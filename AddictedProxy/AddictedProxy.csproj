@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="RailSharp" Version="1.1.0-alpha.2" />
+      <PackageReference Include="System.Runtime.Caching" Version="5.0.0-preview.3.20214.6" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers" />
+      <Folder Include="Model" />
+    </ItemGroup>
+
+
+</Project>
