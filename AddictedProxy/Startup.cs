@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
+using AddictedProxy.Model.Config;
+using AddictedProxy.Services.Addic7ed;
 using AddictedProxy.Services.Caching;
 using AddictedProxy.Services.Proxy;
 using Microsoft.AspNetCore.Builder;
@@ -33,9 +35,16 @@ namespace AddictedProxy
         {
             services.AddSingleton(provider => MemoryCache.Default);
             services.AddSingleton<ICachingService, CachingService>();
+            services.AddSingleton<HttpProxyHandler>();
+            services.AddSingleton<Random>();
 
             services.AddHttpClient<IProxyGetter, ProxyGetter>()
                     .SetHandlerLifetime(TimeSpan.FromDays(1))
+                    .AddPolicyHandler(GetRetryPolicy());
+
+            services.AddHttpClient<IAddic7edClient, Addic7edClient>()
+                    .ConfigurePrimaryHttpMessageHandler(provider => provider.GetService<HttpProxyHandler>())
+                    .SetHandlerLifetime(TimeSpan.FromDays(7))
                     .AddPolicyHandler(GetRetryPolicy());
 
             services.AddControllers();
