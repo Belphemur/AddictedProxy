@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.Caching;
 using System.Threading.Tasks;
 using AddictedProxy.Services.Caching;
@@ -13,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Extensions.Http;
 
 namespace AddictedProxy
 {
@@ -28,9 +31,13 @@ namespace AddictedProxy
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<MemoryCache>(provider => MemoryCache.Default);
+            services.AddSingleton(provider => MemoryCache.Default);
             services.AddSingleton<ICachingService, CachingService>();
-            services.AddHttpClient<IProxyGetter, ProxyGetter>();
+
+            services.AddHttpClient<IProxyGetter, ProxyGetter>()
+                    .SetHandlerLifetime(TimeSpan.FromDays(1))
+                    .AddPolicyHandler(GetRetryPolicy());
+
             services.AddControllers();
         }
 
@@ -49,6 +56,18 @@ namespace AddictedProxy
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+        }
+
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            var jitterer = new Random();
+            return HttpPolicyExtensions
+                   .HandleTransientHttpError()
+                   .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                   .WaitAndRetryAsync(6, // exponential back-off plus some jitter
+                       retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                                       + TimeSpan.FromMilliseconds(jitterer.Next(0, 100))
+                   );
         }
     }
 }

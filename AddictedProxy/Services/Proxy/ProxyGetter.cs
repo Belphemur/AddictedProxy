@@ -32,8 +32,8 @@ namespace AddictedProxy.Services.Proxy
         {
             return await _cachingService.GetSetAsync<IEnumerable<WebProxy>>("proxies", async _ =>
             {
-                await using var stream     = await _httpClient.GetStreamAsync("?request=getproxies&proxytype=http&timeout=450&country=all&ssl=all&anonymity=all");
-                using var       textReader = new StreamReader(stream);
+                using var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "?request=getproxies&proxytype=http&timeout=450&country=all&ssl=all&anonymity=all"), cancellationToken);
+                using var       textReader = new StreamReader(await response.Content.ReadAsStreamAsync());
                 string          line;
 
                 var proxies = new HashSet<WebProxy>();
