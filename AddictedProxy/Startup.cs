@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.Caching;
+using System.Threading;
 using System.Threading.Tasks;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
 using AddictedProxy.Services.Caching;
 using AddictedProxy.Services.Proxy;
+using AngleSharp.Html.Parser;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,16 +37,24 @@ namespace AddictedProxy
         {
             services.AddSingleton(provider => MemoryCache.Default);
             services.AddSingleton<ICachingService, CachingService>();
-            services.AddSingleton<HttpProxyHandler>();
-            services.AddSingleton<Random>();
+            services.AddSingleton(async provider =>
+            {
+                var proxies = await provider.GetService<IProxyGetter>().GetWebProxiesAsync(CancellationToken.None);
+                return new MutliWebProxy(proxies);
+            });
+            services.AddSingleton<IHtmlParser, HtmlParser>();
+            services.AddSingleton<Parser>();
 
             services.AddHttpClient<IProxyGetter, ProxyGetter>()
                     .SetHandlerLifetime(TimeSpan.FromDays(1))
                     .AddPolicyHandler(GetRetryPolicy());
 
             services.AddHttpClient<IAddic7edClient, Addic7edClient>()
-                    .ConfigurePrimaryHttpMessageHandler(provider => provider.GetService<HttpProxyHandler>())
-                    .SetHandlerLifetime(TimeSpan.FromDays(7))
+                    .ConfigurePrimaryHttpMessageHandler(provider => new HttpClientHandler
+                    {
+                        Proxy = provider.GetService<MutliWebProxy>()
+                    })
+                    .SetHandlerLifetime(TimeSpan.FromHours(12))
                     .AddPolicyHandler(GetRetryPolicy());
 
             services.AddControllers();
@@ -75,7 +85,7 @@ namespace AddictedProxy
                    .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
                    .WaitAndRetryAsync(6, // exponential back-off plus some jitter
                        retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
-                                       + TimeSpan.FromMilliseconds(jitterer.Next(0, 100))
+                                       + TimeSpan.FromMilliseconds(jitterer.Next(0, 5000))
                    );
         }
     }
