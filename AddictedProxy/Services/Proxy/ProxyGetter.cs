@@ -19,7 +19,7 @@ namespace AddictedProxy.Services.Proxy
         public ProxyGetter(HttpClient httpClient, ICachingService cachingService)
         {
             _httpClient             = httpClient;
-            _httpClient.BaseAddress = new Uri("https://api.proxyscrape.com/");
+            _httpClient.BaseAddress = new Uri("https://api.proxyscrape.com");
             _cachingService         = cachingService;
         }
 
@@ -40,7 +40,7 @@ namespace AddictedProxy.Services.Proxy
 
                 while ((line = await textReader.ReadLineAsync()) != null)
                 {
-                    proxies.Add(new WebProxy(new Uri(line)));
+                    proxies.Add(new WebProxy(new Uri($"http://{line}")));
                 }
 
                 return proxies;

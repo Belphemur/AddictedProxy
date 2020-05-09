@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Caching;
 using System.Threading.Tasks;
+using AddictedProxy.Services.Caching;
+using AddictedProxy.Services.Proxy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,6 +28,9 @@ namespace AddictedProxy
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<MemoryCache>(provider => MemoryCache.Default);
+            services.AddSingleton<ICachingService, CachingService>();
+            services.AddHttpClient<IProxyGetter, ProxyGetter>();
             services.AddControllers();
         }
 
