@@ -32,7 +32,7 @@ namespace AddictedProxy.Services.Proxy
         {
             return await _cachingService.GetSetAsync<IEnumerable<WebProxy>>("proxies", async _ =>
             {
-                using var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "?request=getproxies&proxytype=http&timeout=450&country=all&ssl=all&anonymity=all"), cancellationToken);
+                using var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "?request=getproxies&proxytype=http&timeout=1100&country=all&ssl=yes&anonymity=all"), cancellationToken);
                 using var       textReader = new StreamReader(await response.Content.ReadAsStreamAsync());
                 string          line;
 
@@ -44,7 +44,7 @@ namespace AddictedProxy.Services.Proxy
                 }
 
                 return proxies;
-            }, TimeSpan.FromDays(1), cancellationToken);
+            }, TimeSpan.FromMinutes(5), cancellationToken);
         }
     }
 }
