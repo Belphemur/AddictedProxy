@@ -119,7 +119,7 @@ namespace AddictedProxy.Services.Addic7ed
                 }
 
             if (!subtitlesRows.Any())
-                yield break;
+                throw new NothingToParseException("No subtitle", null);
 
             var episodeGroups = subtitlesRows.GroupBy(r => r.EpisodeId).ToList();
             foreach (var episode in from episodeGroup in episodeGroups
