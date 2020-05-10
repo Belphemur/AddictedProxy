@@ -85,7 +85,7 @@ namespace AddictedProxy
                    .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
                    .WaitAndRetryAsync(6, // exponential back-off plus some jitter
                        retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
-                                       + TimeSpan.FromMilliseconds(jitterer.Next(0, 5000))
+                                       + TimeSpan.FromMilliseconds(jitterer.Next(0, 300))
                    );
         }
     }
