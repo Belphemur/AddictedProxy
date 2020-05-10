@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using AddictedProxy.Extensions;
 using AddictedProxy.Services.Caching;
 
 namespace AddictedProxy.Services.Proxy
@@ -31,8 +32,13 @@ namespace AddictedProxy.Services.Proxy
         {
             return await _cachingService.GetSetAsync("proxies", async _ =>
             {
+                var random = new Random();
                 var result = await Task.WhenAll(GetFreshProxies(cancellationToken), GetProxyScrape(cancellationToken));
-                return result[0].Union(result[1]);
+
+                var webProxies = result[0].Union(result[1]).ToArray();
+                random.Shuffle(webProxies);
+
+                return webProxies;
             }, TimeSpan.FromMinutes(5), cancellationToken);
         }
 
