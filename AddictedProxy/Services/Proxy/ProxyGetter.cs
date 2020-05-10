@@ -41,22 +41,21 @@ namespace AddictedProxy.Services.Proxy
         private async Task<IEnumerable<WebProxy>> GetFreshProxies(CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                "https://www.freshproxies.net/ProxyList?countries_1=GB-IE-BE-NL-FR-LU-AD-MC-LI&countries_2=DE-AT-PL-CZ-SK-HU-SI-CH&always=yes&protocol=https&level=anon&order=speed&frame=6H&format=txt&fields=mini&count=5&key=8AZZQsQnEvkXwmqs")
+                "https://www.freshproxies.net/ProxyList?countries_1=DE-AT-PL-CZ-SK-HU-SI-CH&countries_2=GB-IE-BE-NL-FR-LU-AD-MC-LI&always=yes&protocol=HTTPS&level=all&order=speed&frame=1H&format=txt&fields=mini&key=8AZZQsQnEvkXwmqs"
+                )
             {
                 Headers = {{"User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0"}}
             };
-            using var response = await _httpClient.SendAsync(
-                request,
-                cancellationToken);
+            using var response = await _httpClient.SendAsync(request, cancellationToken);
             return await ParseProxies(response);
         }
 
         private async Task<IEnumerable<WebProxy>> GetProxyScrape(CancellationToken cancellationToken)
         {
-            using var response = await _httpClient.SendAsync(
-                new HttpRequestMessage(HttpMethod.Get,
-                    "https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=1600&country=all&ssl=yes&anonymity=all&uptime=95&status=alive&averagetimeout=1600&age=unlimited&score=0&port=all&organization=all&serialkey=YQTIY-6D6UY-S0GL9-H6T7M"),
-                cancellationToken);
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                "https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=5050&country=all&ssl=all&anonymity=all&uptime=100&status=alive&averagetimeout=3000&age=unlimited&score=3.9&port=all&organization=all&serialkey=YQTIY-6D6UY-S0GL9-H6T7M"
+            );
+            using var response = await _httpClient.SendAsync(request, cancellationToken);
             return await ParseProxies(response);
         }
 

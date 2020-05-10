@@ -10,6 +10,7 @@ using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
 using AddictedProxy.Services.Addic7ed.Exception;
 using AddictedProxy.Services.Caching;
+using AddictedProxy.Services.Middleware;
 using AddictedProxy.Services.Proxy;
 using AngleSharp.Html.Parser;
 using Microsoft.AspNetCore.Builder;
@@ -40,7 +41,7 @@ namespace AddictedProxy
         {
             services.AddSingleton(provider => MemoryCache.Default);
             services.AddSingleton<ICachingService, CachingService>();
-            services.AddSingleton(provider =>
+            services.AddTransient(provider =>
             {
                 var proxies = provider.GetService<IProxyGetter>().GetWebProxiesAsync(CancellationToken.None).Result;
                 return new MutliWebProxy(proxies);
@@ -57,10 +58,19 @@ namespace AddictedProxy
                     {
                         Proxy = provider.GetService<MutliWebProxy>()
                     })
-                    .SetHandlerLifetime(TimeSpan.FromHours(12))
+                    .SetHandlerLifetime(TimeSpan.FromHours(1))
                     .AddPolicyHandler(GetRetryPolicy());
 
-            services.AddControllers();
+            services.AddControllers()
+                    .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>());
+
+            services.AddLogging(opt =>
+            {
+                opt.AddConsole(c =>
+                {
+                    c.TimestampFormat = "[HH:mm:ss] ";
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,11 +95,12 @@ namespace AddictedProxy
             var jitterer = new Random();
             return HttpPolicyExtensions
                    .HandleTransientHttpError()
+                   .Or<TimeoutRejectedException>()
                    .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
                    .WaitAndRetryAsync(8, // exponential back-off plus some jitter
                        retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
                                        + TimeSpan.FromMilliseconds(jitterer.Next(0, 300))
-                   );
+                   ).WrapAsync(Policy.TimeoutAsync(10));
         }
     }
 }
