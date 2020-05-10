@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AddictedProxy.Model;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
@@ -84,6 +83,7 @@ namespace AddictedProxy.Controllers
             }
 
             var matchingSubtitles = episode.Subtitles
+                                           .Where(subtitle => !string.IsNullOrEmpty(subtitle.Version))
                                            .Where(subtitle => { return subtitle.Version.Split("+").Any(version => request.FileName.ToLowerInvariant().Contains(version.ToLowerInvariant())); })
                                            .ToArray();
             return Ok(new SearchResponse
