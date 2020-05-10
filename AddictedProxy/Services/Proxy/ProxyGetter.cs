@@ -32,20 +32,16 @@ namespace AddictedProxy.Services.Proxy
         {
             return await _cachingService.GetSetAsync("proxies", async _ =>
             {
-                var random = new Random();
                 var result = await Task.WhenAll(GetFreshProxies(cancellationToken), GetProxyScrape(cancellationToken));
 
-                var webProxies = result[0].Union(result[1]).ToArray();
-                random.Shuffle(webProxies);
-
-                return webProxies;
+                return result[0].Union(result[1]).ToArray();
             }, TimeSpan.FromMinutes(5), cancellationToken);
         }
 
         private async Task<IEnumerable<WebProxy>> GetFreshProxies(CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-                "https://www.freshproxies.net/ProxyList?countries_1=GB-IE-BE-NL-FR-LU-AD-MC-LI&countries_2=DE-AT-PL-CZ-SK-HU-SI-CH&always=yes&protocol=HTTPS&level=anon&order=succ&frame=1H&format=txt&fields=mini&key=8AZZQsQnEvkXwmqs&count=50")
+                "https://www.freshproxies.net/ProxyList?countries_1=GB-IE-BE-NL-FR-LU-AD-MC-LI&countries_2=DE-AT-PL-CZ-SK-HU-SI-CH&always=yes&protocol=https&level=anon&order=speed&frame=6H&format=txt&fields=mini&count=500&key=8AZZQsQnEvkXwmqs")
             {
                 Headers = {{"User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0"}}
             };
