@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using AddictedProxy.Model;
@@ -55,14 +54,14 @@ namespace AddictedProxy.Services.Addic7ed
         /// <param name="show"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<int> GetNbSeasonsAsync(Addic7edCreds credentials, TvShow show, CancellationToken token)
+        public async Task<IEnumerable<int>> GetSeasonsAsync(Addic7edCreds credentials, TvShow show, CancellationToken token)
         {
             return await _cachingService.GetSetAsync($"show-nb-season-{show.Id}", async cancellationToken =>
             {
                 return await Policy().ExecuteAsync(async cToken =>
                 {
                     using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.Id}", HttpMethod.Get), cancellationToken);
-                    return await _parser.GetNumberOfSeasonsAsync(await response.Content.ReadAsStreamAsync(), cancellationToken);
+                    return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(), cancellationToken).ToArrayAsync(cToken);
                 }, token);
             }, TimeSpan.FromDays(1), token);
         }

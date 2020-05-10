@@ -64,13 +64,13 @@ namespace AddictedProxy.Controllers
                 return NotFound(new {Error = $"Couldn't find the show {request.Show}"});
             }
 
-            var season = await _client.GetNbSeasonsAsync(request.Credentials, show, token);
-            if (season <= 0)
+            var season = (await _client.GetSeasonsAsync(request.Credentials, show, token)).ToArray();
+            if (season.Length == 0)
             {
                 return NotFound(new {Error = $"Couldn't find a season for {request.Show}"});
             }
 
-            if (season < request.Season)
+            if (!season.Contains(request.Season))
             {
                 return NotFound(new {Error = $"Couldn't find season ${request.Season} for {request.Show}"});
             }

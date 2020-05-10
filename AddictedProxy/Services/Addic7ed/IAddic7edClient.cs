@@ -19,13 +19,13 @@ namespace AddictedProxy.Services.Addic7ed
         Task<IEnumerable<TvShow>> GetTvShowsAsync([CanBeNull]Addic7edCreds credentials, CancellationToken token);
 
         /// <summary>
-        /// Get nb of season the show has
+        /// Get available seasons
         /// </summary>
         /// <param name="credentials"></param>
         /// <param name="show"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        Task<int> GetNbSeasonsAsync([CanBeNull] Addic7edCreds credentials, TvShow show, CancellationToken token);
+        Task<IEnumerable<int>> GetSeasonsAsync([CanBeNull] Addic7edCreds credentials, TvShow show, CancellationToken token);
 
         /// <summary>
         /// Get episode for the following season

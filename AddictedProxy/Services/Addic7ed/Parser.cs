@@ -40,12 +40,19 @@ namespace AddictedProxy.Services.Addic7ed
             }
         }
 
-        public async Task<int> GetNumberOfSeasonsAsync(Stream html, CancellationToken token)
+        public async IAsyncEnumerable<int> GetSeasonsAsync(Stream html, [EnumeratorCancellation] CancellationToken token)
         {
             var document     = await _parser.ParseDocumentAsync(html, token);
             var selectSeason = document.QuerySelector("#qsiSeason") as IHtmlSelectElement;
-
-            return selectSeason?.Options?.Length > 0 ? selectSeason.Options.Length - 1 : throw new NothingToParseException("No season found", null);
+            if (selectSeason?.Options?.Length == 0)
+            {
+                throw new NothingToParseException("No season found", null);
+            }
+            
+            foreach (var option in selectSeason?.Options)
+            {
+                yield return int.Parse(option.Value);
+            }
         }
 
         public async IAsyncEnumerable<Episode> GetSeasonSubtitlesAsync(Stream html, [EnumeratorCancellation] CancellationToken token)
