@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using AddictedProxy.Model;
@@ -35,5 +36,16 @@ namespace AddictedProxy.Services.Addic7ed
         /// <param name="token"></param>
         /// <returns></returns>
         Task<IEnumerable<Episode>> GetEpisodesAsync([CanBeNull] Addic7edCreds credentials, TvShow show, int season, CancellationToken token);
+
+        /// <summary>
+        /// Download the given subtitle
+        /// </summary>
+        /// <param name="credentials"></param>
+        /// <param name="lang"></param>
+        /// <param name="id"></param>
+        /// <param name="version"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        Task<Stream> DownloadSubtitle(Addic7edCreds credentials, int lang, int id, int version, CancellationToken token);
     }
 }
