@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
+using AddictedProxy.Services.Addic7ed.Exception;
 using AddictedProxy.Services.Caching;
 using AddictedProxy.Services.Proxy;
 using AngleSharp.Html.Parser;
@@ -20,6 +22,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Extensions.Http;
+using Polly.Timeout;
 
 namespace AddictedProxy
 {
@@ -68,7 +71,7 @@ namespace AddictedProxy
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -82,8 +85,8 @@ namespace AddictedProxy
             var jitterer = new Random();
             return HttpPolicyExtensions
                    .HandleTransientHttpError()
-                   .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-                   .WaitAndRetryAsync(6, // exponential back-off plus some jitter
+                   .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
+                   .WaitAndRetryAsync(8, // exponential back-off plus some jitter
                        retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
                                        + TimeSpan.FromMilliseconds(jitterer.Next(0, 300))
                    );

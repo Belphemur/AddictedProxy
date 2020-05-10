@@ -45,6 +45,13 @@ namespace AddictedProxy.Controllers
             return Ok(shows);
         }
 
+        [Route("download/{lang:int}/{id:int}/{version:int}")]
+        [HttpPost]
+        public async Task<IActionResult> Search([FromBody] Addic7edCreds credentials, [FromRoute] int lang, [FromRoute] int id, [FromRoute] int version, CancellationToken token)
+        {
+            return Ok();
+        }
+
         [Route("search")]
         [HttpPost]
         public async Task<IActionResult> Search([FromBody] SearchRequest request, CancellationToken token)
@@ -75,10 +82,7 @@ namespace AddictedProxy.Controllers
             }
 
             var matchingSubtitles = episode.Subtitles
-                                           .Where(subtitle =>
-                                           {
-                                               return subtitle.Version.Split("+").Any(version => request.FileName.ToLowerInvariant().Contains(version.ToLowerInvariant()));
-                                           })
+                                           .Where(subtitle => { return subtitle.Version.Split("+").Any(version => request.FileName.ToLowerInvariant().Contains(version.ToLowerInvariant())); })
                                            .ToArray();
             return Ok(new SearchResponse
             {

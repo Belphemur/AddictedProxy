@@ -7,9 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using AddictedProxy.Model;
 using AddictedProxy.Model.Config;
+using AddictedProxy.Services.Addic7ed.Exception;
 using AddictedProxy.Services.Caching;
 using JetBrains.Annotations;
 using MD5Hash;
+using Polly;
 
 namespace AddictedProxy.Services.Addic7ed
 {
@@ -37,14 +39,11 @@ namespace AddictedProxy.Services.Addic7ed
         {
             return await _cachingService.GetSetAsync("shows", async cancellationToken =>
             {
-                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, "ajax_getShows.php", HttpMethod.Get), cancellationToken);
-                var result =  await _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(), token).ToArrayAsync(cancellationToken);
-                if (result.Length == 0)
+                return await Policy().ExecuteAsync(async cToken =>
                 {
-                    throw new Exception("Couldn't find shows");
-                }
-
-                return result;
+                    using var response = await _httpClient.SendAsync(PrepareRequest(credentials, "ajax_getShows.php", HttpMethod.Get), cancellationToken);
+                    return await _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(), token).ToArrayAsync(cancellationToken);
+                }, token);
             }, TimeSpan.FromDays(1), token);
         }
 
@@ -59,8 +58,11 @@ namespace AddictedProxy.Services.Addic7ed
         {
             return await _cachingService.GetSetAsync($"show-nb-season-{show.Id}", async cancellationToken =>
             {
-                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.Id}", HttpMethod.Get), cancellationToken);
-                return await _parser.GetNumberOfSeasonsAsync(await response.Content.ReadAsStreamAsync(), cancellationToken);
+                return await Policy().ExecuteAsync(async cToken =>
+                {
+                    using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.Id}", HttpMethod.Get), cancellationToken);
+                    return await _parser.GetNumberOfSeasonsAsync(await response.Content.ReadAsStreamAsync(), cancellationToken);
+                }, token);
             }, TimeSpan.FromDays(1), token);
         }
 
@@ -76,23 +78,39 @@ namespace AddictedProxy.Services.Addic7ed
         {
             return await _cachingService.GetSetAsync($"show-episodes-{show.Id}", async cancellationToken =>
             {
-                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_loadShow.php?bot=1&show={show.Id}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get), token);
-                return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(), token).ToArrayAsync(token);
+                return await Policy().ExecuteAsync(async cToken =>
+                {
+                    using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_loadShow.php?bot=1&show={show.Id}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get), token);
+                    return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(), token).ToArrayAsync(token);
+                }, token);
             }, TimeSpan.FromHours(1), token);
+        }
+
+        private AsyncPolicy Policy()
+        {
+            var jitterer = new Random();
+            return Polly.Policy.Handle<NothingToParseException>()
+                        .WaitAndRetryAsync(8, // exponential back-off plus some jitter
+                            retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                                            + TimeSpan.FromMilliseconds(jitterer.Next(0, 300))
+                        );
         }
 
         private HttpRequestMessage PrepareRequest([CanBeNull] Addic7edCreds credentials, string url, HttpMethod method)
         {
+            var request = new HttpRequestMessage(method, url)
+            {
+                Headers = {{"User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0"}}
+            };
             if (credentials?.Password == null || credentials.UserId == 0)
             {
-                return new HttpRequestMessage(method, url);
+                return request;
             }
 
             var md5Pass = Hash.Content(credentials.Password);
-            return new HttpRequestMessage(method, url)
-            {
-                Headers = {{"Cookie", $"wikisubtitlespass={md5Pass};wikisubtitlesuser={credentials.UserId}"}}
-            };
+
+            request.Headers.Add("Cookie", $"wikisubtitlespass={md5Pass};wikisubtitlesuser={credentials.UserId}");
+            return request;
         }
     }
 }
