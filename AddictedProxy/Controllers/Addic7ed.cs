@@ -7,6 +7,7 @@ using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 namespace AddictedProxy.Controllers
 {
@@ -47,9 +48,10 @@ namespace AddictedProxy.Controllers
 
         [Route("download/{lang:int}/{id:int}/{version:int}")]
         [HttpPost]
-        public async Task<IActionResult> Search([FromBody] Addic7edCreds credentials, [FromRoute] int lang, [FromRoute] int id, [FromRoute] int version, CancellationToken token)
+        public async Task<IActionResult> Download([FromBody] Addic7edCreds credentials, [FromRoute] int lang, [FromRoute] int id, [FromRoute] int version, CancellationToken token)
         {
-            return Ok();
+            var subtitleStream = await _client.DownloadSubtitle(credentials, lang, id, version, token);
+            return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"));
         }
 
         [Route("search")]
