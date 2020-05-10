@@ -18,9 +18,8 @@ namespace AddictedProxy.Services.Proxy
 
         public ProxyGetter(HttpClient httpClient, ICachingService cachingService)
         {
-            _httpClient             = httpClient;
-            _httpClient.BaseAddress = new Uri("https://api.proxyscrape.com");
-            _cachingService         = cachingService;
+            _httpClient     = httpClient;
+            _cachingService = cachingService;
         }
 
         /// <summary>
@@ -30,21 +29,59 @@ namespace AddictedProxy.Services.Proxy
         /// <returns></returns>
         public async Task<IEnumerable<WebProxy>> GetWebProxiesAsync(CancellationToken cancellationToken)
         {
-            return await _cachingService.GetSetAsync<IEnumerable<WebProxy>>("proxies", async _ =>
+            return await _cachingService.GetSetAsync("proxies", async _ =>
             {
-                using var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "?request=serverips&protocol=http&serialkey=YQTIY-6D6UY-S0GL9-H6T7M"), cancellationToken);
-                using var       textReader = new StreamReader(await response.Content.ReadAsStreamAsync());
-                string          line;
+                var result = await Task.WhenAll(GetFreshProxies(cancellationToken), GetProxyScrape(cancellationToken));
+                return result[0].Union(result[1]);
+            }, TimeSpan.FromMinutes(5), cancellationToken);
+        }
 
-                var proxies = new HashSet<WebProxy>();
+        private async Task<IEnumerable<WebProxy>> GetFreshProxies(CancellationToken cancellationToken)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get,
+                "https://www.freshproxies.net/ProxyList?countries_1=GB-IE-BE-NL-FR-LU-AD-MC-LI&countries_2=DE-AT-PL-CZ-SK-HU-SI-CH&always=yes&protocol=HTTPS&level=anon&order=succ&frame=1H&format=txt&fields=mini&key=8AZZQsQnEvkXwmqs&count=50")
+            {
+                Headers = {{"User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0"}}
+            };
+            using var response = await _httpClient.SendAsync(
+                request,
+                cancellationToken);
+            return await ParseProxies(response);
+        }
 
-                while ((line = await textReader.ReadLineAsync()) != null)
+        private async Task<IEnumerable<WebProxy>> GetProxyScrape(CancellationToken cancellationToken)
+        {
+            using var response = await _httpClient.SendAsync(
+                new HttpRequestMessage(HttpMethod.Get,
+                    "https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=4000&country=all&ssl=all&anonymity=all&uptime=90&status=alive&averagetimeout=2000&age=unlimited&score=0&port=all&organization=all&serialkey=YQTIY-6D6UY-S0GL9-H6T7M"),
+                cancellationToken);
+            return await ParseProxies(response);
+        }
+
+        private static async Task<IEnumerable<WebProxy>> ParseProxies(HttpResponseMessage response)
+        {
+            using var textReader = new StreamReader(await response.Content.ReadAsStreamAsync());
+            string    line;
+
+            var proxies = new HashSet<WebProxy>();
+
+            while ((line = await textReader.ReadLineAsync()) != null)
+            {
+                if (!Uri.IsWellFormedUriString($"http://{line}", UriKind.Absolute))
                 {
-                    proxies.Add(new WebProxy(new Uri($"http://{line}")));
+                    continue;
                 }
 
-                return proxies;
-            }, TimeSpan.FromMinutes(5), cancellationToken);
+                var address = new Uri($"http://{line}");
+                if (address.Port == 0)
+                {
+                    continue;
+                }
+
+                proxies.Add(new WebProxy(address));
+            }
+
+            return proxies;
         }
     }
 }

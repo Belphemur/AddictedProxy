@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AddictedProxy.Model;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Caching;
+using JetBrains.Annotations;
 using MD5Hash;
 
 namespace AddictedProxy.Services.Addic7ed
@@ -37,7 +38,13 @@ namespace AddictedProxy.Services.Addic7ed
             return await _cachingService.GetSetAsync("shows", async cancellationToken =>
             {
                 using var response = await _httpClient.SendAsync(PrepareRequest(credentials, "ajax_getShows.php", HttpMethod.Get), cancellationToken);
-                return await _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(), token).ToArrayAsync(cancellationToken);
+                var result =  await _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(), token).ToArrayAsync(cancellationToken);
+                if (result.Length == 0)
+                {
+                    throw new Exception("Couldn't find shows");
+                }
+
+                return result;
             }, TimeSpan.FromDays(1), token);
         }
 
@@ -74,8 +81,13 @@ namespace AddictedProxy.Services.Addic7ed
             }, TimeSpan.FromHours(1), token);
         }
 
-        private HttpRequestMessage PrepareRequest(Addic7edCreds credentials, string url, HttpMethod method)
+        private HttpRequestMessage PrepareRequest([CanBeNull] Addic7edCreds credentials, string url, HttpMethod method)
         {
+            if (credentials?.Password == null || credentials.UserId == 0)
+            {
+                return new HttpRequestMessage(method, url);
+            }
+
             var md5Pass = Hash.Content(credentials.Password);
             return new HttpRequestMessage(method, url)
             {

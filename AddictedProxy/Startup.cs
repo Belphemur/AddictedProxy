@@ -37,9 +37,9 @@ namespace AddictedProxy
         {
             services.AddSingleton(provider => MemoryCache.Default);
             services.AddSingleton<ICachingService, CachingService>();
-            services.AddSingleton(async provider =>
+            services.AddSingleton(provider =>
             {
-                var proxies = await provider.GetService<IProxyGetter>().GetWebProxiesAsync(CancellationToken.None);
+                var proxies = provider.GetService<IProxyGetter>().GetWebProxiesAsync(CancellationToken.None).Result;
                 return new MutliWebProxy(proxies);
             });
             services.AddSingleton<IHtmlParser, HtmlParser>();

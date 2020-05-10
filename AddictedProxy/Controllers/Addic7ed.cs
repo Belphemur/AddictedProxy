@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AddictedProxy.Controllers
