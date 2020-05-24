@@ -38,7 +38,7 @@ namespace AddictedProxy
         {
             services.AddTransient(provider =>
             {
-                var proxies = provider.GetService<IProxyGetter>().GetWebProxiesAsync(CancellationToken.None).Result;
+                var proxies = provider.GetService<IProxyGetter>().GetWebProxiesAsync(CancellationToken.None).GetAwaiter().GetResult();
                 return new MutliWebProxy(proxies);
             });
             services.AddSingleton<IHtmlParser, HtmlParser>();
