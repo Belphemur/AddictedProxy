@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
-using AddictedProxy.Services.Addic7ed.Exception;
-using AddictedProxy.Services.Caching;
 using AddictedProxy.Services.Middleware;
 using AddictedProxy.Services.Proxy;
 using AngleSharp.Html.Parser;
@@ -39,8 +36,6 @@ namespace AddictedProxy
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(provider => MemoryCache.Default);
-            services.AddSingleton<ICachingService, CachingService>();
             services.AddTransient(provider =>
             {
                 var proxies = provider.GetService<IProxyGetter>().GetWebProxiesAsync(CancellationToken.None).Result;

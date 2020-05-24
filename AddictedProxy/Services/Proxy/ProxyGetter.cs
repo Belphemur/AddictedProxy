@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,17 +6,17 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using AddictedProxy.Extensions;
-using AddictedProxy.Services.Caching;
+
+using Microsoft.Extensions.Caching.Memory;
 
 namespace AddictedProxy.Services.Proxy
 {
     public class ProxyGetter : IProxyGetter
     {
         private readonly HttpClient      _httpClient;
-        private readonly ICachingService _cachingService;
+        private readonly IMemoryCache _cachingService;
 
-        public ProxyGetter(HttpClient httpClient, ICachingService cachingService)
+        public ProxyGetter(HttpClient httpClient, IMemoryCache cachingService)
         {
             _httpClient     = httpClient;
             _cachingService = cachingService;
@@ -30,12 +29,13 @@ namespace AddictedProxy.Services.Proxy
         /// <returns></returns>
         public async Task<IEnumerable<WebProxy>> GetWebProxiesAsync(CancellationToken cancellationToken)
         {
-            return await _cachingService.GetSetAsync("proxies", async _ =>
+            return await _cachingService.GetOrCreateAsync("proxies", async entry =>
             {
+                entry.SlidingExpiration = TimeSpan.FromMinutes(5);
                 var result = await Task.WhenAll(GetFreshProxies(cancellationToken), GetProxyScrape(cancellationToken));
 
                 return result[0].Union(result[1]).ToArray();
-            }, TimeSpan.FromMinutes(5), cancellationToken);
+            });
         }
 
         private async Task<IEnumerable<WebProxy>> GetFreshProxies(CancellationToken cancellationToken)
