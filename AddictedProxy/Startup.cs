@@ -59,6 +59,8 @@ namespace AddictedProxy
             services.AddControllers()
                     .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>());
 
+            services.AddMemoryCache();
+
             services.AddLogging(opt =>
             {
                 opt.AddConsole(c =>
