@@ -36,7 +36,7 @@ namespace AddictedProxy.Services.Addic7ed
                 return await Policy().ExecuteAsync(async cToken =>
                 {
                     using var response = await _httpClient.SendAsync(PrepareRequest(credentials, "ajax_getShows.php", HttpMethod.Get), cToken);
-                    return await _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(), token).ToArrayAsync(cToken);
+                    return await _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(cToken), token).ToArrayAsync(cToken);
                 }, token);
             });
         }
@@ -56,7 +56,7 @@ namespace AddictedProxy.Services.Addic7ed
                 return await Policy().ExecuteAsync(async cToken =>
                 {
                     using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.Id}", HttpMethod.Get), cToken);
-                    return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(), cToken).ToArrayAsync(cToken);
+                    return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken).ToArrayAsync(cToken);
                 }, token);
             });
         }
@@ -77,7 +77,7 @@ namespace AddictedProxy.Services.Addic7ed
                 return await Policy().ExecuteAsync(async cToken =>
                 {
                     using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_loadShow.php?bot=1&show={show.Id}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get), token);
-                    return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(), token).ToArrayAsync(token);
+                    return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(cToken), token).ToArrayAsync(token);
                 }, token);
             });
         }
@@ -96,7 +96,7 @@ namespace AddictedProxy.Services.Addic7ed
             var request = PrepareRequest(credentials, $"updated/{lang}/{id}/{version}", HttpMethod.Get);
             var response = await _httpClient.SendAsync(request, token);
 
-            return await response.Content.ReadAsStreamAsync();
+            return await response.Content.ReadAsStreamAsync(token);
         }
 
         private AsyncPolicy Policy()
@@ -109,7 +109,7 @@ namespace AddictedProxy.Services.Addic7ed
                         );
         }
 
-        private HttpRequestMessage PrepareRequest([CanBeNull] Addic7edCreds credentials, string url, HttpMethod method)
+        private HttpRequestMessage PrepareRequest(Addic7edCreds? credentials, string url, HttpMethod method)
         {
             var request = new HttpRequestMessage(method, url)
             {
