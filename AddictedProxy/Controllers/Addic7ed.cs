@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AddictedProxy.Model;
+﻿using AddictedProxy.Model;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
 using Microsoft.AspNetCore.Mvc;

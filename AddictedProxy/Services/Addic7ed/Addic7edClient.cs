@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using AddictedProxy.Model;
+﻿using AddictedProxy.Model;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed.Exception;
 using JetBrains.Annotations;

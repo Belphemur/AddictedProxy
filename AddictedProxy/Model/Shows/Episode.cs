@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace AddictedProxy.Model
 {
     public class Episode

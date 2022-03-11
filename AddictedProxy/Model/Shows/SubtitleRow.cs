@@ -1,5 +1,3 @@
-using System;
-
 namespace AddictedProxy.Model
 {
     internal class SubtitleRow

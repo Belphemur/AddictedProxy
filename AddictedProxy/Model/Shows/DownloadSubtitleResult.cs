@@ -1,5 +1,3 @@
-using System.IO;
-
 namespace AddictedProxy.Model
 {
     public class DownloadSubtitleResult

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AddictedProxy.Extensions
+﻿namespace AddictedProxy.Extensions
 {
     static class RandomExtensions
     {

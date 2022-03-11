@@ -1,5 +1,3 @@
-using System;
-
 namespace AddictedProxy.Model
 {
     public class Subtitle
