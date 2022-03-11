@@ -26,32 +26,19 @@ namespace AddictedProxy
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient(provider =>
-            {
-                var proxies = provider.GetService<IProxyGetter>().GetWebProxiesAsync(CancellationToken.None).GetAwaiter().GetResult();
-                return new MutliWebProxy(proxies);
-            });
             services.AddSingleton<IHtmlParser, HtmlParser>();
             services.AddSingleton<Parser>();
 
-            services.AddHttpClient<IProxyGetter, ProxyGetter>()
-                    .SetHandlerLifetime(TimeSpan.FromDays(1))
-                    .AddPolicyHandler(GetRetryPolicy());
-
             services.AddHttpClient<IAddic7edClient, Addic7edClient>()
-                    .ConfigurePrimaryHttpMessageHandler(provider => new HttpClientHandler
+                    .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
                     {
-                        Proxy = provider.GetService<MutliWebProxy>()
+                        Proxy = new WebProxy
+                        {
+                            Address = new Uri("***REMOVED***"),
+                            Credentials = new NetworkCredential("***REMOVED***", "***REMOVED***")
+                        }
                     })
                     .SetHandlerLifetime(TimeSpan.FromHours(1))
                     .AddPolicyHandler(GetRetryPolicy());
@@ -61,30 +48,7 @@ namespace AddictedProxy
 
             services.AddMemoryCache();
 
-            services.AddLogging(opt =>
-            {
-                opt.AddConsole(c =>
-                {
-                    c.TimestampFormat = "[HH:mm:ss] ";
-                });
-            });
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            // app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
