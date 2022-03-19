@@ -1,5 +1,6 @@
 ﻿using AddictedProxy.Model;
 using AddictedProxy.Model.Config;
+using AddictedProxy.Model.Shows;
 using JetBrains.Annotations;
 
 namespace AddictedProxy.Services.Addic7ed

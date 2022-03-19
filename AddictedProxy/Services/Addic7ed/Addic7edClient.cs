@@ -1,5 +1,6 @@
 ﻿using AddictedProxy.Model;
 using AddictedProxy.Model.Config;
+using AddictedProxy.Model.Shows;
 using AddictedProxy.Services.Addic7ed.Exception;
 using JetBrains.Annotations;
 using MD5Hash;

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using AddictedProxy.Model;
+using AddictedProxy.Model.Shows;
 using AddictedProxy.Services.Addic7ed.Exception;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;

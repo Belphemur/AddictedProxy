@@ -1,4 +1,4 @@
-namespace AddictedProxy.Model
+namespace AddictedProxy.Model.Shows
 {
     internal class SubtitleRow
     {

@@ -1,5 +1,6 @@
 ﻿using AddictedProxy.Model;
 using AddictedProxy.Model.Config;
+using AddictedProxy.Model.Shows;
 using AddictedProxy.Services.Addic7ed;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
