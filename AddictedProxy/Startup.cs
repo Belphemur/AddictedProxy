@@ -1,4 +1,5 @@
 using System.Net;
+using AddictedProxy.Database;
 using AddictedProxy.Services.Addic7ed;
 using AddictedProxy.Services.Middleware;
 using AngleSharp.Html.Parser;
@@ -33,6 +34,7 @@ namespace AddictedProxy
             services.AddMemoryCache();
 
             services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
+            services.AddDbContext<EntityContext>();
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
