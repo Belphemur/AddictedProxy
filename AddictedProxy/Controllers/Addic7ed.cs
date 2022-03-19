@@ -1,7 +1,9 @@
-﻿using AddictedProxy.Model;
+﻿using AddictedProxy.Database;
+using AddictedProxy.Model;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Model.Shows;
 using AddictedProxy.Services.Addic7ed;
+using AddictedProxy.Services.Saver;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
@@ -12,14 +14,16 @@ namespace AddictedProxy.Controllers
     public class Addic7ed : Controller
     {
         private readonly IAddic7edClient _client;
+        private readonly IAddictedSaver _addictedSaver;
+        private readonly ITvShowRepository _tvShowRepository;
 
         public class SearchRequest
         {
             public Addic7edCreds Credentials { get; set; }
-            public string        Show        { get; set; }
-            public int           Episode     { get; set; }
-            public int           Season      { get; set; }
-            public string        FileName    { get; set; }
+            public string Show { get; set; }
+            public int Episode { get; set; }
+            public int Season { get; set; }
+            public string FileName { get; set; }
         }
 
         public class SearchResponse
@@ -29,16 +33,19 @@ namespace AddictedProxy.Controllers
             public Episode Episode { get; set; }
         }
 
-        public Addic7ed(IAddic7edClient client)
+        public Addic7ed(IAddic7edClient client, IAddictedSaver addictedSaver, ITvShowRepository tvShowRepository)
         {
             _client = client;
+            _addictedSaver = addictedSaver;
+            _tvShowRepository = tvShowRepository;
         }
 
         [Route("shows")]
         [HttpPost]
-        public async Task<IActionResult> GetShows([FromBody] Addic7edCreds credentials, CancellationToken token)
+        public async Task<IActionResult> GetShows(CancellationToken token)
         {
-            var shows = await _client.GetTvShowsAsync(credentials, token);
+            await _addictedSaver.RefreshShows(token);
+            var shows = _tvShowRepository.GetAllAsync(token);
             return Ok(shows);
         }
 
@@ -54,29 +61,28 @@ namespace AddictedProxy.Controllers
         [HttpPost]
         public async Task<IActionResult> Search([FromBody] SearchRequest request, CancellationToken token)
         {
-            var shows = await _client.GetTvShowsAsync(request.Credentials, token);
-            var show  = shows.FirstOrDefault(tvShow => string.Equals(tvShow.Name, request.Show, StringComparison.InvariantCultureIgnoreCase));
+            var show = await _tvShowRepository.FindAsync(request.Show).FirstOrDefaultAsync(token);
             if (show == null)
             {
-                return NotFound(new {Error = $"Couldn't find the show {request.Show}"});
+                return NotFound(new { Error = $"Couldn't find the show {request.Show}" });
             }
 
             var season = (await _client.GetSeasonsAsync(request.Credentials, show, token)).ToArray();
             if (season.Length == 0)
             {
-                return NotFound(new {Error = $"Couldn't find a season for {request.Show}"});
+                return NotFound(new { Error = $"Couldn't find a season for {request.Show}" });
             }
 
             if (!season.Contains(request.Season))
             {
-                return NotFound(new {Error = $"Couldn't find season ${request.Season} for {request.Show}"});
+                return NotFound(new { Error = $"Couldn't find season ${request.Season} for {request.Show}" });
             }
 
             var episodes = await _client.GetEpisodesAsync(request.Credentials, show, request.Season, token);
-            var episode  = episodes.FirstOrDefault(ep => ep.Number == request.Episode);
+            var episode = episodes.FirstOrDefault(ep => ep.Number == request.Episode);
             if (episode == null)
             {
-                return NotFound(new {Error = $"Couldn't find episode S{request.Season}E{request.Episode} for {request.Show}"});
+                return NotFound(new { Error = $"Couldn't find episode S{request.Season}E{request.Episode} for {request.Show}" });
             }
 
             var matchingSubtitles = episode.Subtitles
@@ -85,7 +91,7 @@ namespace AddictedProxy.Controllers
                                            .ToArray();
             return Ok(new SearchResponse
             {
-                Episode           = episode,
+                Episode = episode,
                 MatchingSubtitles = matchingSubtitles
             });
         }

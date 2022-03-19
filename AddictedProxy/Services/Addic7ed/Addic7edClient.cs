@@ -11,35 +11,35 @@ namespace AddictedProxy.Services.Addic7ed
 {
     public class Addic7edClient : IAddic7edClient
     {
-        private readonly HttpClient      _httpClient;
-        private readonly Parser          _parser;
+        private readonly HttpClient _httpClient;
+        private readonly Parser _parser;
         private readonly IMemoryCache _cachingService;
 
         public Addic7edClient(HttpClient httpClient, Parser parser, IMemoryCache cachingService)
         {
-            _httpClient             = httpClient;
-            _parser                 = parser;
-            _cachingService         = cachingService;
+            _httpClient = httpClient;
+            _parser = parser;
+            _cachingService = cachingService;
             _httpClient.BaseAddress = new Uri("https://www.addic7ed.com");
         }
 
         /// <summary>
         /// Get Tv Shows
         /// </summary>
-        /// <param name="credentials"></param>
+        /// <param name="creds"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<TvShow>> GetTvShowsAsync(Addic7edCreds credentials, CancellationToken token)
+        public async IAsyncEnumerable<TvShow> GetTvShowsAsync(Addic7edCreds creds, CancellationToken token)
         {
-            return await _cachingService.GetOrCreateAsync("shows", async entry =>
+            var shows = await await Policy().ExecuteAsync(async cToken =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1);
-                return await Policy().ExecuteAsync(async cToken =>
-                {
-                    using var response = await _httpClient.SendAsync(PrepareRequest(credentials, "ajax_getShows.php", HttpMethod.Get), cToken);
-                    return await _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(cToken), token).ToArrayAsync(cToken);
-                }, token);
-            });
+                using var response = await _httpClient.SendAsync(PrepareRequest(creds, "ajax_getShows.php", HttpMethod.Get), cToken);
+                return _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken).ToArrayAsync(cToken);
+            }, token);
+            foreach (var show in shows)
+            {
+                yield return show;
+            }
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace AddictedProxy.Services.Addic7ed
         {
             var request = new HttpRequestMessage(method, url)
             {
-                Headers = {{"User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0"}}
+                Headers = { { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0" } }
             };
             if (credentials?.Password == null || credentials.UserId == 0)
             {

@@ -1,7 +1,9 @@
 using System.Net;
 using AddictedProxy.Database;
+using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
 using AddictedProxy.Services.Middleware;
+using AddictedProxy.Services.Saver;
 using AngleSharp.Html.Parser;
 using Polly;
 using Polly.Extensions.Http;
@@ -34,7 +36,11 @@ namespace AddictedProxy
             services.AddMemoryCache();
 
             services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
+
+            services.AddSingleton<MainCreds>();
             services.AddDbContext<EntityContext>();
+            services.AddScoped<ITvShowRepository, TvShowRepository>();
+            services.AddScoped<IAddictedSaver, AddictedSaver>();
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()

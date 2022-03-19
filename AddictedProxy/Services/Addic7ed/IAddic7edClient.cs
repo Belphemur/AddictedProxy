@@ -10,10 +10,10 @@ namespace AddictedProxy.Services.Addic7ed
         /// <summary>
         /// Get Tv Shows
         /// </summary>
-        /// <param name="credentials"></param>
+        /// <param name="creds"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        Task<IEnumerable<TvShow>> GetTvShowsAsync([CanBeNull]Addic7edCreds credentials, CancellationToken token);
+        IAsyncEnumerable<TvShow> GetTvShowsAsync(Addic7edCreds creds, CancellationToken token);
 
         /// <summary>
         /// Get available seasons

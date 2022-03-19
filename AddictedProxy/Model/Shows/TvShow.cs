@@ -1,10 +1,12 @@
-﻿namespace AddictedProxy.Model.Shows
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace AddictedProxy.Model.Shows
 {
     public class TvShow
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        
-        public virtual List<Episode> Episodes { get; set; }
+
+        public virtual Episode[] Episodes { get; set; }
     }
 }

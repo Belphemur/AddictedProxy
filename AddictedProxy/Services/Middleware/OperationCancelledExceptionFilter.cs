@@ -7,9 +7,9 @@ namespace AddictedProxy.Services.Middleware
     {
         private readonly ILogger _logger;
 
-        public OperationCancelledExceptionFilter(ILoggerFactory loggerFactory)
+        public OperationCancelledExceptionFilter(ILogger<OperationCancelledExceptionFilter> logger)
         {
-            _logger = loggerFactory.CreateLogger<OperationCancelledExceptionFilter>();
+            _logger = logger;
         }
 
         public override void OnException(ExceptionContext context)

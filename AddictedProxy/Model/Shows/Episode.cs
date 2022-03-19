@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Model.Shows
 {
+    [Index(nameof(TvShowId), nameof(Season), nameof(Number), IsUnique = true)]
     public class Episode
     {
         public int Id { get; set; }

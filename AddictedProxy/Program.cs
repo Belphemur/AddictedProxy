@@ -1,4 +1,6 @@
 using AddictedProxy;
+using AddictedProxy.Database;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,15 +14,22 @@ builder.Services.AddSwaggerGen();
 new Startup().ConfigureServices(builder.Services);
 
 var app = builder.Build();
-
+{
+    await using var serviceScope = app.Services.CreateAsyncScope();
+    await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<EntityContext>();
+    await dbContext.Database.EnsureCreatedAsync();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    await dbContext.Database.MigrateAsync();
 }
+
 
 app.UseRouting();
 
