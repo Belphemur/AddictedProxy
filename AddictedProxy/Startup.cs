@@ -5,6 +5,8 @@ using AddictedProxy.Services.Addic7ed;
 using AddictedProxy.Services.Middleware;
 using AddictedProxy.Services.Saver;
 using AngleSharp.Html.Parser;
+using Job.Scheduler.Builder;
+using Job.Scheduler.Scheduler;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.Timeout;
@@ -37,6 +39,8 @@ namespace AddictedProxy
 
             services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
 
+            services.AddSingleton<IJobRunnerBuilder, JobRunnerBuilder>();
+            services.AddSingleton<IJobScheduler, JobScheduler>();
             services.AddSingleton<MainCreds>();
             services.AddDbContext<EntityContext>();
             services.AddScoped<ITvShowRepository, TvShowRepository>();

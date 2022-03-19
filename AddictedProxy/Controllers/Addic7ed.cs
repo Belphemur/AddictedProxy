@@ -40,15 +40,6 @@ namespace AddictedProxy.Controllers
             _tvShowRepository = tvShowRepository;
         }
 
-        [Route("shows")]
-        [HttpPost]
-        public async Task<IActionResult> GetShows(CancellationToken token)
-        {
-            await _addictedSaver.RefreshShows(token);
-            var shows = _tvShowRepository.GetAllAsync(token);
-            return Ok(shows);
-        }
-
         [Route("download/{lang:int}/{id:int}/{version:int}")]
         [HttpPost]
         public async Task<IActionResult> Download([FromBody] Addic7edCreds credentials, [FromRoute] int lang, [FromRoute] int id, [FromRoute] int version, CancellationToken token)

@@ -1,5 +1,7 @@
 using AddictedProxy;
 using AddictedProxy.Database;
+using AddictedProxy.Services.Saver;
+using Job.Scheduler.Scheduler;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +17,7 @@ new Startup().ConfigureServices(builder.Services);
 
 var app = builder.Build();
 {
-    await using var serviceScope = app.Services.CreateAsyncScope();
+    var serviceScope = app.Services.CreateAsyncScope();
     await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<EntityContext>();
     await dbContext.Database.EnsureCreatedAsync();
 
@@ -28,7 +30,10 @@ var app = builder.Build();
     }
 
     await dbContext.Database.MigrateAsync();
+    app.Services.GetRequiredService<IJobScheduler>().ScheduleJob(new RefreshShowJob(serviceScope.ServiceProvider.GetRequiredService<IAddictedSaver>()));
+
 }
+
 
 
 app.UseRouting();
