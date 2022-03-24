@@ -81,23 +81,6 @@ namespace AddictedProxy.Services.Addic7ed
             });
         }
 
-        /// <summary>
-        /// Download the given subtitle
-        /// </summary>
-        /// <param name="credentials"></param>
-        /// <param name="lang"></param>
-        /// <param name="id"></param>
-        /// <param name="version"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        public async Task<Stream> DownloadSubtitle(Addic7edCreds credentials, int lang, int id, int version, CancellationToken token)
-        {
-            var request = PrepareRequest(credentials, $"updated/{lang}/{id}/{version}", HttpMethod.Get);
-            var response = await _httpClient.SendAsync(request, token);
-
-            return await response.Content.ReadAsStreamAsync(token);
-        }
-
         private AsyncPolicy Policy()
         {
             var jitterer = new Random();
