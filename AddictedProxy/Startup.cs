@@ -45,6 +45,7 @@ namespace AddictedProxy
             services.AddDbContext<EntityContext>();
             services.AddScoped<ITvShowRepository, TvShowRepository>();
             services.AddScoped<IAddictedSaver, AddictedSaver>();
+            services.AddScoped<ISeasonRepository, SeasonRepository>();
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()

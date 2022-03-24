@@ -25,4 +25,6 @@ public class TvShowRepository : ITvShowRepository
     {
         return _entityContext.TvShows.ToAsyncEnumerable();
     }
+
+    public Task UpdateShow(TvShow show, CancellationToken token) => _entityContext.TvShows.SingleUpdateAsync(show, token);
 }

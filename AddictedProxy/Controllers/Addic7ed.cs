@@ -16,6 +16,7 @@ namespace AddictedProxy.Controllers
         private readonly IAddic7edClient _client;
         private readonly IAddictedSaver _addictedSaver;
         private readonly ITvShowRepository _tvShowRepository;
+        private readonly ISeasonRepository _seasonRepository;
 
         public class SearchRequest
         {
@@ -33,11 +34,12 @@ namespace AddictedProxy.Controllers
             public Episode Episode { get; set; }
         }
 
-        public Addic7ed(IAddic7edClient client, IAddictedSaver addictedSaver, ITvShowRepository tvShowRepository)
+        public Addic7ed(IAddic7edClient client, IAddictedSaver addictedSaver, ITvShowRepository tvShowRepository, ISeasonRepository seasonRepository)
         {
             _client = client;
             _addictedSaver = addictedSaver;
             _tvShowRepository = tvShowRepository;
+            _seasonRepository = seasonRepository;
         }
 
         [Route("download/{lang:int}/{id:int}/{version:int}")]
@@ -58,11 +60,23 @@ namespace AddictedProxy.Controllers
                 return NotFound(new { Error = $"Couldn't find the show {request.Show}" });
             }
 
-            var season = (await _client.GetSeasonsAsync(request.Credentials, show, token)).ToArray();
-            if (season.Length == 0)
+            var season = show.Seasons.FirstOrDefault(season => season.Number == request.Season);
+
+            if (season == null && (DateTime.UtcNow - show.LastSeasonRefreshed) >= TimeSpan.FromMinutes(30))
             {
-                return NotFound(new { Error = $"Couldn't find a season for {request.Show}" });
+                var seasons = (await _client.GetSeasonsAsync(request.Credentials, show, token)).ToArray();
+                await _seasonRepository.UpsertSeason(seasons, token);
+                show.LastSeasonRefreshed = DateTime.UtcNow;
+                await _tvShowRepository.UpdateShow(show, token);
+                season = seasons.FirstOrDefault(s => s.Number == request.Season);
+               
             }
+            if (season == null)
+            {
+                return NotFound(new { Error = $"Couldn't find episode S{request.Season}E{request.Episode} for {request.Show}" });
+            }
+            
+
 
             // if (!season.Contains(request.Season))
             // {

@@ -29,7 +29,8 @@ namespace AddictedProxy.Services.Addic7ed
                 yield return new TvShow
                 {
                     Id   = int.Parse(option.Value),
-                    Name = option.Text
+                    Name = option.Text,
+                    LastUpdated = DateTime.UtcNow
                 };
             }
         }
