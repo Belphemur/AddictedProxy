@@ -26,9 +26,14 @@ namespace AddictedProxy.Services.Addic7ed
 
             foreach (var option in selectShow.Options)
             {
+                var id = int.Parse(option.Value);
+                if (id == 0)
+                {
+                    continue;
+                }
                 yield return new TvShow
                 {
-                    Id   = int.Parse(option.Value),
+                    Id   = id,
                     Name = option.Text,
                     LastUpdated = DateTime.UtcNow
                 };
