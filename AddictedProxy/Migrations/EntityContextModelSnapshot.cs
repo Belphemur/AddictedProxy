@@ -110,6 +110,9 @@ namespace AddictedProxy.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime?>("LastEpisodeRefreshed")
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime?>("LastSeasonRefreshed")
                         .HasColumnType("TEXT");
 
