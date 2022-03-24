@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AddictedProxy.Migrations
 {
     [DbContext(typeof(EntityContext))]
-    [Migration("20220319182135_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20220324193247_MakeSeasonUnique")]
+    partial class MakeSeasonUnique
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,9 +40,30 @@ namespace AddictedProxy.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TvShowId");
+                    b.HasIndex("TvShowId", "Season", "Number")
+                        .IsUnique();
 
                     b.ToTable("Episodes");
+                });
+
+            modelBuilder.Entity("AddictedProxy.Model.Shows.Season", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TvShowId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TvShowId", "Number")
+                        .IsUnique();
+
+                    b.ToTable("Seasons");
                 });
 
             modelBuilder.Entity("AddictedProxy.Model.Shows.Subtitle", b =>
@@ -111,6 +132,17 @@ namespace AddictedProxy.Migrations
                     b.Navigation("TvShow");
                 });
 
+            modelBuilder.Entity("AddictedProxy.Model.Shows.Season", b =>
+                {
+                    b.HasOne("AddictedProxy.Model.Shows.TvShow", "TvShow")
+                        .WithMany("Seasons")
+                        .HasForeignKey("TvShowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TvShow");
+                });
+
             modelBuilder.Entity("AddictedProxy.Model.Shows.Subtitle", b =>
                 {
                     b.HasOne("AddictedProxy.Model.Shows.Episode", "Episode")
@@ -130,6 +162,8 @@ namespace AddictedProxy.Migrations
             modelBuilder.Entity("AddictedProxy.Model.Shows.TvShow", b =>
                 {
                     b.Navigation("Episodes");
+
+                    b.Navigation("Seasons");
                 });
 #pragma warning restore 612, 618
         }
