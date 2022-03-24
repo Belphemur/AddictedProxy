@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace AddictedProxy.Model.Shows
 {
     [Index(nameof(DownloadUri), IsUnique = true)]
-    public class Subtitle
+    public class Subtitle : IDiscoverableObject
     {
         public int Id { get; set; }
         public int EpisodeId { get; set; }
@@ -19,5 +19,10 @@ namespace AddictedProxy.Model.Shows
         public bool HD { get; set; }
         public Uri DownloadUri { get; set; }
         public string Language { get; set; }
+        
+        /// <summary>
+        /// When was the subtitle discovered
+        /// </summary>
+        public DateTime Discovered { get; set; }
     }
 }

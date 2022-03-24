@@ -1,6 +1,6 @@
 ﻿using AddictedProxy.Model.Shows;
 
-namespace AddictedProxy.Database;
+namespace AddictedProxy.Database.Repositories;
 
 public interface ITvShowRepository
 {

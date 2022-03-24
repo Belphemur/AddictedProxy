@@ -18,7 +18,7 @@ namespace AddictedProxy.Services.Addic7ed
 
         public async IAsyncEnumerable<TvShow> GetShowsAsync(Stream html, [EnumeratorCancellation] CancellationToken token)
         {
-            var document   = await _parser.ParseDocumentAsync(html, token);
+            var document = await _parser.ParseDocumentAsync(html, token);
             var selectShow = document.QuerySelector("#qsShow") as IHtmlSelectElement;
 
             if (selectShow == null)
@@ -31,9 +31,10 @@ namespace AddictedProxy.Services.Addic7ed
                 {
                     continue;
                 }
+
                 yield return new TvShow
                 {
-                    Id   = id,
+                    Id = id,
                     Name = option.Text,
                     LastUpdated = DateTime.UtcNow,
                     Discovered = DateTime.UtcNow
@@ -43,13 +44,13 @@ namespace AddictedProxy.Services.Addic7ed
 
         public async IAsyncEnumerable<int> GetSeasonsAsync(Stream html, [EnumeratorCancellation] CancellationToken token)
         {
-            var document     = await _parser.ParseDocumentAsync(html, token);
+            var document = await _parser.ParseDocumentAsync(html, token);
             var selectSeason = document.QuerySelector("#qsiSeason") as IHtmlSelectElement;
             if (selectSeason?.Options?.Length == 0)
             {
                 throw new NothingToParseException("No season found", null);
             }
-            
+
             foreach (var option in selectSeason?.Options)
             {
                 yield return int.Parse(option.Value);
@@ -58,7 +59,7 @@ namespace AddictedProxy.Services.Addic7ed
 
         public async IAsyncEnumerable<Episode> GetSeasonSubtitlesAsync(Stream html, [EnumeratorCancellation] CancellationToken token)
         {
-            var               document = await _parser.ParseDocumentAsync(html, token);
+            var document = await _parser.ParseDocumentAsync(html, token);
             IHtmlTableElement table;
             try
             {
@@ -118,7 +119,7 @@ namespace AddictedProxy.Services.Addic7ed
                                 subtitleRow.EpisodeId =
                                     int.Parse(
                                         downloadUri.Replace("/updated/", "").Replace("/original/", "")
-                                                   .Split('/')[1]);
+                                            .Split('/')[1]);
                                 subtitleRow.DownloadUri = new Uri(downloadUri.Replace("/updated/", "/download/").Replace("/original/", "/download/"), UriKind.Relative);
                                 break;
                         }
@@ -131,25 +132,27 @@ namespace AddictedProxy.Services.Addic7ed
 
             var episodeGroups = subtitlesRows.GroupBy(r => r.EpisodeId).ToList();
             foreach (var episode in from episodeGroup in episodeGroups
-                                    where episodeGroup.Any()
-                                    let subtitles = episodeGroup.Select(subtitleRow => new Subtitle
-                                    {
-                                        Version         = subtitleRow.Version,
-                                        Corrected       = subtitleRow.Corrected,
-                                        DownloadUri     = subtitleRow.DownloadUri,
-                                        HD              = subtitleRow.HD,
-                                        HearingImpaired = subtitleRow.HearingImpaired,
-                                        Language        = subtitleRow.Language,
-                                        Completed       = subtitleRow.Completed
-                                    })
-                                    select new Episode
-                                    {
-                                        Title     = episodeGroup.First().Title,
-                                        Number    = episodeGroup.First().Number,
-                                        Season    = episodeGroup.First().Season,
-                                        Id        = episodeGroup.First().EpisodeId,
-                                        Subtitles = subtitles.ToList()
-                                    })
+                     where episodeGroup.Any()
+                     let subtitles = episodeGroup.Select(subtitleRow => new Subtitle
+                     {
+                         Version = subtitleRow.Version,
+                         Corrected = subtitleRow.Corrected,
+                         DownloadUri = subtitleRow.DownloadUri,
+                         HD = subtitleRow.HD,
+                         HearingImpaired = subtitleRow.HearingImpaired,
+                         Language = subtitleRow.Language,
+                         Completed = subtitleRow.Completed,
+                         Discovered = DateTime.UtcNow
+                     })
+                     select new Episode
+                     {
+                         Title = episodeGroup.First().Title,
+                         Number = episodeGroup.First().Number,
+                         Season = episodeGroup.First().Season,
+                         Id = episodeGroup.First().EpisodeId,
+                         Subtitles = subtitles.ToList(),
+                         Discovered = DateTime.UtcNow
+                     })
                 yield return episode;
         }
     }

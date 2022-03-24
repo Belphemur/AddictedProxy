@@ -1,4 +1,5 @@
 ﻿using AddictedProxy.Database;
+using AddictedProxy.Database.Repositories;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
 

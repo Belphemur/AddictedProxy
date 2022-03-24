@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace AddictedProxy.Database;
+namespace AddictedProxy.Database.Context;
 
 public class EntityContext : DbContext
 {
@@ -25,5 +25,11 @@ public class EntityContext : DbContext
     {
         Console.Out.WriteLine($"Set DB path to {DbPath}");
         optionsBuilder.UseSqlite($"Data Source={DbPath}");
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<TvShow>().Property(c => c.Name)
+            .UseCollation("NOCASE");
     }
 }

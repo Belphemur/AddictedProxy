@@ -2,7 +2,7 @@
 
 namespace AddictedProxy.Model.Shows
 {
-    public class TvShow
+    public class TvShow : IDiscoverableObject
     {
         public int Id { get; set; }
         public string Name { get; set; }

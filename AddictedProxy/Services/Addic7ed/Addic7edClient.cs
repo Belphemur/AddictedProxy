@@ -13,13 +13,11 @@ namespace AddictedProxy.Services.Addic7ed
     {
         private readonly HttpClient _httpClient;
         private readonly Parser _parser;
-        private readonly IMemoryCache _cachingService;
 
-        public Addic7edClient(HttpClient httpClient, Parser parser, IMemoryCache cachingService)
+        public Addic7edClient(HttpClient httpClient, Parser parser)
         {
             _httpClient = httpClient;
             _parser = parser;
-            _cachingService = cachingService;
             _httpClient.BaseAddress = new Uri("https://www.addic7ed.com");
         }
 

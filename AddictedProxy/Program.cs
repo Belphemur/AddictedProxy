@@ -1,5 +1,6 @@
 using AddictedProxy;
 using AddictedProxy.Database;
+using AddictedProxy.Database.Context;
 using AddictedProxy.Services.Saver;
 using Job.Scheduler.Scheduler;
 using Microsoft.EntityFrameworkCore;

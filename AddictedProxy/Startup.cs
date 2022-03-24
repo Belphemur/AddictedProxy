@@ -1,5 +1,7 @@
 using System.Net;
 using AddictedProxy.Database;
+using AddictedProxy.Database.Context;
+using AddictedProxy.Database.Repositories;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
 using AddictedProxy.Services.Middleware;
@@ -41,9 +43,6 @@ namespace AddictedProxy
 
             services.AddControllers()
                 .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>());
-
-            services.AddMemoryCache();
-
             services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
 
             services.AddSingleton<IJobRunnerBuilder, JobRunnerBuilder>();
@@ -53,6 +52,7 @@ namespace AddictedProxy
             services.AddScoped<ITvShowRepository, TvShowRepository>();
             services.AddScoped<IAddictedSaver, AddictedSaver>();
             services.AddScoped<ISeasonRepository, SeasonRepository>();
+            services.AddScoped<IEpisodeRepository, EpisodeRepository>();
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
