@@ -31,14 +31,22 @@ namespace AddictedProxy.Services.Addic7ed
         /// <returns></returns>
         public async IAsyncEnumerable<TvShow> GetTvShowsAsync(Addic7edCreds creds, CancellationToken token)
         {
-            var shows = await await Policy().ExecuteAsync(async cToken =>
+            HttpResponseMessage? response = null;
+            try
             {
-                using var response = await _httpClient.SendAsync(PrepareRequest(creds, "ajax_getShows.php", HttpMethod.Get), cToken);
-                return _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken).ToArrayAsync(cToken);
-            }, token);
-            foreach (var show in shows)
+                var shows = await Policy().ExecuteAsync(async cToken =>
+                {
+                    response = await _httpClient.SendAsync(PrepareRequest(creds, "ajax_getShows.php", HttpMethod.Get), cToken);
+                    return _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken);
+                }, token);
+                await foreach (var show in shows.WithCancellation(token))
+                {
+                    yield return show;
+                }
+            }
+            finally
             {
-                yield return show;
+                response?.Dispose();
             }
         }
 
@@ -51,13 +59,13 @@ namespace AddictedProxy.Services.Addic7ed
         /// <returns></returns>
         public async Task<IEnumerable<Season>> GetSeasonsAsync(Addic7edCreds credentials, TvShow show, CancellationToken token)
         {
-            return await _cachingService.GetOrCreateAsync($"show-nb-season-{show.Id}", async entry =>
+            return await Policy().ExecuteAsync(async cToken =>
             {
-                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.Id}", HttpMethod.Get), token);
-                return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(token), token)
+                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.Id}", HttpMethod.Get), cToken);
+                return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken)
                     .Select(i => new Season { TvShow = show, TvShowId = show.Id, Number = i })
-                    .ToArrayAsync(token);
-            });
+                    .ToArrayAsync(cToken);
+            }, token);
         }
 
         /// <summary>
