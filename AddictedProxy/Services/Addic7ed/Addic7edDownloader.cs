@@ -1,4 +1,6 @@
+using System.Net.Http.Headers;
 using AddictedProxy.Model.Config;
+using AddictedProxy.Services.Addic7ed.Exception;
 using MD5Hash;
 
 namespace AddictedProxy.Services.Addic7ed;
@@ -6,10 +8,12 @@ namespace AddictedProxy.Services.Addic7ed;
 public class Addic7edDownloader : IAddic7edDownloader
 {
     private readonly HttpClient _httpClient;
+    private static readonly MediaTypeHeaderValue ContentTypeHtml = new("text/html");
 
     public Addic7edDownloader(HttpClient httpClient)
     {
         _httpClient = httpClient;
+        _httpClient.BaseAddress = new Uri("https://www.addic7ed.com");
     }
 
     /// <summary>
@@ -21,10 +25,15 @@ public class Addic7edDownloader : IAddic7edDownloader
     /// <param name="version"></param>
     /// <param name="token"></param>
     /// <returns></returns>
+    /// <exception cref="DownloadLimitExceededException"> When can't download subtitle anymore</exception>
     public async Task<Stream> DownloadSubtitle(Addic7edCreds credentials, int lang, int id, int version, CancellationToken token)
     {
         var request = PrepareRequest(credentials, $"updated/{lang}/{id}/{version}", HttpMethod.Get);
         var response = await _httpClient.SendAsync(request, token);
+        if (!response.IsSuccessStatusCode || ContentTypeHtml.Equals(response.Content.Headers.ContentType))
+        {
+            throw new DownloadLimitExceededException($"Reached limit for download for {credentials.UserId}");
+        }
 
         return await response.Content.ReadAsStreamAsync(token);
     }

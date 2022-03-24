@@ -147,7 +147,7 @@ namespace AddictedProxy.Services.Addic7ed
                                         Number    = episodeGroup.First().Number,
                                         Season    = episodeGroup.First().Season,
                                         Id        = episodeGroup.First().EpisodeId,
-                                        Subtitles = subtitles.ToArray()
+                                        Subtitles = subtitles.ToList()
                                     })
                 yield return episode;
         }

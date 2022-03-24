@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Model.Shows
 {
+    [Index(nameof(DownloadUri), IsUnique = true)]
     public class Subtitle
     {
         public int Id { get; set; }

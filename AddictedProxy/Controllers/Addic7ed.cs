@@ -3,7 +3,7 @@ using AddictedProxy.Model;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Model.Shows;
 using AddictedProxy.Services.Addic7ed;
-using AddictedProxy.Services.Saver;
+using AddictedProxy.Services.Addic7ed.Exception;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
@@ -14,7 +14,7 @@ namespace AddictedProxy.Controllers
     public class Addic7ed : Controller
     {
         private readonly IAddic7edClient _client;
-        private readonly IAddictedSaver _addictedSaver;
+        private readonly IAddic7edDownloader _downloader;
         private readonly ITvShowRepository _tvShowRepository;
         private readonly ISeasonRepository _seasonRepository;
 
@@ -34,10 +34,10 @@ namespace AddictedProxy.Controllers
             public Episode Episode { get; set; }
         }
 
-        public Addic7ed(IAddic7edClient client, IAddictedSaver addictedSaver, ITvShowRepository tvShowRepository, ISeasonRepository seasonRepository)
+        public Addic7ed(IAddic7edClient client, IAddic7edDownloader downloader, ITvShowRepository tvShowRepository, ISeasonRepository seasonRepository)
         {
             _client = client;
-            _addictedSaver = addictedSaver;
+            _downloader = downloader;
             _tvShowRepository = tvShowRepository;
             _seasonRepository = seasonRepository;
         }
@@ -46,8 +46,15 @@ namespace AddictedProxy.Controllers
         [HttpPost]
         public async Task<IActionResult> Download([FromBody] Addic7edCreds credentials, [FromRoute] int lang, [FromRoute] int id, [FromRoute] int version, CancellationToken token)
         {
-            var subtitleStream = await _client.DownloadSubtitle(credentials, lang, id, version, token);
-            return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"));
+            try
+            {
+                var subtitleStream = await _downloader.DownloadSubtitle(credentials, lang, id, version, token);
+                return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"));
+            }
+            catch (DownloadLimitExceededException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [Route("search")]
