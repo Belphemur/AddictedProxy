@@ -6,16 +6,19 @@ namespace AddictedProxy.Services.Saver;
 
 public class RefreshShowJob : IRecurringJob
 {
-    private readonly IAddictedSaver _addictedSaver;
+    private readonly IServiceProvider _serviceProvider;
 
-    public RefreshShowJob(IAddictedSaver addictedSaver)
+    public RefreshShowJob(IServiceProvider serviceProvider)
     {
-        _addictedSaver = addictedSaver;
+        _serviceProvider = serviceProvider;
     }
 
-    public Task ExecuteAsync(CancellationToken cancellationToken)
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        return _addictedSaver.RefreshShows(cancellationToken);
+        await using var serviceScope = _serviceProvider.CreateAsyncScope();
+        var service = serviceScope.ServiceProvider.GetRequiredService<IAddictedSaver>();
+
+        await service.RefreshShowsAsync(cancellationToken);
     }
 
     public Task OnFailure(JobException exception)

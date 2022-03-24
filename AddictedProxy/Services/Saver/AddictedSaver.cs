@@ -17,7 +17,7 @@ public class AddictedSaver : IAddictedSaver
         _mainCreds = mainCreds;
     }
 
-    public async Task RefreshShows(CancellationToken token)
+    public async Task RefreshShowsAsync(CancellationToken token)
     {
         var tvShows = await _addic7EdClient.GetTvShowsAsync(_mainCreds, token).ToArrayAsync(token);
         await _tvShowRepository.UpsertAsync(tvShows, token);

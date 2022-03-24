@@ -8,7 +8,7 @@ public class EntityContext : DbContext
 {
     public EntityContext([NotNull] DbContextOptions options) : base(options)
     {
-        var folder = Environment.SpecialFolder.LocalApplicationData;
+        var folder = Environment.SpecialFolder.ApplicationData;
         var path = Environment.GetFolderPath(folder);
         DbPath = Path.Join(path, "addicted.db");
     }
@@ -23,6 +23,7 @@ public class EntityContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        Console.Out.WriteLine($"Set DB path to {DbPath}");
         optionsBuilder.UseSqlite($"Data Source={DbPath}");
     }
 }

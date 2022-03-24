@@ -7,8 +7,8 @@ namespace AddictedProxy.Model.Shows
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public virtual Episode[] Episodes { get; set; }
-        public virtual Season[] Seasons { get; set; }
+        public virtual IList<Episode> Episodes { get; set; }
+        public virtual IList<Season> Seasons { get; set; }
         public DateTime LastUpdated { get; set; }
         
         /// <summary>

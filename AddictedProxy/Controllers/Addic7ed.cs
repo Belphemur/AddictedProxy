@@ -62,26 +62,19 @@ namespace AddictedProxy.Controllers
 
             var season = show.Seasons.FirstOrDefault(season => season.Number == request.Season);
 
-            if (season == null && (DateTime.UtcNow - show.LastSeasonRefreshed) >= TimeSpan.FromMinutes(30))
+            if (season == null && (show.LastSeasonRefreshed == null || (DateTime.UtcNow - show.LastSeasonRefreshed) >= TimeSpan.FromMinutes(30)))
             {
                 var seasons = (await _client.GetSeasonsAsync(request.Credentials, show, token)).ToArray();
                 await _seasonRepository.UpsertSeason(seasons, token);
                 show.LastSeasonRefreshed = DateTime.UtcNow;
                 await _tvShowRepository.UpdateShow(show, token);
                 season = seasons.FirstOrDefault(s => s.Number == request.Season);
-               
             }
+
             if (season == null)
             {
                 return NotFound(new { Error = $"Couldn't find episode S{request.Season}E{request.Episode} for {request.Show}" });
             }
-            
-
-
-            // if (!season.Contains(request.Season))
-            // {
-            //     return NotFound(new { Error = $"Couldn't find season ${request.Season} for {request.Show}" });
-            // }
 
             var episodes = await _client.GetEpisodesAsync(request.Credentials, show, request.Season, token);
             var episode = episodes.FirstOrDefault(ep => ep.Number == request.Episode);
@@ -91,9 +84,9 @@ namespace AddictedProxy.Controllers
             }
 
             var matchingSubtitles = episode.Subtitles
-                                           .Where(subtitle => !string.IsNullOrEmpty(subtitle.Version))
-                                           .Where(subtitle => { return subtitle.Version.Split("+").Any(version => request.FileName.ToLowerInvariant().Contains(version.ToLowerInvariant())); })
-                                           .ToArray();
+                .Where(subtitle => !string.IsNullOrEmpty(subtitle.Version))
+                .Where(subtitle => { return subtitle.Version.Split("+").Any(version => request.FileName.ToLowerInvariant().Contains(version.ToLowerInvariant())); })
+                .ToArray();
             return Ok(new SearchResponse
             {
                 Episode = episode,

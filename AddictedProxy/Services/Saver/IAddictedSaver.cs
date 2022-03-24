@@ -2,5 +2,5 @@
 
 public interface IAddictedSaver
 {
-    Task RefreshShows(CancellationToken token);
+    Task RefreshShowsAsync(CancellationToken token);
 }

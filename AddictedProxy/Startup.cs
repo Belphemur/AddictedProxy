@@ -21,19 +21,26 @@ namespace AddictedProxy
             services.AddSingleton<Parser>();
 
             services.AddHttpClient<IAddic7edClient, Addic7edClient>()
-                    .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
+                .SetHandlerLifetime(TimeSpan.FromHours(1))
+                .AddPolicyHandler(GetRetryPolicy())
+                .AddPolicyHandler(Policy.RateLimitAsync<HttpResponseMessage>(
+                    20, TimeSpan.FromMinutes(1)
+                ));
+
+            services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>()
+                .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
+                {
+                    Proxy = new WebProxy
                     {
-                        Proxy = new WebProxy
-                        {
-                            Address = new Uri("***REMOVED***"),
-                            Credentials = new NetworkCredential("***REMOVED***", "***REMOVED***")
-                        }
-                    })
-                    .SetHandlerLifetime(TimeSpan.FromHours(1))
-                    .AddPolicyHandler(GetRetryPolicy());
+                        Address = new Uri("***REMOVED***"),
+                        Credentials = new NetworkCredential("***REMOVED***", "***REMOVED***")
+                    }
+                })
+                .SetHandlerLifetime(TimeSpan.FromHours(1))
+                .AddPolicyHandler(GetRetryPolicy());
 
             services.AddControllers()
-                    .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>());
+                .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>());
 
             services.AddMemoryCache();
 
@@ -52,13 +59,13 @@ namespace AddictedProxy
         {
             var jitterer = new Random();
             return HttpPolicyExtensions
-                   .HandleTransientHttpError()
-                   .Or<TimeoutRejectedException>()
-                   .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
-                   .WaitAndRetryAsync(8, // exponential back-off plus some jitter
-                       retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
-                                       + TimeSpan.FromMilliseconds(jitterer.Next(0, 300))
-                   ).WrapAsync(Policy.TimeoutAsync(10));
+                .HandleTransientHttpError()
+                .Or<TimeoutRejectedException>()
+                .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
+                .WaitAndRetryAsync(8, // exponential back-off plus some jitter
+                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                                    + TimeSpan.FromMilliseconds(jitterer.Next(0, 300))
+                ).WrapAsync(Policy.TimeoutAsync(10));
         }
     }
 }

@@ -17,9 +17,8 @@ new Startup().ConfigureServices(builder.Services);
 
 var app = builder.Build();
 {
-    var serviceScope = app.Services.CreateAsyncScope();
+    await using var serviceScope = app.Services.CreateAsyncScope();
     await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<EntityContext>();
-    await dbContext.Database.EnsureCreatedAsync();
 
 // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
@@ -30,9 +29,9 @@ var app = builder.Build();
     }
 
     await dbContext.Database.MigrateAsync();
-    app.Services.GetRequiredService<IJobScheduler>().ScheduleJob(new RefreshShowJob(serviceScope.ServiceProvider.GetRequiredService<IAddictedSaver>()));
-
 }
+app.Services.GetRequiredService<IJobScheduler>().ScheduleJob(new RefreshShowJob(app.Services));
+
 
 
 

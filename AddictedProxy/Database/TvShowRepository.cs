@@ -1,4 +1,5 @@
 ﻿using AddictedProxy.Model.Shows;
+using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Database;
 
@@ -13,7 +14,7 @@ public class TvShowRepository : ITvShowRepository
 
     public IAsyncEnumerable<TvShow> FindAsync(string name)
     {
-        return _entityContext.TvShows.Where(show => show.Name.Contains(name)).ToAsyncEnumerable();
+        return _entityContext.TvShows.Include(nameof(TvShow.Seasons)).Where(show => show.Name.Contains(name)).ToAsyncEnumerable();
     }
 
     public Task UpsertAsync(IEnumerable<TvShow> tvShows, CancellationToken token)
