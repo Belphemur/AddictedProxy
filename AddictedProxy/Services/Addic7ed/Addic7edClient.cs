@@ -49,16 +49,14 @@ namespace AddictedProxy.Services.Addic7ed
         /// <param name="show"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<int>> GetSeasonsAsync(Addic7edCreds credentials, TvShow show, CancellationToken token)
+        public async Task<IEnumerable<Season>> GetSeasonsAsync(Addic7edCreds credentials, TvShow show, CancellationToken token)
         {
             return await _cachingService.GetOrCreateAsync($"show-nb-season-{show.Id}", async entry =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1);
-                return await Policy().ExecuteAsync(async cToken =>
-                {
-                    using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.Id}", HttpMethod.Get), cToken);
-                    return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken).ToArrayAsync(cToken);
-                }, token);
+                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.Id}", HttpMethod.Get), token);
+                return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(token), token)
+                    .Select(i => new Season { TvShow = show, TvShowId = show.Id, Number = i })
+                    .ToArrayAsync(token);
             });
         }
 
@@ -104,10 +102,10 @@ namespace AddictedProxy.Services.Addic7ed
         {
             var jitterer = new Random();
             return Polly.Policy.Handle<NothingToParseException>()
-                        .WaitAndRetryAsync(8, // exponential back-off plus some jitter
-                            retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
-                                            + TimeSpan.FromMilliseconds(jitterer.Next(0, 300))
-                        );
+                .WaitAndRetryAsync(8, // exponential back-off plus some jitter
+                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                                    + TimeSpan.FromMilliseconds(jitterer.Next(0, 300))
+                );
         }
 
         private HttpRequestMessage PrepareRequest(Addic7edCreds? credentials, string url, HttpMethod method)

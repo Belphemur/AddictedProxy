@@ -13,11 +13,12 @@ public class EntityContext : DbContext
         DbPath = Path.Join(path, "addicted.db");
     }
 
-    public DbSet<TvShow> TvShows { get; set; }
-    public DbSet<Subtitle> Subtitles { get; set; }
-    public DbSet<Episode> Episodes { get; set; }
+    public DbSet<TvShow> TvShows { get; set; } = null!;
+    public DbSet<Subtitle> Subtitles { get; set; } = null!;
+    public DbSet<Episode> Episodes { get; set; } = null!;
+    public DbSet<Season> Seasons { get; set; } = null!;
 
-    public string DbPath { get; }
+    private string DbPath { get; }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -8,5 +8,7 @@ namespace AddictedProxy.Model.Shows
         public string Name { get; set; }
 
         public virtual Episode[] Episodes { get; set; }
+        
+        public virtual Season[] Seasons { get; set; }
     }
 }

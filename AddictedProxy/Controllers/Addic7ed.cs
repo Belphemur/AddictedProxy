@@ -64,10 +64,10 @@ namespace AddictedProxy.Controllers
                 return NotFound(new { Error = $"Couldn't find a season for {request.Show}" });
             }
 
-            if (!season.Contains(request.Season))
-            {
-                return NotFound(new { Error = $"Couldn't find season ${request.Season} for {request.Show}" });
-            }
+            // if (!season.Contains(request.Season))
+            // {
+            //     return NotFound(new { Error = $"Couldn't find season ${request.Season} for {request.Show}" });
+            // }
 
             var episodes = await _client.GetEpisodesAsync(request.Credentials, show, request.Season, token);
             var episode = episodes.FirstOrDefault(ep => ep.Number == request.Episode);
