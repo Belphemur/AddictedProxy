@@ -9,6 +9,12 @@ namespace AddictedProxy.Model.Shows
 
         public virtual IList<Episode> Episodes { get; set; }
         public virtual IList<Season> Seasons { get; set; }
+
+        /// <summary>
+        /// When was the show discovered
+        /// </summary>
+        public DateTime Discovered { get; set; }
+
         public DateTime LastUpdated { get; set; }
 
         /// <summary>

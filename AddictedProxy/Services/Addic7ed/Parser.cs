@@ -35,7 +35,8 @@ namespace AddictedProxy.Services.Addic7ed
                 {
                     Id   = id,
                     Name = option.Text,
-                    LastUpdated = DateTime.UtcNow
+                    LastUpdated = DateTime.UtcNow,
+                    Discovered = DateTime.UtcNow
                 };
             }
         }

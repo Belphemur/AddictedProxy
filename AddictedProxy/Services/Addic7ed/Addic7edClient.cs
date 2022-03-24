@@ -78,15 +78,18 @@ namespace AddictedProxy.Services.Addic7ed
         /// <returns></returns>
         public async Task<IEnumerable<Episode>> GetEpisodesAsync(Addic7edCreds credentials, TvShow show, int season, CancellationToken token)
         {
-            return await _cachingService.GetOrCreateAsync($"show-episodes-{show.Id}", async entry =>
+            return await Policy().ExecuteAsync(async cToken =>
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
-                return await Policy().ExecuteAsync(async cToken =>
-                {
-                    using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_loadShow.php?bot=1&show={show.Id}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get), token);
-                    return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(cToken), token).ToArrayAsync(token);
-                }, token);
-            });
+                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_loadShow.php?bot=1&show={show.Id}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get), token);
+                return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(cToken), cToken)
+                    .Select(episode =>
+                    {
+                        episode.TvShow = show;
+                        episode.TvShowId = show.Id;
+                        return episode;
+                    })
+                    .ToArrayAsync(cToken);
+            }, token);
         }
 
         private AsyncPolicy Policy()

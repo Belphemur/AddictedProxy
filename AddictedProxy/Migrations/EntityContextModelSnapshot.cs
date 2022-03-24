@@ -99,6 +99,9 @@ namespace AddictedProxy.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DownloadUri")
+                        .IsUnique();
+
                     b.HasIndex("EpisodeId");
 
                     b.ToTable("Subtitles");
@@ -109,6 +112,9 @@ namespace AddictedProxy.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Discovered")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastEpisodeRefreshed")
                         .HasColumnType("TEXT");
