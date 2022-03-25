@@ -34,6 +34,7 @@ public class EpisodeRepository : IEpisodeRepository
                 {
                     case BulkOperation<Subtitle> bulkSub:
                         bulkSub.IgnoreOnMergeUpdateExpression = subtitle => subtitle.Discovered;
+                        bulkSub.ColumnPrimaryKeyExpression = subtitle => subtitle.DownloadUri;
                         break;
                     case BulkOperation<Episode> bulkEp:
                         bulkEp.MergeKeepIdentity = true;
@@ -52,6 +53,7 @@ public class EpisodeRepository : IEpisodeRepository
     public Task<Episode?> GetEpisodeAsync(int tvShowId, int season, int episodeNumber, CancellationToken token)
     {
         return _entityContext.Episodes
+            .AsNoTracking()
             .Include(episode => episode.Subtitles)
             .Where(episode => episode.Number == episodeNumber)
             .Where(episode => episode.Season == season)

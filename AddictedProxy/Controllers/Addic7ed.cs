@@ -101,7 +101,7 @@ namespace AddictedProxy.Controllers
             _tvShowRepository = tvShowRepository;
             _seasonRepository = seasonRepository;
             _episodeRepository = episodeRepository;
-            _timeBetweenChecks = TimeSpan.FromMinutes(30);
+            _timeBetweenChecks = TimeSpan.FromHours(1);
         }
 
         [Route("download/{lang:int}/{id:int}/{version:int}")]
@@ -147,8 +147,8 @@ namespace AddictedProxy.Controllers
 
             var episode = await _episodeRepository.GetEpisodeAsync(show.Id, season.Number, request.Episode, token);
 
-            var episodesRefreshed = false;
-            if (episode == null && (show.LastEpisodeRefreshed == null || (DateTime.UtcNow - show.LastEpisodeRefreshed) >= _timeBetweenChecks))
+            var episodesRefreshed = show.LastEpisodeRefreshed != null && DateTime.UtcNow - show.LastEpisodeRefreshed <= _timeBetweenChecks;
+            if (episode == null &&  !episodesRefreshed)
             {
                 episode = await RefreshSubtitlesAsync(request, show, token);
                 episodesRefreshed = true;
@@ -178,7 +178,7 @@ namespace AddictedProxy.Controllers
 
             return Ok(new SearchResponse
             {
-                Episode = new SearchResponse.EpisodeDto(episode),
+                Episode = new SearchResponse.EpisodeDto(episode!),
                 MatchingSubtitles = matchingSubtitles.Select(subtitle => new SearchResponse.SubtitleDto(subtitle))
             });
         }
