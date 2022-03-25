@@ -23,13 +23,13 @@ namespace AddictedProxy.Controllers
 
         public class SearchRequest
         {
-            public Addic7edCreds Credentials { get; set; }
-            public string Show { get; set; }
-            public int Episode { get; set; }
-            public int Season { get; set; }
-            public string? FileName { get; set; }
+            public Addic7edCreds Credentials { get; }
+            public string Show { get; }
+            public int Episode { get; }
+            public int Season { get; }
+            public string FileName { get; }
 
-            public SearchRequest(Addic7edCreds credentials, string show, int episode, int season, string? fileName = null)
+            public SearchRequest(Addic7edCreds credentials, string show, int episode, int season, string fileName)
             {
                 Credentials = credentials;
                 Show = show;
@@ -146,14 +146,12 @@ namespace AddictedProxy.Controllers
             }
 
             var episode = await _episodeRepository.GetEpisodeAsync(show.Id, season.Number, request.Episode, token);
+
+            var episodesRefreshed = false;
             if (episode == null && (show.LastEpisodeRefreshed == null || (DateTime.UtcNow - show.LastEpisodeRefreshed) >= _timeBetweenChecks))
             {
-                var episodes = await _client.GetEpisodesAsync(request.Credentials, show, request.Season, token);
-                var enumerable = episodes as Episode[] ?? episodes.ToArray();
-                await _episodeRepository.UpsertEpisodes(enumerable, token);
-                show.LastEpisodeRefreshed = DateTime.UtcNow;
-                await _tvShowRepository.UpdateShow(show, token);
-                episode = enumerable.FirstOrDefault(ep => ep.Number == request.Episode);
+                episode = await RefreshSubtitlesAsync(request, show, token);
+                episodesRefreshed = true;
             }
 
             if (episode == null)
@@ -161,20 +159,46 @@ namespace AddictedProxy.Controllers
                 return NotFound(new { Error = $"Couldn't find episode S{request.Season}E{request.Episode} for {request.Show}" });
             }
 
-            var matchingSubtitles = episode.Subtitles
-                .Where(subtitle => !string.IsNullOrEmpty(subtitle.Version))
-                .Where(subtitle => { return subtitle.Version.Split("+").Any(version => request.FileName.ToLowerInvariant().Contains(version.ToLowerInvariant())); })
-                .ToArray();
+            var matchingSubtitles = FindMatchingSubtitles(request, episode);
 
-            if (!matchingSubtitles.Any())
+            var latestDiscovered = episode.Subtitles.Max(subtitle => subtitle.Discovered);
+
+            if (matchingSubtitles.Any() || episodesRefreshed || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(14))
             {
-                matchingSubtitles = episode.Subtitles.ToArray();
+                return Ok(new SearchResponse
+                {
+                    Episode = new SearchResponse.EpisodeDto(episode),
+                    MatchingSubtitles = matchingSubtitles.Select(subtitle => new SearchResponse.SubtitleDto(subtitle))
+                });
             }
+
+            episode = await RefreshSubtitlesAsync(request, show, token);
+            matchingSubtitles = FindMatchingSubtitles(request, episode!);
+
+
             return Ok(new SearchResponse
             {
                 Episode = new SearchResponse.EpisodeDto(episode),
                 MatchingSubtitles = matchingSubtitles.Select(subtitle => new SearchResponse.SubtitleDto(subtitle))
             });
+        }
+
+        private static Subtitle[] FindMatchingSubtitles(SearchRequest request, Episode episode)
+        {
+            return episode.Subtitles
+                .Where(subtitle => !string.IsNullOrEmpty(subtitle.Version))
+                .Where(subtitle => { return subtitle.Version.ToLowerInvariant().Split("+").Any(version => request.FileName.ToLowerInvariant().Contains(version)); })
+                .ToArray();
+        }
+
+        private async Task<Episode?> RefreshSubtitlesAsync(SearchRequest request, TvShow show, CancellationToken token)
+        {
+            var episodes = await _client.GetEpisodesAsync(request.Credentials, show, request.Season, token);
+            var enumerable = episodes as Episode[] ?? episodes.ToArray();
+            await _episodeRepository.UpsertEpisodes(enumerable, token);
+            show.LastEpisodeRefreshed = DateTime.UtcNow;
+            await _tvShowRepository.UpdateShow(show, token);
+            return enumerable.FirstOrDefault(ep => ep.Number == request.Episode);
         }
     }
 }
