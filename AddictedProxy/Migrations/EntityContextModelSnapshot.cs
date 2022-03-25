@@ -123,10 +123,14 @@ namespace AddictedProxy.Migrations
             modelBuilder.Entity("AddictedProxy.Model.Shows.TvShow", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Discovered")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("ExternalId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("LastEpisodeRefreshed")
                         .HasColumnType("TEXT");

@@ -34,7 +34,7 @@ namespace AddictedProxy.Services.Addic7ed
 
                 yield return new TvShow
                 {
-                    Id = id,
+                    ExternalId = id,
                     Name = option.Text,
                     LastUpdated = DateTime.UtcNow,
                     Discovered = DateTime.UtcNow

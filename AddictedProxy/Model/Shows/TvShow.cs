@@ -7,8 +7,9 @@ namespace AddictedProxy.Model.Shows
     public class TvShow : IDiscoverableObject
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
+        
+        public int ExternalId { get; set; }
         public string Name { get; set; }
 
         public virtual IList<Episode> Episodes { get; set; }
