@@ -145,7 +145,7 @@ namespace AddictedProxy.Services.Addic7ed
 
                 var subtitles = episodeGroup.Select(subtitleRow => new Subtitle
                 {
-                    Version = subtitleRow.Version,
+                    Version = subtitleRow.Version.Trim(),
                     Corrected = subtitleRow.Corrected,
                     DownloadUri = subtitleRow.DownloadUri,
                     HD = subtitleRow.HD,
