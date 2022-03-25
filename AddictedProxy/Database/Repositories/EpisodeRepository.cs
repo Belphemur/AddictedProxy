@@ -40,6 +40,9 @@ public class EpisodeRepository : IEpisodeRepository
                         bulkEp.ColumnPrimaryKeyExpression = episode => new { episode.TvShowId, episode.Season, episode.Number };
                         bulkEp.IgnoreOnMergeUpdateExpression = episode => episode.Discovered;
                         break;
+                    case BulkOperation<TvShow> bulkShow:
+                        bulkShow.IncludeGraph = false;
+                        break;
                 }
             };
         }, token);
