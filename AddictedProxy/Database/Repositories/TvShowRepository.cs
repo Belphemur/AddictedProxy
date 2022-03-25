@@ -24,6 +24,7 @@ public class TvShowRepository : ITvShowRepository
         if (strictMatch != null)
         {
             yield return strictMatch;
+            yield break;
         }
 
         foreach (var tvShow in _entityContext.TvShows
