@@ -16,12 +16,22 @@ public class TvShowRepository : ITvShowRepository
     }
 
 
-    public IAsyncEnumerable<TvShow> FindAsync(string name)
+    public async IAsyncEnumerable<TvShow> FindAsync(string name, CancellationToken token)
     {
-        return _entityContext.TvShows
-            .Include(show => show.Seasons)
-            .Where(show => show.Name.Contains(name))
-            .ToAsyncEnumerable();
+        var strictMatch = await _entityContext.TvShows.Include(show => show.Seasons)
+            .Where(show => show.Name.ToLower() == name.ToLower())
+            .FirstOrDefaultAsync(token);
+        if (strictMatch != null)
+        {
+            yield return strictMatch;
+        }
+
+        foreach (var tvShow in _entityContext.TvShows
+                     .Include(show => show.Seasons)
+                     .Where(show => show.Name.ToLower().Contains(name.ToLower())))
+        {
+            yield return tvShow;
+        }
     }
 
     public Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token)

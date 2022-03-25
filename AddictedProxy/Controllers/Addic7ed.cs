@@ -154,7 +154,7 @@ namespace AddictedProxy.Controllers
         [HttpPost]
         public async Task<IActionResult> Search([FromBody] SearchRequest request, CancellationToken token)
         {
-            var show = await _tvShowRepository.FindAsync(request.Show).FirstOrDefaultAsync(token);
+            var show = await _tvShowRepository.FindAsync(request.Show, token).FirstOrDefaultAsync(token);
             if (show == null)
             {
                 return NotFound(new { Error = $"Couldn't find the show {request.Show}" });
@@ -225,8 +225,7 @@ namespace AddictedProxy.Controllers
         private async Task<Episode?> RefreshSubtitlesAsync(SearchRequest request, TvShow show, CancellationToken token)
         {
             var episodes = await _client.GetEpisodesAsync(request.Credentials, show, request.Season, token);
-            var enumerable = episodes as Episode[] ?? episodes.ToArray();
-            await _episodeRepository.UpsertEpisodes(enumerable, token);
+            await _episodeRepository.UpsertEpisodes(episodes, token);
             show.LastEpisodeRefreshed = DateTime.UtcNow;
             await _tvShowRepository.UpdateShow(show, token);
             return await _episodeRepository.GetEpisodeAsync(show.Id, request.Season, request.Episode, token);

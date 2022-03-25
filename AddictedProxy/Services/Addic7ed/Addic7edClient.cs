@@ -62,7 +62,7 @@ namespace AddictedProxy.Services.Addic7ed
             {
                 using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.ExternalId}", HttpMethod.Get), cToken);
                 return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken)
-                    .Select(i => new Season { TvShow = show, Number = i, TvShowId = show.Id})
+                    .Select(i => new Season { Number = i, TvShowId = show.Id })
                     .ToArrayAsync(cToken);
             }, token);
         }
@@ -83,7 +83,7 @@ namespace AddictedProxy.Services.Addic7ed
                 return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(cToken), cToken)
                     .Select(episode =>
                     {
-                        episode.TvShow = show;
+                        episode.TvShowId = show.Id;
                         return episode;
                     })
                     .ToArrayAsync(cToken);
