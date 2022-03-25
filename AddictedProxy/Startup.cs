@@ -4,6 +4,7 @@ using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Repositories;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
+using AddictedProxy.Services.Job;
 using AddictedProxy.Services.Middleware;
 using AddictedProxy.Services.Saver;
 using AngleSharp.Html.Parser;
@@ -57,6 +58,7 @@ namespace AddictedProxy
             services.AddScoped<IAddictedSaver, AddictedSaver>();
             services.AddScoped<ISeasonRepository, SeasonRepository>();
             services.AddScoped<IEpisodeRepository, EpisodeRepository>();
+            services.AddHostedService<JobSchedulerHostedService>();
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()

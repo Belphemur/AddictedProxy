@@ -31,9 +31,6 @@ var app = builder.Build();
 
     await dbContext.Database.MigrateAsync();
 }
-app.Services.GetRequiredService<IJobScheduler>().ScheduleJob(new RefreshShowJob(app.Services));
-
-
 
 
 app.UseRouting();
