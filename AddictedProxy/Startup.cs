@@ -34,13 +34,19 @@ namespace AddictedProxy
                 ));
 
             services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>()
-                .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
+                .ConfigurePrimaryHttpMessageHandler(_ =>
                 {
-                    Proxy = new WebProxy
+                    var proxyUrl = Environment.GetEnvironmentVariable("PROXY_URL") ?? throw new InvalidOperationException("No proxy set");
+                    var proxyUri = new Uri(proxyUrl.Trim('"'));
+                    var userSplit = proxyUri.UserInfo.Split(":");
+                    return new HttpClientHandler
                     {
-                        Address = new Uri("***REMOVED***"),
-                        Credentials = new NetworkCredential("***REMOVED***", "***REMOVED***")
-                    }
+                        Proxy = new WebProxy
+                        {
+                            Address =  new Uri(proxyUri.Scheme + "://" + proxyUri.Authority),
+                            Credentials = new NetworkCredential(userSplit[0], userSplit[1])
+                        }
+                    };
                 })
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
                 .AddPolicyHandler(GetRetryPolicy());
