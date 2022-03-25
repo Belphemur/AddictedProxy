@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Model.Shows
 {
+    [Index(nameof(ExternalId), IsUnique = true)]
     public class TvShow : IDiscoverableObject
     {
         [Key]
