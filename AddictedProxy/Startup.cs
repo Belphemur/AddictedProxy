@@ -12,6 +12,7 @@ using Job.Scheduler.Scheduler;
 using Microsoft.EntityFrameworkCore;
 using Polly;
 using Polly.Extensions.Http;
+using Polly.RateLimit;
 using Polly.Timeout;
 using Z.EntityFramework.Extensions;
 
@@ -28,7 +29,7 @@ namespace AddictedProxy
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(Policy.RateLimitAsync<HttpResponseMessage>(
-                    20, TimeSpan.FromMinutes(1)
+                    3, TimeSpan.FromSeconds(1), 10
                 ));
 
             services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>()
@@ -64,6 +65,7 @@ namespace AddictedProxy
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
                 .Or<TimeoutRejectedException>()
+                .Or<RateLimitRejectedException>()
                 .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
                 .WaitAndRetryAsync(8, // exponential back-off plus some jitter
                     retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))

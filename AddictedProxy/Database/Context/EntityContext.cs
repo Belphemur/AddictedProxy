@@ -23,7 +23,6 @@ public class EntityContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        Console.Out.WriteLine($"Set DB path to {DbPath}");
         optionsBuilder.UseSqlite($"Data Source={DbPath}");
     }
 

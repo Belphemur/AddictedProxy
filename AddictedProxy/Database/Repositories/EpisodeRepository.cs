@@ -54,6 +54,7 @@ public class EpisodeRepository : IEpisodeRepository
     {
         return _entityContext.Episodes
             .AsNoTracking()
+            .Include(episode => episode.TvShow)
             .Include(episode => episode.Subtitles)
             .Where(episode => episode.Number == episodeNumber)
             .Where(episode => episode.Season == season)

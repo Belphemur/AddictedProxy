@@ -74,6 +74,7 @@ namespace AddictedProxy.Controllers
                 public int Season { get; }
                 public int Number { get; }
                 public string Title { get; }
+                public string Show { get; }
 
                 /// <summary>
                 /// When was the subtitle discovered
@@ -86,6 +87,7 @@ namespace AddictedProxy.Controllers
                     Number = episode.Number;
                     Title = episode.Title;
                     Discovered = episode.Discovered;
+                    Show = episode.TvShow.Name;
                 }
             }
 
@@ -185,7 +187,7 @@ namespace AddictedProxy.Controllers
         {
             return episode.Subtitles
                 .Where(subtitle => !string.IsNullOrEmpty(subtitle.Version))
-                .Where(subtitle => { return subtitle.Version.ToLowerInvariant().Split("+").Any(version => request.FileName.ToLowerInvariant().Contains(version)); })
+                .Where(subtitle => { return subtitle.Version.ToLowerInvariant().Split('+', '.').Any(version => request.FileName.ToLowerInvariant().Contains(version)); })
                 .Select(subtitle => new SearchResponse.SubtitleDto(subtitle))
                 .ToArray();
         }
