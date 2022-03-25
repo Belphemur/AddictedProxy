@@ -27,6 +27,7 @@ namespace AddictedProxy
             services.AddSingleton<Parser>();
 
             services.AddHttpClient<IAddic7edClient, Addic7edClient>()
+                .ConfigurePrimaryHttpMessageHandler(_ => BuildProxyHttpMessageHandler())
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(Policy.RateLimitAsync<HttpResponseMessage>(
@@ -34,20 +35,7 @@ namespace AddictedProxy
                 ));
 
             services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>()
-                .ConfigurePrimaryHttpMessageHandler(_ =>
-                {
-                    var proxyUrl = Environment.GetEnvironmentVariable("PROXY_URL") ?? throw new InvalidOperationException("No proxy set");
-                    var proxyUri = new Uri(proxyUrl.Trim('"'));
-                    var userSplit = proxyUri.UserInfo.Split(":");
-                    return new HttpClientHandler
-                    {
-                        Proxy = new WebProxy
-                        {
-                            Address =  new Uri(proxyUri.Scheme + "://" + proxyUri.Authority),
-                            Credentials = new NetworkCredential(userSplit[0], userSplit[1])
-                        }
-                    };
-                })
+                .ConfigurePrimaryHttpMessageHandler(_ => BuildProxyHttpMessageHandler())
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
                 .AddPolicyHandler(GetRetryPolicy());
 
@@ -66,6 +54,21 @@ namespace AddictedProxy
             services.AddScoped<IEpisodeRepository, EpisodeRepository>();
             services.AddScoped<ISubtitleRepository, SubtitleRepository>();
             services.AddHostedService<JobSchedulerHostedService>();
+        }
+
+        private static HttpMessageHandler BuildProxyHttpMessageHandler()
+        {
+            var proxyUrl = Environment.GetEnvironmentVariable("PROXY_URL") ?? throw new InvalidOperationException("No proxy set");
+            var proxyUri = new Uri(proxyUrl.Trim('"'));
+            var userSplit = proxyUri.UserInfo.Split(":");
+            return new HttpClientHandler
+            {
+                Proxy = new WebProxy
+                {
+                    Address = new Uri(proxyUri.Scheme + "://" + proxyUri.Authority),
+                    Credentials = new NetworkCredential(userSplit[0], userSplit[1])
+                }
+            };
         }
 
         private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
