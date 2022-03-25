@@ -89,9 +89,15 @@ namespace AddictedProxy.Controllers
                 }
             }
 
-            public IEnumerable<SubtitleDto> MatchingSubtitles { get; set; }
+            public SearchResponse(IEnumerable<SubtitleDto> matchingSubtitles, EpisodeDto episode)
+            {
+                MatchingSubtitles = matchingSubtitles;
+                Episode = episode;
+            }
 
-            public EpisodeDto Episode { get; set; }
+            public IEnumerable<SubtitleDto> MatchingSubtitles { get; }
+
+            public EpisodeDto Episode { get; }
         }
 
         public Addic7ed(IAddic7edClient client, IAddic7edDownloader downloader, ITvShowRepository tvShowRepository, ISeasonRepository seasonRepository, IEpisodeRepository episodeRepository)
@@ -148,7 +154,7 @@ namespace AddictedProxy.Controllers
             var episode = await _episodeRepository.GetEpisodeAsync(show.Id, season.Number, request.Episode, token);
 
             var episodesRefreshed = show.LastEpisodeRefreshed != null && DateTime.UtcNow - show.LastEpisodeRefreshed <= _timeBetweenChecks;
-            if (episode == null &&  !episodesRefreshed)
+            if (episode == null && !episodesRefreshed)
             {
                 episode = await RefreshSubtitlesAsync(request, show, token);
                 episodesRefreshed = true;
@@ -165,29 +171,22 @@ namespace AddictedProxy.Controllers
 
             if (matchingSubtitles.Any() || episodesRefreshed || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(14))
             {
-                return Ok(new SearchResponse
-                {
-                    Episode = new SearchResponse.EpisodeDto(episode),
-                    MatchingSubtitles = matchingSubtitles.Select(subtitle => new SearchResponse.SubtitleDto(subtitle))
-                });
+                return Ok(new SearchResponse(episode: new SearchResponse.EpisodeDto(episode), matchingSubtitles: matchingSubtitles));
             }
 
             episode = await RefreshSubtitlesAsync(request, show, token);
             matchingSubtitles = FindMatchingSubtitles(request, episode!);
 
 
-            return Ok(new SearchResponse
-            {
-                Episode = new SearchResponse.EpisodeDto(episode!),
-                MatchingSubtitles = matchingSubtitles.Select(subtitle => new SearchResponse.SubtitleDto(subtitle))
-            });
+            return Ok(new SearchResponse(episode: new SearchResponse.EpisodeDto(episode!), matchingSubtitles: matchingSubtitles));
         }
 
-        private static Subtitle[] FindMatchingSubtitles(SearchRequest request, Episode episode)
+        private static SearchResponse.SubtitleDto[] FindMatchingSubtitles(SearchRequest request, Episode episode)
         {
             return episode.Subtitles
                 .Where(subtitle => !string.IsNullOrEmpty(subtitle.Version))
                 .Where(subtitle => { return subtitle.Version.ToLowerInvariant().Split("+").Any(version => request.FileName.ToLowerInvariant().Contains(version)); })
+                .Select(subtitle => new SearchResponse.SubtitleDto(subtitle))
                 .ToArray();
         }
 

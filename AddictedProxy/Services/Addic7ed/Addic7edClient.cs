@@ -1,4 +1,5 @@
-﻿using AddictedProxy.Model;
+﻿using System.Runtime.CompilerServices;
+using AddictedProxy.Model;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Model.Shows;
 using AddictedProxy.Services.Addic7ed.Exception;
@@ -27,7 +28,7 @@ namespace AddictedProxy.Services.Addic7ed
         /// <param name="creds"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async IAsyncEnumerable<TvShow> GetTvShowsAsync(Addic7edCreds creds, CancellationToken token)
+        public async IAsyncEnumerable<TvShow> GetTvShowsAsync(Addic7edCreds creds, [EnumeratorCancellation] CancellationToken token)
         {
             HttpResponseMessage? response = null;
             try
