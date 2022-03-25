@@ -4,6 +4,7 @@ using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Repositories;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed;
+using AddictedProxy.Services.Culture;
 using AddictedProxy.Services.Job;
 using AddictedProxy.Services.Middleware;
 using AddictedProxy.Services.Saver;
@@ -54,6 +55,7 @@ namespace AddictedProxy
             services.AddScoped<IEpisodeRepository, EpisodeRepository>();
             services.AddScoped<ISubtitleRepository, SubtitleRepository>();
             services.AddHostedService<JobSchedulerHostedService>();
+            services.AddSingleton<CultureParser>();
         }
 
         private static HttpMessageHandler BuildProxyHttpMessageHandler()

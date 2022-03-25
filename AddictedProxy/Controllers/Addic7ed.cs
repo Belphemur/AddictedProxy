@@ -1,10 +1,12 @@
-﻿using AddictedProxy.Database;
+﻿using System.Globalization;
+using AddictedProxy.Database;
 using AddictedProxy.Database.Repositories;
 using AddictedProxy.Model;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Model.Shows;
 using AddictedProxy.Services.Addic7ed;
 using AddictedProxy.Services.Addic7ed.Exception;
+using AddictedProxy.Services.Culture;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
@@ -20,6 +22,7 @@ namespace AddictedProxy.Controllers
         private readonly ISeasonRepository _seasonRepository;
         private readonly IEpisodeRepository _episodeRepository;
         private readonly ISubtitleRepository _subtitleRepository;
+        private readonly CultureParser _cultureParser;
         private readonly TimeSpan _timeBetweenChecks;
 
         public class SearchRequest
@@ -29,14 +32,19 @@ namespace AddictedProxy.Controllers
             public int Episode { get; }
             public int Season { get; }
             public string FileName { get; }
+            /// <summary>
+            /// 3 letter code of the language
+            /// </summary>
+            public string LanguageISO { get; }
 
-            public SearchRequest(Addic7edCreds credentials, string show, int episode, int season, string fileName)
+            public SearchRequest(Addic7edCreds credentials, string show, int episode, int season, string fileName, string languageIso)
             {
                 Credentials = credentials;
                 Show = show;
                 Episode = episode;
                 Season = season;
                 FileName = fileName;
+                LanguageISO = languageIso;
             }
         }
 
@@ -57,7 +65,7 @@ namespace AddictedProxy.Controllers
                 /// </summary>
                 public DateTime Discovered { get; }
 
-                public SubtitleDto(Subtitle subtitle)
+                public SubtitleDto(Subtitle subtitle, CultureInfo? language)
                 {
                     Version = subtitle.Scene;
                     Completed = subtitle.Completed;
@@ -65,7 +73,7 @@ namespace AddictedProxy.Controllers
                     HD = subtitle.HD;
                     Corrected = subtitle.Completed;
                     DownloadUri = new Uri($"/download/{subtitle.Id}");
-                    Language = subtitle.Language;
+                    Language = language?.EnglishName ?? "Unknown";
                     Discovered = subtitle.Discovered;
                 }
             }
@@ -103,7 +111,13 @@ namespace AddictedProxy.Controllers
             public EpisodeDto Episode { get; }
         }
 
-        public Addic7ed(IAddic7edClient client, IAddic7edDownloader downloader, ITvShowRepository tvShowRepository, ISeasonRepository seasonRepository, IEpisodeRepository episodeRepository, ISubtitleRepository subtitleRepository)
+        public Addic7ed(IAddic7edClient client, 
+            IAddic7edDownloader downloader, 
+            ITvShowRepository tvShowRepository, 
+            ISeasonRepository seasonRepository, 
+            IEpisodeRepository episodeRepository,
+            ISubtitleRepository subtitleRepository,
+            CultureParser cultureParser)
         {
             _client = client;
             _downloader = downloader;
@@ -111,6 +125,7 @@ namespace AddictedProxy.Controllers
             _seasonRepository = seasonRepository;
             _episodeRepository = episodeRepository;
             _subtitleRepository = subtitleRepository;
+            _cultureParser = cultureParser;
             _timeBetweenChecks = TimeSpan.FromHours(1);
         }
 
@@ -213,12 +228,13 @@ namespace AddictedProxy.Controllers
             return Ok(new SearchResponse(episode: new SearchResponse.EpisodeDto(episode!), matchingSubtitles: matchingSubtitles));
         }
 
-        private static SearchResponse.SubtitleDto[] FindMatchingSubtitles(SearchRequest request, Episode episode)
+        private  SearchResponse.SubtitleDto[] FindMatchingSubtitles(SearchRequest request, Episode episode)
         {
+            var searchLanguage = _cultureParser.FromString(request.LanguageISO); 
             return episode.Subtitles
-                .Where(subtitle => !string.IsNullOrEmpty(subtitle.Scene))
+                .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), searchLanguage))
                 .Where(subtitle => { return subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => request.FileName.ToLowerInvariant().Contains(version)); })
-                .Select(subtitle => new SearchResponse.SubtitleDto(subtitle))
+                .Select(subtitle => new SearchResponse.SubtitleDto(subtitle, searchLanguage))
                 .ToArray();
         }
 
