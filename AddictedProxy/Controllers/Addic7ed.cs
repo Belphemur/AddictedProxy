@@ -161,15 +161,16 @@ namespace AddictedProxy.Controllers
             }
 
             var season = show.Seasons.FirstOrDefault(season => season.Number == request.Season);
-            
+
 
             if (season == null && (show.LastSeasonRefreshed == null || (DateTime.UtcNow - show.LastSeasonRefreshed) >= _timeBetweenChecks))
             {
-                var maxSeason = show.Seasons.Max(s => s.Number);
+                var maxSeason = show.Seasons.Any() ? show.Seasons.Max(s => s.Number) : 0;
                 if (show.Seasons.Any() && request.Season - maxSeason > 1)
                 {
                     return NotFound(new { Error = $"{request.Season} is too far in the future." });
                 }
+
                 var seasons = (await _client.GetSeasonsAsync(request.Credentials, show, token)).ToArray();
                 await _seasonRepository.UpsertSeason(seasons, token);
                 show.LastSeasonRefreshed = DateTime.UtcNow;
