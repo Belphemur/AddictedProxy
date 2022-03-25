@@ -15,7 +15,10 @@ public class SeasonRepository : ISeasonRepository
 
     public Task UpsertSeason(IEnumerable<Season> seasons, CancellationToken token)
     {
-        return _entityContext.Seasons.BulkMergeAsync(seasons, token);
+        return _entityContext.Seasons.BulkMergeAsync(seasons, options =>
+        {
+            options.ColumnPrimaryKeyExpression = season => new { season.TvShowId, season.Number };
+        },  token);
     }
 
     public IAsyncEnumerable<Season> GetSeasonsForShow(int showId)
