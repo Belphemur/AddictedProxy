@@ -53,6 +53,8 @@ namespace AddictedProxy.Services.Addic7ed
 
             foreach (var option in selectSeason?.Options)
             {
+                if(option.Text.ToLowerInvariant() == "season")
+                    continue;
                 yield return int.Parse(option.Value);
             }
         }
