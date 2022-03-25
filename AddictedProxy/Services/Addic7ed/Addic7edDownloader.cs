@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using AddictedProxy.Model.Config;
+using AddictedProxy.Model.Shows;
 using AddictedProxy.Services.Addic7ed.Exception;
 using MD5Hash;
 
@@ -26,9 +27,14 @@ public class Addic7edDownloader : IAddic7edDownloader
     /// <param name="token"></param>
     /// <returns></returns>
     /// <exception cref="DownloadLimitExceededException"> When can't download subtitle anymore</exception>
-    public async Task<Stream> DownloadSubtitle(Addic7edCreds credentials, int lang, int id, int version, CancellationToken token)
+    public Task<Stream> DownloadSubtitle(Addic7edCreds credentials, int lang, int id, int version, CancellationToken token)
     {
-        var request = PrepareRequest(credentials, $"updated/{lang}/{id}/{version}", HttpMethod.Get);
+        var request = PrepareRequest(credentials, new Uri($"updated/{lang}/{id}/{version}"), HttpMethod.Get);
+        return DownloadSubtitleFile(credentials, token, request);
+    }
+
+    private async Task<Stream> DownloadSubtitleFile(Addic7edCreds credentials, CancellationToken token, HttpRequestMessage request)
+    {
         var response = await _httpClient.SendAsync(request, token);
         if (!response.IsSuccessStatusCode || ContentTypeHtml.Equals(response.Content.Headers.ContentType))
         {
@@ -38,7 +44,13 @@ public class Addic7edDownloader : IAddic7edDownloader
         return await response.Content.ReadAsStreamAsync(token);
     }
 
-    private HttpRequestMessage PrepareRequest(Addic7edCreds? credentials, string url, HttpMethod method)
+    public Task<Stream> DownloadSubtitle(Addic7edCreds credentials, Subtitle subtitle, CancellationToken token)
+    {
+        var request = PrepareRequest(credentials, subtitle.DownloadUri, HttpMethod.Get);
+        return DownloadSubtitleFile(credentials, token, request);
+    }
+
+    private HttpRequestMessage PrepareRequest(Addic7edCreds? credentials, Uri url, HttpMethod method)
     {
         var request = new HttpRequestMessage(method, url)
         {

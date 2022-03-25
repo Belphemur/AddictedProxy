@@ -95,10 +95,10 @@ namespace AddictedProxy.Services.Addic7ed
                                 subtitleRow.Title = row.Cells[i].TextContent;
                                 break;
                             case 3:
-                                subtitleRow.Language = row.Cells[i].TextContent;
+                                subtitleRow.Language = row.Cells[i].TextContent.Trim();
                                 break;
                             case 4:
-                                subtitleRow.Version = row.Cells[i].TextContent;
+                                subtitleRow.Scene = row.Cells[i].TextContent;
                                 break;
                             case 5:
                                 var state = row.Cells[i].TextContent;
@@ -116,11 +116,13 @@ namespace AddictedProxy.Services.Addic7ed
                                 break;
                             case 9:
                                 var downloadUri = row.Cells[i].FirstElementChild.Attributes["href"].Value;
-                                subtitleRow.EpisodeId =
-                                    int.Parse(
-                                        downloadUri.Replace("/updated/", "").Replace("/original/", "")
-                                            .Split('/')[1]);
-                                subtitleRow.DownloadUri = new Uri(downloadUri.Replace("/updated/", "/download/").Replace("/original/", "/download/"), UriKind.Relative);
+                                var splitOnSlash = downloadUri
+                                    .Replace("/updated/", "")
+                                    .Replace("/original/", "")
+                                    .Split('/');
+                                subtitleRow.EpisodeId = int.Parse(splitOnSlash[1]);
+                                subtitleRow.Version = int.Parse(splitOnSlash[^1]);
+                                subtitleRow.DownloadUri = new Uri(downloadUri, UriKind.Relative);
                                 break;
                         }
 
@@ -139,13 +141,13 @@ namespace AddictedProxy.Services.Addic7ed
                     Title = episodeGroup.First().Title,
                     Number = episodeGroup.First().Number,
                     Season = episodeGroup.First().Season,
-                    Id = episodeGroup.First().EpisodeId,
+                    ExternalId = episodeGroup.First().EpisodeId,
                     Discovered = DateTime.UtcNow
                 };
 
                 var subtitles = episodeGroup.Select(subtitleRow => new Subtitle
                 {
-                    Version = subtitleRow.Version.Trim(),
+                    Scene = subtitleRow.Scene.Trim(),
                     Corrected = subtitleRow.Corrected,
                     DownloadUri = subtitleRow.DownloadUri,
                     HD = subtitleRow.HD,
@@ -154,7 +156,7 @@ namespace AddictedProxy.Services.Addic7ed
                     Completed = subtitleRow.Completed,
                     Discovered = DateTime.UtcNow,
                     Episode = episode,
-                    EpisodeId = episode.Id
+                    Version = subtitleRow.Version
                 });
                 episode.Subtitles = subtitles.ToList();
                 yield return episode;

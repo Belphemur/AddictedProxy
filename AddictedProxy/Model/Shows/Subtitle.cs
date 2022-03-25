@@ -1,18 +1,24 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Model.Shows
 {
     [Index(nameof(DownloadUri), IsUnique = true)]
+    [Index("EpisodeId", nameof(Language), nameof(Version), IsUnique = true)]
     public class Subtitle : IDiscoverableObject
     {
+        [Key]
         public int Id { get; set; }
+
         public int EpisodeId { get; set; }
 
-        [ForeignKey(nameof(EpisodeId))]
+        [ForeignKey("EpisodeId")]
         public virtual Episode Episode { get; set; }
 
-        public string Version { get; set; }
+        public string Scene { get; set; }
+        
+        public int Version { get; set; }
         public bool Completed { get; set; }
         public bool HearingImpaired { get; set; }
         public bool Corrected { get; set; }

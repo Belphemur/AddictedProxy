@@ -20,10 +20,14 @@ namespace AddictedProxy.Migrations
             modelBuilder.Entity("AddictedProxy.Model.Shows.Episode", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Discovered")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("ExternalId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Number")
                         .HasColumnType("INTEGER");
@@ -98,16 +102,20 @@ namespace AddictedProxy.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Version")
+                    b.Property<string>("Scene")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DownloadUri")
                         .IsUnique();
 
-                    b.HasIndex("EpisodeId");
+                    b.HasIndex("EpisodeId", "Language", "Version")
+                        .IsUnique();
 
                     b.ToTable("Subtitles");
                 });

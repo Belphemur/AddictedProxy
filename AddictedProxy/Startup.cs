@@ -58,6 +58,7 @@ namespace AddictedProxy
             services.AddScoped<IAddictedSaver, AddictedSaver>();
             services.AddScoped<ISeasonRepository, SeasonRepository>();
             services.AddScoped<IEpisodeRepository, EpisodeRepository>();
+            services.AddScoped<ISubtitleRepository, SubtitleRepository>();
             services.AddHostedService<JobSchedulerHostedService>();
         }
 

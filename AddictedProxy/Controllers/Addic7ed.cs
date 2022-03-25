@@ -19,6 +19,7 @@ namespace AddictedProxy.Controllers
         private readonly ITvShowRepository _tvShowRepository;
         private readonly ISeasonRepository _seasonRepository;
         private readonly IEpisodeRepository _episodeRepository;
+        private readonly ISubtitleRepository _subtitleRepository;
         private readonly TimeSpan _timeBetweenChecks;
 
         public class SearchRequest
@@ -58,12 +59,12 @@ namespace AddictedProxy.Controllers
 
                 public SubtitleDto(Subtitle subtitle)
                 {
-                    Version = subtitle.Version;
+                    Version = subtitle.Scene;
                     Completed = subtitle.Completed;
                     HearingImpaired = subtitle.HearingImpaired;
                     HD = subtitle.HD;
                     Corrected = subtitle.Completed;
-                    DownloadUri = subtitle.DownloadUri;
+                    DownloadUri = new Uri($"/download/{subtitle.Id}");
                     Language = subtitle.Language;
                     Discovered = subtitle.Discovered;
                 }
@@ -102,13 +103,14 @@ namespace AddictedProxy.Controllers
             public EpisodeDto Episode { get; }
         }
 
-        public Addic7ed(IAddic7edClient client, IAddic7edDownloader downloader, ITvShowRepository tvShowRepository, ISeasonRepository seasonRepository, IEpisodeRepository episodeRepository)
+        public Addic7ed(IAddic7edClient client, IAddic7edDownloader downloader, ITvShowRepository tvShowRepository, ISeasonRepository seasonRepository, IEpisodeRepository episodeRepository, ISubtitleRepository subtitleRepository)
         {
             _client = client;
             _downloader = downloader;
             _tvShowRepository = tvShowRepository;
             _seasonRepository = seasonRepository;
             _episodeRepository = episodeRepository;
+            _subtitleRepository = subtitleRepository;
             _timeBetweenChecks = TimeSpan.FromHours(1);
         }
 
@@ -119,6 +121,27 @@ namespace AddictedProxy.Controllers
             try
             {
                 var subtitleStream = await _downloader.DownloadSubtitle(credentials, lang, id, version, token);
+                return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"));
+            }
+            catch (DownloadLimitExceededException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [Route("download/{subtitleId:int}")]
+        [HttpPost]
+        public async Task<IActionResult> Download([FromBody] Addic7edCreds credentials, [FromRoute] int subtitleId, CancellationToken token)
+        {
+            var subtitle = await _subtitleRepository.GetSubtitleByIdAsync(subtitleId, token);
+            if (subtitle == null)
+            {
+                return NotFound($"Subtitle ({subtitleId}) couldn't be found");
+            }
+
+            try
+            {
+                var subtitleStream = await _downloader.DownloadSubtitle(credentials, subtitle, token);
                 return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"));
             }
             catch (DownloadLimitExceededException e)
@@ -186,8 +209,8 @@ namespace AddictedProxy.Controllers
         private static SearchResponse.SubtitleDto[] FindMatchingSubtitles(SearchRequest request, Episode episode)
         {
             return episode.Subtitles
-                .Where(subtitle => !string.IsNullOrEmpty(subtitle.Version))
-                .Where(subtitle => { return subtitle.Version.ToLowerInvariant().Split('+', '.').Any(version => request.FileName.ToLowerInvariant().Contains(version)); })
+                .Where(subtitle => !string.IsNullOrEmpty(subtitle.Scene))
+                .Where(subtitle => { return subtitle.Scene.ToLowerInvariant().Split('+', '.').Any(version => request.FileName.ToLowerInvariant().Contains(version)); })
                 .Select(subtitle => new SearchResponse.SubtitleDto(subtitle))
                 .ToArray();
         }
@@ -199,7 +222,7 @@ namespace AddictedProxy.Controllers
             await _episodeRepository.UpsertEpisodes(enumerable, token);
             show.LastEpisodeRefreshed = DateTime.UtcNow;
             await _tvShowRepository.UpdateShow(show, token);
-            return enumerable.FirstOrDefault(ep => ep.Number == request.Episode);
+            return await _episodeRepository.GetEpisodeAsync(show.Id, request.Season, request.Episode, token);
         }
     }
 }

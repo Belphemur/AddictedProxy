@@ -23,11 +23,11 @@ public class SeasonRepository : ISeasonRepository
 
     public IAsyncEnumerable<Season> GetSeasonsForShow(int showId)
     {
-        return _entityContext.Seasons.Where(season => season.TvShowId == showId).ToAsyncEnumerable();
+        return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).ToAsyncEnumerable();
     }
 
     public Season? GetSeasonForShow(int showId, int seasonNumber)
     {
-        return _entityContext.Seasons.Where(season => season.TvShowId == showId).FirstOrDefault(season => season.Number == seasonNumber);
+        return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).FirstOrDefault(season => season.Number == seasonNumber);
     }
 }

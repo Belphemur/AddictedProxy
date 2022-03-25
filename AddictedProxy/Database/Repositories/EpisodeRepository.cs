@@ -34,10 +34,10 @@ public class EpisodeRepository : IEpisodeRepository
                 {
                     case BulkOperation<Subtitle> bulkSub:
                         bulkSub.IgnoreOnMergeUpdateExpression = subtitle => subtitle.Discovered;
-                        bulkSub.ColumnPrimaryKeyExpression = subtitle => subtitle.DownloadUri;
+                        bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.EpisodeId, subtitle.Language, subtitle.Version};
                         break;
                     case BulkOperation<Episode> bulkEp:
-                        bulkEp.MergeKeepIdentity = true;
+                        bulkEp.ColumnPrimaryKeyExpression = episode => new { episode.TvShowId, episode.Season, episode.Number };
                         bulkEp.IgnoreOnMergeUpdateExpression = episode => episode.Discovered;
                         break;
                 }
@@ -58,7 +58,7 @@ public class EpisodeRepository : IEpisodeRepository
             .Include(episode => episode.Subtitles)
             .Where(episode => episode.Number == episodeNumber)
             .Where(episode => episode.Season == season)
-            .Where(episode => episode.TvShowId == tvShowId)
+            .Where(episode => episode.TvShow.Id == tvShowId)
             .FirstOrDefaultAsync(token);
     }
 }
