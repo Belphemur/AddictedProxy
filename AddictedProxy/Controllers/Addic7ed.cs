@@ -27,7 +27,16 @@ namespace AddictedProxy.Controllers
             public string Show { get; set; }
             public int Episode { get; set; }
             public int Season { get; set; }
-            public string FileName { get; set; }
+            public string? FileName { get; set; }
+
+            public SearchRequest(Addic7edCreds credentials, string show, int episode, int season, string? fileName = null)
+            {
+                Credentials = credentials;
+                Show = show;
+                Episode = episode;
+                Season = season;
+                FileName = fileName;
+            }
         }
 
         public class SearchResponse

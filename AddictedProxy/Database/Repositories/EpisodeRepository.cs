@@ -36,6 +36,7 @@ public class EpisodeRepository : IEpisodeRepository
                         bulkSub.IgnoreOnMergeUpdateExpression = subtitle => subtitle.Discovered;
                         break;
                     case BulkOperation<Episode> bulkEp:
+                        bulkEp.MergeKeepIdentity = true;
                         bulkEp.IgnoreOnMergeUpdateExpression = episode => episode.Discovered;
                         break;
                 }
