@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace AddictedProxy.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialState : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +15,12 @@ namespace AddictedProxy.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    ExternalId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false, collation: "NOCASE"),
+                    Discovered = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    LastUpdated = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    LastSeasonRefreshed = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    LastEpisodeRefreshed = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -27,10 +33,12 @@ namespace AddictedProxy.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    ExternalId = table.Column<int>(type: "INTEGER", nullable: false),
                     TvShowId = table.Column<int>(type: "INTEGER", nullable: false),
                     Season = table.Column<int>(type: "INTEGER", nullable: false),
                     Number = table.Column<int>(type: "INTEGER", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: false)
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Discovered = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,19 +52,41 @@ namespace AddictedProxy.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Seasons",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TvShowId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Number = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Seasons", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Seasons_TvShows_TvShowId",
+                        column: x => x.TvShowId,
+                        principalTable: "TvShows",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Subtitles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     EpisodeId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Version = table.Column<string>(type: "TEXT", nullable: false),
+                    Scene = table.Column<string>(type: "TEXT", nullable: false),
+                    Version = table.Column<int>(type: "INTEGER", nullable: false),
                     Completed = table.Column<bool>(type: "INTEGER", nullable: false),
                     HearingImpaired = table.Column<bool>(type: "INTEGER", nullable: false),
                     Corrected = table.Column<bool>(type: "INTEGER", nullable: false),
                     HD = table.Column<bool>(type: "INTEGER", nullable: false),
                     DownloadUri = table.Column<string>(type: "TEXT", nullable: false),
-                    Language = table.Column<string>(type: "TEXT", nullable: false)
+                    Language = table.Column<string>(type: "TEXT", nullable: false),
+                    Discovered = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,18 +100,41 @@ namespace AddictedProxy.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Episodes_TvShowId",
+                name: "IX_Episodes_TvShowId_Season_Number",
                 table: "Episodes",
-                column: "TvShowId");
+                columns: new[] { "TvShowId", "Season", "Number" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Subtitles_EpisodeId",
+                name: "IX_Seasons_TvShowId_Number",
+                table: "Seasons",
+                columns: new[] { "TvShowId", "Number" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subtitles_DownloadUri",
                 table: "Subtitles",
-                column: "EpisodeId");
+                column: "DownloadUri",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subtitles_EpisodeId_Language_Version",
+                table: "Subtitles",
+                columns: new[] { "EpisodeId", "Language", "Version" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TvShows_ExternalId",
+                table: "TvShows",
+                column: "ExternalId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Seasons");
+
             migrationBuilder.DropTable(
                 name: "Subtitles");
 
