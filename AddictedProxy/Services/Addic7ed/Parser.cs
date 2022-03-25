@@ -46,7 +46,7 @@ namespace AddictedProxy.Services.Addic7ed
         {
             var document = await _parser.ParseDocumentAsync(html, token);
             var selectSeason = document.QuerySelector("#qsiSeason") as IHtmlSelectElement;
-            if (selectSeason?.Options?.Length == 0)
+            if (selectSeason?.Options?.Length == 1)
             {
                 throw new NothingToParseException("No season found", null);
             }

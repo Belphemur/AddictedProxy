@@ -217,7 +217,7 @@ namespace AddictedProxy.Controllers
         {
             return episode.Subtitles
                 .Where(subtitle => !string.IsNullOrEmpty(subtitle.Scene))
-                .Where(subtitle => { return subtitle.Scene.ToLowerInvariant().Split('+', '.').Any(version => request.FileName.ToLowerInvariant().Contains(version)); })
+                .Where(subtitle => { return subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => request.FileName.ToLowerInvariant().Contains(version)); })
                 .Select(subtitle => new SearchResponse.SubtitleDto(subtitle))
                 .ToArray();
         }

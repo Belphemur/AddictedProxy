@@ -60,7 +60,7 @@ namespace AddictedProxy.Services.Addic7ed
         {
             return await Policy().ExecuteAsync(async cToken =>
             {
-                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.Id}", HttpMethod.Get), cToken);
+                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.ExternalId}", HttpMethod.Get), cToken);
                 return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken)
                     .Select(i => new Season { TvShow = show, Number = i, TvShowId = show.Id})
                     .ToArrayAsync(cToken);
@@ -79,7 +79,7 @@ namespace AddictedProxy.Services.Addic7ed
         {
             return await Policy().ExecuteAsync(async cToken =>
             {
-                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_loadShow.php?bot=1&show={show.Id}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get), token);
+                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_loadShow.php?bot=1&show={show.ExternalId}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get), token);
                 return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(cToken), cToken)
                     .Select(episode =>
                     {
