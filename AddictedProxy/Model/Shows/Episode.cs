@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,8 @@ namespace AddictedProxy.Model.Shows
     [Index(nameof(TvShowId), nameof(Season), nameof(Number), IsUnique = true)]
     public class Episode : IDiscoverableObject
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         public int TvShowId { get; set; }

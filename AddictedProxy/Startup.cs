@@ -9,9 +9,11 @@ using AddictedProxy.Services.Saver;
 using AngleSharp.Html.Parser;
 using Job.Scheduler.Builder;
 using Job.Scheduler.Scheduler;
+using Microsoft.EntityFrameworkCore;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.Timeout;
+using Z.EntityFramework.Extensions;
 
 namespace AddictedProxy
 {
@@ -49,6 +51,7 @@ namespace AddictedProxy
             services.AddSingleton<IJobScheduler, JobScheduler>();
             services.AddSingleton<MainCreds>();
             services.AddDbContext<EntityContext>();
+            EntityFrameworkManager.ContextFactory = context => new EntityContext(new DbContextOptions<EntityContext>());
             services.AddScoped<ITvShowRepository, TvShowRepository>();
             services.AddScoped<IAddictedSaver, AddictedSaver>();
             services.AddScoped<ISeasonRepository, SeasonRepository>();

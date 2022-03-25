@@ -24,9 +24,13 @@ public class TvShowRepository : ITvShowRepository
             .ToAsyncEnumerable();
     }
 
-    public Task UpsertAsync(IEnumerable<TvShow> tvShows, CancellationToken token)
+    public Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token)
     {
-        return _entityContext.TvShows.BulkMergeAsync(tvShows, AvoidUpdateDiscoveredField, token);
+        return _entityContext.TvShows.BulkMergeAsync(tvShows, options =>
+        {
+            options.IgnoreOnMergeUpdateExpression = show => new { show.Discovered, show.LastEpisodeRefreshed, show.LastSeasonRefreshed };
+            options.InsertKeepIdentity = true;
+        }, token);
     }
 
     public IAsyncEnumerable<TvShow> GetAllAsync(CancellationToken token)

@@ -5,7 +5,7 @@ namespace AddictedProxy.Database.Repositories;
 public interface ITvShowRepository
 {
     IAsyncEnumerable<TvShow> FindAsync(string name);
-    Task UpsertAsync(IEnumerable<TvShow> tvShows, CancellationToken token);
+    Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token);
     IAsyncEnumerable<TvShow> GetAllAsync(CancellationToken token);
 
     /// <summary>

@@ -130,30 +130,35 @@ namespace AddictedProxy.Services.Addic7ed
             if (!subtitlesRows.Any())
                 throw new NothingToParseException("No subtitle", null);
 
-            var episodeGroups = subtitlesRows.GroupBy(r => r.EpisodeId).ToList();
-            foreach (var episode in from episodeGroup in episodeGroups
-                     where episodeGroup.Any()
-                     let subtitles = episodeGroup.Select(subtitleRow => new Subtitle
-                     {
-                         Version = subtitleRow.Version,
-                         Corrected = subtitleRow.Corrected,
-                         DownloadUri = subtitleRow.DownloadUri,
-                         HD = subtitleRow.HD,
-                         HearingImpaired = subtitleRow.HearingImpaired,
-                         Language = subtitleRow.Language,
-                         Completed = subtitleRow.Completed,
-                         Discovered = DateTime.UtcNow
-                     })
-                     select new Episode
-                     {
-                         Title = episodeGroup.First().Title,
-                         Number = episodeGroup.First().Number,
-                         Season = episodeGroup.First().Season,
-                         Id = episodeGroup.First().EpisodeId,
-                         Subtitles = subtitles.ToList(),
-                         Discovered = DateTime.UtcNow
-                     })
+            var episodeGroups = subtitlesRows.GroupBy(r => r.EpisodeId);
+
+            foreach (var episodeGroup in episodeGroups.Where(groups => groups.Any()))
+            {
+                var episode = new Episode
+                {
+                    Title = episodeGroup.First().Title,
+                    Number = episodeGroup.First().Number,
+                    Season = episodeGroup.First().Season,
+                    Id = episodeGroup.First().EpisodeId,
+                    Discovered = DateTime.UtcNow
+                };
+
+                var subtitles = episodeGroup.Select(subtitleRow => new Subtitle
+                {
+                    Version = subtitleRow.Version,
+                    Corrected = subtitleRow.Corrected,
+                    DownloadUri = subtitleRow.DownloadUri,
+                    HD = subtitleRow.HD,
+                    HearingImpaired = subtitleRow.HearingImpaired,
+                    Language = subtitleRow.Language,
+                    Completed = subtitleRow.Completed,
+                    Discovered = DateTime.UtcNow,
+                    Episode = episode,
+                    EpisodeId = episode.Id
+                });
+                episode.Subtitles = subtitles.ToList();
                 yield return episode;
+            }
         }
     }
 }

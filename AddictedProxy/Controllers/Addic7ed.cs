@@ -18,6 +18,8 @@ namespace AddictedProxy.Controllers
         private readonly IAddic7edDownloader _downloader;
         private readonly ITvShowRepository _tvShowRepository;
         private readonly ISeasonRepository _seasonRepository;
+        private readonly IEpisodeRepository _episodeRepository;
+        private readonly TimeSpan _timeBetweenChecks;
 
         public class SearchRequest
         {
@@ -35,12 +37,14 @@ namespace AddictedProxy.Controllers
             public Episode Episode { get; set; }
         }
 
-        public Addic7ed(IAddic7edClient client, IAddic7edDownloader downloader, ITvShowRepository tvShowRepository, ISeasonRepository seasonRepository)
+        public Addic7ed(IAddic7edClient client, IAddic7edDownloader downloader, ITvShowRepository tvShowRepository, ISeasonRepository seasonRepository, IEpisodeRepository episodeRepository)
         {
             _client = client;
             _downloader = downloader;
             _tvShowRepository = tvShowRepository;
             _seasonRepository = seasonRepository;
+            _episodeRepository = episodeRepository;
+            _timeBetweenChecks = TimeSpan.FromMinutes(30);
         }
 
         [Route("download/{lang:int}/{id:int}/{version:int}")]
@@ -70,7 +74,7 @@ namespace AddictedProxy.Controllers
 
             var season = show.Seasons.FirstOrDefault(season => season.Number == request.Season);
 
-            if (season == null && (show.LastSeasonRefreshed == null || (DateTime.UtcNow - show.LastSeasonRefreshed) >= TimeSpan.FromMinutes(30)))
+            if (season == null && (show.LastSeasonRefreshed == null || (DateTime.UtcNow - show.LastSeasonRefreshed) >= _timeBetweenChecks))
             {
                 var seasons = (await _client.GetSeasonsAsync(request.Credentials, show, token)).ToArray();
                 await _seasonRepository.UpsertSeason(seasons, token);
@@ -84,8 +88,17 @@ namespace AddictedProxy.Controllers
                 return NotFound(new { Error = $"Couldn't find episode S{request.Season}E{request.Episode} for {request.Show}" });
             }
 
-            var episodes = await _client.GetEpisodesAsync(request.Credentials, show, request.Season, token);
-            var episode = episodes.FirstOrDefault(ep => ep.Number == request.Episode);
+            var episode = await _episodeRepository.GetEpisodeAsync(show.Id, season.Number, request.Episode, token);
+            if (episode == null && (show.LastEpisodeRefreshed == null || (DateTime.UtcNow - show.LastEpisodeRefreshed) >= _timeBetweenChecks))
+            {
+                var episodes = await _client.GetEpisodesAsync(request.Credentials, show, request.Season, token);
+                var enumerable = episodes as Episode[] ?? episodes.ToArray();
+                await _episodeRepository.UpsertEpisodes(enumerable, token);
+                show.LastEpisodeRefreshed = DateTime.UtcNow;
+                await _tvShowRepository.UpdateShow(show, token);
+                episode = enumerable.FirstOrDefault(ep => ep.Number == request.Episode);
+            }
+
             if (episode == null)
             {
                 return NotFound(new { Error = $"Couldn't find episode S{request.Season}E{request.Episode} for {request.Show}" });

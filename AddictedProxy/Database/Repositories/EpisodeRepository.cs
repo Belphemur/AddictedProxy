@@ -22,13 +22,27 @@ public class EpisodeRepository : IEpisodeRepository
     /// </summary>
     public async Task UpsertEpisodes(IEnumerable<Episode> episodes, CancellationToken token)
     {
-        var transaction = await _entityContext.Database.BeginTransactionAsync(token);
 
         var enumerable = episodes as Episode[] ?? episodes.ToArray();
-        await _entityContext.Episodes.BulkMergeAsync(enumerable, AvoidUpdateDiscoveredFieldEpisode, token);
-        await _entityContext.Subtitles.BulkMergeAsync(enumerable.SelectMany(episode => episode.Subtitles), AvoidUpdateDiscoveredFieldSubtitle, token);
+        await _entityContext.Episodes.BulkMergeAsync(enumerable, options =>
+        {
+            options.IncludeGraph = true;
+            options.IncludeGraphOperationBuilder = operation =>
+            {
+                switch (operation)
+                {
+                    case BulkOperation<Subtitle> bulkSub:
+                        bulkSub.IgnoreOnMergeUpdateExpression = subtitle => subtitle.Discovered;
+                        break;
+                    case BulkOperation<Episode> bulkEp:
+                        bulkEp.ColumnPrimaryKeyExpression = episode => episode.Id;
+                        bulkEp.InsertKeepIdentity = true;
+                        bulkEp.IgnoreOnMergeUpdateExpression = episode => episode.Discovered;
+                        break;
+                }
+            };
+        }, token);
 
-        await transaction.CommitAsync(token);
     }
 
     /// <summary>
