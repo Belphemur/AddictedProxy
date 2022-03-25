@@ -180,7 +180,7 @@ namespace AddictedProxy.Controllers
 
             if (season == null)
             {
-                return NotFound(new { Error = $"Couldn't find episode S{request.Season}E{request.Episode} for {request.Show}" });
+                return NotFound(new { Error = $"Couldn't find Season S{request.Season} for {show.Name}" });
             }
 
             var episode = await _episodeRepository.GetEpisodeAsync(show.Id, season.Number, request.Episode, token);
@@ -194,7 +194,7 @@ namespace AddictedProxy.Controllers
 
             if (episode == null)
             {
-                return NotFound(new { Error = $"Couldn't find episode S{request.Season}E{request.Episode} for {request.Show}" });
+                return NotFound(new { Error = $"Couldn't find episode S{season.Number}E{request.Episode} for {show.Name}" });
             }
 
             var matchingSubtitles = FindMatchingSubtitles(request, episode);
