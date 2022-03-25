@@ -16,5 +16,10 @@ public class Season
     /// Number associated with the season
     /// </summary>
     public int Number { get; set; }
+    
+    /// <summary>
+    /// When was the season last refreshed
+    /// </summary>
+    public DateTime? LastRefreshed { get; set; }
 
 }

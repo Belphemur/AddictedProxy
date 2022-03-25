@@ -1,5 +1,6 @@
 using AddictedProxy.Database.Context;
 using AddictedProxy.Model.Shows;
+using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Database.Repositories;
 
@@ -15,10 +16,7 @@ public class SeasonRepository : ISeasonRepository
 
     public Task UpsertSeason(IEnumerable<Season> seasons, CancellationToken token)
     {
-        return _entityContext.Seasons.BulkMergeAsync(seasons, options =>
-        {
-            options.ColumnPrimaryKeyExpression = season => new { season.TvShowId, season.Number };
-        },  token);
+        return _entityContext.Seasons.BulkMergeAsync(seasons, options => { options.ColumnPrimaryKeyExpression = season => new { season.TvShowId, season.Number }; }, token);
     }
 
     public IAsyncEnumerable<Season> GetSeasonsForShow(int showId)
@@ -26,8 +24,17 @@ public class SeasonRepository : ISeasonRepository
         return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).ToAsyncEnumerable();
     }
 
-    public Season? GetSeasonForShow(int showId, int seasonNumber)
+    public Task<Season?> GetSeasonForShow(int showId, int seasonNumber, CancellationToken token)
     {
-        return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).FirstOrDefault(season => season.Number == seasonNumber);
+        return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).SingleOrDefaultAsync(season => season.Number == seasonNumber, token);
+    }
+
+    /// <summary>
+    /// Update the season
+    /// </summary>
+    public Task UpdateSeasonAsync(Season season, CancellationToken token)
+    {
+        _entityContext.Seasons.Update(season);
+        return _entityContext.SaveChangesAsync(token);
     }
 }

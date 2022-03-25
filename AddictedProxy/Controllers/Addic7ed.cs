@@ -175,7 +175,7 @@ namespace AddictedProxy.Controllers
                 await _seasonRepository.UpsertSeason(seasons, token);
                 show.LastSeasonRefreshed = DateTime.UtcNow;
                 await _tvShowRepository.UpdateShow(show, token);
-                season = seasons.FirstOrDefault(s => s.Number == request.Season);
+                season = await _seasonRepository.GetSeasonForShow(show.Id, request.Season, token);
             }
 
             if (season == null)
@@ -185,10 +185,10 @@ namespace AddictedProxy.Controllers
 
             var episode = await _episodeRepository.GetEpisodeAsync(show.Id, season.Number, request.Episode, token);
 
-            var episodesRefreshed = show.LastEpisodeRefreshed != null && DateTime.UtcNow - show.LastEpisodeRefreshed <= _timeBetweenChecks;
+            var episodesRefreshed = season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _timeBetweenChecks;
             if (episode == null && !episodesRefreshed)
             {
-                episode = await RefreshSubtitlesAsync(request, show, token);
+                episode = await RefreshSubtitlesAsync(request, show, season, token);
                 episodesRefreshed = true;
             }
 
@@ -206,7 +206,7 @@ namespace AddictedProxy.Controllers
                 return Ok(new SearchResponse(episode: new SearchResponse.EpisodeDto(episode), matchingSubtitles: matchingSubtitles));
             }
 
-            episode = await RefreshSubtitlesAsync(request, show, token);
+            episode = await RefreshSubtitlesAsync(request, show, season, token);
             matchingSubtitles = FindMatchingSubtitles(request, episode!);
 
 
@@ -222,12 +222,12 @@ namespace AddictedProxy.Controllers
                 .ToArray();
         }
 
-        private async Task<Episode?> RefreshSubtitlesAsync(SearchRequest request, TvShow show, CancellationToken token)
+        private async Task<Episode?> RefreshSubtitlesAsync(SearchRequest request, TvShow show, Season season, CancellationToken token)
         {
             var episodes = await _client.GetEpisodesAsync(request.Credentials, show, request.Season, token);
             await _episodeRepository.UpsertEpisodes(episodes, token);
-            show.LastEpisodeRefreshed = DateTime.UtcNow;
-            await _tvShowRepository.UpdateShow(show, token);
+            season.LastRefreshed = DateTime.UtcNow;
+            await _seasonRepository.UpdateSeasonAsync(season, token);
             return await _episodeRepository.GetEpisodeAsync(show.Id, request.Season, request.Episode, token);
         }
     }
