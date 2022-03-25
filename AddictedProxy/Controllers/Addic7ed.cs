@@ -161,9 +161,15 @@ namespace AddictedProxy.Controllers
             }
 
             var season = show.Seasons.FirstOrDefault(season => season.Number == request.Season);
+            
 
             if (season == null && (show.LastSeasonRefreshed == null || (DateTime.UtcNow - show.LastSeasonRefreshed) >= _timeBetweenChecks))
             {
+                var maxSeason = show.Seasons.Max(s => s.Number);
+                if (show.Seasons.Any() && request.Season - maxSeason > 1)
+                {
+                    return NotFound(new { Error = $"{request.Season} is too far in the future." });
+                }
                 var seasons = (await _client.GetSeasonsAsync(request.Credentials, show, token)).ToArray();
                 await _seasonRepository.UpsertSeason(seasons, token);
                 show.LastSeasonRefreshed = DateTime.UtcNow;
@@ -194,7 +200,7 @@ namespace AddictedProxy.Controllers
 
             var latestDiscovered = episode.Subtitles.Max(subtitle => subtitle.Discovered);
 
-            if (matchingSubtitles.Any() || episodesRefreshed || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(14))
+            if (matchingSubtitles.Any() || episodesRefreshed || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(180))
             {
                 return Ok(new SearchResponse(episode: new SearchResponse.EpisodeDto(episode), matchingSubtitles: matchingSubtitles));
             }
