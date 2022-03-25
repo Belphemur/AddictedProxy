@@ -29,7 +29,7 @@ public class TvShowRepository : ITvShowRepository
         return _entityContext.TvShows.BulkMergeAsync(tvShows, options =>
         {
             options.IgnoreOnMergeUpdateExpression = show => new { show.Discovered, show.LastEpisodeRefreshed, show.LastSeasonRefreshed };
-            options.InsertKeepIdentity = true;
+            options.MergeKeepIdentity = true;
         }, token);
     }
 

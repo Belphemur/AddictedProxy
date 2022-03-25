@@ -32,9 +32,57 @@ namespace AddictedProxy.Controllers
 
         public class SearchResponse
         {
-            public Subtitle[] MatchingSubtitles { get; set; }
+            public class SubtitleDto
+            {
+                public string Version { get; }
+                public bool Completed { get; }
+                public bool HearingImpaired { get; }
+                public bool Corrected { get; }
+                public bool HD { get; }
+                public Uri DownloadUri { get; }
+                public string Language { get; }
 
-            public Episode Episode { get; set; }
+                /// <summary>
+                /// When was the subtitle discovered
+                /// </summary>
+                public DateTime Discovered { get; }
+
+                public SubtitleDto(Subtitle subtitle)
+                {
+                    Version = subtitle.Version;
+                    Completed = subtitle.Completed;
+                    HearingImpaired = subtitle.HearingImpaired;
+                    HD = subtitle.HD;
+                    Corrected = subtitle.Completed;
+                    DownloadUri = subtitle.DownloadUri;
+                    Language = subtitle.Language;
+                    Discovered = subtitle.Discovered;
+                }
+            }
+
+            public class EpisodeDto
+            {
+                public int Season { get; }
+                public int Number { get; }
+                public string Title { get; }
+
+                /// <summary>
+                /// When was the subtitle discovered
+                /// </summary>
+                public DateTime Discovered { get; }
+
+                public EpisodeDto(Episode episode)
+                {
+                    Season = episode.Season;
+                    Number = episode.Number;
+                    Title = episode.Title;
+                    Discovered = episode.Discovered;
+                }
+            }
+
+            public IEnumerable<SubtitleDto> MatchingSubtitles { get; set; }
+
+            public EpisodeDto Episode { get; set; }
         }
 
         public Addic7ed(IAddic7edClient client, IAddic7edDownloader downloader, ITvShowRepository tvShowRepository, ISeasonRepository seasonRepository, IEpisodeRepository episodeRepository)
@@ -108,10 +156,15 @@ namespace AddictedProxy.Controllers
                 .Where(subtitle => !string.IsNullOrEmpty(subtitle.Version))
                 .Where(subtitle => { return subtitle.Version.Split("+").Any(version => request.FileName.ToLowerInvariant().Contains(version.ToLowerInvariant())); })
                 .ToArray();
+
+            if (!matchingSubtitles.Any())
+            {
+                matchingSubtitles = episode.Subtitles.ToArray();
+            }
             return Ok(new SearchResponse
             {
-                Episode = episode,
-                MatchingSubtitles = matchingSubtitles
+                Episode = new SearchResponse.EpisodeDto(episode),
+                MatchingSubtitles = matchingSubtitles.Select(subtitle => new SearchResponse.SubtitleDto(subtitle))
             });
         }
     }
