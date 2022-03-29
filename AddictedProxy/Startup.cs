@@ -49,6 +49,7 @@ namespace AddictedProxy
             services.AddSingleton<MainCreds>();
             services.AddDbContext<EntityContext>();
             EntityFrameworkManager.ContextFactory = context => new EntityContext(new DbContextOptions<EntityContext>());
+            EFCoreConfig.AddLicense(Environment.GetEnvironmentVariable("EFCORE_LICENSE"), Environment.GetEnvironmentVariable("EFCORE_KEY"));
             services.AddScoped<ITvShowRepository, TvShowRepository>();
             services.AddScoped<IAddictedSaver, AddictedSaver>();
             services.AddScoped<ISeasonRepository, SeasonRepository>();
