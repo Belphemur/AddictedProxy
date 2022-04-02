@@ -1,4 +1,4 @@
-﻿namespace InversionOfControl.Service.Parser;
+﻿namespace InversionOfControl.Service.EnvironmentVariable.Parser;
 
 public interface IEnvVarParser<TType> where TType : class
 {

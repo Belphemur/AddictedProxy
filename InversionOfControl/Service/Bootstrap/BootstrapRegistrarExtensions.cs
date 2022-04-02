@@ -1,11 +1,11 @@
-﻿using InversionOfControl.Exception;
-using InversionOfControl.Model;
-using InversionOfControl.Service.Parser;
-using InversionOfControl.Service.Registration;
+﻿using InversionOfControl.Model;
+using InversionOfControl.Service.EnvironmentVariable.Exception;
+using InversionOfControl.Service.EnvironmentVariable.Parser;
+using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace InversionOfControl.Service;
+namespace InversionOfControl.Service.Bootstrap;
 
 public static class BootstrapRegistrarExtensions
 {

@@ -1,5 +1,5 @@
-﻿using InversionOfControl.Service.Parser;
-using InversionOfControl.Service.Registration;
+﻿using InversionOfControl.Service.EnvironmentVariable.Parser;
+using InversionOfControl.Service.EnvironmentVariable.Registration;
 
 namespace InversionOfControl.Model;
 

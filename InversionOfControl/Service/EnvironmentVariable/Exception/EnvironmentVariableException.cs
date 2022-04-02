@@ -1,4 +1,4 @@
-﻿namespace InversionOfControl.Exception;
+﻿namespace InversionOfControl.Service.EnvironmentVariable.Exception;
 
 public class EnvironmentVariableException : System.Exception
 {

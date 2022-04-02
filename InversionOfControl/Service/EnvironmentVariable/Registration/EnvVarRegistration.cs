@@ -1,7 +1,7 @@
-﻿using InversionOfControl.Service.Parser;
+﻿using InversionOfControl.Service.EnvironmentVariable.Parser;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InversionOfControl.Service.Registration;
+namespace InversionOfControl.Service.EnvironmentVariable.Registration;
 
 /// <summary>
 /// Registration of a EnvironmentVariable
