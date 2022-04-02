@@ -24,16 +24,18 @@ app.UseHttpLogging();
     await using var serviceScope = app.Services.CreateAsyncScope();
     await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<EntityContext>();
 
-// Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseDeveloperExceptionPage();
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
 
     await dbContext.Database.MigrateAsync();
 }
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 
 
 app.UseRouting();

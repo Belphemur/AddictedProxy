@@ -187,7 +187,7 @@ public class Addic7ed : Controller
                 HearingImpaired = subtitle.HearingImpaired;
                 HD = subtitle.HD;
                 Corrected = subtitle.Completed;
-                DownloadUri = new Uri($"/download/{subtitle.Id}");
+                DownloadUri = $"/download/{subtitle.Id}";
                 Language = language?.EnglishName ?? "Unknown";
                 Discovered = subtitle.Discovered;
             }
@@ -197,7 +197,7 @@ public class Addic7ed : Controller
             public bool HearingImpaired { get; }
             public bool Corrected { get; }
             public bool HD { get; }
-            public Uri DownloadUri { get; }
+            public string DownloadUri { get; }
             public string Language { get; }
 
             /// <summary>
