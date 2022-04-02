@@ -1,4 +1,4 @@
-using AddictedProxy.Model.Shows;
+using AddictedProxy.Database.Model.Shows;
 using Z.BulkOperations;
 
 namespace AddictedProxy.Database;

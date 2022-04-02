@@ -1,4 +1,5 @@
 using System.Net.Http.Headers;
+using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Model.Config;
 using AddictedProxy.Model.Shows;
 using AddictedProxy.Services.Addic7ed.Exception;

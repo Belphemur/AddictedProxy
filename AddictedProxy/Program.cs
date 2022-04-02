@@ -1,4 +1,6 @@
+using System.Reflection;
 using AddictedProxy.Controllers.Bootstrap;
+using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +13,15 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen().AddEndpointsApiExplorer();
 
 //Add our own bootstrapping
-var currentAssembly = typeof(BootstrapController).Assembly;
+var currentAssemblies = new []
+{
+    typeof(BootstrapController).Assembly,
+    typeof(BootstrapDatabase).Assembly
+};
 
 builder.Services
-       .AddBootstrapEnvironmentVar(currentAssembly)
-       .AddBootstrap(currentAssembly);
+       .AddBootstrapEnvironmentVar(currentAssemblies)
+       .AddBootstrap(currentAssemblies);
 builder.Host.UseSystemd();
 
 var app = builder.Build();

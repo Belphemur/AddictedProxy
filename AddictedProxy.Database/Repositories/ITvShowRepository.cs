@@ -1,4 +1,4 @@
-﻿using AddictedProxy.Model.Shows;
+﻿using AddictedProxy.Database.Model.Shows;
 
 namespace AddictedProxy.Database.Repositories;
 

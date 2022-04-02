@@ -1,5 +1,5 @@
 ﻿using AddictedProxy.Database.Context;
-using AddictedProxy.Model.Shows;
+using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
 using Z.BulkOperations;
 

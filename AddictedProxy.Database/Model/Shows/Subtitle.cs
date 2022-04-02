@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace AddictedProxy.Model.Shows;
+namespace AddictedProxy.Database.Model.Shows;
 
 [Index(nameof(DownloadUri), IsUnique = true)]
 [Index("EpisodeId", nameof(Language), nameof(Version), IsUnique = true)]

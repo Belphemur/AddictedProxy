@@ -1,4 +1,4 @@
-namespace AddictedProxy.Model.Shows;
+namespace AddictedProxy.Database.Model.Shows;
 
 public interface IDiscoverableObject
 {

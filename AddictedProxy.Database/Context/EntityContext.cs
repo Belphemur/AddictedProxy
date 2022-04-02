@@ -1,4 +1,5 @@
-﻿using AddictedProxy.Model.Shows;
+﻿using System.Diagnostics.CodeAnalysis;
+using AddictedProxy.Database.Model.Shows;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,11 +7,15 @@ namespace AddictedProxy.Database.Context;
 
 public class EntityContext : DbContext
 {
-    public EntityContext([NotNull] DbContextOptions options) : base(options)
+    public EntityContext(DbContextOptions options) : base(options)
     {
         var folder = Environment.SpecialFolder.ApplicationData;
         var path = Environment.GetFolderPath(folder);
         DbPath = Path.Join(path, "addicted.db");
+    }
+
+    internal EntityContext() : this(new DbContextOptions<EntityContext>())
+    {
     }
 
     public DbSet<TvShow> TvShows { get; set; } = null!;

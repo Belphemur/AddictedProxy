@@ -11,10 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AddictedProxy.Migrations
 {
     [DbContext(typeof(EntityContext))]
-    [Migration("20220402050310_MoveLastRefreshedToSeason")]
-    partial class MoveLastRefreshedToSeason
+    [Migration("20220325202241_InitialState")]
+    partial class InitialState
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
@@ -57,9 +57,6 @@ namespace AddictedProxy.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("LastRefreshed")
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("Number")
                         .HasColumnType("INTEGER");
@@ -136,6 +133,9 @@ namespace AddictedProxy.Migrations
 
                     b.Property<int>("ExternalId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastEpisodeRefreshed")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("LastSeasonRefreshed")
                         .HasColumnType("TEXT");

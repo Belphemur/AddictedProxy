@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace AddictedProxy.Model.Shows;
+namespace AddictedProxy.Database.Model.Shows;
 
 [Index(nameof(ExternalId), IsUnique = true)]
 public class TvShow : IDiscoverableObject

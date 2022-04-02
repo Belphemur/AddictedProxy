@@ -3,6 +3,7 @@ using AddictedProxy.Database.EnvVar;
 using AddictedProxy.Database.Repositories;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AddictedProxy.Database.Bootstrap;
 

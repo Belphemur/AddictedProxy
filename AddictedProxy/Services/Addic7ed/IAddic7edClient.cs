@@ -1,4 +1,5 @@
-﻿using AddictedProxy.Model.Config;
+﻿using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Model.Config;
 using AddictedProxy.Model.Shows;
 
 namespace AddictedProxy.Services.Addic7ed;

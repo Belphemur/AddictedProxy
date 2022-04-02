@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AddictedProxy.Migrations
+namespace AddictedProxy.Database.Migrations
 {
     public partial class InitialState : Migration
     {

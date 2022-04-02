@@ -1,6 +1,7 @@
 ﻿using AddictedProxy.Database.Context;
 using AddictedProxy.Database.EnvVar;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Z.EntityFramework.Extensions;
 
 namespace AddictedProxy.Database.Bootstrap;
@@ -16,7 +17,7 @@ public class SetupEfCoreHostedService : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        EntityFrameworkManager.ContextFactory = context => new EntityContext(new DbContextOptions<EntityContext>());
+        EntityFrameworkManager.ContextFactory = context => new EntityContext();
         EFCoreConfig.AddLicense(_license.License, _license.Key);
         return Task.CompletedTask;
     }
