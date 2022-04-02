@@ -30,7 +30,7 @@ public static class BootstrapRegistrarExtensions
                              .Where(p => p.IsClass)
                              .Where(p => bootstrapType.IsAssignableFrom(p)))
         {
-            var bootstrap = (IBootstrap)type.GetConstructor(Type.EmptyTypes)!.Invoke(Array.Empty<object>());
+            var bootstrap = (IBootstrap)Activator.CreateInstance(type);
             bootstrap.ConfigureServices(services);
         }
 
