@@ -85,7 +85,7 @@ namespace AddictedProxy.Services.Addic7ed
                     {
                         episode.TvShowId = show.Id;
                         return episode;
-                    })
+                    })  
                     .ToArrayAsync(cToken);
             }, token);
         }

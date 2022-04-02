@@ -2,22 +2,23 @@ using AddictedProxy;
 using AddictedProxy.Database;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Services.Saver;
+using InversionOfControl.Service;
 using Job.Scheduler.Scheduler;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen().AddEndpointsApiExplorer();
+
+//Add our own bootstrapping
+builder.Services.AddBootstrap();
 builder.Host.UseSystemd();
 
-new Startup().ConfigureServices(builder.Services);
-
 var app = builder.Build();
+app.UseHttpLogging();
 {
     await using var serviceScope = app.Services.CreateAsyncScope();
     await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<EntityContext>();

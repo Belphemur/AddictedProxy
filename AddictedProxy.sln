@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy", "AddictedProxy\AddictedProxy.csproj", "{B48C73F2-1D8A-4B87-9C71-F7C720F146EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InversionOfControl", "InversionOfControl\InversionOfControl.csproj", "{3B47CC79-3BEA-4B91-93E8-2B743C75E854}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{B48C73F2-1D8A-4B87-9C71-F7C720F146EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B48C73F2-1D8A-4B87-9C71-F7C720F146EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B48C73F2-1D8A-4B87-9C71-F7C720F146EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B47CC79-3BEA-4B91-93E8-2B743C75E854}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B47CC79-3BEA-4B91-93E8-2B743C75E854}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B47CC79-3BEA-4B91-93E8-2B743C75E854}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B47CC79-3BEA-4B91-93E8-2B743C75E854}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
