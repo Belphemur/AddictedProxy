@@ -1,4 +1,5 @@
-﻿using AddictedProxy.Database.Model.Shows;
+﻿using AddictedProxy.Database.Model.Credentials;
+using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Database.Context;
@@ -20,6 +21,8 @@ public class EntityContext : DbContext
     public DbSet<Subtitle> Subtitles { get; set; } = null!;
     public DbSet<Episode> Episodes { get; set; } = null!;
     public DbSet<Season> Seasons { get; set; } = null!;
+
+    public DbSet<UserCredentials> AddictedUserCreds { get; set; } = null!;
 
     private string DbPath { get; }
 
