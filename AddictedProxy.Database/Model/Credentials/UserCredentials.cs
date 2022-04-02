@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Database.Model.Credentials;
 
 [Table("AddictedUserCredentials")]
-public record UserCredentials(int Id, string Cookie);
+[Index(nameof(UserCredentials.Cookie), IsUnique = true)]
+public record UserCredentials(int Id, string Cookie, int Usage = 0, DateTime? LastUsage = null);
