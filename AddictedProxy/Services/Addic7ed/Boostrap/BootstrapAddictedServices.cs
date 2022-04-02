@@ -3,6 +3,7 @@ using AddictedProxy.Model.Config;
 using AddictedProxy.Services.Addic7ed.EnvVar;
 using AngleSharp.Html.Parser;
 using InversionOfControl.Model;
+using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.RateLimit;
@@ -10,11 +11,13 @@ using Polly.Timeout;
 
 namespace AddictedProxy.Services.Addic7ed.Boostrap;
 
-public class BootstrapAddictedServices : IBootstrap
+public class BootstrapAddictedServices : IBootstrap,
+                                         IBootstrapEnvironmentVariable<HttpProxy, HttpProxyParser>
 {
+    public EnvVarRegistration<HttpProxy, HttpProxyParser> EnvVarRegistration => new("PROXY_URL");
+
     public void ConfigureServices(IServiceCollection services)
     {
-              
         services.AddSingleton<MainCreds>();
         services.AddSingleton<IHtmlParser, HtmlParser>();
         services.AddSingleton<Parser>();
