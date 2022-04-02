@@ -1,4 +1,5 @@
-﻿using InversionOfControl.Model;
+﻿using InversionOfControl.Extensions;
+using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Exception;
 using InversionOfControl.Service.EnvironmentVariable.Parser;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
@@ -29,7 +30,14 @@ public static class BootstrapRegistrarExtensions
         return services;
     }
 
-    public static IServiceCollection AddBootstrapEnvironmentVar(this ServiceCollection services)
+    /// <summary>
+    /// Register the different environment variables
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="EnvironmentVariableException"></exception>
+    public static IServiceCollection AddBootstrapEnvironmentVar(this IServiceCollection services)
     {
         var bootstrapType = typeof(IBootstrapEnvironmentVariable<,>);
         var envVarRegistrationType = typeof(EnvVarRegistration<,>);
@@ -37,8 +45,8 @@ public static class BootstrapRegistrarExtensions
         var keys = new Dictionary<string, Type>();
         foreach (var type in AppDomain.CurrentDomain.GetAssemblies()
                                       .SelectMany(s => s.GetTypes())
-                                      .Where(p => p.IsClass)
-                                      .Where(p => bootstrapType.IsAssignableFrom(p)))
+                                      .Where(p => !p.IsInterface)
+                                      .Where(bootstrapType.IsAssignableToGenericType))
         {
             var bootstrap = type.GetConstructor(Type.EmptyTypes)!.Invoke(Array.Empty<object>());
             var registration = type.GetProperty("EnvVarRegistration")!.GetValue(bootstrap);
@@ -47,16 +55,13 @@ public static class BootstrapRegistrarExtensions
                 throw new ArgumentNullException($"If you use the {typeof(IBootstrapEnvironmentVariable<,>)}, you need to set the env var registration.");
             }
 
-            var genericArguments = type.GetGenericArguments();
+            var genericArguments = type.GetInterfaces().Where(bootstrapType.IsAssignableToGenericType).First().GetGenericArguments();
             var envVarType = genericArguments[0];
             var parserType = genericArguments[1];
-            if (!parserGenericType.IsAssignableFrom(parserType))
-            {
-                throw new EnvironmentVariableException("N/A", $"The parser given for {type} don't implement the right interface {parserType}");
-            }
+
             var currentEnvVarRegistrationType = envVarRegistrationType.MakeGenericType(genericArguments);
             var key = (string)currentEnvVarRegistrationType.GetProperty("Key")!.GetValue(registration);
-            var lifeTime = (ServiceLifetime)currentEnvVarRegistrationType.GetProperty("LifeTime")!.GetValue(registration);
+            var lifeTime = (ServiceLifetime)currentEnvVarRegistrationType.GetProperty("Lifetime")!.GetValue(registration);
             if (keys.TryGetValue(key, out var alreadyRegisteredType))
             {
                 throw new EnvironmentVariableException(key, $"{key} is already registered by {alreadyRegisteredType.Name}.");
