@@ -25,10 +25,7 @@ public class BootstrapAddictedServices : IBootstrap,
         services.AddHttpClient<IAddic7edClient, Addic7edClient>()
                 .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>()))
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
-                .AddPolicyHandler(GetRetryPolicy())
-                .AddPolicyHandler(Policy.RateLimitAsync<HttpResponseMessage>(
-                    3, TimeSpan.FromSeconds(1), 10
-                ));
+                .AddPolicyHandler(GetRetryPolicy());
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>()
                 .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>()))
