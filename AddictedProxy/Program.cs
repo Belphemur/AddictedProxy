@@ -1,4 +1,6 @@
+using System.ComponentModel;
 using AddictedProxy;
+using AddictedProxy.Controllers.Bootstrap;
 using AddictedProxy.Database;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Services.Saver;
@@ -15,9 +17,11 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen().AddEndpointsApiExplorer();
 
 //Add our own bootstrapping
+var currentAssembly = typeof(BootstrapController).Assembly;
+
 builder.Services
-       .AddBootstrapEnvironmentVar()
-       .AddBootstrap();
+       .AddBootstrapEnvironmentVar(currentAssembly)
+       .AddBootstrap(currentAssembly);
 builder.Host.UseSystemd();
 
 var app = builder.Build();

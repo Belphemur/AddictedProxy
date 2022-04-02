@@ -1,4 +1,5 @@
-﻿using InversionOfControl.Extensions;
+﻿using System.Reflection;
+using InversionOfControl.Extensions;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Exception;
 using InversionOfControl.Service.EnvironmentVariable.Parser;
@@ -14,14 +15,20 @@ public static class BootstrapRegistrarExtensions
     /// Add the different <see cref="IBootstrap"/> registration to the IoC container
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="assemblies">Where to look for <see cref="IBootstrap"/></param>
     /// <returns></returns>
-    public static IServiceCollection AddBootstrap(this IServiceCollection services)
+    public static IServiceCollection AddBootstrap(this IServiceCollection services, params Assembly[] assemblies)
     {
         var bootstrapType = typeof(IBootstrap);
-        foreach (var type in AppDomain.CurrentDomain.GetAssemblies()
-                                      .SelectMany(s => s.GetTypes())
-                                      .Where(p => p.IsClass)
-                                      .Where(p => bootstrapType.IsAssignableFrom(p)))
+        if (assemblies.Length == 0)
+        {
+            throw new ArgumentException($"Need minimum one assembly to register {bootstrapType}");
+        }
+
+        foreach (var type in assemblies
+                             .SelectMany(s => s.GetTypes())
+                             .Where(p => p.IsClass)
+                             .Where(p => bootstrapType.IsAssignableFrom(p)))
         {
             var bootstrap = (IBootstrap)type.GetConstructor(Type.EmptyTypes)!.Invoke(Array.Empty<object>());
             bootstrap.ConfigureServices(services);
@@ -34,19 +41,25 @@ public static class BootstrapRegistrarExtensions
     /// Register the different environment variables
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="assemblies">Where to look for <see cref="IBootstrapEnvironmentVariable{TType,TParser}"/></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="EnvironmentVariableException"></exception>
-    public static IServiceCollection AddBootstrapEnvironmentVar(this IServiceCollection services)
+    public static IServiceCollection AddBootstrapEnvironmentVar(this IServiceCollection services, params Assembly[] assemblies)
     {
         var bootstrapType = typeof(IBootstrapEnvironmentVariable<,>);
+
+        if (assemblies.Length == 0)
+        {
+            throw new ArgumentException($"Need minimum one assembly to register {bootstrapType}");
+        }
+
         var envVarRegistrationType = typeof(EnvVarRegistration<,>);
-        var parserGenericType = typeof(IEnvVarParser<>);
         var keys = new Dictionary<string, Type>();
-        foreach (var type in AppDomain.CurrentDomain.GetAssemblies()
-                                      .SelectMany(s => s.GetTypes())
-                                      .Where(p => !p.IsInterface)
-                                      .Where(bootstrapType.IsAssignableToGenericType))
+        foreach (var type in assemblies
+                             .SelectMany(s => s.GetTypes())
+                             .Where(p => !p.IsInterface)
+                             .Where(bootstrapType.IsAssignableToGenericType))
         {
             var bootstrap = type.GetConstructor(Type.EmptyTypes)!.Invoke(Array.Empty<object>());
             var registration = type.GetProperty("EnvVarRegistration")!.GetValue(bootstrap);
@@ -66,19 +79,19 @@ public static class BootstrapRegistrarExtensions
             {
                 throw new EnvironmentVariableException(key, $"{key} is already registered by {alreadyRegisteredType.Name}.");
             }
+
             keys.Add(key, type);
-            
+
             services.TryAddSingleton(parserType);
             services.TryAdd(new ServiceDescriptor(envVarType, factory =>
             {
                 var parser = factory.GetRequiredService(parserType);
                 return parserType.GetMethod("Parse")!.Invoke(parser, new object[] { Environment.GetEnvironmentVariable(key) });
-
             }, lifeTime));
         }
 
         Validate(keys.Keys);
-        
+
         return services;
     }
 
