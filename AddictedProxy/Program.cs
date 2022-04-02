@@ -3,6 +3,7 @@ using AddictedProxy.Database;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Services.Saver;
 using InversionOfControl.Service;
+using InversionOfControl.Service.Bootstrap;
 using Job.Scheduler.Scheduler;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +15,9 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen().AddEndpointsApiExplorer();
 
 //Add our own bootstrapping
-builder.Services.AddBootstrap();
+builder.Services
+       .AddBootstrapEnvironmentVar()
+       .AddBootstrap();
 builder.Host.UseSystemd();
 
 var app = builder.Build();

@@ -1,22 +1,27 @@
 ﻿using AddictedProxy.Database.Context;
+using AddictedProxy.Database.EnvVar;
 using AddictedProxy.Database.Repositories;
 using InversionOfControl.Model;
+using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Microsoft.EntityFrameworkCore;
 using Z.EntityFramework.Extensions;
 
 namespace AddictedProxy.Database.Bootstrap;
 
-public class BootstrapDatabase : IBootstrap
+public class BootstrapDatabase : IBootstrap,
+                                 IBootstrapEnvironmentVariable<EFCoreLicense, EFCoreLicenseParser>
 {
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddHostedService<SetupEfCoreHostedService>();
         services.AddDbContext<EntityContext>();
-        EntityFrameworkManager.ContextFactory = context => new EntityContext(new DbContextOptions<EntityContext>());
-        EFCoreConfig.AddLicense(Environment.GetEnvironmentVariable("EFCORE_LICENSE"), Environment.GetEnvironmentVariable("EFCORE_KEY"));
+
         services.AddScoped<ITvShowRepository, TvShowRepository>();
-        
+
         services.AddScoped<ISeasonRepository, SeasonRepository>();
         services.AddScoped<IEpisodeRepository, EpisodeRepository>();
         services.AddScoped<ISubtitleRepository, SubtitleRepository>();
     }
+
+    public EnvVarRegistration<EFCoreLicense, EFCoreLicenseParser> EnvVarRegistration => new("EFCORE");
 }
