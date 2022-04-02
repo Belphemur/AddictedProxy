@@ -42,7 +42,10 @@ public class Addic7edDownloader : IAddic7edDownloader
     private async Task<Stream> DownloadSubtitleFile(Addic7edCreds credentials, CancellationToken token, HttpRequestMessage request)
     {
         var response = await _httpClient.SendAsync(request, token);
-        if (!response.IsSuccessStatusCode || ContentTypeHtml.Equals(response.Content.Headers.ContentType)) throw new DownloadLimitExceededException($"Reached limit for download for {credentials.UserId}");
+        if (!response.IsSuccessStatusCode || ContentTypeHtml.Equals(response.Content.Headers.ContentType))
+        {
+            throw new DownloadLimitExceededException($"Reached limit for download for {credentials.UserId}");
+        }
 
         return await response.Content.ReadAsStreamAsync(token);
     }
@@ -53,7 +56,10 @@ public class Addic7edDownloader : IAddic7edDownloader
         {
             Headers = { { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0" } }
         };
-        if (credentials?.Password == null || credentials.UserId == 0) return request;
+        if (credentials?.Password == null || credentials.UserId == 0)
+        {
+            return request;
+        }
 
         var md5Pass = Hash.Content(credentials.Password);
 

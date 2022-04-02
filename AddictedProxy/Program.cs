@@ -37,7 +37,6 @@ if (app.Environment.IsDevelopment())
 }
 
 
-
 app.UseRouting();
 
 app.UseAuthorization();

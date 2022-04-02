@@ -30,7 +30,9 @@ public class TvShowRepository : ITvShowRepository
         foreach (var tvShow in _entityContext.TvShows
                                              .Include(show => show.Seasons)
                                              .Where(show => show.Name.ToLower().Contains(name.ToLower())))
+        {
             yield return tvShow;
+        }
     }
 
     public Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token)

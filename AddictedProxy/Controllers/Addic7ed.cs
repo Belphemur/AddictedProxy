@@ -61,7 +61,10 @@ public class Addic7ed : Controller
     public async Task<IActionResult> Download([FromBody] Addic7edCreds credentials, [FromRoute] int subtitleId, CancellationToken token)
     {
         var subtitle = await _subtitleRepository.GetSubtitleByIdAsync(subtitleId, token);
-        if (subtitle == null) return NotFound($"Subtitle ({subtitleId}) couldn't be found");
+        if (subtitle == null)
+        {
+            return NotFound($"Subtitle ({subtitleId}) couldn't be found");
+        }
 
         try
         {
@@ -79,7 +82,10 @@ public class Addic7ed : Controller
     public async Task<IActionResult> Search([FromBody] SearchRequest request, CancellationToken token)
     {
         var show = await _tvShowRepository.FindAsync(request.Show, token).FirstOrDefaultAsync(token);
-        if (show == null) return NotFound(new { Error = $"Couldn't find the show {request.Show}" });
+        if (show == null)
+        {
+            return NotFound(new { Error = $"Couldn't find the show {request.Show}" });
+        }
 
         var season = show.Seasons.FirstOrDefault(season => season.Number == request.Season);
 
@@ -87,7 +93,10 @@ public class Addic7ed : Controller
         if (season == null && (show.LastSeasonRefreshed == null || DateTime.UtcNow - show.LastSeasonRefreshed >= _timeBetweenChecks))
         {
             var maxSeason = show.Seasons.Any() ? show.Seasons.Max(s => s.Number) : 0;
-            if (show.Seasons.Any() && request.Season - maxSeason > 1) return NotFound(new { Error = $"{request.Season} is too far in the future." });
+            if (show.Seasons.Any() && request.Season - maxSeason > 1)
+            {
+                return NotFound(new { Error = $"{request.Season} is too far in the future." });
+            }
 
             var seasons = (await _client.GetSeasonsAsync(request.Credentials, show, token)).ToArray();
             await _seasonRepository.UpsertSeason(seasons, token);
@@ -96,7 +105,10 @@ public class Addic7ed : Controller
             season = await _seasonRepository.GetSeasonForShow(show.Id, request.Season, token);
         }
 
-        if (season == null) return NotFound(new { Error = $"Couldn't find Season S{request.Season} for {show.Name}" });
+        if (season == null)
+        {
+            return NotFound(new { Error = $"Couldn't find Season S{request.Season} for {show.Name}" });
+        }
 
         var episode = await _episodeRepository.GetEpisodeAsync(show.Id, season.Number, request.Episode, token);
 
@@ -107,14 +119,19 @@ public class Addic7ed : Controller
             episodesRefreshed = true;
         }
 
-        if (episode == null) return NotFound(new { Error = $"Couldn't find episode S{season.Number}E{request.Episode} for {show.Name}" });
+        if (episode == null)
+        {
+            return NotFound(new { Error = $"Couldn't find episode S{season.Number}E{request.Episode} for {show.Name}" });
+        }
 
         var matchingSubtitles = FindMatchingSubtitles(request, episode);
 
         var latestDiscovered = episode.Subtitles.Max(subtitle => subtitle.Discovered);
 
         if (matchingSubtitles.Any() || episodesRefreshed || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(180))
+        {
             return Ok(new SearchResponse(episode: new SearchResponse.EpisodeDto(episode), matchingSubtitles: matchingSubtitles));
+        }
 
         episode = await RefreshSubtitlesAsync(request, show, season, token);
         matchingSubtitles = FindMatchingSubtitles(request, episode!);

@@ -20,7 +20,10 @@ public static class BootstrapRegistrarExtensions
     public static IServiceCollection AddBootstrap(this IServiceCollection services, params Assembly[] assemblies)
     {
         var bootstrapType = typeof(IBootstrap);
-        if (assemblies.Length == 0) throw new ArgumentException($"Need minimum one assembly to register {bootstrapType}");
+        if (assemblies.Length == 0)
+        {
+            throw new ArgumentException($"Need minimum one assembly to register {bootstrapType}");
+        }
 
         foreach (var type in assemblies
                              .SelectMany(s => s.GetTypes())
@@ -46,7 +49,10 @@ public static class BootstrapRegistrarExtensions
     {
         var bootstrapType = typeof(IBootstrapEnvironmentVariable<,>);
 
-        if (assemblies.Length == 0) throw new ArgumentException($"Need minimum one assembly to register {bootstrapType}");
+        if (assemblies.Length == 0)
+        {
+            throw new ArgumentException($"Need minimum one assembly to register {bootstrapType}");
+        }
 
         var envVarRegistrationType = typeof(EnvVarRegistration<,>);
         var keys = new Dictionary<string, Type>();
@@ -61,7 +67,10 @@ public static class BootstrapRegistrarExtensions
             var lifeTime = (ServiceLifetime)currentEnvVarRegistrationType.GetProperty(nameof(EnvVarRegistration<Void, VoidParser>.Lifetime))!.GetValue(registration);
             foreach (var key in currentKeys)
             {
-                if (keys.TryGetValue(key, out var alreadyRegisteredType)) throw new EnvironmentVariableException(key, $"{key} is already registered by {alreadyRegisteredType.Name}.");
+                if (keys.TryGetValue(key, out var alreadyRegisteredType))
+                {
+                    throw new EnvironmentVariableException(key, $"{key} is already registered by {alreadyRegisteredType.Name}.");
+                }
 
                 keys.Add(key, currentBootstrapType);
             }
@@ -86,7 +95,11 @@ public static class BootstrapRegistrarExtensions
             {
                 var genericArguments = interfaceBootstrapEnvVarType.GetGenericArguments();
                 var registration = interfaceBootstrapEnvVarType.GetProperty(nameof(VoidBootstrap.EnvVarRegistration))!.GetValue(bootstrap);
-                if (registration == null) throw new ArgumentNullException($"If you use the {typeof(IBootstrapEnvironmentVariable<,>)}, you need to set the env var registration.");
+                if (registration == null)
+                {
+                    throw new ArgumentNullException($"If you use the {typeof(IBootstrapEnvironmentVariable<,>)}, you need to set the env var registration.");
+                }
+
                 RegisterEnvVar(genericArguments, registration, type);
             }
         }

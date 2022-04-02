@@ -30,12 +30,16 @@ public class Addic7edClient : IAddic7edClient
         HttpResponseMessage? response = null;
         try
         {
-            var shows = await Policy().ExecuteAsync(async cToken =>
+            var shows = await Policy()
+                .ExecuteAsync(async cToken =>
+                {
+                    response = await _httpClient.SendAsync(PrepareRequest(creds, "ajax_getShows.php", HttpMethod.Get), cToken);
+                    return _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken);
+                }, token);
+            await foreach (var show in shows.WithCancellation(token))
             {
-                response = await _httpClient.SendAsync(PrepareRequest(creds, "ajax_getShows.php", HttpMethod.Get), cToken);
-                return _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken);
-            }, token);
-            await foreach (var show in shows.WithCancellation(token)) yield return show;
+                yield return show;
+            }
         }
         finally
         {
@@ -52,13 +56,14 @@ public class Addic7edClient : IAddic7edClient
     /// <returns></returns>
     public async Task<IEnumerable<Season>> GetSeasonsAsync(Addic7edCreds credentials, TvShow show, CancellationToken token)
     {
-        return await Policy().ExecuteAsync(async cToken =>
-        {
-            using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.ExternalId}", HttpMethod.Get), cToken);
-            return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken)
-                                .Select(i => new Season { Number = i, TvShowId = show.Id })
-                                .ToArrayAsync(cToken);
-        }, token);
+        return await Policy()
+            .ExecuteAsync(async cToken =>
+            {
+                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.ExternalId}", HttpMethod.Get), cToken);
+                return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken)
+                                    .Select(i => new Season { Number = i, TvShowId = show.Id })
+                                    .ToArrayAsync(cToken);
+            }, token);
     }
 
     /// <summary>
@@ -71,17 +76,18 @@ public class Addic7edClient : IAddic7edClient
     /// <returns></returns>
     public async Task<IEnumerable<Episode>> GetEpisodesAsync(Addic7edCreds credentials, TvShow show, int season, CancellationToken token)
     {
-        return await Policy().ExecuteAsync(async cToken =>
-        {
-            using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_loadShow.php?bot=1&show={show.ExternalId}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get), token);
-            return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(cToken), cToken)
-                                .Select(episode =>
-                                {
-                                    episode.TvShowId = show.Id;
-                                    return episode;
-                                })
-                                .ToArrayAsync(cToken);
-        }, token);
+        return await Policy()
+            .ExecuteAsync(async cToken =>
+            {
+                using var response = await _httpClient.SendAsync(PrepareRequest(credentials, $"ajax_loadShow.php?bot=1&show={show.ExternalId}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get), token);
+                return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(cToken), cToken)
+                                    .Select(episode =>
+                                    {
+                                        episode.TvShowId = show.Id;
+                                        return episode;
+                                    })
+                                    .ToArrayAsync(cToken);
+            }, token);
     }
 
     private AsyncPolicy Policy()
@@ -100,7 +106,10 @@ public class Addic7edClient : IAddic7edClient
         {
             Headers = { { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101 Firefox/76.0" } }
         };
-        if (credentials?.Password == null || credentials.UserId == 0) return request;
+        if (credentials?.Password == null || credentials.UserId == 0)
+        {
+            return request;
+        }
 
         var md5Pass = Hash.Content(credentials.Password);
 

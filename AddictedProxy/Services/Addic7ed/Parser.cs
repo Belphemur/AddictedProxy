@@ -21,12 +21,17 @@ public class Parser
         var selectShow = document.QuerySelector("#qsShow") as IHtmlSelectElement;
 
         if (selectShow == null)
+        {
             throw new NothingToParseException("No shows found", null);
+        }
 
         foreach (var option in selectShow.Options)
         {
             var id = int.Parse(option.Value);
-            if (id == 0) continue;
+            if (id == 0)
+            {
+                continue;
+            }
 
             yield return new TvShow
             {
@@ -42,12 +47,18 @@ public class Parser
     {
         var document = await _parser.ParseDocumentAsync(html, token);
         var selectSeason = document.QuerySelector("#qsiSeason") as IHtmlSelectElement;
-        if (selectSeason?.Options?.Length == 1) throw new NothingToParseException("No season found", null);
+        if (selectSeason?.Options?.Length == 1)
+        {
+            throw new NothingToParseException("No season found", null);
+        }
 
         foreach (var option in selectSeason?.Options)
         {
             if (option.Text.ToLowerInvariant() == "season")
+            {
                 continue;
+            }
+
             yield return int.Parse(option.Value);
         }
     }
@@ -67,14 +78,19 @@ public class Parser
 
         var subtitlesRows = new List<SubtitleRow>();
 
-        if (table == null) throw new NothingToParseException("Can't find episode table", null);
+        if (table == null)
+        {
+            throw new NothingToParseException("Can't find episode table", null);
+        }
 
         foreach (var row in table.Rows.Skip(1))
+        {
             if (row.Cells.Length > 2)
             {
                 var subtitleRow = new SubtitleRow();
 
                 for (var i = 0; i < row.Cells.Length; i++)
+                {
                     switch (i)
                     {
                         case 0:
@@ -95,7 +111,10 @@ public class Parser
                         case 5:
                             var state = row.Cells[i].TextContent;
                             if (!state.Contains("%") && state.Contains("Completed"))
+                            {
                                 subtitleRow.Completed = true;
+                            }
+
                             break;
                         case 6:
                             subtitleRow.HearingImpaired = row.Cells[i].TextContent.Length > 0;
@@ -117,12 +136,16 @@ public class Parser
                             subtitleRow.DownloadUri = new Uri(downloadUri, UriKind.Relative);
                             break;
                     }
+                }
 
                 subtitlesRows.Add(subtitleRow);
             }
+        }
 
         if (!subtitlesRows.Any())
+        {
             throw new NothingToParseException("No subtitle", null);
+        }
 
         var episodeGroups = subtitlesRows.GroupBy(r => r.EpisodeId);
 

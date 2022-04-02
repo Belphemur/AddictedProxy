@@ -57,6 +57,7 @@ public class BootstrapAddictedServices : IBootstrap,
                .WaitAndRetryAsync(8, // exponential back-off plus some jitter
                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
                                    + TimeSpan.FromMilliseconds(jitterer.Next(0, 300))
-               ).WrapAsync(Policy.TimeoutAsync(10));
+               )
+               .WrapAsync(Policy.TimeoutAsync(10));
     }
 }
