@@ -1,7 +1,6 @@
 ﻿using InversionOfControl.Service.EnvironmentVariable.Parser;
-using InversionOfControl.Service.EnvironmentVariable.Registration;
 
-namespace AddictedProxy.Model.Config;
+namespace AddictedProxy.Services.Addic7ed.EnvVar.Credentials;
 
 public class MainCredsParser : IEnvVarParser<MainCreds>
 {

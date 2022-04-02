@@ -3,8 +3,6 @@ using AddictedProxy.Database.EnvVar;
 using AddictedProxy.Database.Repositories;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
-using Microsoft.EntityFrameworkCore;
-using Z.EntityFramework.Extensions;
 
 namespace AddictedProxy.Database.Bootstrap;
 

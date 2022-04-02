@@ -12,14 +12,14 @@ public class Season
 
     [ForeignKey("TvShowId")]
     public virtual TvShow TvShow { get; set; }
+
     /// <summary>
-    /// Number associated with the season
+    ///     Number associated with the season
     /// </summary>
     public int Number { get; set; }
-    
+
     /// <summary>
-    /// When was the season last refreshed
+    ///     When was the season last refreshed
     /// </summary>
     public DateTime? LastRefreshed { get; set; }
-
 }

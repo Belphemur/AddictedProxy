@@ -5,7 +5,7 @@ namespace InversionOfControl.Model;
 public interface IBootstrap
 {
     /// <summary>
-    /// Configure the different services
+    ///     Configure the different services
     /// </summary>
     /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services);

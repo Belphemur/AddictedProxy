@@ -1,8 +1,7 @@
 ﻿using System.Net;
 using InversionOfControl.Service.EnvironmentVariable.Parser;
-using InversionOfControl.Service.EnvironmentVariable.Registration;
 
-namespace AddictedProxy.Services.Addic7ed.EnvVar;
+namespace AddictedProxy.Services.Addic7ed.EnvVar.Http;
 
 public class HttpProxyParser : IEnvVarParser<HttpProxy>
 {
@@ -12,6 +11,5 @@ public class HttpProxyParser : IEnvVarParser<HttpProxy>
         var proxyUri = new Uri(value);
         var userSplit = proxyUri.UserInfo.Split(":");
         return new HttpProxy(new Uri(proxyUri.Scheme + "://" + proxyUri.Authority), new NetworkCredential(userSplit[0], userSplit[1]));
-
     }
 }

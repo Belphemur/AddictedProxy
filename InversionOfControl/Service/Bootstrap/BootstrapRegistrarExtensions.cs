@@ -11,38 +11,16 @@ namespace InversionOfControl.Service.Bootstrap;
 
 public static class BootstrapRegistrarExtensions
 {
-    #region MockupBootstrapEnv
-
-    private record Void;
-
-    private class VoidParser : IEnvVarParser<Void>
-    {
-        public Void Parse(string[] keys, Dictionary<string, string> values)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    private class VoidBootstrap : IBootstrapEnvironmentVariable<Void, VoidParser>
-    {
-        public EnvVarRegistration<Void, VoidParser> EnvVarRegistration { get; }
-    }
-
-    #endregion
-
     /// <summary>
-    /// Add the different <see cref="IBootstrap"/> registration to the IoC container
+    ///     Add the different <see cref="IBootstrap" /> registration to the IoC container
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="assemblies">Where to look for <see cref="IBootstrap"/></param>
+    /// <param name="assemblies">Where to look for <see cref="IBootstrap" /></param>
     /// <returns></returns>
     public static IServiceCollection AddBootstrap(this IServiceCollection services, params Assembly[] assemblies)
     {
         var bootstrapType = typeof(IBootstrap);
-        if (assemblies.Length == 0)
-        {
-            throw new ArgumentException($"Need minimum one assembly to register {bootstrapType}");
-        }
+        if (assemblies.Length == 0) throw new ArgumentException($"Need minimum one assembly to register {bootstrapType}");
 
         foreach (var type in assemblies
                              .SelectMany(s => s.GetTypes())
@@ -57,10 +35,10 @@ public static class BootstrapRegistrarExtensions
     }
 
     /// <summary>
-    /// Register the different environment variables
+    ///     Register the different environment variables
     /// </summary>
     /// <param name="services"></param>
-    /// <param name="assemblies">Where to look for <see cref="IBootstrapEnvironmentVariable{TType,TParser}"/></param>
+    /// <param name="assemblies">Where to look for <see cref="IBootstrapEnvironmentVariable{TType,TParser}" /></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="EnvironmentVariableException"></exception>
@@ -68,10 +46,7 @@ public static class BootstrapRegistrarExtensions
     {
         var bootstrapType = typeof(IBootstrapEnvironmentVariable<,>);
 
-        if (assemblies.Length == 0)
-        {
-            throw new ArgumentException($"Need minimum one assembly to register {bootstrapType}");
-        }
+        if (assemblies.Length == 0) throw new ArgumentException($"Need minimum one assembly to register {bootstrapType}");
 
         var envVarRegistrationType = typeof(EnvVarRegistration<,>);
         var keys = new Dictionary<string, Type>();
@@ -86,10 +61,7 @@ public static class BootstrapRegistrarExtensions
             var lifeTime = (ServiceLifetime)currentEnvVarRegistrationType.GetProperty(nameof(EnvVarRegistration<Void, VoidParser>.Lifetime))!.GetValue(registration);
             foreach (var key in currentKeys)
             {
-                if (keys.TryGetValue(key, out var alreadyRegisteredType))
-                {
-                    throw new EnvironmentVariableException(key, $"{key} is already registered by {alreadyRegisteredType.Name}.");
-                }
+                if (keys.TryGetValue(key, out var alreadyRegisteredType)) throw new EnvironmentVariableException(key, $"{key} is already registered by {alreadyRegisteredType.Name}.");
 
                 keys.Add(key, currentBootstrapType);
             }
@@ -114,10 +86,7 @@ public static class BootstrapRegistrarExtensions
             {
                 var genericArguments = interfaceBootstrapEnvVarType.GetGenericArguments();
                 var registration = interfaceBootstrapEnvVarType.GetProperty(nameof(VoidBootstrap.EnvVarRegistration))!.GetValue(bootstrap);
-                if (registration == null)
-                {
-                    throw new ArgumentNullException($"If you use the {typeof(IBootstrapEnvironmentVariable<,>)}, you need to set the env var registration.");
-                }
+                if (registration == null) throw new ArgumentNullException($"If you use the {typeof(IBootstrapEnvironmentVariable<,>)}, you need to set the env var registration.");
                 RegisterEnvVar(genericArguments, registration, type);
             }
         }
@@ -137,9 +106,28 @@ public static class BootstrapRegistrarExtensions
         switch (errors.Length)
         {
             case > 1:
-                throw new AggregateException($"Multiple environment vars missing: {string.Join(", ", errors.Select(exception => exception.Key))}", errors.Cast<System.Exception>());
+                throw new AggregateException($"Multiple environment vars missing: {string.Join(", ", errors.Select(exception => exception.Key))}", errors.Cast<Exception>());
             case 1:
                 throw errors[0];
         }
     }
+
+    #region MockupBootstrapEnv
+
+    private record Void;
+
+    private class VoidParser : IEnvVarParser<Void>
+    {
+        public Void Parse(string[] keys, Dictionary<string, string> values)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    private class VoidBootstrap : IBootstrapEnvironmentVariable<Void, VoidParser>
+    {
+        public EnvVarRegistration<Void, VoidParser> EnvVarRegistration { get; }
+    }
+
+    #endregion
 }

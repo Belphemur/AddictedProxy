@@ -1,5 +1,4 @@
 ﻿using InversionOfControl.Service.EnvironmentVariable.Parser;
-using InversionOfControl.Service.EnvironmentVariable.Registration;
 
 namespace AddictedProxy.Database.EnvVar;
 

@@ -5,5 +5,8 @@ namespace AddictedProxy.Database;
 
 public static class Rule
 {
-    public static Action<BulkOperation<T>> AvoidUpdateDiscoveredField<T>() where T : class, IDiscoverableObject => operation => operation.IgnoreOnUpdateExpression = o => o.Discovered;
-} 
+    public static Action<BulkOperation<T>> AvoidUpdateDiscoveredField<T>() where T : class, IDiscoverableObject
+    {
+        return operation => operation.IgnoreOnUpdateExpression = o => o.Discovered;
+    }
+}

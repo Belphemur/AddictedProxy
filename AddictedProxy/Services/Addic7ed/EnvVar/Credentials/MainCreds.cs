@@ -1,6 +1,6 @@
-﻿using AngleSharp.Text;
+﻿using AddictedProxy.Model.Config;
 
-namespace AddictedProxy.Model.Config;
+namespace AddictedProxy.Services.Addic7ed.EnvVar.Credentials;
 
 public class MainCreds : Addic7edCreds
 {

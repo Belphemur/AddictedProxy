@@ -1,15 +1,14 @@
-﻿using AddictedProxy.Database;
-using AddictedProxy.Database.Repositories;
-using AddictedProxy.Model.Config;
+﻿using AddictedProxy.Database.Repositories;
 using AddictedProxy.Services.Addic7ed;
+using AddictedProxy.Services.Addic7ed.EnvVar.Credentials;
 
 namespace AddictedProxy.Services.Saver;
 
 public class AddictedSaver : IAddictedSaver
 {
-    private readonly ITvShowRepository _tvShowRepository;
     private readonly IAddic7edClient _addic7EdClient;
     private readonly MainCreds _mainCreds;
+    private readonly ITvShowRepository _tvShowRepository;
 
     public AddictedSaver(ITvShowRepository tvShowRepository, IAddic7edClient addic7EdClient, MainCreds mainCreds)
     {

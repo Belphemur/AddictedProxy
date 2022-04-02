@@ -1,12 +1,6 @@
-using System.ComponentModel;
-using AddictedProxy;
 using AddictedProxy.Controllers.Bootstrap;
-using AddictedProxy.Database;
 using AddictedProxy.Database.Context;
-using AddictedProxy.Services.Saver;
-using InversionOfControl.Service;
 using InversionOfControl.Service.Bootstrap;
-using Job.Scheduler.Scheduler;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -10,6 +10,5 @@ public class BootstrapController : IBootstrap
         services.AddControllers()
                 .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>());
         services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
-
     }
 }

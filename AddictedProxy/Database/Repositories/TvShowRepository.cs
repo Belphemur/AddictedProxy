@@ -7,8 +7,8 @@ namespace AddictedProxy.Database.Repositories;
 
 public class TvShowRepository : ITvShowRepository
 {
-    private readonly EntityContext _entityContext;
     private static readonly Action<BulkOperation<TvShow>> AvoidUpdateDiscoveredField = Rule.AvoidUpdateDiscoveredField<TvShow>();
+    private readonly EntityContext _entityContext;
 
     public TvShowRepository(EntityContext entityContext)
     {
@@ -19,8 +19,8 @@ public class TvShowRepository : ITvShowRepository
     public async IAsyncEnumerable<TvShow> FindAsync(string name, CancellationToken token)
     {
         var strictMatch = await _entityContext.TvShows.Include(show => show.Seasons)
-            .Where(show => show.Name.ToLower() == name.ToLower())
-            .FirstOrDefaultAsync(token);
+                                              .Where(show => show.Name.ToLower() == name.ToLower())
+                                              .FirstOrDefaultAsync(token);
         if (strictMatch != null)
         {
             yield return strictMatch;
@@ -28,11 +28,9 @@ public class TvShowRepository : ITvShowRepository
         }
 
         foreach (var tvShow in _entityContext.TvShows
-                     .Include(show => show.Seasons)
-                     .Where(show => show.Name.ToLower().Contains(name.ToLower())))
-        {
+                                             .Include(show => show.Seasons)
+                                             .Where(show => show.Name.ToLower().Contains(name.ToLower())))
             yield return tvShow;
-        }
     }
 
     public Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token)
@@ -49,5 +47,8 @@ public class TvShowRepository : ITvShowRepository
         return _entityContext.TvShows.ToAsyncEnumerable();
     }
 
-    public Task UpdateShow(TvShow show, CancellationToken token) => _entityContext.TvShows.SingleUpdateAsync(show, AvoidUpdateDiscoveredField, token);
+    public Task UpdateShow(TvShow show, CancellationToken token)
+    {
+        return _entityContext.TvShows.SingleUpdateAsync(show, AvoidUpdateDiscoveredField, token);
+    }
 }

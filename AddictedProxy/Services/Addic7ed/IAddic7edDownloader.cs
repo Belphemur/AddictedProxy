@@ -7,7 +7,7 @@ namespace AddictedProxy.Services.Addic7ed;
 public interface IAddic7edDownloader
 {
     /// <summary>
-    /// Download the given subtitle
+    ///     Download the given subtitle
     /// </summary>
     /// <param name="credentials"></param>
     /// <param name="lang"></param>
@@ -19,7 +19,7 @@ public interface IAddic7edDownloader
     Task<Stream> DownloadSubtitle(Addic7edCreds credentials, int lang, int id, int version, CancellationToken token);
 
     /// <summary>
-    /// Download a specific subtitle
+    ///     Download a specific subtitle
     /// </summary>
     /// <param name="credentials"></param>
     /// <param name="subtitle"></param>

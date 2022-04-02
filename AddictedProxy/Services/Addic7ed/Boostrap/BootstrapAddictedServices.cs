@@ -1,6 +1,6 @@
 ﻿using System.Net;
-using AddictedProxy.Model.Config;
-using AddictedProxy.Services.Addic7ed.EnvVar;
+using AddictedProxy.Services.Addic7ed.EnvVar.Credentials;
+using AddictedProxy.Services.Addic7ed.EnvVar.Http;
 using AngleSharp.Html.Parser;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
@@ -15,10 +15,6 @@ public class BootstrapAddictedServices : IBootstrap,
                                          IBootstrapEnvironmentVariable<HttpProxy, HttpProxyParser>,
                                          IBootstrapEnvironmentVariable<MainCreds, MainCredsParser>
 {
-    public EnvVarRegistration<HttpProxy, HttpProxyParser> EnvVarRegistration => new("PROXY_URL");
-    EnvVarRegistration<MainCreds, MainCredsParser> IBootstrapEnvironmentVariable<MainCreds, MainCredsParser>.EnvVarRegistration => new("ADDICTED_USERID", "ADDICTED_PASS");
-
-
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton<IHtmlParser, HtmlParser>();
@@ -34,6 +30,9 @@ public class BootstrapAddictedServices : IBootstrap,
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
                 .AddPolicyHandler(GetRetryPolicy());
     }
+
+    public EnvVarRegistration<HttpProxy, HttpProxyParser> EnvVarRegistration => new("PROXY_URL");
+    EnvVarRegistration<MainCreds, MainCredsParser> IBootstrapEnvironmentVariable<MainCreds, MainCredsParser>.EnvVarRegistration => new("ADDICTED_USERID", "ADDICTED_PASS");
 
     private static HttpMessageHandler BuildProxyHttpMessageHandler(HttpProxy proxy)
     {

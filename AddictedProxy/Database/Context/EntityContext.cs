@@ -29,6 +29,6 @@ public class EntityContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TvShow>().Property(c => c.Name)
-            .UseCollation("NOCASE");
+                    .UseCollation("NOCASE");
     }
 }

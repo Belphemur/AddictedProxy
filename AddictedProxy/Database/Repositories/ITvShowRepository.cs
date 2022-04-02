@@ -9,7 +9,7 @@ public interface ITvShowRepository
     IAsyncEnumerable<TvShow> GetAllAsync(CancellationToken token);
 
     /// <summary>
-    /// Update data of a show
+    ///     Update data of a show
     /// </summary>
     Task UpdateShow(TvShow show, CancellationToken token);
 }

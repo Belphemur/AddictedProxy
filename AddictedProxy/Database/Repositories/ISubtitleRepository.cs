@@ -5,7 +5,7 @@ namespace AddictedProxy.Database.Repositories;
 public interface ISubtitleRepository
 {
     /// <summary>
-    /// Get Subtitle by their Id
+    ///     Get Subtitle by their Id
     /// </summary>
     /// <param name="id"></param>
     /// <param name="token"></param>

@@ -30,7 +30,7 @@ public class SeasonRepository : ISeasonRepository
     }
 
     /// <summary>
-    /// Update the season
+    ///     Update the season
     /// </summary>
     public Task UpdateSeasonAsync(Season season, CancellationToken token)
     {

@@ -1,7 +1,6 @@
-namespace AddictedProxy.Model.Shows
+namespace AddictedProxy.Model.Shows;
+
+public enum SubtitleState
 {
-    public enum SubtitleState
-    {
-        Completed
-    }
+    Completed
 }
