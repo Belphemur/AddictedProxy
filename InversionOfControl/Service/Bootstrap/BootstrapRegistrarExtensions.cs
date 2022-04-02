@@ -11,6 +11,25 @@ namespace InversionOfControl.Service.Bootstrap;
 
 public static class BootstrapRegistrarExtensions
 {
+    #region MockupBootstrapEnv
+
+    private record Void;
+
+    private class VoidParser : IEnvVarParser<Void>
+    {
+        public Void Parse(string value)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    private class VoidBootstrap : IBootstrapEnvironmentVariable<Void, VoidParser>
+    {
+        public EnvVarRegistration<Void, VoidParser> EnvVarRegistration { get; }
+    }
+
+    #endregion
+
     /// <summary>
     /// Add the different <see cref="IBootstrap"/> registration to the IoC container
     /// </summary>
@@ -62,7 +81,7 @@ public static class BootstrapRegistrarExtensions
                              .Where(bootstrapType.IsAssignableToGenericType))
         {
             var bootstrap = type.GetConstructor(Type.EmptyTypes)!.Invoke(Array.Empty<object>());
-            var registration = type.GetProperty("EnvVarRegistration")!.GetValue(bootstrap);
+            var registration = type.GetProperty(nameof(VoidBootstrap.EnvVarRegistration))!.GetValue(bootstrap);
             if (registration == null)
             {
                 throw new ArgumentNullException($"If you use the {typeof(IBootstrapEnvironmentVariable<,>)}, you need to set the env var registration.");
@@ -73,8 +92,8 @@ public static class BootstrapRegistrarExtensions
             var parserType = genericArguments[1];
 
             var currentEnvVarRegistrationType = envVarRegistrationType.MakeGenericType(genericArguments);
-            var key = (string)currentEnvVarRegistrationType.GetProperty("Key")!.GetValue(registration);
-            var lifeTime = (ServiceLifetime)currentEnvVarRegistrationType.GetProperty("Lifetime")!.GetValue(registration);
+            var key = (string)currentEnvVarRegistrationType.GetProperty(nameof(EnvVarRegistration<Void, VoidParser>.Key))!.GetValue(registration);
+            var lifeTime = (ServiceLifetime)currentEnvVarRegistrationType.GetProperty(nameof(EnvVarRegistration<Void, VoidParser>.Lifetime))!.GetValue(registration);
             if (keys.TryGetValue(key, out var alreadyRegisteredType))
             {
                 throw new EnvironmentVariableException(key, $"{key} is already registered by {alreadyRegisteredType.Name}.");
@@ -86,7 +105,7 @@ public static class BootstrapRegistrarExtensions
             services.TryAdd(new ServiceDescriptor(envVarType, factory =>
             {
                 var parser = factory.GetRequiredService(parserType);
-                return parserType.GetMethod("Parse")!.Invoke(parser, new object[] { Environment.GetEnvironmentVariable(key) });
+                return parserType.GetMethod(nameof(VoidParser.Parse))!.Invoke(parser, new object[] { Environment.GetEnvironmentVariable(key) });
             }, lifeTime));
         }
 
