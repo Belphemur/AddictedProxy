@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using AddictedProxy.Database.Model.Shows;
-using JetBrains.Annotations;
+﻿using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Database.Context;

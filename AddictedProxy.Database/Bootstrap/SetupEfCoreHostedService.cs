@@ -1,6 +1,5 @@
 ﻿using AddictedProxy.Database.Context;
 using AddictedProxy.Database.EnvVar;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Z.EntityFramework.Extensions;
 
