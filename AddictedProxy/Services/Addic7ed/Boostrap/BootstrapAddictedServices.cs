@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using AddictedProxy.Model.Config;
+using AddictedProxy.Services.Addic7ed.EnvVar;
 using AngleSharp.Html.Parser;
 using InversionOfControl.Model;
 using Polly;
@@ -19,7 +20,7 @@ public class BootstrapAddictedServices : IBootstrap
         services.AddSingleton<Parser>();
 
         services.AddHttpClient<IAddic7edClient, Addic7edClient>()
-                .ConfigurePrimaryHttpMessageHandler(_ => BuildProxyHttpMessageHandler())
+                .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>()))
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(Policy.RateLimitAsync<HttpResponseMessage>(
@@ -27,22 +28,19 @@ public class BootstrapAddictedServices : IBootstrap
                 ));
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>()
-                .ConfigurePrimaryHttpMessageHandler(_ => BuildProxyHttpMessageHandler())
+                .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>()))
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
                 .AddPolicyHandler(GetRetryPolicy());
     }
 
-    private static HttpMessageHandler BuildProxyHttpMessageHandler()
+    private static HttpMessageHandler BuildProxyHttpMessageHandler(HttpProxy proxy)
     {
-        var proxyUrl = Environment.GetEnvironmentVariable("PROXY_URL") ?? throw new InvalidOperationException("No proxy set");
-        var proxyUri = new Uri(proxyUrl.Trim('"'));
-        var userSplit = proxyUri.UserInfo.Split(":");
         return new HttpClientHandler
         {
             Proxy = new WebProxy
             {
-                Address = new Uri(proxyUri.Scheme + "://" + proxyUri.Authority),
-                Credentials = new NetworkCredential(userSplit[0], userSplit[1])
+                Address = proxy.Address,
+                Credentials = proxy.Credentials
             }
         };
     }
