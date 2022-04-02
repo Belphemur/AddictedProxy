@@ -12,13 +12,15 @@ using Polly.Timeout;
 namespace AddictedProxy.Services.Addic7ed.Boostrap;
 
 public class BootstrapAddictedServices : IBootstrap,
-                                         IBootstrapEnvironmentVariable<HttpProxy, HttpProxyParser>
+                                         IBootstrapEnvironmentVariable<HttpProxy, HttpProxyParser>,
+                                         IBootstrapEnvironmentVariable<MainCreds, MainCredsParser>
 {
     public EnvVarRegistration<HttpProxy, HttpProxyParser> EnvVarRegistration => new("PROXY_URL");
+    EnvVarRegistration<MainCreds, MainCredsParser> IBootstrapEnvironmentVariable<MainCreds, MainCredsParser>.EnvVarRegistration => new("ADDICTED_USERID", "ADDICTED_PASS");
+
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<MainCreds>();
         services.AddSingleton<IHtmlParser, HtmlParser>();
         services.AddSingleton<Parser>();
 

@@ -2,7 +2,13 @@
 {
     public class Addic7edCreds
     {
-        public virtual long UserId { get; set; }
-        public virtual string Password { get; set; }
+        public long UserId { get; set; }
+        public string Password { get; set; }
+
+        public Addic7edCreds(long userId, string password)
+        {
+            UserId = userId;
+            Password = password;
+        }
     }
 }

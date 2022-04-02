@@ -1,13 +1,15 @@
 ﻿using System.Net;
 using InversionOfControl.Service.EnvironmentVariable.Parser;
+using InversionOfControl.Service.EnvironmentVariable.Registration;
 
 namespace AddictedProxy.Services.Addic7ed.EnvVar;
 
 public class HttpProxyParser : IEnvVarParser<HttpProxy>
 {
-    public HttpProxy Parse(string value)
+    public HttpProxy Parse(string[] keys, Dictionary<string, string> values)
     {
-        var proxyUri = new Uri(value.Trim('"'));
+        var value = values[keys[0]];
+        var proxyUri = new Uri(value);
         var userSplit = proxyUri.UserInfo.Split(":");
         return new HttpProxy(new Uri(proxyUri.Scheme + "://" + proxyUri.Authority), new NetworkCredential(userSplit[0], userSplit[1]));
 

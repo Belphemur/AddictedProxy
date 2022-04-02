@@ -17,7 +17,7 @@ public static class BootstrapRegistrarExtensions
 
     private class VoidParser : IEnvVarParser<Void>
     {
-        public Void Parse(string value)
+        public Void Parse(string[] keys, Dictionary<string, string> values)
         {
             throw new NotImplementedException();
         }
@@ -75,38 +75,51 @@ public static class BootstrapRegistrarExtensions
 
         var envVarRegistrationType = typeof(EnvVarRegistration<,>);
         var keys = new Dictionary<string, Type>();
-        foreach (var type in assemblies
-                             .SelectMany(s => s.GetTypes())
-                             .Where(p => !p.IsInterface)
-                             .Where(bootstrapType.IsAssignableToGenericType))
+
+        void RegisterEnvVar(Type[] genericTypes, object registration, Type currentBootstrapType)
         {
-            var bootstrap = type.GetConstructor(Type.EmptyTypes)!.Invoke(Array.Empty<object>());
-            var registration = type.GetProperty(nameof(VoidBootstrap.EnvVarRegistration))!.GetValue(bootstrap);
-            if (registration == null)
-            {
-                throw new ArgumentNullException($"If you use the {typeof(IBootstrapEnvironmentVariable<,>)}, you need to set the env var registration.");
-            }
+            var envVarType = genericTypes[0];
+            var parserType = genericTypes[1];
 
-            var genericArguments = type.GetInterfaces().Where(bootstrapType.IsAssignableToGenericType).First().GetGenericArguments();
-            var envVarType = genericArguments[0];
-            var parserType = genericArguments[1];
-
-            var currentEnvVarRegistrationType = envVarRegistrationType.MakeGenericType(genericArguments);
-            var key = (string)currentEnvVarRegistrationType.GetProperty(nameof(EnvVarRegistration<Void, VoidParser>.Key))!.GetValue(registration);
+            var currentEnvVarRegistrationType = envVarRegistrationType.MakeGenericType(genericTypes);
+            var currentKeys = (string[])currentEnvVarRegistrationType.GetProperty(nameof(EnvVarRegistration<Void, VoidParser>.Keys))!.GetValue(registration);
             var lifeTime = (ServiceLifetime)currentEnvVarRegistrationType.GetProperty(nameof(EnvVarRegistration<Void, VoidParser>.Lifetime))!.GetValue(registration);
-            if (keys.TryGetValue(key, out var alreadyRegisteredType))
+            foreach (var key in currentKeys)
             {
-                throw new EnvironmentVariableException(key, $"{key} is already registered by {alreadyRegisteredType.Name}.");
-            }
+                if (keys.TryGetValue(key, out var alreadyRegisteredType))
+                {
+                    throw new EnvironmentVariableException(key, $"{key} is already registered by {alreadyRegisteredType.Name}.");
+                }
 
-            keys.Add(key, type);
+                keys.Add(key, currentBootstrapType);
+            }
 
             services.TryAddSingleton(parserType);
             services.TryAdd(new ServiceDescriptor(envVarType, factory =>
             {
                 var parser = factory.GetRequiredService(parserType);
-                return parserType.GetMethod(nameof(VoidParser.Parse))!.Invoke(parser, new object[] { Environment.GetEnvironmentVariable(key) });
+                var keyValues = currentKeys.ToDictionary(s => s, Environment.GetEnvironmentVariable);
+                return parserType.GetMethod(nameof(VoidParser.Parse))!.Invoke(parser, new object[] { currentKeys, keyValues });
             }, lifeTime));
+        }
+
+        foreach (var type in assemblies
+                             .SelectMany(s => s.GetTypes())
+                             .Where(p => !p.IsInterface)
+                             .Where(bootstrapType.IsAssignableToGenericType))
+        {
+            var bootstrap = Activator.CreateInstance(type);
+
+            foreach (var interfaceBootstrapEnvVarType in type.GetInterfaces().Where(bootstrapType.IsAssignableToGenericType))
+            {
+                var genericArguments = interfaceBootstrapEnvVarType.GetGenericArguments();
+                var registration = interfaceBootstrapEnvVarType.GetProperty(nameof(VoidBootstrap.EnvVarRegistration))!.GetValue(bootstrap);
+                if (registration == null)
+                {
+                    throw new ArgumentNullException($"If you use the {typeof(IBootstrapEnvironmentVariable<,>)}, you need to set the env var registration.");
+                }
+                RegisterEnvVar(genericArguments, registration, type);
+            }
         }
 
         Validate(keys.Keys);
