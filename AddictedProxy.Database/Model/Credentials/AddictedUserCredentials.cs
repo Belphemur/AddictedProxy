@@ -5,4 +5,10 @@ namespace AddictedProxy.Database.Model.Credentials;
 
 [Table("AddictedUserCredentials")]
 [Index(nameof(AddictedUserCredentials.Cookie), IsUnique = true)]
-public record AddictedUserCredentials(int Id, string Cookie, int Usage = 0, DateTime? LastUsage = null);
+public class AddictedUserCredentials
+{
+    public int Id { get; set; }
+    public string Cookie { get; set; }
+    public int Usage { get; set; }
+    public DateTime? LastUsage { get; set; }
+}

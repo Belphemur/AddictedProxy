@@ -13,17 +13,15 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
         _context = context;
     }
 
-    public Task<AddictedUserCredentials?> GetLeastUsedCredAsync(CancellationToken token)
+    public async Task<AddictedUserCredentials?> GetLeastUsedCredAsync(CancellationToken token)
     {
-        token.ThrowIfCancellationRequested();
-        var result = _context.AddictedUserCreds.AsSingleQuery()
-                             .MinBy(credentials => credentials.Usage);
-        return Task.FromResult(result);
+        var min = await _context.AddictedUserCreds.MinAsync(credentials => credentials.Usage, cancellationToken: token);
+        return await _context.AddictedUserCreds.Where(credentials => credentials.Usage <= min).FirstAsync(token);
     }
 
     public async Task UpsertUserCredentialsAsync(AddictedUserCredentials credentials, CancellationToken token)
     {
-        await _context.AddictedUserCreds.AddAsync(credentials, token);
+        _context.AddictedUserCreds.Update(credentials);
         await _context.SaveChangesAsync(token);
     }
 }

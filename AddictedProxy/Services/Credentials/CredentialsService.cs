@@ -36,7 +36,8 @@ public class CredentialsService : ICredentialsService
 
     public async Task UpdateUsageCredentialsAsync(AddictedUserCredentials credentials, CancellationToken token)
     {
-        var creds = credentials with { Usage = credentials.Usage + 1, LastUsage = DateTime.UtcNow };
-        await _addictedUserCredentialRepository.UpsertUserCredentialsAsync(creds, token);
+        credentials.Usage++;
+        credentials.LastUsage = DateTime.UtcNow;
+        await _addictedUserCredentialRepository.UpsertUserCredentialsAsync(credentials, token);
     }
 }
