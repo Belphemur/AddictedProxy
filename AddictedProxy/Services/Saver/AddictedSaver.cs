@@ -1,4 +1,5 @@
 ﻿using AddictedProxy.Database.Repositories;
+using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Addic7ed;
 using AddictedProxy.Services.Addic7ed.EnvVar.Credentials;
 

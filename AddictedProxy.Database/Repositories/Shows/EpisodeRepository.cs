@@ -3,7 +3,7 @@ using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
 using Z.BulkOperations;
 
-namespace AddictedProxy.Database.Repositories;
+namespace AddictedProxy.Database.Repositories.Shows;
 
 public class EpisodeRepository : IEpisodeRepository
 {

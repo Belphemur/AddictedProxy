@@ -2,7 +2,7 @@ using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
 
-namespace AddictedProxy.Database.Repositories;
+namespace AddictedProxy.Database.Repositories.Shows;
 
 public class SubtitleRepository : ISubtitleRepository
 {

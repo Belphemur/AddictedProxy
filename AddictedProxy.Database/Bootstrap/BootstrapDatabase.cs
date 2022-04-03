@@ -1,6 +1,7 @@
 ﻿using AddictedProxy.Database.Context;
 using AddictedProxy.Database.EnvVar;
 using AddictedProxy.Database.Repositories;
+using AddictedProxy.Database.Repositories.Shows;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Microsoft.Extensions.DependencyInjection;

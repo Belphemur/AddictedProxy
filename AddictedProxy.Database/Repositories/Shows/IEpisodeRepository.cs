@@ -1,6 +1,6 @@
 using AddictedProxy.Database.Model.Shows;
 
-namespace AddictedProxy.Database.Repositories;
+namespace AddictedProxy.Database.Repositories.Shows;
 
 public interface IEpisodeRepository
 {
