@@ -1,5 +1,9 @@
-﻿using System.Net;
+﻿#region
+
+using System.Net;
 using InversionOfControl.Service.EnvironmentVariable.Parser;
+
+#endregion
 
 namespace AddictedProxy.Services.Addic7ed.EnvVar.Http;
 

@@ -1,6 +1,9 @@
-﻿using AddictedProxy.Database.Model.Shows;
-using AddictedProxy.Model.Config;
-using AddictedProxy.Model.Shows;
+﻿#region
+
+using AddictedProxy.Database.Model.Credentials;
+using AddictedProxy.Database.Model.Shows;
+
+#endregion
 
 namespace AddictedProxy.Services.Addic7ed;
 
@@ -12,7 +15,7 @@ public interface IAddic7edClient
     /// <param name="creds"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    IAsyncEnumerable<TvShow> GetTvShowsAsync(Addic7edCreds creds, CancellationToken token);
+    IAsyncEnumerable<TvShow> GetTvShowsAsync(AddictedUserCredentials creds, CancellationToken token);
 
     /// <summary>
     ///     Get available seasons
@@ -21,7 +24,7 @@ public interface IAddic7edClient
     /// <param name="show"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<IEnumerable<Season>> GetSeasonsAsync(Addic7edCreds credentials, TvShow show, CancellationToken token);
+    Task<IEnumerable<Season>> GetSeasonsAsync(AddictedUserCredentials credentials, TvShow show, CancellationToken token);
 
     /// <summary>
     ///     Get episode for the following season
@@ -31,5 +34,5 @@ public interface IAddic7edClient
     /// <param name="season"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<IEnumerable<Episode>> GetEpisodesAsync(Addic7edCreds credentials, TvShow show, int season, CancellationToken token);
+    Task<IEnumerable<Episode>> GetEpisodesAsync(AddictedUserCredentials credentials, TvShow show, int season, CancellationToken token);
 }

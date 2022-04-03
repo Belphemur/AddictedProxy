@@ -1,4 +1,8 @@
-﻿using System.Net;
+﻿#region
+
+using System.Net;
+
+#endregion
 
 namespace AddictedProxy.Services.Addic7ed.EnvVar.Http;
 

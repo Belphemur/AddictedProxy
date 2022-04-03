@@ -1,24 +1,14 @@
+#region
+
+using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
-using AddictedProxy.Model.Config;
-using AddictedProxy.Model.Shows;
-using AddictedProxy.Services.Addic7ed.Exception;
+
+#endregion
 
 namespace AddictedProxy.Services.Addic7ed;
 
 public interface IAddic7edDownloader
 {
-    /// <summary>
-    ///     Download the given subtitle
-    /// </summary>
-    /// <param name="credentials"></param>
-    /// <param name="lang"></param>
-    /// <param name="id"></param>
-    /// <param name="version"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    /// <exception cref="DownloadLimitExceededException"> When can't download subtitle anymore</exception>
-    Task<Stream> DownloadSubtitle(Addic7edCreds credentials, int lang, int id, int version, CancellationToken token);
-
     /// <summary>
     ///     Download a specific subtitle
     /// </summary>
@@ -26,5 +16,5 @@ public interface IAddic7edDownloader
     /// <param name="subtitle"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<Stream> DownloadSubtitle(Addic7edCreds credentials, Subtitle subtitle, CancellationToken token);
+    Task<Stream> DownloadSubtitle(AddictedUserCredentials credentials, Subtitle subtitle, CancellationToken token);
 }

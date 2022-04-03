@@ -1,5 +1,9 @@
-﻿using AddictedProxy.Services.Middleware;
+﻿#region
+
+using AddictedProxy.Services.Middleware;
 using InversionOfControl.Model;
+
+#endregion
 
 namespace AddictedProxy.Controllers.Bootstrap;
 

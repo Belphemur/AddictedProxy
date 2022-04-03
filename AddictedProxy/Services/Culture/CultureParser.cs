@@ -1,4 +1,8 @@
+#region
+
 using System.Globalization;
+
+#endregion
 
 namespace AddictedProxy.Services.Culture;
 

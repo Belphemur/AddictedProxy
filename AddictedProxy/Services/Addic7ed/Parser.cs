@@ -1,9 +1,13 @@
-﻿using System.Runtime.CompilerServices;
+﻿#region
+
+using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Model.Shows;
 using AddictedProxy.Services.Addic7ed.Exception;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
+
+#endregion
 
 namespace AddictedProxy.Services.Addic7ed;
 

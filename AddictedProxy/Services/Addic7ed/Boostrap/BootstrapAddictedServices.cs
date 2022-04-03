@@ -1,7 +1,9 @@
-﻿using System.Net;
-using AddictedProxy.Services.Addic7ed.EnvVar.Credentials;
+﻿#region
+
+using System.Net;
 using AddictedProxy.Services.Addic7ed.EnvVar.Http;
 using AngleSharp.Html.Parser;
+using Bogus;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Polly;
@@ -9,11 +11,12 @@ using Polly.Extensions.Http;
 using Polly.RateLimit;
 using Polly.Timeout;
 
+#endregion
+
 namespace AddictedProxy.Services.Addic7ed.Boostrap;
 
 public class BootstrapAddictedServices : IBootstrap,
-                                         IBootstrapEnvironmentVariable<HttpProxy, HttpProxyParser>,
-                                         IBootstrapEnvironmentVariable<MainCreds, MainCredsParser>
+                                         IBootstrapEnvironmentVariable<HttpProxy, HttpProxyParser>
 {
     public void ConfigureServices(IServiceCollection services)
     {
@@ -29,10 +32,12 @@ public class BootstrapAddictedServices : IBootstrap,
                 .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>()))
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
                 .AddPolicyHandler(GetRetryPolicy());
+
+        services.AddSingleton<Faker>();
+        services.AddSingleton<HttpUtils>();
     }
 
     public EnvVarRegistration<HttpProxy, HttpProxyParser> EnvVarRegistration => new("PROXY_URL");
-    EnvVarRegistration<MainCreds, MainCredsParser> IBootstrapEnvironmentVariable<MainCreds, MainCredsParser>.EnvVarRegistration => new("ADDICTED_USERID", "ADDICTED_PASS");
 
     private static HttpMessageHandler BuildProxyHttpMessageHandler(HttpProxy proxy)
     {

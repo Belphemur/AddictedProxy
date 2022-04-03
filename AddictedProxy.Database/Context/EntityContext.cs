@@ -22,7 +22,7 @@ public class EntityContext : DbContext
     public DbSet<Episode> Episodes { get; set; } = null!;
     public DbSet<Season> Seasons { get; set; } = null!;
 
-    public DbSet<UserCredentials> AddictedUserCreds { get; set; } = null!;
+    public DbSet<AddictedUserCredentials> AddictedUserCreds { get; set; } = null!;
 
     private string DbPath { get; }
 

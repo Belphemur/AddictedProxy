@@ -1,13 +1,17 @@
-﻿using System.Globalization;
+﻿#region
+
+using System.Globalization;
+using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
-using AddictedProxy.Database.Repositories;
-using AddictedProxy.Model.Config;
-using AddictedProxy.Model.Shows;
+using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Addic7ed;
 using AddictedProxy.Services.Addic7ed.Exception;
+using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Culture;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
+
+#endregion
 
 namespace AddictedProxy.Controllers;
 
@@ -16,6 +20,7 @@ namespace AddictedProxy.Controllers;
 public class Addic7ed : Controller
 {
     private readonly IAddic7edClient _client;
+    private readonly ICredentialsService _credentialsService;
     private readonly CultureParser _cultureParser;
     private readonly IAddic7edDownloader _downloader;
     private readonly IEpisodeRepository _episodeRepository;
@@ -30,7 +35,8 @@ public class Addic7ed : Controller
                     ISeasonRepository seasonRepository,
                     IEpisodeRepository episodeRepository,
                     ISubtitleRepository subtitleRepository,
-                    CultureParser cultureParser)
+                    CultureParser cultureParser,
+                    ICredentialsService credentialsService)
     {
         _client = client;
         _downloader = downloader;
@@ -39,27 +45,23 @@ public class Addic7ed : Controller
         _episodeRepository = episodeRepository;
         _subtitleRepository = subtitleRepository;
         _cultureParser = cultureParser;
+        _credentialsService = credentialsService;
         _timeBetweenChecks = TimeSpan.FromHours(1);
     }
 
-    [Route("download/{lang:int}/{id:int}/{version:int}")]
-    [HttpPost]
-    public async Task<IActionResult> Download([FromBody] Addic7edCreds credentials, [FromRoute] int lang, [FromRoute] int id, [FromRoute] int version, CancellationToken token)
-    {
-        try
-        {
-            var subtitleStream = await _downloader.DownloadSubtitle(credentials, lang, id, version, token);
-            return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"));
-        }
-        catch (DownloadLimitExceededException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
 
+    /// <summary>
+    /// Download specific subtitle
+    /// </summary>
+    /// <param name="credentials"></param>
+    /// <param name="subtitleId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     [Route("download/{subtitleId:int}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(typeof(ErrorResponse), 400, "application/json")]
     [HttpPost]
-    public async Task<IActionResult> Download([FromBody] Addic7edCreds credentials, [FromRoute] int subtitleId, CancellationToken token)
+    public async Task<IActionResult> Download([FromRoute] int subtitleId, CancellationToken token)
     {
         var subtitle = await _subtitleRepository.GetSubtitleByIdAsync(subtitleId, token);
         if (subtitle == null)
@@ -69,17 +71,27 @@ public class Addic7ed : Controller
 
         try
         {
-            var subtitleStream = await _downloader.DownloadSubtitle(credentials, subtitle, token);
+            await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
+            var subtitleStream = await _downloader.DownloadSubtitle(credentials.AddictedUserCredentials, subtitle, token);
             return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"));
         }
         catch (DownloadLimitExceededException e)
         {
-            return BadRequest(e.Message);
+            return BadRequest(new ErrorResponse(e.Message));
         }
     }
 
+    /// <summary>
+    /// Search for subtitle of a specific episode of a show
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     [Route("search")]
     [HttpPost]
+    [ProducesResponseType(typeof(SearchResponse), 200)]
+    [ProducesResponseType(typeof(ErrorResponse), 404)]
+    [Produces("application/json")]
     public async Task<IActionResult> Search([FromBody] SearchRequest request, CancellationToken token)
     {
         var show = await _tvShowRepository.FindAsync(request.Show, token).FirstOrDefaultAsync(token);
@@ -90,16 +102,18 @@ public class Addic7ed : Controller
 
         var season = show.Seasons.FirstOrDefault(season => season.Number == request.Season);
 
+        await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
+
 
         if (season == null && (show.LastSeasonRefreshed == null || DateTime.UtcNow - show.LastSeasonRefreshed >= _timeBetweenChecks))
         {
             var maxSeason = show.Seasons.Any() ? show.Seasons.Max(s => s.Number) : 0;
             if (show.Seasons.Any() && request.Season - maxSeason > 1)
             {
-                return NotFound(new { Error = $"{request.Season} is too far in the future." });
+                return NotFound(new ErrorResponse($"{request.Season} is too far in the future."));
             }
 
-            var seasons = (await _client.GetSeasonsAsync(request.Credentials, show, token)).ToArray();
+            var seasons = (await _client.GetSeasonsAsync(credentials.AddictedUserCredentials, show, token)).ToArray();
             await _seasonRepository.UpsertSeason(seasons, token);
             show.LastSeasonRefreshed = DateTime.UtcNow;
             await _tvShowRepository.UpdateShow(show, token);
@@ -108,7 +122,7 @@ public class Addic7ed : Controller
 
         if (season == null)
         {
-            return NotFound(new { Error = $"Couldn't find Season S{request.Season} for {show.Name}" });
+            return NotFound(new ErrorResponse($"Couldn't find Season S{request.Season} for {show.Name}"));
         }
 
         var episode = await _episodeRepository.GetEpisodeAsync(show.Id, season.Number, request.Episode, token);
@@ -116,13 +130,13 @@ public class Addic7ed : Controller
         var episodesRefreshed = season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _timeBetweenChecks;
         if (episode == null && !episodesRefreshed)
         {
-            episode = await RefreshSubtitlesAsync(request, show, season, token);
+            episode = await RefreshSubtitlesAsync(credentials.AddictedUserCredentials, show, season, request.Episode, token);
             episodesRefreshed = true;
         }
 
         if (episode == null)
         {
-            return NotFound(new { Error = $"Couldn't find episode S{season.Number}E{request.Episode} for {show.Name}" });
+            return NotFound(new ErrorResponse($"Couldn't find episode S{season.Number}E{request.Episode} for {show.Name}"));
         }
 
         var matchingSubtitles = FindMatchingSubtitles(request, episode);
@@ -134,7 +148,7 @@ public class Addic7ed : Controller
             return Ok(new SearchResponse(episode: new SearchResponse.EpisodeDto(episode), matchingSubtitles: matchingSubtitles));
         }
 
-        episode = await RefreshSubtitlesAsync(request, show, season, token);
+        episode = await RefreshSubtitlesAsync(credentials.AddictedUserCredentials, show, season, request.Episode, token);
         matchingSubtitles = FindMatchingSubtitles(request, episode!);
 
 
@@ -151,20 +165,21 @@ public class Addic7ed : Controller
                       .ToArray();
     }
 
-    private async Task<Episode?> RefreshSubtitlesAsync(SearchRequest request, TvShow show, Season season, CancellationToken token)
+    private async Task<Episode?> RefreshSubtitlesAsync(AddictedUserCredentials credentials, TvShow show, Season season, int episodeNumber, CancellationToken token)
     {
-        var episodes = await _client.GetEpisodesAsync(request.Credentials, show, request.Season, token);
+        var episodes = await _client.GetEpisodesAsync(credentials, show, season.Number, token);
         await _episodeRepository.UpsertEpisodes(episodes, token);
         season.LastRefreshed = DateTime.UtcNow;
         await _seasonRepository.UpdateSeasonAsync(season, token);
-        return await _episodeRepository.GetEpisodeAsync(show.Id, request.Season, request.Episode, token);
+        return await _episodeRepository.GetEpisodeAsync(show.Id, season.Number, episodeNumber, token);
     }
+
+    public record ErrorResponse(string Error);
 
     public class SearchRequest
     {
-        public SearchRequest(Addic7edCreds credentials, string show, int episode, int season, string fileName, string languageIso)
+        public SearchRequest(string show, int episode, int season, string fileName, string languageIso)
         {
-            Credentials = credentials;
             Show = show;
             Episode = episode;
             Season = season;
@@ -172,7 +187,6 @@ public class Addic7ed : Controller
             LanguageISO = languageIso;
         }
 
-        public Addic7edCreds Credentials { get; }
         public string Show { get; }
         public int Episode { get; }
         public int Season { get; }
@@ -192,8 +206,14 @@ public class Addic7ed : Controller
             Episode = episode;
         }
 
+        /// <summary>
+        /// Matching subtitle for the filename and language
+        /// </summary>
         public IEnumerable<SubtitleDto> MatchingSubtitles { get; }
 
+        /// <summary>
+        /// Information about the episode
+        /// </summary>
         public EpisodeDto Episode { get; }
 
         public class SubtitleDto
@@ -224,6 +244,9 @@ public class Addic7ed : Controller
             public DateTime Discovered { get; }
         }
 
+        /// <summary>
+        /// Episode information
+        /// </summary>
         public class EpisodeDto
         {
             public EpisodeDto(Episode episode)
@@ -235,9 +258,24 @@ public class Addic7ed : Controller
                 Show = episode.TvShow.Name;
             }
 
+            /// <summary>
+            /// Season of the episode
+            /// </summary>
             public int Season { get; }
+
+            /// <summary>
+            /// Number of the episode
+            /// </summary>
             public int Number { get; }
+
+            /// <summary>
+            /// Title of the episode
+            /// </summary>
             public string Title { get; }
+
+            /// <summary>
+            /// For which show
+            /// </summary>
             public string Show { get; }
 
             /// <summary>

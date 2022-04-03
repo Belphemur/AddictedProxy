@@ -1,4 +1,8 @@
-﻿using InversionOfControl.Model;
+﻿#region
+
+using InversionOfControl.Model;
+
+#endregion
 
 namespace AddictedProxy.Services.Culture.Bootstrap;
 

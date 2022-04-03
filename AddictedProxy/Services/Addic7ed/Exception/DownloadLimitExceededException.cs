@@ -1,4 +1,8 @@
+#region
+
 using JetBrains.Annotations;
+
+#endregion
 
 namespace AddictedProxy.Services.Addic7ed.Exception;
 

@@ -1,9 +1,13 @@
+#region
+
 using System.Reflection;
 using AddictedProxy.Controllers.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 var builder = WebApplication.CreateBuilder(args);
 

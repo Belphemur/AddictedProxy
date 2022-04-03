@@ -1,6 +1,10 @@
-﻿using InversionOfControl.Model;
+﻿#region
+
+using InversionOfControl.Model;
 using Job.Scheduler.Builder;
 using Job.Scheduler.Scheduler;
+
+#endregion
 
 namespace AddictedProxy.Services.Job.Bootstrap;
 

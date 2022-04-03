@@ -1,6 +1,8 @@
 ﻿using AddictedProxy.Database.Context;
 using AddictedProxy.Database.EnvVar;
+using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Repositories;
+using AddictedProxy.Database.Repositories.Credentials;
 using AddictedProxy.Database.Repositories.Shows;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
@@ -21,6 +23,7 @@ public class BootstrapDatabase : IBootstrap,
         services.AddScoped<ISeasonRepository, SeasonRepository>();
         services.AddScoped<IEpisodeRepository, EpisodeRepository>();
         services.AddScoped<ISubtitleRepository, SubtitleRepository>();
+        services.AddScoped<IAddictedUserCredentialRepository, AddictedUserCredentialRepository>();
     }
 
     public EnvVarRegistration<EFCoreLicense, EFCoreLicenseParser> EnvVarRegistration => new("EFCORE");
