@@ -15,7 +15,7 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
 
     public async Task<AddictedUserCredentials?> GetLeastUsedCredAsync(CancellationToken token)
     {
-        var min = await _context.AddictedUserCreds.MinAsync(credentials => credentials.Usage, cancellationToken: token);
+        var min = await _context.AddictedUserCreds.MinAsync(credentials => credentials.Usage, token);
         return await _context.AddictedUserCreds.Where(credentials => credentials.Usage <= min).FirstOrDefaultAsync(token);
     }
 
