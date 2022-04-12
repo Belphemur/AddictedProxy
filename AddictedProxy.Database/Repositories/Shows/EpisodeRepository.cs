@@ -53,15 +53,15 @@ public class EpisodeRepository : IEpisodeRepository
     /// <summary>
     ///     Get a specific episode
     /// </summary>
-    public Task<Episode?> GetEpisodeAsync(int tvShowId, int season, int episodeNumber, CancellationToken token)
+    public Task<Episode?> GetEpisodeUntrackedAsync(int tvShowId, int season, int episodeNumber, CancellationToken token)
     {
         return _entityContext.Episodes
-                             .AsNoTracking()
-                             .Include(episode => episode.TvShow)
-                             .Include(episode => episode.Subtitles)
-                             .Where(episode => episode.Number == episodeNumber)
-                             .Where(episode => episode.Season == season)
-                             .Where(episode => episode.TvShow.Id == tvShowId)
-                             .FirstOrDefaultAsync(token);
+            .Include(episode => episode.TvShow)
+            .Include(episode => episode.Subtitles)
+            .Where(episode => episode.Number == episodeNumber)
+            .Where(episode => episode.Season == season)
+            .Where(episode => episode.TvShow.Id == tvShowId)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(token);
     }
 }

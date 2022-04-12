@@ -125,7 +125,7 @@ public class Addic7ed : Controller
             return NotFound(new ErrorResponse($"Couldn't find Season S{request.Season} for {show.Name}"));
         }
 
-        var episode = await _episodeRepository.GetEpisodeAsync(show.Id, season.Number, request.Episode, token);
+        var episode = await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, season.Number, request.Episode, token);
 
         var episodesRefreshed = season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _timeBetweenChecks;
         if (episode == null && !episodesRefreshed)
@@ -171,7 +171,7 @@ public class Addic7ed : Controller
         await _episodeRepository.UpsertEpisodes(episodes, token);
         season.LastRefreshed = DateTime.UtcNow;
         await _seasonRepository.UpdateSeasonAsync(season, token);
-        return await _episodeRepository.GetEpisodeAsync(show.Id, season.Number, episodeNumber, token);
+        return await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, season.Number, episodeNumber, token);
     }
 
     public record ErrorResponse(string Error);
