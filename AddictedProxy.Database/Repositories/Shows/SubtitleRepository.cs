@@ -39,7 +39,8 @@ public class SubtitleRepository : ISubtitleRepository
             query = query.Include(subtitle => subtitle.Episode);
         }
 
-        return query.SingleOrDefaultAsync(subtitle => subtitle.UniqueId == uniqueId, token);
+        //Weird case where I can't match always the GUID. Might be an issue with SQLite
+        return query.SingleOrDefaultAsync(subtitle => subtitle.UniqueId == uniqueId || subtitle.UniqueId.ToString() == uniqueId.ToString(), token);
     }
 
     /// <summary>
