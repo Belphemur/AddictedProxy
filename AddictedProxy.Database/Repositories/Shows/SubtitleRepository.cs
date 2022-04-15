@@ -36,10 +36,10 @@ public class SubtitleRepository : ISubtitleRepository
         var query = _entityContext.Subtitles.AsQueryable();
         if (withEpisode)
         {
-            query.Include(subtitle => subtitle.Episode);
+            query = query.Include(subtitle => subtitle.Episode);
         }
 
-        return query.FirstOrDefaultAsync(subtitle => subtitle.UniqueId == uniqueId, token);
+        return query.SingleOrDefaultAsync(subtitle => subtitle.UniqueId.ToString() == uniqueId.ToString(), token);
     }
 
     /// <summary>
