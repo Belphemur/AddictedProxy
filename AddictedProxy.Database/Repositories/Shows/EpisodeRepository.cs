@@ -33,7 +33,7 @@ public class EpisodeRepository : IEpisodeRepository
                 switch (operation)
                 {
                     case BulkOperation<Subtitle> bulkSub:
-                        bulkSub.IgnoreOnMergeUpdateExpression = subtitle => subtitle.Discovered;
+                        bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Discovered, subtitle.StoragePath };
                         bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.EpisodeId, subtitle.Language, subtitle.Version };
                         break;
                     case BulkOperation<Episode> bulkEp:
@@ -56,12 +56,12 @@ public class EpisodeRepository : IEpisodeRepository
     public Task<Episode?> GetEpisodeUntrackedAsync(int tvShowId, int season, int episodeNumber, CancellationToken token)
     {
         return _entityContext.Episodes
-            .Include(episode => episode.TvShow)
-            .Include(episode => episode.Subtitles)
-            .Where(episode => episode.Number == episodeNumber)
-            .Where(episode => episode.Season == season)
-            .Where(episode => episode.TvShow.Id == tvShowId)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(token);
+                             .Include(episode => episode.TvShow)
+                             .Include(episode => episode.Subtitles)
+                             .Where(episode => episode.Number == episodeNumber)
+                             .Where(episode => episode.Season == season)
+                             .Where(episode => episode.TvShow.Id == tvShowId)
+                             .AsNoTracking()
+                             .FirstOrDefaultAsync(token);
     }
 }
