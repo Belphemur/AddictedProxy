@@ -14,12 +14,12 @@ namespace AddictedProxy.Database.Migrations
                 table: "Subtitles",
                 type: "TEXT",
                 nullable: true);
-
-            var setGuid = @"UPDATE Subtitles SET UniqueId = (select hex( randomblob(4)) || '-' || hex( randomblob(2))
-                          || '-' || '4' || substr( hex( randomblob(2)), 2) || '-'
-                          || substr('AB89', 1 + (abs(random()) % 4) , 1)  ||
-                          substr(hex(randomblob(2)), 2) || '-' || hex(randomblob(6)) )";
-            migrationBuilder.Sql(setGuid);
+            
+            String u = "lower(hex(randomblob(16)))"; 
+            String v = "substr('89ab',abs(random()) % 4 + 1, 1)";
+            var rawquery = "UPDATE Subtitles SET UniqueId = substr("+u+",1,8)||'-'||substr("+u+",9,4)||'-4'||substr("+u+",13,3)||'-'||"+v+"||substr("+u+",17,3)||'-'||substr("+u+",21,12)";
+            
+            migrationBuilder.Sql(rawquery);
             
             migrationBuilder.AlterColumn<Guid>(
                 name: "UniqueId",
