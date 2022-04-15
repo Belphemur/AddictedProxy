@@ -69,7 +69,7 @@ public class Addic7ed : Controller
     {
         try
         {
-            await using var subtitleStream = await _subtitleProvider.GetSubtitleFileStreamAsync(subtitleId, token);
+            var subtitleStream = await _subtitleProvider.GetSubtitleFileStreamAsync(subtitleId, token);
             if (subtitleStream == null)
             {
                 return NotFound($"Subtitle ({subtitleId}) couldn't be found");
