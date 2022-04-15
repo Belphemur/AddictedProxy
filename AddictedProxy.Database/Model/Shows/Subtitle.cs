@@ -9,9 +9,9 @@ namespace AddictedProxy.Database.Model.Shows;
 public class Subtitle : IDiscoverableObject
 {
     [Key]
-    public int Id { get; set; }
+    public long Id { get; set; }
 
-    public int EpisodeId { get; set; }
+    public long EpisodeId { get; set; }
 
     [ForeignKey("EpisodeId")]
     public virtual Episode Episode { get; set; }

@@ -6,9 +6,9 @@ namespace AddictedProxy.Database.Model.Shows;
 [Index("TvShowId", nameof(Number), IsUnique = true)]
 public class Season
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
-    public int TvShowId { get; set; }
+    public long TvShowId { get; set; }
 
     [ForeignKey("TvShowId")]
     public virtual TvShow TvShow { get; set; }
@@ -16,7 +16,7 @@ public class Season
     /// <summary>
     ///     Number associated with the season
     /// </summary>
-    public int Number { get; set; }
+    public long Number { get; set; }
 
     /// <summary>
     ///     When was the season last refreshed

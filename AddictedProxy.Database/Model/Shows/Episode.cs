@@ -8,11 +8,11 @@ namespace AddictedProxy.Database.Model.Shows;
 public class Episode : IDiscoverableObject
 {
     [Key]
-    public int Id { get; set; }
+    public long Id { get; set; }
 
-    public int ExternalId { get; set; }
+    public long ExternalId { get; set; }
 
-    public int TvShowId { get; set; }
+    public long TvShowId { get; set; }
 
     [ForeignKey("TvShowId")]
     public virtual TvShow TvShow { get; set; }
