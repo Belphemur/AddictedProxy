@@ -45,7 +45,7 @@ public class StoreSubtitleJob : IJob
             throw new InvalidOperationException($"Couldn't store the subtitle {_subtitleId}");
         }
 
-        var subtitleStoragePath = subtitle.StoragePath = storageName;
+        subtitle.StoragePath = storageName;
         await repository.UpdateAsync(subtitle, cancellationToken);
     }
 

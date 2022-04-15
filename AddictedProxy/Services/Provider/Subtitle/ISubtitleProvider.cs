@@ -11,5 +11,5 @@ public interface ISubtitleProvider
     /// <param name="token"></param>
     /// <exception cref="DownloadLimitExceededException">When we reach limit in Addicted to download the subtitle</exception>
     /// <returns></returns>
-    Task<Stream?> GetSubtitleFileStreamAsync(Guid subtitleUniqueId, CancellationToken token);
+    Task<Stream> GetSubtitleFileAsync(Guid subtitleUniqueId, CancellationToken token);
 }

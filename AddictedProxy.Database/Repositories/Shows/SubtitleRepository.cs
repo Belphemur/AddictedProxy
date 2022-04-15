@@ -39,7 +39,7 @@ public class SubtitleRepository : ISubtitleRepository
             query = query.Include(subtitle => subtitle.Episode);
         }
 
-        return query.SingleOrDefaultAsync(subtitle => subtitle.UniqueId.ToString() == uniqueId.ToString(), token);
+        return query.SingleOrDefaultAsync(subtitle => subtitle.UniqueId == uniqueId, token);
     }
 
     /// <summary>

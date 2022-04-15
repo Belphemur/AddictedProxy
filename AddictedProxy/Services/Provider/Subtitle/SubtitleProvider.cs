@@ -39,7 +39,7 @@ public class SubtitleProvider : ISubtitleProvider
     /// <param name="token"></param>
     /// <exception cref="DownloadLimitExceededException">When we reach limit in Addicted to download the subtitle</exception>
     /// <returns></returns>
-    public async Task<Stream?> GetSubtitleFileStreamAsync(Guid subtitleUniqueId, CancellationToken token)
+    public async Task<Stream> GetSubtitleFileAsync(Guid subtitleUniqueId, CancellationToken token)
     {
         var subtitle = await _subtitleRepository.GetSubtitleByGuidAsync(subtitleUniqueId, false, token);
         if (subtitle == null)
@@ -55,12 +55,13 @@ public class SubtitleProvider : ISubtitleProvider
         await using var creds = await _credentialsService.GetLeastUsedCredsAsync(token);
 
         await using var subtitleStream = await _addic7EdDownloader.DownloadSubtitle(creds.AddictedUserCredentials, subtitle, token);
-        var buffer = new MemoryStream();
+        await using var buffer = new MemoryStream();
 
         await subtitleStream.CopyToAsync(buffer, token);
+
         var blob = buffer.ToArray();
 
         _jobScheduler.ScheduleJob(new StoreSubtitleJob(_serviceProvider, subtitleUniqueId, blob));
-        return buffer;
+        return new MemoryStream(blob);
     }
 }
