@@ -5,7 +5,7 @@ using Bogus;
 
 #endregion
 
-namespace AddictedProxy.Services.Addic7ed;
+namespace AddictedProxy.Upstream.Service;
 
 public class HttpUtils
 {

@@ -5,7 +5,7 @@ using InversionOfControl.Service.EnvironmentVariable.Parser;
 
 #endregion
 
-namespace AddictedProxy.Services.Addic7ed.EnvVar.Http;
+namespace AddictedProxy.Upstream.Service.EnvVar.Http;
 
 public class HttpProxyParser : IEnvVarParser<HttpProxy>
 {

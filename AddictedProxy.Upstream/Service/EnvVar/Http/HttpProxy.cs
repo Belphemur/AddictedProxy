@@ -4,6 +4,6 @@ using System.Net;
 
 #endregion
 
-namespace AddictedProxy.Services.Addic7ed.EnvVar.Http;
+namespace AddictedProxy.Upstream.Service.EnvVar.Http;
 
 public record HttpProxy(Uri Address, NetworkCredential Credentials);

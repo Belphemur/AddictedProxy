@@ -1,8 +1,8 @@
 ﻿#region
 
 using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Services.Addic7ed;
 using AddictedProxy.Services.Credentials;
+using AddictedProxy.Upstream.Service;
 
 #endregion
 

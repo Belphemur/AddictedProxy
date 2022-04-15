@@ -2,14 +2,14 @@
 
 using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Model.Shows;
-using AddictedProxy.Model.Shows;
-using AddictedProxy.Services.Addic7ed.Exception;
+using AddictedProxy.Upstream.Model;
+using AddictedProxy.Upstream.Service.Exception;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 
 #endregion
 
-namespace AddictedProxy.Services.Addic7ed;
+namespace AddictedProxy.Upstream.Service;
 
 public class Parser
 {
@@ -52,12 +52,17 @@ public class Parser
     {
         var document = await _parser.ParseDocumentAsync(html, token);
         var selectSeason = document.QuerySelector("#qsiSeason") as IHtmlSelectElement;
-        if (selectSeason?.Options?.Length == 1)
+        if (selectSeason == null)
         {
             throw new NothingToParseException("No season found", null);
         }
 
-        foreach (var option in selectSeason?.Options)
+        if (selectSeason.Options.Length == 1)
+        {
+            throw new NothingToParseException("No season found", null);
+        }
+
+        foreach (var option in selectSeason.Options)
         {
             if (option.Text.ToLowerInvariant() == "season")
             {

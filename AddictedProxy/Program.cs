@@ -5,6 +5,7 @@ using AddictedProxy.Controllers.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Storage.Bootstrap;
+using AddictedProxy.Upstream.Boostrap;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +28,8 @@ var currentAssemblies = new []
 {
     typeof(BootstrapController).Assembly,
     typeof(BootstrapDatabase).Assembly,
-    typeof(BootstrapCompressor).Assembly
+    typeof(BootstrapCompressor).Assembly,
+    typeof(BootstrapAddictedServices).Assembly
 };
 
 builder.Services

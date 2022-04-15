@@ -3,11 +3,11 @@
 using System.Net.Http.Headers;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
-using AddictedProxy.Services.Addic7ed.Exception;
+using AddictedProxy.Upstream.Service.Exception;
 
 #endregion
 
-namespace AddictedProxy.Services.Addic7ed;
+namespace AddictedProxy.Upstream.Service;
 
 public class Addic7edDownloader : IAddic7edDownloader
 {

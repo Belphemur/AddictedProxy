@@ -1,11 +1,13 @@
 ﻿#region
 
 using System.Net;
-using AddictedProxy.Services.Addic7ed.EnvVar.Http;
+using AddictedProxy.Upstream.Service;
+using AddictedProxy.Upstream.Service.EnvVar.Http;
 using AngleSharp.Html.Parser;
 using Bogus;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
+using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.RateLimit;
@@ -14,7 +16,7 @@ using Sentry;
 
 #endregion
 
-namespace AddictedProxy.Services.Addic7ed.Boostrap;
+namespace AddictedProxy.Upstream.Boostrap;
 
 public class BootstrapAddictedServices : IBootstrap,
                                          IBootstrapEnvironmentVariable<HttpProxy, HttpProxyParser>

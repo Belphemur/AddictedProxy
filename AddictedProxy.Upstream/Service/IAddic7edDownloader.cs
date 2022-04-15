@@ -5,7 +5,7 @@ using AddictedProxy.Database.Model.Shows;
 
 #endregion
 
-namespace AddictedProxy.Services.Addic7ed;
+namespace AddictedProxy.Upstream.Service;
 
 public interface IAddic7edDownloader
 {

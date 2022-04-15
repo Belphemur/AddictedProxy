@@ -3,12 +3,12 @@
 using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
-using AddictedProxy.Services.Addic7ed.Exception;
+using AddictedProxy.Upstream.Service.Exception;
 using Polly;
 
 #endregion
 
-namespace AddictedProxy.Services.Addic7ed;
+namespace AddictedProxy.Upstream.Service;
 
 public class Addic7edClient : IAddic7edClient
 {

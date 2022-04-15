@@ -4,10 +4,10 @@ using System.Globalization;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Services.Addic7ed;
-using AddictedProxy.Services.Addic7ed.Exception;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Culture;
+using AddictedProxy.Upstream.Service;
+using AddictedProxy.Upstream.Service.Exception;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
