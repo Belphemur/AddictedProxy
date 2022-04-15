@@ -25,6 +25,8 @@ public class Subtitle : IDiscoverableObject
     public bool HD { get; set; }
     public Uri DownloadUri { get; set; }
     public string Language { get; set; }
+    
+    public string? StoragePath { get; set; }
 
     /// <summary>
     ///     When was the subtitle discovered
