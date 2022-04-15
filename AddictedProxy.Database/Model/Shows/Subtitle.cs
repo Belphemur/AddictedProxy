@@ -6,6 +6,7 @@ namespace AddictedProxy.Database.Model.Shows;
 
 [Index(nameof(DownloadUri), IsUnique = true)]
 [Index("EpisodeId", nameof(Language), nameof(Version), IsUnique = true)]
+[Index(nameof(UniqueId), IsUnique = true)]
 public class Subtitle : IDiscoverableObject
 {
     [Key]
@@ -25,8 +26,10 @@ public class Subtitle : IDiscoverableObject
     public bool HD { get; set; }
     public Uri DownloadUri { get; set; }
     public string Language { get; set; }
-    
+
     public string? StoragePath { get; set; }
+
+    public Guid UniqueId { get; set; } = Guid.NewGuid();
 
     /// <summary>
     ///     When was the subtitle discovered
