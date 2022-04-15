@@ -10,6 +10,7 @@ using Polly;
 using Polly.Extensions.Http;
 using Polly.RateLimit;
 using Polly.Timeout;
+using Sentry;
 
 #endregion
 
@@ -24,12 +25,12 @@ public class BootstrapAddictedServices : IBootstrap,
         services.AddSingleton<Parser>();
 
         services.AddHttpClient<IAddic7edClient, Addic7edClient>()
-                .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>()))
+                .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
                 .AddPolicyHandler(GetRetryPolicy());
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>()
-                .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>()))
+                .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
                 .AddPolicyHandler(GetRetryPolicy());
 

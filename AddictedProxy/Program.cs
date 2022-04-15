@@ -32,6 +32,14 @@ builder.Services
        .AddBootstrapEnvironmentVar(currentAssemblies)
        .AddBootstrap(currentAssemblies);
 builder.Host.UseSystemd();
+builder.WebHost.UseSentry(sentryBuilder =>
+{
+    sentryBuilder.Dsn = Environment.GetEnvironmentVariable("SENTRY_DSN");
+#if DEBUG
+    sentryBuilder.Debug = true;
+#endif
+    sentryBuilder.TracesSampleRate = 1.0;
+});
 
 var app = builder.Build();
 app.UseHttpLogging();
@@ -53,6 +61,7 @@ app.UseSwagger().UseSwaggerUI();
 
 
 app.UseRouting();
+app.UseSentryTracing();
 
 app.UseAuthorization();
 
