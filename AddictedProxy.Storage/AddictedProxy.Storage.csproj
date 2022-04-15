@@ -12,8 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="EasyCompressor" Version="1.4.0" />
-      <PackageReference Include="EasyCompressor.Zstd" Version="1.4.0" />
       <PackageReference Include="uplink.NET" Version="2.8.2410" />
     </ItemGroup>
 
