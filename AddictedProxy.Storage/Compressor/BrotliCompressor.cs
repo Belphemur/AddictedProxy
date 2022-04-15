@@ -1,10 +1,10 @@
 ﻿using System.IO.Compression;
+using AddictedProxy.Storage.Extensions;
 
 namespace AddictedProxy.Storage.Compressor;
 
 public class BrotliCompressor : ICompressor
 {
-
     public BrotliCompressor()
     {
     }
@@ -22,11 +22,12 @@ public class BrotliCompressor : ICompressor
     /// <returns>Return compressed bytes</returns>
     public byte[] Compress(byte[] bytes)
     {
-        using var memoryStream = new MemoryStream(bytes);
-        using var brotliStream = new BrotliStream(memoryStream, CompressionLevel.Optimal);
-
+        using var inputStream = new MemoryStream(bytes);
         using var result = new MemoryStream();
-        brotliStream.CopyTo(result);
+        using var brotliStream = new BrotliStream(result, CompressionLevel.Optimal);
+
+        inputStream.CopyTo(brotliStream);
+        inputStream.Flush();
         return result.ToArray();
     }
 
@@ -37,10 +38,10 @@ public class BrotliCompressor : ICompressor
     /// <returns>Return uncompressed bytes</returns>
     public byte[] Decompress(byte[] compressedBytes)
     {
-        using var memoryStream = new MemoryStream(compressedBytes);
-        using var brotliStream = new BrotliStream(memoryStream, CompressionMode.Decompress);
-
+        using var compressedStream = new MemoryStream(compressedBytes);
         using var result = new MemoryStream();
+        using var brotliStream = new BrotliStream(compressedStream, CompressionMode.Decompress);
+
         brotliStream.CopyTo(result);
         return result.ToArray();
     }
@@ -49,25 +50,30 @@ public class BrotliCompressor : ICompressor
     /// Compress input stream to output stream
     /// </summary>
     /// <param name="inputStream">Input stream</param>
-    /// <param name="outputStream">Output stream</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Task</returns>
-    public async Task CompressAsync(Stream inputStream, Stream outputStream, CancellationToken cancellationToken = default)
+    public async Task<Stream> CompressAsync(Stream inputStream, CancellationToken cancellationToken)
     {
-        await using var brotliStream = new BrotliStream(inputStream, CompressionLevel.Optimal);
-        await brotliStream.CopyToAsync(outputStream, cancellationToken);
+        var outputStream = new MemoryStream();
+        await using var brotliStream = new BrotliStream(outputStream, CompressionLevel.Optimal);
+        await inputStream.CopyToAsync(brotliStream, cancellationToken);
+        await brotliStream.FlushAsync(cancellationToken);
+        outputStream.ResetPosition();
+        return outputStream;
     }
 
     /// <summary>
     /// Decompress input stream to output stream
     /// </summary>
     /// <param name="inputStream">Input stream</param>
-    /// <param name="outputStream">Output stream</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Task</returns>
-    public async Task DecompressAsync(Stream inputStream, Stream outputStream, CancellationToken cancellationToken = default)
+    public async Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken = default)
     {
+        var outputStream = new MemoryStream();
         await using var brotliStream = new BrotliStream(inputStream, CompressionMode.Decompress);
         await brotliStream.CopyToAsync(outputStream, cancellationToken);
+        outputStream.ResetPosition();
+        return outputStream;
     }
 }

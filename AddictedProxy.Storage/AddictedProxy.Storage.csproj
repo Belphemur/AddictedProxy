@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
       <PackageReference Include="uplink.NET" Version="2.8.2410" />
     </ItemGroup>
 

@@ -37,8 +37,7 @@ public class UplinkStorageProvider : IStorageProvider
     public async Task<bool> StoreAsync(string filename, Stream inputStream, CancellationToken cancellationToken)
     {
         var bucket = await _bucketService.GetBucketAsync(_settings.Bucket);
-        using var compressedStream = new MemoryStream();
-        await _compressor.CompressAsync(inputStream, compressedStream, cancellationToken);
+        await using var compressedStream = await _compressor.CompressAsync(inputStream, cancellationToken);
         var uploadOperation = await _objectService.UploadObjectAsync(bucket, GetFileName(filename), new UploadOptions(), compressedStream, false);
 
         await using var ctr = cancellationToken.Register(_ => { uploadOperation.Cancel(); }, null);
@@ -60,6 +59,7 @@ public class UplinkStorageProvider : IStorageProvider
         await using var ctr = cancellationToken.Register(_ => { downloadOperation.Cancel(); }, null);
         await downloadOperation.StartDownloadAsync();
 
-        return new MemoryStream(_compressor.Decompress(downloadOperation.DownloadedBytes));
+        await using var memoryStream = new MemoryStream(downloadOperation.DownloadedBytes);
+        return await _compressor.DecompressAsync(memoryStream, cancellationToken);
     }
 }

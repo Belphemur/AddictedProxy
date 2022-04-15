@@ -25,17 +25,15 @@ public interface ICompressor
     /// Compress input stream to output stream
     /// </summary>
     /// <param name="inputStream">Input stream</param>
-    /// <param name="outputStream">Output stream</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Task</returns>
-    Task CompressAsync(Stream inputStream, Stream outputStream, CancellationToken cancellationToken = default);
+    Task<Stream> CompressAsync(Stream inputStream, CancellationToken cancellationToken);
 
     /// <summary>
     /// Decompress input stream to output stream
     /// </summary>
     /// <param name="inputStream">Input stream</param>
-    /// <param name="outputStream">Output stream</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Task</returns>
-    Task DecompressAsync(Stream inputStream, Stream outputStream, CancellationToken cancellationToken = default);
+    Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken);
 }
