@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Storage", "Ad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Upstream", "AddictedProxy.Upstream\AddictedProxy.Upstream.csproj", "{11DA456D-B11B-4FAD-A9C1-9A57B8F91343}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Storage.Tests", "AddictedProxy.Storage.Tests\AddictedProxy.Storage.Tests.csproj", "{A6A931F1-3F50-4B5F-AEA2-089BC2842F33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{11DA456D-B11B-4FAD-A9C1-9A57B8F91343}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11DA456D-B11B-4FAD-A9C1-9A57B8F91343}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11DA456D-B11B-4FAD-A9C1-9A57B8F91343}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6A931F1-3F50-4B5F-AEA2-089BC2842F33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6A931F1-3F50-4B5F-AEA2-089BC2842F33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6A931F1-3F50-4B5F-AEA2-089BC2842F33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6A931F1-3F50-4B5F-AEA2-089BC2842F33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

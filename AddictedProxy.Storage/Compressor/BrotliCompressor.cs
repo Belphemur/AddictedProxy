@@ -55,9 +55,11 @@ public class BrotliCompressor : ICompressor
     public async Task<Stream> CompressAsync(Stream inputStream, CancellationToken cancellationToken)
     {
         var outputStream = new MemoryStream();
-        await using var brotliStream = new BrotliStream(outputStream, CompressionLevel.Optimal);
-        await inputStream.CopyToAsync(brotliStream, cancellationToken);
-        await brotliStream.FlushAsync(cancellationToken);
+        {
+            await using var brotliStream = new BrotliStream(outputStream, CompressionLevel.Optimal, true);
+            await inputStream.CopyToAsync(brotliStream, cancellationToken);
+            await brotliStream.FlushAsync(cancellationToken);
+        }
         outputStream.ResetPosition();
         return outputStream;
     }
@@ -71,7 +73,8 @@ public class BrotliCompressor : ICompressor
     public async Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken = default)
     {
         var outputStream = new MemoryStream();
-        await using var brotliStream = new BrotliStream(inputStream, CompressionMode.Decompress);
+        await using var brotliStream = new BrotliStream(inputStream, CompressionMode.Decompress, true);
+        await brotliStream.FlushAsync(cancellationToken);
         await brotliStream.CopyToAsync(outputStream, cancellationToken);
         outputStream.ResetPosition();
         return outputStream;
