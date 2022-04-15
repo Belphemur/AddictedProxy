@@ -20,7 +20,7 @@ public class RefreshShowJob : IRecurringJob
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         await using var serviceScope = _serviceProvider.CreateAsyncScope();
-        var service = serviceScope.ServiceProvider.GetRequiredService<IAddictedSaver>();
+        var service = serviceScope.ServiceProvider.GetRequiredService<IShowProvider>();
 
         await service.RefreshShowsAsync(cancellationToken);
     }

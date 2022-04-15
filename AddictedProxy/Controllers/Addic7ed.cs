@@ -6,6 +6,8 @@ using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Culture;
+using AddictedProxy.Services.Provider.Subtitle;
+using AddictedProxy.Services.Saver;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.Exception;
 using Microsoft.AspNetCore.Mvc;
@@ -21,11 +23,12 @@ public class Addic7ed : Controller
 {
     private readonly IAddic7edClient _client;
     private readonly ICredentialsService _credentialsService;
+    private readonly IShowProvider _showProvider;
+    private readonly ISubtitleProvider _subtitleProvider;
     private readonly CultureParser _cultureParser;
     private readonly IAddic7edDownloader _downloader;
     private readonly IEpisodeRepository _episodeRepository;
     private readonly ISeasonRepository _seasonRepository;
-    private readonly ISubtitleRepository _subtitleRepository;
     private readonly TimeSpan _timeBetweenChecks;
     private readonly ITvShowRepository _tvShowRepository;
 
@@ -34,18 +37,20 @@ public class Addic7ed : Controller
                     ITvShowRepository tvShowRepository,
                     ISeasonRepository seasonRepository,
                     IEpisodeRepository episodeRepository,
-                    ISubtitleRepository subtitleRepository,
                     CultureParser cultureParser,
-                    ICredentialsService credentialsService)
+                    ICredentialsService credentialsService,
+                    IShowProvider showProvider,
+                    ISubtitleProvider subtitleProvider)
     {
         _client = client;
         _downloader = downloader;
         _tvShowRepository = tvShowRepository;
         _seasonRepository = seasonRepository;
         _episodeRepository = episodeRepository;
-        _subtitleRepository = subtitleRepository;
         _cultureParser = cultureParser;
         _credentialsService = credentialsService;
+        _showProvider = showProvider;
+        _subtitleProvider = subtitleProvider;
         _timeBetweenChecks = TimeSpan.FromHours(1);
     }
 
@@ -53,26 +58,23 @@ public class Addic7ed : Controller
     /// <summary>
     /// Download specific subtitle
     /// </summary>
-    /// <param name="credentials"></param>
     /// <param name="subtitleId"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    [Route("download/{subtitleId:int}")]
+    [Route("download/{subtitleId:guid}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(typeof(ErrorResponse), 400, "application/json")]
     [HttpPost]
-    public async Task<IActionResult> Download([FromRoute] int subtitleId, CancellationToken token)
+    public async Task<IActionResult> Download([FromRoute] Guid subtitleId, CancellationToken token)
     {
-        var subtitle = await _subtitleRepository.GetSubtitleByIdAsync(subtitleId, token);
-        if (subtitle == null)
-        {
-            return NotFound($"Subtitle ({subtitleId}) couldn't be found");
-        }
-
         try
         {
-            await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
-            var subtitleStream = await _downloader.DownloadSubtitle(credentials.AddictedUserCredentials, subtitle, token);
+            await using var subtitleStream = await _subtitleProvider.GetSubtitleFileStreamAsync(subtitleId, token);
+            if (subtitleStream == null)
+            {
+                return NotFound($"Subtitle ({subtitleId}) couldn't be found");
+            }
+
             return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"));
         }
         catch (DownloadLimitExceededException e)
@@ -94,7 +96,7 @@ public class Addic7ed : Controller
     [Produces("application/json")]
     public async Task<IActionResult> Search([FromBody] SearchRequest request, CancellationToken token)
     {
-        var show = await _tvShowRepository.FindAsync(request.Show, token).FirstOrDefaultAsync(token);
+        var show = await _showProvider.FindShowsAsync(request.Show, token).FirstOrDefaultAsync(token);
         if (show == null)
         {
             return NotFound(new { Error = $"Couldn't find the show {request.Show}" });
@@ -225,7 +227,7 @@ public class Addic7ed : Controller
                 HearingImpaired = subtitle.HearingImpaired;
                 HD = subtitle.HD;
                 Corrected = subtitle.Completed;
-                DownloadUri = $"/download/{subtitle.Id}";
+                DownloadUri = $"/download/{subtitle.UniqueId}";
                 Language = language?.EnglishName ?? "Unknown";
                 Discovered = subtitle.Discovered;
             }

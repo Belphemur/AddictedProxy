@@ -1,5 +1,6 @@
 ﻿#region
 
+using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Upstream.Service;
@@ -8,13 +9,13 @@ using AddictedProxy.Upstream.Service;
 
 namespace AddictedProxy.Services.Saver;
 
-public class AddictedSaver : IAddictedSaver
+public class ShowProvider : IShowProvider
 {
     private readonly IAddic7edClient _addic7EdClient;
     private readonly ICredentialsService _credentialsService;
     private readonly ITvShowRepository _tvShowRepository;
 
-    public AddictedSaver(ITvShowRepository tvShowRepository, IAddic7edClient addic7EdClient, ICredentialsService credentialsService)
+    public ShowProvider(ITvShowRepository tvShowRepository, IAddic7edClient addic7EdClient, ICredentialsService credentialsService)
     {
         _tvShowRepository = tvShowRepository;
         _addic7EdClient = addic7EdClient;
@@ -28,4 +29,6 @@ public class AddictedSaver : IAddictedSaver
 
         await _tvShowRepository.UpsertRefreshedShowsAsync(tvShows, token);
     }
+
+    public IAsyncEnumerable<TvShow> FindShowsAsync(string search, CancellationToken token) => _tvShowRepository.FindAsync(search, token);
 }

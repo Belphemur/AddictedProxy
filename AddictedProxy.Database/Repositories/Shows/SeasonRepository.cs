@@ -24,7 +24,7 @@ public class SeasonRepository : ISeasonRepository
         return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).ToAsyncEnumerable();
     }
 
-    public Task<Season?> GetSeasonForShow(int showId, int seasonNumber, CancellationToken token)
+    public Task<Season?> GetSeasonForShow(long showId, int seasonNumber, CancellationToken token)
     {
         return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).SingleOrDefaultAsync(season => season.Number == seasonNumber, token);
     }

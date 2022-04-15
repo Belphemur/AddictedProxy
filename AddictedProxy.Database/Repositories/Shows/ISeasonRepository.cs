@@ -16,7 +16,7 @@ public interface ISeasonRepository
     /// <returns></returns>
     IAsyncEnumerable<Season> GetSeasonsForShow(int showId);
 
-    Task<Season?> GetSeasonForShow(int showId, int seasonNumber, CancellationToken token);
+    Task<Season?> GetSeasonForShow(long showId, int seasonNumber, CancellationToken token);
 
     /// <summary>
     ///     Update the season

@@ -53,7 +53,7 @@ public class EpisodeRepository : IEpisodeRepository
     /// <summary>
     ///     Get a specific episode
     /// </summary>
-    public Task<Episode?> GetEpisodeUntrackedAsync(int tvShowId, int season, int episodeNumber, CancellationToken token)
+    public Task<Episode?> GetEpisodeUntrackedAsync(long tvShowId, int season, int episodeNumber, CancellationToken token)
     {
         return _entityContext.Episodes
                              .Include(episode => episode.TvShow)

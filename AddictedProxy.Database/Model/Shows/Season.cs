@@ -16,7 +16,7 @@ public class Season
     /// <summary>
     ///     Number associated with the season
     /// </summary>
-    public long Number { get; set; }
+    public int Number { get; set; }
 
     /// <summary>
     ///     When was the season last refreshed
