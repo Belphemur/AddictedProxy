@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="EasyCompressor" Version="1.4.0" />
+      <PackageReference Include="EasyCompressor.Zstd" Version="1.4.0" />
+      <PackageReference Include="uplink.NET" Version="2.8.2410" />
+    </ItemGroup>
+
+</Project>

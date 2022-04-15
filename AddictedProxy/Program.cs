@@ -4,6 +4,7 @@ using System.Reflection;
 using AddictedProxy.Controllers.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
+using AddictedProxy.Storage.Bootstrap;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +26,8 @@ builder.Services.AddSwaggerGen(options =>
 var currentAssemblies = new []
 {
     typeof(BootstrapController).Assembly,
-    typeof(BootstrapDatabase).Assembly
+    typeof(BootstrapDatabase).Assembly,
+    typeof(BootstrapCompressor).Assembly
 };
 
 builder.Services
