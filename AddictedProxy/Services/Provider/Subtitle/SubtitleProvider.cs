@@ -39,7 +39,7 @@ public class SubtitleProvider : ISubtitleProvider
     /// <param name="token"></param>
     /// <exception cref="DownloadLimitExceededException">When we reach limit in Addicted to download the subtitle</exception>
     /// <returns></returns>
-    public async Task<Stream> GetSubtitleFileAsync(Guid subtitleUniqueId, CancellationToken token)
+    public async Task<Stream?> GetSubtitleFileAsync(Guid subtitleUniqueId, CancellationToken token)
     {
         var subtitle = await _subtitleRepository.GetSubtitleByGuidAsync(subtitleUniqueId, false, token);
         if (subtitle == null)
