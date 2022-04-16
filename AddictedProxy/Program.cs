@@ -52,6 +52,7 @@ builder.Services.AddResponseCompression(options =>
     options.EnableForHttps = true;
     options.Providers.Add<BrotliCompressionProvider>();
     options.Providers.Add<GzipCompressionProvider>();
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Append("text/srt");
 });
 
 builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
