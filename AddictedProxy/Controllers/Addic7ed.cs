@@ -18,7 +18,7 @@ using Microsoft.Net.Http.Headers;
 namespace AddictedProxy.Controllers;
 
 [ApiController]
-[Route("addic7ed")]
+[Route("subtitles")]
 public class Addic7ed : Controller
 {
     private readonly IAddic7edClient _client;
@@ -61,7 +61,7 @@ public class Addic7ed : Controller
     /// <param name="subtitleId"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    [Route("download/{subtitleId:guid}")]
+    [Route("download/{subtitleId:guid}", Name = nameof(Routes.DownloadSubtitle))]
     [ProducesResponseType(200)]
     [ProducesResponseType(typeof(ErrorResponse), 400, "application/json")]
     [HttpGet]
@@ -162,8 +162,14 @@ public class Addic7ed : Controller
         var searchLanguage = _cultureParser.FromString(request.LanguageISO);
         return episode.Subtitles
                       .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), searchLanguage))
-                      .Where(subtitle => { return subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => request.FileName.ToLowerInvariant().Contains(version)); })
-                      .Select(subtitle => new SearchResponse.SubtitleDto(subtitle, searchLanguage))
+                      .Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => request.FileName.ToLowerInvariant().Contains(version)))
+                      .Select(
+                          subtitle => new SearchResponse.SubtitleDto(
+                              subtitle,
+                              Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ?? throw new InvalidOperationException(),
+                              searchLanguage
+                          )
+                      )
                       .ToArray();
     }
 
@@ -220,14 +226,14 @@ public class Addic7ed : Controller
 
         public class SubtitleDto
         {
-            public SubtitleDto(Subtitle subtitle, CultureInfo? language)
+            public SubtitleDto(Subtitle subtitle, string downloadUri, CultureInfo? language)
             {
                 Version = subtitle.Scene;
                 Completed = subtitle.Completed;
                 HearingImpaired = subtitle.HearingImpaired;
                 HD = subtitle.HD;
                 Corrected = subtitle.Completed;
-                DownloadUri = $"/download/{subtitle.UniqueId}";
+                DownloadUri = downloadUri;
                 Language = language?.EnglishName ?? "Unknown";
                 Discovered = subtitle.Discovered;
             }
