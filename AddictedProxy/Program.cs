@@ -1,5 +1,6 @@
 #region
 
+using System.IO.Compression;
 using System.Reflection;
 using AddictedProxy.Controllers.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
@@ -7,6 +8,7 @@ using AddictedProxy.Database.Context;
 using AddictedProxy.Storage.Bootstrap;
 using AddictedProxy.Upstream.Boostrap;
 using InversionOfControl.Service.Bootstrap;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 
 #endregion
@@ -45,6 +47,24 @@ builder.WebHost.UseSentry(sentryBuilder =>
     sentryBuilder.TracesSampleRate = 1.0;
 });
 
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+});
+
+builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
+{
+    options.Level = CompressionLevel.Fastest;
+});
+
+builder.Services.Configure<GzipCompressionProviderOptions>(options =>
+{
+    options.Level = CompressionLevel.SmallestSize;
+});
+
+
 var app = builder.Build();
 app.UseHttpLogging();
 {
@@ -66,6 +86,7 @@ app.UseSwagger().UseSwaggerUI();
 
 app.UseRouting();
 app.UseSentryTracing();
+app.UseResponseCompression();
 
 app.UseAuthorization();
 
