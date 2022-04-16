@@ -59,7 +59,7 @@ public class UplinkStorageProvider : IStorageProvider
         await using var ctr = cancellationToken.Register(_ => { downloadOperation.Cancel(); }, null);
         await downloadOperation.StartDownloadAsync();
 
-        await using var memoryStream = new MemoryStream(downloadOperation.DownloadedBytes);
+        var memoryStream = new MemoryStream(downloadOperation.DownloadedBytes);
         return await _compressor.DecompressAsync(memoryStream, cancellationToken);
     }
 }
