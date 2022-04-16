@@ -64,7 +64,7 @@ public class Addic7ed : Controller
     [Route("download/{subtitleId:guid}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(typeof(ErrorResponse), 400, "application/json")]
-    [HttpPost]
+    [HttpGet]
     public async Task<IActionResult> Download([FromRoute] Guid subtitleId, CancellationToken token)
     {
         try
