@@ -166,7 +166,7 @@ public class Addic7ed : Controller
                       .Select(
                           subtitle => new SearchResponse.SubtitleDto(
                               subtitle,
-                              Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ?? throw new InvalidOperationException(),
+                              Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
                               searchLanguage
                           )
                       )
