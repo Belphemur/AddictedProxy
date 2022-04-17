@@ -3,8 +3,6 @@
 using AddictedProxy.Services.Saver;
 using InversionOfControl.Model;
 using Job.Scheduler.AspNetCore.Extensions;
-using Job.Scheduler.Builder;
-using Job.Scheduler.Scheduler;
 
 #endregion
 

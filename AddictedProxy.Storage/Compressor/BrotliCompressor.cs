@@ -1,14 +1,14 @@
-﻿using System.IO.Compression;
+﻿#region
+
+using System.IO.Compression;
 using AddictedProxy.Storage.Extensions;
+
+#endregion
 
 namespace AddictedProxy.Storage.Compressor;
 
 public class BrotliCompressor : ICompressor
 {
-    public BrotliCompressor()
-    {
-    }
-
     /// <summary>
     /// Extension related to the compressor
     /// </summary>

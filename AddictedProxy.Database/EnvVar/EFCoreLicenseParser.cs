@@ -1,4 +1,8 @@
-﻿using InversionOfControl.Service.EnvironmentVariable.Parser;
+﻿#region
+
+using InversionOfControl.Service.EnvironmentVariable.Parser;
+
+#endregion
 
 namespace AddictedProxy.Database.EnvVar;
 

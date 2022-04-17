@@ -1,7 +1,11 @@
-﻿using AddictedProxy.Storage.Store.Boostrap.EnvVar;
+﻿#region
+
+using AddictedProxy.Storage.Store.Boostrap.EnvVar;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 namespace AddictedProxy.Storage.Store.Boostrap;
 

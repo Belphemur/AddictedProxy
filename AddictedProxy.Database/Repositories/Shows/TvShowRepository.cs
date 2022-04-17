@@ -1,7 +1,11 @@
-﻿using AddictedProxy.Database.Context;
+﻿#region
+
+using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
 using Z.BulkOperations;
+
+#endregion
 
 namespace AddictedProxy.Database.Repositories.Shows;
 

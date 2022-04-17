@@ -10,8 +10,8 @@ namespace AddictedProxy.Services.Saver;
 
 public class RefreshShowJob : IRecurringJob
 {
-    private readonly IShowProvider _showProvider;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IShowProvider _showProvider;
 
     public RefreshShowJob(IShowProvider showProvider)
     {

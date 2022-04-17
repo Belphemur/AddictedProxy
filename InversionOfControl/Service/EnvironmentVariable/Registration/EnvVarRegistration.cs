@@ -1,5 +1,9 @@
-﻿using InversionOfControl.Service.EnvironmentVariable.Parser;
+﻿#region
+
+using InversionOfControl.Service.EnvironmentVariable.Parser;
 using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 namespace InversionOfControl.Service.EnvironmentVariable.Registration;
 

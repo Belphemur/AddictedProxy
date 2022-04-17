@@ -30,5 +30,8 @@ public class ShowProvider : IShowProvider
         await _tvShowRepository.UpsertRefreshedShowsAsync(tvShows, token);
     }
 
-    public IAsyncEnumerable<TvShow> FindShowsAsync(string search, CancellationToken token) => _tvShowRepository.FindAsync(search, token);
+    public IAsyncEnumerable<TvShow> FindShowsAsync(string search, CancellationToken token)
+    {
+        return _tvShowRepository.FindAsync(search, token);
+    }
 }

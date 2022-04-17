@@ -1,46 +1,40 @@
-﻿using System.Globalization;
-using AddictedProxy.Controllers;
+﻿#region
+
+using System.Globalization;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Culture;
-using AddictedProxy.Services.Saver;
 using AddictedProxy.Upstream.Service;
 using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
 using Locking;
 
+#endregion
+
 namespace AddictedProxy.Services.Provider.Subtitle.Job;
 
 public class FetchSubtitlesJob : IJob
 {
-    public record JobData(TvShow Show, int Season, int Episode, CultureInfo? Language, string? FileName)
-    {
-        public string Key => $"{Show.Id}-{Season}";
-    }
-
-    private readonly ILogger<FetchSubtitlesJob> _logger;
-    private readonly ICredentialsService _credentialsService;
-
     private readonly IAddic7edClient _client;
+    private readonly ICredentialsService _credentialsService;
     private readonly CultureParser _cultureParser;
     private readonly IEpisodeRepository _episodeRepository;
+
+    private readonly ILogger<FetchSubtitlesJob> _logger;
     private readonly ISeasonRepository _seasonRepository;
     private readonly ITvShowRepository _tvShowRepository;
 
-    public TimeSpan TimeBetweenChecks { get; } = TimeSpan.FromMinutes(30);
-    public JobData Data { get; set; }
-
 
     public FetchSubtitlesJob(ILogger<FetchSubtitlesJob> logger,
-                            ICredentialsService credentialsService,
-                            IAddic7edClient client,
-                            CultureParser cultureParser,
-                            IEpisodeRepository episodeRepository,
-                            ISeasonRepository seasonRepository,
-                            ITvShowRepository tvShowRepository)
+                             ICredentialsService credentialsService,
+                             IAddic7edClient client,
+                             CultureParser cultureParser,
+                             IEpisodeRepository episodeRepository,
+                             ISeasonRepository seasonRepository,
+                             ITvShowRepository tvShowRepository)
     {
         _logger = logger;
         _credentialsService = credentialsService;
@@ -50,6 +44,9 @@ public class FetchSubtitlesJob : IJob
         _seasonRepository = seasonRepository;
         _tvShowRepository = tvShowRepository;
     }
+
+    public TimeSpan TimeBetweenChecks { get; } = TimeSpan.FromMinutes(30);
+    public JobData Data { get; set; }
 
 
     public async Task ExecuteAsync(CancellationToken token)
@@ -127,6 +124,9 @@ public class FetchSubtitlesJob : IJob
         return Task.CompletedTask;
     }
 
+    public IRetryAction FailRule { get; } = new ExponentialBackoffRetry(TimeSpan.FromSeconds(5), 5);
+    public TimeSpan? MaxRuntime { get; }
+
     private async Task<Episode?> RefreshSubtitlesAsync(AddictedUserCredentials credentials, Season season, bool reloadEpisode, CancellationToken token)
     {
         var episodes = await _client.GetEpisodesAsync(credentials, Data.Show, season.Number, token);
@@ -153,6 +153,8 @@ public class FetchSubtitlesJob : IJob
         return list.Any();
     }
 
-    public IRetryAction FailRule { get; } = new ExponentialBackoffRetry(TimeSpan.FromSeconds(5), 5);
-    public TimeSpan? MaxRuntime { get; }
+    public record JobData(TvShow Show, int Season, int Episode, CultureInfo? Language, string? FileName)
+    {
+        public string Key => $"{Show.Id}-{Season}";
+    }
 }

@@ -1,5 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿#region
+
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace AddictedProxy.Database.Model.Shows;
 

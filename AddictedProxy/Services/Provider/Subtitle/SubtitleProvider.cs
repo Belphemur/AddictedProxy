@@ -1,4 +1,6 @@
-﻿using AddictedProxy.Database.Repositories.Shows;
+﻿#region
+
+using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Subtitle.Job;
 using AddictedProxy.Storage.Store;
@@ -7,16 +9,18 @@ using AddictedProxy.Upstream.Service.Exception;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 
+#endregion
+
 namespace AddictedProxy.Services.Provider.Subtitle;
 
 public class SubtitleProvider : ISubtitleProvider
 {
     private readonly IAddic7edDownloader _addic7EdDownloader;
-    private readonly IStorageProvider _storageProvider;
-    private readonly ISubtitleRepository _subtitleRepository;
     private readonly ICredentialsService _credentialsService;
     private readonly IJobBuilder _jobBuilder;
     private readonly IJobScheduler _jobScheduler;
+    private readonly IStorageProvider _storageProvider;
+    private readonly ISubtitleRepository _subtitleRepository;
 
     public SubtitleProvider(IAddic7edDownloader addic7EdDownloader,
                             IStorageProvider storageProvider,
@@ -68,5 +72,8 @@ public class SubtitleProvider : ISubtitleProvider
         return new MemoryStream(blob);
     }
 
-    public Task<Database.Model.Shows.Subtitle?> GetSubtitleAsync(Guid subtitleId, CancellationToken token) => _subtitleRepository.GetSubtitleByGuidAsync(subtitleId, false, token);
+    public Task<Database.Model.Shows.Subtitle?> GetSubtitleAsync(Guid subtitleId, CancellationToken token)
+    {
+        return _subtitleRepository.GetSubtitleByGuidAsync(subtitleId, false, token);
+    }
 }

@@ -9,10 +9,10 @@ namespace AddictedProxy.Model.Crendentials;
 
 public class CredsContainer : IAsyncDisposable
 {
-    private readonly ICredentialsService _credentialsService;
     private readonly AddictedUserCredentials _addictedUserCredentials;
+    private readonly ICredentialsService _credentialsService;
 
-    private bool _isCredentialsCalled = false;
+    private bool _isCredentialsCalled;
 
     public CredsContainer(ICredentialsService credentialsService, AddictedUserCredentials addictedUserCredentials)
     {

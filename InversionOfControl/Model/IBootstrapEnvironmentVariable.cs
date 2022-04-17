@@ -1,5 +1,9 @@
-﻿using InversionOfControl.Service.EnvironmentVariable.Parser;
+﻿#region
+
+using InversionOfControl.Service.EnvironmentVariable.Parser;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
+
+#endregion
 
 namespace InversionOfControl.Model;
 

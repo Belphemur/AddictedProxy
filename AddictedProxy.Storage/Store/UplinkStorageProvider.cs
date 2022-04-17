@@ -1,16 +1,20 @@
-﻿using AddictedProxy.Storage.Compressor;
+﻿#region
+
+using AddictedProxy.Storage.Compressor;
 using AddictedProxy.Storage.Store.Boostrap.EnvVar;
 using uplink.NET.Models;
 using uplink.NET.Services;
+
+#endregion
 
 namespace AddictedProxy.Storage.Store;
 
 public class UplinkStorageProvider : IStorageProvider
 {
-    private readonly UplinkSettings _settings;
+    private readonly BucketService _bucketService;
     private readonly ICompressor _compressor;
     private readonly ObjectService _objectService;
-    private readonly BucketService _bucketService;
+    private readonly UplinkSettings _settings;
 
     public UplinkStorageProvider(UplinkSettings settings, ICompressor compressor)
     {
@@ -19,13 +23,6 @@ public class UplinkStorageProvider : IStorageProvider
         _objectService = new ObjectService(new Access(settings.AccessGrant));
         _bucketService = new BucketService(new Access(settings.AccessGrant));
     }
-
-    /// <summary>
-    /// Get the full file name in the storage
-    /// </summary>
-    /// <param name="file"></param>
-    /// <returns></returns>
-    private string GetFileName(string file) => $"{file}{_compressor.Extension}";
 
     /// <summary>
     /// Store a file
@@ -61,5 +58,15 @@ public class UplinkStorageProvider : IStorageProvider
 
         var memoryStream = new MemoryStream(downloadOperation.DownloadedBytes);
         return await _compressor.DecompressAsync(memoryStream, cancellationToken);
+    }
+
+    /// <summary>
+    /// Get the full file name in the storage
+    /// </summary>
+    /// <param name="file"></param>
+    /// <returns></returns>
+    private string GetFileName(string file)
+    {
+        return $"{file}{_compressor.Extension}";
     }
 }

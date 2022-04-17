@@ -1,4 +1,8 @@
-﻿using AddictedProxy.Database.Model.Credentials;
+﻿#region
+
+using AddictedProxy.Database.Model.Credentials;
+
+#endregion
 
 namespace AddictedProxy.Database.Repositories.Credentials;
 

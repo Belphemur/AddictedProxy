@@ -1,15 +1,12 @@
 ﻿#region
 
 using System.Globalization;
-using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Culture;
 using AddictedProxy.Services.Provider.Subtitle;
 using AddictedProxy.Services.Provider.Subtitle.Job;
 using AddictedProxy.Services.Saver;
-using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.Exception;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
@@ -24,12 +21,12 @@ namespace AddictedProxy.Controllers;
 [Route("subtitles")]
 public class Addic7ed : Controller
 {
-    private readonly IShowProvider _showProvider;
-    private readonly ISubtitleProvider _subtitleProvider;
-    private readonly IJobBuilder _jobBuilder;
-    private readonly IJobScheduler _jobScheduler;
     private readonly CultureParser _cultureParser;
     private readonly IEpisodeRepository _episodeRepository;
+    private readonly IJobBuilder _jobBuilder;
+    private readonly IJobScheduler _jobScheduler;
+    private readonly IShowProvider _showProvider;
+    private readonly ISubtitleProvider _subtitleProvider;
 
     public Addic7ed(IEpisodeRepository episodeRepository,
                     CultureParser cultureParser,

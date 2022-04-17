@@ -1,6 +1,10 @@
+#region
+
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace AddictedProxy.Database.Repositories.Shows;
 

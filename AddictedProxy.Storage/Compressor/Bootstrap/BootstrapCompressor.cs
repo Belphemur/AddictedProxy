@@ -1,6 +1,10 @@
-﻿using InversionOfControl.Model;
+﻿#region
+
+using AddictedProxy.Storage.Compressor;
+using InversionOfControl.Model;
 using Microsoft.Extensions.DependencyInjection;
-using ICompressor = AddictedProxy.Storage.Compressor.ICompressor;
+
+#endregion
 
 namespace AddictedProxy.Storage.Bootstrap;
 
@@ -8,6 +12,6 @@ public class BootstrapCompressor : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<ICompressor, Compressor.BrotliCompressor>();
+        services.AddSingleton<ICompressor, BrotliCompressor>();
     }
 }

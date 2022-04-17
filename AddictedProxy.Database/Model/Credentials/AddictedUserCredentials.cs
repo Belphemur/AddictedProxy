@@ -1,10 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿#region
+
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace AddictedProxy.Database.Model.Credentials;
 
 [Table("AddictedUserCredentials")]
-[Index(nameof(AddictedUserCredentials.Cookie), IsUnique = true)]
+[Index(nameof(Cookie), IsUnique = true)]
 public class AddictedUserCredentials
 {
     public int Id { get; set; }

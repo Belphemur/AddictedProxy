@@ -1,9 +1,13 @@
-﻿using AddictedProxy.Database.Repositories.Shows;
+﻿#region
+
+using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Storage.Store;
 using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
 using Locking;
+
+#endregion
 
 namespace AddictedProxy.Services.Provider.Subtitle.Job;
 
@@ -13,9 +17,6 @@ public class StoreSubtitleJob : IJob
     private readonly IStorageProvider _storageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
 
-    public Guid SubtitleId { get; set; }
-    public byte[] SubtitleBlob { get; set; } = null!;
-
     public StoreSubtitleJob(ILogger<StoreSubtitleJob> logger, IStorageProvider storageProvider, ISubtitleRepository subtitleRepository)
     {
         _logger = logger;
@@ -23,9 +24,8 @@ public class StoreSubtitleJob : IJob
         _subtitleRepository = subtitleRepository;
     }
 
-
-    private string GetStorageName(Database.Model.Shows.Subtitle subtitle)
-        => $"{subtitle.Episode.TvShowId}/{subtitle.Episode.Season}/{subtitle.Episode.Number}/{subtitle.UniqueId}.srt";
+    public Guid SubtitleId { get; set; }
+    public byte[] SubtitleBlob { get; set; } = null!;
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -64,4 +64,10 @@ public class StoreSubtitleJob : IJob
 
     public IRetryAction FailRule { get; } = new ExponentialBackoffRetry(TimeSpan.FromSeconds(1), 10);
     public TimeSpan? MaxRuntime { get; }
+
+
+    private string GetStorageName(Database.Model.Shows.Subtitle subtitle)
+    {
+        return $"{subtitle.Episode.TvShowId}/{subtitle.Episode.Season}/{subtitle.Episode.Number}/{subtitle.UniqueId}.srt";
+    }
 }

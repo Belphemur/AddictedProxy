@@ -1,4 +1,8 @@
+#region
+
 using AddictedProxy.Database.Model.Shows;
+
+#endregion
 
 namespace AddictedProxy.Database.Repositories.Shows;
 

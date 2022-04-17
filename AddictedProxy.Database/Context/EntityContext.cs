@@ -1,6 +1,10 @@
-﻿using AddictedProxy.Database.Model.Credentials;
+﻿#region
+
+using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace AddictedProxy.Database.Context;
 

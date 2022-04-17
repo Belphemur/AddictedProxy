@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿#region
+
+using System.Reflection;
 using InversionOfControl.Extensions;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Exception;
@@ -6,6 +8,8 @@ using InversionOfControl.Service.EnvironmentVariable.Parser;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+
+#endregion
 
 namespace InversionOfControl.Service.Bootstrap;
 

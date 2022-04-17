@@ -1,4 +1,8 @@
-﻿using AddictedProxy.Upstream.Service.Exception;
+﻿#region
+
+using AddictedProxy.Upstream.Service.Exception;
+
+#endregion
 
 namespace AddictedProxy.Services.Provider.Subtitle;
 
@@ -12,7 +16,7 @@ public interface ISubtitleProvider
     /// <exception cref="DownloadLimitExceededException">When we reach limit in Addicted to download the subtitle</exception>
     /// <returns></returns>
     public Task<Stream> GetSubtitleFileAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token);
-    
+
     /// <summary>
     /// Get the subtitle
     /// </summary>

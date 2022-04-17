@@ -1,7 +1,11 @@
-﻿using AddictedProxy.Database.Context;
+﻿#region
+
+using AddictedProxy.Database.Context;
 using AddictedProxy.Database.EnvVar;
 using Microsoft.Extensions.Hosting;
 using Z.EntityFramework.Extensions;
+
+#endregion
 
 namespace AddictedProxy.Database.Bootstrap;
 

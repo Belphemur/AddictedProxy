@@ -1,7 +1,3 @@
-#region
-
-#endregion
-
 namespace AddictedProxy.Upstream.Service.Exception;
 
 public class DownloadLimitExceededException : System.Exception

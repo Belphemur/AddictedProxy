@@ -1,9 +1,13 @@
+#region
+
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AddictedProxy.Storage.Compressor;
 using NUnit.Framework;
+
+#endregion
 
 namespace AddictedProxy.Storage.Tests;
 

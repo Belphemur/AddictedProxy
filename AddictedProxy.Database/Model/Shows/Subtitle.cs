@@ -1,6 +1,10 @@
+#region
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace AddictedProxy.Database.Model.Shows;
 
@@ -28,7 +32,7 @@ public class Subtitle : IDiscoverableObject
     public string Language { get; set; }
 
     public string? StoragePath { get; set; }
-    
+
     public DateTime? StoredAt { get; set; }
 
     public Guid UniqueId { get; set; } = Guid.NewGuid();

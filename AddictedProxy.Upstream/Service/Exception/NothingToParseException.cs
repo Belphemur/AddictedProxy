@@ -1,8 +1,4 @@
-﻿#region
-
-#endregion
-
-namespace AddictedProxy.Upstream.Service.Exception;
+﻿namespace AddictedProxy.Upstream.Service.Exception;
 
 public class NothingToParseException : System.Exception
 {
