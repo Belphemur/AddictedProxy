@@ -28,6 +28,8 @@ public class Subtitle : IDiscoverableObject
     public string Language { get; set; }
 
     public string? StoragePath { get; set; }
+    
+    public DateTime? StoredAt { get; set; }
 
     public Guid UniqueId { get; set; } = Guid.NewGuid();
 
