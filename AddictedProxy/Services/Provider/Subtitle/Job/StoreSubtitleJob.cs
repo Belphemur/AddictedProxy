@@ -3,6 +3,7 @@ using AddictedProxy.Storage.Store;
 using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
+using Locking;
 
 namespace AddictedProxy.Services.Provider.Subtitle.Job;
 
@@ -28,6 +29,13 @@ public class StoreSubtitleJob : IJob
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
+        using var namedLock = Lock<StoreSubtitleJob>.GetNamedLock(SubtitleId.ToString());
+        if (!await namedLock.WaitAsync(TimeSpan.Zero, cancellationToken))
+        {
+            _logger.LogInformation("Lock already taken for {subtitleId}", SubtitleId);
+            return;
+        }
+
         _logger.LogInformation("Saving subtitle {subtitleId} into the storage", SubtitleId);
         var subtitle = await _subtitleRepository.GetSubtitleByGuidAsync(SubtitleId, true, cancellationToken);
         if (subtitle == null)

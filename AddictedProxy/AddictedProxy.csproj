@@ -23,6 +23,7 @@
         <ProjectReference Include="..\AddictedProxy.Storage\AddictedProxy.Storage.csproj" />
         <ProjectReference Include="..\AddictedProxy.Upstream\AddictedProxy.Upstream.csproj" />
         <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
+        <ProjectReference Include="..\Locking\Locking.csproj" />
     </ItemGroup>
 
     <PropertyGroup>
