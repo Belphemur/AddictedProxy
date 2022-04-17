@@ -14,6 +14,7 @@ public class BootstrapSaver : IBootstrap
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddJob<StoreSubtitleJob>();
+        services.AddJob<FetchSubtitlesJob>();
         services.AddScoped<IShowProvider, ShowProvider>();
         services.AddScoped<ISubtitleProvider, SubtitleProvider>();
     }
