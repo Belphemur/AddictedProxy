@@ -1,7 +1,6 @@
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
-using static System.String;
 
 namespace AddictedProxy.Database.Repositories.Shows;
 
@@ -41,7 +40,7 @@ public class SubtitleRepository : ISubtitleRepository
         }
 
         //Weird case where I can't match always the GUID. Might be an issue with SQLite
-        return query.SingleOrDefaultAsync(subtitle => subtitle.UniqueId == uniqueId || string.Equals(subtitle.UniqueId.ToString(), uniqueId.ToString(), StringComparison.CurrentCultureIgnoreCase), token);
+        return query.SingleOrDefaultAsync(subtitle => subtitle.UniqueId == uniqueId || subtitle.UniqueId.ToString().ToUpper() == uniqueId.ToString().ToUpper(), token);
     }
 
     /// <summary>
