@@ -25,7 +25,6 @@ public class FetchSubtitlesJob : IJob
     private readonly ICredentialsService _credentialsService;
 
     private readonly IAddic7edClient _client;
-    private readonly ISubtitleProvider _subtitleProvider;
     private readonly CultureParser _cultureParser;
     private readonly IEpisodeRepository _episodeRepository;
     private readonly ISeasonRepository _seasonRepository;
@@ -38,7 +37,6 @@ public class FetchSubtitlesJob : IJob
     public FetchSubtitlesJob(ILogger<FetchSubtitlesJob> logger,
                             ICredentialsService credentialsService,
                             IAddic7edClient client,
-                            ISubtitleProvider subtitleProvider,
                             CultureParser cultureParser,
                             IEpisodeRepository episodeRepository,
                             ISeasonRepository seasonRepository,
@@ -47,7 +45,6 @@ public class FetchSubtitlesJob : IJob
         _logger = logger;
         _credentialsService = credentialsService;
         _client = client;
-        _subtitleProvider = subtitleProvider;
         _cultureParser = cultureParser;
         _episodeRepository = episodeRepository;
         _seasonRepository = seasonRepository;
