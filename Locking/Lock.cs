@@ -4,7 +4,7 @@ namespace Locking;
 
 public static class Lock<T>
 {
-    public class Container : IDisposable
+    private class Container : ILockContainer
     {
         private readonly IKeyedSemaphore _semaphore;
 
@@ -35,7 +35,7 @@ public static class Lock<T>
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    public static Container GetNamedLock(string name)
+    public static ILockContainer GetNamedLock(string name)
     {
         return new Container(KeyedSemaphore.GetOrCreate(name));
     }
