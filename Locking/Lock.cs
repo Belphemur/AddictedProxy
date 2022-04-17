@@ -8,6 +8,7 @@ public static class Lock<T>
     public class Container : IDisposable
     {
         private readonly SemaphoreSlim _semaphore;
+        private bool _hasLock;
 
         public Container(SemaphoreSlim semaphore)
         {
@@ -20,14 +21,18 @@ public static class Lock<T>
         /// <param name="timeSpan"></param>
         /// <param name="token"></param>
         /// <returns>True if got the lock before <see cref="timeSpan"/> expires</returns>
-        public Task<bool> WaitAsync(TimeSpan timeSpan, CancellationToken token)
+        public async Task<bool> WaitAsync(TimeSpan timeSpan, CancellationToken token)
         {
-            return _semaphore.WaitAsync(timeSpan, token);
+            return _hasLock = await _semaphore.WaitAsync(timeSpan, token);
         }
 
         public void Dispose()
         {
-            _semaphore.Release();
+            //Only release the lock if we had it
+            if (_hasLock)
+            {
+                _semaphore.Release();
+            }
         }
     }
 
