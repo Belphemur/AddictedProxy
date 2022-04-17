@@ -51,7 +51,7 @@ public class FetchSubtitlesJob : IJob
 
     public async Task ExecuteAsync(CancellationToken token)
     {
-        using var scope = _logger.BeginScope(Data.Key);
+        using var scope = _logger.BeginScope(Data.ScopeName);
         using var namedLock = Lock<FetchSubtitlesJob>.GetNamedLock(Data.Key);
         if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
         {
@@ -110,7 +110,7 @@ public class FetchSubtitlesJob : IJob
 
         if (matchingSubtitles || episodesRefreshed || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(180))
         {
-            _logger.LogInformation("Matching subtitles found");
+            _logger.LogInformation("Matching subtitles found or episode was already refreshed");
             return;
         }
 
@@ -119,7 +119,7 @@ public class FetchSubtitlesJob : IJob
 
     public Task OnFailure(JobException exception)
     {
-        using var scope = _logger.BeginScope(Data.Key);
+        using var scope = _logger.BeginScope(Data.ScopeName);
         _logger.LogError(exception, "Fetching subtitles info");
         return Task.CompletedTask;
     }
@@ -156,5 +156,6 @@ public class FetchSubtitlesJob : IJob
     public record JobData(TvShow Show, int Season, int Episode, CultureInfo? Language, string? FileName)
     {
         public string Key => $"{Show.Id}-{Season}";
+        public string ScopeName => $"{Show.Name} S{Season}E{Episode} ({Language}) [{FileName}]";
     }
 }
