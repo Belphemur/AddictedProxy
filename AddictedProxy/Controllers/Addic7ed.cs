@@ -79,7 +79,7 @@ public class Addic7ed : Controller
 
             return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"))
             {
-                EntityTag = new EntityTagHeaderValue(subtitle.UniqueId.ToString()),
+                EntityTag = new EntityTagHeaderValue('"' + $"{subtitle.UniqueId}-{(subtitle.StoredAt.HasValue ? "-" + subtitle.StoredAt.Value.Ticks : "")}" + '"'),
                 LastModified = subtitle.StoredAt
             };
         }
@@ -172,7 +172,8 @@ public class Addic7ed : Controller
                       .Select(
                           subtitle => new SearchResponse.SubtitleDto(
                               subtitle,
-                              Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                              Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
+                              throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
                               searchLanguage
                           )
                       )
@@ -242,20 +243,34 @@ public class Addic7ed : Controller
                 DownloadUri = downloadUri;
                 Language = language?.EnglishName ?? "Unknown";
                 Discovered = subtitle.Discovered;
+                SubtitleId = subtitle.UniqueId.ToString();
             }
 
+            /// <summary>
+            /// Version of the subtitle
+            /// </summary>
             public string Version { get; }
+
             public bool Completed { get; }
             public bool HearingImpaired { get; }
             public bool Corrected { get; }
             public bool HD { get; }
             public string DownloadUri { get; }
+
+            /// <summary>
+            /// Language of the subtitle (in English)
+            /// </summary>
             public string Language { get; }
 
             /// <summary>
             ///     When was the subtitle discovered
             /// </summary>
             public DateTime Discovered { get; }
+
+            /// <summary>
+            /// Unique Id of the subtitle
+            /// </summary>
+            public string SubtitleId { get; }
         }
 
         /// <summary>
