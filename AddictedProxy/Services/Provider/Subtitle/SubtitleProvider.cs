@@ -36,18 +36,12 @@ public class SubtitleProvider : ISubtitleProvider
     /// <summary>
     /// Get the subtitle file stream
     /// </summary>
-    /// <param name="subtitleUniqueId"></param>
+    /// <param name="subtitle"></param>
     /// <param name="token"></param>
     /// <exception cref="DownloadLimitExceededException">When we reach limit in Addicted to download the subtitle</exception>
     /// <returns></returns>
-    public async Task<Stream?> GetSubtitleFileAsync(Guid subtitleUniqueId, CancellationToken token)
+    public async Task<Stream> GetSubtitleFileAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token)
     {
-        var subtitle = await _subtitleRepository.GetSubtitleByGuidAsync(subtitleUniqueId, false, token);
-        if (subtitle == null)
-        {
-            return null;
-        }
-
         if (subtitle.StoragePath != null)
         {
             return await _storageProvider.DownloadAsync(subtitle.StoragePath, token);
@@ -67,10 +61,12 @@ public class SubtitleProvider : ISubtitleProvider
                        .Configure(job =>
                        {
                            job.SubtitleBlob = blob;
-                           job.SubtitleId = subtitleUniqueId;
+                           job.SubtitleId = subtitle.UniqueId;
                        })
                        .Build()
         );
         return new MemoryStream(blob);
     }
+
+    public Task<Database.Model.Shows.Subtitle?> GetSubtitleAsync(Guid subtitleId, CancellationToken token) => _subtitleRepository.GetSubtitleByGuidAsync(subtitleId, false, token);
 }

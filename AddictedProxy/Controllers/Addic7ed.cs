@@ -69,13 +69,19 @@ public class Addic7ed : Controller
     {
         try
         {
-            var subtitleStream = await _subtitleProvider.GetSubtitleFileAsync(subtitleId, token);
-            if (subtitleStream == null)
+            var subtitle = await _subtitleProvider.GetSubtitleAsync(subtitleId, token);
+            if (subtitle == null)
             {
                 return NotFound($"Subtitle ({subtitleId}) couldn't be found");
             }
 
-            return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"));
+            var subtitleStream = await _subtitleProvider.GetSubtitleFileAsync(subtitle, token);
+
+            return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"))
+            {
+                EntityTag = new EntityTagHeaderValue(subtitle.UniqueId.ToString()),
+                LastModified = subtitle.StoredAt
+            };
         }
         catch (DownloadLimitExceededException e)
         {

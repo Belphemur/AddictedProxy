@@ -52,6 +52,7 @@ public class StoreSubtitleJob : IJob
         }
 
         subtitle.StoragePath = storageName;
+        subtitle.StoredAt = DateTime.UtcNow;
         await _subtitleRepository.UpdateAsync(subtitle, cancellationToken);
     }
 
