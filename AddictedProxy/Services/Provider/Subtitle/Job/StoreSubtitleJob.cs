@@ -9,40 +9,39 @@ namespace AddictedProxy.Services.Provider.Subtitle.Job;
 public class StoreSubtitleJob : IJob
 {
     private readonly ILogger<StoreSubtitleJob> _logger;
-    private readonly Guid _subtitleId;
-    private readonly byte[] _subtitleBlob;
+    public Guid SubtitleId { get; set; }
+    public byte[] SubtitleBlob { get; set; }
     private readonly IServiceProvider _serviceProvider;
     private readonly IStorageProvider _storageProvider;
 
-    public StoreSubtitleJob(IServiceProvider serviceProvider, Guid subtitleId, byte[] subtitleBlob)
+    public StoreSubtitleJob(ILogger<StoreSubtitleJob> logger, IServiceProvider serviceProvider, IStorageProvider storageProvider)
     {
+        _logger = logger;
         _serviceProvider = serviceProvider;
-        _storageProvider = _serviceProvider.GetRequiredService<IStorageProvider>();
-        _logger = _serviceProvider.GetRequiredService<ILogger<StoreSubtitleJob>>();
-        _subtitleId = subtitleId;
-        _subtitleBlob = subtitleBlob;
+        _storageProvider = storageProvider;
     }
+
 
     private string GetStorageName(Database.Model.Shows.Subtitle subtitle)
         => $"{subtitle.Episode.TvShowId}/{subtitle.Episode.Season}/{subtitle.Episode.Number}/{subtitle.UniqueId}.srt";
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Saving subtitle {subtitleId} into the storage", _subtitleId);
+        _logger.LogInformation("Saving subtitle {subtitleId} into the storage", SubtitleId);
         await using var scope = _serviceProvider.CreateAsyncScope();
         var repository = scope.ServiceProvider.GetRequiredService<ISubtitleRepository>();
-        var subtitle = await repository.GetSubtitleByGuidAsync(_subtitleId, true, cancellationToken);
+        var subtitle = await repository.GetSubtitleByGuidAsync(SubtitleId, true, cancellationToken);
         if (subtitle == null)
         {
-            _logger.LogWarning("Subtitle couldn't be found with GUID {subtitleId}", _subtitleId);
+            _logger.LogWarning("Subtitle couldn't be found with GUID {subtitleId}", SubtitleId);
             return;
         }
 
-        await using var buffer = new MemoryStream(_subtitleBlob);
+        await using var buffer = new MemoryStream(SubtitleBlob);
         var storageName = GetStorageName(subtitle);
         if (!await _storageProvider.StoreAsync(storageName, buffer, cancellationToken))
         {
-            throw new InvalidOperationException($"Couldn't store the subtitle {_subtitleId}");
+            throw new InvalidOperationException($"Couldn't store the subtitle {SubtitleId}");
         }
 
         subtitle.StoragePath = storageName;
@@ -51,7 +50,7 @@ public class StoreSubtitleJob : IJob
 
     public Task OnFailure(JobException exception)
     {
-        _logger.LogError(exception, "Issue while saving subtitle {subtitleId} in storage", _subtitleId);
+        _logger.LogError(exception, "Issue while saving subtitle {subtitleId} in storage", SubtitleId);
         return Task.CompletedTask;
     }
 

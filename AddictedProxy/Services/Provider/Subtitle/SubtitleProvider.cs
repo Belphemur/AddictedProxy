@@ -4,6 +4,7 @@ using AddictedProxy.Services.Provider.Subtitle.Job;
 using AddictedProxy.Storage.Store;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.Exception;
+using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 
 namespace AddictedProxy.Services.Provider.Subtitle;
@@ -14,21 +15,21 @@ public class SubtitleProvider : ISubtitleProvider
     private readonly IStorageProvider _storageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
     private readonly ICredentialsService _credentialsService;
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IJobBuilder _jobBuilder;
     private readonly IJobScheduler _jobScheduler;
 
     public SubtitleProvider(IAddic7edDownloader addic7EdDownloader,
                             IStorageProvider storageProvider,
                             ISubtitleRepository subtitleRepository,
                             ICredentialsService credentialsService,
-                            IServiceProvider serviceProvider,
+                            IJobBuilder jobBuilder,
                             IJobScheduler jobScheduler)
     {
         _addic7EdDownloader = addic7EdDownloader;
         _storageProvider = storageProvider;
         _subtitleRepository = subtitleRepository;
         _credentialsService = credentialsService;
-        _serviceProvider = serviceProvider;
+        _jobBuilder = jobBuilder;
         _jobScheduler = jobScheduler;
     }
 
@@ -61,7 +62,15 @@ public class SubtitleProvider : ISubtitleProvider
 
         var blob = buffer.ToArray();
 
-        _jobScheduler.ScheduleJob(new StoreSubtitleJob(_serviceProvider, subtitleUniqueId, blob));
+        _jobScheduler.ScheduleJob(
+            _jobBuilder.Create<StoreSubtitleJob>()
+                       .Configure(job =>
+                       {
+                           job.SubtitleBlob = blob;
+                           job.SubtitleId = subtitleUniqueId;
+                       })
+                       .Build()
+        );
         return new MemoryStream(blob);
     }
 }

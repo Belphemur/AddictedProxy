@@ -10,19 +10,17 @@ namespace AddictedProxy.Services.Saver;
 
 public class RefreshShowJob : IRecurringJob
 {
+    private readonly IShowProvider _showProvider;
     private readonly IServiceProvider _serviceProvider;
 
-    public RefreshShowJob(IServiceProvider serviceProvider)
+    public RefreshShowJob(IShowProvider showProvider)
     {
-        _serviceProvider = serviceProvider;
+        _showProvider = showProvider;
     }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        await using var serviceScope = _serviceProvider.CreateAsyncScope();
-        var service = serviceScope.ServiceProvider.GetRequiredService<IShowProvider>();
-
-        await service.RefreshShowsAsync(cancellationToken);
+        await _showProvider.RefreshShowsAsync(cancellationToken);
     }
 
     public Task OnFailure(JobException exception)

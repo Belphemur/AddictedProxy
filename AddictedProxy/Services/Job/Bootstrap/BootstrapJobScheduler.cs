@@ -1,6 +1,8 @@
 ﻿#region
 
+using AddictedProxy.Services.Saver;
 using InversionOfControl.Model;
+using Job.Scheduler.AspNetCore.Extensions;
 using Job.Scheduler.Builder;
 using Job.Scheduler.Scheduler;
 
@@ -12,8 +14,7 @@ public class BootstrapJobScheduler : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<IJobRunnerBuilder, JobRunnerBuilder>();
-        services.AddSingleton<IJobScheduler, JobScheduler>();
-        services.AddHostedService<JobSchedulerHostedService>();
+        services.AddJob<RefreshShowJob>();
+        services.AddJobScheduler(config => config.AddStartupJob(builder => builder.Create<RefreshShowJob>().Build()));
     }
 }
