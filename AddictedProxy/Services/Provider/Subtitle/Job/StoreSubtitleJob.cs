@@ -9,16 +9,17 @@ namespace AddictedProxy.Services.Provider.Subtitle.Job;
 public class StoreSubtitleJob : IJob
 {
     private readonly ILogger<StoreSubtitleJob> _logger;
-    public Guid SubtitleId { get; set; }
-    public byte[] SubtitleBlob { get; set; }
-    private readonly IServiceProvider _serviceProvider;
     private readonly IStorageProvider _storageProvider;
+    private readonly ISubtitleRepository _subtitleRepository;
 
-    public StoreSubtitleJob(ILogger<StoreSubtitleJob> logger, IServiceProvider serviceProvider, IStorageProvider storageProvider)
+    public Guid SubtitleId { get; set; }
+    public byte[] SubtitleBlob { get; set; } = null!;
+
+    public StoreSubtitleJob(ILogger<StoreSubtitleJob> logger, IStorageProvider storageProvider, ISubtitleRepository subtitleRepository)
     {
         _logger = logger;
-        _serviceProvider = serviceProvider;
         _storageProvider = storageProvider;
+        _subtitleRepository = subtitleRepository;
     }
 
 
@@ -28,9 +29,7 @@ public class StoreSubtitleJob : IJob
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Saving subtitle {subtitleId} into the storage", SubtitleId);
-        await using var scope = _serviceProvider.CreateAsyncScope();
-        var repository = scope.ServiceProvider.GetRequiredService<ISubtitleRepository>();
-        var subtitle = await repository.GetSubtitleByGuidAsync(SubtitleId, true, cancellationToken);
+        var subtitle = await _subtitleRepository.GetSubtitleByGuidAsync(SubtitleId, true, cancellationToken);
         if (subtitle == null)
         {
             _logger.LogWarning("Subtitle couldn't be found with GUID {subtitleId}", SubtitleId);
@@ -45,7 +44,7 @@ public class StoreSubtitleJob : IJob
         }
 
         subtitle.StoragePath = storageName;
-        await repository.UpdateAsync(subtitle, cancellationToken);
+        await _subtitleRepository.UpdateAsync(subtitle, cancellationToken);
     }
 
     public Task OnFailure(JobException exception)
