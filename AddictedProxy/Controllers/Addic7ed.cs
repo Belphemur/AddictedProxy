@@ -7,9 +7,12 @@ using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Culture;
 using AddictedProxy.Services.Provider.Subtitle;
+using AddictedProxy.Services.Provider.Subtitle.Job;
 using AddictedProxy.Services.Saver;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.Exception;
+using Job.Scheduler.AspNetCore.Builder;
+using Job.Scheduler.Scheduler;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
@@ -21,37 +24,26 @@ namespace AddictedProxy.Controllers;
 [Route("subtitles")]
 public class Addic7ed : Controller
 {
-    private readonly IAddic7edClient _client;
-    private readonly ICredentialsService _credentialsService;
     private readonly IShowProvider _showProvider;
     private readonly ISubtitleProvider _subtitleProvider;
+    private readonly IJobBuilder _jobBuilder;
+    private readonly IJobScheduler _jobScheduler;
     private readonly CultureParser _cultureParser;
-    private readonly IAddic7edDownloader _downloader;
     private readonly IEpisodeRepository _episodeRepository;
-    private readonly ISeasonRepository _seasonRepository;
-    private readonly TimeSpan _timeBetweenChecks;
-    private readonly ITvShowRepository _tvShowRepository;
 
-    public Addic7ed(IAddic7edClient client,
-                    IAddic7edDownloader downloader,
-                    ITvShowRepository tvShowRepository,
-                    ISeasonRepository seasonRepository,
-                    IEpisodeRepository episodeRepository,
+    public Addic7ed(IEpisodeRepository episodeRepository,
                     CultureParser cultureParser,
-                    ICredentialsService credentialsService,
                     IShowProvider showProvider,
-                    ISubtitleProvider subtitleProvider)
+                    ISubtitleProvider subtitleProvider,
+                    IJobBuilder jobBuilder,
+                    IJobScheduler jobScheduler)
     {
-        _client = client;
-        _downloader = downloader;
-        _tvShowRepository = tvShowRepository;
-        _seasonRepository = seasonRepository;
         _episodeRepository = episodeRepository;
         _cultureParser = cultureParser;
-        _credentialsService = credentialsService;
         _showProvider = showProvider;
         _subtitleProvider = subtitleProvider;
-        _timeBetweenChecks = TimeSpan.FromHours(1);
+        _jobBuilder = jobBuilder;
+        _jobScheduler = jobScheduler;
     }
 
 
@@ -105,62 +97,31 @@ public class Addic7ed : Controller
         var show = await _showProvider.FindShowsAsync(request.Show, token).FirstOrDefaultAsync(token);
         if (show == null)
         {
-            return NotFound(new { Error = $"Couldn't find the show {request.Show}" });
+            return NotFound(new ErrorResponse($"Couldn't find the show {request.Show}"));
         }
 
-        var season = show.Seasons.FirstOrDefault(season => season.Number == request.Season);
-
-        await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
-
-
-        if (season == null && (show.LastSeasonRefreshed == null || DateTime.UtcNow - show.LastSeasonRefreshed >= _timeBetweenChecks))
-        {
-            var maxSeason = show.Seasons.Any() ? show.Seasons.Max(s => s.Number) : 0;
-            if (show.Seasons.Any() && request.Season - maxSeason > 1)
-            {
-                return NotFound(new ErrorResponse($"{request.Season} is too far in the future."));
-            }
-
-            var seasons = (await _client.GetSeasonsAsync(credentials.AddictedUserCredentials, show, token)).ToArray();
-            await _seasonRepository.UpsertSeason(seasons, token);
-            show.LastSeasonRefreshed = DateTime.UtcNow;
-            await _tvShowRepository.UpdateShow(show, token);
-            season = await _seasonRepository.GetSeasonForShow(show.Id, request.Season, token);
-        }
-
-        if (season == null)
-        {
-            return NotFound(new ErrorResponse($"Couldn't find Season S{request.Season} for {show.Name}"));
-        }
-
-        var episode = await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, season.Number, request.Episode, token);
-
-        var episodesRefreshed = season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _timeBetweenChecks;
-        if (episode == null && !episodesRefreshed)
-        {
-            episode = await RefreshSubtitlesAsync(credentials.AddictedUserCredentials, show, season, request.Episode, token);
-            episodesRefreshed = true;
-        }
-
+        var episode = await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, request.Season, request.Episode, token);
         if (episode == null)
         {
-            return NotFound(new ErrorResponse($"Couldn't find episode S{season.Number}E{request.Episode} for {show.Name}"));
+            ScheduleJob(request, show);
+            return NotFound(new ErrorResponse("Episode couldn't be found. Try again later."));
         }
 
         var matchingSubtitles = FindMatchingSubtitles(request, episode);
-
-        var latestDiscovered = episode.Subtitles.Max(subtitle => subtitle.Discovered);
-
-        if (matchingSubtitles.Any() || episodesRefreshed || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(180))
+        if (matchingSubtitles.Length == 0)
         {
-            return Ok(new SearchResponse(episode: new SearchResponse.EpisodeDto(episode), matchingSubtitles: matchingSubtitles));
+            ScheduleJob(request, show);
         }
 
-        episode = await RefreshSubtitlesAsync(credentials.AddictedUserCredentials, show, season, request.Episode, token);
-        matchingSubtitles = FindMatchingSubtitles(request, episode!);
+        return Ok(new SearchResponse(matchingSubtitles, new SearchResponse.EpisodeDto(episode)));
+    }
 
-
-        return Ok(new SearchResponse(episode: new SearchResponse.EpisodeDto(episode!), matchingSubtitles: matchingSubtitles));
+    private void ScheduleJob(SearchRequest request, TvShow show)
+    {
+        var job = _jobBuilder.Create<FetchSubtitlesJob>()
+                             .Configure(subtitlesJob => { subtitlesJob.Data = new FetchSubtitlesJob.JobData(show, request.Season, request.Episode, _cultureParser.FromString(request.LanguageISO), request.FileName); })
+                             .Build();
+        _jobScheduler.ScheduleJob(job);
     }
 
     private SearchResponse.SubtitleDto[] FindMatchingSubtitles(SearchRequest request, Episode episode)
@@ -178,15 +139,6 @@ public class Addic7ed : Controller
                           )
                       )
                       .ToArray();
-    }
-
-    private async Task<Episode?> RefreshSubtitlesAsync(AddictedUserCredentials credentials, TvShow show, Season season, int episodeNumber, CancellationToken token)
-    {
-        var episodes = await _client.GetEpisodesAsync(credentials, show, season.Number, token);
-        await _episodeRepository.UpsertEpisodes(episodes, token);
-        season.LastRefreshed = DateTime.UtcNow;
-        await _seasonRepository.UpdateSeasonAsync(season, token);
-        return await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, season.Number, episodeNumber, token);
     }
 
     public record ErrorResponse(string Error);

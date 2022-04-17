@@ -16,7 +16,7 @@ namespace AddictedProxy.Services.Provider.Subtitle.Job;
 
 public class FetchSubtitlesJob : IJob
 {
-    public record JobData(TvShow Show, int Season, int Episode, CultureInfo Language, string? FileName)
+    public record JobData(TvShow Show, int Season, int Episode, CultureInfo? Language, string? FileName)
     {
         public string Key => $"{Show.Id}-{Season}";
     }
