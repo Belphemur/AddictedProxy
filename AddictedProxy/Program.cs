@@ -52,7 +52,7 @@ var app = builder.Build();
 
 app.UseBootstrap(currentAssemblies);
 
-app.UseHttpLogging();
+
 {
     await using var serviceScope = app.Services.CreateAsyncScope();
     await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<EntityContext>();
@@ -70,12 +70,10 @@ if (app.Environment.IsDevelopment())
 app.UseSwagger().UseSwaggerUI();
 
 
-app.UseRouting();
 app.UseSentryTracing();
 
-
-app.UseAuthorization();
-
 app.MapControllers();
+
+
 
 app.Run();
