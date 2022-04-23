@@ -6,6 +6,7 @@ using AddictedProxy.Database.Repositories.Credentials;
 using AddictedProxy.Database.Repositories.Shows;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 #endregion
@@ -15,7 +16,7 @@ namespace AddictedProxy.Database.Bootstrap;
 public class BootstrapDatabase : IBootstrap,
                                  IBootstrapEnvironmentVariable<EFCoreLicense, EFCoreLicenseParser>
 {
-    public void ConfigureServices(IServiceCollection services)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddHostedService<SetupEfCoreHostedService>();
         services.AddDbContext<EntityContext>();

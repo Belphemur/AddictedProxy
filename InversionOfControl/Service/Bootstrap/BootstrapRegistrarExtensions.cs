@@ -6,6 +6,7 @@ using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Exception;
 using InversionOfControl.Service.EnvironmentVariable.Parser;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -19,9 +20,10 @@ public static class BootstrapRegistrarExtensions
     ///     Add the different <see cref="IBootstrap" /> registration to the IoC container
     /// </summary>
     /// <param name="services"></param>
+    /// <param name="configuration"></param>
     /// <param name="assemblies">Where to look for <see cref="IBootstrap" /></param>
     /// <returns></returns>
-    public static IServiceCollection AddBootstrap(this IServiceCollection services, params Assembly[] assemblies)
+    public static IServiceCollection AddBootstrap(this IServiceCollection services, IConfiguration configuration, params Assembly[] assemblies)
     {
         var bootstrapType = typeof(IBootstrap);
         if (assemblies.Length == 0)
@@ -35,7 +37,7 @@ public static class BootstrapRegistrarExtensions
                              .Where(p => bootstrapType.IsAssignableFrom(p)))
         {
             var bootstrap = (IBootstrap)Activator.CreateInstance(type);
-            bootstrap.ConfigureServices(services);
+            bootstrap.ConfigureServices(services, configuration);
         }
 
         return services;

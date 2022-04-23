@@ -36,7 +36,7 @@ var currentAssemblies = new []
 
 builder.Services
        .AddBootstrapEnvironmentVar(currentAssemblies)
-       .AddBootstrap(currentAssemblies);
+       .AddBootstrap(builder.Configuration, currentAssemblies);
 builder.Host.UseSystemd();
 builder.WebHost.UseSentry(sentryBuilder =>
 {

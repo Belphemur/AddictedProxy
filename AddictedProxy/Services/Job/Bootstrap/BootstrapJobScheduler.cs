@@ -10,7 +10,7 @@ namespace AddictedProxy.Services.Job.Bootstrap;
 
 public class BootstrapJobScheduler : IBootstrap
 {
-    public void ConfigureServices(IServiceCollection services)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddJob<RefreshShowJob>();
         services.AddJobScheduler(config => config.AddStartupJob(builder => builder.Create<RefreshShowJob>().Build()));

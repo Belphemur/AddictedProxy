@@ -1,5 +1,6 @@
 ﻿#region
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 #endregion
@@ -12,5 +13,6 @@ public interface IBootstrap
     ///     Configure the different services
     /// </summary>
     /// <param name="services"></param>
-    public void ConfigureServices(IServiceCollection services);
+    /// <param name="configuration"></param>
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration);
 }

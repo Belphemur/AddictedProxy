@@ -7,6 +7,7 @@ using AngleSharp.Html.Parser;
 using Bogus;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Extensions.Http;
@@ -21,7 +22,7 @@ namespace AddictedProxy.Upstream.Boostrap;
 public class BootstrapAddictedServices : IBootstrap,
                                          IBootstrapEnvironmentVariable<HttpProxy, HttpProxyParser>
 {
-    public void ConfigureServices(IServiceCollection services)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IHtmlParser, HtmlParser>();
         services.AddSingleton<Parser>();

@@ -11,7 +11,7 @@ namespace AddictedProxy.Services.Saver.Bootstrap;
 
 public class BootstrapSaver : IBootstrap
 {
-    public void ConfigureServices(IServiceCollection services)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddJob<StoreSubtitleJob>();
         services.AddJob<FetchSubtitlesJob>();
