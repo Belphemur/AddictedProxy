@@ -19,14 +19,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwaggerGen(options =>
-{
-    // using System.Reflection;
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-}).AddEndpointsApiExplorer();
+       {
+           // using System.Reflection;
+           var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+           options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+       })
+       .AddEndpointsApiExplorer();
 
 //Add our own bootstrapping
-var currentAssemblies = new []
+var currentAssemblies = new[]
 {
     typeof(BootstrapController).Assembly,
     typeof(BootstrapDatabase).Assembly,
@@ -35,8 +36,8 @@ var currentAssemblies = new []
 };
 
 builder.Services
-       .AddBootstrapEnvironmentVar(currentAssemblies)
        .AddBootstrap(builder.Configuration, currentAssemblies);
+
 builder.Host.UseSystemd();
 builder.WebHost.UseSentry(sentryBuilder =>
 {
@@ -55,18 +56,15 @@ builder.Services.AddResponseCompression(options =>
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Append("text/srt");
 });
 
-builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
-{
-    options.Level = CompressionLevel.Fastest;
-});
+builder.Services.Configure<BrotliCompressionProviderOptions>(options => { options.Level = CompressionLevel.Fastest; });
 
-builder.Services.Configure<GzipCompressionProviderOptions>(options =>
-{
-    options.Level = CompressionLevel.SmallestSize;
-});
+builder.Services.Configure<GzipCompressionProviderOptions>(options => { options.Level = CompressionLevel.SmallestSize; });
 
 
 var app = builder.Build();
+
+app.UseBootstrap(currentAssemblies);
+
 app.UseHttpLogging();
 {
     await using var serviceScope = app.Services.CreateAsyncScope();
