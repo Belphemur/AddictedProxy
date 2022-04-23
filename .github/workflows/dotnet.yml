@@ -21,7 +21,6 @@ env:
 
 jobs:
   build:
-    if: github.ref != 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
       - name: Cancel Previous Runs
@@ -37,7 +36,6 @@ jobs:
           filters: |
             ci:
              - '.github/**/*.yml'
-             - 'devRelease.js'
             MainProject:
               - 'Addicted*/**'
               - 'Locking/**'
@@ -100,7 +98,6 @@ jobs:
             ci:
               - '.github/**/*.yml'
               - 'MainProject*/**'
-              - 'devRelease.js'
 
   main-release:
     needs: [ build, changes ]
