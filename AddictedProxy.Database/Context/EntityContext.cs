@@ -12,9 +12,8 @@ public class EntityContext : DbContext
 {
     public EntityContext(DbContextOptions options) : base(options)
     {
-        var folder = Environment.SpecialFolder.ApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        DbPath = Path.Join(path, "addicted.db");
+        var folder = Environment.GetEnvironmentVariable("DB_PATH") ?? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        DbPath = Path.Join(folder, "addicted.db");
     }
 
     internal EntityContext() : this(new DbContextOptions<EntityContext>())
