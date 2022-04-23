@@ -1,0 +1,145 @@
+name: .NET
+
+on:
+  push:
+    branches: [ dev, main ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ dev, main ]
+env:
+  # Stop wasting time caching packages
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Disable sending usage data to Microsoft
+  # DOTNET_CLI_TELEMETRY_OPTOUT: true
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PROJECT_NAME: "AddictedProxy"
+  NODEJS: 16
+  DOTNET: "6.0.x"
+  DOTNET_PRERELEASE: true
+  CONFIGURATION: "Debug"
+  SENTRY_NAME: "addictedproxy"
+
+jobs:
+  build:
+    if: github.ref != 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          all_but_latest: true
+          access_token: ${{ github.token }}
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            ci:
+             - '.github/**/*.yml'
+             - 'devRelease.js'
+            MainProject:
+              - 'Addicted*/**'
+              - 'Locking/**'
+              - 'InversionOfControl/**'
+            node:
+              - 'package.json'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
+        with:
+          dotnet-version: ${{ env.DOTNET }}
+          include-prerelease: ${{ env.DOTNET_PRERELEASE }}
+      - name: Restore
+        if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
+        run: dotnet restore
+      - name: Build
+        if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
+        run: dotnet build -c Release --no-restore ${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.csproj
+      - name: Test
+        if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
+        run: dotnet test -c Release --no-restore  --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}"
+      - name: Upload test results
+        if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v3
+        with:
+          name: dotnet-results-${{ matrix.dotnet-version }}
+          path: TestResults-${{ matrix.dotnet-version }}
+        # Use always() to always run this step to publish test results when there are test failures
+      - name: Setup Node.js
+        if: steps.filter.outputs.node == 'true'
+        uses: actions/setup-node@v3.1.1
+        with:
+          node-version: ${{env.NODEJS}}
+      - name: Cache node modules
+        if: steps.filter.outputs.node == 'true'
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: npm-cache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Install semantic-release dependencies
+        if: steps.filter.outputs.node == 'true'
+        run: npm ci --prefer-offline --silent --cache npm-cache
+      - name: Release dry run
+        if: steps.filter.outputs.node == 'true'
+        run: npx semantic-release -d
+
+  changes:
+    runs-on: ubuntu-latest
+    # Set job outputs to values from filter step
+    outputs:
+      ci: ${{ steps.filter.outputs.ci }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            ci:
+              - '.github/**/*.yml'
+              - 'MainProject*/**'
+              - 'devRelease.js'
+
+  main-release:
+    needs: [ build, changes ]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          all_but_latest: true
+          access_token: ${{ github.token }}
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3.1.1
+        with:
+          node-version: ${{env.NODEJS}}
+      - name: Cache node modules
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: npm-cache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Install semantic-release dependencies
+        run: npm ci --prefer-offline --silent --cache npm-cache
+      - name: Release
+        run: npx semantic-release
+      - name: Latest Version
+        run: | 
+          version=$(git describe --tags --abbrev=0 | cut -c 2-)
+          echo "::set-output name=version::$version.0"
+        id: version
+      - name: Sentry Release
+        uses: getsentry/action-release@v1.1.6
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{env.SENTRY_NAME}}
+          SENTRY_PROJECT: ${{env.SENTRY_NAME}}
+        with:
+          environment: Stable
+          version: "${{env.PROJECT_NAME}}@${{ steps.version.outputs.version }}"
+
