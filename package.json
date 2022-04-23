@@ -2,6 +2,16 @@
   "name": "subtitles",
   "type": "module",
   "release": {
+    "branches": [
+      {
+        "name": "master",
+        "prerelease": false
+      },
+      {
+        "name": "dev",
+        "prerelease": true
+      }
+    ],
     "plugins": [
       [
         "@semantic-release/commit-analyzer",
