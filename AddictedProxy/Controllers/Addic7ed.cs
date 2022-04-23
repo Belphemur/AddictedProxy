@@ -53,6 +53,7 @@ public class Addic7ed : Controller
     [Route("download/{subtitleId:guid}", Name = nameof(Routes.DownloadSubtitle))]
     [ProducesResponseType(200)]
     [ProducesResponseType(typeof(ErrorResponse), 400, "application/json")]
+    [ProducesResponseType(typeof(string), 429)]
     [HttpGet]
     public async Task<IActionResult> Download([FromRoute] Guid subtitleId, CancellationToken token)
     {
@@ -81,6 +82,9 @@ public class Addic7ed : Controller
     /// <summary>
     /// Search for subtitle of a specific episode of a show
     /// </summary>
+    /// <remarks>
+    /// The routes are ratelimited to 15 call per seconds.
+    /// </remarks>
     /// <param name="request"></param>
     /// <param name="token"></param>
     /// <returns></returns>
@@ -88,6 +92,7 @@ public class Addic7ed : Controller
     [HttpPost]
     [ProducesResponseType(typeof(SearchResponse), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 404)]
+    [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
     public async Task<IActionResult> Search([FromBody] SearchRequest request, CancellationToken token)
     {
@@ -150,15 +155,32 @@ public class Addic7ed : Controller
             FileName = fileName;
             LanguageISO = languageIso;
         }
+        /// <summary>
+        /// Name of the show
+        /// </summary>
+        /// <example>NCIS</example>
 
         public string Show { get; }
+        /// <summary>
+        /// Episode number
+        /// </summary>
+        /// <example>1</example>
         public int Episode { get; }
+        /// <summary>
+        /// Season number
+        /// </summary>
+        /// <example>1</example>
         public int Season { get; }
+        /// <summary>
+        /// Name of the file for which you want subtitle, it help find a version of the subtitle that matches it
+        /// </summary>
+        /// <example>NCIS.S01E01.HDTV.mkv</example>
         public string FileName { get; }
 
         /// <summary>
-        ///     3 letter code of the language
+        ///     3 or 2 letter code of the language
         /// </summary>
+        /// <example>en</example>
         public string LanguageISO { get; }
     }
 
