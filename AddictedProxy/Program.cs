@@ -48,19 +48,6 @@ builder.WebHost.UseSentry(sentryBuilder =>
     sentryBuilder.TracesSampleRate = 1.0;
 });
 
-builder.Services.AddResponseCompression(options =>
-{
-    options.EnableForHttps = true;
-    options.Providers.Add<BrotliCompressionProvider>();
-    options.Providers.Add<GzipCompressionProvider>();
-    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Append("text/srt");
-});
-
-builder.Services.Configure<BrotliCompressionProviderOptions>(options => { options.Level = CompressionLevel.Fastest; });
-
-builder.Services.Configure<GzipCompressionProviderOptions>(options => { options.Level = CompressionLevel.SmallestSize; });
-
-
 var app = builder.Build();
 
 app.UseBootstrap(currentAssemblies);
@@ -85,7 +72,7 @@ app.UseSwagger().UseSwaggerUI();
 
 app.UseRouting();
 app.UseSentryTracing();
-app.UseResponseCompression();
+
 
 app.UseAuthorization();
 
