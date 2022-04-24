@@ -145,6 +145,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: v${{ needs.main-release.outputs.version}}
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
