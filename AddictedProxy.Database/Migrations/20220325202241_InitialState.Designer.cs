@@ -10,8 +10,6 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AddictedProxy.Migrations
 {
-    [DbContext(typeof(EntityContext))]
-    [Migration("20220325202241_InitialState")]
     partial class InitialState
     {
         protected void BuildTargetModel(ModelBuilder modelBuilder)

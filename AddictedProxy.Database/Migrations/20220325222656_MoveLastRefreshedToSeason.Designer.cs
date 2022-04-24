@@ -10,8 +10,6 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AddictedProxy.Migrations
 {
-    [DbContext(typeof(EntityContext))]
-    [Migration("20220402050310_MoveLastRefreshedToSeason")]
     partial class MoveLastRefreshedToSeason
     {
         protected void BuildTargetModel(ModelBuilder modelBuilder)

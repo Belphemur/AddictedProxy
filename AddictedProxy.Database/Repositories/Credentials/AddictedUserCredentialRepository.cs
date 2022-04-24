@@ -19,8 +19,15 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
 
     public async Task<AddictedUserCredentials?> GetLeastUsedCredAsync(CancellationToken token)
     {
-        var min = await _context.AddictedUserCreds.MinAsync(credentials => credentials.Usage, token);
-        return await _context.AddictedUserCreds.Where(credentials => credentials.Usage <= min).FirstOrDefaultAsync(token);
+        try
+        {
+            var min = await _context.AddictedUserCreds.MinAsync(credentials => credentials.Usage, token);
+            return await _context.AddictedUserCreds.Where(credentials => credentials.Usage <= min).FirstOrDefaultAsync(token);
+        }
+        catch (InvalidOperationException e) when (e.Message == "Sequence contains no elements.")
+        {
+            return null;
+        }
     }
 
     public async Task UpsertUserCredentialsAsync(AddictedUserCredentials credentials, CancellationToken token)

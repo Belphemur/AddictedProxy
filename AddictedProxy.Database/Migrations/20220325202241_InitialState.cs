@@ -1,10 +1,15 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿
 
 #nullable disable
 
+using System;
+using AddictedProxy.Database.Context;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 namespace AddictedProxy.Database.Migrations
 {
+    [DbContext(typeof(EntityContext))]
+    [Migration("20220325202241_InitialState")]
     public partial class InitialState : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +25,6 @@ namespace AddictedProxy.Database.Migrations
                     Discovered = table.Column<DateTime>(type: "TEXT", nullable: false),
                     LastUpdated = table.Column<DateTime>(type: "TEXT", nullable: false),
                     LastSeasonRefreshed = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastEpisodeRefreshed = table.Column<DateTime>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {

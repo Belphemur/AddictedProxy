@@ -53,13 +53,7 @@ var app = builder.Build();
 app.UseBootstrap(currentAssemblies);
 
 
-{
-    await using var serviceScope = app.Services.CreateAsyncScope();
-    await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<EntityContext>();
 
-
-    await dbContext.Database.MigrateAsync();
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -74,6 +68,13 @@ app.UseSentryTracing();
 
 app.MapControllers();
 
+#if DEBUG
+{
+    await using var serviceScope = app.Services.CreateAsyncScope();
+    await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<EntityContext>();
 
+    await dbContext.Database.MigrateAsync();
+}
+#endif
 
 app.Run();

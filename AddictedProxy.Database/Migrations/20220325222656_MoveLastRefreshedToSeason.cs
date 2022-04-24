@@ -1,18 +1,19 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿
 
 #nullable disable
 
+using System;
+using AddictedProxy.Database.Context;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 namespace AddictedProxy.Database.Migrations
 {
+    [DbContext(typeof(EntityContext))]
+    [Migration("20220402050310_MoveLastRefreshedToSeason")]
     public partial class MoveLastRefreshedToSeason : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "LastEpisodeRefreshed",
-                table: "TvShows");
-
             migrationBuilder.AddColumn<DateTime>(
                 name: "LastRefreshed",
                 table: "Seasons",
@@ -22,10 +23,6 @@ namespace AddictedProxy.Database.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "LastRefreshed",
-                table: "Seasons");
-
             migrationBuilder.AddColumn<DateTime>(
                 name: "LastEpisodeRefreshed",
                 table: "TvShows",
