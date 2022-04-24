@@ -1,4 +1,5 @@
 ﻿ARG MAIN_PROJECT=AddictedProxy
+ARG DATA_DIRECTORY="/data"
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
@@ -18,7 +19,11 @@ RUN dotnet publish "${MAIN_PROJECT}.csproj" -c Release -o /app/publish
 
 FROM base AS final
 ARG MAIN_PROJECT
+ARG DATA_DIRECTORY
+ENV DB_PATH=$DATA_DIRECTORY
+
 WORKDIR /app
 COPY --from=publish /app/publish .
-RUN ln -s ${MAIN_PROJECT}.dll app.dll 
+RUN ln -s ${MAIN_PROJECT}.dll app.dll && mkdir $DATA_DIRECTORY
+VOLUME $DATA_DIRECTORY
 ENTRYPOINT ["dotnet", "app.dll"]
