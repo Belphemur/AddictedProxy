@@ -44,7 +44,7 @@ public class SubtitleRepository : ISubtitleRepository
         }
 
         //Weird case where I can't match always the GUID. Might be an issue with SQLite
-        return query.SingleOrDefaultAsync(subtitle => subtitle.UniqueId == uniqueId || subtitle.UniqueId.ToString().ToUpper() == uniqueId.ToString().ToUpper(), token);
+        return query.SingleOrDefaultAsync(subtitle => subtitle.UniqueId == uniqueId, token);
     }
 
     /// <summary>
