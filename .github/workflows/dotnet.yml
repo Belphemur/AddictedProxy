@@ -120,7 +120,7 @@ jobs:
       - name: Latest Version
         run: | 
           version=$(git describe --tags --abbrev=0 | cut -c 2-)
-          echo "::set-output name=version::$version.0"
+          echo "::set-output name=version::$version"
         id: version
       - name: Sentry Release
         uses: getsentry/action-release@v1.1.6
@@ -177,8 +177,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', main) }}
-            type=raw,value=${{ needs.main-release.outputs.version}}
+            type=raw,value=latest
+            type=semver,pattern={{version}},value=${{ needs.main-release.outputs.version}}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
