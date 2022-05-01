@@ -37,7 +37,7 @@ public class StoreSubtitleJob : IJob
         }
 
         _logger.LogInformation("Saving subtitle {subtitleId} into the storage", SubtitleId);
-        var subtitle = await _subtitleRepository.GetSubtitleByGuidAsync(SubtitleId, true, cancellationToken);
+        var subtitle = await _subtitleRepository.GetSubtitleByGuidAsync(SubtitleId, true, false, cancellationToken);
         if (subtitle == null)
         {
             _logger.LogWarning("Subtitle couldn't be found with GUID {subtitleId}", SubtitleId);

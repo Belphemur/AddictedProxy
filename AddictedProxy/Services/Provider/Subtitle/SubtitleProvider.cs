@@ -95,8 +95,8 @@ public class SubtitleProvider : ISubtitleProvider
         return new MemoryStream(blob);
     }
 
-    public Task<Database.Model.Shows.Subtitle?> GetSubtitleAsync(Guid subtitleId, CancellationToken token)
+    public Task<Database.Model.Shows.Subtitle?> GetSubtitleFullAsync(Guid subtitleId, CancellationToken token)
     {
-        return _subtitleRepository.GetSubtitleByGuidAsync(subtitleId, false, token);
+        return _subtitleRepository.GetSubtitleByGuidAsync(subtitleId, true, true, token);
     }
 }

@@ -19,7 +19,7 @@ namespace AddictedProxy.Controllers;
 
 [ApiController]
 [Route("subtitles")]
-public class Addic7ed : Controller
+public class Subtitles : Controller
 {
     private readonly CultureParser _cultureParser;
     private readonly IEpisodeRepository _episodeRepository;
@@ -28,12 +28,12 @@ public class Addic7ed : Controller
     private readonly IShowProvider _showProvider;
     private readonly ISubtitleProvider _subtitleProvider;
 
-    public Addic7ed(IEpisodeRepository episodeRepository,
-                    CultureParser cultureParser,
-                    IShowProvider showProvider,
-                    ISubtitleProvider subtitleProvider,
-                    IJobBuilder jobBuilder,
-                    IJobScheduler jobScheduler)
+    public Subtitles(IEpisodeRepository episodeRepository,
+                     CultureParser cultureParser,
+                     IShowProvider showProvider,
+                     ISubtitleProvider subtitleProvider,
+                     IJobBuilder jobBuilder,
+                     IJobScheduler jobScheduler)
     {
         _episodeRepository = episodeRepository;
         _cultureParser = cultureParser;
@@ -59,7 +59,7 @@ public class Addic7ed : Controller
     {
         try
         {
-            var subtitle = await _subtitleProvider.GetSubtitleAsync(subtitleId, token);
+            var subtitle = await _subtitleProvider.GetSubtitleFullAsync(subtitleId, token);
             if (subtitle == null)
             {
                 return NotFound($"Subtitle ({subtitleId}) couldn't be found");
@@ -70,7 +70,9 @@ public class Addic7ed : Controller
             return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"))
             {
                 EntityTag = new EntityTagHeaderValue('"' + $"{subtitle.UniqueId}-{(subtitle.StoredAt.HasValue ? "-" + subtitle.StoredAt.Value.Ticks : "")}" + '"'),
-                LastModified = subtitle.StoredAt
+                LastModified = subtitle.StoredAt,
+                FileDownloadName =
+                    $"{subtitle.Episode.TvShow.Name.Replace(" ", ".")}.S{subtitle.Episode.Season}E{subtitle.Episode.Number}.{_cultureParser.FromString(subtitle.Language)?.TwoLetterISOLanguageName.ToLowerInvariant()}.srt"
             };
         }
         catch (DownloadLimitExceededException e)
