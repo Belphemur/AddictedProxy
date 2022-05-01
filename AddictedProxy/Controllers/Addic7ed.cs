@@ -155,22 +155,26 @@ public class Addic7ed : Controller
             FileName = fileName;
             LanguageISO = languageIso;
         }
+
         /// <summary>
         /// Name of the show
         /// </summary>
         /// <example>NCIS</example>
 
         public string Show { get; }
+
         /// <summary>
         /// Episode number
         /// </summary>
         /// <example>1</example>
         public int Episode { get; }
+
         /// <summary>
         /// Season number
         /// </summary>
         /// <example>1</example>
         public int Season { get; }
+
         /// <summary>
         /// Name of the file for which you want subtitle, it help find a version of the subtitle that matches it
         /// </summary>
@@ -215,7 +219,14 @@ public class Addic7ed : Controller
                 Language = language?.EnglishName ?? "Unknown";
                 Discovered = subtitle.Discovered;
                 SubtitleId = subtitle.UniqueId.ToString();
+                DownloadCount = subtitle.DownloadCount;
             }
+
+
+            /// <summary>
+            /// Unique Id of the subtitle
+            /// </summary>
+            public string SubtitleId { get; }
 
             /// <summary>
             /// Version of the subtitle
@@ -239,9 +250,9 @@ public class Addic7ed : Controller
             public DateTime Discovered { get; }
 
             /// <summary>
-            /// Unique Id of the subtitle
+            /// Number of times the subtitle was downloaded from the proxy
             /// </summary>
-            public string SubtitleId { get; }
+            public long DownloadCount { get; }
         }
 
         /// <summary>
