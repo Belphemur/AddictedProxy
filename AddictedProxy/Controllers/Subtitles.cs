@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
@@ -67,7 +68,8 @@ public class Subtitles : Controller
 
             var subtitleStream = await _subtitleProvider.GetSubtitleFileAsync(subtitle, token);
 
-            var fileName = $"{subtitle.Episode.TvShow.Name.Replace(" ", ".")}.S{subtitle.Episode.Season:D2}E{subtitle.Episode.Number:D2}.{_cultureParser.FromString(subtitle.Language)?.TwoLetterISOLanguageName.ToLowerInvariant()}.srt";
+            var fileName =
+                $"{subtitle.Episode.TvShow.Name.Replace(" ", ".")}.S{subtitle.Episode.Season:D2}E{subtitle.Episode.Number:D2}.{_cultureParser.FromString(subtitle.Language)?.TwoLetterISOLanguageName.ToLowerInvariant()}.srt";
             return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"))
             {
                 EntityTag = new EntityTagHeaderValue('"' + $"{subtitle.UniqueId}-{(subtitle.StoredAt.HasValue ? "-" + subtitle.StoredAt.Value.Ticks : "")}" + '"'),
@@ -131,25 +133,29 @@ public class Subtitles : Controller
     private SearchResponse.SubtitleDto[] FindMatchingSubtitles(SearchRequest request, Episode episode)
     {
         var searchLanguage = _cultureParser.FromString(request.LanguageISO);
-        return episode.Subtitles
-                      .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), searchLanguage))
-                      .Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => request.FileName.ToLowerInvariant().Contains(version)))
-                      .Select(
-                          subtitle => new SearchResponse.SubtitleDto(
-                              subtitle,
-                              Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
-                              throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
-                              searchLanguage
-                          )
-                      )
-                      .ToArray();
+        var search = episode.Subtitles
+                            .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), searchLanguage));
+        if (request.FileName != null)
+        {
+            search = search.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => request.FileName.ToLowerInvariant().Contains(version)));
+        }
+
+        return search.Select(
+                         subtitle => new SearchResponse.SubtitleDto(
+                             subtitle,
+                             Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
+                             throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                             searchLanguage
+                         )
+                     )
+                     .ToArray();
     }
 
     public record ErrorResponse(string Error);
 
     public class SearchRequest
     {
-        public SearchRequest(string show, int episode, int season, string fileName, string languageIso)
+        public SearchRequest(string show, int episode, int season, string languageIso, string? fileName)
         {
             Show = show;
             Episode = episode;
@@ -163,30 +169,35 @@ public class Subtitles : Controller
         /// </summary>
         /// <example>NCIS</example>
 
+        [Required]
         public string Show { get; }
 
         /// <summary>
         /// Episode number
         /// </summary>
         /// <example>1</example>
+        [Required]
         public int Episode { get; }
 
         /// <summary>
         /// Season number
         /// </summary>
         /// <example>1</example>
+        [Required]
         public int Season { get; }
 
         /// <summary>
         /// Name of the file for which you want subtitle, it help find a version of the subtitle that matches it
         /// </summary>
         /// <example>NCIS.S01E01.HDTV.mkv</example>
-        public string FileName { get; }
+        /// <remarks>Optional, only if you want to match by version of subtitle</remarks>
+        public string? FileName { get; }
 
         /// <summary>
         ///     3 or 2 letter code of the language
         /// </summary>
         /// <example>en</example>
+        [Required]
         public string LanguageISO { get; }
     }
 
