@@ -304,32 +304,41 @@ public class Subtitles : Controller
             /// <summary>
             /// Unique Id of the subtitle
             /// </summary>
+            /// <example>1086727A-EB71-4B24-A209-7CF22374574D</example>
             public string SubtitleId { get; }
 
             /// <summary>
             /// Version of the subtitle
             /// </summary>
+            /// <example>HDTV</example>
             public string Version { get; }
 
             public bool Completed { get; }
             public bool HearingImpaired { get; }
             public bool Corrected { get; }
             public bool HD { get; }
+            /// <summary>
+            /// Url to download the subtitle
+            /// </summary>
+            /// <example>/download/1086727A-EB71-4B24-A209-7CF22374574D</example>
             public string DownloadUri { get; }
 
             /// <summary>
             /// Language of the subtitle (in English)
             /// </summary>
+            /// <example>English</example>
             public string Language { get; }
 
             /// <summary>
-            ///     When was the subtitle discovered
+            ///     When was the subtitle discovered in UTC
             /// </summary>
+            /// <example>2022-04-02T05:16:45.4001274</example>
             public DateTime Discovered { get; }
 
             /// <summary>
             /// Number of times the subtitle was downloaded from the proxy
             /// </summary>
+            /// <example>100</example>
             public long DownloadCount { get; }
         }
 
@@ -350,26 +359,31 @@ public class Subtitles : Controller
             /// <summary>
             /// Season of the episode
             /// </summary>
+            /// <example>1</example>
             public int Season { get; }
 
             /// <summary>
             /// Number of the episode
             /// </summary>
+            /// <example>1</example>
             public int Number { get; }
 
             /// <summary>
             /// Title of the episode
             /// </summary>
+            /// <example>Demon Girl</example>
             public string Title { get; }
 
             /// <summary>
             /// For which show
             /// </summary>
+            /// <example>Wellington Paranormal</example>
             public string Show { get; }
 
             /// <summary>
-            ///     When was the subtitle discovered
+            ///     When was the Episode discovered
             /// </summary>
+            /// <example>2022-04-02T05:16:45.3996669</example>
             public DateTime Discovered { get; }
         }
     }
