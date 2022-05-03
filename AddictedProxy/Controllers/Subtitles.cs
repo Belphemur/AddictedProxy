@@ -2,6 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Culture;
@@ -28,6 +29,7 @@ public class Subtitles : Controller
     private readonly IJobScheduler _jobScheduler;
     private readonly IShowProvider _showProvider;
     private readonly ISubtitleProvider _subtitleProvider;
+    private readonly Regex _searchPattern = new(@"(?<show>.+)S(?<season>\d+)E(?<episode>\d+)", RegexOptions.Compiled  | RegexOptions.IgnoreCase);
 
     public Subtitles(IEpisodeRepository episodeRepository,
                      CultureParser cultureParser,
@@ -84,11 +86,8 @@ public class Subtitles : Controller
     }
 
     /// <summary>
-    /// Search for subtitle of a specific episode of a show
+    /// Search for a specific episode
     /// </summary>
-    /// <remarks>
-    /// The routes are ratelimited to 15 call per seconds.
-    /// </remarks>
     /// <param name="request"></param>
     /// <param name="token"></param>
     /// <returns></returns>
@@ -96,9 +95,42 @@ public class Subtitles : Controller
     [HttpPost]
     [ProducesResponseType(typeof(SearchResponse), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 404)]
+    [ProducesResponseType(typeof(WrongFormatResponse), 400)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
     public async Task<IActionResult> Search([FromBody] SearchRequest request, CancellationToken token)
+    {
+        var match = _searchPattern.Match(request.Search);
+        if (!match.Success)
+        {
+            return BadRequest(new WrongFormatResponse("The search doesn't follow the wanted format. Example: Wellington S01E01", request.Search));
+        }
+
+        return await ProcessQueryRequestAsync(new QueryRequest(match.Groups["show"].Value.Trim().Replace(".", " "), int.Parse(match.Groups["episode"].Value), int.Parse(match.Groups["season"].Value), request.Language, null),
+            token);
+    }
+
+    /// <summary>
+    /// Query for subtitle of a specific episode of a show
+    /// </summary>
+    /// <remarks>
+    /// The routes are ratelimited to 15 call per seconds.
+    /// </remarks>
+    /// <param name="request"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    [Route("query")]
+    [HttpPost]
+    [ProducesResponseType(typeof(SearchResponse), 200)]
+    [ProducesResponseType(typeof(ErrorResponse), 404)]
+    [ProducesResponseType(typeof(string), 429)]
+    [Produces("application/json")]
+    public async Task<IActionResult> Query([FromBody] QueryRequest request, CancellationToken token)
+    {
+        return await ProcessQueryRequestAsync(request, token);
+    }
+
+    private async Task<IActionResult> ProcessQueryRequestAsync(QueryRequest request, CancellationToken token)
     {
         var show = await _showProvider.FindShowsAsync(request.Show, token).FirstOrDefaultAsync(token);
         if (show == null)
@@ -122,7 +154,7 @@ public class Subtitles : Controller
         return Ok(new SearchResponse(matchingSubtitles, new SearchResponse.EpisodeDto(episode)));
     }
 
-    private void ScheduleJob(SearchRequest request, TvShow show)
+    private void ScheduleJob(QueryRequest request, TvShow show)
     {
         var job = _jobBuilder.Create<FetchSubtitlesJob>()
                              .Configure(subtitlesJob => { subtitlesJob.Data = new FetchSubtitlesJob.JobData(show, request.Season, request.Episode, _cultureParser.FromString(request.LanguageISO), request.FileName); })
@@ -130,7 +162,7 @@ public class Subtitles : Controller
         _jobScheduler.ScheduleJob(job);
     }
 
-    private SearchResponse.SubtitleDto[] FindMatchingSubtitles(SearchRequest request, Episode episode)
+    private SearchResponse.SubtitleDto[] FindMatchingSubtitles(QueryRequest request, Episode episode)
     {
         var searchLanguage = _cultureParser.FromString(request.LanguageISO);
         var search = episode.Subtitles
@@ -151,11 +183,44 @@ public class Subtitles : Controller
                      .ToArray();
     }
 
+    /// <summary>
+    /// Returns when there is an error
+    /// </summary>
+    /// <param name="Error"></param>
     public record ErrorResponse(string Error);
 
-    public class SearchRequest
+    /// <summary>
+    /// Returned when the search wasn't formatted properly
+    /// </summary>
+    /// <param name="Error"></param>
+    public record WrongFormatResponse(string Error, string Search) : ErrorResponse(Error);
+
+    /// <summary>
+    /// Use for the website to provide easy search for the user
+    /// </summary>
+    /// <param name="Search"></param>
+    /// <param name="Language"></param>
+    public record SearchRequest(string Search, string Language)
     {
-        public SearchRequest(string show, int episode, int season, string languageIso, string? fileName)
+        /// <summary>
+        /// Search for specific subtitle
+        /// </summary>
+        /// <example>Wellington Paranormal S01E05</example>
+        public string Search { get; init; } = Search;
+
+        /// <summary>
+        /// Language of the subtitle
+        /// </summary>
+        /// <example>English</example>
+        public string Language { get; init; } = Language;
+    }
+
+    /// <summary>
+    /// Used for different Media Center/Subtitle searchers
+    /// </summary>
+    public class QueryRequest
+    {
+        public QueryRequest(string show, int episode, int season, string languageIso, string? fileName)
         {
             Show = show;
             Episode = episode;
