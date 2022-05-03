@@ -29,7 +29,7 @@ public class Subtitles : Controller
     private readonly IJobScheduler _jobScheduler;
     private readonly IShowProvider _showProvider;
     private readonly ISubtitleProvider _subtitleProvider;
-    private readonly Regex _searchPattern = new(@"(?<show>.+)S(?<season>\d+)E(?<episode>\d+)", RegexOptions.Compiled  | RegexOptions.IgnoreCase);
+    private readonly Regex _searchPattern = new(@"(?<show>.+)S(?<season>\d+)E(?<episode>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public Subtitles(IEpisodeRepository episodeRepository,
                      CultureParser cultureParser,
@@ -91,6 +91,10 @@ public class Subtitles : Controller
     /// <param name="request"></param>
     /// <param name="token"></param>
     /// <returns></returns>
+    /// <response code="200">Returns the matching subtitles</response>
+    /// <response code="404">Couldn't find the show or its season/episode</response>
+    /// <response code="400">Doesn't follow the right format for the search: Show S00E00</response>
+    /// <response code="429">Reached the rate limiting of the endpoint</response>
     [Route("search")]
     [HttpPost]
     [ProducesResponseType(typeof(SearchResponse), 200)]
@@ -106,7 +110,8 @@ public class Subtitles : Controller
             return BadRequest(new WrongFormatResponse("The search doesn't follow the wanted format. Example: Wellington S01E01", request.Search));
         }
 
-        return await ProcessQueryRequestAsync(new QueryRequest(match.Groups["show"].Value.Trim().Replace(".", " "), int.Parse(match.Groups["episode"].Value), int.Parse(match.Groups["season"].Value), request.Language, null),
+        return await ProcessQueryRequestAsync(
+            new QueryRequest(match.Groups["show"].Value.Trim().Replace(".", " "), int.Parse(match.Groups["episode"].Value), int.Parse(match.Groups["season"].Value), request.Language, null),
             token);
     }
 
@@ -119,6 +124,9 @@ public class Subtitles : Controller
     /// <param name="request"></param>
     /// <param name="token"></param>
     /// <returns></returns>
+    /// <response code="200">Returns the matching subtitles</response>
+    /// <response code="404">Couldn't find the show or its season/episode</response>
+    /// <response code="429">Reached the rate limiting of the endpoint</response>
     [Route("query")]
     [HttpPost]
     [ProducesResponseType(typeof(SearchResponse), 200)]
@@ -317,6 +325,7 @@ public class Subtitles : Controller
             public bool HearingImpaired { get; }
             public bool Corrected { get; }
             public bool HD { get; }
+
             /// <summary>
             /// Url to download the subtitle
             /// </summary>
