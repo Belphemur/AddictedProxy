@@ -37,6 +37,24 @@ public class SubtitleProvider : ISubtitleProvider
         _jobScheduler = jobScheduler;
     }
 
+    private class SubtitleCounterUpdater : IAsyncDisposable
+    {
+        private readonly ISubtitleRepository _subtitleRepository;
+        private readonly Database.Model.Shows.Subtitle _subtitle;
+
+        public SubtitleCounterUpdater(ISubtitleRepository subtitleRepository, Database.Model.Shows.Subtitle subtitle)
+        {
+            _subtitleRepository = subtitleRepository;
+            _subtitle = subtitle;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            _subtitle.DownloadCount++;
+            await _subtitleRepository.UpdateAsync(_subtitle, CancellationToken.None);
+        }
+    }
+
     /// <summary>
     /// Get the subtitle file stream
     /// </summary>
@@ -46,9 +64,14 @@ public class SubtitleProvider : ISubtitleProvider
     /// <returns></returns>
     public async Task<Stream> GetSubtitleFileAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token)
     {
+        await using var subDownloadUpdater = new SubtitleCounterUpdater(_subtitleRepository, subtitle);
         if (subtitle.StoragePath != null)
         {
-            return await _storageProvider.DownloadAsync(subtitle.StoragePath, token);
+            var stream = await _storageProvider.DownloadAsync(subtitle.StoragePath, token);
+            if (stream != null)
+            {
+                return stream;
+            }
         }
 
         await using var creds = await _credentialsService.GetLeastUsedCredsAsync(token);
@@ -72,8 +95,8 @@ public class SubtitleProvider : ISubtitleProvider
         return new MemoryStream(blob);
     }
 
-    public Task<Database.Model.Shows.Subtitle?> GetSubtitleAsync(Guid subtitleId, CancellationToken token)
+    public Task<Database.Model.Shows.Subtitle?> GetSubtitleFullAsync(Guid subtitleId, CancellationToken token)
     {
-        return _subtitleRepository.GetSubtitleByGuidAsync(subtitleId, false, token);
+        return _subtitleRepository.GetSubtitleByGuidAsync(subtitleId, true, true, token);
     }
 }

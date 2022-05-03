@@ -21,9 +21,10 @@ public interface ISubtitleRepository
     /// </summary>
     /// <param name="uniqueId"></param>
     /// <param name="withEpisode"></param>
+    /// <param name="withShow"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<Subtitle?> GetSubtitleByGuidAsync(Guid uniqueId, bool withEpisode = false, CancellationToken token = default);
+    Task<Subtitle?> GetSubtitleByGuidAsync(Guid uniqueId, bool withEpisode = false, bool withShow = false, CancellationToken token = default);
 
     /// <summary>
     /// Update the subtitle

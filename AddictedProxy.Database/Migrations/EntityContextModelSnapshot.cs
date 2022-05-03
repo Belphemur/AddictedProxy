@@ -112,6 +112,9 @@ namespace AddictedProxy.Database.Migrations
                     b.Property<DateTime>("Discovered")
                         .HasColumnType("TEXT");
 
+                    b.Property<long>("DownloadCount")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("DownloadUri")
                         .IsRequired()
                         .HasColumnType("TEXT");

@@ -10,6 +10,7 @@ using AddictedProxy.Upstream.Boostrap;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 #endregion
 
@@ -23,6 +24,11 @@ builder.Services.AddSwaggerGen(options =>
            // using System.Reflection;
            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+           options.SwaggerDoc("v1", new OpenApiInfo
+           {
+               Title = "Addicted Proxy",
+               Description = "Provide a full system to search and download subtitles from Addi7ed website."
+           });
        })
        .AddEndpointsApiExplorer();
 
@@ -53,15 +59,14 @@ var app = builder.Build();
 app.UseBootstrap(currentAssemblies);
 
 
-
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
 
-app.UseSwagger().UseSwaggerUI();
+app.UseSwagger(options => options.RouteTemplate = "api/{documentName}/swagger.{json|yaml}")
+   .UseSwaggerUI(options => options.RoutePrefix = "api");
 
 
 app.UseSentryTracing();

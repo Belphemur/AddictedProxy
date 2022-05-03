@@ -33,14 +33,20 @@ public class SubtitleRepository : ISubtitleRepository
     /// </summary>
     /// <param name="uniqueId"></param>
     /// <param name="withEpisode"></param>
+    /// <param name="withShow"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Subtitle?> GetSubtitleByGuidAsync(Guid uniqueId, bool withEpisode, CancellationToken token)
+    public Task<Subtitle?> GetSubtitleByGuidAsync(Guid uniqueId, bool withEpisode, bool withShow, CancellationToken token = default)
     {
         var query = _entityContext.Subtitles.AsQueryable();
         if (withEpisode)
         {
             query = query.Include(subtitle => subtitle.Episode);
+        }
+
+        if (withShow)
+        {
+            query = query.Include(subtitle => subtitle.Episode.TvShow);
         }
 
         //Weird case where I can't match always the GUID. Might be an issue with SQLite

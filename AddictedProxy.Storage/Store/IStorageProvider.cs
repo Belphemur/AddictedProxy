@@ -17,5 +17,5 @@ public interface IStorageProvider
     /// <param name="filename"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<Stream> DownloadAsync(string filename, CancellationToken cancellationToken);
+    Task<Stream?> DownloadAsync(string filename, CancellationToken cancellationToken);
 }

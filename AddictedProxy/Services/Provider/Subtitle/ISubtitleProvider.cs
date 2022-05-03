@@ -1,5 +1,6 @@
 ﻿#region
 
+using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Service.Exception;
 
 #endregion
@@ -18,10 +19,10 @@ public interface ISubtitleProvider
     public Task<Stream> GetSubtitleFileAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token);
 
     /// <summary>
-    /// Get the subtitle
+    /// Get the <see cref="Subtitle"/> with its <see cref="Episode"/> and attached <see cref="TvShow"/>
     /// </summary>
     /// <param name="subtitleId"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<Database.Model.Shows.Subtitle?> GetSubtitleAsync(Guid subtitleId, CancellationToken token);
+    public Task<Database.Model.Shows.Subtitle?> GetSubtitleFullAsync(Guid subtitleId, CancellationToken token);
 }

@@ -41,4 +41,9 @@ public class Subtitle : IDiscoverableObject
     ///     When was the subtitle discovered
     /// </summary>
     public DateTime Discovered { get; set; }
+
+    /// <summary>
+    ///Number of time this sub was downloaded
+    /// </summary>
+    public long DownloadCount { get; set; }
 }
