@@ -27,7 +27,8 @@ builder.Services.AddSwaggerGen(options =>
            options.SwaggerDoc("v1", new OpenApiInfo
            {
                Title = "Addicted Proxy",
-               Description = "Provide a full system to search and download subtitles from Addi7ed website."
+               Description = "Provide a full system to search and download subtitles from Addi7ed website.",
+               Version = Assembly.GetExecutingAssembly().GetName().Version!.ToString()
            });
        })
        .AddEndpointsApiExplorer();
