@@ -22,4 +22,12 @@ public interface IShowProvider
     /// <param name="token"></param>
     /// <returns></returns>
     IAsyncEnumerable<TvShow> FindShowsAsync(string search, CancellationToken token);
+
+    /// <summary>
+    /// Get the show by its id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<TvShow?> GetShowByIdAsync(long id, CancellationToken cancellationToken);
 }

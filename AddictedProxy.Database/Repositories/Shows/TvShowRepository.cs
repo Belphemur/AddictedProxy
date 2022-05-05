@@ -53,8 +53,13 @@ public class TvShowRepository : ITvShowRepository
         return _entityContext.TvShows.ToAsyncEnumerable();
     }
 
-    public Task UpdateShow(TvShow show, CancellationToken token)
+    public Task UpdateShowAsync(TvShow show, CancellationToken token)
     {
         return _entityContext.TvShows.SingleUpdateAsync(show, AvoidUpdateDiscoveredField, token);
+    }
+
+    public Task<TvShow?> GetByIdAsync(long id, CancellationToken cancellationToken)
+    {
+        return _entityContext.TvShows.SingleOrDefaultAsync(show => show.Id == id, cancellationToken: cancellationToken);
     }
 }

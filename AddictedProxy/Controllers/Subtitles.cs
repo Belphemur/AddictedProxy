@@ -97,7 +97,7 @@ public class Subtitles : Controller
     /// <response code="429">Reached the rate limiting of the endpoint</response>
     [Route("search")]
     [HttpPost]
-    [ProducesResponseType(typeof(SearchResponse), 200)]
+    [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 404)]
     [ProducesResponseType(typeof(WrongFormatResponse), 400)]
     [ProducesResponseType(typeof(string), 429)]
@@ -111,7 +111,7 @@ public class Subtitles : Controller
         }
 
         return await ProcessQueryRequestAsync(
-            new QueryRequest(match.Groups["show"].Value.Trim().Replace(".", " "), int.Parse(match.Groups["episode"].Value), int.Parse(match.Groups["season"].Value), request.Language, null),
+            new SubtitleQueryRequest(match.Groups["show"].Value.Trim().Replace(".", " "), int.Parse(match.Groups["episode"].Value), int.Parse(match.Groups["season"].Value), request.Language, null),
             token);
     }
 
@@ -129,16 +129,16 @@ public class Subtitles : Controller
     /// <response code="429">Reached the rate limiting of the endpoint</response>
     [Route("query")]
     [HttpPost]
-    [ProducesResponseType(typeof(SearchResponse), 200)]
+    [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 404)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
-    public async Task<IActionResult> Query([FromBody] QueryRequest request, CancellationToken token)
+    public async Task<IActionResult> Query([FromBody] SubtitleQueryRequest request, CancellationToken token)
     {
         return await ProcessQueryRequestAsync(request, token);
     }
 
-    private async Task<IActionResult> ProcessQueryRequestAsync(QueryRequest request, CancellationToken token)
+    private async Task<IActionResult> ProcessQueryRequestAsync(SubtitleQueryRequest request, CancellationToken token)
     {
         var show = await _showProvider.FindShowsAsync(request.Show, token).FirstOrDefaultAsync(token);
         if (show == null)
@@ -159,10 +159,10 @@ public class Subtitles : Controller
             ScheduleJob(request, show);
         }
 
-        return Ok(new SearchResponse(matchingSubtitles, new EpisodeDto(episode)));
+        return Ok(new SubtitleSearchResponse(matchingSubtitles, new EpisodeDto(episode)));
     }
 
-    private void ScheduleJob(QueryRequest request, TvShow show)
+    private void ScheduleJob(SubtitleQueryRequest request, TvShow show)
     {
         var job = _jobBuilder.Create<FetchSubtitlesJob>()
                              .Configure(subtitlesJob => { subtitlesJob.Data = new FetchSubtitlesJob.JobData(show, request.Season, request.Episode, _cultureParser.FromString(request.LanguageISO), request.FileName); })
@@ -170,7 +170,7 @@ public class Subtitles : Controller
         _jobScheduler.ScheduleJob(job);
     }
 
-    private SubtitleDto[] FindMatchingSubtitles(QueryRequest request, Episode episode)
+    private SubtitleDto[] FindMatchingSubtitles(SubtitleQueryRequest request, Episode episode)
     {
         var searchLanguage = _cultureParser.FromString(request.LanguageISO);
         var search = episode.Subtitles
@@ -226,9 +226,9 @@ public class Subtitles : Controller
     /// <summary>
     /// Used for different Media Center/Subtitle searchers
     /// </summary>
-    public class QueryRequest
+    public class SubtitleQueryRequest
     {
-        public QueryRequest(string show, int episode, int season, string languageIso, string? fileName)
+        public SubtitleQueryRequest(string show, int episode, int season, string languageIso, string? fileName)
         {
             Show = show;
             Episode = episode;
@@ -274,9 +274,9 @@ public class Subtitles : Controller
         public string LanguageISO { get; }
     }
 
-    public class SearchResponse
+    public class SubtitleSearchResponse
     {
-        public SearchResponse(IEnumerable<SubtitleDto> matchingSubtitles, EpisodeDto episode)
+        public SubtitleSearchResponse(IEnumerable<SubtitleDto> matchingSubtitles, EpisodeDto episode)
         {
             MatchingSubtitles = matchingSubtitles;
             Episode = episode;

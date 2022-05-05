@@ -34,4 +34,9 @@ public class ShowProvider : IShowProvider
     {
         return _tvShowRepository.FindAsync(search, token);
     }
+
+    public Task<TvShow?> GetShowByIdAsync(long id, CancellationToken cancellationToken)
+    {
+        return _tvShowRepository.GetByIdAsync(id, cancellationToken);
+    }
 }

@@ -78,7 +78,7 @@ public class FetchSubtitlesJob : IJob
             var seasons = (await _client.GetSeasonsAsync(credentials.AddictedUserCredentials, show, token)).ToArray();
             await _seasonRepository.UpsertSeason(seasons, token);
             show.LastSeasonRefreshed = DateTime.UtcNow;
-            await _tvShowRepository.UpdateShow(show, token);
+            await _tvShowRepository.UpdateShowAsync(show, token);
             season = await _seasonRepository.GetSeasonForShow(show.Id, Data.Season, token);
         }
 
