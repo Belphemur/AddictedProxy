@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="addicted.db" uuid="4b854be4-7ed5-4166-acfc-17776e6230d9">
+    <data-source source="LOCAL" name="SQLite - addicted.db" uuid="4b854be4-7ed5-4166-acfc-17776e6230d9">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$USER_HOME$/AppData/Roaming/addicted.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$USER_HOME$/.config/addicted.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
