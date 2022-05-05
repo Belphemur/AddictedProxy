@@ -1,5 +1,6 @@
 ﻿#region
 
+using AddictedProxy.Services.Provider.Show;
 using AddictedProxy.Services.Provider.Subtitle;
 using AddictedProxy.Services.Provider.Subtitle.Job;
 using InversionOfControl.Model;
@@ -7,7 +8,7 @@ using Job.Scheduler.AspNetCore.Extensions;
 
 #endregion
 
-namespace AddictedProxy.Services.Saver.Bootstrap;
+namespace AddictedProxy.Services.Provider.Bootstrap;
 
 public class BootstrapSaver : IBootstrap
 {
