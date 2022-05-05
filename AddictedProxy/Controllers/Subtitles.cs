@@ -1,10 +1,10 @@
 ﻿#region
 
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Text.RegularExpressions;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Model.Dto;
 using AddictedProxy.Services.Culture;
 using AddictedProxy.Services.Provider.Show;
 using AddictedProxy.Services.Provider.Subtitle;
@@ -159,7 +159,7 @@ public class Subtitles : Controller
             ScheduleJob(request, show);
         }
 
-        return Ok(new SearchResponse(matchingSubtitles, new SearchResponse.EpisodeDto(episode)));
+        return Ok(new SearchResponse(matchingSubtitles, new EpisodeDto(episode)));
     }
 
     private void ScheduleJob(QueryRequest request, TvShow show)
@@ -170,7 +170,7 @@ public class Subtitles : Controller
         _jobScheduler.ScheduleJob(job);
     }
 
-    private SearchResponse.SubtitleDto[] FindMatchingSubtitles(QueryRequest request, Episode episode)
+    private SubtitleDto[] FindMatchingSubtitles(QueryRequest request, Episode episode)
     {
         var searchLanguage = _cultureParser.FromString(request.LanguageISO);
         var search = episode.Subtitles
@@ -181,7 +181,7 @@ public class Subtitles : Controller
         }
 
         return search.Select(
-                         subtitle => new SearchResponse.SubtitleDto(
+                         subtitle => new SubtitleDto(
                              subtitle,
                              Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
                              throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
@@ -291,109 +291,5 @@ public class Subtitles : Controller
         /// Information about the episode
         /// </summary>
         public EpisodeDto Episode { get; }
-
-        public class SubtitleDto
-        {
-            public SubtitleDto(Subtitle subtitle, string downloadUri, CultureInfo? language)
-            {
-                Version = subtitle.Scene;
-                Completed = subtitle.Completed;
-                HearingImpaired = subtitle.HearingImpaired;
-                HD = subtitle.HD;
-                Corrected = subtitle.Completed;
-                DownloadUri = downloadUri;
-                Language = language?.EnglishName ?? "Unknown";
-                Discovered = subtitle.Discovered;
-                SubtitleId = subtitle.UniqueId.ToString();
-                DownloadCount = subtitle.DownloadCount;
-            }
-
-
-            /// <summary>
-            /// Unique Id of the subtitle
-            /// </summary>
-            /// <example>1086727A-EB71-4B24-A209-7CF22374574D</example>
-            public string SubtitleId { get; }
-
-            /// <summary>
-            /// Version of the subtitle
-            /// </summary>
-            /// <example>HDTV</example>
-            public string Version { get; }
-
-            public bool Completed { get; }
-            public bool HearingImpaired { get; }
-            public bool Corrected { get; }
-            public bool HD { get; }
-
-            /// <summary>
-            /// Url to download the subtitle
-            /// </summary>
-            /// <example>/download/1086727A-EB71-4B24-A209-7CF22374574D</example>
-            public string DownloadUri { get; }
-
-            /// <summary>
-            /// Language of the subtitle (in English)
-            /// </summary>
-            /// <example>English</example>
-            public string Language { get; }
-
-            /// <summary>
-            ///     When was the subtitle discovered in UTC
-            /// </summary>
-            /// <example>2022-04-02T05:16:45.4001274</example>
-            public DateTime Discovered { get; }
-
-            /// <summary>
-            /// Number of times the subtitle was downloaded from the proxy
-            /// </summary>
-            /// <example>100</example>
-            public long DownloadCount { get; }
-        }
-
-        /// <summary>
-        /// Episode information
-        /// </summary>
-        public class EpisodeDto
-        {
-            public EpisodeDto(Episode episode)
-            {
-                Season = episode.Season;
-                Number = episode.Number;
-                Title = episode.Title;
-                Discovered = episode.Discovered;
-                Show = episode.TvShow.Name;
-            }
-
-            /// <summary>
-            /// Season of the episode
-            /// </summary>
-            /// <example>1</example>
-            public int Season { get; }
-
-            /// <summary>
-            /// Number of the episode
-            /// </summary>
-            /// <example>1</example>
-            public int Number { get; }
-
-            /// <summary>
-            /// Title of the episode
-            /// </summary>
-            /// <example>Demon Girl</example>
-            public string Title { get; }
-
-            /// <summary>
-            /// For which show
-            /// </summary>
-            /// <example>Wellington Paranormal</example>
-            public string Show { get; }
-
-            /// <summary>
-            ///     When was the Episode discovered
-            /// </summary>
-            /// <example>2022-04-02T05:16:45.3996669</example>
-            public DateTime Discovered { get; }
-        }
     }
 }
