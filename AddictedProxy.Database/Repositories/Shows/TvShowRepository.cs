@@ -24,7 +24,7 @@ public class TvShowRepository : ITvShowRepository
     public async IAsyncEnumerable<TvShow> FindAsync(string name, [EnumeratorCancellation] CancellationToken token)
     {
         var strictMatch = await _entityContext.TvShows
-                                              .Where(show => show.Name.ToLower() == name.ToLower())
+                                              .Where(show => show.Name == name)
                                               .Include(show => show.Seasons)
                                               .FirstOrDefaultAsync(token);
         if (strictMatch != null)
@@ -34,7 +34,7 @@ public class TvShowRepository : ITvShowRepository
         }
 
         foreach (var tvShow in _entityContext.TvShows
-                                             .Where(show => show.Name.ToLower().Contains(name.ToLower()))
+                                             .Where(show => EF.Functions.Like(show.Name, $"%{name}%"))
                                              .Include(show => show.Seasons))
             
         {
