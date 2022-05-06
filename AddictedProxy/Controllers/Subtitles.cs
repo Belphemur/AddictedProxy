@@ -27,20 +27,20 @@ public class Subtitles : Controller
     private readonly IEpisodeRepository _episodeRepository;
     private readonly IJobBuilder _jobBuilder;
     private readonly IJobScheduler _jobScheduler;
-    private readonly IShowProvider _showProvider;
+    private readonly IShowRefresher _showRefresher;
     private readonly ISubtitleProvider _subtitleProvider;
     private readonly Regex _searchPattern = new(@"(?<show>.+)S(?<season>\d+)E(?<episode>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public Subtitles(IEpisodeRepository episodeRepository,
                      CultureParser cultureParser,
-                     IShowProvider showProvider,
+                     IShowRefresher showRefresher,
                      ISubtitleProvider subtitleProvider,
                      IJobBuilder jobBuilder,
                      IJobScheduler jobScheduler)
     {
         _episodeRepository = episodeRepository;
         _cultureParser = cultureParser;
-        _showProvider = showProvider;
+        _showRefresher = showRefresher;
         _subtitleProvider = subtitleProvider;
         _jobBuilder = jobBuilder;
         _jobScheduler = jobScheduler;
@@ -140,7 +140,7 @@ public class Subtitles : Controller
 
     private async Task<IActionResult> ProcessQueryRequestAsync(SubtitleQueryRequest request, CancellationToken token)
     {
-        var show = await _showProvider.FindShowsAsync(request.Show, token).FirstOrDefaultAsync(token);
+        var show = await _showRefresher.FindShowsAsync(request.Show, token).FirstOrDefaultAsync(token);
         if (show == null)
         {
             return NotFound(new ErrorResponse($"Couldn't find the show {request.Show}"));

@@ -11,16 +11,16 @@ namespace AddictedProxy.Services.Provider.Shows;
 public class RefreshShowJob : IRecurringJob
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly IShowProvider _showProvider;
+    private readonly IShowRefresher _showRefresher;
 
-    public RefreshShowJob(IShowProvider showProvider)
+    public RefreshShowJob(IShowRefresher showRefresher)
     {
-        _showProvider = showProvider;
+        _showRefresher = showRefresher;
     }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        await _showProvider.RefreshShowsAsync(cancellationToken);
+        await _showRefresher.RefreshShowsAsync(cancellationToken);
     }
 
     public Task OnFailure(JobException exception)

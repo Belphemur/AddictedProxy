@@ -9,13 +9,13 @@ using AddictedProxy.Upstream.Service;
 
 namespace AddictedProxy.Services.Provider.Shows;
 
-public class ShowProvider : IShowProvider
+public class ShowRefresher : IShowRefresher
 {
     private readonly IAddic7edClient _addic7EdClient;
     private readonly ICredentialsService _credentialsService;
     private readonly ITvShowRepository _tvShowRepository;
 
-    public ShowProvider(ITvShowRepository tvShowRepository, IAddic7edClient addic7EdClient, ICredentialsService credentialsService)
+    public ShowRefresher(ITvShowRepository tvShowRepository, IAddic7edClient addic7EdClient, ICredentialsService credentialsService)
     {
         _tvShowRepository = tvShowRepository;
         _addic7EdClient = addic7EdClient;

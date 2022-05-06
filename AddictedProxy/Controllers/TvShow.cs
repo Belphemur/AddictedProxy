@@ -9,7 +9,7 @@ namespace AddictedProxy.Controllers;
 [Route("shows")]
 public class TvShows : Controller
 {
-    private readonly IShowProvider _showProvider;
+    private readonly IShowRefresher _showRefresher;
     private readonly IJobBuilder _jobBuilder;
     private readonly IJobScheduler _jobScheduler;
 
@@ -27,9 +27,9 @@ public class TvShows : Controller
 
     public record ShowSearchResponse(IAsyncEnumerable<ShowDto> Shows);
 
-    public TvShows(IShowProvider showProvider, IJobBuilder jobBuilder, IJobScheduler jobScheduler)
+    public TvShows(IShowRefresher showRefresher, IJobBuilder jobBuilder, IJobScheduler jobScheduler)
     {
-        _showProvider = showProvider;
+        _showRefresher = showRefresher;
         _jobBuilder = jobBuilder;
         _jobScheduler = jobScheduler;
     }
@@ -50,7 +50,7 @@ public class TvShows : Controller
     public async Task<IActionResult> Search([FromBody] ShowSearchRequest showSearch, CancellationToken cancellationToken)
     {
         return Ok(new ShowSearchResponse(
-                _showProvider.FindShowsAsync(showSearch.Query, cancellationToken)
+                _showRefresher.FindShowsAsync(showSearch.Query, cancellationToken)
                                                         .Select(show => new ShowDto(show))
             )
         );
@@ -69,7 +69,7 @@ public class TvShows : Controller
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Refresh([FromRoute] long showId, CancellationToken token)
     {
-        var show = await _showProvider.GetShowByIdAsync(showId, token);
+        var show = await _showRefresher.GetShowByIdAsync(showId, token);
         if (show == null)
         {
             return NotFound();

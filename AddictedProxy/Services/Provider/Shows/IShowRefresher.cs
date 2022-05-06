@@ -6,7 +6,7 @@ using AddictedProxy.Database.Model.Shows;
 
 namespace AddictedProxy.Services.Provider.Shows;
 
-public interface IShowProvider
+public interface IShowRefresher
 {
     /// <summary>
     /// Refresh the shows
