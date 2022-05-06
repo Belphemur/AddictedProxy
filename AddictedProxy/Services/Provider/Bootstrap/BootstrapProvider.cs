@@ -1,6 +1,8 @@
 ﻿#region
 
-using AddictedProxy.Services.Provider.Show;
+using AddictedProxy.Services.Provider.Episodes;
+using AddictedProxy.Services.Provider.Seasons;
+using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle;
 using AddictedProxy.Services.Provider.Subtitle.Job;
 using InversionOfControl.Model;
@@ -10,7 +12,7 @@ using Job.Scheduler.AspNetCore.Extensions;
 
 namespace AddictedProxy.Services.Provider.Bootstrap;
 
-public class BootstrapSaver : IBootstrap
+public class BootstrapProvider : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
@@ -18,5 +20,8 @@ public class BootstrapSaver : IBootstrap
         services.AddJob<FetchSubtitlesJob>();
         services.AddScoped<IShowProvider, ShowProvider>();
         services.AddScoped<ISubtitleProvider, SubtitleProvider>();
+        services.AddScoped<ISeasonRefresher, SeasonRefresher>();
+        services.AddScoped<IEpisodeRefresher, EpisodeRefresher>();
+
     }
 }

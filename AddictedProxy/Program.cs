@@ -1,6 +1,5 @@
 #region
 
-using System.IO.Compression;
 using System.Reflection;
 using AddictedProxy.Controllers.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
@@ -8,7 +7,6 @@ using AddictedProxy.Database.Context;
 using AddictedProxy.Storage.Bootstrap;
 using AddictedProxy.Upstream.Boostrap;
 using InversionOfControl.Service.Bootstrap;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 

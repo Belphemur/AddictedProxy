@@ -7,7 +7,7 @@ using AddictedProxy.Upstream.Service;
 
 #endregion
 
-namespace AddictedProxy.Services.Provider.Show;
+namespace AddictedProxy.Services.Provider.Shows;
 
 public class ShowProvider : IShowProvider
 {

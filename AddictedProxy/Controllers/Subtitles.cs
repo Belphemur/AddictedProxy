@@ -6,7 +6,7 @@ using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Services.Culture;
-using AddictedProxy.Services.Provider.Show;
+using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle;
 using AddictedProxy.Services.Provider.Subtitle.Job;
 using AddictedProxy.Upstream.Service.Exception;

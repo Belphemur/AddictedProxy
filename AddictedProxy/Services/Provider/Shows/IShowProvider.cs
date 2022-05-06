@@ -4,7 +4,7 @@ using AddictedProxy.Database.Model.Shows;
 
 #endregion
 
-namespace AddictedProxy.Services.Provider.Show;
+namespace AddictedProxy.Services.Provider.Shows;
 
 public interface IShowProvider
 {

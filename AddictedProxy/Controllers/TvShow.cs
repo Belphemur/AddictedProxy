@@ -1,5 +1,5 @@
 ﻿using AddictedProxy.Model.Dto;
-using AddictedProxy.Services.Provider.Show;
+using AddictedProxy.Services.Provider.Shows;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 using Microsoft.AspNetCore.Mvc;
