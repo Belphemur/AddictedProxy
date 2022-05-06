@@ -2,7 +2,9 @@
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Crendentials;
 using AddictedProxy.Services.Credentials;
+using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Upstream.Service;
+using Microsoft.Extensions.Options;
 
 namespace AddictedProxy.Services.Provider.Seasons;
 
@@ -13,24 +15,30 @@ public class SeasonRefresher : ISeasonRefresher
     private readonly IAddic7edClient _addic7EdClient;
     private readonly ICredentialsService _credentialsService;
     private readonly ISeasonRepository _seasonRepository;
+    private readonly IOptions<RefreshConfig> _refreshConfig;
 
-    public SeasonRefresher(ILogger<SeasonRefresher> logger, ITvShowRepository tvShowRepository, IAddic7edClient addic7EdClient, ICredentialsService credentialsService, ISeasonRepository seasonRepository)
+    public SeasonRefresher(ILogger<SeasonRefresher> logger,
+                           ITvShowRepository tvShowRepository,
+                           IAddic7edClient addic7EdClient,
+                           ICredentialsService credentialsService,
+                           ISeasonRepository seasonRepository,
+                           IOptions<RefreshConfig> refreshConfig)
     {
         _logger = logger;
         _tvShowRepository = tvShowRepository;
         _addic7EdClient = addic7EdClient;
         _credentialsService = credentialsService;
         _seasonRepository = seasonRepository;
+        _refreshConfig = refreshConfig;
     }
 
-    public async Task<Season?> GetRefreshSeasonAsync(TvShow show, int seasonNumber, TimeSpan timeBetweenChecks, CancellationToken token)
+    public async Task<Season?> GetRefreshSeasonAsync(TvShow show, int seasonNumber, CancellationToken token)
     {
         var season = show.Seasons.FirstOrDefault(season => season.Number == seasonNumber);
-        await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
 
 
         //Check if we need to refresh because enough time has passed
-        if (season != null && show.LastSeasonRefreshed != null && !(DateTime.UtcNow - show.LastSeasonRefreshed >= timeBetweenChecks))
+        if (season != null && show.LastSeasonRefreshed != null && !(DateTime.UtcNow - show.LastSeasonRefreshed >= _refreshConfig.Value.SeasonRefresh))
         {
             return season;
         }
@@ -43,17 +51,22 @@ public class SeasonRefresher : ISeasonRefresher
             return season;
         }
 
-        var _ = await RefreshSeasonsAsync(show, credentials, token);
+        await RefreshSeasonsAsync(show, true, token);
         return await _seasonRepository.GetSeasonForShow(show.Id, seasonNumber, token);
     }
 
-
-    public async Task<TvShow> RefreshSeasonsAsync(TvShow show, CredsContainer credentials, CancellationToken token)
+    public async Task RefreshSeasonsAsync(TvShow show, bool force = false, CancellationToken token = default)
     {
+        await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
+
+        if (!force && show.LastSeasonRefreshed != null && !(DateTime.UtcNow - show.LastSeasonRefreshed >= _refreshConfig.Value.SeasonRefresh))
+        {
+            return;
+        }
+
         var seasons = (await _addic7EdClient.GetSeasonsAsync(credentials.AddictedUserCredentials, show, token)).ToArray();
         await _seasonRepository.UpsertSeason(seasons, token);
         show.LastSeasonRefreshed = DateTime.UtcNow;
         await _tvShowRepository.UpdateShowAsync(show, token);
-        return (await _tvShowRepository.GetByIdAsync(show.Id, token))!;
     }
 }

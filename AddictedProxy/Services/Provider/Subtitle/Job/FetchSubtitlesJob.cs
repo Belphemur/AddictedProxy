@@ -54,7 +54,7 @@ public class FetchSubtitlesJob : IJob
         }
 
         var show = Data.Show;
-        var season = await _seasonRefresher.GetRefreshSeasonAsync(show, Data.Season, TimeBetweenChecks, token);
+        var season = await _seasonRefresher.GetRefreshSeasonAsync(show, Data.Season, token);
 
         if (season == null)
         {
@@ -62,7 +62,7 @@ public class FetchSubtitlesJob : IJob
             return;
         }
 
-        var (episode, episodesRefreshed) = await _episodeRefresher.GetRefreshEpisodeAsync(show, season, Data.Episode, TimeBetweenChecks, token);
+        var (episode, episodesRefreshed) = await _episodeRefresher.GetRefreshEpisodeAsync(show, season, Data.Episode, token);
 
         if (episode == null)
         {
@@ -81,7 +81,7 @@ public class FetchSubtitlesJob : IJob
             return;
         }
 
-        await _episodeRefresher.RefreshSubtitlesAsync(Data.Show, season, token);
+        await _episodeRefresher.RefreshEpisodesAsync(Data.Show, season, true, token);
     }
 
     public Task OnFailure(JobException exception)

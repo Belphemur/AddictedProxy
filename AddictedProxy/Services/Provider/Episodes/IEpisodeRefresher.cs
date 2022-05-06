@@ -10,8 +10,9 @@ public interface IEpisodeRefresher
     /// </summary>
     /// <param name="show"></param>
     /// <param name="season"></param>
+    /// <param name="forceRefresh"></param>
     /// <param name="token"></param>
-    Task RefreshSubtitlesAsync(TvShow show, Season season, CancellationToken token);
+    Task RefreshEpisodesAsync(TvShow show, Season season, bool forceRefresh = false, CancellationToken token = default);
 
     /// <summary>
     /// Get episode. It might have been refreshed.
@@ -19,8 +20,7 @@ public interface IEpisodeRefresher
     /// <param name="show"></param>
     /// <param name="season"></param>
     /// <param name="episodeNumber"></param>
-    /// <param name="timeBetweenChecks"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<(Episode? episode, bool episodesRefreshed)> GetRefreshEpisodeAsync(TvShow show, Season season, int episodeNumber, TimeSpan timeBetweenChecks, CancellationToken token);
+    Task<(Episode? episode, bool episodesRefreshed)> GetRefreshEpisodeAsync(TvShow show, Season season, int episodeNumber, CancellationToken token);
 }

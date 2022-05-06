@@ -1,5 +1,6 @@
 ﻿#region
 
+using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows;
@@ -22,6 +23,7 @@ public class BootstrapProvider : IBootstrap
         services.AddScoped<ISubtitleProvider, SubtitleProvider>();
         services.AddScoped<ISeasonRefresher, SeasonRefresher>();
         services.AddScoped<IEpisodeRefresher, EpisodeRefresher>();
+        services.Configure<RefreshConfig>(configuration.GetSection("Refresh"));
 
     }
 }

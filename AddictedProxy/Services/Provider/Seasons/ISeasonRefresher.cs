@@ -10,17 +10,16 @@ public interface ISeasonRefresher
     /// </summary>
     /// <param name="show"></param>
     /// <param name="seasonNumber"></param>
-    /// <param name="timeBetweenChecks"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<Season?> GetRefreshSeasonAsync(TvShow show, int seasonNumber, TimeSpan timeBetweenChecks, CancellationToken token);
+    Task<Season?> GetRefreshSeasonAsync(TvShow show, int seasonNumber, CancellationToken token);
 
     /// <summary>
     /// Refresh the season of the given show
     /// </summary>
     /// <param name="show"></param>
-    /// <param name="credentials"></param>
+    /// <param name="force"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<TvShow> RefreshSeasonsAsync(TvShow show, CredsContainer credentials, CancellationToken token);
+    Task RefreshSeasonsAsync(TvShow show, bool force = false, CancellationToken token = default);
 }

@@ -2,7 +2,9 @@
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
+using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Upstream.Service;
+using Microsoft.Extensions.Options;
 
 namespace AddictedProxy.Services.Provider.Episodes;
 
@@ -12,13 +14,19 @@ public class EpisodeRefresher : IEpisodeRefresher
     private readonly IEpisodeRepository _episodeRepository;
     private readonly ISeasonRepository _seasonRepository;
     private readonly ICredentialsService _credentialsService;
+    private readonly IOptions<RefreshConfig> _refreshConfig;
 
-    public EpisodeRefresher(IAddic7edClient client, IEpisodeRepository episodeRepository, ISeasonRepository seasonRepository, ICredentialsService credentialsService)
+    public EpisodeRefresher(IAddic7edClient client,
+                            IEpisodeRepository episodeRepository,
+                            ISeasonRepository seasonRepository,
+                            ICredentialsService credentialsService,
+                            IOptions<RefreshConfig> refreshConfig)
     {
         _client = client;
         _episodeRepository = episodeRepository;
         _seasonRepository = seasonRepository;
         _credentialsService = credentialsService;
+        _refreshConfig = refreshConfig;
     }
 
     /// <summary>
@@ -27,21 +35,20 @@ public class EpisodeRefresher : IEpisodeRefresher
     /// <param name="show"></param>
     /// <param name="season"></param>
     /// <param name="episodeNumber"></param>
-    /// <param name="timeBetweenChecks"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public async Task<(Episode? episode, bool episodesRefreshed)> GetRefreshEpisodeAsync(TvShow show, Season season, int episodeNumber, TimeSpan timeBetweenChecks, CancellationToken token)
+    public async Task<(Episode? episode, bool episodesRefreshed)> GetRefreshEpisodeAsync(TvShow show, Season season, int episodeNumber, CancellationToken token)
     {
         var episode = await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, season.Number, episodeNumber, token);
 
-        var episodesRefreshed = season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= timeBetweenChecks;
-        if (episode == null && !episodesRefreshed)
+        var episodeShouldRefresh = season.LastRefreshed == null || DateTime.UtcNow - season.LastRefreshed >= _refreshConfig.Value.EpisodeRefresh;
+        if (episode == null || episodeShouldRefresh)
         {
-            await RefreshSubtitlesAsync(show, season, token);
+            await RefreshEpisodesAsync(show, season, true, token);
             return (await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, season.Number, episodeNumber, token), true);
         }
 
-        return (episode, episodesRefreshed);
+        return (episode, episodeShouldRefresh);
     }
 
     /// <summary>
@@ -49,9 +56,15 @@ public class EpisodeRefresher : IEpisodeRefresher
     /// </summary>
     /// <param name="show"></param>
     /// <param name="season"></param>
+    /// <param name="forceRefresh"></param>
     /// <param name="token"></param>
-    public async Task RefreshSubtitlesAsync(TvShow show, Season season, CancellationToken token)
+    public async Task RefreshEpisodesAsync(TvShow show, Season season, bool forceRefresh, CancellationToken token)
     {
+        if (!forceRefresh && season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _refreshConfig.Value.EpisodeRefresh)
+        {
+            return;
+        }
+
         await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
         var episodes = await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, show, season.Number, token);
         await _episodeRepository.UpsertEpisodes(episodes, token);
