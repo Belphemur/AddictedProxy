@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
@@ -20,10 +21,11 @@ public class TvShowRepository : ITvShowRepository
     }
 
 
-    public async IAsyncEnumerable<TvShow> FindAsync(string name, CancellationToken token)
+    public async IAsyncEnumerable<TvShow> FindAsync(string name, [EnumeratorCancellation] CancellationToken token)
     {
-        var strictMatch = await _entityContext.TvShows.Include(show => show.Seasons)
+        var strictMatch = await _entityContext.TvShows
                                               .Where(show => show.Name.ToLower() == name.ToLower())
+                                              .Include(show => show.Seasons)
                                               .FirstOrDefaultAsync(token);
         if (strictMatch != null)
         {
@@ -32,8 +34,9 @@ public class TvShowRepository : ITvShowRepository
         }
 
         foreach (var tvShow in _entityContext.TvShows
-                                             .Include(show => show.Seasons)
-                                             .Where(show => show.Name.ToLower().Contains(name.ToLower())))
+                                             .Where(show => show.Name.ToLower().Contains(name.ToLower()))
+                                             .Include(show => show.Seasons))
+            
         {
             yield return tvShow;
         }
