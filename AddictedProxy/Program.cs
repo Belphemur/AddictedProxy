@@ -72,6 +72,8 @@ app.UseSentryTracing();
 
 app.MapControllers();
 
+app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
 #if DEBUG
 {
     await using var serviceScope = app.Services.CreateAsyncScope();
