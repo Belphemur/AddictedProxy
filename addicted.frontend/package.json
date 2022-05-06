@@ -11,7 +11,9 @@
   "dependencies": {
     "core-js": "^3.8.3",
     "element-plus": "^2.1.11",
+    "isomorphic-fetch": "^3.0.0",
     "register-service-worker": "^1.7.2",
+    "url": "^0.11.0",
     "vue": "^3.2.13",
     "vue-class-component": "^8.0.0-0",
     "vue-country-flag-next": "^2.3.2",
