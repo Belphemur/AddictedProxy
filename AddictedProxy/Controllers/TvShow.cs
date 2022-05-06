@@ -68,6 +68,7 @@ public class TvShows : Controller
     [Route("refresh/{showId:long}")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [HttpPost]
     public async Task<IActionResult> Refresh([FromRoute] long showId, CancellationToken token)
     {
         var show = await _showRefresher.GetShowByIdAsync(showId, token);
