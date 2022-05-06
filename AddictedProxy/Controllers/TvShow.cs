@@ -1,5 +1,6 @@
 ﻿using AddictedProxy.Model.Dto;
 using AddictedProxy.Services.Provider.Shows;
+using AddictedProxy.Services.Provider.Shows.Jobs;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 using Microsoft.AspNetCore.Mvc;
@@ -74,6 +75,11 @@ public class TvShows : Controller
         {
             return NotFound();
         }
+
+        var job = _jobBuilder.Create<RefreshShowJob>()
+                   .Configure(job => job.Show = show)
+                   .Build();
+        _jobScheduler.ScheduleJob(job);
 
         return NoContent();
 
