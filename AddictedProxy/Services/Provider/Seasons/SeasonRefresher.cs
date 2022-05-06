@@ -40,6 +40,7 @@ public class SeasonRefresher : ISeasonRefresher
         //Check if we need to refresh because enough time has passed
         if (season != null && show.LastSeasonRefreshed != null && !(DateTime.UtcNow - show.LastSeasonRefreshed >= _refreshConfig.Value.SeasonRefresh))
         {
+            _logger.LogInformation("Don't need to refresh season {number} of {show}", seasonNumber, show.Name);
             return season;
         }
 
@@ -61,6 +62,7 @@ public class SeasonRefresher : ISeasonRefresher
 
         if (!force && show.LastSeasonRefreshed != null && !(DateTime.UtcNow - show.LastSeasonRefreshed >= _refreshConfig.Value.SeasonRefresh))
         {
+            _logger.LogInformation("Don't need to refresh seasons of {show}", show.Name);
             return;
         }
 
@@ -68,5 +70,6 @@ public class SeasonRefresher : ISeasonRefresher
         await _seasonRepository.UpsertSeason(seasons, token);
         show.LastSeasonRefreshed = DateTime.UtcNow;
         await _tvShowRepository.UpdateShowAsync(show, token);
+        _logger.LogInformation("Fetched {number} seasons of {show}", seasons.Length, show.Name);
     }
 }

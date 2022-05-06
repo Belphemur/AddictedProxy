@@ -17,19 +17,22 @@ public class ShowRefresher : IShowRefresher
     private readonly ICredentialsService _credentialsService;
     private readonly ISeasonRefresher _seasonRefresher;
     private readonly IEpisodeRefresher _episodeRefresher;
+    private readonly ILogger<ShowRefresher> _logger;
     private readonly ITvShowRepository _tvShowRepository;
 
     public ShowRefresher(ITvShowRepository tvShowRepository,
                          IAddic7edClient addic7EdClient,
                          ICredentialsService credentialsService,
                          ISeasonRefresher seasonRefresher,
-                         IEpisodeRefresher episodeRefresher)
+                         IEpisodeRefresher episodeRefresher,
+                         ILogger<ShowRefresher> logger)
     {
         _tvShowRepository = tvShowRepository;
         _addic7EdClient = addic7EdClient;
         _credentialsService = credentialsService;
         _seasonRefresher = seasonRefresher;
         _episodeRefresher = episodeRefresher;
+        _logger = logger;
     }
 
     public async Task RefreshShowsAsync(CancellationToken token)
@@ -48,7 +51,9 @@ public class ShowRefresher : IShowRefresher
     public async Task RefreshShowAsync(TvShow tvShow, CancellationToken token)
     {
         await _seasonRefresher.RefreshSeasonsAsync(tvShow, token: token);
+        
         var show = (await _tvShowRepository.GetByIdAsync(tvShow.Id, token))!;
+        _logger.LogInformation("Refreshing episode for {number} seasons of {show}", show.Seasons.Count, show.Name);
         foreach (var season in show.Seasons)
         {
             await _episodeRefresher.RefreshEpisodesAsync(show, season, token: token);

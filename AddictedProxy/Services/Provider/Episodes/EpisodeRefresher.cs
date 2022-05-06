@@ -15,18 +15,21 @@ public class EpisodeRefresher : IEpisodeRefresher
     private readonly ISeasonRepository _seasonRepository;
     private readonly ICredentialsService _credentialsService;
     private readonly IOptions<RefreshConfig> _refreshConfig;
+    private readonly ILogger<EpisodeRefresher> _logger;
 
     public EpisodeRefresher(IAddic7edClient client,
                             IEpisodeRepository episodeRepository,
                             ISeasonRepository seasonRepository,
                             ICredentialsService credentialsService,
-                            IOptions<RefreshConfig> refreshConfig)
+                            IOptions<RefreshConfig> refreshConfig,
+                            ILogger<EpisodeRefresher> logger)
     {
         _client = client;
         _episodeRepository = episodeRepository;
         _seasonRepository = seasonRepository;
         _credentialsService = credentialsService;
         _refreshConfig = refreshConfig;
+        _logger = logger;
     }
 
     /// <summary>
@@ -62,13 +65,15 @@ public class EpisodeRefresher : IEpisodeRefresher
     {
         if (!forceRefresh && season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _refreshConfig.Value.EpisodeRefresh)
         {
+            _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
             return;
         }
 
         await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
-        var episodes = await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, show, season.Number, token);
+        var episodes = (await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, show, season.Number, token)).ToArray();
         await _episodeRepository.UpsertEpisodes(episodes, token);
         season.LastRefreshed = DateTime.UtcNow;
         await _seasonRepository.UpdateSeasonAsync(season, token);
+        _logger.LogInformation("Refreshed {episodes} of {show} S{season}", episodes.Length, show.Name, season.Number);
     }
 }
