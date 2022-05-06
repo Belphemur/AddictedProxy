@@ -1,3 +1,7 @@
 ﻿namespace AddictedProxy.Services.Provider.Config;
 
-public record RefreshConfig(TimeSpan SeasonRefresh, TimeSpan EpisodeRefresh);
+public class RefreshConfig
+{
+    public TimeSpan SeasonRefresh { get; init; }
+    public TimeSpan EpisodeRefresh { get; init; }
+}
