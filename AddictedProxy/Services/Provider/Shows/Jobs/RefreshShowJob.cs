@@ -1,8 +1,10 @@
 ﻿using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Model.Dto;
+using AddictedProxy.Services.Provider.Subtitle.Jobs;
 using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
+using Locking;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
 
@@ -24,6 +26,13 @@ public class RefreshShowJob : IJob
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
+        using var namedLock = Lock<RefreshShowJob>.GetNamedLock(Show.Id.ToString());
+        if (!await namedLock.WaitAsync(TimeSpan.Zero, cancellationToken))
+        {
+            _logger.LogInformation("Lock for {show} already taken", Show.Id);
+            return;
+        }
+
         _logger.LogInformation("Refreshing show: {Show}", Show.Name);
         await _showRefresher.RefreshShowAsync(Show, cancellationToken);
     }
