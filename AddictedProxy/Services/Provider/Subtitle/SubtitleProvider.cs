@@ -2,7 +2,7 @@
 
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
-using AddictedProxy.Services.Provider.Subtitle.Job;
+using AddictedProxy.Services.Provider.Subtitle.Jobs;
 using AddictedProxy.Storage.Store;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.Exception;

@@ -1,14 +1,10 @@
 ﻿#region
 
 using System.Globalization;
-using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
-using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Culture;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
-using AddictedProxy.Upstream.Service;
 using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
@@ -16,7 +12,7 @@ using Locking;
 
 #endregion
 
-namespace AddictedProxy.Services.Provider.Subtitle.Job;
+namespace AddictedProxy.Services.Provider.Subtitle.Jobs;
 
 public class FetchSubtitlesJob : IJob
 {

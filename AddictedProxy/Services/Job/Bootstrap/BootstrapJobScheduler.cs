@@ -1,6 +1,7 @@
 ﻿#region
 
 using AddictedProxy.Services.Provider.Shows;
+using AddictedProxy.Services.Provider.Shows.Jobs;
 using InversionOfControl.Model;
 using Job.Scheduler.AspNetCore.Extensions;
 

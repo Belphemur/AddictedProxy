@@ -8,7 +8,7 @@ using AddictedProxy.Model.Dto;
 using AddictedProxy.Services.Culture;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle;
-using AddictedProxy.Services.Provider.Subtitle.Job;
+using AddictedProxy.Services.Provider.Subtitle.Jobs;
 using AddictedProxy.Upstream.Service.Exception;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;

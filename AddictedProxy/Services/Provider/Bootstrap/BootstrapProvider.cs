@@ -5,7 +5,7 @@ using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle;
-using AddictedProxy.Services.Provider.Subtitle.Job;
+using AddictedProxy.Services.Provider.Subtitle.Jobs;
 using InversionOfControl.Model;
 using Job.Scheduler.AspNetCore.Extensions;
 

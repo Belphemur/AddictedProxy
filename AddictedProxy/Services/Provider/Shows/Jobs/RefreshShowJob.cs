@@ -6,7 +6,7 @@ using Job.Scheduler.Job.Exception;
 
 #endregion
 
-namespace AddictedProxy.Services.Provider.Shows;
+namespace AddictedProxy.Services.Provider.Shows.Jobs;
 
 public class RefreshShowJob : IRecurringJob
 {
