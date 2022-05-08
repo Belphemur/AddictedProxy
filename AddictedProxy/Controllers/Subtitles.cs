@@ -4,7 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Model;
 using AddictedProxy.Model.Dto;
+using AddictedProxy.Model.Responses;
 using AddictedProxy.Services.Culture;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle;
@@ -192,12 +194,6 @@ public class Subtitles : Controller
     }
 
     /// <summary>
-    /// Returns when there is an error
-    /// </summary>
-    /// <param name="Error"></param>
-    public record ErrorResponse(string Error);
-
-    /// <summary>
     /// Returned when the search wasn't formatted properly
     /// </summary>
     /// <param name="Error"></param>
@@ -272,24 +268,5 @@ public class Subtitles : Controller
         /// <example>en</example>
         [Required]
         public string LanguageISO { get; }
-    }
-
-    public class SubtitleSearchResponse
-    {
-        public SubtitleSearchResponse(IEnumerable<SubtitleDto> matchingSubtitles, EpisodeDto episode)
-        {
-            MatchingSubtitles = matchingSubtitles;
-            Episode = episode;
-        }
-
-        /// <summary>
-        /// Matching subtitle for the filename and language
-        /// </summary>
-        public IEnumerable<SubtitleDto> MatchingSubtitles { get; }
-
-        /// <summary>
-        /// Information about the episode
-        /// </summary>
-        public EpisodeDto Episode { get; }
     }
 }

@@ -1,4 +1,8 @@
-﻿using AddictedProxy.Model.Dto;
+﻿using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Model.Dto;
+using AddictedProxy.Model.Responses;
+using AddictedProxy.Services.Culture;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Shows.Jobs;
 using Job.Scheduler.AspNetCore.Builder;
@@ -13,6 +17,8 @@ public class TvShows : Controller
     private readonly IShowRefresher _showRefresher;
     private readonly IJobBuilder _jobBuilder;
     private readonly IJobScheduler _jobScheduler;
+    private readonly IEpisodeRepository _episodeRepository;
+    private readonly CultureParser _cultureParser;
 
     /// <summary>
     /// Search for a specific show
@@ -28,11 +34,13 @@ public class TvShows : Controller
 
     public record ShowSearchResponse(IAsyncEnumerable<ShowDto> Shows);
 
-    public TvShows(IShowRefresher showRefresher, IJobBuilder jobBuilder, IJobScheduler jobScheduler)
+    public TvShows(IShowRefresher showRefresher, IJobBuilder jobBuilder, IJobScheduler jobScheduler, IEpisodeRepository episodeRepository, CultureParser cultureParser)
     {
         _showRefresher = showRefresher;
         _jobBuilder = jobBuilder;
         _jobScheduler = jobScheduler;
+        _episodeRepository = episodeRepository;
+        _cultureParser = cultureParser;
     }
 
     /// <summary>
@@ -52,7 +60,7 @@ public class TvShows : Controller
     {
         return Ok(new ShowSearchResponse(
                 _showRefresher.FindShowsAsync(showSearch.Query, cancellationToken)
-                                                        .Select(show => new ShowDto(show))
+                              .Select(show => new ShowDto(show))
             )
         );
     }
@@ -78,11 +86,55 @@ public class TvShows : Controller
         }
 
         var job = _jobBuilder.Create<RefreshShowJob>()
-                   .Configure(job => job.Show = show)
-                   .Build();
+                             .Configure(job => job.Show = show)
+                             .Build();
         _jobScheduler.ScheduleJob(job);
 
         return NoContent();
+    }
 
+
+    /// <summary>
+    /// Get all subtitle of the given season for a specific language
+    /// </summary>
+    /// <param name="showId"></param>
+    /// <param name="seasonNumber"></param>
+    /// <param name="language"></param>
+    /// <param name="cancellationToken"></param>
+    /// <response code="404">Couldn't find the show</response>
+    /// <response code="400">Unknown language</response>
+    /// <response code="429">Reached the rate limiting of the endpoint</response>
+    /// <returns></returns>
+    [Route("{showId:guid}/{seasonNumber:int}/{language}")]
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string), 429)]
+    [ProducesResponseType(typeof(TvShowSubtitleResponse), 200)]
+    public async Task<IActionResult> GetSubtitlesForSeason([FromRoute] Guid showId, [FromRoute] int seasonNumber, [FromRoute] string language, CancellationToken cancellationToken)
+    {
+        var show = await _showRefresher.GetShowByGuidAsync(showId, cancellationToken);
+        if (show == null)
+        {
+            return NotFound();
+        }
+
+        var searchLanguage = _cultureParser.FromString(language);
+
+        if (searchLanguage == null)
+        {
+            return BadRequest(new ErrorResponse("Unknown language"));
+        }
+
+
+        var episodes = _episodeRepository.GetSeasonEpisodesAsync(show.Id, seasonNumber)
+                                         .Select(episode =>
+                                         {
+                                             var subs = episode.Subtitles.Select(subtitle => new SubtitleDto(subtitle,
+                                                 Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
+                                                 throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                                                 searchLanguage));
+                                             return new EpisodeWithSubtitlesDto(episode, subs);
+                                         });
+        return Ok(new TvShowSubtitleResponse(episodes));
     }
 }
