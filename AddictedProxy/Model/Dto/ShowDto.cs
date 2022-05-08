@@ -8,13 +8,13 @@ namespace AddictedProxy.Model.Dto;
 /// <param name="Id"></param>
 /// <param name="Name"></param>
 /// <param name="NbSeasons"></param>
-public record ShowDto(long Id, string Name, long NbSeasons)
+public record ShowDto(Guid Id, string Name, long NbSeasons)
 {
     /// <summary>
     /// Unique ID of the show
     /// </summary>
-    /// <example>1234</example>
-    public long Id { get; init; } = Id;
+    /// <example>E9C1FA23-55AF-4711-8E34-3B31E2A75533</example>
+    public Guid Id { get; init; } = Id;
 
     /// <summary>
     /// Name of the show
@@ -28,7 +28,7 @@ public record ShowDto(long Id, string Name, long NbSeasons)
     /// <example>5</example>
     public long NbSeasons { get; init; } = NbSeasons;
 
-    public ShowDto(TvShow show) : this(show.Id, show.Name, show.Seasons.Count)
+    public ShowDto(TvShow show) : this(show.UniqueId, show.Name, show.Seasons.Count)
     {
     }
 }

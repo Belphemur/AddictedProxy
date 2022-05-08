@@ -41,4 +41,12 @@ public interface ITvShowRepository
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<TvShow?> GetByIdAsync(long id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Get show by their unique id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<TvShow?> GetByGuidAsync(Guid id, CancellationToken cancellationToken);
 }

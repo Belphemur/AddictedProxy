@@ -67,4 +67,10 @@ public class TvShowRepository : ITvShowRepository
                              .Include(show => show.Seasons)
                              .SingleOrDefaultAsync(show => show.Id == id, cancellationToken: cancellationToken);
     }
+
+    public Task<TvShow?> GetByGuidAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return _entityContext.TvShows
+                             .Include(show => show.Seasons)
+                             .SingleOrDefaultAsync(show => show.UniqueId == id, cancellationToken: cancellationToken);    }
 }

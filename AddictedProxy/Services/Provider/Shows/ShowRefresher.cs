@@ -65,8 +65,8 @@ public class ShowRefresher : IShowRefresher
         return _tvShowRepository.FindAsync(search, token);
     }
 
-    public Task<TvShow?> GetShowByIdAsync(long id, CancellationToken cancellationToken)
+    public Task<TvShow?> GetShowByGuidAsync(Guid id, CancellationToken cancellationToken)
     {
-        return _tvShowRepository.GetByIdAsync(id, cancellationToken);
+        return _tvShowRepository.GetByGuidAsync(id, cancellationToken);
     }
 }

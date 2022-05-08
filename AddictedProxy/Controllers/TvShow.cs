@@ -65,13 +65,13 @@ public class TvShows : Controller
     /// <returns></returns>
     /// <response code="404">Couldn't find the show</response>
     /// <response code="204">If the job to sync the show has been scheduled</response>
-    [Route("refresh/{showId:long}")]
+    [Route("refresh/{showId:guid}")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [HttpPost]
-    public async Task<IActionResult> Refresh([FromRoute] long showId, CancellationToken token)
+    public async Task<IActionResult> Refresh([FromRoute] Guid showId, CancellationToken token)
     {
-        var show = await _showRefresher.GetShowByIdAsync(showId, token);
+        var show = await _showRefresher.GetShowByGuidAsync(showId, token);
         if (show == null)
         {
             return NotFound();
