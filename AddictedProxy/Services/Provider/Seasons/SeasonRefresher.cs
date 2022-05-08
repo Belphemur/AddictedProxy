@@ -4,6 +4,7 @@ using AddictedProxy.Model.Crendentials;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Upstream.Service;
+using Locking;
 using Microsoft.Extensions.Options;
 
 namespace AddictedProxy.Services.Provider.Seasons;
@@ -58,6 +59,13 @@ public class SeasonRefresher : ISeasonRefresher
 
     public async Task RefreshSeasonsAsync(TvShow show, bool force = false, CancellationToken token = default)
     {
+        using var namedLock = Lock<SeasonRefresher>.GetNamedLock(show.Id.ToString());
+        if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
+        {
+            _logger.LogInformation("Already refreshing seasons of {show}", show.Name);
+            return;
+        }
+
         await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
 
         if (!force && show.LastSeasonRefreshed != null && !(DateTime.UtcNow - show.LastSeasonRefreshed >= _refreshConfig.Value.SeasonRefresh))

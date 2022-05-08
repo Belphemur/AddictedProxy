@@ -3,7 +3,9 @@ using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Config;
+using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Upstream.Service;
+using Locking;
 using Microsoft.Extensions.Options;
 
 namespace AddictedProxy.Services.Provider.Episodes;
@@ -63,6 +65,13 @@ public class EpisodeRefresher : IEpisodeRefresher
     /// <param name="token"></param>
     public async Task RefreshEpisodesAsync(TvShow show, Season season, bool forceRefresh, CancellationToken token)
     {
+        using var namedLock = Lock<EpisodeRefresher>.GetNamedLock($"{show.Id}-{season.Id}");
+        if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
+        {
+            _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
+            return;
+        }
+
         if (!forceRefresh && season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _refreshConfig.Value.EpisodeRefresh)
         {
             _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
