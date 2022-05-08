@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Model;
 using AddictedProxy.Upstream.Service.Exception;
@@ -14,6 +15,7 @@ namespace AddictedProxy.Upstream.Service;
 public class Parser
 {
     private readonly IHtmlParser _parser;
+    private readonly Regex _completionRegex = new (@"(?<completion>\d+\.?\d+)%", RegexOptions.Compiled);
 
     public Parser(IHtmlParser parser)
     {
@@ -123,7 +125,10 @@ public class Parser
                             if (!state.Contains("%") && state.Contains("Completed"))
                             {
                                 subtitleRow.Completed = true;
+                                subtitleRow.CompletionPercentage = 100;
                             }
+
+                            subtitleRow.CompletionPercentage = double.Parse(_completionRegex.Match(state).Groups["completion"].Value);
 
                             break;
                         case 6:
@@ -179,6 +184,7 @@ public class Parser
                 HearingImpaired = subtitleRow.HearingImpaired,
                 Language = subtitleRow.Language,
                 Completed = subtitleRow.Completed,
+                CompletionPct = subtitleRow.CompletionPercentage,
                 Discovered = DateTime.UtcNow,
                 Episode = episode,
                 Version = subtitleRow.Version

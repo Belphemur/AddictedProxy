@@ -3,6 +3,7 @@ using System;
 using AddictedProxy.Database.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AddictedProxy.Database.Migrations
 {
     [DbContext(typeof(EntityContext))]
-    partial class EntityContextModelSnapshot : ModelSnapshot
+    [Migration("20220501190811_AddDownloadCountToSubtitles")]
+    partial class AddDownloadCountToSubtitles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
@@ -106,9 +108,6 @@ namespace AddictedProxy.Database.Migrations
                     b.Property<bool>("Completed")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double>("CompletionPct")
-                        .HasColumnType("REAL");
-
                     b.Property<bool>("Corrected")
                         .HasColumnType("INTEGER");
 
@@ -188,15 +187,9 @@ namespace AddictedProxy.Database.Migrations
                         .HasColumnType("TEXT")
                         .UseCollation("NOCASE");
 
-                    b.Property<Guid>("UniqueId")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ExternalId")
-                        .IsUnique();
-
-                    b.HasIndex("UniqueId")
                         .IsUnique();
 
                     b.ToTable("TvShows");
