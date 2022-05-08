@@ -11,8 +11,6 @@ namespace AddictedProxy.Database.Repositories.Shows;
 
 public class EpisodeRepository : IEpisodeRepository
 {
-    private static readonly Action<BulkOperation<Episode>> AvoidUpdateDiscoveredFieldEpisode = Rule.AvoidUpdateDiscoveredField<Episode>();
-    private static readonly Action<BulkOperation<Subtitle>> AvoidUpdateDiscoveredFieldSubtitle = Rule.AvoidUpdateDiscoveredField<Subtitle>();
     private readonly EntityContext _entityContext;
 
 
@@ -37,7 +35,7 @@ public class EpisodeRepository : IEpisodeRepository
                 switch (operation)
                 {
                     case BulkOperation<Subtitle> bulkSub:
-                        bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Discovered, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount };
+                        bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Discovered, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount, subtitle.UniqueId };
                         bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.EpisodeId, subtitle.Language, subtitle.Version };
                         break;
                     case BulkOperation<Episode> bulkEp:
