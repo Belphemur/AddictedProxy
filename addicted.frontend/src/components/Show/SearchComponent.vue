@@ -29,6 +29,7 @@
       <el-select
         v-show="selectedShowSeason.length > 0"
         v-model="selectedSeason"
+        placeholder="Season"
       >
         <el-option
           v-for="item in selectedShowSeason"
