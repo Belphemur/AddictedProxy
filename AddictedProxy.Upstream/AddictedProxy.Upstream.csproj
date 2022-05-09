@@ -20,7 +20,7 @@
         <PackageReference Include="Polly.Extensions.Http" Version="3.0.0"/>
         <PackageReference Include="Sentry" Version="3.17.0"/>
         <PackageReference Include="uplink.NET.Win" Version="2.8.2410" Condition="$([MSBuild]::IsOsPlatform('Windows'))"/>
-        <PackageReference Include="uplink.NET.Linux" Version="2.8.2410" Condition="$([MSBuild]::IsOsPlatform('Linux'))"/>
+        <PackageReference Include="uplink.NET.Linux" Version="2.8.2565" Condition="$([MSBuild]::IsOsPlatform('Linux'))"/>
 
     </ItemGroup>
 
