@@ -17,7 +17,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0"/>
-        <PackageReference Include="uplink.NET" Version="2.8.2410"/>
+        <PackageReference Include="uplink.NET" Version="2.8.2565"/>
     </ItemGroup>
 
 </Project>
