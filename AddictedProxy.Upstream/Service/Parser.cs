@@ -126,6 +126,7 @@ public class Parser
                             {
                                 subtitleRow.Completed = true;
                                 subtitleRow.CompletionPercentage = 100;
+                                break;
                             }
 
                             subtitleRow.CompletionPercentage = double.Parse(_completionRegex.Match(state).Groups["completion"].Value);
