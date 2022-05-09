@@ -8,7 +8,7 @@
     :debounce="500"
     :trigger-on-focus="false"
     v-on:select="updateSelectedShow"
-    :minlenght="5"
+    :minlength="5"
   >
     <template #prepend>
       <el-select
