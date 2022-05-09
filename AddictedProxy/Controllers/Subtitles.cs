@@ -1,14 +1,16 @@
 ﻿#region
 
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Text.RegularExpressions;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Model;
+using AddictedProxy.Model.Dto;
+using AddictedProxy.Model.Responses;
 using AddictedProxy.Services.Culture;
+using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle;
-using AddictedProxy.Services.Provider.Subtitle.Job;
-using AddictedProxy.Services.Saver;
+using AddictedProxy.Services.Provider.Subtitle.Jobs;
 using AddictedProxy.Upstream.Service.Exception;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
@@ -27,20 +29,20 @@ public class Subtitles : Controller
     private readonly IEpisodeRepository _episodeRepository;
     private readonly IJobBuilder _jobBuilder;
     private readonly IJobScheduler _jobScheduler;
-    private readonly IShowProvider _showProvider;
+    private readonly IShowRefresher _showRefresher;
     private readonly ISubtitleProvider _subtitleProvider;
     private readonly Regex _searchPattern = new(@"(?<show>.+)S(?<season>\d+)E(?<episode>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public Subtitles(IEpisodeRepository episodeRepository,
                      CultureParser cultureParser,
-                     IShowProvider showProvider,
+                     IShowRefresher showRefresher,
                      ISubtitleProvider subtitleProvider,
                      IJobBuilder jobBuilder,
                      IJobScheduler jobScheduler)
     {
         _episodeRepository = episodeRepository;
         _cultureParser = cultureParser;
-        _showProvider = showProvider;
+        _showRefresher = showRefresher;
         _subtitleProvider = subtitleProvider;
         _jobBuilder = jobBuilder;
         _jobScheduler = jobScheduler;
@@ -97,7 +99,7 @@ public class Subtitles : Controller
     /// <response code="429">Reached the rate limiting of the endpoint</response>
     [Route("search")]
     [HttpPost]
-    [ProducesResponseType(typeof(SearchResponse), 200)]
+    [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 404)]
     [ProducesResponseType(typeof(WrongFormatResponse), 400)]
     [ProducesResponseType(typeof(string), 429)]
@@ -111,7 +113,7 @@ public class Subtitles : Controller
         }
 
         return await ProcessQueryRequestAsync(
-            new QueryRequest(match.Groups["show"].Value.Trim().Replace(".", " "), int.Parse(match.Groups["episode"].Value), int.Parse(match.Groups["season"].Value), request.Language, null),
+            new SubtitleQueryRequest(match.Groups["show"].Value.Trim().Replace(".", " "), int.Parse(match.Groups["episode"].Value), int.Parse(match.Groups["season"].Value), request.Language, null),
             token);
     }
 
@@ -129,18 +131,18 @@ public class Subtitles : Controller
     /// <response code="429">Reached the rate limiting of the endpoint</response>
     [Route("query")]
     [HttpPost]
-    [ProducesResponseType(typeof(SearchResponse), 200)]
+    [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 404)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
-    public async Task<IActionResult> Query([FromBody] QueryRequest request, CancellationToken token)
+    public async Task<IActionResult> Query([FromBody] SubtitleQueryRequest request, CancellationToken token)
     {
         return await ProcessQueryRequestAsync(request, token);
     }
 
-    private async Task<IActionResult> ProcessQueryRequestAsync(QueryRequest request, CancellationToken token)
+    private async Task<IActionResult> ProcessQueryRequestAsync(SubtitleQueryRequest request, CancellationToken token)
     {
-        var show = await _showProvider.FindShowsAsync(request.Show, token).FirstOrDefaultAsync(token);
+        var show = await _showRefresher.FindShowsAsync(request.Show, token).FirstOrDefaultAsync(token);
         if (show == null)
         {
             return NotFound(new ErrorResponse($"Couldn't find the show {request.Show}"));
@@ -159,10 +161,10 @@ public class Subtitles : Controller
             ScheduleJob(request, show);
         }
 
-        return Ok(new SearchResponse(matchingSubtitles, new SearchResponse.EpisodeDto(episode)));
+        return Ok(new SubtitleSearchResponse(matchingSubtitles, new EpisodeDto(episode)));
     }
 
-    private void ScheduleJob(QueryRequest request, TvShow show)
+    private void ScheduleJob(SubtitleQueryRequest request, TvShow show)
     {
         var job = _jobBuilder.Create<FetchSubtitlesJob>()
                              .Configure(subtitlesJob => { subtitlesJob.Data = new FetchSubtitlesJob.JobData(show, request.Season, request.Episode, _cultureParser.FromString(request.LanguageISO), request.FileName); })
@@ -170,7 +172,7 @@ public class Subtitles : Controller
         _jobScheduler.ScheduleJob(job);
     }
 
-    private SearchResponse.SubtitleDto[] FindMatchingSubtitles(QueryRequest request, Episode episode)
+    private SubtitleDto[] FindMatchingSubtitles(SubtitleQueryRequest request, Episode episode)
     {
         var searchLanguage = _cultureParser.FromString(request.LanguageISO);
         var search = episode.Subtitles
@@ -181,7 +183,7 @@ public class Subtitles : Controller
         }
 
         return search.Select(
-                         subtitle => new SearchResponse.SubtitleDto(
+                         subtitle => new SubtitleDto(
                              subtitle,
                              Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
                              throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
@@ -190,12 +192,6 @@ public class Subtitles : Controller
                      )
                      .ToArray();
     }
-
-    /// <summary>
-    /// Returns when there is an error
-    /// </summary>
-    /// <param name="Error"></param>
-    public record ErrorResponse(string Error);
 
     /// <summary>
     /// Returned when the search wasn't formatted properly
@@ -226,9 +222,9 @@ public class Subtitles : Controller
     /// <summary>
     /// Used for different Media Center/Subtitle searchers
     /// </summary>
-    public class QueryRequest
+    public class SubtitleQueryRequest
     {
-        public QueryRequest(string show, int episode, int season, string languageIso, string? fileName)
+        public SubtitleQueryRequest(string show, int episode, int season, string languageIso, string? fileName)
         {
             Show = show;
             Episode = episode;
@@ -272,128 +268,5 @@ public class Subtitles : Controller
         /// <example>en</example>
         [Required]
         public string LanguageISO { get; }
-    }
-
-    public class SearchResponse
-    {
-        public SearchResponse(IEnumerable<SubtitleDto> matchingSubtitles, EpisodeDto episode)
-        {
-            MatchingSubtitles = matchingSubtitles;
-            Episode = episode;
-        }
-
-        /// <summary>
-        /// Matching subtitle for the filename and language
-        /// </summary>
-        public IEnumerable<SubtitleDto> MatchingSubtitles { get; }
-
-        /// <summary>
-        /// Information about the episode
-        /// </summary>
-        public EpisodeDto Episode { get; }
-
-        public class SubtitleDto
-        {
-            public SubtitleDto(Subtitle subtitle, string downloadUri, CultureInfo? language)
-            {
-                Version = subtitle.Scene;
-                Completed = subtitle.Completed;
-                HearingImpaired = subtitle.HearingImpaired;
-                HD = subtitle.HD;
-                Corrected = subtitle.Completed;
-                DownloadUri = downloadUri;
-                Language = language?.EnglishName ?? "Unknown";
-                Discovered = subtitle.Discovered;
-                SubtitleId = subtitle.UniqueId.ToString();
-                DownloadCount = subtitle.DownloadCount;
-            }
-
-
-            /// <summary>
-            /// Unique Id of the subtitle
-            /// </summary>
-            /// <example>1086727A-EB71-4B24-A209-7CF22374574D</example>
-            public string SubtitleId { get; }
-
-            /// <summary>
-            /// Version of the subtitle
-            /// </summary>
-            /// <example>HDTV</example>
-            public string Version { get; }
-
-            public bool Completed { get; }
-            public bool HearingImpaired { get; }
-            public bool Corrected { get; }
-            public bool HD { get; }
-
-            /// <summary>
-            /// Url to download the subtitle
-            /// </summary>
-            /// <example>/download/1086727A-EB71-4B24-A209-7CF22374574D</example>
-            public string DownloadUri { get; }
-
-            /// <summary>
-            /// Language of the subtitle (in English)
-            /// </summary>
-            /// <example>English</example>
-            public string Language { get; }
-
-            /// <summary>
-            ///     When was the subtitle discovered in UTC
-            /// </summary>
-            /// <example>2022-04-02T05:16:45.4001274</example>
-            public DateTime Discovered { get; }
-
-            /// <summary>
-            /// Number of times the subtitle was downloaded from the proxy
-            /// </summary>
-            /// <example>100</example>
-            public long DownloadCount { get; }
-        }
-
-        /// <summary>
-        /// Episode information
-        /// </summary>
-        public class EpisodeDto
-        {
-            public EpisodeDto(Episode episode)
-            {
-                Season = episode.Season;
-                Number = episode.Number;
-                Title = episode.Title;
-                Discovered = episode.Discovered;
-                Show = episode.TvShow.Name;
-            }
-
-            /// <summary>
-            /// Season of the episode
-            /// </summary>
-            /// <example>1</example>
-            public int Season { get; }
-
-            /// <summary>
-            /// Number of the episode
-            /// </summary>
-            /// <example>1</example>
-            public int Number { get; }
-
-            /// <summary>
-            /// Title of the episode
-            /// </summary>
-            /// <example>Demon Girl</example>
-            public string Title { get; }
-
-            /// <summary>
-            /// For which show
-            /// </summary>
-            /// <example>Wellington Paranormal</example>
-            public string Show { get; }
-
-            /// <summary>
-            ///     When was the Episode discovered
-            /// </summary>
-            /// <example>2022-04-02T05:16:45.3996669</example>
-            public DateTime Discovered { get; }
-        }
     }
 }

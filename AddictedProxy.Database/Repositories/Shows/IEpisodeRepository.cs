@@ -17,4 +17,12 @@ public interface IEpisodeRepository
     ///     Get a specific episode
     /// </summary>
     Task<Episode?> GetEpisodeUntrackedAsync(long tvShowId, int season, int episodeNumber, CancellationToken token);
+
+    /// <summary>
+    /// Get season episodes
+    /// </summary>
+    /// <param name="tvShowId"></param>
+    /// <param name="season"></param>
+    /// <returns></returns>
+    IAsyncEnumerable<Episode> GetSeasonEpisodesAsync(long tvShowId, int season);
 }

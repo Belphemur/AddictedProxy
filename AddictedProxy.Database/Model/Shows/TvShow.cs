@@ -8,10 +8,13 @@ using Microsoft.EntityFrameworkCore;
 namespace AddictedProxy.Database.Model.Shows;
 
 [Index(nameof(ExternalId), IsUnique = true)]
+[Index(nameof(UniqueId), IsUnique = true)]
 public class TvShow : IDiscoverableObject
 {
     [Key]
     public long Id { get; set; }
+    
+    public Guid UniqueId { get; set; } = Guid.NewGuid();
 
     public long ExternalId { get; set; }
     public string Name { get; set; }

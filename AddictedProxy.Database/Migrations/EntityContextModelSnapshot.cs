@@ -106,6 +106,9 @@ namespace AddictedProxy.Database.Migrations
                     b.Property<bool>("Completed")
                         .HasColumnType("INTEGER");
 
+                    b.Property<double>("CompletionPct")
+                        .HasColumnType("REAL");
+
                     b.Property<bool>("Corrected")
                         .HasColumnType("INTEGER");
 
@@ -185,9 +188,15 @@ namespace AddictedProxy.Database.Migrations
                         .HasColumnType("TEXT")
                         .UseCollation("NOCASE");
 
+                    b.Property<Guid>("UniqueId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ExternalId")
+                        .IsUnique();
+
+                    b.HasIndex("UniqueId")
                         .IsUnique();
 
                     b.ToTable("TvShows");

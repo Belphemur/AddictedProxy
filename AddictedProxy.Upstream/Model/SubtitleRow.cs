@@ -9,6 +9,8 @@ internal class SubtitleRow
     public string Language { get; set; }
     public string Scene { get; set; }
     public bool Completed { get; set; }
+    
+    public double CompletionPercentage { get; set; }
     public bool HearingImpaired { get; set; }
     public bool Corrected { get; set; }
     public bool HD { get; set; }

@@ -9,7 +9,7 @@ using Locking;
 
 #endregion
 
-namespace AddictedProxy.Services.Provider.Subtitle.Job;
+namespace AddictedProxy.Services.Provider.Subtitle.Jobs;
 
 public class StoreSubtitleJob : IJob
 {

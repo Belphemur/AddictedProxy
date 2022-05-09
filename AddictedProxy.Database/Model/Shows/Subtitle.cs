@@ -25,6 +25,7 @@ public class Subtitle : IDiscoverableObject
 
     public int Version { get; set; }
     public bool Completed { get; set; }
+    public double CompletionPct { get; set; }
     public bool HearingImpaired { get; set; }
     public bool Corrected { get; set; }
     public bool HD { get; set; }

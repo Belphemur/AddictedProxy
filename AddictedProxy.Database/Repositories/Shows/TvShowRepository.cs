@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
@@ -20,10 +21,11 @@ public class TvShowRepository : ITvShowRepository
     }
 
 
-    public async IAsyncEnumerable<TvShow> FindAsync(string name, CancellationToken token)
+    public async IAsyncEnumerable<TvShow> FindAsync(string name, [EnumeratorCancellation] CancellationToken token)
     {
-        var strictMatch = await _entityContext.TvShows.Include(show => show.Seasons)
-                                              .Where(show => show.Name.ToLower() == name.ToLower())
+        var strictMatch = await _entityContext.TvShows
+                                              .Where(show => show.Name == name)
+                                              .Include(show => show.Seasons)
                                               .FirstOrDefaultAsync(token);
         if (strictMatch != null)
         {
@@ -32,8 +34,9 @@ public class TvShowRepository : ITvShowRepository
         }
 
         foreach (var tvShow in _entityContext.TvShows
-                                             .Include(show => show.Seasons)
-                                             .Where(show => show.Name.ToLower().Contains(name.ToLower())))
+                                             .Where(show => EF.Functions.Like(show.Name, $"%{name}%"))
+                                             .Include(show => show.Seasons))
+            
         {
             yield return tvShow;
         }
@@ -43,7 +46,7 @@ public class TvShowRepository : ITvShowRepository
     {
         return _entityContext.TvShows.BulkMergeAsync(tvShows, options =>
         {
-            options.IgnoreOnMergeUpdateExpression = show => new { show.Discovered, show.LastSeasonRefreshed };
+            options.IgnoreOnMergeUpdateExpression = show => new { show.Discovered, show.LastSeasonRefreshed, show.UniqueId };
             options.ColumnPrimaryKeyExpression = show => show.ExternalId;
         }, token);
     }
@@ -53,8 +56,21 @@ public class TvShowRepository : ITvShowRepository
         return _entityContext.TvShows.ToAsyncEnumerable();
     }
 
-    public Task UpdateShow(TvShow show, CancellationToken token)
+    public Task UpdateShowAsync(TvShow show, CancellationToken token)
     {
         return _entityContext.TvShows.SingleUpdateAsync(show, AvoidUpdateDiscoveredField, token);
     }
+
+    public Task<TvShow?> GetByIdAsync(long id, CancellationToken cancellationToken)
+    {
+        return _entityContext.TvShows
+                             .Include(show => show.Seasons)
+                             .SingleOrDefaultAsync(show => show.Id == id, cancellationToken: cancellationToken);
+    }
+
+    public Task<TvShow?> GetByGuidAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return _entityContext.TvShows
+                             .Include(show => show.Seasons)
+                             .SingleOrDefaultAsync(show => show.UniqueId == id, cancellationToken: cancellationToken);    }
 }

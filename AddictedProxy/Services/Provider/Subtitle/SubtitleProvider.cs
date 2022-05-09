@@ -2,7 +2,7 @@
 
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
-using AddictedProxy.Services.Provider.Subtitle.Job;
+using AddictedProxy.Services.Provider.Subtitle.Jobs;
 using AddictedProxy.Storage.Store;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.Exception;
@@ -65,6 +65,7 @@ public class SubtitleProvider : ISubtitleProvider
     public async Task<Stream> GetSubtitleFileAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token)
     {
         await using var subDownloadUpdater = new SubtitleCounterUpdater(_subtitleRepository, subtitle);
+        //We have the subtitle stored
         if (subtitle.StoragePath != null)
         {
             var stream = await _storageProvider.DownloadAsync(subtitle.StoragePath, token);
@@ -75,6 +76,13 @@ public class SubtitleProvider : ISubtitleProvider
         }
 
         await using var creds = await _credentialsService.GetLeastUsedCredsAsync(token);
+
+        //Subtitle isn't complete, no need to store it, just directly return the download stream
+        if (!subtitle.Completed)
+        {
+            return await _addic7EdDownloader.DownloadSubtitle(creds.AddictedUserCredentials, subtitle, token);
+        }
+
 
         await using var subtitleStream = await _addic7EdDownloader.DownloadSubtitle(creds.AddictedUserCredentials, subtitle, token);
         await using var buffer = new MemoryStream();

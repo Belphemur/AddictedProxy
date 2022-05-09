@@ -11,8 +11,6 @@ namespace AddictedProxy.Database.Repositories.Shows;
 
 public class EpisodeRepository : IEpisodeRepository
 {
-    private static readonly Action<BulkOperation<Episode>> AvoidUpdateDiscoveredFieldEpisode = Rule.AvoidUpdateDiscoveredField<Episode>();
-    private static readonly Action<BulkOperation<Subtitle>> AvoidUpdateDiscoveredFieldSubtitle = Rule.AvoidUpdateDiscoveredField<Subtitle>();
     private readonly EntityContext _entityContext;
 
 
@@ -37,7 +35,7 @@ public class EpisodeRepository : IEpisodeRepository
                 switch (operation)
                 {
                     case BulkOperation<Subtitle> bulkSub:
-                        bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Discovered, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount };
+                        bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Discovered, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount, subtitle.UniqueId };
                         bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.EpisodeId, subtitle.Language, subtitle.Version };
                         break;
                     case BulkOperation<Episode> bulkEp:
@@ -53,6 +51,21 @@ public class EpisodeRepository : IEpisodeRepository
 
         await transaction.CommitAsync(token);
     }
+    
+    /// <summary>
+    /// Get season episodes
+    /// </summary>
+    /// <param name="tvShowId"></param>
+    /// <param name="season"></param>
+    /// <returns></returns>
+    public IAsyncEnumerable<Episode> GetSeasonEpisodesAsync(long tvShowId, int season)
+    {
+        return _entityContext.Episodes.Where(episode => episode.Season == season)
+                             .Where(episode => episode.TvShow.Id == tvShowId)
+                             .Include(episode => episode.TvShow)
+                             .Include(episode => episode.Subtitles)
+                             .ToAsyncEnumerable();
+    }
 
     /// <summary>
     ///     Get a specific episode
@@ -60,11 +73,11 @@ public class EpisodeRepository : IEpisodeRepository
     public Task<Episode?> GetEpisodeUntrackedAsync(long tvShowId, int season, int episodeNumber, CancellationToken token)
     {
         return _entityContext.Episodes
-                             .Include(episode => episode.TvShow)
-                             .Include(episode => episode.Subtitles)
                              .Where(episode => episode.Number == episodeNumber)
                              .Where(episode => episode.Season == season)
                              .Where(episode => episode.TvShow.Id == tvShowId)
+                             .Include(episode => episode.TvShow)
+                             .Include(episode => episode.Subtitles)
                              .AsNoTracking()
                              .FirstOrDefaultAsync(token);
     }

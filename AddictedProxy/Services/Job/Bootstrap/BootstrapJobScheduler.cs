@@ -1,6 +1,7 @@
 ﻿#region
 
-using AddictedProxy.Services.Saver;
+using AddictedProxy.Services.Provider.Shows;
+using AddictedProxy.Services.Provider.Shows.Jobs;
 using InversionOfControl.Model;
 using Job.Scheduler.AspNetCore.Extensions;
 
@@ -12,7 +13,7 @@ public class BootstrapJobScheduler : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddJob<RefreshShowJob>();
-        services.AddJobScheduler(config => config.AddStartupJob(builder => builder.Create<RefreshShowJob>().Build()));
+        services.AddJob<RefreshShowsJob>();
+        services.AddJobScheduler(config => config.AddStartupJob(builder => builder.Create<RefreshShowsJob>().Build()));
     }
 }
