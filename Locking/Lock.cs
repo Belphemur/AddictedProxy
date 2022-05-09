@@ -15,7 +15,7 @@ public static class Lock<T>
     /// <returns></returns>
     public static ILockContainer GetNamedLock(string name)
     {
-        return new Container(KeyedSemaphore.GetOrCreate(name));
+        return new Container(KeyedSemaphore.GetOrCreate(GetLockKey(name)));
     }
 
     private static string GetLockKey(string key)
