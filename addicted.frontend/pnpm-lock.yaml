@@ -16,6 +16,7 @@ specifiers:
   '@vue/eslint-config-typescript': ^9.1.0
   '@vue/test-utils': ^2.0.0-0
   '@vue/vue3-jest': ^27.0.0-alpha.1
+  all-iso-language-codes: ^1.0.5
   babel-jest: ^27.0.6
   core-js: ^3.8.3
   element-plus: ^2.1.11
@@ -36,11 +37,11 @@ specifiers:
   url: ^0.11.0
   vue: ^3.2.13
   vue-class-component: ^8.0.0-0
-  vue-country-flag-next: ^2.3.2
   vue-router: ^4.0.3
 
 dependencies:
   '@element-plus/icons-vue': 1.1.4_vue@3.2.33
+  all-iso-language-codes: 1.0.5
   core-js: 3.22.4
   element-plus: 2.1.11_vue@3.2.33
   isomorphic-fetch: 3.0.0
@@ -48,7 +49,6 @@ dependencies:
   url: 0.11.0
   vue: 3.2.33
   vue-class-component: 8.0.0-rc.1_vue@3.2.33
-  vue-country-flag-next: 2.3.2_vue@3.2.33
   vue-router: 4.0.15_vue@3.2.33
 
 devDependencies:
@@ -3206,6 +3206,10 @@ packages:
       require-from-string: 2.0.2
       uri-js: 4.4.1
     dev: true
+
+  /all-iso-language-codes/1.0.5:
+    resolution: {integrity: sha512-uSE78fLXmG1GU1617BzCsGMqUDwZ65sbMToLjZtSIZDow7wLgkOx73TZyVNThHy06VsQ/39qcyUHHkLyqrRBXQ==}
+    dev: false
 
   /ansi-colors/4.1.1:
     resolution: {integrity: sha512-JoX0apGbHaUJBNl6yF+p6JAFYZ666/hhCGKN5t9QFjbJQKUU/g8MNbFDbvfrgKXvI1QpZplPOnwIo99lX/AAmA==}
@@ -9295,15 +9299,6 @@ packages:
 
   /vue-class-component/8.0.0-rc.1_vue@3.2.33:
     resolution: {integrity: sha512-w1nMzsT/UdbDAXKqhwTmSoyuJzUXKrxLE77PCFVuC6syr8acdFDAq116xgvZh9UCuV0h+rlCtxXolr3Hi3HyPQ==}
-    peerDependencies:
-      vue: ^3.0.0
-    dependencies:
-      vue: 3.2.33
-    dev: false
-
-  /vue-country-flag-next/2.3.2_vue@3.2.33:
-    resolution: {integrity: sha512-Lv12L1VTwlBgizpZ3xPEPO3zuIETaJmeSiPuLOWLLgu2EakwU/o72iKYiKcdZ6BXiSkfss+Ski5fDzjuxZ1DcA==}
-    engines: {node: '>=10'}
     peerDependencies:
       vue: ^3.0.0
     dependencies:

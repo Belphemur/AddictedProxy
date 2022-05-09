@@ -1,11 +1,10 @@
 <template>
-  <BaseHeader />
-  <div style="display: flex">
+  <el-container>
     <BaseSide />
-    <div style="width: 100%">
+    <el-main>
       <router-view />
-    </div>
-  </div>
+    </el-main>
+  </el-container>
 </template>
 
 <style lang="scss">
@@ -15,5 +14,6 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: var(--el-text-color-primary);
+  height: 100%;
 }
 </style>

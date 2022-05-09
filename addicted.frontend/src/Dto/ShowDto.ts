@@ -1,5 +1,5 @@
 export interface ShowDto {
-  id: number;
+  id: string;
   title: string;
   seasons: number;
 }
