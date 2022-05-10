@@ -30,10 +30,14 @@
               <span v-else></span>
             </template>
           </el-table-column>
-          <el-table-column
-            label="Downloads"
-            prop="downloadCount"
-          ></el-table-column>
+          <el-table-column label="Downloads" prop="downloadCount">
+            <template #default="scope">
+              <el-button type="primary" @click="downloadSubtitle(scope.row)">
+                <i class="fa-solid fa-download fa-fw" />
+                {{ scope.row.downloadCount }}
+              </el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-collapse-item>
     </el-collapse>
@@ -42,13 +46,22 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
-import { EpisodeWithSubtitlesDto } from "@/api";
+import { EpisodeWithSubtitlesDto, SubtitleDto } from "@/api";
+import { ElMessage } from "element-plus";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto>;
 }
 
 const props = defineProps<Props>();
+const downloadSubtitle = async (sub: SubtitleDto) => {
+  ElMessage({
+    message: "Subtitle download started ... It might take a moment.",
+    type: "success",
+  });
+  window.location.href = `${process.env.VUE_APP_API_PATH}${sub.downloadUri}`;
+  sub.downloadCount!++;
+};
 </script>
 <style scoped>
 #episodes {
