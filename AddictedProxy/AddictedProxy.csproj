@@ -10,7 +10,7 @@
     <ItemGroup>
         <PackageReference Include="AspNetCoreRateLimit" Version="4.0.2" />
         <PackageReference Include="Bogus" Version="34.0.2" />
-        <PackageReference Include="Job.Scheduler.AspNetCore" Version="2.7.1" />
+        <PackageReference Include="Job.Scheduler.AspNetCore" Version="2.7.3" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
         <PackageReference Include="Sentry.AspNetCore" Version="3.17.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />

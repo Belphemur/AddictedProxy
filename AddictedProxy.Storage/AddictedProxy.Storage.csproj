@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj"/>
+        <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -16,8 +16,10 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0"/>
-        <PackageReference Include="uplink.NET" Version="2.8.2565"/>
+        <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
+        <PackageReference Include="uplink.NET" Version="2.8.2572" />
+        <PackageReference Include="uplink.NET.Win" Version="2.8.2572" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
+        <PackageReference Include="uplink.NET.Linux" Version="2.8.2565" Condition="$([MSBuild]::IsOsPlatform('Linux'))" />
     </ItemGroup>
 
 </Project>
