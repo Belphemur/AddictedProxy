@@ -1,5 +1,6 @@
 ﻿#region
 
+using AddictedProxy.Controllers.Serializer;
 using AddictedProxy.Services.Middleware;
 using InversionOfControl.Model;
 
@@ -12,7 +13,8 @@ public class BootstrapController : IBootstrap, IBootstrapApp
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers()
-                .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>());
+            .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>())
+            .AddJsonOptions(options => options.JsonSerializerOptions.AddContext<SerializationContext>());
         services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
     }
 
