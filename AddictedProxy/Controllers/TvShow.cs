@@ -129,10 +129,16 @@ public class TvShows : Controller
         var episodes = _episodeRepository.GetSeasonEpisodesAsync(show.Id, seasonNumber)
                                          .Select(episode =>
                                          {
-                                             var subs = episode.Subtitles.Select(subtitle => new SubtitleDto(subtitle,
-                                                 Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
-                                                 throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
-                                                 searchLanguage));
+                                             var subs = episode
+                                                        .Subtitles
+                                                        .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), searchLanguage))
+                                                        .Select(
+                                                            subtitle =>
+                                                            new SubtitleDto(subtitle,
+                                                                Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
+                                                                throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                                                                searchLanguage)
+                                                        );
                                              return new EpisodeWithSubtitlesDto(episode, subs);
                                          });
         return Ok(new TvShowSubtitleResponse(episodes));
