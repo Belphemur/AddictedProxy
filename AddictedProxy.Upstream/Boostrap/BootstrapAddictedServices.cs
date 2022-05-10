@@ -65,8 +65,8 @@ public class BootstrapAddictedServices : IBootstrap,
                .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
                .WaitAndRetryAsync(8, // exponential back-off plus some jitter
                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
-                                   + TimeSpan.FromMilliseconds(jitterer.Next(0, 300))
+                                   + TimeSpan.FromMilliseconds(jitterer.Next(0, 1200))
                )
-               .WrapAsync(Policy.TimeoutAsync(10));
+               .WrapAsync(Policy.TimeoutAsync(30));
     }
 }
