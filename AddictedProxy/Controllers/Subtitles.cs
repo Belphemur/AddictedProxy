@@ -73,7 +73,7 @@ public class Subtitles : Controller
             var subtitleStream = await _subtitleProvider.GetSubtitleFileAsync(subtitle, token);
 
             var fileName =
-                $"{subtitle.Episode.TvShow.Name.Replace(" ", ".")}.S{subtitle.Episode.Season:D2}E{subtitle.Episode.Number:D2}.{_cultureParser.FromString(subtitle.Language)?.TwoLetterISOLanguageName.ToLowerInvariant()}.srt";
+                $"{subtitle.Episode.TvShow.Name.Replace(" ", ".")}.S{subtitle.Episode.Season:D2}E{subtitle.Episode.Number:D2}.{_cultureParser.FromString(subtitle.Language)?.TwoLetterISOLanguageName.ToLowerInvariant()}{(subtitle.HearingImpaired ? ".hi" : "")}.srt";
             return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"))
             {
                 EntityTag = new EntityTagHeaderValue('"' + $"{subtitle.UniqueId}-{(subtitle.StoredAt.HasValue ? "-" + subtitle.StoredAt.Value.Ticks : "")}" + '"'),
