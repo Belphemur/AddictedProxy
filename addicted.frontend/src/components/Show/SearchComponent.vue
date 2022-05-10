@@ -47,19 +47,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineEmits } from "vue";
+import { ref, watch } from "vue";
 import { TvShowsApi, Configuration } from "@/api";
 import { ShowDto } from "@/Dto/ShowDto";
 import { getName, getAll639_1 } from "all-iso-language-codes";
 import { SelectedShow } from "@/Dto/SelectedShow";
+import { ElNotification } from "element-plus";
 
 const langs = getAll639_1().map((value) => {
   return { value: value, label: getName(value) };
 });
 const userLang = (navigator.language || navigator.userLanguage).split("-")[0];
 
+// eslint-disable-next-line no-undef
 const emit = defineEmits<{
-  (e: "change", show: SelectedShow): void;
+  (e: "selected", show: SelectedShow): void;
   (e: "cleared"): void;
 }>();
 
@@ -93,6 +95,12 @@ const updateSelectedShow = async (event: ShowDto) => {
   //Force refreshing the show
   if (selectedShow.value.seasons == 0) {
     await api.showsShowIdRefreshPost(selectedShow.value.id);
+    ElNotification({
+      title: "Fetching...",
+      message:
+        "We don't have any subtitle for that show. We're fetching them from Addic7ed.\nPlease Try later.",
+      type: "warning",
+    });
     return;
   }
   selectedShowSeason.value = Array.from(
@@ -112,7 +120,7 @@ watch(selectedSeason, (value) => {
     emit("cleared");
     return;
   }
-  emit("change", {
+  emit("selected", {
     language: languageSelect.value,
     season: value,
     showId: selectedShow.value.id,
@@ -123,7 +131,7 @@ watch(languageSelect, (value) => {
   if (selectedSeason.value == null || selectedShow.value == null) {
     return;
   }
-  emit("change", {
+  emit("selected", {
     language: value,
     season: selectedSeason.value,
     showId: selectedShow.value.id,
