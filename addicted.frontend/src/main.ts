@@ -2,8 +2,12 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";
-import "element-plus/dist/index.css";
+
+import "@/styles/index.scss";
+
 import { library, dom } from "@fortawesome/fontawesome-svg-core";
+import "element-plus/theme-chalk/dark/css-vars.css";
+
 import { fas } from "@fortawesome/free-solid-svg-icons";
 library.add(fas);
 import { fab } from "@fortawesome/free-brands-svg-icons";
