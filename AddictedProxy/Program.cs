@@ -72,7 +72,7 @@ app.UseSentryTracing();
 
 app.MapControllers();
 
-app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
 
 #if DEBUG
 {
