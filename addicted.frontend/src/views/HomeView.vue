@@ -27,7 +27,7 @@ import { SelectedShow } from "@/Dto/SelectedShow";
 import SubtitlesTable from "@/components/Show/SubtitlesTable.vue";
 import { Configuration, EpisodeWithSubtitlesDto, TvShowsApi } from "@/api";
 
-const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto> | null>(null);
+const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
 const api = new TvShowsApi(
   new Configuration({ basePath: process.env.VUE_APP_API_PATH })
 );
@@ -38,11 +38,11 @@ const getSubtitles = async (show: SelectedShow) => {
     show.season,
     show.language
   );
-  episodesWithSubtitles.value = response.episodes || null;
+  episodesWithSubtitles.value = response.episodes || [];
 };
 
 const clear = () => {
-  episodesWithSubtitles.value = null;
+  episodesWithSubtitles.value = [];
 };
 </script>
 

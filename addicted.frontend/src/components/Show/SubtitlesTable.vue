@@ -32,7 +32,11 @@
           </el-table-column>
           <el-table-column label="Downloads" prop="downloadCount">
             <template #default="scope">
-              <el-button type="primary" @click="downloadSubtitle(scope.row)">
+              <el-button
+                type="primary"
+                @click="downloadSubtitle(scope.row)"
+                :disabled="currentlyDownloading.has(scope.row.subtitleId)"
+              >
                 <i class="fa-solid fa-download fa-fw" />
                 {{ scope.row.downloadCount }}
               </el-button>
@@ -45,22 +49,64 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
-import { EpisodeWithSubtitlesDto, SubtitleDto } from "@/api";
+import { defineProps, ref } from "vue";
+import { createWriteStream } from "streamsaver";
+
+import {
+  Configuration,
+  EpisodeWithSubtitlesDto,
+  SubtitleDto,
+  SubtitlesApi,
+} from "@/api";
 import { ElMessage } from "element-plus";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto>;
 }
 
+const api = new SubtitlesApi(
+  new Configuration({ basePath: process.env.VUE_APP_API_PATH })
+);
 const props = defineProps<Props>();
+
+const currentlyDownloading = ref<Map<string, boolean>>(new Map());
 const downloadSubtitle = async (sub: SubtitleDto) => {
+  currentlyDownloading.value.set(sub.subtitleId!, true);
   ElMessage({
     message: "Subtitle download started ... It might take a moment.",
     type: "success",
   });
-  window.location.href = `${process.env.VUE_APP_API_PATH}${sub.downloadUri}`;
-  sub.downloadCount!++;
+  const response = await api.downloadSubtitle(sub.subtitleId!);
+  const header = response.headers.get("Content-Disposition");
+  const parts = header!.split(";");
+  const filename = parts[1].split("=")[1] ?? "sub.srt";
+
+  const fileStream = createWriteStream(filename);
+  const readableStream = response.body;
+
+  // More optimized
+  if (window.WritableStream && readableStream?.pipeTo) {
+    return readableStream.pipeTo(fileStream).then(() => {
+      sub.downloadCount!++;
+      currentlyDownloading.value.delete(sub.subtitleId!);
+    });
+  }
+
+  const writer = fileStream.getWriter();
+
+  const reader = response!.body!.getReader();
+  const pump = (): unknown =>
+    reader
+      .read()
+      .then((res) =>
+        res.done ? writer.close() : writer.write(res.value).then(pump)
+      )
+      .then(() => {
+        sub.downloadCount!++;
+        currentlyDownloading.value.delete(sub.subtitleId!);
+      });
+
+  await pump();
 };
 </script>
 <style scoped>
