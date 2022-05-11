@@ -54,10 +54,7 @@ public class ShowRefresher : IShowRefresher
         
         var show = (await _tvShowRepository.GetByIdAsync(tvShow.Id, token))!;
         _logger.LogInformation("Refreshing episode for {number} seasons of {show}", show.Seasons.Count, show.Name);
-        foreach (var season in show.Seasons)
-        {
-            await _episodeRefresher.RefreshEpisodesAsync(show, season, token: token);
-        }
+        await Task.WhenAll(show.Seasons.Select(season => _episodeRefresher.RefreshEpisodesAsync(show, season, token: token)));
     }
 
     public IAsyncEnumerable<TvShow> FindShowsAsync(string search, CancellationToken token)
