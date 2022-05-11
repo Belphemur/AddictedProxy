@@ -101,7 +101,8 @@ const updateSelectedShow = async (event: ShowDto) => {
       type: "warning",
       duration: 5000,
     });
-    emit("cleared");
+    selectedShow.value = null;
+    selectedShowSeason.value = [];
     return;
   }
   selectedShowSeason.value = Array.from(
