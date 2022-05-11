@@ -6,8 +6,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: var(--el-text-color-primary);
+  font-size: large;
 }
-
+.el-aside, .el-menu {
+  height: 100vh
+}
 a {
   color: var(--ep-color-primary);
 }

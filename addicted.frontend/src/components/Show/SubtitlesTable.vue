@@ -6,6 +6,7 @@
         v-bind:key="episode.number"
         :title="`Ep. ${episode.number}: ${episode.title}`"
         :name="episode.number"
+        style="--el-collapse-header-font-size: 1.2rem"
       >
         <el-table table-layout="auto" :data="episode.subtitles">
           <el-table-column label="Version" prop="version"></el-table-column>
