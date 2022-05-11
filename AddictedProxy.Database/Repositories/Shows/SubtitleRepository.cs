@@ -56,12 +56,10 @@ public class SubtitleRepository : ISubtitleRepository
     /// <summary>
     /// Update the subtitle
     /// </summary>
-    /// <param name="subtitle"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task UpdateAsync(Subtitle subtitle, CancellationToken token)
+    public Task SaveChangeAsync(CancellationToken token)
     {
-        _entityContext.Subtitles.Update(subtitle);
         return _entityContext.SaveChangesAsync(token);
     }
 }

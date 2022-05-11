@@ -27,10 +27,9 @@ public interface ISubtitleRepository
     Task<Subtitle?> GetSubtitleByGuidAsync(Guid uniqueId, bool withEpisode = false, bool withShow = false, CancellationToken token = default);
 
     /// <summary>
-    /// Update the subtitle
+    /// Save any change in the database
     /// </summary>
-    /// <param name="subtitle"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task UpdateAsync(Subtitle subtitle, CancellationToken token);
+    Task SaveChangeAsync(CancellationToken token);
 }
