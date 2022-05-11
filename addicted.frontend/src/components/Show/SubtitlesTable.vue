@@ -41,6 +41,13 @@
                 <i class="fa-solid fa-download fa-fw" />
                 {{ scope.row.downloadCount }}
               </el-button>
+              <el-progress
+                v-show="currentlyDownloading.has(scope.row.subtitleId)"
+                :percentage="100"
+                status="success"
+                :indeterminate="true"
+                :duration="5"
+              />
             </template>
           </el-table-column>
         </el-table>
@@ -85,12 +92,14 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
   const fileStream = createWriteStream(filename);
   const readableStream = response.body;
 
+  const UpdateDownloaded = () => {
+    sub.downloadCount!++;
+    currentlyDownloading.value.delete(sub.subtitleId!);
+  };
+
   // More optimized
   if (window.WritableStream && readableStream?.pipeTo) {
-    return readableStream.pipeTo(fileStream).then(() => {
-      sub.downloadCount!++;
-      currentlyDownloading.value.delete(sub.subtitleId!);
-    });
+    return readableStream.pipeTo(fileStream).then(UpdateDownloaded);
   }
 
   const writer = fileStream.getWriter();
@@ -102,10 +111,7 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
       .then((res) =>
         res.done ? writer.close() : writer.write(res.value).then(pump)
       )
-      .then(() => {
-        sub.downloadCount!++;
-        currentlyDownloading.value.delete(sub.subtitleId!);
-      });
+      .then(UpdateDownloaded);
 
   await pump();
 };
