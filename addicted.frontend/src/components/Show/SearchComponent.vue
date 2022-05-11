@@ -34,7 +34,7 @@
         <el-option
           v-for="item in selectedShowSeason"
           :key="item"
-          :label="item"
+          :label="`Season ${item}`"
           :value="item"
         />
       </el-select>
@@ -52,7 +52,7 @@ import { TvShowsApi, Configuration } from "@/api";
 import { ShowDto } from "@/Dto/ShowDto";
 import { getName, getAll639_1 } from "all-iso-language-codes";
 import { SelectedShow } from "@/Dto/SelectedShow";
-import { ElNotification } from "element-plus";
+import { ElMessage, ElNotification } from "element-plus";
 
 const langs = getAll639_1().map((value) => {
   return { value: value, label: getName(value) };
@@ -95,12 +95,13 @@ const updateSelectedShow = async (event: ShowDto) => {
   //Force refreshing the show
   if (selectedShow.value.seasons == 0) {
     await api.showsShowIdRefreshPost(selectedShow.value.id);
-    ElNotification({
-      title: "Fetching...",
+    ElMessage({
       message:
         "We don't have any subtitle for that show. We're fetching them from Addic7ed.\nPlease Try later.",
       type: "warning",
+      duration: 5000,
     });
+    emit("cleared");
     return;
   }
   selectedShowSeason.value = Array.from(
