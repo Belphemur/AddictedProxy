@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace AddictedProxy.Controllers.Hub;
 
-public class RefreshHub : Microsoft.AspNetCore.SignalR.Hub
+public class RefreshHub : Hub<IRefreshClient>
 {
     private readonly IShowRefresher _showRefresher;
     private readonly IJobBuilder _jobBuilder;
@@ -21,6 +21,11 @@ public class RefreshHub : Microsoft.AspNetCore.SignalR.Hub
         _jobScheduler = jobScheduler;
     }
 
+    /// <summary>
+    /// Trigger the refresh of a show
+    /// </summary>
+    /// <param name="showId"></param>
+    /// <param name="token"></param>
     public async Task RefreshShow(Guid showId, CancellationToken token)
     {
         var show = await _showRefresher.GetShowByGuidAsync(showId, token);
@@ -34,29 +39,5 @@ public class RefreshHub : Microsoft.AspNetCore.SignalR.Hub
                              .Build();
         _jobScheduler.ScheduleJob(job);
         await Groups.AddToGroupAsync(Context.ConnectionId, showId.ToString(), token);
-    }
-
-    /// <summary>
-    /// Send progress about refresh
-    /// </summary>
-    /// <param name="show"></param>
-    /// <param name="progress"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    internal Task SendProgressAsync(TvShow show, int progress, CancellationToken token)
-    {
-        return Clients.Group(show.UniqueId.ToString()).SendAsync("progress", show.UniqueId, progress, token);
-    }
-
-    /// <summary>
-    /// Send the fact the show was refreshed
-    /// </summary>
-    /// <param name="show"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    internal async Task SendRefreshDone(TvShow show, CancellationToken token)
-    {
-        await Clients.Group(show.UniqueId.ToString()).SendAsync("done", new ShowDto(show), token);
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, show.UniqueId.ToString(), token);
     }
 }
