@@ -72,13 +72,11 @@ app.UseSentryTracing();
 
 app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
 
-#if DEBUG
 {
     await using var serviceScope = app.Services.CreateAsyncScope();
     await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<EntityContext>();
 
     await dbContext.Database.MigrateAsync();
 }
-#endif
 
 app.Run();
