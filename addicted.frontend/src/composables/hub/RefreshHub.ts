@@ -30,6 +30,9 @@ export type DoneHandler = (show: ShowDto) => void;
 export function sendRefreshAsync(showId: string) {
   return connection.invoke("RefreshShow", showId);
 }
+export function unsubscribeShowAsync(showId: string) {
+  return connection.invoke("UnsubscribeRefreshShow", showId);
+}
 
 export function onProgress(handler: ProgressHandler) {
   connection.on("Progress", handler);
