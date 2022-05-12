@@ -63,6 +63,7 @@ const userLang = (navigator.language || navigator.userLanguage).split("-")[0];
 const emit = defineEmits<{
   (e: "selected", show: SelectedShow): void;
   (e: "cleared"): void;
+  (e: "needRefresh", showId: string): void;
 }>();
 
 const selectedSeason = ref<number | null>(null);
@@ -94,13 +95,7 @@ const updateSelectedShow = async (event: ShowDto) => {
   selectedSeason.value = null;
   //Force refreshing the show
   if (selectedShow.value.seasons == 0) {
-    await api.showsShowIdRefreshPost(selectedShow.value.id);
-    ElMessage({
-      message:
-        "We don't have any subtitle for that show. We're fetching them from Addic7ed.\nPlease Try later.",
-      type: "warning",
-      duration: 5000,
-    });
+    emit("needRefresh", selectedShow.value.id);
     selectedShow.value = null;
     selectedShowSeason.value = [];
     return;

@@ -14,6 +14,7 @@
       <SearchComponent
         v-on:selected="getSubtitles"
         v-on:cleared="clear"
+        v-on:need-refresh="needRefresh"
         style="display: flex; flex-grow: 1"
       />
     </el-col>
@@ -48,6 +49,8 @@ import { SelectedShow } from "@/Dto/SelectedShow";
 import SubtitlesTable from "@/components/Show/SubtitlesTable.vue";
 import { Configuration, EpisodeWithSubtitlesDto, TvShowsApi } from "@/api";
 import { Search, ArrowDownBold } from "@element-plus/icons-vue";
+import { ElMessage } from "element-plus";
+import { onProgress, sendRefreshAsync } from "@/composables/hub/RefreshHub";
 
 const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
 const api = new TvShowsApi(
@@ -70,6 +73,17 @@ const getSubtitles = async (show: SelectedShow) => {
 const clear = () => {
   episodesWithSubtitles.value = [];
 };
+
+const needRefresh = async (showId: string) => {
+  ElMessage({
+    message:
+      "We don't have any subtitle for that show. We're fetching them from Addic7ed.\nPlease Try later.",
+    type: "warning",
+    duration: 5000,
+  });
+  await sendRefreshAsync(showId);
+};
+onProgress((progress) => console.log(progress));
 </script>
 
 <style scoped></style>
