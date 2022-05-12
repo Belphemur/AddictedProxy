@@ -35,14 +35,14 @@ export function onProgress(handler: ProgressHandler) {
   connection.on("Progress", handler);
 }
 
-export function OffProgress(handler: ProgressHandler) {
+export function offProgress(handler: ProgressHandler) {
   connection.off("Progress", handler);
 }
 
-export function OnDone(handler: DoneHandler) {
+export function onDone(handler: DoneHandler) {
   connection.on("Done", handler);
 }
 
-export function OffDone(handler: DoneHandler) {
+export function offDone(handler: DoneHandler) {
   connection.off("Done", handler);
 }

@@ -40,7 +40,7 @@
       </el-select>
     </template>
     <template #default="{ item }">
-      <span class="name">{{ item.value }}</span>
+      <span class="name">{{ item.title }}</span>
       <span v-if="item.seasons > 0"> ({{ item.seasons }})</span>
     </template>
   </el-autocomplete>
@@ -63,7 +63,7 @@ const userLang = (navigator.language || navigator.userLanguage).split("-")[0];
 const emit = defineEmits<{
   (e: "selected", show: SelectedShow): void;
   (e: "cleared"): void;
-  (e: "needRefresh", showId: string): void;
+  (e: "needRefresh", show: ShowDto): void;
 }>();
 
 const selectedSeason = ref<number | null>(null);
@@ -82,10 +82,10 @@ const querySearch = async (query: string, cb: (param: unknown) => void) => {
   cb(
     searchResponse.shows?.map((show) => {
       return {
-        value: show.name,
+        title: show.name,
         id: show.id,
         seasons: show.nbSeasons,
-      } as unknown as ShowDto;
+      } as ShowDto;
     })
   );
 };
@@ -95,7 +95,9 @@ const updateSelectedShow = async (event: ShowDto) => {
   selectedSeason.value = null;
   //Force refreshing the show
   if (selectedShow.value.seasons == 0) {
-    emit("needRefresh", selectedShow.value.id);
+    emit("needRefresh", {
+      ...selectedShow.value,
+    });
     selectedShow.value = null;
     selectedShowSeason.value = [];
     return;

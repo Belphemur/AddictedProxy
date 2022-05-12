@@ -21,6 +21,11 @@
   </el-row>
   <el-row>
     <el-col :offset="5" :span="14">
+      <el-progress
+        v-show="refreshShowProgress > 0"
+        :percentage="refreshShowProgress"
+        :format="formatPercentage"
+      />
       <el-divider>
         <el-icon>
           <arrow-down-bold />
@@ -44,13 +49,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onUnmounted, ref } from "vue";
 import { SelectedShow } from "@/Dto/SelectedShow";
 import SubtitlesTable from "@/components/Show/SubtitlesTable.vue";
 import { Configuration, EpisodeWithSubtitlesDto, TvShowsApi } from "@/api";
 import { Search, ArrowDownBold } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
-import { onProgress, sendRefreshAsync } from "@/composables/hub/RefreshHub";
+import {
+  offProgress,
+  onProgress,
+  ProgressHandler,
+  sendRefreshAsync,
+} from "@/composables/hub/RefreshHub";
+import { ShowDto } from "@/Dto/ShowDto";
 
 const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
 const api = new TvShowsApi(
@@ -58,6 +69,8 @@ const api = new TvShowsApi(
 );
 
 const loadingSubtitles = ref(false);
+const refreshShowProgress = ref(0);
+const refreshShowName = ref("");
 
 const getSubtitles = async (show: SelectedShow) => {
   loadingSubtitles.value = true;
@@ -74,16 +87,26 @@ const clear = () => {
   episodesWithSubtitles.value = [];
 };
 
-const needRefresh = async (showId: string) => {
+const formatPercentage = (progress: number) =>
+  `Fetching ${refreshShowName.value}: (${progress}%)`;
+
+const needRefresh = async (show: ShowDto) => {
+  refreshShowName.value = show.title;
   ElMessage({
     message:
       "We don't have any subtitle for that show. We're fetching them from Addic7ed.\nPlease Try later.",
     type: "warning",
     duration: 5000,
   });
-  await sendRefreshAsync(showId);
+  await sendRefreshAsync(show.id);
 };
-onProgress((progress) => console.log(progress));
+const progressHandler: ProgressHandler = (progress) => {
+  refreshShowProgress.value = progress.progress;
+};
+onProgress(progressHandler);
+onUnmounted(() => {
+  offProgress(progressHandler);
+});
 </script>
 
 <style scoped></style>
