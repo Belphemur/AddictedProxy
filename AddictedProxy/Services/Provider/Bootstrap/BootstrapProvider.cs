@@ -4,7 +4,6 @@ using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows;
-using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Services.Provider.Shows.Jobs;
 using AddictedProxy.Services.Provider.Subtitle;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
@@ -27,7 +26,5 @@ public class BootstrapProvider : IBootstrap
         services.AddScoped<ISeasonRefresher, SeasonRefresher>();
         services.AddScoped<IEpisodeRefresher, EpisodeRefresher>();
         services.Configure<RefreshConfig>(configuration.GetSection("Refresh"));
-        services.AddSingleton<IRefreshHubManager, RefreshHubManager>();
-
     }
 }

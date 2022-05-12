@@ -1,4 +1,6 @@
-﻿using AddictedProxy.Services.Provider.Shows;
+﻿using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Model.Dto;
+using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Shows.Jobs;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
@@ -31,30 +33,30 @@ public class RefreshHub : Microsoft.AspNetCore.SignalR.Hub
                              .Configure(job => job.Show = show)
                              .Build();
         _jobScheduler.ScheduleJob(job);
+        await Groups.AddToGroupAsync(Context.ConnectionId, showId.ToString(), token);
     }
 
     /// <summary>
     /// Send progress about refresh
     /// </summary>
-    /// <param name="connectionId"></param>
-    /// <param name="showId"></param>
+    /// <param name="show"></param>
     /// <param name="progress"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    internal Task SendProgressAsync(string connectionId, Guid showId, int progress, CancellationToken token)
+    internal Task SendProgressAsync(TvShow show, int progress, CancellationToken token)
     {
-        return Clients.Client(connectionId).SendAsync("progressRefresh", showId, progress, token);
+        return Clients.Group(show.UniqueId.ToString()).SendAsync("progress", show.UniqueId, progress, token);
     }
 
     /// <summary>
     /// Send the fact the show was refreshed
     /// </summary>
-    /// <param name="connectionId"></param>
-    /// <param name="showId"></param>
+    /// <param name="show"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    internal Task SendRefreshDone(string connectionId, Guid showId, CancellationToken token)
+    internal async Task SendRefreshDone(TvShow show, CancellationToken token)
     {
-        return Clients.Client(connectionId).SendAsync("showRefreshed", showId, token);
+        await Clients.Group(show.UniqueId.ToString()).SendAsync("done", new ShowDto(show), token);
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, show.UniqueId.ToString(), token);
     }
 }
