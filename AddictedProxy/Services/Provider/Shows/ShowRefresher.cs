@@ -72,7 +72,7 @@ public class ShowRefresher : IShowRefresher
             var refresh = Interlocked.Add(ref currentRefresh, refreshIncrement);
             await _refreshHubManager.SendProgressAsync(tvShow, refresh, token);
         }));
-        await _refreshHubManager.SendRefreshDone(tvShow, token);
+        await _refreshHubManager.SendRefreshDone(show, token);
     }
 
     public IAsyncEnumerable<TvShow> FindShowsAsync(string search, CancellationToken token)
