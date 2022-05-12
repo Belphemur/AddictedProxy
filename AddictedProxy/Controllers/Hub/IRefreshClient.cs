@@ -13,7 +13,7 @@ public interface IRefreshClient
     /// <param name="progress"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task Progress(Guid showId, int progress, CancellationToken token);
+    Task Progress(ProgressDto progress, CancellationToken token);
 
     /// <summary>
     /// Send the fact the show was refreshed

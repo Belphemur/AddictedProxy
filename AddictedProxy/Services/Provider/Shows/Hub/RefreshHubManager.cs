@@ -23,7 +23,7 @@ public class RefreshHubManager : IRefreshHubManager
     /// <returns></returns>
     public Task SendProgressAsync(TvShow show, int progress, CancellationToken token)
     {
-        return _hubContext.Clients.Group(show.UniqueId.ToString()).Progress(show.UniqueId, progress, token);
+        return _hubContext.Clients.Group(show.UniqueId.ToString()).Progress(new ProgressDto(show.UniqueId, progress), token);
     }
 
     /// <summary>
