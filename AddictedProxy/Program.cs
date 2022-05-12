@@ -1,7 +1,7 @@
 #region
 
 using System.Reflection;
-using AddictedProxy.Controllers.Bootstrap;
+using AddictedProxy.Controllers.Rest.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Storage.Bootstrap;
@@ -69,8 +69,6 @@ app.UseSwagger(options => options.RouteTemplate = "api/{documentName}/swagger.{j
 
 
 app.UseSentryTracing();
-
-app.MapControllers();
 
 app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
 

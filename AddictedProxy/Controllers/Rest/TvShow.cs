@@ -1,5 +1,4 @@
-﻿using AddictedProxy.Database.Model.Shows;
-using AddictedProxy.Database.Repositories.Shows;
+﻿using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
 using AddictedProxy.Services.Culture;
@@ -9,7 +8,7 @@ using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AddictedProxy.Controllers;
+namespace AddictedProxy.Controllers.Rest;
 
 [Route("shows")]
 public class TvShows : Controller

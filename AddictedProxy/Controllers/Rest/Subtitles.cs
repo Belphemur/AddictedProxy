@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Model;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
 using AddictedProxy.Services.Culture;
@@ -19,7 +18,7 @@ using Microsoft.Net.Http.Headers;
 
 #endregion
 
-namespace AddictedProxy.Controllers;
+namespace AddictedProxy.Controllers.Rest;
 
 [ApiController]
 [Route("subtitles")]
