@@ -17,7 +17,7 @@ async function start() {
   }
 }
 
-await start();
+start();
 
 export interface Progress {
   showId: string;

@@ -26,9 +26,10 @@ public class RefreshHub : Hub<IRefreshClient>
     /// </summary>
     /// <param name="showId"></param>
     /// <param name="token"></param>
-    public async Task RefreshShow(Guid showId, CancellationToken token)
+    public async Task RefreshShow(Guid showId)
     {
-        var show = await _showRefresher.GetShowByGuidAsync(showId, token);
+        await Groups.AddToGroupAsync(Context.ConnectionId, showId.ToString());
+        var show = await _showRefresher.GetShowByGuidAsync(showId, default);
         if (show == null)
         {
             return;
@@ -38,6 +39,5 @@ public class RefreshHub : Hub<IRefreshClient>
                              .Configure(job => job.Show = show)
                              .Build();
         _jobScheduler.ScheduleJob(job);
-        await Groups.AddToGroupAsync(Context.ConnectionId, showId.ToString(), token);
     }
 }

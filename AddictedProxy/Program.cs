@@ -70,7 +70,12 @@ app.UseSwagger(options => options.RouteTemplate = "api/{documentName}/swagger.{j
 
 app.UseSentryTracing();
 
-app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition"));
+app.UseCors(policyBuilder => policyBuilder
+                             .AllowAnyMethod()
+                             .AllowAnyHeader()
+                             .AllowCredentials()
+                             .SetIsOriginAllowed(hostName => true)
+                             .WithExposedHeaders("Content-Disposition"));
 
 {
     await using var serviceScope = app.Services.CreateAsyncScope();

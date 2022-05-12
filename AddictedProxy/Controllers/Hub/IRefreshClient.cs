@@ -5,12 +5,6 @@ namespace AddictedProxy.Controllers.Hub;
 
 public interface IRefreshClient
 {
-    /// <summary>
-    /// Trigger the refresh of a show
-    /// </summary>
-    /// <param name="showId"></param>
-    /// <param name="token"></param>
-    public Task RefreshShow(Guid showId, CancellationToken token);
 
     /// <summary>
     /// Send progress about refresh
