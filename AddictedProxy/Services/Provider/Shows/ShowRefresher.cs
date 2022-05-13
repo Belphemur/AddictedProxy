@@ -65,11 +65,12 @@ public class ShowRefresher : IShowRefresher
         var refreshIncrement = 50 / show.Seasons.Count;
         _logger.LogInformation("Refreshing episode for {number} seasons of {show}", show.Seasons.Count, show.Name);
 
-        var refresh = 50;
+        var progressMin = 50;
+        var progressMax = 100;
 
         async Task SendProgress(int progress)
         {
-            var refreshValue = Interlocked.Add(ref refresh, progress / 100 * refreshIncrement);
+            var refreshValue =  Convert.ToInt32(Math.Ceiling(progressMin + (progressMax - progressMin) * progress / 100.0));
             await _refreshHubManager.SendProgressAsync(tvShow, refreshValue, token);
         }
 
