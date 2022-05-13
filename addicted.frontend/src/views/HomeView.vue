@@ -1,77 +1,82 @@
 <template>
   <el-row>
     <el-col :offset="5" :span="14">
-      <p>Welcome to Gestdown.</p>
-      <p>
-        It acts as a proxy for the Addic7ed subtitle website. You can easily
-        search here for subtitle available on the platform and download them.
-      </p>
-      <el-divider>
-        <el-icon>
-          <search />
-        </el-icon>
-      </el-divider>
-      <SearchComponent
-        ref="searchBox"
-        v-on:selected="getSubtitles"
-        v-on:cleared="clear"
-        v-on:need-refresh="needRefresh"
-        style="display: flex; flex-grow: 1"
-      />
+      <el-card header="Welcome to Gestdown">
+        <p>
+          It acts as a proxy for the Addic7ed subtitle website. You can easily
+          search here for subtitle available on the platform and download them.
+        </p>
+
+        <SearchComponent
+          ref="searchBox"
+          v-on:selected="getSubtitles"
+          v-on:cleared="clear"
+          v-on:need-refresh="needRefresh"
+          style="display: flex; flex-grow: 1"
+        />
+      </el-card>
     </el-col>
   </el-row>
+  <el-divider>
+    <el-icon>
+      <search />
+    </el-icon>
+  </el-divider>
   <el-row>
     <el-col :offset="5" :span="14">
-      <el-divider v-if="refreshingShows.size > 0">
-        <el-icon>
-          <refresh />
-        </el-icon>
-      </el-divider>
-      <div
-        v-for="[key, value] in refreshingShows"
-        v-bind:key="key"
-        class="progress-container"
-      >
-        <el-progress
-          :percentage="value.progress"
-          :format="formatPercentage(key)"
-          :text-inside="true"
-          :stroke-width="32"
-          :class="`progress-bar${value.show != null ? '-with-button' : ''}`"
-        />
-        <el-tooltip
-          v-if="value.show != null"
-          class="box-item"
-          effect="dark"
-          content="Redo the search"
-          placement="right"
+      <el-card>
+        <el-divider v-if="refreshingShows.size > 0">
+          <el-icon>
+            <refresh />
+          </el-icon>
+        </el-divider>
+        <div
+          v-for="[key, value] in refreshingShows"
+          v-bind:key="key"
+          class="progress-container"
         >
-          <el-button
-            class="search-button"
-            :icon="Search"
-            circle
-            @click="selectShow(key)"
+          <el-progress
+            :percentage="value.progress"
+            :format="formatPercentage(key)"
+            :text-inside="true"
+            :stroke-width="32"
+            :class="`progress-bar${value.show != null ? '-with-button' : ''}`"
           />
-        </el-tooltip>
-      </div>
-      <el-divider>
-        <el-icon>
-          <arrow-down-bold />
-        </el-icon>
-      </el-divider>
-      <el-skeleton :rows="5" animated :loading="loadingSubtitles">
-        <template #default>
-          <subtitles-table
-            v-if="episodesWithSubtitles.length > 0"
-            :episodes="episodesWithSubtitles"
-            style="display: flex; flex-grow: 1"
-          ></subtitles-table>
-          <el-empty
-            description="No Result"
-            v-if="episodesWithSubtitles.length == 0"
-          />
-        </template>
-      </el-skeleton>
+          <el-tooltip
+            v-if="value.show != null"
+            class="box-item"
+            effect="dark"
+            content="Redo the search"
+            placement="right"
+          >
+            <el-button
+              class="search-button"
+              :icon="Search"
+              type="primary"
+              circle
+              @click="selectShow(key)"
+            />
+          </el-tooltip>
+        </div>
+        <el-divider v-if="refreshingShows.size > 0">
+          <el-icon>
+            <arrow-down-bold />
+          </el-icon>
+        </el-divider>
+        <el-skeleton :rows="5" animated :loading="loadingSubtitles">
+          <template #default>
+            <subtitles-table
+              v-if="episodesWithSubtitles.length > 0"
+              :episodes="episodesWithSubtitles"
+              style="display: flex; flex-grow: 1"
+            ></subtitles-table>
+            <el-empty
+              description="No Result"
+              v-if="episodesWithSubtitles.length == 0"
+            />
+          </template>
+        </el-skeleton>
+      </el-card>
     </el-col>
   </el-row>
 </template>

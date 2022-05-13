@@ -1,5 +1,5 @@
 <template>
-  <el-aside width="200px">
+  <el-aside width="200px" class="menu">
     <el-scrollbar>
       <el-menu :default-openeds="['1']" :collapse="false">
         <img
@@ -35,3 +35,9 @@ import black from "@/assets/Logos/Gestdown-logos_black.png";
 import { isDark } from "@/composables/theme";
 import { Sunny, Moon } from "@element-plus/icons-vue";
 </script>
+
+<style scoped>
+.menu {
+  background-color: var(--el-bg-color);
+}
+</style>
