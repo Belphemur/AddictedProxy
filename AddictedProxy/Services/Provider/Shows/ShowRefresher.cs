@@ -61,19 +61,20 @@ public class ShowRefresher : IShowRefresher
         await _seasonRefresher.RefreshSeasonsAsync(tvShow, token: token);
         await _refreshHubManager.SendProgressAsync(tvShow, 50, token);
 
-        var currentRefresh = 50;
-
         var show = (await _tvShowRepository.GetByIdAsync(tvShow.Id, token))!;
         var refreshIncrement = 50 / show.Seasons.Count;
         _logger.LogInformation("Refreshing episode for {number} seasons of {show}", show.Seasons.Count, show.Name);
 
         var refresh = 50;
-        foreach (var season in show.Seasons)
+
+        async Task SendProgress(int progress)
         {
-            await _episodeRefresher.RefreshEpisodesAsync(show, season, token: token);
-            refresh += refreshIncrement;
-            await _refreshHubManager.SendProgressAsync(tvShow, refresh, token);
+            var refreshValue = Interlocked.Add(ref refresh, progress / 100 * refreshIncrement);
+            await _refreshHubManager.SendProgressAsync(tvShow, refreshValue, token);
         }
+
+        await _episodeRefresher.RefreshEpisodesAsync(show, show.Seasons.ToArray(), SendProgress, token);
+
 
         await _refreshHubManager.SendProgressAsync(tvShow, 100, token);
         await _refreshHubManager.SendRefreshDone(show, token);
