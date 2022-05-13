@@ -65,10 +65,14 @@ import { Configuration, EpisodeWithSubtitlesDto, TvShowsApi } from "@/api";
 import { Search, ArrowDownBold, Refresh } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import {
+  DoneHandler,
+  offDone,
   offProgress,
+  onDone,
   onProgress,
   ProgressHandler,
   sendRefreshAsync,
+  unsubscribeShowAsync,
 } from "@/composables/hub/RefreshHub";
 import { ShowDto } from "@/Dto/ShowDto";
 
@@ -124,9 +128,15 @@ const progressHandler: ProgressHandler = (progress) => {
     progress: progress.progress,
   });
 };
+
+const doneHandler: DoneHandler = async (show) => {
+  await unsubscribeShowAsync(show.id!);
+};
 onProgress(progressHandler);
+onDone(doneHandler);
 onUnmounted(() => {
   offProgress(progressHandler);
+  offDone(doneHandler);
 });
 </script>
 
