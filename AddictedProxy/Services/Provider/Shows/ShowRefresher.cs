@@ -72,6 +72,7 @@ public class ShowRefresher : IShowRefresher
             var refresh = Interlocked.Add(ref currentRefresh, refreshIncrement);
             await _refreshHubManager.SendProgressAsync(tvShow, refresh, token);
         }));
+        await _refreshHubManager.SendProgressAsync(tvShow, 100, token);
         await _refreshHubManager.SendRefreshDone(show, token);
     }
 
