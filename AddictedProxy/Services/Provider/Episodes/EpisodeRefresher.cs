@@ -144,7 +144,12 @@ public class EpisodeRefresher : IEpisodeRefresher
         }
 
         await _seasonRepository.SaveChangesAsync(token);
-        await sendProgress(100);
+        //Send the 100 progress if it wasn't sent before because the number was like 97%
+        if (currentProgress < 100)
+        {
+            await sendProgress(100);
+        }
+
         _logger.LogInformation("Refreshed {episodes} episodes of {show} {season}", total, show.Name, string.Join(", ", seasons.Select(season => $"S{season.Number}")));
     }
 }
