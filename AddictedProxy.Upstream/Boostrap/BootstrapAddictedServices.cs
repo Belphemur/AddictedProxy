@@ -29,12 +29,12 @@ public class BootstrapAddictedServices : IBootstrap,
 
         services.AddHttpClient<IAddic7edClient, Addic7edClient>()
                 .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
-                .SetHandlerLifetime(TimeSpan.FromHours(1))
+                .SetHandlerLifetime(TimeSpan.FromMinutes(15))
                 .AddPolicyHandler(GetRetryPolicy());
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>()
                 .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
-                .SetHandlerLifetime(TimeSpan.FromHours(1))
+                .SetHandlerLifetime(TimeSpan.FromMinutes(15))
                 .AddPolicyHandler(GetRetryPolicy());
 
         services.AddSingleton<Faker>();
