@@ -204,19 +204,19 @@ export interface ShowDto {
    * @type {string}
    * @memberof ShowDto
    */
-  id?: string;
+  id: string;
   /**
    * Name of the show
    * @type {string}
    * @memberof ShowDto
    */
-  name?: string;
+  name: string;
   /**
    * How many season the show has
    * @type {number}
    * @memberof ShowDto
    */
-  nbSeasons?: number;
+  nbSeasons: number;
 }
 /**
  * Search for a specific show
