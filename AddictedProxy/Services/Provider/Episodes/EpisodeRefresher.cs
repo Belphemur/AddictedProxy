@@ -122,7 +122,7 @@ public class EpisodeRefresher : IEpisodeRefresher
 
         var results = new List<Episode[]>();
         var currentProgress = 0;
-        var progressIncrement = 50 / (seasons.Length / 2);
+        var progressIncrement = 50 / (int)Math.Ceiling(seasons.Length / 2.0);
 
 
         foreach (var season in seasons.Chunk(2))
