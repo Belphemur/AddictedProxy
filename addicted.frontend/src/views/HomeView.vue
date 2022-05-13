@@ -21,10 +21,19 @@
   </el-row>
   <el-row>
     <el-col :offset="5" :span="14">
+      <el-divider v-show="refreshingShows.size > 0">
+        <el-icon>
+          <refresh />
+        </el-icon>
+      </el-divider>
       <el-progress
-        v-show="refreshShowProgress > 0"
-        :percentage="refreshShowProgress"
-        :format="formatPercentage"
+        v-for="[key, value] in refreshingShows"
+        v-bind:key="key"
+        :percentage="value.progress"
+        :format="formatPercentage(key)"
+        :text-inside="true"
+        :stroke-width="24"
+        class="progress-bar"
       />
       <el-divider>
         <el-icon>
@@ -53,7 +62,7 @@ import { onUnmounted, ref } from "vue";
 import { SelectedShow } from "@/Dto/SelectedShow";
 import SubtitlesTable from "@/components/Show/SubtitlesTable.vue";
 import { Configuration, EpisodeWithSubtitlesDto, TvShowsApi } from "@/api";
-import { Search, ArrowDownBold } from "@element-plus/icons-vue";
+import { Search, ArrowDownBold, Refresh } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import {
   offProgress,
@@ -63,14 +72,18 @@ import {
 } from "@/composables/hub/RefreshHub";
 import { ShowDto } from "@/Dto/ShowDto";
 
+interface ProgressShow {
+  name: string;
+  progress: number;
+}
+
 const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
 const api = new TvShowsApi(
   new Configuration({ basePath: process.env.VUE_APP_API_PATH })
 );
 
 const loadingSubtitles = ref(false);
-const refreshShowProgress = ref(0);
-const refreshShowName = ref("");
+const refreshingShows = ref(new Map<string, ProgressShow>());
 
 const getSubtitles = async (show: SelectedShow) => {
   loadingSubtitles.value = true;
@@ -86,22 +99,30 @@ const getSubtitles = async (show: SelectedShow) => {
 const clear = () => {
   episodesWithSubtitles.value = [];
 };
+const formatPercentage = (showId: string) => {
+  const showProgress = refreshingShows.value.get(showId)!;
 
-const formatPercentage = (progress: number) =>
-  `Fetching ${refreshShowName.value}: (${progress}%)`;
+  return (progress: number) => {
+    return `Fetching ${showProgress.name}: (${progress}%)`;
+  };
+};
 
 const needRefresh = async (show: ShowDto) => {
-  refreshShowName.value = show.title;
   ElMessage({
     message:
       "We don't have any subtitle for that show. We're fetching them from Addic7ed.\nPlease Try later.",
     type: "warning",
     duration: 5000,
   });
+  refreshingShows.value.set(show.id, { name: show.title, progress: 0 });
   await sendRefreshAsync(show.id);
 };
 const progressHandler: ProgressHandler = (progress) => {
-  refreshShowProgress.value = progress.progress;
+  const progressShow = refreshingShows.value.get(progress.showId)!;
+  refreshingShows.value.set(progress.showId, {
+    ...progressShow,
+    progress: progress.progress,
+  });
 };
 onProgress(progressHandler);
 onUnmounted(() => {
@@ -109,4 +130,8 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.progress-bar {
+  padding-bottom: 0.5rem;
+}
+</style>
