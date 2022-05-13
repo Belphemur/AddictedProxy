@@ -27,7 +27,7 @@
     </template>
     <template #append>
       <el-select
-        v-show="selectedShowSeason.length > 0"
+        v-if="selectedShowSeason.length > 0"
         v-model="selectedSeason"
         placeholder="Season"
       >
@@ -107,6 +107,7 @@ defineExpose({ setSelectedShow });
 watch(searchInput, (value) => {
   if (value == "") {
     selectedSeason.value = null;
+    selectedShowSeason.value = [];
   }
 });
 

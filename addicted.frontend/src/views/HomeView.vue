@@ -12,7 +12,7 @@
         </el-icon>
       </el-divider>
       <SearchComponent
-        ref="search"
+        ref="searchBox"
         v-on:selected="getSubtitles"
         v-on:cleared="clear"
         v-on:need-refresh="needRefresh"
@@ -22,21 +22,38 @@
   </el-row>
   <el-row>
     <el-col :offset="5" :span="14">
-      <el-divider v-show="refreshingShows.size > 0">
+      <el-divider v-if="refreshingShows.size > 0">
         <el-icon>
           <refresh />
         </el-icon>
       </el-divider>
-      <el-progress
+      <div
         v-for="[key, value] in refreshingShows"
         v-bind:key="key"
-        :percentage="value.progress"
-        :format="formatPercentage(key)"
-        :text-inside="true"
-        :stroke-width="24"
-        class="progress-bar"
-        @click="selectShow(key)"
-      />
+        class="progress-container"
+      >
+        <el-progress
+          :percentage="value.progress"
+          :format="formatPercentage(key)"
+          :text-inside="true"
+          :stroke-width="32"
+          :class="`progress-bar${value.show != null ? '-with-button' : ''}`"
+        />
+        <el-tooltip
+          v-if="value.show != null"
+          class="box-item"
+          effect="dark"
+          content="Redo the search"
+          placement="right"
+        >
+          <el-button
+            class="search-button"
+            :icon="Search"
+            circle
+            @click="selectShow(key)"
+          />
+        </el-tooltip>
+      </div>
       <el-divider>
         <el-icon>
           <arrow-down-bold />
@@ -45,13 +62,13 @@
       <el-skeleton :rows="5" animated :loading="loadingSubtitles">
         <template #default>
           <subtitles-table
-            v-show="episodesWithSubtitles.length > 0"
+            v-if="episodesWithSubtitles.length > 0"
             :episodes="episodesWithSubtitles"
             style="display: flex; flex-grow: 1"
           ></subtitles-table>
           <el-empty
             description="No Result"
-            v-show="episodesWithSubtitles.length == 0"
+            v-if="episodesWithSubtitles.length == 0"
           />
         </template>
       </el-skeleton>
@@ -94,7 +111,7 @@ const api = new TvShowsApi(
   new Configuration({ basePath: process.env.VUE_APP_API_PATH })
 );
 
-const search = ref<InstanceType<typeof SearchComponent> | null>(null);
+const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
 
 const loadingSubtitles = ref(false);
 const refreshingShows = ref(new Map<string, ProgressShow>());
@@ -104,7 +121,8 @@ const selectShow = (showId: string) => {
   if (showProgress?.show == null) {
     return;
   }
-  search.value?.setSelectedShow(showProgress.show);
+  searchBox.value?.setSelectedShow(showProgress.show);
+  refreshingShows.value.delete(showId);
 };
 
 const getSubtitles = async (show: SelectedShow) => {
@@ -168,7 +186,22 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.search-button {
+  margin-left: 1em;
+}
+
 .progress-bar {
   padding-bottom: 0.5rem;
+  flex: 1 0 100%;
+}
+
+.progress-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.progress-bar-with-button {
+  padding-bottom: 0.5rem;
+  flex: 1 0 50%;
 }
 </style>
