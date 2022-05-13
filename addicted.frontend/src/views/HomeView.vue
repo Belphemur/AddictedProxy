@@ -12,6 +12,7 @@
         </el-icon>
       </el-divider>
       <SearchComponent
+        ref="search"
         v-on:selected="getSubtitles"
         v-on:cleared="clear"
         v-on:need-refresh="needRefresh"
@@ -34,6 +35,7 @@
         :text-inside="true"
         :stroke-width="24"
         class="progress-bar"
+        @click="selectShow(key)"
       />
       <el-divider>
         <el-icon>
@@ -58,10 +60,16 @@
 </template>
 
 <script setup lang="ts">
+import SearchComponent from "@/components/Show/SearchComponent.vue";
 import { onUnmounted, ref } from "vue";
 import { SelectedShow } from "@/Dto/SelectedShow";
 import SubtitlesTable from "@/components/Show/SubtitlesTable.vue";
-import { Configuration, EpisodeWithSubtitlesDto, TvShowsApi } from "@/api";
+import {
+  Configuration,
+  EpisodeWithSubtitlesDto,
+  ShowDto,
+  TvShowsApi,
+} from "@/api";
 import { Search, ArrowDownBold, Refresh } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import {
@@ -74,11 +82,12 @@ import {
   sendRefreshAsync,
   unsubscribeShowAsync,
 } from "@/composables/hub/RefreshHub";
-import { ShowDto } from "@/Dto/ShowDto";
+import { ShowInfo } from "@/Dto/ShowInfo";
 
 interface ProgressShow {
   name: string;
   progress: number;
+  show?: ShowDto;
 }
 
 const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
@@ -86,8 +95,18 @@ const api = new TvShowsApi(
   new Configuration({ basePath: process.env.VUE_APP_API_PATH })
 );
 
+const search = ref<InstanceType<typeof SearchComponent> | null>(null);
+
 const loadingSubtitles = ref(false);
 const refreshingShows = ref(new Map<string, ProgressShow>());
+
+const selectShow = (showId: string) => {
+  const showProgress = refreshingShows.value.get(showId);
+  if (showProgress?.show == null) {
+    return;
+  }
+  search.value?.setSelectedShow(showProgress.show);
+};
 
 const getSubtitles = async (show: SelectedShow) => {
   loadingSubtitles.value = true;
@@ -111,7 +130,7 @@ const formatPercentage = (showId: string) => {
   };
 };
 
-const needRefresh = async (show: ShowDto) => {
+const needRefresh = async (show: ShowInfo) => {
   ElMessage({
     message:
       "We don't have any subtitle for that show. We're fetching them from Addic7ed.\nPlease Try later.",
@@ -123,6 +142,10 @@ const needRefresh = async (show: ShowDto) => {
 };
 const progressHandler: ProgressHandler = (progress) => {
   const progressShow = refreshingShows.value.get(progress.showId)!;
+  if (progress.progress < progressShow.progress) {
+    console.error("Got progress lower than current value");
+    return;
+  }
   refreshingShows.value.set(progress.showId, {
     ...progressShow,
     progress: progress.progress,
@@ -131,6 +154,11 @@ const progressHandler: ProgressHandler = (progress) => {
 
 const doneHandler: DoneHandler = async (show) => {
   await unsubscribeShowAsync(show.id!);
+  const progressShow = refreshingShows.value.get(show.id)!;
+  refreshingShows.value.set(show.id, {
+    ...progressShow,
+    show: show,
+  });
 };
 onProgress(progressHandler);
 onDone(doneHandler);

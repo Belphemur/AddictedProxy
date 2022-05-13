@@ -47,12 +47,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, defineExpose } from "vue";
 import { TvShowsApi, Configuration } from "@/api";
-import { ShowDto } from "@/Dto/ShowDto";
+import { ShowInfo } from "@/Dto/ShowInfo";
 import { getName, getAll639_1 } from "all-iso-language-codes";
 import { SelectedShow } from "@/Dto/SelectedShow";
-import { ElMessage, ElNotification } from "element-plus";
 
 const langs = getAll639_1().map((value) => {
   return { value: value, label: getName(value) };
@@ -63,7 +62,7 @@ const userLang = (navigator.language || navigator.userLanguage).split("-")[0];
 const emit = defineEmits<{
   (e: "selected", show: SelectedShow): void;
   (e: "cleared"): void;
-  (e: "needRefresh", show: ShowDto): void;
+  (e: "needRefresh", show: ShowInfo): void;
 }>();
 
 const selectedSeason = ref<number | null>(null);
@@ -73,7 +72,7 @@ const api = new TvShowsApi(
   new Configuration({ basePath: process.env.VUE_APP_API_PATH })
 );
 
-const selectedShow = ref<ShowDto | null>(null);
+const selectedShow = ref<ShowInfo | null>(null);
 
 const selectedShowSeason = ref<Array<number>>([]);
 
@@ -85,12 +84,12 @@ const querySearch = async (query: string, cb: (param: unknown) => void) => {
         title: show.name,
         id: show.id,
         seasons: show.nbSeasons,
-      } as ShowDto;
+      } as ShowInfo;
     })
   );
 };
 
-const updateSelectedShow = async (event: ShowDto) => {
+const updateSelectedShow = async (event: ShowInfo) => {
   selectedShow.value = event;
   selectedSeason.value = null;
   //Force refreshing the show
@@ -107,6 +106,18 @@ const updateSelectedShow = async (event: ShowDto) => {
     (_, i) => i + 1
   );
 };
+
+const setSelectedShow = (show: ShowInfo) => {
+  selectedShow.value = show;
+  searchInput.value = show.title;
+  selectedSeason.value = null;
+  selectedShowSeason.value = Array.from(
+    { length: selectedShow.value.seasons },
+    (_, i) => i + 1
+  );
+};
+
+defineExpose({ setSelectedShow });
 
 watch(searchInput, (value) => {
   if (value == "") {
