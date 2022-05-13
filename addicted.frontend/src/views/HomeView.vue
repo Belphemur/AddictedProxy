@@ -82,7 +82,6 @@ import {
   sendRefreshAsync,
   unsubscribeShowAsync,
 } from "@/composables/hub/RefreshHub";
-import { ShowInfo } from "@/Dto/ShowInfo";
 
 interface ProgressShow {
   name: string;
@@ -130,14 +129,14 @@ const formatPercentage = (showId: string) => {
   };
 };
 
-const needRefresh = async (show: ShowInfo) => {
+const needRefresh = async (show: ShowDto) => {
   ElMessage({
     message:
       "We don't have any subtitle for that show. We're fetching them from Addic7ed.\nPlease Try later.",
     type: "warning",
     duration: 5000,
   });
-  refreshingShows.value.set(show.id, { name: show.title, progress: 0 });
+  refreshingShows.value.set(show.id, { name: show.name, progress: 0 });
   await sendRefreshAsync(show.id);
 };
 const progressHandler: ProgressHandler = (progress) => {

@@ -40,16 +40,15 @@
       </el-select>
     </template>
     <template #default="{ item }">
-      <span class="name">{{ item.title }}</span>
-      <span v-if="item.seasons > 0"> ({{ item.seasons }})</span>
+      <span class="name">{{ item.name }}</span>
+      <span v-if="item.seasons.length > 0"> ({{ item.seasons.length }})</span>
     </template>
   </el-autocomplete>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, defineExpose } from "vue";
-import { TvShowsApi, Configuration } from "@/api";
-import { ShowInfo } from "@/Dto/ShowInfo";
+import { TvShowsApi, Configuration, ShowDto } from "@/api";
 import { getName, getAll639_1 } from "all-iso-language-codes";
 import { SelectedShow } from "@/Dto/SelectedShow";
 
@@ -62,7 +61,7 @@ const userLang = (navigator.language || navigator.userLanguage).split("-")[0];
 const emit = defineEmits<{
   (e: "selected", show: SelectedShow): void;
   (e: "cleared"): void;
-  (e: "needRefresh", show: ShowInfo): void;
+  (e: "needRefresh", show: ShowDto): void;
 }>();
 
 const selectedSeason = ref<number | null>(null);
@@ -72,28 +71,20 @@ const api = new TvShowsApi(
   new Configuration({ basePath: process.env.VUE_APP_API_PATH })
 );
 
-const selectedShow = ref<ShowInfo | null>(null);
+const selectedShow = ref<ShowDto | null>(null);
 
 const selectedShowSeason = ref<Array<number>>([]);
 
 const querySearch = async (query: string, cb: (param: unknown) => void) => {
   const searchResponse = await api.showsSearchPost({ query: query });
-  cb(
-    searchResponse.shows?.map((show) => {
-      return {
-        title: show.name,
-        id: show.id,
-        seasons: show.nbSeasons,
-      } as ShowInfo;
-    })
-  );
+  cb(searchResponse.shows);
 };
 
-const updateSelectedShow = async (event: ShowInfo) => {
+const updateSelectedShow = async (event: ShowDto) => {
   selectedShow.value = event;
   selectedSeason.value = null;
   //Force refreshing the show
-  if (selectedShow.value.seasons == 0) {
+  if (selectedShow.value.nbSeasons == 0) {
     emit("needRefresh", {
       ...selectedShow.value,
     });
@@ -101,20 +92,14 @@ const updateSelectedShow = async (event: ShowInfo) => {
     selectedShowSeason.value = [];
     return;
   }
-  selectedShowSeason.value = Array.from(
-    { length: event.seasons },
-    (_, i) => i + 1
-  );
+  selectedShowSeason.value = event.seasons;
 };
 
-const setSelectedShow = (show: ShowInfo) => {
+const setSelectedShow = (show: ShowDto) => {
   selectedShow.value = show;
-  searchInput.value = show.title;
+  searchInput.value = show.name;
   selectedSeason.value = null;
-  selectedShowSeason.value = Array.from(
-    { length: selectedShow.value.seasons },
-    (_, i) => i + 1
-  );
+  selectedShowSeason.value = show.seasons;
 };
 
 defineExpose({ setSelectedShow });
