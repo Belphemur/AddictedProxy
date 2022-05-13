@@ -81,18 +81,15 @@ const querySearch = async (query: string, cb: (param: unknown) => void) => {
 };
 
 const updateSelectedShow = async (event: ShowDto) => {
-  selectedShow.value = event;
-  selectedSeason.value = null;
+  setSelectedShow(event);
+
   //Force refreshing the show
-  if (selectedShow.value.nbSeasons == 0) {
-    emit("needRefresh", {
-      ...selectedShow.value,
-    });
+  if (selectedShow.value!.nbSeasons == 0) {
+    emit("needRefresh", selectedShow.value!);
     selectedShow.value = null;
     selectedShowSeason.value = [];
     return;
   }
-  selectedShowSeason.value = event.seasons;
 };
 
 const setSelectedShow = (show: ShowDto) => {
@@ -120,6 +117,7 @@ watch(selectedSeason, (value) => {
     language: languageSelect.value,
     season: value,
     showId: selectedShow.value.id,
+    name: selectedShow.value.name,
   });
 });
 
@@ -131,6 +129,7 @@ watch(languageSelect, (value) => {
     language: value,
     season: selectedSeason.value,
     showId: selectedShow.value.id,
+    name: selectedShow.value.name,
   });
 });
 </script>

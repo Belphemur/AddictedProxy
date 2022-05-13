@@ -24,7 +24,7 @@
   </el-divider>
   <el-row>
     <el-col :offset="5" :span="14">
-      <el-card>
+      <el-card :header="showTitle">
         <el-divider v-if="refreshingShows.size > 0">
           <el-icon>
             <refresh />
@@ -71,7 +71,7 @@
               style="display: flex; flex-grow: 1"
             ></subtitles-table>
             <el-empty
-              description="No Result"
+              description="Subtitles will be shown here"
               v-if="episodesWithSubtitles.length == 0"
             />
           </template>
@@ -120,6 +120,7 @@ const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
 
 const loadingSubtitles = ref(false);
 const refreshingShows = ref(new Map<string, ProgressShow>());
+const showTitle = ref("");
 
 const selectShow = (showId: string) => {
   const showProgress = refreshingShows.value.get(showId);
@@ -132,6 +133,7 @@ const selectShow = (showId: string) => {
 
 const getSubtitles = async (show: SelectedShow) => {
   loadingSubtitles.value = true;
+  showTitle.value = `${show.name}: Season ${show.season}`;
   const response = await api.showsShowIdSeasonNumberLanguageGet(
     show.showId,
     show.season,
@@ -143,6 +145,7 @@ const getSubtitles = async (show: SelectedShow) => {
 
 const clear = () => {
   episodesWithSubtitles.value = [];
+  showTitle.value = "";
 };
 const formatPercentage = (showId: string) => {
   const showProgress = refreshingShows.value.get(showId)!;
