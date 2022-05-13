@@ -118,6 +118,7 @@ export interface EpisodeDto {
    */
   discovered?: Date;
 }
+
 /**
  *
  * @export
@@ -161,6 +162,7 @@ export interface EpisodeWithSubtitlesDto {
    */
   subtitles?: Array<SubtitleDto>;
 }
+
 /**
  * Returns when there is an error
  * @export
@@ -174,6 +176,7 @@ export interface ErrorResponse {
    */
   error?: string;
 }
+
 /**
  * Use for the website to provide easy search for the user
  * @export
@@ -193,6 +196,7 @@ export interface SearchRequest {
    */
   language?: string;
 }
+
 /**
  * Represent the information relating to a show
  * @export
@@ -217,7 +221,14 @@ export interface ShowDto {
    * @memberof ShowDto
    */
   nbSeasons: number;
+  /**
+   * Seasons available
+   * @type {Array<number>}
+   * @memberof ShowDto
+   */
+  seasons: Array<number>;
 }
+
 /**
  * Search for a specific show
  * @export
@@ -231,6 +242,7 @@ export interface ShowSearchRequest {
    */
   query?: string;
 }
+
 /**
  *
  * @export
@@ -244,6 +256,7 @@ export interface ShowSearchResponse {
    */
   shows?: Array<ShowDto>;
 }
+
 /**
  *
  * @export
@@ -311,6 +324,7 @@ export interface SubtitleDto {
    */
   downloadCount?: number;
 }
+
 /**
  * Used for different Media Center/Subtitle searchers
  * @export
@@ -348,6 +362,7 @@ export interface SubtitleQueryRequest {
    */
   languageISO: string;
 }
+
 /**
  *
  * @export
@@ -367,6 +382,7 @@ export interface SubtitleSearchResponse {
    */
   episode?: EpisodeDto;
 }
+
 /**
  *
  * @export
@@ -380,6 +396,7 @@ export interface TvShowSubtitleResponse {
    */
   episodes?: Array<EpisodeWithSubtitlesDto>;
 }
+
 /**
  * Returned when the search wasn't formatted properly
  * @export
@@ -399,6 +416,7 @@ export interface WrongFormatResponse {
    */
   search?: string;
 }
+
 /**
  * SubtitlesApi - fetch parameter creator
  * @export
@@ -747,6 +765,7 @@ export class SubtitlesApi extends BaseAPI {
     )(this.fetch, this.basePath);
   }
 }
+
 /**
  * TvShowsApi - fetch parameter creator
  * @export
