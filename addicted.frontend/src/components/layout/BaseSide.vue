@@ -44,6 +44,6 @@ import { Sunny, Moon } from "@element-plus/icons-vue";
 
 <style scoped>
 .menu {
-  background-color: var(--el-bg-color);
+  background-color: var(--el-bg-color-overlay);
 }
 </style>
