@@ -1,7 +1,7 @@
 <template>
   <el-aside width="200px" class="menu">
     <el-scrollbar>
-      <el-menu :collapse="false" :router="true" default-active="/">
+      <el-menu :collapse="false" :router="true" :default-active="$route.path">
         <img
           :src="isDark ? transparent : black"
           alt="gestdown logo"
