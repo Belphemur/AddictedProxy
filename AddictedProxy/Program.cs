@@ -20,13 +20,14 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(options =>
        {
            // using System.Reflection;
-           var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+           var executingAssembly = Assembly.GetExecutingAssembly();
+           var xmlFilename = $"{executingAssembly.GetName().Name}.xml";
            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
            options.SwaggerDoc("v1", new OpenApiInfo
            {
-               Title = "Addicted Proxy",
-               Description = "Provide a full system to search and download subtitles from Addi7ed website.",
-               Version = Assembly.GetExecutingAssembly().GetName().Version!.ToString(3)
+               Title = "Gestdown: Addicted Proxy",
+               Description = "Provide a full api to search and download subtitles from Addic7ed website.",
+               Version = executingAssembly.GetName().Version!.ToString(3)
            });
        })
        .AddEndpointsApiExplorer();
