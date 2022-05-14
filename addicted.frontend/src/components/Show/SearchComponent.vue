@@ -83,6 +83,10 @@ const selectedShow = ref<ShowDto | null>(null);
 const selectedShowSeason = ref<Array<number>>([]);
 
 const querySearch = async (query: string, cb: (param: unknown) => void) => {
+  if (query.length < 3) {
+    cb([]);
+    return;
+  }
   const searchResponse = await api.showsSearchPost({ query: query });
   cb(searchResponse.shows);
 };
