@@ -26,18 +26,25 @@
       </el-select>
     </template>
     <template #append>
-      <el-select
-        v-if="selectedShowSeason.length > 0"
-        v-model="selectedSeason"
-        placeholder="Season"
+      <el-tooltip
+        effect="dark"
+        content="Search a show first"
+        placement="right"
+        :disabled="selectedShowSeason.length > 0"
       >
-        <el-option
-          v-for="item in selectedShowSeason"
-          :key="item"
-          :label="`Season ${item}`"
-          :value="item"
-        />
-      </el-select>
+        <el-select
+          v-model="selectedSeason"
+          placeholder="Select a season"
+          :disabled="selectedShowSeason.length === 0"
+        >
+          <el-option
+            v-for="item in selectedShowSeason"
+            :key="item"
+            :label="`Season ${item}`"
+            :value="item"
+          />
+        </el-select>
+      </el-tooltip>
     </template>
     <template #default="{ item }">
       <span class="name">{{ item.name }}</span>
@@ -97,6 +104,9 @@ const setSelectedShow = (show: ShowDto) => {
   searchInput.value = show.name;
   selectedSeason.value = null;
   selectedShowSeason.value = show.seasons;
+  if (show.nbSeasons == 1) {
+    selectedSeason.value = selectedShowSeason.value[0];
+  }
 };
 
 defineExpose({ setSelectedShow });
@@ -116,8 +126,7 @@ watch(selectedSeason, (value) => {
   emit("selected", {
     language: languageSelect.value,
     season: value,
-    showId: selectedShow.value.id,
-    name: selectedShow.value.name,
+    show: selectedShow.value,
   });
 });
 
@@ -128,8 +137,7 @@ watch(languageSelect, (value) => {
   emit("selected", {
     language: value,
     season: selectedSeason.value,
-    showId: selectedShow.value.id,
-    name: selectedShow.value.name,
+    show: selectedShow.value,
   });
 });
 </script>

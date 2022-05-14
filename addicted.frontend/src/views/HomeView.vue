@@ -17,52 +17,71 @@
       </el-card>
     </el-col>
   </el-row>
-  <el-divider>
-    <el-icon>
-      <search />
-    </el-icon>
-  </el-divider>
   <el-row>
     <el-col :offset="5" :span="14">
-      <el-card :header="showTitle">
-        <el-divider v-if="refreshingShows.size > 0">
-          <el-icon>
-            <refresh />
-          </el-icon>
-        </el-divider>
-        <div
-          v-for="[key, value] in refreshingShows"
-          v-bind:key="key"
-          class="progress-container"
+      <el-divider v-if="refreshingShows.size > 0">
+        <el-icon>
+          <refresh />
+        </el-icon>
+      </el-divider>
+      <div
+        v-for="[key, value] in refreshingShows"
+        v-bind:key="key"
+        class="progress-container"
+      >
+        <el-progress
+          :percentage="value.progress"
+          :format="formatPercentage(key)"
+          :text-inside="true"
+          :stroke-width="32"
+          :class="`progress-bar${value.show != null ? '-with-button' : ''}`"
+        />
+        <el-tooltip
+          v-if="value.show != null"
+          class="box-item"
+          effect="dark"
+          content="Redo the search"
+          placement="right"
         >
-          <el-progress
-            :percentage="value.progress"
-            :format="formatPercentage(key)"
-            :text-inside="true"
-            :stroke-width="32"
-            :class="`progress-bar${value.show != null ? '-with-button' : ''}`"
+          <el-button
+            class="search-button"
+            :icon="Search"
+            type="primary"
+            circle
+            @click="selectShow(key)"
           />
-          <el-tooltip
-            v-if="value.show != null"
-            class="box-item"
-            effect="dark"
-            content="Redo the search"
-            placement="right"
-          >
-            <el-button
-              class="search-button"
-              :icon="Search"
-              type="primary"
-              circle
-              @click="selectShow(key)"
-            />
-          </el-tooltip>
-        </div>
-        <el-divider v-if="refreshingShows.size > 0">
-          <el-icon>
-            <arrow-down-bold />
-          </el-icon>
-        </el-divider>
+        </el-tooltip>
+      </div>
+      <el-divider>
+        <el-icon>
+          <search />
+        </el-icon>
+      </el-divider>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col :offset="5" :span="14">
+      <el-card>
+        <template #header v-if="currentShow != null">
+          <div class="card-header">
+            <span>
+              {{ currentShow.show.name }}: Season
+              {{ currentShow.season }}
+            </span>
+            <el-tooltip
+              effect="dark"
+              content="Fetch from Addic7ed"
+              placement="right"
+            >
+              <el-button
+                class="button"
+                type="primary"
+                :icon="Refresh"
+                @click="refreshShow(currentShow.show)"
+              />
+            </el-tooltip>
+          </div>
+        </template>
         <el-skeleton :rows="5" animated :loading="loadingSubtitles">
           <template #default>
             <subtitles-table
@@ -120,7 +139,7 @@ const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
 
 const loadingSubtitles = ref(false);
 const refreshingShows = ref(new Map<string, ProgressShow>());
-const showTitle = ref("");
+const currentShow = ref<SelectedShow | null>(null);
 
 const selectShow = (showId: string) => {
   const showProgress = refreshingShows.value.get(showId);
@@ -133,9 +152,9 @@ const selectShow = (showId: string) => {
 
 const getSubtitles = async (show: SelectedShow) => {
   loadingSubtitles.value = true;
-  showTitle.value = `${show.name}: Season ${show.season}`;
+  currentShow.value = show;
   const response = await api.showsShowIdSeasonNumberLanguageGet(
-    show.showId,
+    show.show.id,
     show.season,
     show.language
   );
@@ -145,7 +164,7 @@ const getSubtitles = async (show: SelectedShow) => {
 
 const clear = () => {
   episodesWithSubtitles.value = [];
-  showTitle.value = "";
+  currentShow.value = null;
 };
 const formatPercentage = (showId: string) => {
   const showProgress = refreshingShows.value.get(showId)!;
@@ -155,6 +174,11 @@ const formatPercentage = (showId: string) => {
   };
 };
 
+const refreshShow = async (show: ShowDto) => {
+  refreshingShows.value.set(show.id, { name: show.name, progress: 0 });
+  await sendRefreshAsync(show.id);
+};
+
 const needRefresh = async (show: ShowDto) => {
   ElMessage({
     message:
@@ -162,8 +186,7 @@ const needRefresh = async (show: ShowDto) => {
     type: "warning",
     duration: 5000,
   });
-  refreshingShows.value.set(show.id, { name: show.name, progress: 0 });
-  await sendRefreshAsync(show.id);
+  await refreshShow(show);
 };
 const progressHandler: ProgressHandler = (progress) => {
   const progressShow = refreshingShows.value.get(progress.showId)!;
@@ -211,5 +234,11 @@ onUnmounted(() => {
 .progress-bar-with-button {
   padding-bottom: 0.5rem;
   flex: 1 0 50%;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
