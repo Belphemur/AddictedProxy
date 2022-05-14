@@ -56,19 +56,14 @@ builder.WebHost.UseSentry(sentryBuilder =>
 var app = builder.Build();
 
 app.UseBootstrap(currentAssemblies);
-
+app.UseSentryTracing();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+    app.UseDeveloperExceptionPage()
+       .UseSwaggerUI(options => options.RoutePrefix = "api");
 }
-
-app.UseSwagger(options => options.RouteTemplate = "api/{documentName}/swagger.{json|yaml}")
-   .UseSwaggerUI(options => options.RoutePrefix = "api");
-
-
-app.UseSentryTracing();
 
 app.UseCors(policyBuilder => policyBuilder
                              .AllowAnyMethod()
@@ -77,11 +72,15 @@ app.UseCors(policyBuilder => policyBuilder
                              .SetIsOriginAllowed(hostName => true)
                              .WithExposedHeaders("Content-Disposition"));
 
+app.UseSwagger(options => options.RouteTemplate = "api/{documentName}/swagger.{json|yaml}");
+
 {
     await using var serviceScope = app.Services.CreateAsyncScope();
     await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<EntityContext>();
 
     await dbContext.Database.MigrateAsync();
 }
+
+
 
 app.Run();
