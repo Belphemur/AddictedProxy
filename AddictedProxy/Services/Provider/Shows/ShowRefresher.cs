@@ -74,7 +74,7 @@ public class ShowRefresher : IShowRefresher
             await _refreshHubManager.SendProgressAsync(tvShow, refreshValue, token);
         }
 
-        await _episodeRefresher.RefreshEpisodesAsync(show, show.Seasons.ToArray(), SendProgress, token);
+        await _episodeRefresher.RefreshEpisodesAsync(show, show.Seasons.OrderByDescending(season => season.Number).ToArray(), SendProgress, token);
         await _refreshHubManager.SendRefreshDone(show, token);
     }
 
