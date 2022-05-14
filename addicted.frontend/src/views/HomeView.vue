@@ -170,7 +170,19 @@ const formatPercentage = (showId: string) => {
   const showProgress = refreshingShows.value.get(showId)!;
 
   return (progress: number) => {
-    return `Fetching ${showProgress.name}: (${progress}%)`;
+    let keyword = "";
+    switch (true) {
+      case progress < 25:
+        keyword = "Fetching seasons of";
+        break;
+      case progress >= 25:
+        keyword = "Fetching subtitles of";
+        break;
+      default:
+        keyword = "Fetching";
+        break;
+    }
+    return `${keyword} ${showProgress.name}: (${progress}%)`;
   };
 };
 
