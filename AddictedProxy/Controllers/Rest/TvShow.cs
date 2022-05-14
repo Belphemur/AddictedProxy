@@ -23,14 +23,12 @@ public class TvShows : Controller
     /// <summary>
     /// Search for a specific show
     /// </summary>
-    public record ShowSearchRequest(string Query)
+    public record ShowSearchRequest([Required] [MinLength(3, ErrorMessage = "3 characters are the minimum for the search")] string Query)
     {
         /// <summary>
-        /// Search run on the shows
+        /// Name of the show you're looking for
         /// </summary>
         /// <example>Wellington</example>
-        [Required]
-        [MinLength(3, ErrorMessage = "3 characters are the minimum for the search")]
         public string Query { get; init; } = Query;
     }
 
