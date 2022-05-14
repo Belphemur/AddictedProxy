@@ -21,11 +21,11 @@ public class EpisodeRefresher : IEpisodeRefresher
     private readonly ILogger<EpisodeRefresher> _logger;
 
     public EpisodeRefresher(IAddic7edClient client,
-        IEpisodeRepository episodeRepository,
-        ISeasonRepository seasonRepository,
-        ICredentialsService credentialsService,
-        IOptions<RefreshConfig> refreshConfig,
-        ILogger<EpisodeRefresher> logger
+                            IEpisodeRepository episodeRepository,
+                            ISeasonRepository seasonRepository,
+                            ICredentialsService credentialsService,
+                            IOptions<RefreshConfig> refreshConfig,
+                            ILogger<EpisodeRefresher> logger
     )
     {
         _client = client;
@@ -134,7 +134,7 @@ public class EpisodeRefresher : IEpisodeRefresher
         }
 
         var total = 0;
-        progressIncrement = 50 / results.Count;
+        progressIncrement = 50 / (results.Count != 0 ? results.Count : 1);
         foreach (var episodes in results)
         {
             total += episodes.Length;
