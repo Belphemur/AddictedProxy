@@ -14,7 +14,11 @@
               v-bind:key="route.path"
               :route="route"
               :index="route.path"
-              >{{ route.name }}
+            >
+              <el-icon v-if="route.meta.icon != null">
+                <component :is="route.meta.icon"></component>
+              </el-icon>
+              {{ route.name }}
             </el-menu-item>
           </el-menu-item-group>
           <el-menu-item h="full">
