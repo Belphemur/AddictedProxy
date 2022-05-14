@@ -1,4 +1,5 @@
-﻿using AddictedProxy.Database.Repositories.Shows;
+﻿using System.ComponentModel.DataAnnotations;
+using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
 using AddictedProxy.Services.Culture;
@@ -28,6 +29,8 @@ public class TvShows : Controller
         /// Search run on the shows
         /// </summary>
         /// <example>Wellington</example>
+        [Required]
+        [MinLength(3, ErrorMessage = "3 characters are the minimum for the search")]
         public string Query { get; init; } = Query;
     }
 
@@ -133,10 +136,10 @@ public class TvShows : Controller
                                                         .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), searchLanguage))
                                                         .Select(
                                                             subtitle =>
-                                                            new SubtitleDto(subtitle,
-                                                                Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
-                                                                throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
-                                                                searchLanguage)
+                                                                new SubtitleDto(subtitle,
+                                                                    Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
+                                                                    throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                                                                    searchLanguage)
                                                         );
                                              return new EpisodeWithSubtitlesDto(episode, subs);
                                          });
