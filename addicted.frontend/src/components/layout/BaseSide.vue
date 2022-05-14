@@ -1,20 +1,20 @@
 <template>
   <el-aside width="200px" class="menu">
     <el-scrollbar>
-      <el-menu :default-openeds="['1']" :collapse="false">
+      <el-menu :collapse="false" :router="true" default-active="/">
         <img
           :src="isDark ? transparent : black"
           alt="gestdown logo"
           width="180"
         />
         <el-menu-item-group>
-          <router-link to="/">
-            <el-menu-item index="1-1">Home</el-menu-item>
-          </router-link>
-
-          <router-link to="/about">
-            <el-menu-item index="1-2">About</el-menu-item>
-          </router-link>
+          <el-menu-item
+            v-for="route in $router.getRoutes()"
+            v-bind:key="route.path"
+            :route="route"
+            :index="route.path"
+            >{{ route.name }}
+          </el-menu-item>
         </el-menu-item-group>
         <el-menu-item h="full">
           <el-switch
