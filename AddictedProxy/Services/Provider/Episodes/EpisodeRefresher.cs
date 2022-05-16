@@ -92,10 +92,10 @@ public class EpisodeRefresher : IEpisodeRefresher
     /// Refresh subtitle of specific seasons of the show
     /// </summary>
     /// <param name="show"></param>
-    /// <param name="seasons"></param>
+    /// <param name="seasonsToRefresh"></param>
     /// <param name="sendProgress"></param>
     /// <param name="token"></param>
-    public async Task RefreshEpisodesAsync(TvShow show, Season[] seasons, Func<int, Task> sendProgress, CancellationToken token)
+    public async Task RefreshEpisodesAsync(TvShow show, IEnumerable<Season> seasonsToRefresh, Func<int, Task> sendProgress, CancellationToken token)
     {
         async Task<Episode[]?> EpisodeFetch(Season season)
         {
@@ -119,7 +119,8 @@ public class EpisodeRefresher : IEpisodeRefresher
             season.LastRefreshed = DateTime.UtcNow;
             return episodes;
         }
-
+   
+        var seasons = seasonsToRefresh as Season[] ?? seasonsToRefresh.ToArray();
         var results = new List<Episode[]>();
         var currentProgress = 0;
         var progressIncrement = 50 / (int)Math.Ceiling(seasons.Length / 2.0);

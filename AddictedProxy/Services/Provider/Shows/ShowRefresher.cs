@@ -61,11 +61,28 @@ public class ShowRefresher : IShowRefresher
         var progressMax = 100;
 
         await _refreshHubManager.SendProgressAsync(tvShow, 1, token);
+
+        var currentSeasons = tvShow.Seasons.Select(season => season.Number).ToArray();
+
         await _seasonRefresher.RefreshSeasonsAsync(tvShow, token: token);
         await _refreshHubManager.SendProgressAsync(tvShow, progressMin, token);
 
         var show = (await _tvShowRepository.GetByIdAsync(tvShow.Id, token))!;
-        _logger.LogInformation("Refreshing episode for {number} seasons of {show}", show.Seasons.Count, show.Name);
+        var seasonToSync = show.Seasons;
+
+        // If we currently have more than one season
+        if (currentSeasons.Length > 0 && seasonToSync.Count > 0)
+        {
+            //Only sync new seasons, be sure that whatever happen, we always sync the last season
+            seasonToSync = seasonToSync.ExceptBy(currentSeasons, season => season.Number)
+                .Append(show.Seasons.OrderByDescending(season => season.Number).First())
+                .OrderByDescending(season => season.Number)
+                .Distinct()
+                .ToArray();
+        }
+
+
+        _logger.LogInformation("Refreshing episode for {number} seasons of {show}", seasonToSync.Count, show.Name);
 
 
         async Task SendProgress(int progress)
@@ -74,7 +91,7 @@ public class ShowRefresher : IShowRefresher
             await _refreshHubManager.SendProgressAsync(tvShow, refreshValue, token);
         }
 
-        await _episodeRefresher.RefreshEpisodesAsync(show, show.Seasons.OrderByDescending(season => season.Number).ToArray(), SendProgress, token);
+        await _episodeRefresher.RefreshEpisodesAsync(show, seasonToSync, SendProgress, token);
         await _refreshHubManager.SendRefreshDone(show, token);
     }
 
