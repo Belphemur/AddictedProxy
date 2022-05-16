@@ -62,7 +62,6 @@ import { SelectedShow } from "@/Dto/SelectedShow";
 const langs = getAll639_1().map((value) => {
   return { value: value, label: getName(value) };
 });
-const userLang = (navigator.language || navigator.userLanguage).split("-")[0];
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits<{
@@ -73,7 +72,7 @@ const emit = defineEmits<{
 
 const selectedSeason = ref<number | null>(null);
 const searchInput = ref<string>("");
-const languageSelect = ref<string>(userLang);
+const languageSelect = ref<string>(localStorage.getItem("lang") || "en");
 const api = new TvShowsApi(
   new Configuration({ basePath: process.env.VUE_APP_API_PATH })
 );
@@ -135,6 +134,7 @@ watch(selectedSeason, (value) => {
 });
 
 watch(languageSelect, (value) => {
+  localStorage.setItem("lang", value);
   if (selectedSeason.value == null || selectedShow.value == null) {
     return;
   }
