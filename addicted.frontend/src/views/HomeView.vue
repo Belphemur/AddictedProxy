@@ -172,6 +172,8 @@ const formatPercentage = (showId: string) => {
   return (progress: number) => {
     let keyword = "";
     switch (true) {
+      case progress == 100:
+        return `${showProgress.name}: Ready`;
       case progress < 25:
         keyword = "Fetching seasons of";
         break;
@@ -219,6 +221,11 @@ const doneHandler: DoneHandler = async (show) => {
     ...progressShow,
     show: show,
   });
+  //Auto refresh if the current show is the one that has finished refreshing
+  if (currentShow.value?.show.id === show.id) {
+    refreshingShows.value.delete(show.id);
+    await getSubtitles(currentShow.value);
+  }
 };
 onProgress(progressHandler);
 onDone(doneHandler);
