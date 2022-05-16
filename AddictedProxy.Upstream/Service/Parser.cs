@@ -122,14 +122,20 @@ public class Parser
                             break;
                         case 5:
                             var state = row.Cells[i].TextContent;
-                            if (!state.Contains("%") && state.Contains("Completed"))
+                            if (!state.Contains("%") && (state.Contains("Completed") || state.Contains("Terminé")))
                             {
                                 subtitleRow.Completed = true;
                                 subtitleRow.CompletionPercentage = 100;
                                 break;
                             }
 
-                            subtitleRow.CompletionPercentage = double.Parse(_completionRegex.Match(state).Groups["completion"].Value);
+                            var match = _completionRegex.Match(state);
+                            if (!match.Success)
+                            {
+                                subtitleRow.CompletionPercentage = 0;
+                                break;
+                            } 
+                            subtitleRow.CompletionPercentage = double.Parse(match.Groups["completion"].Value);
 
                             break;
                         case 6:
