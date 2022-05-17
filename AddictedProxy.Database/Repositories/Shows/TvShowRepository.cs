@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Z.BulkOperations;
 
 #endregion
@@ -14,15 +15,18 @@ public class TvShowRepository : ITvShowRepository
 {
     private static readonly Action<BulkOperation<TvShow>> AvoidUpdateDiscoveredField = Rule.AvoidUpdateDiscoveredField<TvShow>();
     private readonly EntityContext _entityContext;
+    private readonly ILogger<TvShowRepository> _logger;
 
-    public TvShowRepository(EntityContext entityContext)
+    public TvShowRepository(EntityContext entityContext, ILogger<TvShowRepository> logger)
     {
         _entityContext = entityContext;
+        _logger = logger;
     }
 
 
     public async IAsyncEnumerable<TvShow> FindAsync(string name, [EnumeratorCancellation] CancellationToken token)
     {
+        _logger.LogInformation("Looking for show: {show}", name);
         var strictMatch = await _entityContext.TvShows
                                               .Where(show => show.Name == name)
                                               .Include(show => show.Seasons)
@@ -30,6 +34,7 @@ public class TvShowRepository : ITvShowRepository
         if (strictMatch != null)
         {
             yield return strictMatch;
+            _logger.LogInformation("Found exact match for {show}", name);
             yield break;
         }
 

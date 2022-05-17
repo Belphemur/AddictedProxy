@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col :offset="5" :span="14">
+    <el-col :offset="2" :span="20">
       <el-card header="Welcome to Gestdown">
         <p>
           It acts as a proxy for the Addic7ed subtitle website. You can easily
@@ -18,7 +18,7 @@
     </el-col>
   </el-row>
   <el-row>
-    <el-col :offset="5" :span="14">
+    <el-col :offset="2" :span="20">
       <el-divider v-if="refreshingShows.size > 0">
         <el-icon>
           <refresh />
@@ -60,7 +60,7 @@
     </el-col>
   </el-row>
   <el-row>
-    <el-col :offset="5" :span="14">
+    <el-col :offset="2" :span="20">
       <el-card>
         <template #header v-if="currentShow != null">
           <div class="card-header">
