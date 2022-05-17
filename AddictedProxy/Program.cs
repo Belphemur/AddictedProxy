@@ -4,6 +4,7 @@ using System.Reflection;
 using AddictedProxy.Controllers.Rest.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
+using AddictedProxy.Model.Performance;
 using AddictedProxy.Storage.Bootstrap;
 using AddictedProxy.Upstream.Boostrap;
 using InversionOfControl.Service.Bootstrap;
@@ -51,7 +52,8 @@ builder.WebHost.UseSentry(sentryBuilder =>
 #if DEBUG
     sentryBuilder.Debug = true;
 #endif
-    sentryBuilder.TracesSampleRate = 1.0;
+    var perf = builder.Configuration.GetSection("Performance").Get<Performance>();
+    sentryBuilder.TracesSampleRate = perf.SampleRate;
 });
 
 var app = builder.Build();

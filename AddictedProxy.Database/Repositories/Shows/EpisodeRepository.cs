@@ -1,5 +1,6 @@
 #region
 
+using System.Globalization;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +65,22 @@ public class EpisodeRepository : IEpisodeRepository
                              .Where(episode => episode.TvShow.Id == tvShowId)
                              .Include(episode => episode.TvShow)
                              .Include(episode => episode.Subtitles)
+                             .ToAsyncEnumerable();
+    }
+
+    /// <summary>
+    /// Get season episodes for language
+    /// </summary>
+    /// <param name="tvShowId"></param>
+    /// <param name="language"></param>
+    /// <param name="season"></param>
+    /// <returns></returns>
+    public IAsyncEnumerable<Episode> GetSeasonEpisodesByLangAsync(long tvShowId, CultureInfo language, int season)
+    {
+        return _entityContext.Episodes.Where(episode => episode.Season == season)
+                             .Where(episode => episode.TvShow.Id == tvShowId)
+                             .Include(episode => episode.TvShow)
+                             .Include(episode => episode.Subtitles.Where(subtitle => subtitle.Language == language.EnglishName))
                              .ToAsyncEnumerable();
     }
 
