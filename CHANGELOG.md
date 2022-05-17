@@ -1,3 +1,10 @@
+### [2.1.4](https://github.com/Belphemur/AddictedProxy/compare/v2.1.3...v2.1.4) (2022-05-17)
+
+
+### Enhancements
+
+* **Backoff:** Proper backoff strategy when addicted doesn't answer ([de5bfe0](https://github.com/Belphemur/AddictedProxy/commit/de5bfe073eb3d13f19a5c646e476b65148660377))
+
 ### [2.1.3](https://github.com/Belphemur/AddictedProxy/compare/v2.1.2...v2.1.3) (2022-05-17)
 
 
