@@ -1,3 +1,63 @@
+## [2.1.0](https://github.com/Belphemur/AddictedProxy/compare/v2.0.0...v2.1.0) (2022-05-17)
+
+
+### Features
+
+* **ApiDoc:** Have the api documentation in the Single Page App ([29d6a50](https://github.com/Belphemur/AddictedProxy/commit/29d6a50622513fd0efc970a535525556adf5d12f))
+* **background:** Add nice background to the application ([428e8b9](https://github.com/Belphemur/AddictedProxy/commit/428e8b93cfbea9bf1bd106a3bbeacc777e6fe290))
+* **Frontend:** Add logo and dark mode ([6d4f24e](https://github.com/Belphemur/AddictedProxy/commit/6d4f24e0536e6a608a5098ba4d2cdeede35b427f))
+* **Hub::frontend:** Add frontend hub for refresh ([7732950](https://github.com/Belphemur/AddictedProxy/commit/77329506000a7e245dc37a737701d5b0d6b68330))
+* **Hub::frontend:** Use the hub to send refresh request ([311306b](https://github.com/Belphemur/AddictedProxy/commit/311306bd6f173ca0f05e2ccb2f4b1e2fd7e9d8a5))
+* **Hub::Refresh::Unsubscribe:** Be able to unsubscribe from specific show refresh ([bdd3f3b](https://github.com/Belphemur/AddictedProxy/commit/bdd3f3bec555801e94fbc28d0c127bf7655f8275))
+* **Hub:** Add websocket to be able to interact with refreshing show ([3a6b586](https://github.com/Belphemur/AddictedProxy/commit/3a6b586a40faaa32e43c24841c5a1108342fbb9d))
+* **language:** save the language in local storage ([475758b](https://github.com/Belphemur/AddictedProxy/commit/475758b0347e9da53862278d32421313fc5e1561))
+* **Page::Title:** Add proper page title depending on the route ([8a4aaeb](https://github.com/Belphemur/AddictedProxy/commit/8a4aaebc46cf501fdf1181cb92165da49be8b6aa))
+* **Refresh::search:** The user can now redo their search when the refresh is done ([5f3e214](https://github.com/Belphemur/AddictedProxy/commit/5f3e21458227b6efb6b16fe2a514d9928e9d1c96))
+* **Refresh:** Only refresh the new season and the latest one ([d9c6e07](https://github.com/Belphemur/AddictedProxy/commit/d9c6e071caf591387e2b786b93bbeb442f74d8b0))
+* **Refresh:** Show all the current refresh in the UI ([adf5c68](https://github.com/Belphemur/AddictedProxy/commit/adf5c6817e9a9076f08198828c4291ecb6454ff9))
+* **Subtitle::frontend:** Add subtitle table with search result ([5bfbfc6](https://github.com/Belphemur/AddictedProxy/commit/5bfbfc68800195551e369730db32771a20b71ae6))
+* **Subtitle:Download:** Be able to download the subtitle from the UI ([7f1e5e4](https://github.com/Belphemur/AddictedProxy/commit/7f1e5e427e833e564cd1e4dd326dd50f00e3c89c))
+* **Title:** Proper title for the name of the show and season on the page ([a828c01](https://github.com/Belphemur/AddictedProxy/commit/a828c01b91fb5957c9ba2a7590d2f75ac011dca2))
+
+
+### Bug Fixes
+
+* **config:** Be sure the config has the right api path ([6e3d84e](https://github.com/Belphemur/AddictedProxy/commit/6e3d84ebd2bc7ccdc7678b0436f26273116280f8))
+* **CORS:** Add missing header for JS ([64c2988](https://github.com/Belphemur/AddictedProxy/commit/64c2988df40c49f8b047e664182caa5ad6f698f4))
+* **Cors:** Be sure swagger have proper cors applied to it ([a044cbc](https://github.com/Belphemur/AddictedProxy/commit/a044cbc485287a1432ca7a495063e53cfbf06d07))
+* **etag:** Be sure the etag of subtitle is implemented properly ([9491b63](https://github.com/Belphemur/AddictedProxy/commit/9491b63b3dcbe4c4b937d440a0cbcafa0e30cafc))
+* **Hub::Progress:** Send progress as a single object ([2322155](https://github.com/Belphemur/AddictedProxy/commit/2322155c1da7510d77178b26040c2de6488c2b06))
+* **Hub::Show:** Return the right show to the Hub ([93a5d03](https://github.com/Belphemur/AddictedProxy/commit/93a5d0350a8643afe1f03cd8512cabf283941e6f))
+* **Hub:** Add proper way to register the hub and send message to it ([537736a](https://github.com/Belphemur/AddictedProxy/commit/537736a8583a66ceb3eaa0e61e6c3662901ed093))
+* **hub:** Hub don't support cancellation token in their call ([ce58cb2](https://github.com/Belphemur/AddictedProxy/commit/ce58cb28ec9f5984b043cb415521e67fc7975fa2))
+* **menu:** Fix background color ([a9a9530](https://github.com/Belphemur/AddictedProxy/commit/a9a9530db9c77947bb760b490318de4d334daf51))
+* **migration:** Always run the migrations ([e257898](https://github.com/Belphemur/AddictedProxy/commit/e2578985f0460133671a72e1c2ba36983d794d9b))
+* **Parser:** Fix the parser for change of language of the table ([7edbd29](https://github.com/Belphemur/AddictedProxy/commit/7edbd291f73a741c0954f47139c9b6f6c22e72f7))
+* **Parser:** Make the parser future-proof ([442adcb](https://github.com/Belphemur/AddictedProxy/commit/442adcb7df7f95bec5efb382b185e0aab210b014))
+* **Refresh::Progress:** Be sure the progress is set to 100 when finishing processing show ([ecdef1f](https://github.com/Belphemur/AddictedProxy/commit/ecdef1fa2de74442c4619729dc0302ceca3b711a))
+* **Refresh::Progress:** Use interpolation to calculate the progress ([6e1a41a](https://github.com/Belphemur/AddictedProxy/commit/6e1a41a4c13089f55daae4cc328726ba15c1d913))
+* **Refresh:** Fix possible division by 0 ([07e7302](https://github.com/Belphemur/AddictedProxy/commit/07e7302846ea557d62204778e951ea25db9fd1ce))
+* **Refresh:** Issue with the interaction between vue module. ([4ccaf8b](https://github.com/Belphemur/AddictedProxy/commit/4ccaf8b5045443fb33f1362d72161861a283f5f8))
+* **Refresh:** Possible division by 0 ([b7e870d](https://github.com/Belphemur/AddictedProxy/commit/b7e870d1224a0300c13039e9f81a5abdc71e31dd))
+* **Refresh:** Remove concurrent season refreshing ([5c05a92](https://github.com/Belphemur/AddictedProxy/commit/5c05a9206f3650eb64e71601a59a3c4f98b8e504))
+* **Search::Validation:** Put the validation on the right parameter ([8752821](https://github.com/Belphemur/AddictedProxy/commit/87528219b7fb4fabc4bec7bfa46c4cd14f4537dd))
+* **Search:** Clean up previous search result when search isn't possible ([09e323d](https://github.com/Belphemur/AddictedProxy/commit/09e323d36bec074b69e75b4fb5e41f74a86c810f))
+* **Search:** Only send search when more than 3 characters ([e998c41](https://github.com/Belphemur/AddictedProxy/commit/e998c416f54fa4361d20552bacd0403c9cfaa636))
+* **Season:** Send all the available season, not just the number ([882aefe](https://github.com/Belphemur/AddictedProxy/commit/882aefe0b01a7120f372d6fc048de277958d591d))
+* **Subtitles:** Filtering subtitles by language ([31d359d](https://github.com/Belphemur/AddictedProxy/commit/31d359d841be78005f2868a36cfafd608b56f1b7))
+
+
+### Enhancements
+
+* **Download:** Add download progress when downloading a subtitle ([4b315aa](https://github.com/Belphemur/AddictedProxy/commit/4b315aa8ca00c4d147807be451ff7cc478a55d40))
+* **Download:** Add suffix for hearing impared subtitles ([b9e42b5](https://github.com/Belphemur/AddictedProxy/commit/b9e42b5a046b22c9cb046019e5b5ec5288aaef4c))
+* **Fetching:** Increase timeout to 30 seconds ([3ac8416](https://github.com/Belphemur/AddictedProxy/commit/3ac841609f57a0fc8c197748f9a0e4e1865a5bf7))
+* **frontend:** Add some styling ([9852e9b](https://github.com/Belphemur/AddictedProxy/commit/9852e9bc3d70ed1dc7414d960193301af55dc810))
+* **Refresh:** Rework the code to fetch 2 season simultaneously for a show ([46dab2f](https://github.com/Belphemur/AddictedProxy/commit/46dab2f486e01aaa462f44ca6b5e3b845f5eae65))
+* **Search:** Consistent messaging in the application ([58d22e9](https://github.com/Belphemur/AddictedProxy/commit/58d22e9a705c163fa7e181635aa8598ffcf86d90))
+* **Search:** Improve the usability of the search by giving contextual tooltips. ([d8636cd](https://github.com/Belphemur/AddictedProxy/commit/d8636cd75ed48281d4bf1d9c4de0ee2a373a228a))
+* **Subtitle:Download:** Block the button when download subtitle ([dbd8784](https://github.com/Belphemur/AddictedProxy/commit/dbd8784685e04d7016f3672d99aab7103d85b710))
+
 ## [2.0.0](https://github.com/Belphemur/AddictedProxy/compare/v1.1.1...v2.0.0) (2022-05-09)
 
 
