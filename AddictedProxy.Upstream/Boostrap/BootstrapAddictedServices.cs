@@ -10,6 +10,7 @@ using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
+using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
 using Polly.RateLimit;
 using Polly.Timeout;
@@ -57,16 +58,12 @@ public class BootstrapAddictedServices : IBootstrap,
 
     private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
     {
-        var jitterer = new Random();
+        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 10);
         return HttpPolicyExtensions
                .HandleTransientHttpError()
                .Or<TimeoutRejectedException>()
-               .Or<RateLimitRejectedException>()
                .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
-               .WaitAndRetryAsync(8, // exponential back-off plus some jitter
-                   retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
-                                   + TimeSpan.FromMilliseconds(jitterer.Next(0, 1200))
-               )
+               .WaitAndRetryAsync(delay)
                .WrapAsync(Policy.TimeoutAsync(30));
     }
 }
