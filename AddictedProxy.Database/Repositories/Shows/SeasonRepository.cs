@@ -36,9 +36,8 @@ public class SeasonRepository : ISeasonRepository
     /// <summary>
     ///     Update the season
     /// </summary>
-    public Task UpdateSeasonAsync(Season season, CancellationToken token)
+    public Task SaveChangesAsync(CancellationToken token)
     {
-        _entityContext.Seasons.Update(season);
         return _entityContext.SaveChangesAsync(token);
     }
 }

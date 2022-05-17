@@ -1,5 +1,7 @@
+import { ShowDto } from "@/api";
+
 export interface SelectedShow {
-  showId: string;
-  season: number;
+  show: ShowDto;
   language: string;
+  season: number;
 }

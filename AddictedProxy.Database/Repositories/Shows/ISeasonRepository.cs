@@ -25,5 +25,5 @@ public interface ISeasonRepository
     /// <summary>
     ///     Update the season
     /// </summary>
-    Task UpdateSeasonAsync(Season season, CancellationToken token);
+    Task SaveChangesAsync(CancellationToken token);
 }

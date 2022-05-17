@@ -1,7 +1,7 @@
 ﻿using AspNetCoreRateLimit;
 using InversionOfControl.Model;
 
-namespace AddictedProxy.Controllers.Bootstrap;
+namespace AddictedProxy.Controllers.Rest.Bootstrap;
 
 public class BootstrapRateLimiting : IBootstrap, IBootstrapApp
 {

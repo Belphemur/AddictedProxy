@@ -23,4 +23,13 @@ public interface IEpisodeRefresher
     /// <param name="token"></param>
     /// <returns></returns>
     Task<(Episode? episode, bool episodesRefreshed)> GetRefreshEpisodeAsync(TvShow show, Season season, int episodeNumber, CancellationToken token);
+
+    /// <summary>
+    /// Refresh subtitle of specific seasons of the show
+    /// </summary>
+    /// <param name="show"></param>
+    /// <param name="seasonsToRefresh"></param>
+    /// <param name="sendProgress"></param>
+    /// <param name="token"></param>
+    Task RefreshEpisodesAsync(TvShow show, IEnumerable<Season> seasonsToRefresh, Func<int, Task> sendProgress, CancellationToken token);
 }

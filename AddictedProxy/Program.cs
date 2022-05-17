@@ -1,7 +1,7 @@
 #region
 
 using System.Reflection;
-using AddictedProxy.Controllers.Bootstrap;
+using AddictedProxy.Controllers.Rest.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Storage.Bootstrap;
@@ -20,13 +20,14 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(options =>
        {
            // using System.Reflection;
-           var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+           var executingAssembly = Assembly.GetExecutingAssembly();
+           var xmlFilename = $"{executingAssembly.GetName().Name}.xml";
            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
            options.SwaggerDoc("v1", new OpenApiInfo
            {
-               Title = "Addicted Proxy",
-               Description = "Provide a full system to search and download subtitles from Addi7ed website.",
-               Version = Assembly.GetExecutingAssembly().GetName().Version!.ToString(3)
+               Title = "Gestdown: Addicted Proxy",
+               Description = "Provide a full api to search and download subtitles from Addic7ed website.",
+               Version = executingAssembly.GetName().Version!.ToString(3)
            });
        })
        .AddEndpointsApiExplorer();
@@ -56,31 +57,31 @@ builder.WebHost.UseSentry(sentryBuilder =>
 var app = builder.Build();
 
 app.UseBootstrap(currentAssemblies);
-
+app.UseSentryTracing();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+    app.UseDeveloperExceptionPage()
+       .UseSwaggerUI(options => options.RoutePrefix = "api");
 }
 
-app.UseSwagger(options => options.RouteTemplate = "api/{documentName}/swagger.{json|yaml}")
-   .UseSwaggerUI(options => options.RoutePrefix = "api");
+app.UseCors(policyBuilder => policyBuilder
+                             .AllowAnyMethod()
+                             .AllowAnyHeader()
+                             .AllowCredentials()
+                             .SetIsOriginAllowed(hostName => true)
+                             .WithExposedHeaders("Content-Disposition"));
 
+app.UseSwagger(options => options.RouteTemplate = "api/{documentName}/swagger.{json|yaml}");
 
-app.UseSentryTracing();
-
-app.MapControllers();
-
-app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
-#if DEBUG
 {
     await using var serviceScope = app.Services.CreateAsyncScope();
     await using var dbContext = serviceScope.ServiceProvider.GetRequiredService<EntityContext>();
 
     await dbContext.Database.MigrateAsync();
 }
-#endif
+
+
 
 app.Run();

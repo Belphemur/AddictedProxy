@@ -1,11 +1,14 @@
 ﻿#region
 
+using AddictedProxy.Controllers.Hub;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
+using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Upstream.Service;
+using Microsoft.AspNetCore.SignalR;
 
 #endregion
 
@@ -18,14 +21,17 @@ public class ShowRefresher : IShowRefresher
     private readonly ISeasonRefresher _seasonRefresher;
     private readonly IEpisodeRefresher _episodeRefresher;
     private readonly ILogger<ShowRefresher> _logger;
+    private readonly IRefreshHubManager _refreshHubManager;
     private readonly ITvShowRepository _tvShowRepository;
 
     public ShowRefresher(ITvShowRepository tvShowRepository,
-                         IAddic7edClient addic7EdClient,
-                         ICredentialsService credentialsService,
-                         ISeasonRefresher seasonRefresher,
-                         IEpisodeRefresher episodeRefresher,
-                         ILogger<ShowRefresher> logger)
+        IAddic7edClient addic7EdClient,
+        ICredentialsService credentialsService,
+        ISeasonRefresher seasonRefresher,
+        IEpisodeRefresher episodeRefresher,
+        ILogger<ShowRefresher> logger,
+        IRefreshHubManager refreshHubManager
+    )
     {
         _tvShowRepository = tvShowRepository;
         _addic7EdClient = addic7EdClient;
@@ -33,6 +39,7 @@ public class ShowRefresher : IShowRefresher
         _seasonRefresher = seasonRefresher;
         _episodeRefresher = episodeRefresher;
         _logger = logger;
+        _refreshHubManager = refreshHubManager;
     }
 
     public async Task RefreshShowsAsync(CancellationToken token)
@@ -50,14 +57,42 @@ public class ShowRefresher : IShowRefresher
     /// <param name="token"></param>
     public async Task RefreshShowAsync(TvShow tvShow, CancellationToken token)
     {
+        var progressMin = 25;
+        var progressMax = 100;
+
+        await _refreshHubManager.SendProgressAsync(tvShow, 1, token);
+
+        var currentSeasons = tvShow.Seasons.Select(season => season.Number).ToArray();
+
         await _seasonRefresher.RefreshSeasonsAsync(tvShow, token: token);
-        
+        await _refreshHubManager.SendProgressAsync(tvShow, progressMin, token);
+
         var show = (await _tvShowRepository.GetByIdAsync(tvShow.Id, token))!;
-        _logger.LogInformation("Refreshing episode for {number} seasons of {show}", show.Seasons.Count, show.Name);
-        foreach (var season in show.Seasons)
+        var seasonToSync = show.Seasons;
+
+        // If we currently have more than one season
+        if (currentSeasons.Length > 0 && seasonToSync.Count > 0)
         {
-            await _episodeRefresher.RefreshEpisodesAsync(show, season, token: token);
+            //Only sync new seasons, be sure that whatever happen, we always sync the last season
+            seasonToSync = seasonToSync.ExceptBy(currentSeasons, season => season.Number)
+                .Append(show.Seasons.OrderByDescending(season => season.Number).First())
+                .OrderByDescending(season => season.Number)
+                .Distinct()
+                .ToArray();
         }
+
+
+        _logger.LogInformation("Refreshing episode for {number} seasons of {show}", seasonToSync.Count, show.Name);
+
+
+        async Task SendProgress(int progress)
+        {
+            var refreshValue = Convert.ToInt32(Math.Ceiling(progressMin + (progressMax - progressMin) * progress / 100.0));
+            await _refreshHubManager.SendProgressAsync(tvShow, refreshValue, token);
+        }
+
+        await _episodeRefresher.RefreshEpisodesAsync(show, seasonToSync, SendProgress, token);
+        await _refreshHubManager.SendRefreshDone(show, token);
     }
 
     public IAsyncEnumerable<TvShow> FindShowsAsync(string search, CancellationToken token)

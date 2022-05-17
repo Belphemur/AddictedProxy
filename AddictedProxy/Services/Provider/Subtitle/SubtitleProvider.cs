@@ -51,7 +51,7 @@ public class SubtitleProvider : ISubtitleProvider
         public async ValueTask DisposeAsync()
         {
             _subtitle.DownloadCount++;
-            await _subtitleRepository.UpdateAsync(_subtitle, CancellationToken.None);
+            await _subtitleRepository.SaveChangeAsync(CancellationToken.None);
         }
     }
 

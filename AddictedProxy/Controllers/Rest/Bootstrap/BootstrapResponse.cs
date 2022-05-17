@@ -2,7 +2,7 @@
 using InversionOfControl.Model;
 using Microsoft.AspNetCore.ResponseCompression;
 
-namespace AddictedProxy.Controllers.Bootstrap;
+namespace AddictedProxy.Controllers.Rest.Bootstrap;
 
 public class BootstrapResponse : IBootstrap, IBootstrapApp
 {

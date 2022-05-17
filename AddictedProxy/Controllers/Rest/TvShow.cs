@@ -1,4 +1,4 @@
-﻿using AddictedProxy.Database.Model.Shows;
+﻿using System.ComponentModel.DataAnnotations;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
@@ -9,7 +9,7 @@ using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AddictedProxy.Controllers;
+namespace AddictedProxy.Controllers.Rest;
 
 [Route("shows")]
 public class TvShows : Controller
@@ -23,10 +23,10 @@ public class TvShows : Controller
     /// <summary>
     /// Search for a specific show
     /// </summary>
-    public record ShowSearchRequest(string Query)
+    public record ShowSearchRequest([Required] [MinLength(3, ErrorMessage = "3 characters are the minimum for the search")] string Query)
     {
         /// <summary>
-        /// Search run on the shows
+        /// Name of the show you're looking for
         /// </summary>
         /// <example>Wellington</example>
         public string Query { get; init; } = Query;
@@ -129,10 +129,16 @@ public class TvShows : Controller
         var episodes = _episodeRepository.GetSeasonEpisodesAsync(show.Id, seasonNumber)
                                          .Select(episode =>
                                          {
-                                             var subs = episode.Subtitles.Select(subtitle => new SubtitleDto(subtitle,
-                                                 Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
-                                                 throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
-                                                 searchLanguage));
+                                             var subs = episode
+                                                        .Subtitles
+                                                        .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), searchLanguage))
+                                                        .Select(
+                                                            subtitle =>
+                                                                new SubtitleDto(subtitle,
+                                                                    Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
+                                                                    throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                                                                    searchLanguage)
+                                                        );
                                              return new EpisodeWithSubtitlesDto(episode, subs);
                                          });
         return Ok(new TvShowSubtitleResponse(episodes));

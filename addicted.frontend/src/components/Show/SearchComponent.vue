@@ -26,46 +26,53 @@
       </el-select>
     </template>
     <template #append>
-      <el-select
-        v-show="selectedShowSeason.length > 0"
-        v-model="selectedSeason"
-        placeholder="Season"
+      <el-tooltip
+        effect="dark"
+        content="Search a show first"
+        placement="right"
+        :disabled="selectedShowSeason.length > 0"
       >
-        <el-option
-          v-for="item in selectedShowSeason"
-          :key="item"
-          :label="item"
-          :value="item"
-        />
-      </el-select>
+        <el-select
+          v-model="selectedSeason"
+          placeholder="Select a season"
+          :disabled="selectedShowSeason.length === 0"
+        >
+          <el-option
+            v-for="item in selectedShowSeason"
+            :key="item"
+            :label="`Season ${item}`"
+            :value="item"
+          />
+        </el-select>
+      </el-tooltip>
     </template>
     <template #default="{ item }">
-      <span class="name">{{ item.value }}</span>
-      <span v-if="item.seasons > 0"> ({{ item.seasons }})</span>
+      <span class="name">{{ item.name }}</span>
+      <span v-if="item.seasons.length > 0"> ({{ item.seasons.length }})</span>
     </template>
   </el-autocomplete>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineEmits } from "vue";
-import { TvShowsApi, Configuration } from "@/api";
-import { ShowDto } from "@/Dto/ShowDto";
+import { ref, watch, defineExpose } from "vue";
+import { TvShowsApi, Configuration, ShowDto } from "@/api";
 import { getName, getAll639_1 } from "all-iso-language-codes";
 import { SelectedShow } from "@/Dto/SelectedShow";
 
 const langs = getAll639_1().map((value) => {
   return { value: value, label: getName(value) };
 });
-const userLang = (navigator.language || navigator.userLanguage).split("-")[0];
 
+// eslint-disable-next-line no-undef
 const emit = defineEmits<{
-  (e: "change", show: SelectedShow): void;
+  (e: "selected", show: SelectedShow): void;
   (e: "cleared"): void;
+  (e: "needRefresh", show: ShowDto): void;
 }>();
 
 const selectedSeason = ref<number | null>(null);
 const searchInput = ref<string>("");
-const languageSelect = ref<string>(userLang);
+const languageSelect = ref<string>(localStorage.getItem("lang") || "en");
 const api = new TvShowsApi(
   new Configuration({ basePath: process.env.VUE_APP_API_PATH })
 );
@@ -75,35 +82,42 @@ const selectedShow = ref<ShowDto | null>(null);
 const selectedShowSeason = ref<Array<number>>([]);
 
 const querySearch = async (query: string, cb: (param: unknown) => void) => {
+  if (query.length < 3) {
+    cb([]);
+    return;
+  }
   const searchResponse = await api.showsSearchPost({ query: query });
-  cb(
-    searchResponse.shows?.map((show) => {
-      return {
-        value: show.name,
-        id: show.id,
-        seasons: show.nbSeasons,
-      } as unknown as ShowDto;
-    })
-  );
+  cb(searchResponse.shows);
 };
 
 const updateSelectedShow = async (event: ShowDto) => {
-  selectedShow.value = event;
-  selectedSeason.value = null;
+  setSelectedShow(event);
+
   //Force refreshing the show
-  if (selectedShow.value.seasons == 0) {
-    await api.showsShowIdRefreshPost(selectedShow.value.id);
+  if (selectedShow.value!.nbSeasons == 0) {
+    emit("needRefresh", selectedShow.value!);
+    selectedShow.value = null;
+    selectedShowSeason.value = [];
     return;
   }
-  selectedShowSeason.value = Array.from(
-    { length: event.seasons },
-    (_, i) => i + 1
-  );
 };
+
+const setSelectedShow = (show: ShowDto) => {
+  selectedShow.value = show;
+  searchInput.value = show.name;
+  selectedSeason.value = null;
+  selectedShowSeason.value = show.seasons;
+  if (show.nbSeasons == 1) {
+    selectedSeason.value = selectedShowSeason.value[0];
+  }
+};
+
+defineExpose({ setSelectedShow });
 
 watch(searchInput, (value) => {
   if (value == "") {
     selectedSeason.value = null;
+    selectedShowSeason.value = [];
   }
 });
 
@@ -112,21 +126,22 @@ watch(selectedSeason, (value) => {
     emit("cleared");
     return;
   }
-  emit("change", {
+  emit("selected", {
     language: languageSelect.value,
     season: value,
-    showId: selectedShow.value.id,
+    show: selectedShow.value,
   });
 });
 
 watch(languageSelect, (value) => {
+  localStorage.setItem("lang", value);
   if (selectedSeason.value == null || selectedShow.value == null) {
     return;
   }
-  emit("change", {
+  emit("selected", {
     language: value,
     season: selectedSeason.value,
-    showId: selectedShow.value.id,
+    show: selectedShow.value,
   });
 });
 </script>

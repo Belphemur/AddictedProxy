@@ -17,6 +17,11 @@ public class RefreshShowJob : IJob
     public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(10);
 
     public TvShow Show { get; set; }
+    
+    /// <summary>
+    /// Id of the user that made the request
+    /// </summary>
+    public string? ConnectionId { get; set; }
 
     public RefreshShowJob(ILogger<RefreshShowJob> logger, IShowRefresher showRefresher)
     {
