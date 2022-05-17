@@ -24,6 +24,15 @@ builder.Services.AddSwaggerGen(options =>
            var executingAssembly = Assembly.GetExecutingAssembly();
            var xmlFilename = $"{executingAssembly.GetName().Name}.xml";
            options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+           if (builder.Environment.IsProduction())
+           {
+               options.AddServer(new OpenApiServer
+               {
+                   Url = "https://api.gestdown.info",
+                   Description = "Production"
+               });
+           }
+
            options.SwaggerDoc("v1", new OpenApiInfo
            {
                Title = "Gestdown: Addicted Proxy",
