@@ -23,6 +23,7 @@ env:
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME_FRONTEND: ${{ github.repository }}-frontend
 
 jobs:
   build:
@@ -252,7 +253,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}
           tags: |
             type=semver,pattern={{version}},value=${{ needs.main-release.outputs.version}}
 
@@ -280,4 +281,4 @@ jobs:
           COSIGN_EXPERIMENTAL: "true"
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
-        run: cosign sign $( echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')@${{ steps.build-and-push.outputs.digest }}
+        run: cosign sign $( echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}" | tr '[:upper:]' '[:lower:]')@${{ steps.build-and-push.outputs.digest }}
