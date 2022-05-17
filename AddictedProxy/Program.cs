@@ -66,12 +66,22 @@ if (app.Environment.IsDevelopment())
        .UseSwaggerUI(options => options.RoutePrefix = "api");
 }
 
-app.UseCors(policyBuilder => policyBuilder
-                             .AllowAnyMethod()
-                             .AllowAnyHeader()
-                             .AllowCredentials()
-                             .SetIsOriginAllowed(hostName => true)
-                             .WithExposedHeaders("Content-Disposition"));
+app.UseCors(policyBuilder =>
+{
+    policyBuilder
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .WithExposedHeaders("Content-Disposition");
+    if (app.Environment.IsDevelopment())
+    {
+        policyBuilder.SetIsOriginAllowed(_ => true);
+    }
+    else
+    {
+        policyBuilder.SetIsOriginAllowed(hostname => hostname.EndsWith(".gestdown.info"));
+    }
+});
 
 app.UseSwagger(options => options.RouteTemplate = "api/{documentName}/swagger.{json|yaml}");
 
@@ -81,7 +91,6 @@ app.UseSwagger(options => options.RouteTemplate = "api/{documentName}/swagger.{j
 
     await dbContext.Database.MigrateAsync();
 }
-
 
 
 app.Run();
