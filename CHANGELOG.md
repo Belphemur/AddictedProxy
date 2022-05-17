@@ -1,3 +1,10 @@
+### [2.1.2](https://github.com/Belphemur/AddictedProxy/compare/v2.1.1...v2.1.2) (2022-05-17)
+
+
+### Bug Fixes
+
+* **cors:** Have proper cors in place ([ba2a98d](https://github.com/Belphemur/AddictedProxy/commit/ba2a98dec4f7428e2c20c24ec48cf2faf50e2f01))
+
 ### [2.1.1](https://github.com/Belphemur/AddictedProxy/compare/v2.1.0...v2.1.1) (2022-05-17)
 
 
