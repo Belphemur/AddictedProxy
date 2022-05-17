@@ -1,3 +1,10 @@
+### [2.1.1](https://github.com/Belphemur/AddictedProxy/compare/v2.1.0...v2.1.1) (2022-05-17)
+
+
+### Bug Fixes
+
+* **CI:** Fix building frontend image ([919fb39](https://github.com/Belphemur/AddictedProxy/commit/919fb3990c1b81839fd248b741cb83a3189cfc93))
+
 ## [2.1.0](https://github.com/Belphemur/AddictedProxy/compare/v2.0.0...v2.1.0) (2022-05-17)
 
 
