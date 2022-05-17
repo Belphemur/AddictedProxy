@@ -1,3 +1,11 @@
+### [2.1.5](https://github.com/Belphemur/AddictedProxy/compare/v2.1.4...v2.1.5) (2022-05-17)
+
+
+### Enhancements
+
+* **Icon:** Use icon of element-plus to reduce size of bundle ([95d0a9c](https://github.com/Belphemur/AddictedProxy/commit/95d0a9c6cebb0773fe98418b12c781010728fb3a))
+* **logging:** add logging the search query done on show ([8c95836](https://github.com/Belphemur/AddictedProxy/commit/8c9583680f79bba42fa1b453a2a6da2cf121f593))
+
 ### [2.1.4](https://github.com/Belphemur/AddictedProxy/compare/v2.1.3...v2.1.4) (2022-05-17)
 
 
