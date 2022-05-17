@@ -1,3 +1,10 @@
+### [2.1.6](https://github.com/Belphemur/AddictedProxy/compare/v2.1.5...v2.1.6) (2022-05-17)
+
+
+### Bug Fixes
+
+* **API:** Add documentation for API server ([8d08c4d](https://github.com/Belphemur/AddictedProxy/commit/8d08c4d1bb593219e6c930f67aac5de4b3a63eae))
+
 ### [2.1.5](https://github.com/Belphemur/AddictedProxy/compare/v2.1.4...v2.1.5) (2022-05-17)
 
 
