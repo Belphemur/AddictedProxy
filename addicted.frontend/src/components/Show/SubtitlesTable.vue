@@ -12,22 +12,19 @@
           <el-table-column label="Version" prop="version"></el-table-column>
           <el-table-column label="Completed" prop="completed">
             <template #default="scope">
-              <i v-if="scope.row.completed" class="fa-solid fa-check" />
+              <Check height="24px" v-if="scope.row.completed" />
               <span v-else></span>
             </template>
           </el-table-column>
           <el-table-column label="Hearing Impaired" prop="hearingImpaired">
             <template #default="scope">
-              <i
-                v-if="scope.row.hearingImpaired"
-                class="fa-solid fa-ear-deaf"
-              />
+              <HearingOffIcon v-if="scope.row.hearingImpaired" />
               <span v-else></span>
             </template>
           </el-table-column>
           <el-table-column label="HD" prop="hd">
             <template #default="scope">
-              <i v-if="scope.row.hd" class="fa-solid fa-check" />
+              <Check height="24px" v-if="scope.row.hd" />
               <span v-else></span>
             </template>
           </el-table-column>
@@ -38,7 +35,7 @@
                 @click="downloadSubtitle(scope.row)"
                 :disabled="currentlyDownloading.has(scope.row.subtitleId)"
               >
-                <i class="fa-solid fa-download fa-fw" />
+                <Download height="24px" />
                 {{ scope.row.downloadCount }}
               </el-button>
               <el-progress
@@ -59,6 +56,7 @@
 <script setup lang="ts">
 import { defineProps, ref } from "vue";
 import { createWriteStream } from "streamsaver";
+import HearingOffIcon from "vue-material-design-icons/EarHearingOff.vue";
 
 import {
   Configuration,
@@ -67,6 +65,7 @@ import {
   SubtitlesApi,
 } from "@/api";
 import { ElMessage } from "element-plus";
+import { Download, Check } from "@element-plus/icons-vue";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto>;
