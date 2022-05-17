@@ -1,3 +1,16 @@
+### [2.1.3](https://github.com/Belphemur/AddictedProxy/compare/v2.1.2...v2.1.3) (2022-05-17)
+
+
+### Bug Fixes
+
+* **log:** add proper logging for websocket rate limited ([def3b04](https://github.com/Belphemur/AddictedProxy/commit/def3b04b176f489a408f7057e24cfb98fa1766c8))
+
+
+### Enhancements
+
+* **Performance:** Add configurable performance sample rate ([260dcfa](https://github.com/Belphemur/AddictedProxy/commit/260dcfa8cdb2b62f3cf32bda88e37895832f520f))
+* **Subtitle:** Improve performance of getting subtitles of a show by giving the language to the db ([ccb817e](https://github.com/Belphemur/AddictedProxy/commit/ccb817ed082ddfbd1b150229516494c1db71aecd))
+
 ### [2.1.2](https://github.com/Belphemur/AddictedProxy/compare/v2.1.1...v2.1.2) (2022-05-17)
 
 
