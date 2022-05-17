@@ -35,7 +35,6 @@ public class SignalRRateLimiter : IHubFilter
         foreach (var rule in await _processor.GetMatchingRulesAsync(client))
         {
             var counter = await _processor.ProcessRequestAsync(client, rule);
-            _logger.LogInformation("time: {0}, count: {1}", counter.Timestamp, counter.Count);
 
             if (!(counter.Count > rule.Limit))
             {
@@ -43,6 +42,8 @@ public class SignalRRateLimiter : IHubFilter
             }
 
             var retry = counter.Timestamp.RetryAfterFrom(rule);
+            _logger.LogInformation("ip: {ip} has been rate limited after {count}", ip, counter.Count);
+
             throw new HubException($"call limit {retry}");
         }
 
