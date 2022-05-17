@@ -1,5 +1,6 @@
 #region
 
+using System.Globalization;
 using AddictedProxy.Database.Model.Shows;
 
 #endregion
@@ -25,4 +26,13 @@ public interface IEpisodeRepository
     /// <param name="season"></param>
     /// <returns></returns>
     IAsyncEnumerable<Episode> GetSeasonEpisodesAsync(long tvShowId, int season);
+
+    /// <summary>
+    /// Get season episodes for language
+    /// </summary>
+    /// <param name="tvShowId"></param>
+    /// <param name="language"></param>
+    /// <param name="season"></param>
+    /// <returns></returns>
+    IAsyncEnumerable<Episode> GetSeasonEpisodesByLangAsync(long tvShowId, CultureInfo language, int season);
 }
