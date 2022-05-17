@@ -1,3 +1,10 @@
+### [2.1.7](https://github.com/Belphemur/AddictedProxy/compare/v2.1.6...v2.1.7) (2022-05-17)
+
+
+### Enhancements
+
+* **SEO:** Have proper SEO meta ([c6c4c68](https://github.com/Belphemur/AddictedProxy/commit/c6c4c682252843b5cfdafc4388dc71dbe5777d6d))
+
 ### [2.1.6](https://github.com/Belphemur/AddictedProxy/compare/v2.1.5...v2.1.6) (2022-05-17)
 
 
