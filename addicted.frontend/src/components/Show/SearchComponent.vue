@@ -107,8 +107,9 @@ const setSelectedShow = (show: ShowDto) => {
   searchInput.value = show.name;
   selectedSeason.value = null;
   selectedShowSeason.value = show.seasons;
-  if (show.nbSeasons == 1) {
-    selectedSeason.value = selectedShowSeason.value[0];
+  if (show.nbSeasons > 0) {
+    const lastSeason = selectedShowSeason.value.length - 1;
+    selectedSeason.value = selectedShowSeason.value[lastSeason];
   }
 };
 
