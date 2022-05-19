@@ -1,3 +1,10 @@
+## [2.2.0](https://github.com/Belphemur/AddictedProxy/compare/v2.1.7...v2.2.0) (2022-05-19)
+
+
+### Features
+
+* **Search:** Automatically select latest season ([62778ee](https://github.com/Belphemur/AddictedProxy/commit/62778eea46d1f031228dab6419a51ac7ced47ceb))
+
 ### [2.1.7](https://github.com/Belphemur/AddictedProxy/compare/v2.1.6...v2.1.7) (2022-05-17)
 
 
