@@ -1,3 +1,10 @@
+## [2.3.0](https://github.com/Belphemur/AddictedProxy/compare/v2.2.0...v2.3.0) (2022-05-20)
+
+
+### Features
+
+* **Search::API:** Return a 423 when the data isn't available yet for the episode ([6bbd519](https://github.com/Belphemur/AddictedProxy/commit/6bbd519a34bd39b0ce225ca2cd9918706713ec7f))
+
 ## [2.2.0](https://github.com/Belphemur/AddictedProxy/compare/v2.1.7...v2.2.0) (2022-05-19)
 
 
