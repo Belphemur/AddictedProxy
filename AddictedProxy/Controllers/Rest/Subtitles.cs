@@ -33,11 +33,12 @@ public class Subtitles : Controller
     private readonly Regex _searchPattern = new(@"(?<show>.+)S(?<season>\d+)E(?<episode>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public Subtitles(IEpisodeRepository episodeRepository,
-                     CultureParser cultureParser,
-                     IShowRefresher showRefresher,
-                     ISubtitleProvider subtitleProvider,
-                     IJobBuilder jobBuilder,
-                     IJobScheduler jobScheduler)
+        CultureParser cultureParser,
+        IShowRefresher showRefresher,
+        ISubtitleProvider subtitleProvider,
+        IJobBuilder jobBuilder,
+        IJobScheduler jobScheduler
+    )
     {
         _episodeRepository = episodeRepository;
         _cultureParser = cultureParser;
@@ -96,10 +97,12 @@ public class Subtitles : Controller
     /// <response code="404">Couldn't find the show or its season/episode</response>
     /// <response code="400">Doesn't follow the right format for the search: Show S00E00</response>
     /// <response code="429">Reached the rate limiting of the endpoint</response>
+    /// <response code="423">Refreshing the show, currently don't have data, try again later</response>
     [Route("search")]
     [HttpPost]
     [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 404)]
+    [ProducesResponseType(typeof(ErrorResponse), 423)]
     [ProducesResponseType(typeof(WrongFormatResponse), 400)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
@@ -112,7 +115,7 @@ public class Subtitles : Controller
         }
 
         return await ProcessQueryRequestAsync(
-            new SubtitleQueryRequest(match.Groups["show"].Value.Trim().Replace(".", " "), int.Parse(match.Groups["episode"].Value), int.Parse(match.Groups["season"].Value), request.Language, null),
+            new SubtitleQueryRequest(match.Groups["show"].Value.Trim().Replace(".", " ").Replace("_", " "), int.Parse(match.Groups["episode"].Value), int.Parse(match.Groups["season"].Value), request.Language, null),
             token);
     }
 
@@ -128,10 +131,12 @@ public class Subtitles : Controller
     /// <response code="200">Returns the matching subtitles</response>
     /// <response code="404">Couldn't find the show or its season/episode</response>
     /// <response code="429">Reached the rate limiting of the endpoint</response>
+    /// <response code="423">Refreshing the show, currently don't have data, try again later</response>
     [Route("query")]
     [HttpPost]
     [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 404)]
+    [ProducesResponseType(typeof(ErrorResponse), 423)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
     public async Task<IActionResult> Query([FromBody] SubtitleQueryRequest request, CancellationToken token)
@@ -151,7 +156,7 @@ public class Subtitles : Controller
         if (episode == null)
         {
             ScheduleJob(request, show);
-            return NotFound(new ErrorResponse("Episode couldn't be found. Try again later."));
+            return StatusCode(StatusCodes.Status423Locked, new ErrorResponse("Episode couldn't be found. Try again later."));
         }
 
         var matchingSubtitles = FindMatchingSubtitles(request, episode);
@@ -166,8 +171,8 @@ public class Subtitles : Controller
     private void ScheduleJob(SubtitleQueryRequest request, TvShow show)
     {
         var job = _jobBuilder.Create<FetchSubtitlesJob>()
-                             .Configure(subtitlesJob => { subtitlesJob.Data = new FetchSubtitlesJob.JobData(show, request.Season, request.Episode, _cultureParser.FromString(request.LanguageISO), request.FileName); })
-                             .Build();
+            .Configure(subtitlesJob => { subtitlesJob.Data = new FetchSubtitlesJob.JobData(show, request.Season, request.Episode, _cultureParser.FromString(request.LanguageISO), request.FileName); })
+            .Build();
         _jobScheduler.ScheduleJob(job);
     }
 
@@ -175,21 +180,21 @@ public class Subtitles : Controller
     {
         var searchLanguage = _cultureParser.FromString(request.LanguageISO);
         var search = episode.Subtitles
-                            .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), searchLanguage));
+            .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), searchLanguage));
         if (request.FileName != null)
         {
             search = search.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => request.FileName.ToLowerInvariant().Contains(version)));
         }
 
         return search.Select(
-                         subtitle => new SubtitleDto(
-                             subtitle,
-                             Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
-                             throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
-                             searchLanguage
-                         )
-                     )
-                     .ToArray();
+                subtitle => new SubtitleDto(
+                    subtitle,
+                    Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
+                    throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                    searchLanguage
+                )
+            )
+            .ToArray();
     }
 
     /// <summary>
