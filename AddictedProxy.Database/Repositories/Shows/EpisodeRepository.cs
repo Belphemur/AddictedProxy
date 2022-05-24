@@ -26,31 +26,38 @@ public class EpisodeRepository : IEpisodeRepository
     public async Task UpsertEpisodes(IEnumerable<Episode> episodes, CancellationToken token)
     {
         var transaction = await _entityContext.Database.BeginTransactionAsync(token);
-
-        var enumerable = episodes as Episode[] ?? episodes.ToArray();
-        await _entityContext.Episodes.BulkMergeAsync(enumerable, options =>
+        try
         {
-            options.IncludeGraph = true;
-            options.IncludeGraphOperationBuilder = operation =>
+            var enumerable = episodes as Episode[] ?? episodes.ToArray();
+            await _entityContext.Episodes.BulkMergeAsync(enumerable, options =>
             {
-                switch (operation)
+                options.IncludeGraph = true;
+                options.IncludeGraphOperationBuilder = operation =>
                 {
-                    case BulkOperation<Subtitle> bulkSub:
-                        bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Discovered, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount, subtitle.UniqueId };
-                        bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.EpisodeId, subtitle.Language, subtitle.Version };
-                        break;
-                    case BulkOperation<Episode> bulkEp:
-                        bulkEp.ColumnPrimaryKeyExpression = episode => new { episode.TvShowId, episode.Season, episode.Number };
-                        bulkEp.IgnoreOnMergeUpdateExpression = episode => episode.Discovered;
-                        break;
-                    case BulkOperation<TvShow> bulkShow:
-                        bulkShow.IsReadOnly = true;
-                        break;
-                }
-            };
-        }, token);
+                    switch (operation)
+                    {
+                        case BulkOperation<Subtitle> bulkSub:
+                            bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Discovered, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount, subtitle.UniqueId };
+                            bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.EpisodeId, subtitle.Language, subtitle.Version };
+                            break;
+                        case BulkOperation<Episode> bulkEp:
+                            bulkEp.ColumnPrimaryKeyExpression = episode => new { episode.TvShowId, episode.Season, episode.Number };
+                            bulkEp.IgnoreOnMergeUpdateExpression = episode => episode.Discovered;
+                            break;
+                        case BulkOperation<TvShow> bulkShow:
+                            bulkShow.IsReadOnly = true;
+                            break;
+                    }
+                };
+            }, token);
 
-        await transaction.CommitAsync(token);
+            await transaction.CommitAsync(token);
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync(token);
+            throw;
+        }
     }
     
     /// <summary>
