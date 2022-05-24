@@ -1,3 +1,12 @@
+### [2.4.1](https://github.com/Belphemur/AddictedProxy/compare/v2.4.0...v2.4.1) (2022-05-24)
+
+
+### Bug Fixes
+
+* **Episode::GetEpisodes:** Don't track getting episode for UI ([f652e4b](https://github.com/Belphemur/AddictedProxy/commit/f652e4bdba60d726a4ba98a8bfa955ccde17f740))
+* **Episode::Refresh:** Fix the code that refresh the episode ([83b82c0](https://github.com/Belphemur/AddictedProxy/commit/83b82c01deb7ba9fc2a0a9c1aa74c09e32312feb))
+* **Logging:** Only log inner exception ([068746e](https://github.com/Belphemur/AddictedProxy/commit/068746e6e01cdc234834cb9b91bde4d508fb5e61))
+
 ## [2.4.0](https://github.com/Belphemur/AddictedProxy/compare/v2.3.0...v2.4.0) (2022-05-24)
 
 
