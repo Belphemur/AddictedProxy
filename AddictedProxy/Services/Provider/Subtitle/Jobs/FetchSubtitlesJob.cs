@@ -3,6 +3,7 @@
 using System.Globalization;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Services.Culture;
+using AddictedProxy.Services.Job.Extensions;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
 using Job.Scheduler.Job;
@@ -83,7 +84,7 @@ public class FetchSubtitlesJob : IJob
     public Task OnFailure(JobException exception)
     {
         using var scope = _logger.BeginScope(Data.ScopeName);
-        _logger.LogError(exception, "Fetching subtitles info");
+        _logger.LogJobException(exception, "Fetching subtitles info");
         return Task.CompletedTask;
     }
 

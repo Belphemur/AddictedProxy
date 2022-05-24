@@ -4,6 +4,7 @@ using AddictedProxy.Database.Context;
 using AddictedProxy.Database.EnvVar;
 using AddictedProxy.Database.Repositories.Credentials;
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Database.Transaction;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +20,7 @@ public class BootstrapDatabase : IBootstrap,
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddHostedService<SetupEfCoreHostedService>();
-        services.AddDbContext<EntityContext>();
+        services.AddDbContext<EntityContext>(builder => builder.EnableSensitiveDataLogging());
 
         services.AddScoped<ITvShowRepository, TvShowRepository>();
 
@@ -27,6 +28,7 @@ public class BootstrapDatabase : IBootstrap,
         services.AddScoped<IEpisodeRepository, EpisodeRepository>();
         services.AddScoped<ISubtitleRepository, SubtitleRepository>();
         services.AddScoped<IAddictedUserCredentialRepository, AddictedUserCredentialRepository>();
+        services.AddScoped<ITransactionManager, TransactionManager<EntityContext>>();
     }
 
     public EnvVarRegistration<EFCoreLicense, EFCoreLicenseParser> EnvVarRegistration => new("EFCORE");

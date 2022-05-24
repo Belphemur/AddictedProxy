@@ -1,5 +1,6 @@
 ﻿using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Model.Dto;
+using AddictedProxy.Services.Job.Extensions;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
 using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
@@ -44,7 +45,7 @@ public class RefreshShowJob : IJob
 
     public Task OnFailure(JobException exception)
     {
-        _logger.LogError(exception, "Couldn't refresh show {Show}", Show.Name);
+        _logger.LogJobException(exception, "Couldn't refresh show {Show}", Show.Name);
         return Task.CompletedTask;
     }
 }

@@ -1,6 +1,7 @@
 ﻿#region
 
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Services.Job.Extensions;
 using AddictedProxy.Storage.Store;
 using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
@@ -58,7 +59,7 @@ public class StoreSubtitleJob : IJob
 
     public Task OnFailure(JobException exception)
     {
-        _logger.LogError(exception, "Issue while saving subtitle {subtitleId} in storage", SubtitleId);
+        _logger.LogJobException(exception, "Issue while saving subtitle {subtitleId} in storage", SubtitleId);
         return Task.CompletedTask;
     }
 
