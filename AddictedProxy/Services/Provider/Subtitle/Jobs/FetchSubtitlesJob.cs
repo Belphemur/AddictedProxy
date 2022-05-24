@@ -25,9 +25,9 @@ public class FetchSubtitlesJob : IJob
 
 
     public FetchSubtitlesJob(ILogger<FetchSubtitlesJob> logger,
-                             CultureParser cultureParser,
-                             ISeasonRefresher seasonRefresher,
-                             IEpisodeRefresher episodeRefresher
+        CultureParser cultureParser,
+        ISeasonRefresher seasonRefresher,
+        IEpisodeRefresher episodeRefresher
     )
     {
         _logger = logger;
@@ -59,7 +59,7 @@ public class FetchSubtitlesJob : IJob
             return;
         }
 
-        var (episode, episodesRefreshed) = await _episodeRefresher.GetRefreshEpisodeAsync(show, season, Data.Episode, token);
+        var episode = await _episodeRefresher.GetRefreshEpisodeAsync(show, season, Data.Episode, token);
 
         if (episode == null)
         {
@@ -72,13 +72,14 @@ public class FetchSubtitlesJob : IJob
 
         var latestDiscovered = episode.Subtitles.Max(subtitle => subtitle.Discovered);
 
-        if (matchingSubtitles || episodesRefreshed || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(180))
+        if (matchingSubtitles || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(180))
         {
             _logger.LogInformation("Matching subtitles found or episode was already refreshed");
-            return;
         }
-
-        await _episodeRefresher.RefreshEpisodesAsync(Data.Show, season, true, token);
+        else
+        {
+            _logger.LogInformation("Couldn't find matching subtitles for {search}", Data.ScopeName);
+        }
     }
 
     public Task OnFailure(JobException exception)
@@ -95,7 +96,7 @@ public class FetchSubtitlesJob : IJob
     private bool HasMatchingSubtitle(Episode episode)
     {
         var list = episode.Subtitles
-                          .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), Data.Language));
+            .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), Data.Language));
         if (Data.FileName != null)
         {
             list = list.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => Data.FileName.ToLowerInvariant().Contains(version)));

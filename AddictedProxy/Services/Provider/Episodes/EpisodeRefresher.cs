@@ -21,11 +21,11 @@ public class EpisodeRefresher : IEpisodeRefresher
     private readonly ILogger<EpisodeRefresher> _logger;
 
     public EpisodeRefresher(IAddic7edClient client,
-                            IEpisodeRepository episodeRepository,
-                            ISeasonRepository seasonRepository,
-                            ICredentialsService credentialsService,
-                            IOptions<RefreshConfig> refreshConfig,
-                            ILogger<EpisodeRefresher> logger
+        IEpisodeRepository episodeRepository,
+        ISeasonRepository seasonRepository,
+        ICredentialsService credentialsService,
+        IOptions<RefreshConfig> refreshConfig,
+        ILogger<EpisodeRefresher> logger
     )
     {
         _client = client;
@@ -44,18 +44,11 @@ public class EpisodeRefresher : IEpisodeRefresher
     /// <param name="episodeNumber"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public async Task<(Episode? episode, bool episodesRefreshed)> GetRefreshEpisodeAsync(TvShow show, Season season, int episodeNumber, CancellationToken token)
+    public async Task<Episode?> GetRefreshEpisodeAsync(TvShow show, Season season, int episodeNumber, CancellationToken token)
     {
-        var episode = await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, season.Number, episodeNumber, token);
+        await RefreshEpisodesAsync(show, season, token);
 
-        var episodeShouldRefresh = season.LastRefreshed == null || DateTime.UtcNow - season.LastRefreshed >= _refreshConfig.Value.EpisodeRefresh;
-        if (episode == null || episodeShouldRefresh)
-        {
-            await RefreshEpisodesAsync(show, season, true, token);
-            return (await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, season.Number, episodeNumber, token), true);
-        }
-
-        return (episode, episodeShouldRefresh);
+        return await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, season.Number, episodeNumber, token);
     }
 
     /// <summary>
@@ -63,9 +56,8 @@ public class EpisodeRefresher : IEpisodeRefresher
     /// </summary>
     /// <param name="show"></param>
     /// <param name="season"></param>
-    /// <param name="forceRefresh"></param>
     /// <param name="token"></param>
-    public async Task RefreshEpisodesAsync(TvShow show, Season season, bool forceRefresh, CancellationToken token)
+    private async Task RefreshEpisodesAsync(TvShow show, Season season, CancellationToken token)
     {
         using var namedLock = Lock<EpisodeRefresher>.GetNamedLock($"{show.Id}-{season.Id}");
         if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
@@ -74,7 +66,7 @@ public class EpisodeRefresher : IEpisodeRefresher
             return;
         }
 
-        if (!forceRefresh && season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _refreshConfig.Value.EpisodeRefresh)
+        if (season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _refreshConfig.Value.EpisodeRefresh)
         {
             _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
             return;
@@ -119,7 +111,7 @@ public class EpisodeRefresher : IEpisodeRefresher
             season.LastRefreshed = DateTime.UtcNow;
             return episodes;
         }
-   
+
         var seasons = seasonsToRefresh as Season[] ?? seasonsToRefresh.ToArray();
         var results = new List<Episode[]>();
         var currentProgress = 0;

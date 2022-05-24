@@ -6,7 +6,7 @@ public sealed class TransactionContainer : ITransactionContainer
 {
     private readonly IDbContextTransaction _transaction;
     private readonly TransactionCounter _counter;
-    private bool _commited;
+    private bool _committed;
 
     public TransactionContainer(IDbContextTransaction transaction, TransactionCounter counter)
     {
@@ -20,12 +20,14 @@ public sealed class TransactionContainer : ITransactionContainer
     /// <param name="token"></param>
     public async Task CommitAsync(CancellationToken token)
     {
-        //Only transaction
-        if (_counter.NestedTransactionCount == 1)
+        //Only commit if this is the only active transaction
+        if (_counter.NestedTransactionCount != 1)
         {
-            await _transaction.CommitAsync(token);
-            _commited = true;
+            return;
         }
+
+        await _transaction.CommitAsync(token);
+        _committed = true;
     }
 
     public async ValueTask DisposeAsync()
@@ -35,7 +37,7 @@ public sealed class TransactionContainer : ITransactionContainer
             return;
         }
 
-        if (!_commited)
+        if (!_committed)
         {
             await _transaction.RollbackAsync();
         }

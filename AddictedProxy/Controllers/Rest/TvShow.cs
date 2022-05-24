@@ -126,7 +126,7 @@ public class TvShows : Controller
         }
 
 
-        var episodes = _episodeRepository.GetSeasonEpisodesByLangAsync(show.Id, searchLanguage, seasonNumber)
+        var episodes = _episodeRepository.GetSeasonEpisodesByLangUntrackedAsync(show.Id, searchLanguage, seasonNumber)
                                          .Select(episode =>
                                          {
                                              var subs = episode
