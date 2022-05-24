@@ -34,5 +34,5 @@ public interface IEpisodeRepository
     /// <param name="language"></param>
     /// <param name="season"></param>
     /// <returns></returns>
-    IAsyncEnumerable<Episode> GetSeasonEpisodesByLangAsync(long tvShowId, CultureInfo language, int season);
+    IAsyncEnumerable<Episode> GetSeasonEpisodesByLangUntrackedAsync(long tvShowId, CultureInfo language, int season);
 }

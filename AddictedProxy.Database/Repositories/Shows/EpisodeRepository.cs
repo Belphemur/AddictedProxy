@@ -79,12 +79,13 @@ public class EpisodeRepository : IEpisodeRepository
     /// <param name="language"></param>
     /// <param name="season"></param>
     /// <returns></returns>
-    public IAsyncEnumerable<Episode> GetSeasonEpisodesByLangAsync(long tvShowId, CultureInfo language, int season)
+    public IAsyncEnumerable<Episode> GetSeasonEpisodesByLangUntrackedAsync(long tvShowId, CultureInfo language, int season)
     {
         return _entityContext.Episodes.Where(episode => episode.Season == season)
             .Where(episode => episode.TvShow.Id == tvShowId)
             .Include(episode => episode.TvShow)
             .Include(episode => episode.Subtitles.Where(subtitle => subtitle.Language == language.EnglishName))
+            .AsNoTracking()
             .ToAsyncEnumerable();
     }
 
