@@ -1,3 +1,10 @@
+### [2.4.2](https://github.com/Belphemur/AddictedProxy/compare/v2.4.1...v2.4.2) (2022-05-24)
+
+
+### Bug Fixes
+
+* **Episode::Parsing:** Fix grouping of subtitle by unique episode ([3c9f437](https://github.com/Belphemur/AddictedProxy/commit/3c9f43714ae88f3495a2f1d8c0743e276943b23e))
+
 ### [2.4.1](https://github.com/Belphemur/AddictedProxy/compare/v2.4.0...v2.4.1) (2022-05-24)
 
 
