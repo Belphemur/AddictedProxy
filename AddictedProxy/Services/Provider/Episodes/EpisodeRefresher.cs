@@ -57,7 +57,7 @@ public class EpisodeRefresher : IEpisodeRefresher
     /// <param name="show"></param>
     /// <param name="season"></param>
     /// <param name="token"></param>
-    public async Task RefreshEpisodesAsync(TvShow show, Season season, CancellationToken token)
+    private async Task RefreshEpisodesAsync(TvShow show, Season season, CancellationToken token)
     {
         using var namedLock = Lock<EpisodeRefresher>.GetNamedLock($"{show.Id}-{season.Id}");
         if (!await namedLock.WaitAsync(TimeSpan.Zero, token))

@@ -6,14 +6,6 @@ namespace AddictedProxy.Services.Provider.Episodes;
 public interface IEpisodeRefresher
 {
     /// <summary>
-    /// Refresh subtitle of a specific show and season
-    /// </summary>
-    /// <param name="show"></param>
-    /// <param name="season"></param>
-    /// <param name="token"></param>
-    Task RefreshEpisodesAsync(TvShow show, Season season, CancellationToken token = default);
-
-    /// <summary>
     /// Get episode. It might have been refreshed.
     /// </summary>
     /// <param name="show"></param>
