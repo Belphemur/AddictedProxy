@@ -20,7 +20,7 @@ public class BootstrapDatabase : IBootstrap,
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddHostedService<SetupEfCoreHostedService>();
-        services.AddDbContext<EntityContext>();
+        services.AddDbContext<EntityContext>(builder => builder.EnableSensitiveDataLogging());
 
         services.AddScoped<ITvShowRepository, TvShowRepository>();
 
