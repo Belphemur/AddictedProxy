@@ -1,3 +1,16 @@
+## [2.4.0](https://github.com/Belphemur/AddictedProxy/compare/v2.3.0...v2.4.0) (2022-05-24)
+
+
+### Features
+
+* **TransactionManager:** add manager for transaction ([a81b53c](https://github.com/Belphemur/AddictedProxy/commit/a81b53cceefb1cc4dc28739af2c379255c531b5c))
+
+
+### Bug Fixes
+
+* **Episode::Id:** Fix conflict on Id when bulk insert ([e0babdd](https://github.com/Belphemur/AddictedProxy/commit/e0babddb70393729df98d1ba29e1deba54bc7247))
+* **Transaction:** Be sure to end the transaction if exception is triggered ([afea8fe](https://github.com/Belphemur/AddictedProxy/commit/afea8fef2211f2fb539dd060424267d1ecb775c1))
+
 ## [2.3.0](https://github.com/Belphemur/AddictedProxy/compare/v2.2.0...v2.3.0) (2022-05-20)
 
 
