@@ -40,10 +40,12 @@ public class EpisodeRepository : IEpisodeRepository
                     case BulkOperation<Subtitle> bulkSub:
                         bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Discovered, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount, subtitle.UniqueId };
                         bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.EpisodeId, subtitle.Language, subtitle.Version };
+                        bulkSub.IgnoreOnMergeInsertExpression = subtitle => new { subtitle.Id };
                         break;
                     case BulkOperation<Episode> bulkEp:
                         bulkEp.ColumnPrimaryKeyExpression = episode => new { episode.TvShowId, episode.Season, episode.Number };
                         bulkEp.IgnoreOnMergeUpdateExpression = episode => episode.Discovered;
+                        bulkEp.IgnoreOnMergeInsertExpression = episode => episode.Id;
                         break;
                     case BulkOperation<TvShow> bulkShow:
                         bulkShow.IsReadOnly = true;
