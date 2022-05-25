@@ -4,7 +4,7 @@ internal class SpanSentry : ISpan
 {
     internal global::Sentry.ISpan InternalSpan { get; }
     internal SpanSentry? Parent { get; }
-    public event EventHandler<TransactionFinishedEvent> OnSpanFinished = null!;
+    public event EventHandler<SpanFinishedEvent> OnSpanFinished = null!;
 
     /// <summary>
     /// Id of the span
@@ -79,22 +79,32 @@ internal class SpanSentry : ISpan
     }
 
 
-    internal record TransactionFinishedEvent(SpanSentry SpanSentry);
+    internal record SpanFinishedEvent(SpanSentry Span);
 
 
     private void OnFinished()
     {
-        OnSpanFinished(this, new TransactionFinishedEvent(this));
+        OnSpanFinished(this, new SpanFinishedEvent(this));
     }
 
 
     public void Dispose()
     {
-        if (InternalSpan.IsFinished)
+        try
         {
-            return;
-        }
+            if (InternalSpan.IsFinished)
+            {
+                return;
+            }
 
-        Finish(Model.Status.Ok);
+            Finish(Model.Status.Ok);
+        }
+        finally
+        {
+            foreach (Delegate del in OnSpanFinished.GetInvocationList().Where(del => del != null))
+            {
+                OnSpanFinished -= (EventHandler<SpanFinishedEvent>)del;
+            }
+        }
     }
 }

@@ -25,14 +25,13 @@ public class PerformanceTrackerSentry : IPerformanceTracker
         return _currentTransaction = currentTransaction;
     }
 
-    private void TransactionOnOnTransactionFinished(object sender, SpanSentry.TransactionFinishedEvent e)
+    private void TransactionOnOnTransactionFinished(object sender, SpanSentry.SpanFinishedEvent e)
     {
-        e.SpanSentry.OnSpanFinished -= TransactionOnOnTransactionFinished;
-        if (e.SpanSentry.SpanId != _currentTransaction?.SpanId || e.SpanSentry.Parent == null)
+        if (e.Span.SpanId != _currentTransaction?.SpanId || e.Span.Parent == null)
         {
             return;
         }
 
-        _currentTransaction = new SpanSentry(e.SpanSentry.Parent.InternalSpan, e.SpanSentry.Parent.Parent);
+        _currentTransaction = new SpanSentry(e.Span.Parent.InternalSpan, e.Span.Parent.Parent);
     }
 }
