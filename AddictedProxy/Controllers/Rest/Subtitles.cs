@@ -28,6 +28,7 @@ public class Subtitles : Controller
     private readonly IEpisodeRepository _episodeRepository;
     private readonly IJobBuilder _jobBuilder;
     private readonly IJobScheduler _jobScheduler;
+    private readonly ILogger<Subtitles> _logger;
     private readonly IShowRefresher _showRefresher;
     private readonly ISubtitleProvider _subtitleProvider;
     private readonly Regex _searchPattern = new(@"(?<show>.+)S(?<season>\d+)E(?<episode>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -37,8 +38,8 @@ public class Subtitles : Controller
         IShowRefresher showRefresher,
         ISubtitleProvider subtitleProvider,
         IJobBuilder jobBuilder,
-        IJobScheduler jobScheduler
-    )
+        IJobScheduler jobScheduler,
+        ILogger<Subtitles> logger)
     {
         _episodeRepository = episodeRepository;
         _cultureParser = cultureParser;
@@ -46,6 +47,7 @@ public class Subtitles : Controller
         _subtitleProvider = subtitleProvider;
         _jobBuilder = jobBuilder;
         _jobScheduler = jobScheduler;
+        _logger = logger;
     }
 
 
@@ -146,6 +148,7 @@ public class Subtitles : Controller
 
     private async Task<IActionResult> ProcessQueryRequestAsync(SubtitleQueryRequest request, CancellationToken token)
     {
+        _logger.LogInformation("Search for {Show} S{Season:D2}E{Episode:D2} ({Language})", request.Show, request.Season, request.Episode, request.LanguageISO);
         var show = await _showRefresher.FindShowsAsync(request.Show, token).FirstOrDefaultAsync(token);
         if (show == null)
         {
