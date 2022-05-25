@@ -39,7 +39,7 @@ public class EpisodeRepository : IEpisodeRepository
                 {
                     case BulkOperation<Subtitle> bulkSub:
                         bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Discovered, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount, subtitle.UniqueId };
-                        bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.EpisodeId, subtitle.Language, subtitle.Version };
+                        bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.DownloadUri };
                         bulkSub.IgnoreOnMergeInsertExpression = subtitle => new { subtitle.Id };
                         break;
                     case BulkOperation<Episode> bulkEp:

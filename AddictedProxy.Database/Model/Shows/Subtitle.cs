@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace AddictedProxy.Database.Model.Shows;
 
 [Index(nameof(DownloadUri), IsUnique = true)]
-[Index("EpisodeId", nameof(Language), nameof(Version), IsUnique = true)]
+[Index("EpisodeId", nameof(Language), nameof(Version), IsUnique = false)]
 [Index(nameof(UniqueId), IsUnique = true)]
 public class Subtitle : IDiscoverableObject
 {
