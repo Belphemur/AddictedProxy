@@ -1,3 +1,10 @@
+### [2.5.2](https://github.com/Belphemur/AddictedProxy/compare/v2.5.1...v2.5.2) (2022-05-25)
+
+
+### Bug Fixes
+
+* **Performance:** Fix wrong transaction used for tracing ([cc79adb](https://github.com/Belphemur/AddictedProxy/commit/cc79adb0a0d8a753699b65fa892176f4e6544ebe))
+
 ### [2.5.1](https://github.com/Belphemur/AddictedProxy/compare/v2.5.0...v2.5.1) (2022-05-25)
 
 
