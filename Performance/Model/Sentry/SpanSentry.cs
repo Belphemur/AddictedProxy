@@ -3,6 +3,8 @@ namespace Sentry.Performance.Model.Sentry;
 internal class SpanSentry : ISpan
 {
     internal global::Sentry.ISpan InternalSpan { get; }
+    public event EventHandler<SpanFinishedEvent> OnSpanFinished = null!;
+
     /// <summary>
     /// Id of the span
     /// </summary>
@@ -44,6 +46,7 @@ internal class SpanSentry : ISpan
     public void Finish()
     {
         InternalSpan.Finish();
+        OnFinished();
     }
 
     /// <summary>
@@ -52,6 +55,7 @@ internal class SpanSentry : ISpan
     public void Finish(Status status)
     {
         InternalSpan.Finish((SpanStatus)status);
+        OnFinished();
     }
 
     /// <summary>
@@ -60,6 +64,7 @@ internal class SpanSentry : ISpan
     public void Finish(Exception exception, Status status)
     {
         InternalSpan.Finish(exception, (SpanStatus)status);
+        OnFinished();
     }
 
     /// <summary>
@@ -68,16 +73,36 @@ internal class SpanSentry : ISpan
     public void Finish(Exception exception)
     {
         InternalSpan.Finish(exception);
+        OnFinished();
     }
-    
+
+
+    internal record SpanFinishedEvent(SpanSentry Span);
+
+
+    private void OnFinished()
+    {
+        OnSpanFinished(this, new SpanFinishedEvent(this));
+    }
+
 
     public void Dispose()
     {
-        if (InternalSpan.IsFinished)
+        try
         {
-            return;
-        }
+            if (InternalSpan.IsFinished)
+            {
+                return;
+            }
 
-        Finish(Model.Status.Ok);
+            Finish(Model.Status.Ok);
+        }
+        finally
+        {
+            foreach (Delegate del in OnSpanFinished.GetInvocationList().Where(del => del != null))
+            {
+                OnSpanFinished -= (EventHandler<SpanFinishedEvent>)del;
+            }
+        }
     }
 }
