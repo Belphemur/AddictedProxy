@@ -10,6 +10,7 @@ using AddictedProxy.Upstream.Boostrap;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Sentry.Performance.Bootstrap;
 
 #endregion
 
@@ -48,7 +49,8 @@ var currentAssemblies = new[]
     typeof(BootstrapController).Assembly,
     typeof(BootstrapDatabase).Assembly,
     typeof(BootstrapCompressor).Assembly,
-    typeof(BootstrapAddictedServices).Assembly
+    typeof(BootstrapAddictedServices).Assembly,
+    typeof(BootstrapPerformance).Assembly
 };
 
 builder.Services
