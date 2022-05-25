@@ -4,7 +4,12 @@ namespace Sentry.Performance.Service.Sentry;
 
 public class PerformanceTrackerSentry : IPerformanceTracker
 {
-    private SpanSentry? _currentTransaction;
+    private readonly IHub _sentryHub;
+
+    public PerformanceTrackerSentry(IHub sentryHub)
+    {
+        _sentryHub = sentryHub;
+    }
 
     /// <summary>
     /// Start a transaction.
@@ -12,26 +17,6 @@ public class PerformanceTrackerSentry : IPerformanceTracker
     /// </summary>
     public Model.ISpan BeginNestedSpan(string operation, string description)
     {
-        //If the current transaction isn't finished, create a child from it
-        if (_currentTransaction is { IsFinished: false })
-        {
-            var transaction = _currentTransaction.StartChild(operation, description);
-            transaction.OnSpanFinished += OnSpanFinished;
-            return _currentTransaction = transaction;
-        }
-
-        var currentTransaction = new SpanSentry(SentrySdk.StartTransaction(operation, description), null);
-        currentTransaction.OnSpanFinished += OnSpanFinished;
-        return _currentTransaction = currentTransaction;
-    }
-
-    private void OnSpanFinished(object sender, SpanSentry.SpanFinishedEvent e)
-    {
-        if (e.Span.SpanId != _currentTransaction?.SpanId || e.Span.Parent == null)
-        {
-            return;
-        }
-
-        _currentTransaction = e.Span.Parent;
+        return new SpanSentry(_sentryHub.GetSpan()?.StartChild(operation, description) ?? _sentryHub.StartTransaction(operation, description));
     }
 }
