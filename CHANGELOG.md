@@ -1,3 +1,24 @@
+## [2.5.0](https://github.com/Belphemur/AddictedProxy/compare/v2.4.2...v2.5.0) (2022-05-25)
+
+
+### Features
+
+* **Performance:** Add performance library ([44cf096](https://github.com/Belphemur/AddictedProxy/commit/44cf09616c3f8f389580c35647c46bce4220fdc5))
+
+
+### Bug Fixes
+
+* **Download:** Fix possible crash when Addic7ed doesn't return a subtitle ([d0167b2](https://github.com/Belphemur/AddictedProxy/commit/d0167b2794b2e6e085d5bead51bce1ec2cc7566f))
+
+
+### Enhancements
+
+* **Performance:** Add concept of nesting transaction ([f920952](https://github.com/Belphemur/AddictedProxy/commit/f920952428e3105cb58d6c8a387867859f3668ce))
+* **Performance:** Proper tracking of refresh ([d627c15](https://github.com/Belphemur/AddictedProxy/commit/d627c15924b41e557e1bd0f40b3a695f374f4e52))
+* **Performance:** Simplify contract to only deal with Span ([9abed79](https://github.com/Belphemur/AddictedProxy/commit/9abed795ef1f7d6c0820746ee0bd142cb84042e3))
+* **Performance:** Track performance of the different jobs ([9468e42](https://github.com/Belphemur/AddictedProxy/commit/9468e42176a35c18baa9bde0571ce70f943008dc))
+* **Performance:** Use using to be sure the object is disposed ([5c10709](https://github.com/Belphemur/AddictedProxy/commit/5c10709107c47e74670553ba729820f5d9c15ace))
+
 ### [2.4.2](https://github.com/Belphemur/AddictedProxy/compare/v2.4.1...v2.4.2) (2022-05-24)
 
 
