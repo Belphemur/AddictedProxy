@@ -32,6 +32,6 @@ public class PerformanceTrackerSentry : IPerformanceTracker
             return;
         }
 
-        _currentTransaction = new SpanSentry(e.Span.Parent.InternalSpan, e.Span.Parent.Parent);
+        _currentTransaction = e.Span.Parent;
     }
 }
