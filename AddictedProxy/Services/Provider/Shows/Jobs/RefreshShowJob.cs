@@ -42,7 +42,7 @@ public class RefreshShowJob : IJob
             return;
         }
 
-        using var _ = _performanceTracker.BeginNestedSpan(nameof(RefreshShowJob), "refresh-show");
+        using var _ = _performanceTracker.BeginNestedSpan(nameof(RefreshShowJob), $"refresh-show {Show.Name}");
 
         _logger.LogInformation("Refreshing show: {Show}", Show.Name);
         await _showRefresher.RefreshShowAsync(Show, cancellationToken);
