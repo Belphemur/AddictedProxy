@@ -18,14 +18,6 @@ public interface ISpan : IDisposable
     string SpanId { get; }
 
     /// <summary>
-    /// Create a child span
-    /// </summary>
-    /// <param name="operation"></param>
-    /// <param name="description"></param>
-    /// <returns></returns>
-    ISpan StartChild(string operation, string description);
-
-    /// <summary>
     /// Finishes the span.
     /// </summary>
     void Finish();

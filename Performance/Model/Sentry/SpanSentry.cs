@@ -4,6 +4,7 @@ internal class SpanSentry : ISpan
 {
     internal global::Sentry.ISpan InternalSpan { get; }
     internal SpanSentry? Parent { get; }
+    public event EventHandler<TransactionFinishedEvent> OnSpanFinished = null!;
 
     /// <summary>
     /// Id of the span
@@ -36,7 +37,7 @@ internal class SpanSentry : ISpan
     /// <param name="operation"></param>
     /// <param name="description"></param>
     /// <returns></returns>
-    public ISpan StartChild(string operation, string description)
+    internal SpanSentry StartChild(string operation, string description)
     {
         return new SpanSentry(InternalSpan.StartChild(operation, description), this);
     }
@@ -77,9 +78,15 @@ internal class SpanSentry : ISpan
         OnFinished();
     }
 
-    protected virtual void OnFinished()
+
+    internal record TransactionFinishedEvent(SpanSentry SpanSentry);
+
+
+    private void OnFinished()
     {
+        OnSpanFinished(this, new TransactionFinishedEvent(this));
     }
+
 
     public void Dispose()
     {
