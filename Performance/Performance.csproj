@@ -5,21 +5,19 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
+        <RootNamespace>Sentry.Performance</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
+        <PackageReference Include="Sentry" Version="3.17.1" />
         <PackageReference Include="IsExternalInit" Version="1.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
-        <PackageReference Include="uplink.NET" Version="2.9.2640" />
-        <PackageReference Include="uplink.NET.Win" Version="2.9.2640" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
-        <PackageReference Include="uplink.NET.Linux" Version="2.9.2640" Condition="$([MSBuild]::IsOsPlatform('Linux'))" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
     </ItemGroup>
 
 </Project>

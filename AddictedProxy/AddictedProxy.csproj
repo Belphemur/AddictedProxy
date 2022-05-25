@@ -26,6 +26,7 @@
         <ProjectReference Include="..\AddictedProxy.Upstream\AddictedProxy.Upstream.csproj" />
         <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
         <ProjectReference Include="..\Locking\Locking.csproj" />
+        <ProjectReference Include="..\Performance\Performance.csproj" />
     </ItemGroup>
 
     <PropertyGroup>

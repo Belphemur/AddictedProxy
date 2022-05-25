@@ -6,6 +6,7 @@ using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Upstream.Service;
 using Locking;
 using Microsoft.Extensions.Options;
+using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Seasons;
 
@@ -17,13 +18,16 @@ public class SeasonRefresher : ISeasonRefresher
     private readonly ICredentialsService _credentialsService;
     private readonly ISeasonRepository _seasonRepository;
     private readonly IOptions<RefreshConfig> _refreshConfig;
+    private readonly IPerformanceTracker _performanceTracker;
 
     public SeasonRefresher(ILogger<SeasonRefresher> logger,
-                           ITvShowRepository tvShowRepository,
-                           IAddic7edClient addic7EdClient,
-                           ICredentialsService credentialsService,
-                           ISeasonRepository seasonRepository,
-                           IOptions<RefreshConfig> refreshConfig)
+        ITvShowRepository tvShowRepository,
+        IAddic7edClient addic7EdClient,
+        ICredentialsService credentialsService,
+        ISeasonRepository seasonRepository,
+        IOptions<RefreshConfig> refreshConfig,
+        IPerformanceTracker performanceTracker
+    )
     {
         _logger = logger;
         _tvShowRepository = tvShowRepository;
@@ -31,6 +35,7 @@ public class SeasonRefresher : ISeasonRefresher
         _credentialsService = credentialsService;
         _seasonRepository = seasonRepository;
         _refreshConfig = refreshConfig;
+        _performanceTracker = performanceTracker;
     }
 
     public async Task<Season?> GetRefreshSeasonAsync(TvShow show, int seasonNumber, CancellationToken token)
@@ -65,6 +70,8 @@ public class SeasonRefresher : ISeasonRefresher
             _logger.LogInformation("Already refreshing seasons of {show}", show.Name);
             return;
         }
+
+        using var transaction = _performanceTracker.BeginNestedSpan("season", $"refresh-show-seasons for show {show.Name}");
 
         await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
 

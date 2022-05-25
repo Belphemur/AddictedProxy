@@ -3,6 +3,7 @@
 using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
+using Sentry.Performance.Service;
 
 #endregion
 
@@ -12,14 +13,17 @@ public class RefreshShowsJob : IRecurringJob
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IShowRefresher _showRefresher;
+    private readonly IPerformanceTracker _performanceTracker;
 
-    public RefreshShowsJob(IShowRefresher showRefresher)
+    public RefreshShowsJob(IShowRefresher showRefresher, IPerformanceTracker performanceTracker)
     {
         _showRefresher = showRefresher;
+        _performanceTracker = performanceTracker;
     }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
+        using var transaction = _performanceTracker.BeginNestedSpan(nameof(RefreshShowJob), "refresh-all-shows");
         await _showRefresher.RefreshShowsAsync(cancellationToken);
     }
 

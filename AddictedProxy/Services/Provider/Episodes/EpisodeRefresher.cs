@@ -8,6 +8,8 @@ using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Upstream.Service;
 using Locking;
 using Microsoft.Extensions.Options;
+using Sentry.Performance.Model;
+using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Episodes;
 
@@ -19,13 +21,15 @@ public class EpisodeRefresher : IEpisodeRefresher
     private readonly ICredentialsService _credentialsService;
     private readonly IOptions<RefreshConfig> _refreshConfig;
     private readonly ILogger<EpisodeRefresher> _logger;
+    private readonly IPerformanceTracker _performanceTracker;
 
     public EpisodeRefresher(IAddic7edClient client,
         IEpisodeRepository episodeRepository,
         ISeasonRepository seasonRepository,
         ICredentialsService credentialsService,
         IOptions<RefreshConfig> refreshConfig,
-        ILogger<EpisodeRefresher> logger
+        ILogger<EpisodeRefresher> logger,
+        IPerformanceTracker performanceTracker
     )
     {
         _client = client;
@@ -34,6 +38,7 @@ public class EpisodeRefresher : IEpisodeRefresher
         _credentialsService = credentialsService;
         _refreshConfig = refreshConfig;
         _logger = logger;
+        _performanceTracker = performanceTracker;
     }
 
     /// <summary>
@@ -65,6 +70,8 @@ public class EpisodeRefresher : IEpisodeRefresher
             _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
             return;
         }
+
+        using var transaction = _performanceTracker.BeginNestedSpan("episode", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
 
         if (season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _refreshConfig.Value.EpisodeRefresh)
         {
@@ -100,6 +107,8 @@ public class EpisodeRefresher : IEpisodeRefresher
                 return null;
             }
 
+            using var transaction = _performanceTracker.BeginNestedSpan("episodes.fetch", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
+
             if (season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _refreshConfig.Value.EpisodeRefresh)
             {
                 _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
@@ -113,18 +122,24 @@ public class EpisodeRefresher : IEpisodeRefresher
         }
 
         var seasons = seasonsToRefresh as Season[] ?? seasonsToRefresh.ToArray();
+        var seasonsText = string.Join(", ", seasons.Select(season => $"S{season.Number}"));
         var results = new List<Episode[]>();
         var currentProgress = 0;
         var progressIncrement = 50 / (int)Math.Ceiling(seasons.Length / 2.0);
 
-
-        foreach (var season in seasons.Chunk(2))
+        using (var _ = _performanceTracker.BeginNestedSpan("episodes.seasons", $"Fetch episodes and subtitles from addic7ed for {show.Name} and Seasons {seasonsText}"))
         {
-            var result = await Task.WhenAll(season.Select(EpisodeFetch));
-            results.AddRange(result.Where(episodes => episodes != null)!);
-            currentProgress += progressIncrement;
-            await sendProgress(currentProgress);
+            foreach (var season in seasons.Chunk(2))
+            {
+                var result = await Task.WhenAll(season.Select(EpisodeFetch));
+                results.AddRange(result.Where(episodes => episodes != null)!);
+                currentProgress += progressIncrement;
+                await sendProgress(currentProgress);
+            }
         }
+
+
+        using var savingSubtitlesSpan = _performanceTracker.BeginNestedSpan("episodes.save", $"Saving all the downloaded subtitles for {show.Name} and Seasons {seasonsText}");
 
         var total = 0;
         progressIncrement = 50 / (results.Count != 0 ? results.Count : 1);
@@ -143,6 +158,6 @@ public class EpisodeRefresher : IEpisodeRefresher
             await sendProgress(100);
         }
 
-        _logger.LogInformation("Refreshed {episodes} episodes of {show} {season}", total, show.Name, string.Join(", ", seasons.Select(season => $"S{season.Number}")));
+        _logger.LogInformation("Refreshed {episodes} episodes of {show} {season}", total, show.Name, seasonsText);
     }
 }
