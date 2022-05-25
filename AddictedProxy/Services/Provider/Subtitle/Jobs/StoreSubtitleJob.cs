@@ -7,6 +7,7 @@ using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
 using Locking;
+using Sentry;
 
 #endregion
 
