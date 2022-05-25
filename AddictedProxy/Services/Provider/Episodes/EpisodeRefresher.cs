@@ -127,17 +127,17 @@ public class EpisodeRefresher : IEpisodeRefresher
         var currentProgress = 0;
         var progressIncrement = 50 / (int)Math.Ceiling(seasons.Length / 2.0);
 
-        var fetchingEpisodeSpan = _performanceTracker.BeginNestedSpan("episodes.seasons", $"Fetch episodes and subtitles from addic7ed for {show.Name} and Seasons {seasonsText}");
-
-        foreach (var season in seasons.Chunk(2))
+        using (var _ = _performanceTracker.BeginNestedSpan("episodes.seasons", $"Fetch episodes and subtitles from addic7ed for {show.Name} and Seasons {seasonsText}"))
         {
-            var result = await Task.WhenAll(season.Select(EpisodeFetch));
-            results.AddRange(result.Where(episodes => episodes != null)!);
-            currentProgress += progressIncrement;
-            await sendProgress(currentProgress);
+            foreach (var season in seasons.Chunk(2))
+            {
+                var result = await Task.WhenAll(season.Select(EpisodeFetch));
+                results.AddRange(result.Where(episodes => episodes != null)!);
+                currentProgress += progressIncrement;
+                await sendProgress(currentProgress);
+            }
         }
 
-        fetchingEpisodeSpan.Finish(Status.Ok);
 
         using var savingSubtitlesSpan = _performanceTracker.BeginNestedSpan("episodes.save", $"Saving all the downloaded subtitles for {show.Name} and Seasons {seasonsText}");
 
