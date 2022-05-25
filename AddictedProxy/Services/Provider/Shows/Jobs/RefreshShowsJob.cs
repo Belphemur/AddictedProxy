@@ -23,7 +23,7 @@ public class RefreshShowsJob : IRecurringJob
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        using var transaction = _performanceTracker.BeginNestedSpan(nameof(RefreshShowJob), "refresh-all-shows");
+        using var transaction = _performanceTracker.BeginNestedSpan("refresh", "refresh-show-list");
         await _showRefresher.RefreshShowsAsync(cancellationToken);
     }
 

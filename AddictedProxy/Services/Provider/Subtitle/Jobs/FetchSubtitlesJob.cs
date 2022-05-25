@@ -56,7 +56,7 @@ public class FetchSubtitlesJob : IJob
             return;
         }
 
-        using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), $"Fetching subtitles for {Data.ScopeName}");
+        using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), "fetch-subtitles-one-episode");
 
         var show = Data.Show;
         var season = await _seasonRefresher.GetRefreshSeasonAsync(show, Data.Season, token);
