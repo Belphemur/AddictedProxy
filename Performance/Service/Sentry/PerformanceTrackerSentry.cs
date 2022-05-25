@@ -16,16 +16,16 @@ public class PerformanceTrackerSentry : IPerformanceTracker
         if (_currentTransaction is { IsFinished: false })
         {
             var transaction = _currentTransaction.StartChild(operation, description);
-            transaction.OnSpanFinished += TransactionOnOnTransactionFinished;
+            transaction.OnSpanFinished += OnSpanFinished;
             return _currentTransaction = transaction;
         }
 
         var currentTransaction = new SpanSentry(SentrySdk.StartTransaction(operation, description), null);
-        currentTransaction.OnSpanFinished += TransactionOnOnTransactionFinished;
+        currentTransaction.OnSpanFinished += OnSpanFinished;
         return _currentTransaction = currentTransaction;
     }
 
-    private void TransactionOnOnTransactionFinished(object sender, SpanSentry.SpanFinishedEvent e)
+    private void OnSpanFinished(object sender, SpanSentry.SpanFinishedEvent e)
     {
         if (e.Span.SpanId != _currentTransaction?.SpanId || e.Span.Parent == null)
         {
