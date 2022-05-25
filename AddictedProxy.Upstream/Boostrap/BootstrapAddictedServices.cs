@@ -62,6 +62,8 @@ public class BootstrapAddictedServices : IBootstrap,
         return HttpPolicyExtensions
                .HandleTransientHttpError()
                .Or<TimeoutRejectedException>()
+               //Issue with downloading the subtitle from Addic7ed
+               .Or<HttpRequestException>(exception => exception.InnerException is IOException)
                .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
                .WaitAndRetryAsync(delay)
                .WrapAsync(Policy.TimeoutAsync(30));
