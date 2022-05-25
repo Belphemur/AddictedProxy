@@ -13,6 +13,11 @@ internal class Span : ISpan
         set => _span.Status = (SpanStatus?)value;
     }
 
+    /// <summary>
+    /// Is the span finished
+    /// </summary>
+    public bool IsFinished => _span.IsFinished;
+
     public Span(global::Sentry.ISpan span)
     {
         _span = span;

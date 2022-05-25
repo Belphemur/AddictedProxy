@@ -8,6 +8,11 @@ public interface ISpan : IDisposable
     Status? Status { get; set; }
 
     /// <summary>
+    /// Is the span finished
+    /// </summary>
+    bool IsFinished { get; }
+
+    /// <summary>
     /// Create a child span
     /// </summary>
     /// <param name="operation"></param>
