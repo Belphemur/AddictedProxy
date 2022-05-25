@@ -4,7 +4,13 @@ namespace Sentry.Performance.Service.Sentry;
 
 public class PerformanceTrackerSentry : IPerformanceTracker
 {
-    private SpanSentry? _currentTransaction;
+    private readonly IHub _sentryHub;
+    private SpanSentry? _currentSpan;
+
+    public PerformanceTrackerSentry(IHub sentryHub)
+    {
+        _sentryHub = sentryHub;
+    }
 
     /// <summary>
     /// Start a transaction.
@@ -13,25 +19,29 @@ public class PerformanceTrackerSentry : IPerformanceTracker
     public Model.ISpan BeginNestedSpan(string operation, string description)
     {
         //If the current transaction isn't finished, create a child from it
-        if (_currentTransaction is { IsFinished: false })
+        if (_currentSpan is { IsFinished: false })
         {
-            var transaction = _currentTransaction.StartChild(operation, description);
-            transaction.OnSpanFinished += OnSpanFinished;
-            return _currentTransaction = transaction;
+            var span = _currentSpan.StartChild(operation, description);
+            span.OnSpanFinished += OnSpanFinished;
+            return _currentSpan = span;
         }
 
-        var currentTransaction = new SpanSentry(SentrySdk.StartTransaction(operation, description), null);
+        var transaction = _sentryHub.StartTransaction(operation, description);
+        var currentTransaction = new SpanSentry(transaction, null);
+        
+        _sentryHub.ConfigureScope(scope => { scope.Transaction = transaction; });
+        
         currentTransaction.OnSpanFinished += OnSpanFinished;
-        return _currentTransaction = currentTransaction;
+        return _currentSpan = currentTransaction;
     }
 
     private void OnSpanFinished(object sender, SpanSentry.SpanFinishedEvent e)
     {
-        if (e.Span.SpanId != _currentTransaction?.SpanId || e.Span.Parent == null)
+        if (e.Span.SpanId != _currentSpan?.SpanId || e.Span.Parent == null)
         {
             return;
         }
 
-        _currentTransaction = e.Span.Parent;
+        _currentSpan = e.Span.Parent;
     }
 }

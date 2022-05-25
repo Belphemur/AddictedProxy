@@ -2,7 +2,8 @@ namespace Sentry.Performance.Model.Sentry;
 
 internal class SpanSentry : ISpan
 {
-    internal global::Sentry.ISpan InternalSpan { get; }
+    private global::Sentry.ISpan InternalSpan { get; }
+    public SpanSentry? Parent { get; }
     public event EventHandler<SpanFinishedEvent> OnSpanFinished = null!;
 
     /// <summary>
@@ -24,9 +25,10 @@ internal class SpanSentry : ISpan
     /// </summary>
     public bool IsFinished => InternalSpan.IsFinished;
 
-    public SpanSentry(global::Sentry.ISpan internalSpan)
+    public SpanSentry(global::Sentry.ISpan internalSpan, SpanSentry? parent)
     {
         InternalSpan = internalSpan;
+        Parent = parent;
     }
 
     /// <summary>
@@ -37,7 +39,7 @@ internal class SpanSentry : ISpan
     /// <returns></returns>
     internal SpanSentry StartChild(string operation, string description)
     {
-        return new SpanSentry(InternalSpan.StartChild(operation, description));
+        return new SpanSentry(InternalSpan.StartChild(operation, description), this);
     }
 
     /// <summary>
