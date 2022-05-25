@@ -13,6 +13,11 @@ public interface ISpan : IDisposable
     bool IsFinished { get; }
 
     /// <summary>
+    /// Id of the span
+    /// </summary>
+    string SpanId { get; }
+
+    /// <summary>
     /// Create a child span
     /// </summary>
     /// <param name="operation"></param>

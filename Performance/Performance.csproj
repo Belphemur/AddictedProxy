@@ -9,11 +9,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Sentry" Version="3.17.1" />
+        <PackageReference Include="Sentry" Version="3.17.1"/>
+        <PackageReference Include="IsExternalInit" Version="1.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
+        <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -1,26 +1,33 @@
 namespace Sentry.Performance.Model.Sentry;
 
-internal class Span : ISpan
+internal class SpanSentry : ISpan
 {
-    private readonly global::Sentry.ISpan _span;
+    internal global::Sentry.ISpan InternalSpan { get; }
+    internal SpanSentry? Parent { get; }
+
+    /// <summary>
+    /// Id of the span
+    /// </summary>
+    public string SpanId => InternalSpan.SpanId.ToString();
 
     /// <summary>
     /// Status of the span
     /// </summary>
     public Status? Status
     {
-        get => (Status?)_span.Status;
-        set => _span.Status = (SpanStatus?)value;
+        get => (Status?)InternalSpan.Status;
+        set => InternalSpan.Status = (SpanStatus?)value;
     }
 
     /// <summary>
     /// Is the span finished
     /// </summary>
-    public bool IsFinished => _span.IsFinished;
+    public bool IsFinished => InternalSpan.IsFinished;
 
-    public Span(global::Sentry.ISpan span)
+    public SpanSentry(global::Sentry.ISpan internalSpan, SpanSentry? parent)
     {
-        _span = span;
+        InternalSpan = internalSpan;
+        Parent = parent;
     }
 
     /// <summary>
@@ -31,14 +38,16 @@ internal class Span : ISpan
     /// <returns></returns>
     public ISpan StartChild(string operation, string description)
     {
-        return new Span(_span.StartChild(operation, description));
+        return new SpanSentry(InternalSpan.StartChild(operation, description), this);
     }
+
     /// <summary>
     /// Finishes the span.
     /// </summary>
     public void Finish()
     {
-        _span.Finish();
+        InternalSpan.Finish();
+        OnFinished();
     }
 
     /// <summary>
@@ -46,7 +55,8 @@ internal class Span : ISpan
     /// </summary>
     public void Finish(Status status)
     {
-        _span.Finish((SpanStatus)status);
+        InternalSpan.Finish((SpanStatus)status);
+        OnFinished();
     }
 
     /// <summary>
@@ -54,7 +64,8 @@ internal class Span : ISpan
     /// </summary>
     public void Finish(Exception exception, Status status)
     {
-        _span.Finish(exception, (SpanStatus)status);
+        InternalSpan.Finish(exception, (SpanStatus)status);
+        OnFinished();
     }
 
     /// <summary>
@@ -62,16 +73,21 @@ internal class Span : ISpan
     /// </summary>
     public void Finish(Exception exception)
     {
-        _span.Finish(exception);
+        InternalSpan.Finish(exception);
+        OnFinished();
+    }
+
+    protected virtual void OnFinished()
+    {
     }
 
     public void Dispose()
     {
-        if (_span.IsFinished)
+        if (InternalSpan.IsFinished)
         {
             return;
         }
 
-        _span.Finish();
+        Finish(Model.Status.Ok);
     }
 }

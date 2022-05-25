@@ -10,6 +10,6 @@ public class BootstrapPerformance : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<IPerformanceTracker, PerformanceTracker>();
+        services.AddScoped<IPerformanceTracker, PerformanceTrackerSentry>();
     }
 }
