@@ -10,6 +10,9 @@ using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
 using Locking;
+using Sentry;
+using Sentry.Performance.Model;
+using Sentry.Performance.Service;
 
 #endregion
 
@@ -22,18 +25,21 @@ public class FetchSubtitlesJob : IJob
     private readonly ILogger<FetchSubtitlesJob> _logger;
     private readonly ISeasonRefresher _seasonRefresher;
     private readonly IEpisodeRefresher _episodeRefresher;
+    private readonly IPerformanceTracker _performanceTracker;
 
 
     public FetchSubtitlesJob(ILogger<FetchSubtitlesJob> logger,
         CultureParser cultureParser,
         ISeasonRefresher seasonRefresher,
-        IEpisodeRefresher episodeRefresher
+        IEpisodeRefresher episodeRefresher,
+        IPerformanceTracker performanceTracker
     )
     {
         _logger = logger;
         _cultureParser = cultureParser;
         _seasonRefresher = seasonRefresher;
         _episodeRefresher = episodeRefresher;
+        _performanceTracker = performanceTracker;
     }
 
     public TimeSpan TimeBetweenChecks { get; } = TimeSpan.FromMinutes(30);
@@ -50,6 +56,8 @@ public class FetchSubtitlesJob : IJob
             return;
         }
 
+        using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), $"Fetching subtitles for {Data.ScopeName}");
+
         var show = Data.Show;
         var season = await _seasonRefresher.GetRefreshSeasonAsync(show, Data.Season, token);
 
@@ -64,7 +72,6 @@ public class FetchSubtitlesJob : IJob
         if (episode == null)
         {
             _logger.LogInformation("Couldn't find episode S{season}E{episode} for show {showName}", Data.Season, Data.Episode, Data.Show.Name);
-
             return;
         }
 
@@ -108,6 +115,6 @@ public class FetchSubtitlesJob : IJob
     public record JobData(TvShow Show, int Season, int Episode, CultureInfo? Language, string? FileName)
     {
         public string Key => $"{Show.Id}-{Season}";
-        public string ScopeName => $"{Show.Name} S{Season}E{Episode} ({Language}) [{FileName}]";
+        public string ScopeName => $"{Show.Name} S{Season}E{Episode} ({Language}) {FileName ?? ""}";
     }
 }

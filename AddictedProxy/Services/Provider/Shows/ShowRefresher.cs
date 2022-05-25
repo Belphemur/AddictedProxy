@@ -9,6 +9,7 @@ using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Upstream.Service;
 using Microsoft.AspNetCore.SignalR;
+using Sentry.Performance.Service;
 
 #endregion
 
@@ -22,6 +23,7 @@ public class ShowRefresher : IShowRefresher
     private readonly IEpisodeRefresher _episodeRefresher;
     private readonly ILogger<ShowRefresher> _logger;
     private readonly IRefreshHubManager _refreshHubManager;
+    private readonly IPerformanceTracker _performanceTracker;
     private readonly ITvShowRepository _tvShowRepository;
 
     public ShowRefresher(ITvShowRepository tvShowRepository,
@@ -30,7 +32,8 @@ public class ShowRefresher : IShowRefresher
         ISeasonRefresher seasonRefresher,
         IEpisodeRefresher episodeRefresher,
         ILogger<ShowRefresher> logger,
-        IRefreshHubManager refreshHubManager
+        IRefreshHubManager refreshHubManager,
+        IPerformanceTracker performanceTracker
     )
     {
         _tvShowRepository = tvShowRepository;
@@ -40,6 +43,7 @@ public class ShowRefresher : IShowRefresher
         _episodeRefresher = episodeRefresher;
         _logger = logger;
         _refreshHubManager = refreshHubManager;
+        _performanceTracker = performanceTracker;
     }
 
     public async Task RefreshShowsAsync(CancellationToken token)
@@ -57,6 +61,7 @@ public class ShowRefresher : IShowRefresher
     /// <param name="token"></param>
     public async Task RefreshShowAsync(TvShow tvShow, CancellationToken token)
     {
+        using var transaction = _performanceTracker.BeginNestedSpan(nameof(ShowRefresher), "refresh-show");
         var progressMin = 25;
         var progressMax = 100;
 

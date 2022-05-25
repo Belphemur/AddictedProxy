@@ -8,6 +8,7 @@ using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Upstream.Service;
 using Locking;
 using Microsoft.Extensions.Options;
+using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Episodes;
 
@@ -19,13 +20,15 @@ public class EpisodeRefresher : IEpisodeRefresher
     private readonly ICredentialsService _credentialsService;
     private readonly IOptions<RefreshConfig> _refreshConfig;
     private readonly ILogger<EpisodeRefresher> _logger;
+    private readonly IPerformanceTracker _performanceTracker;
 
     public EpisodeRefresher(IAddic7edClient client,
         IEpisodeRepository episodeRepository,
         ISeasonRepository seasonRepository,
         ICredentialsService credentialsService,
         IOptions<RefreshConfig> refreshConfig,
-        ILogger<EpisodeRefresher> logger
+        ILogger<EpisodeRefresher> logger,
+        IPerformanceTracker performanceTracker
     )
     {
         _client = client;
@@ -34,6 +37,7 @@ public class EpisodeRefresher : IEpisodeRefresher
         _credentialsService = credentialsService;
         _refreshConfig = refreshConfig;
         _logger = logger;
+        _performanceTracker = performanceTracker;
     }
 
     /// <summary>
@@ -65,6 +69,8 @@ public class EpisodeRefresher : IEpisodeRefresher
             _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
             return;
         }
+
+        using var transaction = _performanceTracker.BeginNestedSpan("episode", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
 
         if (season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _refreshConfig.Value.EpisodeRefresh)
         {

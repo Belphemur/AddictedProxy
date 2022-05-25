@@ -8,6 +8,7 @@ using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
 using Locking;
 using Sentry;
+using Sentry.Performance.Service;
 
 #endregion
 
@@ -18,12 +19,14 @@ public class StoreSubtitleJob : IJob
     private readonly ILogger<StoreSubtitleJob> _logger;
     private readonly IStorageProvider _storageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
+    private readonly IPerformanceTracker _performanceTracker;
 
-    public StoreSubtitleJob(ILogger<StoreSubtitleJob> logger, IStorageProvider storageProvider, ISubtitleRepository subtitleRepository)
+    public StoreSubtitleJob(ILogger<StoreSubtitleJob> logger, IStorageProvider storageProvider, ISubtitleRepository subtitleRepository, IPerformanceTracker performanceTracker)
     {
         _logger = logger;
         _storageProvider = storageProvider;
         _subtitleRepository = subtitleRepository;
+        _performanceTracker = performanceTracker;
     }
 
     public Guid SubtitleId { get; set; }
@@ -37,6 +40,8 @@ public class StoreSubtitleJob : IJob
             _logger.LogInformation("Lock already taken for {subtitleId}", SubtitleId);
             return;
         }
+
+        using var transaction = _performanceTracker.BeginNestedSpan(nameof(StoreSubtitleJob), "store");
 
         _logger.LogInformation("Saving subtitle {subtitleId} into the storage", SubtitleId);
         var subtitle = await _subtitleRepository.GetSubtitleByGuidAsync(SubtitleId, true, false, cancellationToken);
