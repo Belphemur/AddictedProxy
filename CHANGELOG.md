@@ -1,3 +1,17 @@
+### [2.5.1](https://github.com/Belphemur/AddictedProxy/compare/v2.5.0...v2.5.1) (2022-05-25)
+
+
+### Bug Fixes
+
+* **performance:** Use the IHub from sentry ([91de2b3](https://github.com/Belphemur/AddictedProxy/commit/91de2b3b607ac13c8c93d5fc5a8200fdb55c4e8b))
+* **Subtitle:** Fix the uniqueness on wrong column ([8b4751a](https://github.com/Belphemur/AddictedProxy/commit/8b4751a1f316b9f66f98441f600fc2d41b681909))
+* **Tracing:** Remove details from main transaction ([12c534d](https://github.com/Belphemur/AddictedProxy/commit/12c534da45aa1a7b68f34dba9e26c2807d347ea0))
+
+
+### Enhancements
+
+* **Logging:** Add log for any search done ([5176deb](https://github.com/Belphemur/AddictedProxy/commit/5176debe08dd07fafcc15ebf7f81d730e22abe57))
+
 ## [2.5.0](https://github.com/Belphemur/AddictedProxy/compare/v2.4.2...v2.5.0) (2022-05-25)
 
 
