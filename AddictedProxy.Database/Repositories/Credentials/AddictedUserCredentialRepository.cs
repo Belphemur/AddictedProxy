@@ -30,9 +30,8 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
         }
     }
 
-    public async Task UpsertUserCredentialsAsync(AddictedUserCredentials credentials, CancellationToken token)
+    public async Task SaveChangesAsync(CancellationToken token)
     {
-        _context.AddictedUserCreds.Update(credentials);
         await _context.SaveChangesAsync(token);
     }
 }

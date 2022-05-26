@@ -18,8 +18,7 @@ public interface IAddictedUserCredentialRepository
     /// <summary>
     /// Update the data of the creds
     /// </summary>
-    /// <param name="credentials"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task UpsertUserCredentialsAsync(AddictedUserCredentials credentials, CancellationToken token);
+    Task SaveChangesAsync(CancellationToken token);
 }

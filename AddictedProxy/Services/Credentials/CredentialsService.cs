@@ -38,6 +38,6 @@ public class CredentialsService : ICredentialsService
     {
         credentials.Usage++;
         credentials.LastUsage = DateTime.UtcNow;
-        await _addictedUserCredentialRepository.UpsertUserCredentialsAsync(credentials, token);
+        await _addictedUserCredentialRepository.SaveChangesAsync(token);
     }
 }

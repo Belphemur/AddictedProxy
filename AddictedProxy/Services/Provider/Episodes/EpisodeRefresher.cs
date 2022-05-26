@@ -64,18 +64,19 @@ public class EpisodeRefresher : IEpisodeRefresher
     /// <param name="token"></param>
     private async Task RefreshEpisodesAsync(TvShow show, Season season, CancellationToken token)
     {
+        using var transaction = _performanceTracker.BeginNestedSpan("episode", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
         using var namedLock = Lock<EpisodeRefresher>.GetNamedLock($"{show.Id}-{season.Id}");
         if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
         {
             _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
+            transaction.Finish(Status.Unavailable);
             return;
         }
-
-        using var transaction = _performanceTracker.BeginNestedSpan("episode", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
 
         if (season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _refreshConfig.Value.EpisodeRefresh)
         {
             _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
+            transaction.Finish(Status.Unavailable);
             return;
         }
 
@@ -100,18 +101,20 @@ public class EpisodeRefresher : IEpisodeRefresher
         {
             using var namedLock = Lock<EpisodeRefresher>.GetNamedLock($"{show.Id}-{season.Id}");
 
+            using var transaction = _performanceTracker.BeginNestedSpan("episodes.fetch", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
 
             if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
             {
                 _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
+                transaction.Finish(Status.Unavailable);
                 return null;
             }
 
-            using var transaction = _performanceTracker.BeginNestedSpan("episodes.fetch", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
 
             if (season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _refreshConfig.Value.EpisodeRefresh)
             {
                 _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
+                transaction.Finish(Status.Unavailable);
                 return null;
             }
 
