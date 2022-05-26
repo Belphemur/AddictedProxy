@@ -1,3 +1,12 @@
+### [2.5.3](https://github.com/Belphemur/AddictedProxy/compare/v2.5.2...v2.5.3) (2022-05-26)
+
+
+### Enhancements
+
+* **Performance:** Improve refresh episode performance tracking ([6d0b89e](https://github.com/Belphemur/AddictedProxy/commit/6d0b89e7d4cb7c17403206b1bc4bff5d6f2c10a4))
+* **Refresh:** When manually refreshing, refresh all season ([bfeb1cf](https://github.com/Belphemur/AddictedProxy/commit/bfeb1cffcafbbd95fe94c1081b5112e44c990afa))
+* **Tracing:** Improve tracing of Show Refresher ([daec003](https://github.com/Belphemur/AddictedProxy/commit/daec0030c1f7250a9a58d95da3a73ebefeaf5ec6))
+
 ### [2.5.2](https://github.com/Belphemur/AddictedProxy/compare/v2.5.1...v2.5.2) (2022-05-25)
 
 
