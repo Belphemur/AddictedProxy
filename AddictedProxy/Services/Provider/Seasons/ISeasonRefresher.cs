@@ -18,8 +18,7 @@ public interface ISeasonRefresher
     /// Refresh the season of the given show
     /// </summary>
     /// <param name="show"></param>
-    /// <param name="force"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task RefreshSeasonsAsync(TvShow show, bool force = false, CancellationToken token = default);
+    Task RefreshSeasonsAsync(TvShow show, CancellationToken token = default);
 }

@@ -1,11 +1,13 @@
 ﻿using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Database.Transaction;
 using AddictedProxy.Model.Crendentials;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Upstream.Service;
 using Locking;
 using Microsoft.Extensions.Options;
+using Sentry.Performance.Model;
 using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Seasons;
@@ -19,14 +21,16 @@ public class SeasonRefresher : ISeasonRefresher
     private readonly ISeasonRepository _seasonRepository;
     private readonly IOptions<RefreshConfig> _refreshConfig;
     private readonly IPerformanceTracker _performanceTracker;
+    private readonly ITransactionManager _transactionManager;
 
     public SeasonRefresher(ILogger<SeasonRefresher> logger,
-        ITvShowRepository tvShowRepository,
-        IAddic7edClient addic7EdClient,
-        ICredentialsService credentialsService,
-        ISeasonRepository seasonRepository,
-        IOptions<RefreshConfig> refreshConfig,
-        IPerformanceTracker performanceTracker
+                           ITvShowRepository tvShowRepository,
+                           IAddic7edClient addic7EdClient,
+                           ICredentialsService credentialsService,
+                           ISeasonRepository seasonRepository,
+                           IOptions<RefreshConfig> refreshConfig,
+                           IPerformanceTracker performanceTracker,
+                           ITransactionManager transactionManager
     )
     {
         _logger = logger;
@@ -36,55 +40,42 @@ public class SeasonRefresher : ISeasonRefresher
         _seasonRepository = seasonRepository;
         _refreshConfig = refreshConfig;
         _performanceTracker = performanceTracker;
+        _transactionManager = transactionManager;
     }
 
     public async Task<Season?> GetRefreshSeasonAsync(TvShow show, int seasonNumber, CancellationToken token)
     {
-        var season = show.Seasons.FirstOrDefault(season => season.Number == seasonNumber);
-
-
-        //Check if we need to refresh because enough time has passed
-        if (season != null && show.LastSeasonRefreshed != null && !(DateTime.UtcNow - show.LastSeasonRefreshed >= _refreshConfig.Value.SeasonRefresh))
-        {
-            _logger.LogInformation("Don't need to refresh season {number} of {show}", seasonNumber, show.Name);
-            return season;
-        }
-
-        var maxSeason = show.Seasons.Any() ? show.Seasons.Max(s => s.Number) : 0;
-        if (show.Seasons.Any() && seasonNumber - maxSeason > 1)
-        {
-            _logger.LogInformation("{season} is too far in the future.", seasonNumber);
-
-            return season;
-        }
-
-        await RefreshSeasonsAsync(show, true, token);
-        return await _seasonRepository.GetSeasonForShow(show.Id, seasonNumber, token);
+        await RefreshSeasonsAsync(show, token);
+        return await _seasonRepository.GetSeasonForShowAsync(show.Id, seasonNumber, token);
     }
 
-    public async Task RefreshSeasonsAsync(TvShow show, bool force = false, CancellationToken token = default)
+    public async Task RefreshSeasonsAsync(TvShow show, CancellationToken token = default)
     {
+        await using var transaction = await _transactionManager.BeginNestedAsync(token);
+        using var span = _performanceTracker.BeginNestedSpan("season", $"refresh-show-seasons for show {show.Name}");
+
         using var namedLock = Lock<SeasonRefresher>.GetNamedLock(show.Id.ToString());
         if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
         {
             _logger.LogInformation("Already refreshing seasons of {show}", show.Name);
+            span.Finish(Status.Unavailable);
             return;
         }
 
-        using var transaction = _performanceTracker.BeginNestedSpan("season", $"refresh-show-seasons for show {show.Name}");
-
         await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
 
-        if (!force && show.LastSeasonRefreshed != null && !(DateTime.UtcNow - show.LastSeasonRefreshed >= _refreshConfig.Value.SeasonRefresh))
+        if (show.LastSeasonRefreshed != null && !(DateTime.UtcNow - show.LastSeasonRefreshed >= _refreshConfig.Value.SeasonRefresh))
         {
             _logger.LogInformation("Don't need to refresh seasons of {show}", show.Name);
+            span.Finish(Status.Unavailable);
             return;
         }
 
         var seasons = (await _addic7EdClient.GetSeasonsAsync(credentials.AddictedUserCredentials, show, token)).ToArray();
-        await _seasonRepository.UpsertSeason(seasons, token);
+        await _seasonRepository.UpsertSeasonAsync(seasons, token);
         show.LastSeasonRefreshed = DateTime.UtcNow;
         await _tvShowRepository.UpdateShowAsync(show, token);
         _logger.LogInformation("Fetched {number} seasons of {show}", seasons.Length, show.Name);
+        await transaction.CommitAsync(token);
     }
 }
