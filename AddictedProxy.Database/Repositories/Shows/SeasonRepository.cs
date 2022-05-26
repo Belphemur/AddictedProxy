@@ -18,17 +18,16 @@ public class SeasonRepository : ISeasonRepository
         _entityContext = entityContext;
     }
 
-    public Task UpsertSeason(IEnumerable<Season> seasons, CancellationToken token)
+    public Task UpsertSeasonAsync(IEnumerable<Season> seasons, CancellationToken token)
     {
-        return _entityContext.Seasons.BulkMergeAsync(seasons, options => { options.ColumnPrimaryKeyExpression = season => new { season.TvShowId, season.Number }; }, token);
+        return _entityContext.Seasons.BulkMergeAsync(seasons, options =>
+        {
+            options.ColumnPrimaryKeyExpression = season => new { season.TvShowId, season.Number };
+            options.IgnoreOnMergeUpdateExpression = season => new { season.LastRefreshed };
+        }, token);
     }
 
-    public IAsyncEnumerable<Season> GetSeasonsForShow(int showId)
-    {
-        return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).ToAsyncEnumerable();
-    }
-
-    public Task<Season?> GetSeasonForShow(long showId, int seasonNumber, CancellationToken token)
+    public Task<Season?> GetSeasonForShowAsync(long showId, int seasonNumber, CancellationToken token)
     {
         return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).SingleOrDefaultAsync(season => season.Number == seasonNumber, token);
     }
