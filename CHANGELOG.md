@@ -1,3 +1,11 @@
+### [2.5.4](https://github.com/Belphemur/AddictedProxy/compare/v2.5.3...v2.5.4) (2022-05-26)
+
+
+### Enhancements
+
+* **Refresh::Timing:** Increase time to wait before refreshing data ([849b85c](https://github.com/Belphemur/AddictedProxy/commit/849b85cfdd58df07cf2a5323ee17119519f24cfb))
+* **Season:** Improve when to refresh season ([e79f73c](https://github.com/Belphemur/AddictedProxy/commit/e79f73cc13ac925d4d36beeb9f8547e7a552c7e3))
+
 ### [2.5.3](https://github.com/Belphemur/AddictedProxy/compare/v2.5.2...v2.5.3) (2022-05-26)
 
 
