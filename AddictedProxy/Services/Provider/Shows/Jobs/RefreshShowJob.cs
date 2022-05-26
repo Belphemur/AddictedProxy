@@ -6,6 +6,7 @@ using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
 using Locking;
+using Sentry.Performance.Model;
 using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
@@ -35,14 +36,15 @@ public class RefreshShowJob : IJob
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
+        using var transaction = _performanceTracker.BeginNestedSpan("refresh", "refresh-specific-show");
+
         using var namedLock = Lock<RefreshShowJob>.GetNamedLock(Show.Id.ToString());
         if (!await namedLock.WaitAsync(TimeSpan.Zero, cancellationToken))
         {
             _logger.LogInformation("Lock for {show} already taken", Show.Id);
+            transaction.Finish(Status.Unavailable);
             return;
         }
-
-        using var _ = _performanceTracker.BeginNestedSpan("refresh", "refresh-specific-show");
 
         _logger.LogInformation("Refreshing show: {Show}", Show.Name);
         await _showRefresher.RefreshShowAsync(Show, cancellationToken);

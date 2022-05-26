@@ -28,7 +28,7 @@ public class PerformanceTrackerSentry : IPerformanceTracker
 
         var transaction = _sentryHub.StartTransaction(operation, description);
         var currentTransaction = new SpanSentry(transaction, null);
-        
+
         _sentryHub.ConfigureScope(scope => { scope.Transaction = transaction; });
         
         currentTransaction.OnSpanFinished += OnSpanFinished;
