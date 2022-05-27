@@ -18,7 +18,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
         <PackageReference Include="uplink.NET" Version="2.9.2650" />
-        <PackageReference Include="uplink.NET.Win" Version="2.9.2640" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
+        <PackageReference Include="uplink.NET.Win" Version="2.9.2650" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
         <PackageReference Include="uplink.NET.Linux" Version="2.9.2650" Condition="$([MSBuild]::IsOsPlatform('Linux'))" />
     </ItemGroup>
 
