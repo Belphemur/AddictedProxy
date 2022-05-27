@@ -1,3 +1,10 @@
+### [2.5.6](https://github.com/Belphemur/AddictedProxy/compare/v2.5.5...v2.5.6) (2022-05-27)
+
+
+### Enhancements
+
+* **Search:** Avoid refreshing show so often when we know we won't do anything since it's not time to refresh the show data ([4f87636](https://github.com/Belphemur/AddictedProxy/commit/4f8763666695659de744dc33e974cf137bc2bc48))
+
 ### [2.5.5](https://github.com/Belphemur/AddictedProxy/compare/v2.5.4...v2.5.5) (2022-05-26)
 
 
