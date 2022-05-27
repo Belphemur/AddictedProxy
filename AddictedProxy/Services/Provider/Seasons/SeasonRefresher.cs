@@ -24,13 +24,13 @@ public class SeasonRefresher : ISeasonRefresher
     private readonly ITransactionManager _transactionManager;
 
     public SeasonRefresher(ILogger<SeasonRefresher> logger,
-                           ITvShowRepository tvShowRepository,
-                           IAddic7edClient addic7EdClient,
-                           ICredentialsService credentialsService,
-                           ISeasonRepository seasonRepository,
-                           IOptions<RefreshConfig> refreshConfig,
-                           IPerformanceTracker performanceTracker,
-                           ITransactionManager transactionManager
+        ITvShowRepository tvShowRepository,
+        IAddic7edClient addic7EdClient,
+        ICredentialsService credentialsService,
+        ISeasonRepository seasonRepository,
+        IOptions<RefreshConfig> refreshConfig,
+        IPerformanceTracker performanceTracker,
+        ITransactionManager transactionManager
     )
     {
         _logger = logger;
@@ -64,12 +64,13 @@ public class SeasonRefresher : ISeasonRefresher
 
         await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
 
-        if (show.LastSeasonRefreshed != null && !(DateTime.UtcNow - show.LastSeasonRefreshed >= _refreshConfig.Value.SeasonRefresh))
+        if (!IsShowNeedsRefresh(show))
         {
             _logger.LogInformation("Don't need to refresh seasons of {show}", show.Name);
             span.Finish(Status.Unavailable);
             return;
         }
+
 
         var seasons = (await _addic7EdClient.GetSeasonsAsync(credentials.AddictedUserCredentials, show, token)).ToArray();
         await _seasonRepository.UpsertSeasonAsync(seasons, token);
@@ -77,5 +78,15 @@ public class SeasonRefresher : ISeasonRefresher
         await _tvShowRepository.UpdateShowAsync(show, token);
         _logger.LogInformation("Fetched {number} seasons of {show}", seasons.Length, show.Name);
         await transaction.CommitAsync(token);
+    }
+
+    /// <summary>
+    /// Does the show need to have its seasons refreshed
+    /// </summary>
+    /// <param name="show"></param>
+    /// <returns></returns>
+    public bool IsShowNeedsRefresh(TvShow show)
+    {
+        return show.LastSeasonRefreshed == null || DateTime.UtcNow - show.LastSeasonRefreshed >= _refreshConfig.Value.SeasonRefresh;
     }
 }

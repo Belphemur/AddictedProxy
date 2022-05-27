@@ -7,6 +7,15 @@ namespace AddictedProxy.Model.Dto;
 /// </summary>
 public class EpisodeDto
 {
+    internal EpisodeDto(int season, int number, string show)
+    {
+        Season = season;
+        Number = number;
+        Title = "N/A";
+        Show = show;
+        Discovered = DateTime.UtcNow;
+    }
+
     public EpisodeDto(Episode episode)
     {
         Season = episode.Season;

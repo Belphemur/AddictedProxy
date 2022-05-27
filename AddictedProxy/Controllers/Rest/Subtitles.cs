@@ -7,6 +7,8 @@ using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
 using AddictedProxy.Services.Culture;
+using AddictedProxy.Services.Provider.Episodes;
+using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
@@ -29,6 +31,8 @@ public class Subtitles : Controller
     private readonly IJobBuilder _jobBuilder;
     private readonly IJobScheduler _jobScheduler;
     private readonly ILogger<Subtitles> _logger;
+    private readonly ISeasonRefresher _seasonRefresher;
+    private readonly IEpisodeRefresher _episodeRefresher;
     private readonly IShowRefresher _showRefresher;
     private readonly ISubtitleProvider _subtitleProvider;
     private readonly Regex _searchPattern = new(@"(?<show>.+)S(?<season>\d+)E(?<episode>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -39,7 +43,9 @@ public class Subtitles : Controller
         ISubtitleProvider subtitleProvider,
         IJobBuilder jobBuilder,
         IJobScheduler jobScheduler,
-        ILogger<Subtitles> logger)
+        ILogger<Subtitles> logger,
+        ISeasonRefresher seasonRefresher,
+        IEpisodeRefresher episodeRefresher)
     {
         _episodeRepository = episodeRepository;
         _cultureParser = cultureParser;
@@ -48,6 +54,8 @@ public class Subtitles : Controller
         _jobBuilder = jobBuilder;
         _jobScheduler = jobScheduler;
         _logger = logger;
+        _seasonRefresher = seasonRefresher;
+        _episodeRefresher = episodeRefresher;
     }
 
 
@@ -156,8 +164,22 @@ public class Subtitles : Controller
         }
 
         var episode = await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, request.Season, request.Episode, token);
+
         if (episode == null)
         {
+            var season = show.Seasons.FirstOrDefault(season => season.Number == request.Season);
+            if (season == null && !_seasonRefresher.IsShowNeedsRefresh(show))
+            {
+                _logger.LogInformation("Don't need to refresh seasons of show {show} returning empty data",  show.Name);
+                return Ok(new SubtitleSearchResponse(ArraySegment<SubtitleDto>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name)));
+            }
+
+            if (season != null && !_episodeRefresher.IsSeasonNeedRefresh(season))
+            {
+                _logger.LogInformation("Don't need to refresh episodes of {season} of show {show} returning empty data", request.Season, show.Name);
+                return Ok(new SubtitleSearchResponse(ArraySegment<SubtitleDto>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name)));
+            }
+            
             ScheduleJob(request, show);
             return StatusCode(StatusCodes.Status423Locked, new ErrorResponse("Episode couldn't be found. Try again later."));
         }
