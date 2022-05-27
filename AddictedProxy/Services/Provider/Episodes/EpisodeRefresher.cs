@@ -73,12 +73,14 @@ public class EpisodeRefresher : IEpisodeRefresher
             return;
         }
 
-        if (season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _refreshConfig.Value.EpisodeRefresh)
+        if (!IsSeasonNeedRefresh(season))
         {
             _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
             transaction.Finish(Status.Unavailable);
             return;
         }
+    
+
 
         await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
         var episodes = (await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, show, season.Number, token)).ToArray();
@@ -86,6 +88,16 @@ public class EpisodeRefresher : IEpisodeRefresher
         season.LastRefreshed = DateTime.UtcNow;
         await _seasonRepository.SaveChangesAsync(token);
         _logger.LogInformation("Refreshed {episodes} episodes of {show} S{season}", episodes.Length, show.Name, season.Number);
+    }
+
+    /// <summary>
+    /// Does the episode of the season needs to be refreshed
+    /// </summary>
+    /// <param name="season"></param>
+    /// <returns></returns>
+    public bool IsSeasonNeedRefresh(Season season)
+    {
+        return season.LastRefreshed == null|| DateTime.UtcNow - season.LastRefreshed >= _refreshConfig.Value.EpisodeRefresh;
     }
 
     /// <summary>
