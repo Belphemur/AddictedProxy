@@ -1,3 +1,10 @@
+### [2.6.1](https://github.com/Belphemur/AddictedProxy/compare/v2.6.0...v2.6.1) (2022-05-28)
+
+
+### Bug Fixes
+
+* **SQLite:** Fix locking issue with litestream ([2f61a43](https://github.com/Belphemur/AddictedProxy/commit/2f61a43dc67df53dfe77cf19d5ec3eb541bafe91))
+
 ## [2.6.0](https://github.com/Belphemur/AddictedProxy/compare/v2.5.6...v2.6.0) (2022-05-28)
 
 
