@@ -16,12 +16,17 @@ public class CredentialsService : ICredentialsService
     private readonly IAddictedUserCredentialRepository _addictedUserCredentialRepository;
     private readonly IOptions<RefreshConfig> _refreshConfig;
     private readonly ITransactionManager _transactionManager;
+    private readonly ILogger<CredentialsService> _logger;
 
-    public CredentialsService(IAddictedUserCredentialRepository addictedUserCredentialRepository, IOptions<RefreshConfig> refreshConfig, ITransactionManager transactionManager)
+    public CredentialsService(IAddictedUserCredentialRepository addictedUserCredentialRepository,
+                              IOptions<RefreshConfig> refreshConfig,
+                              ITransactionManager transactionManager,
+                              ILogger<CredentialsService> logger)
     {
         _addictedUserCredentialRepository = addictedUserCredentialRepository;
         _refreshConfig = refreshConfig;
         _transactionManager = transactionManager;
+        _logger = logger;
     }
 
     /// <summary>
@@ -47,12 +52,13 @@ public class CredentialsService : ICredentialsService
     /// <param name="token"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException">If no credentials</exception>
-    public async Task<ICredsContainer> GetLeastUsedCredsDownloadAsync(CancellationToken token)
+    public async Task<ICredsContainer?> GetLeastUsedCredsDownloadAsync(CancellationToken token)
     {
         var creds = await _addictedUserCredentialRepository.GetLeastUsedCredDownloadAsync(token);
         if (creds == null)
         {
-            throw new ArgumentNullException("creds", "Was expecting some user creds");
+            _logger.LogWarning("Couldn't find any credentials for downloading");
+            return null;
         }
 
         return new CredsContainerNormalUsage(this, creds, true);
@@ -60,6 +66,7 @@ public class CredentialsService : ICredentialsService
 
     public async Task UpdateUsageCredentialsAsync(AddictedUserCredentials credentials, bool isDownload, CancellationToken token)
     {
+  
         if (isDownload)
         {
             credentials.DownloadUsage++;
