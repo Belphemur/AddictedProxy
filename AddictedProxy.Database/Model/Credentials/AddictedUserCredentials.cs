@@ -17,4 +17,6 @@ public class AddictedUserCredentials
 
     public int DownloadUsage { get; set; } = 0;
     public DateTime? LastUsage { get; set; }
+
+    public DateTime? DownloadExceededDate { get; set; }
 }
