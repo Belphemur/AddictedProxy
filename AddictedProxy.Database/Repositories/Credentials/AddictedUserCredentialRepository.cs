@@ -35,7 +35,7 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
         try
         {
             var min = await _context.AddictedUserCreds.MinAsync(credentials => credentials.DownloadUsage, token);
-            return await _context.AddictedUserCreds.Where(credentials => credentials.DownloadUsage <= min).FirstOrDefaultAsync(token);
+            return await _context.AddictedUserCreds.Where(credentials => credentials.DownloadUsage <= min && credentials.DownloadExceededDate == null).FirstOrDefaultAsync(token);
         }
         catch (InvalidOperationException e) when (e.Message == "Sequence contains no elements.")
         {

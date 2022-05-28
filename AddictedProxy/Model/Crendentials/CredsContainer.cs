@@ -31,6 +31,14 @@ public class CredsContainerNormalUsage : ICredsContainer
         }
     }
 
+    /// <summary>
+    /// Tag the credential as unfit to download subtitle
+    /// </summary>
+    public void TagAsDownloadExceeded()
+    {
+        _addictedUserCredentials.DownloadExceededDate = DateTime.UtcNow;
+    }
+
     public async ValueTask DisposeAsync()
     {
         if (!_isCredentialsCalled)
