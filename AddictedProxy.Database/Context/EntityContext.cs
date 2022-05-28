@@ -40,5 +40,6 @@ public class EntityContext : DbContext
         modelBuilder.Entity<TvShow>()
                     .Property(c => c.Name)
                     .UseCollation("NOCASE");
+
     }
 }
