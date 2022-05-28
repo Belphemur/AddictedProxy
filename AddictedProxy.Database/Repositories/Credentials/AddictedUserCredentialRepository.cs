@@ -30,6 +30,20 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
         }
     }
 
+    public async Task<AddictedUserCredentials?> GetLeastUsedCredDownloadAsync(CancellationToken token)
+    {
+        try
+        {
+            var min = await _context.AddictedUserCreds.MinAsync(credentials => credentials.DownloadUsage, token);
+            return await _context.AddictedUserCreds.Where(credentials => credentials.DownloadUsage <= min).FirstOrDefaultAsync(token);
+        }
+        catch (InvalidOperationException e) when (e.Message == "Sequence contains no elements.")
+        {
+            return null;
+        }
+    }
+
+
     public async Task SaveChangesAsync(CancellationToken token)
     {
         await _context.SaveChangesAsync(token);

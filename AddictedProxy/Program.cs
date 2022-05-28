@@ -10,6 +10,7 @@ using AddictedProxy.Upstream.Boostrap;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Sentry;
 using Sentry.Performance.Bootstrap;
 
 #endregion
@@ -65,6 +66,9 @@ builder.WebHost.UseSentry(sentryBuilder =>
 #endif
     var perf = builder.Configuration.GetSection("Performance").Get<Performance>();
     sentryBuilder.TracesSampleRate = perf.SampleRate;
+    sentryBuilder.AddExceptionFilterForType<OperationCanceledException>();
+    sentryBuilder.AddExceptionFilterForType<TaskCanceledException>();
+
 });
 
 var app = builder.Build();

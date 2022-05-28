@@ -14,5 +14,7 @@ public class AddictedUserCredentials
     public int Id { get; set; }
     public string Cookie { get; set; }
     public int Usage { get; set; }
+
+    public int DownloadUsage { get; set; } = 0;
     public DateTime? LastUsage { get; set; }
 }
