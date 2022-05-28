@@ -1,3 +1,12 @@
+### [2.7.1](https://github.com/Belphemur/AddictedProxy/compare/v2.7.0...v2.7.1) (2022-05-28)
+
+
+### Bug Fixes
+
+* **Download:** Add missing referer ([309a074](https://github.com/Belphemur/AddictedProxy/commit/309a07433dfba956a874c8a2364cc5675973c862))
+* **Download:** Fallback downloading without credentials relying on the proxy ([5ce3886](https://github.com/Belphemur/AddictedProxy/commit/5ce38862d5e2b1e1d878cbe2c064ab31a6ff244b))
+* **Download:** Only tag as exceeded if a credential was used. ([a91a187](https://github.com/Belphemur/AddictedProxy/commit/a91a1876188b432234439cf932c57515ecb08b55))
+
 ## [2.7.0](https://github.com/Belphemur/AddictedProxy/compare/v2.6.1...v2.7.0) (2022-05-28)
 
 
