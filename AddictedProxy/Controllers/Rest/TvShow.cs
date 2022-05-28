@@ -56,13 +56,13 @@ public class TvShows : Controller
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
     [ProducesResponseType(typeof(ShowSearchResponse), 200)]
-    public async Task<IActionResult> Search([FromBody] ShowSearchRequest showSearch, CancellationToken cancellationToken)
+    public Task<IActionResult> Search([FromBody] ShowSearchRequest showSearch, CancellationToken cancellationToken)
     {
-        return Ok(new ShowSearchResponse(
+        return Task.FromResult<IActionResult>(Ok(new ShowSearchResponse(
                 _showRefresher.FindShowsAsync(showSearch.Query, cancellationToken)
                               .Select(show => new ShowDto(show))
             )
-        );
+        ));
     }
 
     /// <summary>
