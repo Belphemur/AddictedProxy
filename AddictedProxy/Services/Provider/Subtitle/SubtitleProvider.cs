@@ -105,7 +105,7 @@ public class SubtitleProvider : ISubtitleProvider
         }
         catch (DownloadLimitExceededException)
         {
-            creds.TagAsDownloadExceeded();
+            creds?.TagAsDownloadExceeded();
             throw;
         }
     }
