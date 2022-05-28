@@ -23,6 +23,7 @@ public class HttpUtils
         {
             Headers =
             {
+                {"Referer", "https://www.addic7ed.com/"},
                 { "User-Agent", userAgent },
             }
         };
