@@ -1,3 +1,16 @@
+## [2.7.0](https://github.com/Belphemur/AddictedProxy/compare/v2.6.1...v2.7.0) (2022-05-28)
+
+
+### Features
+
+* **Creds::Download:** Auto redeem credentials after 24h ([4c469d3](https://github.com/Belphemur/AddictedProxy/commit/4c469d35e04aceeb0df9972c665c646643d93d36))
+
+
+### Enhancements
+
+* **Creds:** Tag credentials as unable to be used for downloading subtitle ([b998295](https://github.com/Belphemur/AddictedProxy/commit/b998295ea18f38f70d55a2dee38710e9a5cf7c69))
+* **RateLimiting:** Make the rate limiting less limiting ([fc4602b](https://github.com/Belphemur/AddictedProxy/commit/fc4602be3d742253e6f1765c8b0a73fad4a50812))
+
 ### [2.6.1](https://github.com/Belphemur/AddictedProxy/compare/v2.6.0...v2.6.1) (2022-05-28)
 
 
