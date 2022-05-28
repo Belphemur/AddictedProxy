@@ -1,3 +1,16 @@
+## [2.6.0](https://github.com/Belphemur/AddictedProxy/compare/v2.5.6...v2.6.0) (2022-05-28)
+
+
+### Features
+
+* **Creds::Download:** Add download usage to creds ([12bda16](https://github.com/Belphemur/AddictedProxy/commit/12bda1685d9ce65481196711b3ae800e3f00517b))
+* **Creds::Download:** Use the least used credential for download ([93ca3b8](https://github.com/Belphemur/AddictedProxy/commit/93ca3b860c02304de786aee7da0c10ed532db327))
+
+
+### Bug Fixes
+
+* **Sentry:** Don't log task cancelled exceptions ([4ed6d82](https://github.com/Belphemur/AddictedProxy/commit/4ed6d82feffdb288c3efa49de2253f2b87bf7a1e))
+
 ### [2.5.6](https://github.com/Belphemur/AddictedProxy/compare/v2.5.5...v2.5.6) (2022-05-27)
 
 
