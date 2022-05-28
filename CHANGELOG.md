@@ -1,3 +1,10 @@
+### [2.7.2](https://github.com/Belphemur/AddictedProxy/compare/v2.7.1...v2.7.2) (2022-05-28)
+
+
+### Bug Fixes
+
+* **Download:** Don't get the min from all the table, only the selectable creds ([f19b35b](https://github.com/Belphemur/AddictedProxy/commit/f19b35bb84b1743ef318f0496374407ad7ee5541))
+
 ### [2.7.1](https://github.com/Belphemur/AddictedProxy/compare/v2.7.0...v2.7.1) (2022-05-28)
 
 
