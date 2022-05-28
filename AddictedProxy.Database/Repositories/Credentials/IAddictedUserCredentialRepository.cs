@@ -28,4 +28,16 @@ public interface IAddictedUserCredentialRepository
     /// <param name="token"></param>
     /// <returns></returns>
     Task<AddictedUserCredentials?> GetLeastUsedCredDownloadAsync(CancellationToken token);
+
+    /// <summary>
+    /// Get credentials that can't currently be used for downloading
+    /// </summary>
+    /// <param name="currentTime"></param>
+    /// <param name="timeout"></param>
+    IAsyncEnumerable<AddictedUserCredentials> GetExpiredDownloadToRedeemCredentialsAsync(DateTime currentTime, TimeSpan timeout);
+
+    /// <summary>
+    /// Get all the credentials
+    /// </summary>
+    IAsyncEnumerable<AddictedUserCredentials> GetAllCredentialsAsync();
 }
