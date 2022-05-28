@@ -16,7 +16,7 @@ public class HttpUtils
         _faker = faker;
     }
 
-    public HttpRequestMessage PrepareRequest(AddictedUserCredentials credentials, string url, HttpMethod method)
+    public HttpRequestMessage PrepareRequest(AddictedUserCredentials? credentials, string url, HttpMethod method)
     {
         var userAgent = _faker.Internet.UserAgent();
         var request = new HttpRequestMessage(method, url)
@@ -24,9 +24,12 @@ public class HttpUtils
             Headers =
             {
                 { "User-Agent", userAgent },
-                { "Cookie", credentials.Cookie }
             }
         };
+        if (credentials != null)
+        {
+            request.Headers.Add("Cookie", credentials.Cookie);
+        }
 
         return request;
     }

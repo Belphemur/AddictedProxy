@@ -81,11 +81,11 @@ public class SubtitleProvider : ISubtitleProvider
             //Subtitle isn't complete, no need to store it, just directly return the download stream
             if (!subtitle.Completed)
             {
-                return await _addic7EdDownloader.DownloadSubtitle(creds.AddictedUserCredentials, subtitle, token);
+                return await _addic7EdDownloader.DownloadSubtitle(creds?.AddictedUserCredentials, subtitle, token);
             }
 
 
-            await using var subtitleStream = await _addic7EdDownloader.DownloadSubtitle(creds.AddictedUserCredentials, subtitle, token);
+            await using var subtitleStream = await _addic7EdDownloader.DownloadSubtitle(creds?.AddictedUserCredentials, subtitle, token);
             await using var buffer = new MemoryStream();
 
             await subtitleStream.CopyToAsync(buffer, token);
