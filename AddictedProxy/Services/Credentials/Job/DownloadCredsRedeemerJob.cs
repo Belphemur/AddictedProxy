@@ -2,6 +2,7 @@
 using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
+using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Credentials.Job;
 
@@ -9,15 +10,18 @@ public class DownloadCredsRedeemerJob : IRecurringJob
 {
     private readonly ILogger<DownloadCredsRedeemerJob> _logger;
     private readonly ICredentialsService _credentialsService;
+    private readonly IPerformanceTracker _performanceTracker;
 
-    public DownloadCredsRedeemerJob(ILogger<DownloadCredsRedeemerJob> logger, ICredentialsService credentialsService)
+    public DownloadCredsRedeemerJob(ILogger<DownloadCredsRedeemerJob> logger, ICredentialsService credentialsService, IPerformanceTracker performanceTracker)
     {
         _logger = logger;
         _credentialsService = credentialsService;
+        _performanceTracker = performanceTracker;
     }
 
     public Task ExecuteAsync(CancellationToken cancellationToken)
     {
+        using var span = _performanceTracker.BeginNestedSpan(nameof(DownloadCredsRedeemerJob), "redeeming-expired-dl-creds"); 
         return _credentialsService.RedeemDownloadCredentialsAsync(DateTime.UtcNow, cancellationToken);
     }
 

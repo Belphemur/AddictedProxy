@@ -44,16 +44,6 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
     }
 
     /// <summary>
-    /// Get credentials that can't currently be used for downloading
-    /// </summary>
-    /// <param name="currentTime"></param>
-    /// <param name="timeout"></param>
-    public IAsyncEnumerable<AddictedUserCredentials> GetExpiredDownloadToRedeemCredentialsAsync(DateTime currentTime, TimeSpan timeout)
-    {
-        return _context.AddictedUserCreds.Where(credentials => credentials.DownloadExceededDate != null && currentTime - credentials.DownloadExceededDate >= timeout).ToAsyncEnumerable();
-    }
-
-    /// <summary>
     /// Get all the credentials
     /// </summary>
     public IAsyncEnumerable<AddictedUserCredentials> GetAllCredentialsAsync()

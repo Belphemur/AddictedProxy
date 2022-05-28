@@ -79,8 +79,9 @@ public class CredentialsService : ICredentialsService
     public async Task RedeemDownloadCredentialsAsync(DateTime currentDateTime, CancellationToken token)
     {
         await using var transaction = await _transactionManager.BeginNestedAsync(token);
+        var credentials = await _addictedUserCredentialRepository.GetAllCredentialsAsync().ToArrayAsync(token);
         var hasRedeemedCreds = false;
-        await foreach (var cred in _addictedUserCredentialRepository.GetExpiredDownloadToRedeemCredentialsAsync(currentDateTime, _refreshConfig.Value.DownloadExceededTimeout).WithCancellation(token))
+        foreach (var cred in credentials.Where(cred => cred.DownloadExceededDate != null && currentDateTime - cred.DownloadExceededDate >= _refreshConfig.Value.DownloadExceededTimeout))
         {
             cred.DownloadExceededDate = null;
             hasRedeemedCreds = true;
@@ -91,7 +92,7 @@ public class CredentialsService : ICredentialsService
             return;
         }
 
-        await foreach (var cred in _addictedUserCredentialRepository.GetAllCredentialsAsync().WithCancellation(token))
+        foreach (var cred in credentials)
         {
             cred.DownloadUsage = 0;
         }
