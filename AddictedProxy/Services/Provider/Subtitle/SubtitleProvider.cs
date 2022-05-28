@@ -75,7 +75,7 @@ public class SubtitleProvider : ISubtitleProvider
             }
         }
 
-        await using var creds = await _credentialsService.GetLeastUsedCredsAsync(token);
+        await using var creds = await _credentialsService.GetLeastUsedCredsDownloadAsync(token);
 
         //Subtitle isn't complete, no need to store it, just directly return the download stream
         if (!subtitle.Completed)

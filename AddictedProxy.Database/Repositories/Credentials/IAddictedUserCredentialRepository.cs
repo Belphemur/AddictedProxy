@@ -21,4 +21,11 @@ public interface IAddictedUserCredentialRepository
     /// <param name="token"></param>
     /// <returns></returns>
     Task SaveChangesAsync(CancellationToken token);
+
+    /// <summary>
+    /// Get the least used credential for download
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task<AddictedUserCredentials?> GetLeastUsedCredDownloadAsync(CancellationToken token);
 }

@@ -7,16 +7,18 @@ using AddictedProxy.Services.Credentials;
 
 namespace AddictedProxy.Model.Crendentials;
 
-public class CredsContainer : IAsyncDisposable
+public class CredsContainerNormalUsage : ICredsContainer
 {
     private readonly AddictedUserCredentials _addictedUserCredentials;
+    private readonly bool _forDownloadOperation;
     private readonly ICredentialsService _credentialsService;
 
     private bool _isCredentialsCalled;
 
-    public CredsContainer(ICredentialsService credentialsService, AddictedUserCredentials addictedUserCredentials)
+    public CredsContainerNormalUsage(ICredentialsService credentialsService, AddictedUserCredentials addictedUserCredentials, bool forDownloadOperation)
     {
         _addictedUserCredentials = addictedUserCredentials;
+        _forDownloadOperation = forDownloadOperation;
         _credentialsService = credentialsService;
     }
 
@@ -36,6 +38,6 @@ public class CredsContainer : IAsyncDisposable
             return;
         }
 
-        await _credentialsService.UpdateUsageCredentialsAsync(AddictedUserCredentials, default);
+        await _credentialsService.UpdateUsageCredentialsAsync(AddictedUserCredentials, _forDownloadOperation, default);
     }
 }
