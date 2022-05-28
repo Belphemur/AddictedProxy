@@ -93,7 +93,7 @@ public class Subtitles : Controller
         }
         catch (DownloadLimitExceededException e)
         {
-            return BadRequest(new ErrorResponse(e.Message));
+            return StatusCode(429, e.Message);
         }
     }
 

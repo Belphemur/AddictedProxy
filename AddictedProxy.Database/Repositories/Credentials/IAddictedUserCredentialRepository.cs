@@ -28,4 +28,9 @@ public interface IAddictedUserCredentialRepository
     /// <param name="token"></param>
     /// <returns></returns>
     Task<AddictedUserCredentials?> GetLeastUsedCredDownloadAsync(CancellationToken token);
+
+    /// <summary>
+    /// Get all the credentials
+    /// </summary>
+    IAsyncEnumerable<AddictedUserCredentials> GetAllCredentialsAsync();
 }

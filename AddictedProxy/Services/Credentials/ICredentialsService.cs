@@ -32,4 +32,9 @@ public interface ICredentialsService
     /// <returns></returns>
     /// <exception cref="ArgumentNullException">If no credentials</exception>
     Task<ICredsContainer> GetLeastUsedCredsDownloadAsync(CancellationToken token);
+
+    /// <summary>
+    /// Redeem credentials that are currently expired
+    /// </summary>
+    Task RedeemDownloadCredentialsAsync(DateTime currentDateTime, CancellationToken token);
 }
