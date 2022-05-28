@@ -1,3 +1,10 @@
+### [2.7.3](https://github.com/Belphemur/AddictedProxy/compare/v2.7.2...v2.7.3) (2022-05-28)
+
+
+### Bug Fixes
+
+* **Uplink:** Catch when we can't find the subtitle in uplink ([8ab327c](https://github.com/Belphemur/AddictedProxy/commit/8ab327cb504152a67000d3c4fcfcd6da79024e63))
+
 ### [2.7.2](https://github.com/Belphemur/AddictedProxy/compare/v2.7.1...v2.7.2) (2022-05-28)
 
 
