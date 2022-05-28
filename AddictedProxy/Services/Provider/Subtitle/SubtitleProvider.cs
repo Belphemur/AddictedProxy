@@ -19,6 +19,7 @@ public class SubtitleProvider : ISubtitleProvider
     private readonly ICredentialsService _credentialsService;
     private readonly IJobBuilder _jobBuilder;
     private readonly IJobScheduler _jobScheduler;
+    private readonly ILogger<SubtitleProvider> _logger;
     private readonly IStorageProvider _storageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
 
@@ -27,7 +28,8 @@ public class SubtitleProvider : ISubtitleProvider
                             ISubtitleRepository subtitleRepository,
                             ICredentialsService credentialsService,
                             IJobBuilder jobBuilder,
-                            IJobScheduler jobScheduler)
+                            IJobScheduler jobScheduler,
+                            ILogger<SubtitleProvider> logger)
     {
         _addic7EdDownloader = addic7EdDownloader;
         _storageProvider = storageProvider;
@@ -35,6 +37,7 @@ public class SubtitleProvider : ISubtitleProvider
         _credentialsService = credentialsService;
         _jobBuilder = jobBuilder;
         _jobScheduler = jobScheduler;
+        _logger = logger;
     }
 
     private class SubtitleCounterUpdater : IAsyncDisposable
@@ -73,6 +76,7 @@ public class SubtitleProvider : ISubtitleProvider
             {
                 return stream;
             }
+            _logger.LogWarning("Couldn't find subtitle with path [{path}] in storage, even if we have a path for it", subtitle.StoragePath);
         }
 
         await using var creds = await _credentialsService.GetLeastUsedCredsDownloadAsync(token);
