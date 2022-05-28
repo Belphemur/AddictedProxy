@@ -32,7 +32,7 @@ public class EntityContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite($"Data Source={DbPath};Cache=Shared");
+        optionsBuilder.UseSqlite($"Data Source={DbPath};Cache=Shared", builder => builder.CommandTimeout(45));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
