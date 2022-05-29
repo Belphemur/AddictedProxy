@@ -1,3 +1,16 @@
+### [2.7.4](https://github.com/Belphemur/AddictedProxy/compare/v2.7.3...v2.7.4) (2022-05-29)
+
+
+### Bug Fixes
+
+* **Creds:** Fix issue where not finding credentials throw exception. ([f8a26de](https://github.com/Belphemur/AddictedProxy/commit/f8a26de44e9fa0f68c501383faa3c0be6f6112b8)), closes [#1](https://github.com/Belphemur/AddictedProxy/issues/1)
+
+
+### Enhancements
+
+* **Creds::DownloadExceeded:** Improve the redeem logic of credentials ([658dcd0](https://github.com/Belphemur/AddictedProxy/commit/658dcd066895f090c84bf9587354f39f8771216f))
+* **RateLimiting:** Accept more request per hours ([a76c2ba](https://github.com/Belphemur/AddictedProxy/commit/a76c2ba2ac9e0a1011832024df9934ba5d8f5c1c))
+
 ### [2.7.3](https://github.com/Belphemur/AddictedProxy/compare/v2.7.2...v2.7.3) (2022-05-28)
 
 
