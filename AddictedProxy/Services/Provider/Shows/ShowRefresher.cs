@@ -48,7 +48,7 @@ public class ShowRefresher : IShowRefresher
 
     public async Task RefreshShowsAsync(CancellationToken token)
     {
-        await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
+        await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
         var transaction = _performanceTracker.BeginNestedSpan(nameof(ShowRefresher), "fetch-from-addicted");
 
         var tvShows = await _addic7EdClient.GetTvShowsAsync(credentials.AddictedUserCredentials, token).ToArrayAsync(token);

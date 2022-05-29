@@ -82,7 +82,7 @@ public class EpisodeRefresher : IEpisodeRefresher
     
 
 
-        await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
+        await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
         var episodes = (await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, show, season.Number, token)).ToArray();
         await _episodeRepository.UpsertEpisodes(episodes, token);
         season.LastRefreshed = DateTime.UtcNow;
@@ -130,7 +130,7 @@ public class EpisodeRefresher : IEpisodeRefresher
                 return null;
             }
 
-            await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
+            await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
             var episodes = (await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, show, season.Number, token)).ToArray();
             season.LastRefreshed = DateTime.UtcNow;
             return episodes;

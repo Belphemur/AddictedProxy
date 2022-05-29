@@ -62,7 +62,7 @@ public class SeasonRefresher : ISeasonRefresher
             return;
         }
 
-        await using var credentials = await _credentialsService.GetLeastUsedCredsAsync(token);
+        await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
 
         if (!IsShowNeedsRefresh(show))
         {

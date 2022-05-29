@@ -23,7 +23,7 @@ public interface ICredentialsService
     /// <param name="token"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException">If no crendentials</exception>
-    Task<ICredsContainer> GetLeastUsedCredsAsync(CancellationToken token);
+    Task<ICredsContainer> GetLeastUsedCredsQueryingAsync(CancellationToken token);
 
     /// <summary>
     /// Get the least used credentials for download

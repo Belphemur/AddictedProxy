@@ -20,7 +20,7 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
         _logger = logger;
     }
 
-    public async Task<AddictedUserCredentials?> GetLeastUsedCredAsync(CancellationToken token)
+    public async Task<AddictedUserCredentials?> GetLeastUsedCredQueryingAsync(CancellationToken token)
     {
         try
         {

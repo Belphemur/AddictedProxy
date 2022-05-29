@@ -13,7 +13,7 @@ public interface IAddictedUserCredentialRepository
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<AddictedUserCredentials?> GetLeastUsedCredAsync(CancellationToken token);
+    Task<AddictedUserCredentials?> GetLeastUsedCredQueryingAsync(CancellationToken token);
 
     /// <summary>
     /// Update the data of the creds

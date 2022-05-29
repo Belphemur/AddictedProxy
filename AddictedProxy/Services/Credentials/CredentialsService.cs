@@ -35,9 +35,9 @@ public class CredentialsService : ICredentialsService
     /// <param name="token"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException">If no credentials</exception>
-    public async Task<ICredsContainer> GetLeastUsedCredsAsync(CancellationToken token)
+    public async Task<ICredsContainer> GetLeastUsedCredsQueryingAsync(CancellationToken token)
     {
-        var creds = await _addictedUserCredentialRepository.GetLeastUsedCredAsync(token);
+        var creds = await _addictedUserCredentialRepository.GetLeastUsedCredQueryingAsync(token);
         if (creds == null)
         {
             throw new ArgumentNullException("creds", "Was expecting some user creds");
