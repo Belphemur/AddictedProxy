@@ -61,6 +61,15 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
     }
 
     /// <summary>
+    /// Get credentials that have reach their download limits
+    /// </summary>
+    /// <returns></returns>
+    public IAsyncEnumerable<AddictedUserCredentials> GetDownloadExceededCredentialsAsync()
+    {
+        return _context.AddictedUserCreds.Where(credentials => credentials.DownloadExceededDate != null).ToAsyncEnumerable();
+    }
+
+    /// <summary>
     /// Get all the credentials
     /// </summary>
     public IAsyncEnumerable<AddictedUserCredentials> GetAllCredentialsAsync()

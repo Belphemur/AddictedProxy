@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Repositories.Credentials;
 using AddictedProxy.Database.Transaction;
@@ -66,7 +67,6 @@ public class CredentialsService : ICredentialsService
 
     public async Task UpdateUsageCredentialsAsync(AddictedUserCredentials credentials, bool isDownload, CancellationToken token)
     {
-  
         if (isDownload)
         {
             credentials.DownloadUsage++;
@@ -86,11 +86,11 @@ public class CredentialsService : ICredentialsService
     public async Task RedeemDownloadCredentialsAsync(DateTime currentDateTime, CancellationToken token)
     {
         await using var transaction = await _transactionManager.BeginNestedAsync(token);
-        var credentials = await _addictedUserCredentialRepository.GetAllCredentialsAsync().ToArrayAsync(token);
         var hasRedeemedCreds = false;
-        foreach (var cred in credentials.Where(cred => cred.DownloadExceededDate != null && currentDateTime - cred.DownloadExceededDate >= _refreshConfig.Value.DownloadExceededTimeout))
+        await foreach (var cred in _addictedUserCredentialRepository.GetDownloadExceededCredentialsAsync().Where(cred => currentDateTime - cred.DownloadExceededDate >= _refreshConfig.Value.DownloadExceededTimeout).WithCancellation(token))
         {
             cred.DownloadExceededDate = null;
+            cred.DownloadUsage = 0;
             hasRedeemedCreds = true;
         }
 
@@ -99,10 +99,6 @@ public class CredentialsService : ICredentialsService
             return;
         }
 
-        foreach (var cred in credentials)
-        {
-            cred.DownloadUsage = 0;
-        }
 
         await _addictedUserCredentialRepository.SaveChangesAsync(token);
         await transaction.CommitAsync(token);

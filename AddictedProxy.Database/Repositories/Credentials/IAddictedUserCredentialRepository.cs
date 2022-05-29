@@ -33,4 +33,10 @@ public interface IAddictedUserCredentialRepository
     /// Get all the credentials
     /// </summary>
     IAsyncEnumerable<AddictedUserCredentials> GetAllCredentialsAsync();
+
+    /// <summary>
+    /// Get credentials that have reach their download limits
+    /// </summary>
+    /// <returns></returns>
+    IAsyncEnumerable<AddictedUserCredentials> GetDownloadExceededCredentialsAsync();
 }
