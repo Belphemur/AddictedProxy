@@ -1,3 +1,10 @@
+### [2.7.5](https://github.com/Belphemur/AddictedProxy/compare/v2.7.4...v2.7.5) (2022-05-30)
+
+
+### Bug Fixes
+
+* **DB:** Fix database locked issue ([f169843](https://github.com/Belphemur/AddictedProxy/commit/f169843f192f1d14bd1951320520fd881c6413ff)), closes [#85](https://github.com/Belphemur/AddictedProxy/issues/85)
+
 ### [2.7.4](https://github.com/Belphemur/AddictedProxy/compare/v2.7.3...v2.7.4) (2022-05-29)
 
 
