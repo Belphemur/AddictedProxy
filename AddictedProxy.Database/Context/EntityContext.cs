@@ -15,21 +15,6 @@ public class EntityContext : DbContext
     {
         var folder = Environment.GetEnvironmentVariable("DB_PATH") ?? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         DbPath = Path.Join(folder, "addicted.db");
-        Database.GetDbConnection().StateChange -= OnSqliteDatabaseStateChanged;
-        Database.GetDbConnection().StateChange += OnSqliteDatabaseStateChanged;
-    }
-
-    private void OnSqliteDatabaseStateChanged(object sender, StateChangeEventArgs e)
-    {
-        if (e.CurrentState != ConnectionState.Open)
-        {
-            return;
-        }
-
-        //We're using litestream to do backup of the sqlite database.
-        //They advise to have the busy_timeout set to 5 seconds. To be sure, I'm putting it to 7.5.
-        //https://litestream.io/tips/#busy-timeout
-        Database.ExecuteSqlRaw("PRAGMA busy_timeout = 7500;");
     }
 
     internal EntityContext() : this(new DbContextOptions<EntityContext>())
