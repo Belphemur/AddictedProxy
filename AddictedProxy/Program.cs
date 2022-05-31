@@ -2,6 +2,7 @@
 
 using System.Reflection;
 using AddictedProxy.Controllers.Bootstrap;
+using AddictedProxy.Controllers.Rest.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Model.Performance;
@@ -82,23 +83,6 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage()
        .UseSwaggerUI(options => options.RoutePrefix = "api");
 }
-
-app.UseCors(policyBuilder =>
-{
-    policyBuilder
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials()
-        .WithExposedHeaders("Content-Disposition");
-    if (app.Environment.IsDevelopment())
-    {
-        policyBuilder.SetIsOriginAllowed(_ => true);
-    }
-    else
-    {
-        policyBuilder.SetIsOriginAllowed(hostname => hostname.EndsWith(".gestdown.info"));
-    }
-});
 
 app.UseSwagger(options => options.RouteTemplate = "api/{documentName}/swagger.{json|yaml}");
 

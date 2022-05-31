@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 
 namespace AddictedProxy.Controllers.Bootstrap;
 
-public class BootstrapResponse : IBootstrap, IBootstrapApp
+public class BootstrapResponseCompression : IBootstrap, IBootstrapApp
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {

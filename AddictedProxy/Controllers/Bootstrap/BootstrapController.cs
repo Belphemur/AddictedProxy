@@ -6,7 +6,7 @@ using InversionOfControl.Model;
 
 #endregion
 
-namespace AddictedProxy.Controllers.Bootstrap;
+namespace AddictedProxy.Controllers.Rest.Bootstrap;
 
 public class BootstrapController : IBootstrap, IBootstrapApp
 {
@@ -25,9 +25,25 @@ public class BootstrapController : IBootstrap, IBootstrapApp
         {
             endpointRouteBuilder.MapControllers();
         }
-
-        app.UseResponseCaching();
+        
+        app.UseCors(policyBuilder =>
+        {
+            policyBuilder
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .WithExposedHeaders("Content-Disposition");
+            if (app.ApplicationServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
+            {
+                policyBuilder.SetIsOriginAllowed(_ => true);
+            }
+            else
+            {
+                policyBuilder.SetIsOriginAllowed(hostname => hostname.EndsWith(".gestdown.info"));
+            }
+        });
         app.UseHttpLogging();
+        app.UseResponseCaching();
         app.UseRouting();
         app.UseAuthorization();
     }
