@@ -1,3 +1,11 @@
+## [2.8.0](https://github.com/Belphemur/AddictedProxy/compare/v2.7.7...v2.8.0) (2022-05-31)
+
+
+### Features
+
+* **Caching::Subtitle:** Cache subtitle file in memory for 24h ([b4deb6b](https://github.com/Belphemur/AddictedProxy/commit/b4deb6b1b656511707d3d5b1269c07d66af6fda1))
+* **Response::Caching:** Add proper caching ([ae617a2](https://github.com/Belphemur/AddictedProxy/commit/ae617a257be2586e22be8c18b0c988ae36a55e39))
+
 ## [2.7.7](https://github.com/Belphemur/AddictedProxy/compare/v2.7.6...v2.7.7) (2022-05-31)
 
 
