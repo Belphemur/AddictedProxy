@@ -1,7 +1,7 @@
 #region
 
 using System.Reflection;
-using AddictedProxy.Controllers.Rest.Bootstrap;
+using AddictedProxy.Controllers.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Model.Performance;

@@ -6,7 +6,7 @@ using InversionOfControl.Model;
 
 #endregion
 
-namespace AddictedProxy.Controllers.Rest.Bootstrap;
+namespace AddictedProxy.Controllers.Bootstrap;
 
 public class BootstrapController : IBootstrap, IBootstrapApp
 {
@@ -16,16 +16,17 @@ public class BootstrapController : IBootstrap, IBootstrapApp
             .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>())
             .AddJsonOptions(options => options.JsonSerializerOptions.AddContext<SerializationContext>());
         services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
+        services.AddResponseCaching();
     }
 
     public void ConfigureApp(IApplicationBuilder app)
     {
-        
         if (app is IEndpointRouteBuilder endpointRouteBuilder)
         {
             endpointRouteBuilder.MapControllers();
         }
-        
+
+        app.UseResponseCaching();
         app.UseHttpLogging();
         app.UseRouting();
         app.UseAuthorization();
