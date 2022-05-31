@@ -51,7 +51,6 @@ public class SeasonRefresher : ISeasonRefresher
 
     public async Task RefreshSeasonsAsync(TvShow show, CancellationToken token = default)
     {
-        await using var transaction = await _transactionManager.BeginNestedAsync(token);
         using var span = _performanceTracker.BeginNestedSpan("season", $"refresh-show-seasons for show {show.Name}");
 
         using var namedLock = Lock<SeasonRefresher>.GetNamedLock(show.Id.ToString());
@@ -71,8 +70,8 @@ public class SeasonRefresher : ISeasonRefresher
             return;
         }
 
-
         var seasons = (await _addic7EdClient.GetSeasonsAsync(credentials.AddictedUserCredentials, show, token)).ToArray();
+        await using var transaction = await _transactionManager.BeginNestedAsync(token);
         await _seasonRepository.UpsertSeasonAsync(seasons, token);
         show.LastSeasonRefreshed = DateTime.UtcNow;
         await _tvShowRepository.UpdateShowAsync(show, token);

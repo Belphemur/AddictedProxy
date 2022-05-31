@@ -16,17 +16,15 @@ public class CredentialsService : ICredentialsService
 {
     private readonly IAddictedUserCredentialRepository _addictedUserCredentialRepository;
     private readonly IOptions<RefreshConfig> _refreshConfig;
-    private readonly ITransactionManager _transactionManager;
     private readonly ILogger<CredentialsService> _logger;
 
     public CredentialsService(IAddictedUserCredentialRepository addictedUserCredentialRepository,
-                              IOptions<RefreshConfig> refreshConfig,
-                              ITransactionManager transactionManager,
-                              ILogger<CredentialsService> logger)
+        IOptions<RefreshConfig> refreshConfig,
+        ILogger<CredentialsService> logger
+    )
     {
         _addictedUserCredentialRepository = addictedUserCredentialRepository;
         _refreshConfig = refreshConfig;
-        _transactionManager = transactionManager;
         _logger = logger;
     }
 
@@ -85,7 +83,6 @@ public class CredentialsService : ICredentialsService
     /// </summary>
     public async Task RedeemDownloadCredentialsAsync(DateTime currentDateTime, CancellationToken token)
     {
-        await using var transaction = await _transactionManager.BeginNestedAsync(token);
         var hasRedeemedCreds = false;
         await foreach (var cred in _addictedUserCredentialRepository.GetDownloadExceededCredentialsAsync().Where(cred => currentDateTime - cred.DownloadExceededDate >= _refreshConfig.Value.DownloadExceededTimeout).WithCancellation(token))
         {
@@ -99,8 +96,6 @@ public class CredentialsService : ICredentialsService
             return;
         }
 
-
         await _addictedUserCredentialRepository.SaveChangesAsync(token);
-        await transaction.CommitAsync(token);
     }
 }
