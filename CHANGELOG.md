@@ -1,3 +1,10 @@
+## [2.8.1](https://github.com/Belphemur/AddictedProxy/compare/v2.8.0...v2.8.1) (2022-05-31)
+
+
+### Bug Fixes
+
+* **Database:** No need for pragma busy_timeout. The CommandTimeout is a better pattern that already take care of the different retries strategies when the database is locked. ([a2d90a0](https://github.com/Belphemur/AddictedProxy/commit/a2d90a02c8785854648547f8d7c823b8ff835099))
+
 ## [2.8.0](https://github.com/Belphemur/AddictedProxy/compare/v2.7.7...v2.8.0) (2022-05-31)
 
 
