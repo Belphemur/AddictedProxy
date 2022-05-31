@@ -1,3 +1,10 @@
+## [2.7.6](https://github.com/Belphemur/AddictedProxy/compare/v2.7.5...v2.7.6) (2022-05-30)
+
+
+### Bug Fixes
+
+* **Database:** Only register once the callback on the connection ([d226b6a](https://github.com/Belphemur/AddictedProxy/commit/d226b6a8aa4fa4966f059d8da8038f143f7f0b68))
+
 ### [2.7.5](https://github.com/Belphemur/AddictedProxy/compare/v2.7.4...v2.7.5) (2022-05-30)
 
 
