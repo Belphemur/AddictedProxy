@@ -207,6 +207,11 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: cosign sign $( echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')@${{ steps.build-and-push.outputs.digest }}
+      - name: Clean up old ${{env.IMAGE_NAME}} packages
+        uses: actions/delete-package-versions@v3
+        with:
+          package-name: "${{env.IMAGE_NAME}}"
+          min-versions-to-keep: 10
 
   docker-build-publish-frontend:
     needs: [ main-release]
@@ -282,3 +287,8 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: cosign sign $( echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}" | tr '[:upper:]' '[:lower:]')@${{ steps.build-and-push.outputs.digest }}
+      - name: Clean up old ${{env.IMAGE_NAME_FRONTEND}} packages
+        uses: actions/delete-package-versions@v3
+        with:
+          package-name: "${{env.IMAGE_NAME_FRONTEND}}"
+          min-versions-to-keep: 10
