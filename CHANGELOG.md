@@ -1,3 +1,10 @@
+## [2.7.7](https://github.com/Belphemur/AddictedProxy/compare/v2.7.6...v2.7.7) (2022-05-31)
+
+
+### Bug Fixes
+
+* **Database::Deadlock:** Fix keeping the transaction way too long ([c883fdd](https://github.com/Belphemur/AddictedProxy/commit/c883fddb5075cee17bc1dc3d33d8224627ede6a2)), closes [#87](https://github.com/Belphemur/AddictedProxy/issues/87)
+
 ## [2.7.6](https://github.com/Belphemur/AddictedProxy/compare/v2.7.5...v2.7.6) (2022-05-30)
 
 
