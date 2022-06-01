@@ -13,10 +13,10 @@ env:
   # DOTNET_CLI_TELEMETRY_OPTOUT: true
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   PROJECT_NAME: "AddictedProxy"
+  PROJECT_NAME_FRONTEND: ${{env.PROJECT_NAME}}-frontend
   NODEJS: 16
   DOTNET: "6.0.x"
   DOTNET_PRERELEASE: true
-  CONFIGURATION: "Debug"
   SENTRY_NAME: "addictedproxy"
   SENTRY_ORG: "soundswitch"
   # Use docker.io for Docker Hub if empty
@@ -210,7 +210,7 @@ jobs:
       - name: Clean up old ${{env.IMAGE_NAME}} packages
         uses: actions/delete-package-versions@v3
         with:
-          package-name: "${{env.IMAGE_NAME}}"
+          package-name: "${{env.PROJECT_NAME}}"
           min-versions-to-keep: 10
 
   docker-build-publish-frontend:
@@ -290,5 +290,5 @@ jobs:
       - name: Clean up old ${{env.IMAGE_NAME_FRONTEND}} packages
         uses: actions/delete-package-versions@v3
         with:
-          package-name: "${{env.IMAGE_NAME_FRONTEND}}"
+          package-name: "${{env.PROJECT_NAME_FRONTEND}}"
           min-versions-to-keep: 10
