@@ -34,7 +34,7 @@ public class RefreshHub : Hub<IRefreshClient>
             return;
         }
 
-        var job = _jobBuilder.Create<RefreshShowJob>()
+        var job = _jobBuilder.Create<RefreshSignleShowJob>()
                              .Configure(job => job.Show = show)
                              .Build();
         _jobScheduler.ScheduleJob(job);

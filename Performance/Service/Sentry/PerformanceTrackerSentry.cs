@@ -18,30 +18,35 @@ public class PerformanceTrackerSentry : IPerformanceTracker
     /// </summary>
     public Model.ISpan BeginNestedSpan(string operation, string description)
     {
-        //If the current transaction isn't finished, create a child from it
-        if (_currentSpan is { IsFinished: false })
+        switch (_currentSpan)
         {
-            var span = _currentSpan.StartChild(operation, description);
-            span.OnSpanFinished += OnSpanFinished;
-            return _currentSpan = span;
+            //If the current span isn't finished, create a child from it
+            case { IsFinished: false }:
+            {
+                var span = _currentSpan.StartChild(operation, description);
+                return _currentSpan = span;
+            }
+            //If the span IsFinished, then find the closest parent that isn't
+            case { IsFinished: true }:
+            {
+                var span = _currentSpan.Parent;
+                while (span is { IsFinished: true })
+                {
+                    span = span.Parent;
+                }
+
+                _currentSpan = span;
+                return BeginNestedSpan(operation, description);
+            }
+            case null:
+            {
+                var transaction = _sentryHub.StartTransaction(operation, description);
+                var currentTransaction = new SpanSentry(transaction, null);
+
+                _sentryHub.ConfigureScope(scope => { scope.Transaction = transaction; });
+
+                return _currentSpan = currentTransaction;
+            }
         }
-
-        var transaction = _sentryHub.StartTransaction(operation, description);
-        var currentTransaction = new SpanSentry(transaction, null);
-
-        _sentryHub.ConfigureScope(scope => { scope.Transaction = transaction; });
-        
-        currentTransaction.OnSpanFinished += OnSpanFinished;
-        return _currentSpan = currentTransaction;
-    }
-
-    private void OnSpanFinished(object sender, SpanSentry.SpanFinishedEvent e)
-    {
-        if (e.Span.SpanId != _currentSpan?.SpanId || e.Span.Parent == null)
-        {
-            return;
-        }
-
-        _currentSpan = e.Span.Parent;
     }
 }

@@ -14,10 +14,10 @@ public class BootstrapJobScheduler : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddJob<RefreshShowsJob>();
+        services.AddJob<RefreshAvailableShowsJob>();
         services.AddJobScheduler(
             config => config
-                      .AddStartupJob(builder => builder.Create<RefreshShowsJob>().Build())
+                      .AddStartupJob(builder => builder.Create<RefreshAvailableShowsJob>().Build())
                       .AddStartupJob(builder => builder.Create<DownloadCredsRedeemerJob>().Build())
         );
     }

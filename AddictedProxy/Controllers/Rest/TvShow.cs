@@ -85,7 +85,7 @@ public class TvShows : Controller
             return NotFound();
         }
 
-        var job = _jobBuilder.Create<RefreshShowJob>()
+        var job = _jobBuilder.Create<RefreshSignleShowJob>()
                              .Configure(job => job.Show = show)
                              .Build();
         _jobScheduler.ScheduleJob(job);

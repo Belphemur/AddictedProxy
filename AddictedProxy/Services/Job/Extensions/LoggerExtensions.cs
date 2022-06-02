@@ -13,5 +13,9 @@ public static class LoggerExtensions
     /// <param name="message"></param>
     /// <param name="args"></param>
     // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-    public static void LogJobException(this ILogger logger, JobException exception, [StructuredMessageTemplate] string? message, params object?[] args) => logger.Log(LogLevel.Error, exception.InnerException, message, args);
+    public static void LogJobException(this ILogger logger, JobException exception, [StructuredMessageTemplate] string? message, params object?[] args)
+    {
+        logger.LogInformation("Job exception: {Message}", exception.Message);
+        logger.Log(LogLevel.Error, exception.InnerException, message, args);
+    }
 }
