@@ -1,3 +1,10 @@
+## [2.8.5](https://github.com/Belphemur/AddictedProxy/compare/v2.8.4...v2.8.5) (2022-06-02)
+
+
+### Enhancements
+
+* **Caching:** Add proper information for caching ([e547a64](https://github.com/Belphemur/AddictedProxy/commit/e547a6441636a0744695b16e7d758fe1c92d6043))
+
 ## [2.8.4](https://github.com/Belphemur/AddictedProxy/compare/v2.8.3...v2.8.4) (2022-06-02)
 
 
