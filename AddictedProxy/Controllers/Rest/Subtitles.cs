@@ -70,7 +70,7 @@ public class Subtitles : Controller
     [ProducesResponseType(typeof(ErrorResponse), 400, "application/json")]
     [ProducesResponseType(typeof(string), 429)]
     [HttpGet]
-    [ResponseCache(Duration = 86400, Location = ResponseCacheLocation.Any, NoStore = false)]
+    [ResponseCache(Duration = 86400, Location = ResponseCacheLocation.Any)]
     public async Task<IActionResult> Download([FromRoute] Guid subtitleId, CancellationToken token)
     {
         try
