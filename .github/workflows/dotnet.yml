@@ -141,7 +141,7 @@ jobs:
         include:
           - package: "addictedproxy"
             image: ${{ github.repository }}
-            context: ""."
+            context: "."
           - package: "addictedproxy-frontend"
             image: ${{ github.repository }}-frontend
             context: "addicted.frontend/"
