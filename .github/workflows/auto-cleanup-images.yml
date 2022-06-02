@@ -1,0 +1,21 @@
+name: Delete old container images
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # every day at midnight
+
+
+jobs:
+  clean-ghcr:
+    name: Delete old unused container images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete image older than a week
+        uses: snok/container-retention-policy@v1
+        with:
+          image-names: addictedproxy, addictedproxy-frontend
+          cut-off: A week ago UTC
+          account-type: personal
+          keep-at-least: 10
+          skip-tags: latest
+          token:  ${{ secrets.GIT_HUB_DELETE_PACKAGE }}
