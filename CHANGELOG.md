@@ -1,3 +1,10 @@
+## [2.8.3](https://github.com/Belphemur/AddictedProxy/compare/v2.8.2...v2.8.3) (2022-06-02)
+
+
+### Enhancements
+
+* **Parsing:** Update angle sharp ([71eb40e](https://github.com/Belphemur/AddictedProxy/commit/71eb40eee4ecefa47cfac948847efdf190f1eb62))
+
 ## [2.8.2](https://github.com/Belphemur/AddictedProxy/compare/v2.8.1...v2.8.2) (2022-06-02)
 
 
