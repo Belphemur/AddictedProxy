@@ -1,3 +1,10 @@
+## [2.8.4](https://github.com/Belphemur/AddictedProxy/compare/v2.8.3...v2.8.4) (2022-06-02)
+
+
+### Bug Fixes
+
+* **CoSign:** Fix signing images ([ec7dfdb](https://github.com/Belphemur/AddictedProxy/commit/ec7dfdbf25dfbda6c4b8165553ef9b8b99bf8b5d))
+
 ## [2.8.3](https://github.com/Belphemur/AddictedProxy/compare/v2.8.2...v2.8.3) (2022-06-02)
 
 
