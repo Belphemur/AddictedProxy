@@ -97,7 +97,7 @@ public class FetchSubtitlesJob : IJob
     }
 
     public IRetryAction FailRule { get; } = new ExponentialBackoffRetry(TimeSpan.FromSeconds(5), 5);
-    public TimeSpan? MaxRuntime { get; }
+    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(2);
 
 
     private bool HasMatchingSubtitle(Episode episode)

@@ -70,7 +70,7 @@ public class StoreSubtitleJob : IJob
     }
 
     public IRetryAction FailRule { get; } = new ExponentialBackoffRetry(TimeSpan.FromSeconds(1), 10);
-    public TimeSpan? MaxRuntime { get; }
+    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromSeconds(30);
 
 
     private string GetStorageName(Database.Model.Shows.Subtitle subtitle)

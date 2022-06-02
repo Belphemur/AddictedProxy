@@ -9,13 +9,12 @@ using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
 
-public class RefreshShowsJob : IRecurringJob
+public class RefreshAvailableShowsJob : IRecurringJob
 {
-    private readonly IServiceProvider _serviceProvider;
     private readonly IShowRefresher _showRefresher;
     private readonly IPerformanceTracker _performanceTracker;
 
-    public RefreshShowsJob(IShowRefresher showRefresher, IPerformanceTracker performanceTracker)
+    public RefreshAvailableShowsJob(IShowRefresher showRefresher, IPerformanceTracker performanceTracker)
     {
         _showRefresher = showRefresher;
         _performanceTracker = performanceTracker;

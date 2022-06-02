@@ -11,14 +11,14 @@ using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
 
-public class RefreshShowJob : IJob
+public class RefreshSignleShowJob : IJob
 {
-    private readonly ILogger<RefreshShowJob> _logger;
+    private readonly ILogger<RefreshSignleShowJob> _logger;
     private readonly IShowRefresher _showRefresher;
     private readonly IPerformanceTracker _performanceTracker;
 
     public IRetryAction FailRule { get; } = new ExponentialBackoffRetry(TimeSpan.FromSeconds(30), 3);
-    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(10);
+    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(5);
 
     public TvShow Show { get; set; }
 
@@ -27,7 +27,7 @@ public class RefreshShowJob : IJob
     /// </summary>
     public string? ConnectionId { get; set; }
 
-    public RefreshShowJob(ILogger<RefreshShowJob> logger, IShowRefresher showRefresher, IPerformanceTracker performanceTracker)
+    public RefreshSignleShowJob(ILogger<RefreshSignleShowJob> logger, IShowRefresher showRefresher, IPerformanceTracker performanceTracker)
     {
         _logger = logger;
         _showRefresher = showRefresher;
@@ -38,7 +38,7 @@ public class RefreshShowJob : IJob
     {
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "refresh-specific-show");
 
-        using var namedLock = Lock<RefreshShowJob>.GetNamedLock(Show.Id.ToString());
+        using var namedLock = Lock<RefreshSignleShowJob>.GetNamedLock(Show.Id.ToString());
         if (!await namedLock.WaitAsync(TimeSpan.Zero, cancellationToken))
         {
             _logger.LogInformation("Lock for {show} already taken", Show.Id);
