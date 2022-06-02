@@ -1,3 +1,11 @@
+## [2.8.2](https://github.com/Belphemur/AddictedProxy/compare/v2.8.1...v2.8.2) (2022-06-02)
+
+
+### Enhancements
+
+* **Jobs:** Don't let jobs run forever, put a max runtime to them ([9b3ff0a](https://github.com/Belphemur/AddictedProxy/commit/9b3ff0ae4eff4ebb3933a35c3ddf1d082c771c55))
+* **Performance::Tracking:** Improve the way we deal with the span to track performance ([be9618c](https://github.com/Belphemur/AddictedProxy/commit/be9618cefd84021f081ca284391e7599a1886dbf))
+
 ## [2.8.1](https://github.com/Belphemur/AddictedProxy/compare/v2.8.0...v2.8.1) (2022-05-31)
 
 
