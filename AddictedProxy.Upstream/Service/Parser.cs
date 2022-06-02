@@ -15,7 +15,7 @@ namespace AddictedProxy.Upstream.Service;
 public class Parser
 {
     private readonly IHtmlParser _parser;
-    private readonly Regex _completionRegex = new (@"(?<completion>\d+\.?\d+)%", RegexOptions.Compiled);
+    private readonly Regex _completionRegex = new(@"(?<completion>\d+\.?\d+)%", RegexOptions.Compiled);
 
     public Parser(IHtmlParser parser)
     {
@@ -130,7 +130,7 @@ public class Parser
                                 subtitleRow.CompletionPercentage = 100;
                                 break;
                             }
-                            
+
                             subtitleRow.CompletionPercentage = double.Parse(match.Groups["completion"].Value);
 
                             break;
@@ -146,9 +146,9 @@ public class Parser
                         case 9:
                             var downloadUri = row.Cells[i].FirstElementChild.Attributes["href"].Value;
                             var splitOnSlash = downloadUri
-                                               .Replace("/updated/", "")
-                                               .Replace("/original/", "")
-                                               .Split('/');
+                                .Replace("/updated/", "")
+                                .Replace("/original/", "")
+                                .Split('/');
                             subtitleRow.EpisodeId = int.Parse(splitOnSlash[1]);
                             subtitleRow.Version = int.Parse(splitOnSlash[^1]);
                             subtitleRow.DownloadUri = new Uri(downloadUri, UriKind.Relative);
@@ -164,7 +164,7 @@ public class Parser
         {
             throw new NothingToParseException("No subtitle", null);
         }
- 
+
         var episodeGroups = subtitlesRows.GroupBy(r => (r.Season, r.Number));
 
         foreach (var episodeGroup in episodeGroups.Where(groups => groups.Any()))
