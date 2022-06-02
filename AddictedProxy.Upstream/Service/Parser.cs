@@ -164,7 +164,7 @@ public class Parser
         {
             throw new NothingToParseException("No subtitle", null);
         }
-
+ 
         var episodeGroups = subtitlesRows.GroupBy(r => (r.Season, r.Number));
 
         foreach (var episodeGroup in episodeGroups.Where(groups => groups.Any()))
