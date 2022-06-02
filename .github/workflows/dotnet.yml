@@ -13,7 +13,7 @@ env:
   # DOTNET_CLI_TELEMETRY_OPTOUT: true
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   PROJECT_NAME: "AddictedProxy"
-  PROJECT_NAME_FRONTEND: ${{env.PROJECT_NAME}}-frontend
+  PROJECT_NAME_FRONTEND: "AddictedProxy-frontend"
   NODEJS: 16
   DOTNET: "6.0.x"
   DOTNET_PRERELEASE: true
