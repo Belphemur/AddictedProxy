@@ -144,6 +144,8 @@ jobs:
       id-token: write
 
     steps:
+      - name: Set PACKAGE_NAME
+        run:  echo "PACKAGE_NAME=${PROJECT_NAME,,}" >>${GITHUB_ENV}
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
@@ -208,7 +210,7 @@ jobs:
       - name: Clean up old ${{env.IMAGE_NAME}} packages
         uses: actions/delete-package-versions@v3
         with:
-          package-name: "${{env.PROJECT_NAME}}"
+          package-name: "${{env.PACKAGE_NAME}}"
           min-versions-to-keep: 10
 
   docker-build-publish-frontend:
@@ -222,6 +224,8 @@ jobs:
       id-token: write
 
     steps:
+      - name: Set PACKAGE_NAME
+        run:  echo "PACKAGE_NAME=${PROJECT_NAME_FRONTEND,,}" >>${GITHUB_ENV}
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
@@ -286,5 +290,5 @@ jobs:
       - name: Clean up old ${{env.IMAGE_NAME_FRONTEND}} packages
         uses: actions/delete-package-versions@v3
         with:
-          package-name: "${{env.PROJECT_NAME_FRONTEND}}"
+          package-name: "${{env.PACKAGE_NAME}}"
           min-versions-to-keep: 10
