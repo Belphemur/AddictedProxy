@@ -1,3 +1,25 @@
+## [2.8.1](https://github.com/Belphemur/AddictedProxy/compare/v2.8.0...v2.8.1) (2022-05-31)
+
+
+### Bug Fixes
+
+* **Database:** No need for pragma busy_timeout. The CommandTimeout is a better pattern that already take care of the different retries strategies when the database is locked. ([a2d90a0](https://github.com/Belphemur/AddictedProxy/commit/a2d90a02c8785854648547f8d7c823b8ff835099))
+
+## [2.8.0](https://github.com/Belphemur/AddictedProxy/compare/v2.7.7...v2.8.0) (2022-05-31)
+
+
+### Features
+
+* **Caching::Subtitle:** Cache subtitle file in memory for 24h ([b4deb6b](https://github.com/Belphemur/AddictedProxy/commit/b4deb6b1b656511707d3d5b1269c07d66af6fda1))
+* **Response::Caching:** Add proper caching ([ae617a2](https://github.com/Belphemur/AddictedProxy/commit/ae617a257be2586e22be8c18b0c988ae36a55e39))
+
+## [2.7.7](https://github.com/Belphemur/AddictedProxy/compare/v2.7.6...v2.7.7) (2022-05-31)
+
+
+### Bug Fixes
+
+* **Database::Deadlock:** Fix keeping the transaction way too long ([c883fdd](https://github.com/Belphemur/AddictedProxy/commit/c883fddb5075cee17bc1dc3d33d8224627ede6a2)), closes [#87](https://github.com/Belphemur/AddictedProxy/issues/87)
+
 ## [2.7.6](https://github.com/Belphemur/AddictedProxy/compare/v2.7.5...v2.7.6) (2022-05-30)
 
 
