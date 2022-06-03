@@ -15,6 +15,7 @@ internal class BootstrapRegister : IDisposable
 {
     private Dictionary<Assembly, Type[]>? _assemblyTypeCache = new();
     private readonly Type _bootstrapType = typeof(IBootstrap);
+    private readonly Type _bootstrapConditionalType = typeof(IBootstrapConditional);
     private readonly Type _bootstrapEnv = typeof(IBootstrapEnvironmentVariable<,>);
     private readonly Type _bootstrapApp = typeof(IBootstrapApp);
     private readonly Type _envVarRegistrationType = typeof(EnvVarRegistration<,>);
@@ -65,9 +66,18 @@ internal class BootstrapRegister : IDisposable
             foreach (var type in types)
             {
                 object? bootstrap = null;
+                if (_bootstrapConditionalType.IsAssignableFrom(type))
+                {
+                    bootstrap ??= Activator.CreateInstance(type);
+                    if (!((IBootstrapConditional)bootstrap).ShouldLoadBootstrap(configuration))
+                    {
+                        Console.Out.WriteLine($"[Bootstrap] Condition not met to load boostrap: {type}");
+                        continue;
+                    }
+                }
                 if (_bootstrapType.IsAssignableFrom(type))
                 {
-                    bootstrap = Activator.CreateInstance(type);
+                    bootstrap ??= Activator.CreateInstance(type);
                     ((IBootstrap)bootstrap).ConfigureServices(services, configuration);
                 }
 
