@@ -12,14 +12,15 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="AWSSDK.S3" Version="3.7.9.11" />
         <PackageReference Include="IsExternalInit" Version="1.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
-        <PackageReference Include="uplink.NET" Version="2.9.2659" />
-        <PackageReference Include="uplink.NET.Win" Version="2.9.2659" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
-        <PackageReference Include="uplink.NET.Linux" Version="2.9.2659" Condition="$([MSBuild]::IsOsPlatform('Linux'))" />
+        <PackageReference Include="uplink.NET" Version="2.9.2650" />
+        <PackageReference Include="uplink.NET.Win" Version="2.9.2650" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
+        <PackageReference Include="uplink.NET.Linux" Version="2.9.2650" Condition="$([MSBuild]::IsOsPlatform('Linux'))" />
     </ItemGroup>
 
 </Project>

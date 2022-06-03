@@ -1,14 +1,14 @@
 ﻿#region
 
 using AddictedProxy.Storage.Compressor;
-using AddictedProxy.Storage.Store.Boostrap.EnvVar;
+using AddictedProxy.Storage.Store.Uplink.Bootstrap.EnvVar;
 using uplink.NET.Exceptions;
 using uplink.NET.Models;
 using uplink.NET.Services;
 
 #endregion
 
-namespace AddictedProxy.Storage.Store;
+namespace AddictedProxy.Storage.Store.Uplink;
 
 public class UplinkStorageProvider : IStorageProvider
 {

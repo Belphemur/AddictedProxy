@@ -1,13 +1,12 @@
 ﻿#region
 
-using AddictedProxy.Storage.Compressor;
 using InversionOfControl.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 #endregion
 
-namespace AddictedProxy.Storage.Bootstrap;
+namespace AddictedProxy.Storage.Compressor.Bootstrap;
 
 public class BootstrapCompressor : IBootstrap
 {

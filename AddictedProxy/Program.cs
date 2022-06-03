@@ -6,7 +6,7 @@ using AddictedProxy.Controllers.Rest.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Model.Performance;
-using AddictedProxy.Storage.Bootstrap;
+using AddictedProxy.Storage.Compressor.Bootstrap;
 using AddictedProxy.Upstream.Boostrap;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.EntityFrameworkCore;

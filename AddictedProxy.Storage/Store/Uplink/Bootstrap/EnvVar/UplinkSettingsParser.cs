@@ -4,7 +4,7 @@ using InversionOfControl.Service.EnvironmentVariable.Parser;
 
 #endregion
 
-namespace AddictedProxy.Storage.Store.Boostrap.EnvVar;
+namespace AddictedProxy.Storage.Store.Uplink.Bootstrap.EnvVar;
 
 public class UplinkSettingsParser : IEnvVarParser<UplinkSettings>
 {
