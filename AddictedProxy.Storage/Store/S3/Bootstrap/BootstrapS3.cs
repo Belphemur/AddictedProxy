@@ -10,7 +10,7 @@ public class BootstrapS3 : IBootstrapConditional, IBootstrapEnvironmentVariable<
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        
+        services.AddSingleton<IStorageProvider, S3StorageProvider>();
     }
 
     public bool ShouldLoadBootstrap(IConfiguration configuration)
@@ -18,5 +18,5 @@ public class BootstrapS3 : IBootstrapConditional, IBootstrapEnvironmentVariable<
         return Environment.GetEnvironmentVariable("STORAGE") == "s3";
     }
 
-    public EnvVarRegistration<S3Config, S3ConfigParser> EnvVarRegistration { get; } = new("S3_GATEWAY", "S3_ACCESS", "S3_SECRET");
+    public EnvVarRegistration<S3Config, S3ConfigParser> EnvVarRegistration { get; } = new("S3_GATEWAY", "S3_ACCESS", "S3_SECRET", "S3_BUCKET");
 }
