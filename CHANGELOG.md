@@ -1,3 +1,11 @@
+## [2.9.0](https://github.com/Belphemur/AddictedProxy/compare/v2.8.5...v2.9.0) (2022-06-03)
+
+
+### Features
+
+* **Bootstrap::Conditional:** Add conditional bootstrap ([70ffcab](https://github.com/Belphemur/AddictedProxy/commit/70ffcabfeb955c78f83ae83e3cfc9c6598502c14))
+* **Storage::S3:** Add support for S3 ([1384b74](https://github.com/Belphemur/AddictedProxy/commit/1384b7429393c90fbef145341ebf66430170a06a))
+
 ## [2.8.5](https://github.com/Belphemur/AddictedProxy/compare/v2.8.4...v2.8.5) (2022-06-02)
 
 
