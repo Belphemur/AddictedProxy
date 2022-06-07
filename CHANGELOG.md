@@ -1,3 +1,11 @@
+## [2.9.1](https://github.com/Belphemur/AddictedProxy/compare/v2.9.0...v2.9.1) (2022-06-07)
+
+
+### Enhancements
+
+* **DownloadCount:** Always increment the download count even when response comes from cache ([5baad0f](https://github.com/Belphemur/AddictedProxy/commit/5baad0f87e77a1c5e4805bcb73aa2ed360417213))
+* **RateLimiting:** Be less restrictive on the rate limiting ([22fca37](https://github.com/Belphemur/AddictedProxy/commit/22fca37c00812efa27b2cde70f9726333d84e779))
+
 ## [2.9.0](https://github.com/Belphemur/AddictedProxy/compare/v2.8.5...v2.9.0) (2022-06-03)
 
 
