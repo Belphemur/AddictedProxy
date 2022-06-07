@@ -24,26 +24,26 @@ namespace AddictedProxy.Controllers.Rest;
 
 [ApiController]
 [Route("subtitles")]
-public class Subtitles : Controller
+public class SubtitlesController : Controller
 {
     private readonly CultureParser _cultureParser;
     private readonly IEpisodeRepository _episodeRepository;
     private readonly IJobBuilder _jobBuilder;
     private readonly IJobScheduler _jobScheduler;
-    private readonly ILogger<Subtitles> _logger;
+    private readonly ILogger<SubtitlesController> _logger;
     private readonly ISeasonRefresher _seasonRefresher;
     private readonly IEpisodeRefresher _episodeRefresher;
     private readonly IShowRefresher _showRefresher;
     private readonly ISubtitleProvider _subtitleProvider;
     private readonly Regex _searchPattern = new(@"(?<show>.+)S(?<season>\d+)E(?<episode>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    public Subtitles(IEpisodeRepository episodeRepository,
+    public SubtitlesController(IEpisodeRepository episodeRepository,
         CultureParser cultureParser,
         IShowRefresher showRefresher,
         ISubtitleProvider subtitleProvider,
         IJobBuilder jobBuilder,
         IJobScheduler jobScheduler,
-        ILogger<Subtitles> logger,
+        ILogger<SubtitlesController> logger,
         ISeasonRefresher seasonRefresher,
         IEpisodeRefresher episodeRefresher)
     {
