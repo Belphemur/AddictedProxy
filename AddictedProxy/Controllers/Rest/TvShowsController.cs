@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AddictedProxy.Controllers.Rest;
 
 [Route("shows")]
-public class TvShows : Controller
+public class TvShowsController : Controller
 {
     private readonly IShowRefresher _showRefresher;
     private readonly IJobBuilder _jobBuilder;
@@ -34,7 +34,7 @@ public class TvShows : Controller
 
     public record ShowSearchResponse(IAsyncEnumerable<ShowDto> Shows);
 
-    public TvShows(IShowRefresher showRefresher, IJobBuilder jobBuilder, IJobScheduler jobScheduler, IEpisodeRepository episodeRepository, CultureParser cultureParser)
+    public TvShowsController(IShowRefresher showRefresher, IJobBuilder jobBuilder, IJobScheduler jobScheduler, IEpisodeRepository episodeRepository, CultureParser cultureParser)
     {
         _showRefresher = showRefresher;
         _jobBuilder = jobBuilder;

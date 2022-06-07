@@ -19,7 +19,8 @@ public class BootstrapController : IBootstrap, IBootstrapApp
             .AddJsonOptions(options => options.JsonSerializerOptions.AddContext<SerializationContext>());
         services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
         services.AddResponseCaching();
-        services.AddScoped<DefaultResponseCachingMiddleware>();
+        services.AddSingleton<DefaultResponseCachingMiddleware>();
+        services.AddSingleton<SubtitleIncrementDownloadMiddleware>();
     }
 
     public void ConfigureApp(IApplicationBuilder app)
@@ -45,12 +46,13 @@ public class BootstrapController : IBootstrap, IBootstrapApp
                 policyBuilder.SetIsOriginAllowed(hostname => hostname.EndsWith(".gestdown.info"));
             }
         });
-        app.UseHttpLogging();
-        app.UseResponseCaching();
 
+        app.UseHttpLogging();
+        app.UseMiddleware<SubtitleIncrementDownloadMiddleware>();
+        app.UseResponseCaching();
         app.UseMiddleware<DefaultResponseCachingMiddleware>();
-        
         app.UseRouting();
         app.UseAuthorization();
+        
     }
 }

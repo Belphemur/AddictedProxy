@@ -13,7 +13,7 @@ using Job.Scheduler.Scheduler;
 
 namespace AddictedProxy.Services.Provider.Subtitle;
 
-public class SubtitleProvider : ISubtitleProvider
+public  class SubtitleProvider : ISubtitleProvider
 {
     private readonly IAddic7edDownloader _addic7EdDownloader;
     private readonly ICredentialsService _credentialsService;
@@ -40,24 +40,6 @@ public class SubtitleProvider : ISubtitleProvider
         _logger = logger;
     }
 
-    private class SubtitleCounterUpdater : IAsyncDisposable
-    {
-        private readonly ISubtitleRepository _subtitleRepository;
-        private readonly Database.Model.Shows.Subtitle _subtitle;
-
-        public SubtitleCounterUpdater(ISubtitleRepository subtitleRepository, Database.Model.Shows.Subtitle subtitle)
-        {
-            _subtitleRepository = subtitleRepository;
-            _subtitle = subtitle;
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            _subtitle.DownloadCount++;
-            await _subtitleRepository.SaveChangeAsync(CancellationToken.None);
-        }
-    }
-
     /// <summary>
     /// Get the subtitle file stream
     /// </summary>
@@ -66,8 +48,7 @@ public class SubtitleProvider : ISubtitleProvider
     /// <exception cref="DownloadLimitExceededException">When we reach limit in Addicted to download the subtitle</exception>
     /// <returns></returns>
     public async Task<Stream> GetSubtitleFileAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token)
-    {
-        await using var subDownloadUpdater = new SubtitleCounterUpdater(_subtitleRepository, subtitle);
+    { 
         //We have the subtitle stored
         if (subtitle.StoragePath != null)
         {

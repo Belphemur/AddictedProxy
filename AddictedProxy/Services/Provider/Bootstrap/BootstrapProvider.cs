@@ -28,5 +28,6 @@ public class BootstrapProvider : IBootstrap
         services.AddScoped<IEpisodeRefresher, EpisodeRefresher>();
         services.Configure<RefreshConfig>(configuration.GetSection("Refresh"));
         services.AddSingleton<IRefreshHubManager, RefreshHubManager>();
+        services.AddScoped<SubtitleCounterUpdater>();
     }
 }
