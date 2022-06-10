@@ -11,6 +11,7 @@ public class DownloadCredsRedeemerJob : IRecurringJob
     private readonly ILogger<DownloadCredsRedeemerJob> _logger;
     private readonly ICredentialsService _credentialsService;
     private readonly IPerformanceTracker _performanceTracker;
+    private DateTime? _lastRun = DateTime.UtcNow;
 
     public DownloadCredsRedeemerJob(ILogger<DownloadCredsRedeemerJob> logger, ICredentialsService credentialsService, IPerformanceTracker performanceTracker)
     {
@@ -19,10 +20,12 @@ public class DownloadCredsRedeemerJob : IRecurringJob
         _performanceTracker = performanceTracker;
     }
 
-    public Task ExecuteAsync(CancellationToken cancellationToken)
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         using var span = _performanceTracker.BeginNestedSpan(nameof(DownloadCredsRedeemerJob), "redeeming-expired-dl-creds"); 
-        return _credentialsService.RedeemDownloadCredentialsAsync(DateTime.UtcNow, cancellationToken);
+        _logger.LogInformation("Running redeem creds job, last time: {DateTime}", _lastRun);
+        await _credentialsService.RedeemDownloadCredentialsAsync(DateTime.UtcNow, cancellationToken);
+        _lastRun = DateTime.UtcNow;
     }
 
     public Task OnFailure(JobException exception)

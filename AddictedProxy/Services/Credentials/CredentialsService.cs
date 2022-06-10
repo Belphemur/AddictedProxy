@@ -65,14 +65,19 @@ public class CredentialsService : ICredentialsService
 
     public async Task UpdateUsageCredentialsAsync(AddictedUserCredentials credentials, bool isDownload, CancellationToken token)
     {
+        int count;
+        string usageType;
         if (isDownload)
         {
-            credentials.DownloadUsage++;
+            count = ++credentials.DownloadUsage;
+            usageType = "download";
         }
         else
         {
-            credentials.Usage++;
+            count = ++credentials.Usage;
+            usageType = "querying";
         }
+        _logger.LogInformation("Update usage of {Cred} to {Count} for {Type}", credentials.Id, count, usageType);
 
         credentials.LastUsage = DateTime.UtcNow;
         await _addictedUserCredentialRepository.SaveChangesAsync(token);
@@ -84,12 +89,16 @@ public class CredentialsService : ICredentialsService
     public async Task RedeemDownloadCredentialsAsync(DateTime currentDateTime, CancellationToken token)
     {
         var hasRedeemedCreds = false;
+        _logger.LogInformation("[Redeem] Fetching creds to be redeemed for download usage");
+        var ids = new List<long>();
         await foreach (var cred in _addictedUserCredentialRepository.GetDownloadExceededCredentialsAsync().Where(cred => currentDateTime - cred.DownloadExceededDate >= _refreshConfig.Value.DownloadExceededTimeout).WithCancellation(token))
         {
             cred.DownloadExceededDate = null;
             cred.DownloadUsage = 0;
             hasRedeemedCreds = true;
+            ids.Add(cred.Id);
         }
+        _logger.LogInformation("[Redeem] Redeemed those creds: [{Ids}]", string.Join(", ", ids));
 
         if (!hasRedeemedCreds)
         {
