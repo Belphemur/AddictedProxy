@@ -1,3 +1,11 @@
+## [2.9.2](https://github.com/Belphemur/AddictedProxy/compare/v2.9.1...v2.9.2) (2022-06-10)
+
+
+### Enhancements
+
+* **DownwloadCreds:** Set a proper max runtime to avoid lingering job. ([e9361d8](https://github.com/Belphemur/AddictedProxy/commit/e9361d84f176d587f0263785ab9944f447f1aac8))
+* **Logging:** Improve logging of redeeming download creds ([64b4da0](https://github.com/Belphemur/AddictedProxy/commit/64b4da05dd1eb17a36addc8ed7375b5d5625912a))
+
 ## [2.9.1](https://github.com/Belphemur/AddictedProxy/compare/v2.9.0...v2.9.1) (2022-06-07)
 
 
