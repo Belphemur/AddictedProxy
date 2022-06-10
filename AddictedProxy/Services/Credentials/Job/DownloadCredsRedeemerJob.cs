@@ -35,6 +35,6 @@ public class DownloadCredsRedeemerJob : IRecurringJob
     }
 
     public IRetryAction FailRule { get; } = new AlwaysRetry();
-    public TimeSpan? MaxRuntime { get; }
+    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(1);
     public TimeSpan Delay { get; } = TimeSpan.FromHours(1);
 }
