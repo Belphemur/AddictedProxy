@@ -38,14 +38,14 @@ public class SubtitlesController : Controller
     private readonly Regex _searchPattern = new(@"(?<show>.+)S(?<season>\d+)E(?<episode>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public SubtitlesController(IEpisodeRepository episodeRepository,
-        CultureParser cultureParser,
-        IShowRefresher showRefresher,
-        ISubtitleProvider subtitleProvider,
-        IJobBuilder jobBuilder,
-        IJobScheduler jobScheduler,
-        ILogger<SubtitlesController> logger,
-        ISeasonRefresher seasonRefresher,
-        IEpisodeRefresher episodeRefresher)
+                               CultureParser cultureParser,
+                               IShowRefresher showRefresher,
+                               ISubtitleProvider subtitleProvider,
+                               IJobBuilder jobBuilder,
+                               IJobScheduler jobScheduler,
+                               ILogger<SubtitlesController> logger,
+                               ISeasonRefresher seasonRefresher,
+                               IEpisodeRefresher episodeRefresher)
     {
         _episodeRepository = episodeRepository;
         _cultureParser = cultureParser;
