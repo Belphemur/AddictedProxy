@@ -49,6 +49,29 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "api" */ "../views/ApiView.vue"),
   },
+  {
+    path: "/Stats/Top/10",
+    name: "Top 10 Shows",
+    meta: {
+      icon: Collection,
+      title: "Gestdown: Top 10 shows",
+      metaTags: [
+        {
+          name: "description",
+          content: "Top 10 shows by popularity",
+        },
+        {
+          property: "og:description",
+          content: "Top 10 shows by popularity",
+        },
+      ],
+    },
+    // route level code-splitting
+    // this generates a separate chunk (api.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(/* webpackChunkName: "stats" */ "../views/StatsView.vue"),
+  },
 ];
 
 const router = createRouter({

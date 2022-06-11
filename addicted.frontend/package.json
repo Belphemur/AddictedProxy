@@ -13,6 +13,7 @@
     "@microsoft/signalr": "^6.0.5",
     "@vueuse/core": "^8.4.2",
     "all-iso-language-codes": "^1.0.5",
+    "chart.js": "^3.8.0",
     "core-js": "^3.8.3",
     "element-plus": "^2.2.0",
     "isomorphic-fetch": "^3.0.0",
@@ -21,10 +22,10 @@
     "swagger-ui": "^4.11.1",
     "url": "^0.11.0",
     "vue": "^3.2.13",
+    "vue-chartjs": "^4.1.1",
     "vue-class-component": "^8.0.0-0",
     "vue-material-design-icons": "^5.0.0",
-    "vue-router": "^4.0.3",
-    "vue3-apexcharts": "^1.4.1"
+    "vue-router": "^4.0.3"
   },
   "devDependencies": {
     "@types/jest": "^27.0.1",
