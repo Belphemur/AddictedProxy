@@ -14,4 +14,6 @@ public class ShowPopularity
     public string Language { get; set; }
     
     public long RequestedCount { get; set; }
+    
+    public DateTime? LastRequestedDate { get; set; }
 }
