@@ -1,3 +1,17 @@
+## [2.9.3](https://github.com/Belphemur/AddictedProxy/compare/v2.9.2...v2.9.3) (2022-06-11)
+
+
+### Bug Fixes
+
+* **Frontend::Router:** Issue with order of route ([d5cb7fa](https://github.com/Belphemur/AddictedProxy/commit/d5cb7fa80f1fc1351b1846d8f891797c8ea5f2dd))
+* **Middleware:** Don't use weird middleware to track subtitle download ([58efe87](https://github.com/Belphemur/AddictedProxy/commit/58efe878321462ce678f8d4eadb8678ab5b7a5bc))
+
+
+### Enhancements
+
+* **PerformanceTracking:** Not much transactions for now so we can keep the performance sample rate at 1 ([5612633](https://github.com/Belphemur/AddictedProxy/commit/56126334d76d9f81e3aa1f207f00b639c1631552))
+* **RateLimiting:** Be less limiting ([c0cd412](https://github.com/Belphemur/AddictedProxy/commit/c0cd4126df2d0efcdb67b6b0d1c617e281f90410))
+
 ## [2.9.2](https://github.com/Belphemur/AddictedProxy/compare/v2.9.1...v2.9.2) (2022-06-10)
 
 
