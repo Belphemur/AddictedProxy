@@ -21,7 +21,7 @@ public class StatsController : Controller
     /// <param name="token"></param>
     /// <returns></returns>
     [HttpGet]
-    [ResponseCache(Duration = 86400, Location = ResponseCacheLocation.Any)]
+    [ResponseCache(Duration = 6 * 3600, Location = ResponseCacheLocation.Any)]
     [Route("top/{top:range(1,50)}")]
     public ActionResult<IAsyncEnumerable<TopShowDto>> GetTopShows([FromRoute] int top, CancellationToken token)
     {
