@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import { Search, Collection } from "@element-plus/icons-vue";
+import { Search, Collection, DataLine } from "@element-plus/icons-vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -8,6 +8,7 @@ const routes: Array<RouteRecordRaw> = [
     name: "Home",
     component: HomeView,
     meta: {
+      order: 10,
       icon: Search,
       title: "Gestdown: Addic7ed Proxy",
       metaTags: [
@@ -28,6 +29,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/Api",
     name: "Api",
     meta: {
+      order: 20,
       icon: Collection,
       title: "Gestdown: API Documentation",
       metaTags: [
@@ -53,7 +55,8 @@ const routes: Array<RouteRecordRaw> = [
     path: "/Stats/Top/10",
     name: "Top 10 Shows",
     meta: {
-      icon: Collection,
+      order: 30,
+      icon: DataLine,
       title: "Gestdown: Top 10 shows",
       metaTags: [
         {
