@@ -6,6 +6,7 @@ using AddictedProxy.Controllers.Rest.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Model.Performance;
+using AddictedProxy.Stats.Popularity.Bootstrap;
 using AddictedProxy.Storage.Compressor.Bootstrap;
 using AddictedProxy.Upstream.Boostrap;
 using InversionOfControl.Service.Bootstrap;
@@ -52,7 +53,8 @@ var currentAssemblies = new[]
     typeof(BootstrapDatabase).Assembly,
     typeof(BootstrapCompressor).Assembly,
     typeof(BootstrapAddictedServices).Assembly,
-    typeof(BootstrapPerformance).Assembly
+    typeof(BootstrapPerformance).Assembly,
+    typeof(BootstrapStatsPopularityShow).Assembly
 };
 
 builder.Services

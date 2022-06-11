@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import { Search, Collection } from "@element-plus/icons-vue";
+import { Search, Collection, DataLine } from "@element-plus/icons-vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -8,6 +8,7 @@ const routes: Array<RouteRecordRaw> = [
     name: "Home",
     component: HomeView,
     meta: {
+      order: 10,
       icon: Search,
       title: "Gestdown: Addic7ed Proxy",
       metaTags: [
@@ -28,6 +29,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/Api",
     name: "Api",
     meta: {
+      order: 20,
       icon: Collection,
       title: "Gestdown: API Documentation",
       metaTags: [
@@ -48,6 +50,30 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "api" */ "../views/ApiView.vue"),
+  },
+  {
+    path: "/Stats/Top/10",
+    name: "Top 10 Shows",
+    meta: {
+      order: 30,
+      icon: DataLine,
+      title: "Gestdown: Top 10 shows",
+      metaTags: [
+        {
+          name: "description",
+          content: "Top 10 shows by popularity",
+        },
+        {
+          property: "og:description",
+          content: "Top 10 shows by popularity",
+        },
+      ],
+    },
+    // route level code-splitting
+    // this generates a separate chunk (api.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(/* webpackChunkName: "stats" */ "../views/StatsView.vue"),
   },
 ];
 

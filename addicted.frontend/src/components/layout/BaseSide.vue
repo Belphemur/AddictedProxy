@@ -10,7 +10,9 @@
           />
           <el-menu-item-group>
             <el-menu-item
-              v-for="route in $router.getRoutes()"
+              v-for="route in $router
+                .getRoutes()
+                .sort((a, b) => a.meta.order > b.meta.order)"
               v-bind:key="route.path"
               :route="route"
               :index="route.path"

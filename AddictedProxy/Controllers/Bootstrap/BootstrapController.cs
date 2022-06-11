@@ -20,7 +20,6 @@ public class BootstrapController : IBootstrap, IBootstrapApp
         services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
         services.AddResponseCaching();
         services.AddSingleton<DefaultResponseCachingMiddleware>();
-        services.AddSingleton<SubtitleIncrementDownloadMiddleware>();
     }
 
     public void ConfigureApp(IApplicationBuilder app)
@@ -48,7 +47,6 @@ public class BootstrapController : IBootstrap, IBootstrapApp
         });
 
         app.UseHttpLogging();
-        app.UseMiddleware<SubtitleIncrementDownloadMiddleware>();
         app.UseResponseCaching();
         app.UseMiddleware<DefaultResponseCachingMiddleware>();
         app.UseRouting();

@@ -3,6 +3,7 @@
 using System.Data;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Database.Model.Stats;
 using Microsoft.EntityFrameworkCore;
 
 #endregion
@@ -25,6 +26,8 @@ public class EntityContext : DbContext
     public DbSet<Subtitle> Subtitles { get; set; } = null!;
     public DbSet<Episode> Episodes { get; set; } = null!;
     public DbSet<Season> Seasons { get; set; } = null!;
+    
+    public DbSet<ShowPopularity> ShowPopularity { get; set; } = null!;
 
     public DbSet<AddictedUserCredentials> AddictedUserCreds { get; set; } = null!;
 
@@ -41,5 +44,7 @@ public class EntityContext : DbContext
         modelBuilder.Entity<TvShow>()
                     .Property(c => c.Name)
                     .UseCollation("NOCASE");
+
+        modelBuilder.Entity<ShowPopularity>().HasKey(popularity => new { popularity.TvShowId, popularity.Language });
     }
 }

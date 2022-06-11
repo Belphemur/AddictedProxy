@@ -41,7 +41,7 @@ public class StoreSubtitleJob : IJob
             return;
         }
 
-        using var transaction = _performanceTracker.BeginNestedSpan(nameof(StoreSubtitleJob), "store");
+        using var span = _performanceTracker.BeginNestedSpan(nameof(StoreSubtitleJob), "store");
 
         _logger.LogInformation("Saving subtitle {subtitleId} into the storage", SubtitleId);
         var subtitle = await _subtitleRepository.GetSubtitleByGuidAsync(SubtitleId, true, false, cancellationToken);

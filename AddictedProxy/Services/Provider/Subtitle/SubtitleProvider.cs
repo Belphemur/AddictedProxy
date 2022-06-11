@@ -13,13 +13,14 @@ using Job.Scheduler.Scheduler;
 
 namespace AddictedProxy.Services.Provider.Subtitle;
 
-public  class SubtitleProvider : ISubtitleProvider
+internal class SubtitleProvider : ISubtitleProvider
 {
     private readonly IAddic7edDownloader _addic7EdDownloader;
     private readonly ICredentialsService _credentialsService;
     private readonly IJobBuilder _jobBuilder;
     private readonly IJobScheduler _jobScheduler;
     private readonly ILogger<SubtitleProvider> _logger;
+    private readonly SubtitleCounterUpdater _subtitleCounterUpdater;
     private readonly IStorageProvider _storageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
 
@@ -29,7 +30,8 @@ public  class SubtitleProvider : ISubtitleProvider
                             ICredentialsService credentialsService,
                             IJobBuilder jobBuilder,
                             IJobScheduler jobScheduler,
-                            ILogger<SubtitleProvider> logger)
+                            ILogger<SubtitleProvider> logger,
+                            SubtitleCounterUpdater subtitleCounterUpdater)
     {
         _addic7EdDownloader = addic7EdDownloader;
         _storageProvider = storageProvider;
@@ -38,6 +40,7 @@ public  class SubtitleProvider : ISubtitleProvider
         _jobBuilder = jobBuilder;
         _jobScheduler = jobScheduler;
         _logger = logger;
+        _subtitleCounterUpdater = subtitleCounterUpdater;
     }
 
     /// <summary>
@@ -48,15 +51,17 @@ public  class SubtitleProvider : ISubtitleProvider
     /// <exception cref="DownloadLimitExceededException">When we reach limit in Addicted to download the subtitle</exception>
     /// <returns></returns>
     public async Task<Stream> GetSubtitleFileAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token)
-    { 
+    {
         //We have the subtitle stored
         if (subtitle.StoragePath != null)
         {
             var stream = await _storageProvider.DownloadAsync(subtitle.StoragePath, token);
             if (stream != null)
             {
+                await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
                 return stream;
             }
+
             _logger.LogWarning("Couldn't find subtitle with path [{path}] in storage, even if we have a path for it", subtitle.StoragePath);
         }
 
@@ -66,6 +71,7 @@ public  class SubtitleProvider : ISubtitleProvider
             //Subtitle isn't complete, no need to store it, just directly return the download stream
             if (!subtitle.Completed)
             {
+                await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
                 return await _addic7EdDownloader.DownloadSubtitle(creds?.AddictedUserCredentials, subtitle, token);
             }
 
@@ -86,6 +92,7 @@ public  class SubtitleProvider : ISubtitleProvider
                            })
                            .Build()
             );
+            await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
             return new MemoryStream(blob);
         }
         catch (DownloadLimitExceededException)
