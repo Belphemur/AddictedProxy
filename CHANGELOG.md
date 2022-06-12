@@ -1,3 +1,10 @@
+## [2.9.4](https://github.com/Belphemur/AddictedProxy/compare/v2.9.3...v2.9.4) (2022-06-12)
+
+
+### Bug Fixes
+
+* **S3Storage:** Can't find the subtitle ([dd42c78](https://github.com/Belphemur/AddictedProxy/commit/dd42c7846421e37c2a8eb2fd67180b0681f6bd57))
+
 ## [2.9.3](https://github.com/Belphemur/AddictedProxy/compare/v2.9.2...v2.9.3) (2022-06-11)
 
 
