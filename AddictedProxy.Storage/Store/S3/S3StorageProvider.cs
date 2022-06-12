@@ -47,17 +47,24 @@ public class S3StorageProvider : IStorageProvider
 
     public async Task<Stream?> DownloadAsync(string filename, CancellationToken cancellationToken)
     {
-        var result = await _awsS3Client.GetObjectAsync(new GetObjectRequest
+        try
         {
-            BucketName = _s3Config.Bucket,
-            Key = GetFileName(filename)
-        }, cancellationToken);
+            var result = await _awsS3Client.GetObjectAsync(new GetObjectRequest
+            {
+                BucketName = _s3Config.Bucket,
+                Key = GetFileName(filename)
+            }, cancellationToken);
 
-        if (result?.HttpStatusCode != HttpStatusCode.OK)
+            if (result?.HttpStatusCode != HttpStatusCode.OK)
+            {
+                return null;
+            }
+
+            return await _compressor.DecompressAsync(result.ResponseStream, cancellationToken);
+        }
+        catch (AmazonS3Exception e) when (e.Message == "The specified key does not exist.")
         {
             return null;
         }
-
-        return await _compressor.DecompressAsync(result.ResponseStream, cancellationToken);
     }
 }
