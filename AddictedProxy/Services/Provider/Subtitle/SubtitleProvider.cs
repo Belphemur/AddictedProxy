@@ -23,6 +23,7 @@ internal class SubtitleProvider : ISubtitleProvider
     private readonly SubtitleCounterUpdater _subtitleCounterUpdater;
     private readonly IStorageProvider _storageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
+    private const int MAX_ATTEMPTS = 3;
 
     public SubtitleProvider(IAddic7edDownloader addic7EdDownloader,
                             IStorageProvider storageProvider,
@@ -65,6 +66,16 @@ internal class SubtitleProvider : ISubtitleProvider
             _logger.LogWarning("Couldn't find subtitle with path [{path}] in storage, even if we have a path for it", subtitle.StoragePath);
         }
 
+        return await DownloadStoreSubtitleAsync(subtitle, 0, token);
+    }
+
+    private async Task<Stream> DownloadStoreSubtitleAsync(Database.Model.Shows.Subtitle subtitle, int attempts, CancellationToken token)
+    {
+        if (attempts >= MAX_ATTEMPTS)
+        {
+            throw new DownloadLimitExceededException($"Reached maximum attempts ({MAX_ATTEMPTS}) to download subtitle");
+        }
+
         await using var creds = await _credentialsService.GetLeastUsedCredsDownloadAsync(token);
         try
         {
@@ -98,7 +109,8 @@ internal class SubtitleProvider : ISubtitleProvider
         catch (DownloadLimitExceededException)
         {
             creds?.TagAsDownloadExceeded();
-            throw;
+            await Task.Delay(TimeSpan.FromMilliseconds(100), token);
+            return await DownloadStoreSubtitleAsync(subtitle,  attempts + 1, token);
         }
     }
 
