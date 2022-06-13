@@ -1,3 +1,10 @@
+## [2.9.5](https://github.com/Belphemur/AddictedProxy/compare/v2.9.4...v2.9.5) (2022-06-13)
+
+
+### Bug Fixes
+
+* **Download:** Add auto retry downloading subtitle ([d3551cb](https://github.com/Belphemur/AddictedProxy/commit/d3551cb60d4f34119d76501249ee706d4cf55dc8))
+
 ## [2.9.4](https://github.com/Belphemur/AddictedProxy/compare/v2.9.3...v2.9.4) (2022-06-12)
 
 
