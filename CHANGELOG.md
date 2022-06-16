@@ -1,3 +1,11 @@
+## [2.9.6](https://github.com/Belphemur/AddictedProxy/compare/v2.9.5...v2.9.6) (2022-06-16)
+
+
+### Enhancements
+
+* **Creds:** Save in bulk the download creds ([e655840](https://github.com/Belphemur/AddictedProxy/commit/e655840e39e412a01ea6057f7e1d9c03b558a6a3))
+* **Version:** Add endpoint to get version ([20c47cd](https://github.com/Belphemur/AddictedProxy/commit/20c47cd7e4caffa7d483948dc5e9411a4e8099ae))
+
 ## [2.9.5](https://github.com/Belphemur/AddictedProxy/compare/v2.9.4...v2.9.5) (2022-06-13)
 
 
