@@ -71,7 +71,6 @@ builder.WebHost.UseSentry(sentryBuilder =>
     sentryBuilder.TracesSampleRate = perf.SampleRate;
     sentryBuilder.AddExceptionFilterForType<OperationCanceledException>();
     sentryBuilder.AddExceptionFilterForType<TaskCanceledException>();
-
 });
 
 var app = builder.Build();
@@ -94,6 +93,8 @@ app.UseSwagger(options => options.RouteTemplate = "api/{documentName}/swagger.{j
 
     await dbContext.Database.MigrateAsync();
 }
+
+app.Services.GetRequiredService<ILogger<Program>>().LogInformation("Application version: {version}", Assembly.GetExecutingAssembly().GetName().Version!.ToString(3));
 
 
 app.Run();
