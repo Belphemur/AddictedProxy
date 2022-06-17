@@ -30,6 +30,7 @@ public class TvShowRepository : ITvShowRepository
         var strictMatch = await _entityContext.TvShows
                                               .Where(show => show.Name == name)
                                               .Include(show => show.Seasons)
+                                              .OrderByDescending(show => show.Priority)
                                               .FirstOrDefaultAsync(token);
         if (strictMatch != null)
         {
@@ -40,6 +41,7 @@ public class TvShowRepository : ITvShowRepository
 
         foreach (var tvShow in _entityContext.TvShows
                                              .Where(show => EF.Functions.Like(show.Name, $"%{name}%"))
+                                             .OrderByDescending(show => show.Priority)
                                              .Include(show => show.Seasons))
             
         {
@@ -51,7 +53,7 @@ public class TvShowRepository : ITvShowRepository
     {
         return _entityContext.TvShows.BulkMergeAsync(tvShows, options =>
         {
-            options.IgnoreOnMergeUpdateExpression = show => new { show.Discovered, show.LastSeasonRefreshed, show.UniqueId };
+            options.IgnoreOnMergeUpdateExpression = show => new { show.Discovered, show.LastSeasonRefreshed, show.UniqueId, show.Priority };
             options.ColumnPrimaryKeyExpression = show => show.ExternalId;
         }, token);
     }

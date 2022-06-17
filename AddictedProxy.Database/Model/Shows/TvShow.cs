@@ -33,4 +33,9 @@ public class TvShow : IDiscoverableObject
     ///     When was the show discovered
     /// </summary>
     public DateTime Discovered { get; set; }
+
+    /// <summary>
+    /// Priority of the show when searching
+    /// </summary>
+    public int Priority { get; set; } = 0;
 }
