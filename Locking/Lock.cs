@@ -25,9 +25,9 @@ public static class Lock<T>
 
     private class Container : ILockContainer
     {
-        private readonly IKeyedSemaphore _semaphore;
+        private readonly IKeyedSemaphore<string> _semaphore;
 
-        public Container(IKeyedSemaphore semaphore)
+        public Container(IKeyedSemaphore<string> semaphore)
         {
             _semaphore = semaphore;
         }
