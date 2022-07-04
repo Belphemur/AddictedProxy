@@ -4,6 +4,9 @@ using System.Net.Http.Headers;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Service.Exception;
+using Polly;
+using Polly.Contrib.WaitAndRetry;
+using Polly.Extensions.Http;
 
 #endregion
 
@@ -30,12 +33,23 @@ public class Addic7edDownloader : IAddic7edDownloader
 
     private async Task<Stream> DownloadSubtitleFile(AddictedUserCredentials? credentials, CancellationToken token, HttpRequestMessage request)
     {
-        var response = await _httpClient.SendAsync(request, token);
-        if (!response.IsSuccessStatusCode || ContentTypeHtml.Equals(response.Content.Headers.ContentType))
+        return await Policy().ExecuteAsync(async cancellationToken =>
         {
-            throw new DownloadLimitExceededException($"Reached limit for download for {credentials?.Id}");
-        }
+            var response = await _httpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode || ContentTypeHtml.Equals(response.Content.Headers.ContentType))
+            {
+                throw new DownloadLimitExceededException($"Reached limit for download for {credentials?.Id}");
+            }
 
-        return await response.Content.ReadAsStreamAsync(token);
+            return await response.Content.ReadAsStreamAsync(cancellationToken);
+        }, token);
+        
+    }
+    
+    private AsyncPolicy Policy()
+    {
+        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromMilliseconds(500), retryCount: 3);
+        return Polly.Policy.Handle<HttpRequestException>(exception => exception.InnerException is IOException)
+            .WaitAndRetryAsync(delay);
     }
 }
