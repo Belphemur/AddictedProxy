@@ -1,3 +1,10 @@
+## [2.10.2](https://github.com/Belphemur/AddictedProxy/compare/v2.10.1...v2.10.2) (2022-07-04)
+
+
+### Enhancements
+
+* **Perf:** reduce sampling for performance tracking ([5e25265](https://github.com/Belphemur/AddictedProxy/commit/5e25265692b11ff753c48b21e032f46e929786e1))
+
 ## [2.10.1](https://github.com/Belphemur/AddictedProxy/compare/v2.10.0...v2.10.1) (2022-07-04)
 
 
