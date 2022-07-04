@@ -5,6 +5,7 @@ using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Service.Exception;
 using Polly;
+using Polly.Contrib.WaitAndRetry;
 
 #endregion
 
@@ -98,11 +99,8 @@ public class Addic7edClient : IAddic7edClient
 
     private AsyncPolicy Policy()
     {
-        var jitterer = new Random();
+        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromMilliseconds(500), retryCount: 8);
         return Polly.Policy.Handle<NothingToParseException>()
-                    .WaitAndRetryAsync(8, // exponential back-off plus some jitter
-                        retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
-                                        + TimeSpan.FromMilliseconds(jitterer.Next(0, 300))
-                    );
+                    .WaitAndRetryAsync(delay);
     }
 }
