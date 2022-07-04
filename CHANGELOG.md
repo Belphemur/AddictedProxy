@@ -1,3 +1,10 @@
+## [2.10.0](https://github.com/Belphemur/AddictedProxy/compare/v2.9.6...v2.10.0) (2022-06-17)
+
+
+### Features
+
+* **Show::Priority:** Set a priority for show to avoid matching wrong shows ([3886442](https://github.com/Belphemur/AddictedProxy/commit/38864423de4417fbbdf4dfda3568ff78f6ac6c5b))
+
 ## [2.9.6](https://github.com/Belphemur/AddictedProxy/compare/v2.9.5...v2.9.6) (2022-06-16)
 
 
