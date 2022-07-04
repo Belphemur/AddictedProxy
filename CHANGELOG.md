@@ -1,3 +1,10 @@
+## [2.10.1](https://github.com/Belphemur/AddictedProxy/compare/v2.10.0...v2.10.1) (2022-07-04)
+
+
+### Bug Fixes
+
+* **Download:** Fix issue where download can't copy the stream. ([3d3f428](https://github.com/Belphemur/AddictedProxy/commit/3d3f428b7f6be35f7a8d6785806647f40ffe8ff1)), closes [#ADDICTEDPROXY-37](https://github.com/Belphemur/AddictedProxy/issues/ADDICTEDPROXY-37)
+
 ## [2.10.0](https://github.com/Belphemur/AddictedProxy/compare/v2.9.6...v2.10.0) (2022-06-17)
 
 
