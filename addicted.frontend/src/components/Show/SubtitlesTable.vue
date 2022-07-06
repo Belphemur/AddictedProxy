@@ -59,22 +59,15 @@ import { createWriteStream } from "streamsaver";
 import streamSaver from "streamsaver";
 import HearingOffIcon from "vue-material-design-icons/EarHearingOff.vue";
 
-import {
-  Configuration,
-  EpisodeWithSubtitlesDto,
-  SubtitleDto,
-  SubtitlesApi,
-} from "~/api";
+import { EpisodeWithSubtitlesDto, SubtitleDto } from "~/api/api";
 import { ElMessage } from "element-plus";
 import { Download, Check } from "@element-plus/icons-vue";
+import { api } from "~/composables/rest/api";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto>;
 }
 
-const api = new SubtitlesApi(
-  new Configuration({ basePath: import.meta.env.VITE_APP_API_PATH })
-);
 const props = defineProps<Props>();
 // eslint-disable-next-line no-import-assign,@typescript-eslint/no-unused-vars
 streamSaver.mitm = "/mitm.html";
@@ -87,7 +80,7 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
     message: "Subtitle download started ... It might take a moment.",
     type: "success",
   });
-  const response = await api.downloadSubtitle(sub.subtitleId!);
+  const response = await api.subtitles.downloadSubtitle(sub.subtitleId!);
   const header = response.headers.get("Content-Disposition");
   const parts = header!.split(";");
   const filename = parts[1].split("=")[1] ?? "sub.srt";

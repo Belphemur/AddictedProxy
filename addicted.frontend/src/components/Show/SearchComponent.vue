@@ -55,9 +55,10 @@
 
 <script setup lang="ts">
 import { ref, watch, defineExpose } from "vue";
-import { TvShowsApi, Configuration, ShowDto } from "~/api";
+import { ShowDto } from "~/api/api";
 import { getName, getAll639_1 } from "all-iso-language-codes";
 import { SelectedShow } from "~/Dto/SelectedShow";
+import { api } from "~/composables/rest/api";
 
 const langs = getAll639_1().map((value) => {
   return { value: value, label: getName(value) };
@@ -73,9 +74,6 @@ const emit = defineEmits<{
 const selectedSeason = ref<number | null>(null);
 const searchInput = ref<string>("");
 const languageSelect = ref<string>(localStorage.getItem("lang") || "en");
-const api = new TvShowsApi(
-  new Configuration({ basePath: import.meta.env.VITE_APP_API_PATH })
-);
 
 const selectedShow = ref<ShowDto | null>(null);
 
@@ -87,8 +85,8 @@ const querySearch = async (query: string, cb: (param: unknown) => void) => {
     return;
   }
   window._mtm.push({ event: "show-search", query: query });
-  const searchResponse = await api.showsSearchPost({ query: query });
-  cb(searchResponse.shows);
+  const searchResponse = await api.shows.searchCreate({ query: query });
+  cb(searchResponse.data.shows);
 };
 
 const updateSelectedShow = async (event: ShowDto) => {

@@ -4,7 +4,6 @@ import vue from "@vitejs/plugin-vue";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
-import { createHtmlPlugin } from "vite-plugin-html";
 
 import Unocss from "unocss/vite";
 import {
@@ -32,6 +31,9 @@ export default defineConfig(({ mode }) => {
     };
   };
   return {
+    build: {
+      minify: false,
+    },
     resolve: {
       alias: {
         "~/": `${pathSrc}/`,

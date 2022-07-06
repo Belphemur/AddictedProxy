@@ -105,13 +105,8 @@ import SearchComponent from "~/components/Show/SearchComponent.vue";
 import { onUnmounted, ref } from "vue";
 import { SelectedShow } from "~/Dto/SelectedShow";
 import SubtitlesTable from "~/components/Show/SubtitlesTable.vue";
-import {
-  Configuration,
-  EpisodeWithSubtitlesDto,
-  ShowDto,
-  TvShowsApi,
-} from "~/api";
-import { Search, ArrowDownBold, Refresh } from "@element-plus/icons-vue";
+import { EpisodeWithSubtitlesDto, ShowDto } from "~/api/api";
+import { Search, Refresh } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import {
   DoneHandler,
@@ -123,6 +118,7 @@ import {
   sendRefreshAsync,
   unsubscribeShowAsync,
 } from "~/composables/hub/RefreshHub";
+import { api } from "~/composables/rest/api";
 
 interface ProgressShow {
   name: string;
@@ -131,9 +127,6 @@ interface ProgressShow {
 }
 
 const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
-const api = new TvShowsApi(
-  new Configuration({ basePath: import.meta.env.VITE_APP_API_PATH })
-);
 
 const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
 
@@ -153,12 +146,12 @@ const selectShow = (showId: string) => {
 const getSubtitles = async (show: SelectedShow) => {
   loadingSubtitles.value = true;
   currentShow.value = show;
-  const response = await api.showsShowIdSeasonNumberLanguageGet(
+  const response = await api.shows.showsDetail(
     show.show.id,
     show.season,
     show.language
   );
-  episodesWithSubtitles.value = response.episodes || [];
+  episodesWithSubtitles.value = response.data.episodes || [];
   loadingSubtitles.value = false;
 };
 
@@ -224,7 +217,7 @@ const doneHandler: DoneHandler = async (show) => {
   //Auto refresh if the current show is the one that has finished refreshing
   if (currentShow.value?.show.id === show.id) {
     refreshingShows.value.delete(show.id);
-    await getSubtitles(currentShow.value);
+    await getSubtitles(currentShow.value!);
   }
 };
 onProgress(progressHandler);
