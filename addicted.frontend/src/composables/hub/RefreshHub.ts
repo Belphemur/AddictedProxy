@@ -1,8 +1,8 @@
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import { ShowDto } from "@/api";
+import { ShowDto } from "~/api";
 
 const connection = new HubConnectionBuilder()
-  .withUrl(process.env.VUE_APP_API_PATH + "/refresh")
+  .withUrl(import.meta.env.VITE_APP_API_PATH + "/refresh")
   .configureLogging(LogLevel.Information)
   .withAutomaticReconnect()
   .build();

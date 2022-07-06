@@ -11,7 +11,7 @@ import { onMounted } from "vue";
 
 onMounted(() => {
   SwaggerUI({
-    url: process.env.VUE_APP_API_PATH + "/api/v1/swagger.json",
+    url: import.meta.env.VITE_APP_API_PATH + "/api/v1/swagger.json",
     dom_id: "#swagger"
   });
 });

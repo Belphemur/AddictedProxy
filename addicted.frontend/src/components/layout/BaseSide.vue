@@ -38,9 +38,9 @@
 </template>
 
 <script lang="ts" setup>
-import transparent from "@/assets/Logos/Gestdown-logos_transparent.png";
-import black from "@/assets/Logos/Gestdown-logos_black.png";
-import { isDark } from "@/composables/theme";
+import transparent from "~/assets/Logos/Gestdown-logos_transparent.png";
+import black from "~/assets/Logos/Gestdown-logos_black.png";
+import { isDark } from "~/composables/theme";
 import { Sunny, Moon } from "@element-plus/icons-vue";
 </script>
 

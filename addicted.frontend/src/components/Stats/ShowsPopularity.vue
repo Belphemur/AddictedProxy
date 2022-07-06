@@ -9,11 +9,11 @@
 </template>
 
 <script lang="ts" setup>
-import { Configuration, StatsApi } from "@/api";
-import PopularityChart from "@/components/Stats/PopularityChart.vue";
+import { Configuration, StatsApi } from "~/api";
+import PopularityChart from "~/components/Stats/PopularityChart.vue";
 
 const api = new StatsApi(
-  new Configuration({ basePath: process.env.VUE_APP_API_PATH })
+  new Configuration({ basePath: import.meta.env.VITE_APP_API_PATH })
 );
 const topShows = await api.statsTopTopGet(10);
 </script>

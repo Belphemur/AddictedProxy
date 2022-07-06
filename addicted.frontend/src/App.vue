@@ -8,7 +8,7 @@
   </el-container>
 </template>
 <script setup lang="ts">
-import background from "@/assets/background.webp";
+import background from "~/assets/background.webp";
 
 const backgroundStyle = {
   backgroundImage: `url(${background})`,

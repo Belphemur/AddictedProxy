@@ -63,7 +63,7 @@ import {
   EpisodeWithSubtitlesDto,
   SubtitleDto,
   SubtitlesApi,
-} from "@/api";
+} from "~/api";
 import { ElMessage } from "element-plus";
 import { Download, Check } from "@element-plus/icons-vue";
 
@@ -72,7 +72,7 @@ interface Props {
 }
 
 const api = new SubtitlesApi(
-  new Configuration({ basePath: process.env.VUE_APP_API_PATH })
+  new Configuration({ basePath: import.meta.env.VITE_APP_API_PATH })
 );
 const props = defineProps<Props>();
 
