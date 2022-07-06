@@ -56,6 +56,7 @@
 <script setup lang="ts">
 import { defineProps, ref } from "vue";
 import { createWriteStream } from "streamsaver";
+import streamSaver from "streamsaver";
 import HearingOffIcon from "vue-material-design-icons/EarHearingOff.vue";
 
 import {
@@ -75,6 +76,8 @@ const api = new SubtitlesApi(
   new Configuration({ basePath: import.meta.env.VITE_APP_API_PATH })
 );
 const props = defineProps<Props>();
+// eslint-disable-next-line no-import-assign,@typescript-eslint/no-unused-vars
+streamSaver.mitm = "/mitm.html";
 
 const currentlyDownloading = ref<Map<string, boolean>>(new Map());
 const downloadSubtitle = async (sub: SubtitleDto) => {
