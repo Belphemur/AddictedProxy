@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
   };
   return {
     build: {
-      minify: false,
+      sourcemap: "inline",
     },
     resolve: {
       alias: {
