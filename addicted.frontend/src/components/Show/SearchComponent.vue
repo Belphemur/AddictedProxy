@@ -86,12 +86,14 @@ const querySearch = async (query: string, cb: (param: unknown) => void) => {
     cb([]);
     return;
   }
+  window._mtm.push({ event: "show-search", query: query });
   const searchResponse = await api.showsSearchPost({ query: query });
   cb(searchResponse.shows);
 };
 
 const updateSelectedShow = async (event: ShowDto) => {
   setSelectedShow(event);
+  window._mtm.push({ event: "show-selected", show: event });
 
   //Force refreshing the show
   if (selectedShow.value!.nbSeasons == 0) {

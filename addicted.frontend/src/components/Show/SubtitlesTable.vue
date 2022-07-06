@@ -81,6 +81,7 @@ streamSaver.mitm = "/mitm.html";
 
 const currentlyDownloading = ref<Map<string, boolean>>(new Map());
 const downloadSubtitle = async (sub: SubtitleDto) => {
+  window._mtm.push({ event: "download-subtitle", subtitle: sub });
   currentlyDownloading.value.set(sub.subtitleId!, true);
   ElMessage({
     message: "Subtitle download started ... It might take a moment.",
