@@ -1,3 +1,10 @@
+## [2.10.5](https://github.com/Belphemur/AddictedProxy/compare/v2.10.4...v2.10.5) (2022-07-06)
+
+
+### Bug Fixes
+
+* **Vite:** Fix config of Vite ([2518b01](https://github.com/Belphemur/AddictedProxy/commit/2518b019ca28482af69dae9053c853a8acdd5ac4))
+
 ## [2.10.4](https://github.com/Belphemur/AddictedProxy/compare/v2.10.3...v2.10.4) (2022-07-06)
 
 
