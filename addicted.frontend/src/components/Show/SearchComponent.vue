@@ -55,9 +55,9 @@
 
 <script setup lang="ts">
 import { ref, watch, defineExpose } from "vue";
-import { TvShowsApi, Configuration, ShowDto } from "@/api";
+import { TvShowsApi, Configuration, ShowDto } from "~/api";
 import { getName, getAll639_1 } from "all-iso-language-codes";
-import { SelectedShow } from "@/Dto/SelectedShow";
+import { SelectedShow } from "~/Dto/SelectedShow";
 
 const langs = getAll639_1().map((value) => {
   return { value: value, label: getName(value) };
@@ -74,7 +74,7 @@ const selectedSeason = ref<number | null>(null);
 const searchInput = ref<string>("");
 const languageSelect = ref<string>(localStorage.getItem("lang") || "en");
 const api = new TvShowsApi(
-  new Configuration({ basePath: process.env.VUE_APP_API_PATH })
+  new Configuration({ basePath: import.meta.env.VITE_APP_API_PATH })
 );
 
 const selectedShow = ref<ShowDto | null>(null);
@@ -86,12 +86,14 @@ const querySearch = async (query: string, cb: (param: unknown) => void) => {
     cb([]);
     return;
   }
+  window._mtm.push({ event: "show-search", query: query });
   const searchResponse = await api.showsSearchPost({ query: query });
   cb(searchResponse.shows);
 };
 
 const updateSelectedShow = async (event: ShowDto) => {
   setSelectedShow(event);
+  window._mtm.push({ event: "show-selected", show: event });
 
   //Force refreshing the show
   if (selectedShow.value!.nbSeasons == 0) {

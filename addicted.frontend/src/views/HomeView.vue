@@ -101,16 +101,16 @@
 </template>
 
 <script setup lang="ts">
-import SearchComponent from "@/components/Show/SearchComponent.vue";
+import SearchComponent from "~/components/Show/SearchComponent.vue";
 import { onUnmounted, ref } from "vue";
-import { SelectedShow } from "@/Dto/SelectedShow";
-import SubtitlesTable from "@/components/Show/SubtitlesTable.vue";
+import { SelectedShow } from "~/Dto/SelectedShow";
+import SubtitlesTable from "~/components/Show/SubtitlesTable.vue";
 import {
   Configuration,
   EpisodeWithSubtitlesDto,
   ShowDto,
   TvShowsApi,
-} from "@/api";
+} from "~/api";
 import { Search, ArrowDownBold, Refresh } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import {
@@ -122,7 +122,7 @@ import {
   ProgressHandler,
   sendRefreshAsync,
   unsubscribeShowAsync,
-} from "@/composables/hub/RefreshHub";
+} from "~/composables/hub/RefreshHub";
 
 interface ProgressShow {
   name: string;
@@ -132,7 +132,7 @@ interface ProgressShow {
 
 const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
 const api = new TvShowsApi(
-  new Configuration({ basePath: process.env.VUE_APP_API_PATH })
+  new Configuration({ basePath: import.meta.env.VITE_APP_API_PATH })
 );
 
 const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);

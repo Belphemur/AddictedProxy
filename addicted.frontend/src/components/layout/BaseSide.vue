@@ -23,7 +23,7 @@
               {{ route.name }}
             </el-menu-item>
           </el-menu-item-group>
-          <el-menu-item h="full">
+          <el-menu-item>
             <el-switch
               v-model="isDark"
               size="large"
@@ -38,9 +38,9 @@
 </template>
 
 <script lang="ts" setup>
-import transparent from "@/assets/Logos/Gestdown-logos_transparent.png";
-import black from "@/assets/Logos/Gestdown-logos_black.png";
-import { isDark } from "@/composables/theme";
+import transparent from "~/assets/Logos/Gestdown-logos_transparent.png";
+import black from "~/assets/Logos/Gestdown-logos_black.png";
+import { isDark } from "~/composables/theme";
 import { Sunny, Moon } from "@element-plus/icons-vue";
 </script>
 

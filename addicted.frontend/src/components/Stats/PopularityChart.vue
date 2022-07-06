@@ -7,10 +7,10 @@
 </template>
 
 <script setup lang="ts">
-import { TopShowDto } from "@/api";
+import { TopShowDto } from "~/api";
 import { computed, defineProps } from "vue";
-import PieChart from "@/components/Charts/PieChart";
-import { stringToColour } from "@/components/Charts/generateColorFromString";
+import PieChart from "~/components/Charts/PieChart";
+import { stringToColour } from "~/components/Charts/generateColorFromString";
 
 interface Props {
   top: Array<TopShowDto>;
