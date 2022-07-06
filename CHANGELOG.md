@@ -1,3 +1,16 @@
+## [2.10.3](https://github.com/Belphemur/AddictedProxy/compare/v2.10.2...v2.10.3) (2022-07-06)
+
+
+### Bug Fixes
+
+* **frontend::download:** Fix downloading subtitle with StreamSaver ([3187e98](https://github.com/Belphemur/AddictedProxy/commit/3187e98508606634017ebe25f9c8da9440acd4d3))
+* **SideBar:** Be sure the dark/light theme toggle is at the right place ([3af8f28](https://github.com/Belphemur/AddictedProxy/commit/3af8f28fd2169e8f3bd5ef287013209e14e89247))
+
+
+### Enhancements
+
+* **Vite:** Move to vite for the front-end ([ba034a1](https://github.com/Belphemur/AddictedProxy/commit/ba034a16bf835a0d01cde2a79f3ddb9e81309a8e))
+
 ## [2.10.2](https://github.com/Belphemur/AddictedProxy/compare/v2.10.1...v2.10.2) (2022-07-04)
 
 
