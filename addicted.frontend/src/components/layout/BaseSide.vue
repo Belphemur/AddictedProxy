@@ -23,7 +23,7 @@
               {{ route.name }}
             </el-menu-item>
           </el-menu-item-group>
-          <el-menu-item h="full">
+          <el-menu-item>
             <el-switch
               v-model="isDark"
               size="large"
