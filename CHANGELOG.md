@@ -1,3 +1,10 @@
+## [2.10.4](https://github.com/Belphemur/AddictedProxy/compare/v2.10.3...v2.10.4) (2022-07-06)
+
+
+### Bug Fixes
+
+* **Api:** Fix issue with the api code gen ([224dc19](https://github.com/Belphemur/AddictedProxy/commit/224dc19e3d48c517e46772c74473b6fbd710a1fd))
+
 ## [2.10.3](https://github.com/Belphemur/AddictedProxy/compare/v2.10.2...v2.10.3) (2022-07-06)
 
 
