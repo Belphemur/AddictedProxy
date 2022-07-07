@@ -1,3 +1,10 @@
+## [2.10.6](https://github.com/Belphemur/AddictedProxy/compare/v2.10.5...v2.10.6) (2022-07-07)
+
+
+### Bug Fixes
+
+* **Download:** Fix issue with retrying download in case of HTTP Exception ([51e1815](https://github.com/Belphemur/AddictedProxy/commit/51e1815e5c97bf976c9522491b4c25b1d49674a6)), closes [#ADDICTEDPROXY-3](https://github.com/Belphemur/AddictedProxy/issues/ADDICTEDPROXY-3)
+
 ## [2.10.5](https://github.com/Belphemur/AddictedProxy/compare/v2.10.4...v2.10.5) (2022-07-06)
 
 
