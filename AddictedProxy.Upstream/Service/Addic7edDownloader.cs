@@ -25,27 +25,26 @@ public class Addic7edDownloader : IAddic7edDownloader
         _httpClient.BaseAddress = new Uri("https://www.addic7ed.com");
     }
 
-    public Task<Stream> DownloadSubtitle(AddictedUserCredentials? credentials, Subtitle subtitle, CancellationToken token)
-    {
-        var request = _httpUtils.PrepareRequest(credentials, subtitle.DownloadUri.ToString(), HttpMethod.Get);
-        return DownloadSubtitleFile(credentials, token, request);
-    }
-
-    private async Task<Stream> DownloadSubtitleFile(AddictedUserCredentials? credentials, CancellationToken token, HttpRequestMessage request)
+    public async Task<Stream> DownloadSubtitle(AddictedUserCredentials? credentials, Subtitle subtitle, CancellationToken token)
     {
         return await Policy().ExecuteAsync(async cancellationToken =>
         {
-            var response = await _httpClient.SendAsync(request, cancellationToken);
-            if (!response.IsSuccessStatusCode || ContentTypeHtml.Equals(response.Content.Headers.ContentType))
-            {
-                throw new DownloadLimitExceededException($"Reached limit for download for {credentials?.Id}");
-            }
-
-            return await response.Content.ReadAsStreamAsync(cancellationToken);
+            var request = _httpUtils.PrepareRequest(credentials, subtitle.DownloadUri.ToString(), HttpMethod.Get);
+            return await DownloadSubtitleFile(credentials, cancellationToken, request);
         }, token);
-        
     }
-    
+
+    private async Task<Stream> DownloadSubtitleFile(AddictedUserCredentials? credentials, CancellationToken cancellationToken, HttpRequestMessage request)
+    {
+        var response = await _httpClient.SendAsync(request, cancellationToken);
+        if (!response.IsSuccessStatusCode || ContentTypeHtml.Equals(response.Content.Headers.ContentType))
+        {
+            throw new DownloadLimitExceededException($"Reached limit for download for {credentials?.Id}");
+        }
+
+        return await response.Content.ReadAsStreamAsync(cancellationToken);
+    }
+
     private AsyncPolicy Policy()
     {
         var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromMilliseconds(500), retryCount: 3);
