@@ -28,12 +28,12 @@ public class BootstrapAddictedServices : IBootstrap,
         services.AddSingleton<IHtmlParser, HtmlParser>();
         services.AddSingleton<Parser>();
 
-        services.AddHttpClient<IAddic7edClient, Addic7edClient>()
+        services.AddHttpClient<IAddic7edClient, Addic7edClient>(client => client.Timeout = TimeSpan.FromSeconds(45))
                 .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
                 .SetHandlerLifetime(TimeSpan.FromMinutes(15))
                 .AddPolicyHandler(GetRetryPolicy());
 
-        services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>()
+        services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>(client => client.Timeout = TimeSpan.FromSeconds(45))
                 .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
                 .SetHandlerLifetime(TimeSpan.FromMinutes(15))
                 .AddPolicyHandler(GetRetryPolicy());
