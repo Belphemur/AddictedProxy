@@ -1,3 +1,10 @@
+## [2.10.7](https://github.com/Belphemur/AddictedProxy/compare/v2.10.6...v2.10.7) (2022-07-11)
+
+
+### Enhancements
+
+* **HTTP::perf:** Improve HTTP quering performance ([9e5bf3f](https://github.com/Belphemur/AddictedProxy/commit/9e5bf3fdc4023d91a66176008aaa92a344263f10))
+
 ## [2.10.6](https://github.com/Belphemur/AddictedProxy/compare/v2.10.5...v2.10.6) (2022-07-07)
 
 
