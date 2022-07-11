@@ -1,3 +1,10 @@
+## [2.10.9](https://github.com/Belphemur/AddictedProxy/compare/v2.10.8...v2.10.9) (2022-07-11)
+
+
+### Enhancements
+
+* **HTTP::perf:** Implement retries properly ([044c6e0](https://github.com/Belphemur/AddictedProxy/commit/044c6e069068cf0182c18e7f37d95bd2607fd492))
+
 ## [2.10.8](https://github.com/Belphemur/AddictedProxy/compare/v2.10.7...v2.10.8) (2022-07-11)
 
 
