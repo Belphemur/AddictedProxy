@@ -21,22 +21,32 @@ using Sentry;
 namespace AddictedProxy.Upstream.Boostrap;
 
 public class BootstrapAddictedServices : IBootstrap,
-                                         IBootstrapEnvironmentVariable<HttpProxy, HttpProxyParser>
+    IBootstrapEnvironmentVariable<HttpProxy, HttpProxyParser>
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IHtmlParser, HtmlParser>();
         services.AddSingleton<Parser>();
 
-        services.AddHttpClient<IAddic7edClient, Addic7edClient>(client => client.Timeout = TimeSpan.FromSeconds(45))
-                .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
-                .SetHandlerLifetime(TimeSpan.FromMinutes(15))
-                .AddPolicyHandler(GetRetryPolicy());
+        services.AddHttpClient<IAddic7edClient, Addic7edClient>(client =>
+            {
+                client.Timeout = TimeSpan.FromMinutes(8);
+                client.BaseAddress = new Uri("https://www.addic7ed.com");
+            })
+            .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
+            .SetHandlerLifetime(TimeSpan.FromMinutes(15))
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetTimeoutPolicy());
 
-        services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>(client => client.Timeout = TimeSpan.FromSeconds(45))
-                .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
-                .SetHandlerLifetime(TimeSpan.FromMinutes(15))
-                .AddPolicyHandler(GetRetryPolicy());
+        services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>(client =>
+            {
+                client.Timeout = TimeSpan.FromMinutes(8);
+                client.BaseAddress = new Uri("https://www.addic7ed.com");
+            })
+            .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
+            .SetHandlerLifetime(TimeSpan.FromMinutes(15))
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetTimeoutPolicy());
 
         services.AddSingleton<Faker>();
         services.AddSingleton<HttpUtils>();
@@ -56,15 +66,16 @@ public class BootstrapAddictedServices : IBootstrap,
         };
     }
 
+    private static IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy() => Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(45));
+
     private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
     {
-        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 5);
+        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 8);
         return HttpPolicyExtensions
             .HandleTransientHttpError()
             //Issue with downloading the subtitle from Addic7ed
             .OrInner<IOException>()
             .Or<TimeoutRejectedException>()
-            .Or<TimeoutException>()
             .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
             .WaitAndRetryAsync(delay);
     }

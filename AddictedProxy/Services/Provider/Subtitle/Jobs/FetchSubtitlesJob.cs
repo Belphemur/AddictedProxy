@@ -44,6 +44,7 @@ public class FetchSubtitlesJob : IJob
 
     public TimeSpan TimeBetweenChecks { get; } = TimeSpan.FromMinutes(30);
     public JobData Data { get; set; }
+    
 
 
     public async Task ExecuteAsync(CancellationToken token)

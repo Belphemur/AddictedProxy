@@ -22,7 +22,6 @@ public class Addic7edDownloader : IAddic7edDownloader
     {
         _httpClient = httpClient;
         _httpUtils = httpUtils;
-        _httpClient.BaseAddress = new Uri("https://www.addic7ed.com");
     }
 
     public async Task<Stream> DownloadSubtitle(AddictedUserCredentials? credentials, Subtitle subtitle, CancellationToken token)

@@ -22,7 +22,6 @@ public class Addic7edClient : IAddic7edClient
         _httpClient = httpClient;
         _parser = parser;
         _httpUtils = httpUtils;
-        _httpClient.BaseAddress = new Uri("https://www.addic7ed.com");
     }
 
     /// <summary>
