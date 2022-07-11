@@ -1,3 +1,10 @@
+## [2.10.8](https://github.com/Belphemur/AddictedProxy/compare/v2.10.7...v2.10.8) (2022-07-11)
+
+
+### Enhancements
+
+* **HTTP::perf:** Retry automatically on timeout. ([bf2c11c](https://github.com/Belphemur/AddictedProxy/commit/bf2c11c597604c637404862fa9f8c1ccadec848f))
+
 ## [2.10.7](https://github.com/Belphemur/AddictedProxy/compare/v2.10.6...v2.10.7) (2022-07-11)
 
 
