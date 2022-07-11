@@ -58,14 +58,14 @@ public class BootstrapAddictedServices : IBootstrap,
 
     private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
     {
-        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 10);
+        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 5);
         return HttpPolicyExtensions
-               .HandleTransientHttpError()
-               .Or<TimeoutRejectedException>()
-               //Issue with downloading the subtitle from Addic7ed
-               .Or<HttpRequestException>(exception => exception.InnerException is IOException)
-               .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
-               .WaitAndRetryAsync(delay)
-               .WrapAsync(Policy.TimeoutAsync(30));
+            .HandleTransientHttpError()
+            //Issue with downloading the subtitle from Addic7ed
+            .OrInner<IOException>()
+            .Or<TimeoutRejectedException>()
+            .Or<TimeoutException>()
+            .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
+            .WaitAndRetryAsync(delay);
     }
 }
