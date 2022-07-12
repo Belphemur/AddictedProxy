@@ -65,8 +65,8 @@ public class FetchSubtitlesJob : IJob
 
     public JobData Data { get; set; }
 
-    public IRetryAction FailRule { get; } = new ExponentialBackoffRetryDecorrelated(TimeSpan.FromMinutes(1), 5);
-    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(15);
+    public IRetryAction FailRule { get; } = new ExponentialBackoffRetryDecorrelated(TimeSpan.FromMinutes(5), 5);
+    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(30);
 
     public async Task ExecuteAsync(CancellationToken token)
     {
@@ -74,7 +74,7 @@ public class FetchSubtitlesJob : IJob
         using var namedLock = Lock<FetchSubtitlesJob>.GetNamedLock(Data.Key);
         if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
         {
-            _logger.LogWarning("Lock for {key} already taken", Data.Key);
+            _logger.LogInformation("Lock for {key} already taken", Data.Key);
             return;
         }
 
