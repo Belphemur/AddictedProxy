@@ -1,3 +1,10 @@
+## [2.11.1](https://github.com/Belphemur/AddictedProxy/compare/v2.11.0...v2.11.1) (2022-07-12)
+
+
+### Enhancements
+
+* **Logging:** Move prod logging to warning ([dced8fd](https://github.com/Belphemur/AddictedProxy/commit/dced8fdfcc6ad1b54b29da354a6c16e99af2e466))
+
 ## [2.11.0](https://github.com/Belphemur/AddictedProxy/compare/v2.10.10...v2.11.0) (2022-07-12)
 
 
