@@ -48,6 +48,28 @@ internal class ShowPopularityService : IShowPopularityService
     }
 
     /// <summary>
+    /// Get top shows by downloads
+    /// </summary>
+    /// <param name="limit"></param>
+    /// <returns></returns>
+    public IAsyncEnumerable<DownloadPopularity> GetTopDownloadPopularity(int limit = 10)
+    {
+        return _entityContext.Subtitles
+                             .Include(subtitle => subtitle.Episode.TvShow.Seasons)
+                             .GroupBy(subtitle => subtitle.Episode.TvShowId)
+                             .Select(grouping => new
+                             {
+                                 grouping.First().Episode.TvShow,
+                                 TotalDownloads = grouping.Sum(subtitle => subtitle.DownloadCount)
+                             })
+                             .OrderByDescending(arg => arg.TotalDownloads)
+                             .AsNoTracking()
+                             .Take(limit)
+                             .ToAsyncEnumerable()
+                             .Select(arg => new DownloadPopularity(arg.TvShow, arg.TotalDownloads));
+    }
+
+    /// <summary>
     /// Get the top popular show, order by total request count
     /// </summary>
     /// <param name="limit">Default top 10</param>
