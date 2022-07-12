@@ -21,26 +21,6 @@ namespace AddictedProxy.Services.Provider.Subtitle.Jobs;
 
 public class FetchSubtitlesJob : IJob
 {
-    private class ExponentialBackoffRetryDecorrelated : IRetryAction
-    {
-        private readonly Queue<TimeSpan> _retryTimes;
-
-        public ExponentialBackoffRetryDecorrelated(TimeSpan medianFirstRetryDelay, int maxRetries)
-        {
-            _retryTimes = new Queue<TimeSpan>(Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: medianFirstRetryDelay, retryCount: maxRetries));
-        }
-
-        public bool ShouldRetry(int currentRetry)
-        {
-            return _retryTimes.Count > 0;
-        }
-
-        public TimeSpan? GetDelayBetweenRetries(int currentRetry)
-        {
-            return _retryTimes.Dequeue();
-        }
-    }
-
     private readonly CultureParser _cultureParser;
 
     private readonly ILogger<FetchSubtitlesJob> _logger;
@@ -65,7 +45,7 @@ public class FetchSubtitlesJob : IJob
 
     public JobData Data { get; set; }
 
-    public IRetryAction FailRule { get; } = new ExponentialBackoffRetryDecorrelated(TimeSpan.FromMinutes(5), 5);
+    public IRetryAction FailRule { get; } = new ExponentialDecorrelatedJittedBackoffRetry(5, TimeSpan.FromMinutes(5));
     public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(30);
 
     public async Task ExecuteAsync(CancellationToken token)
