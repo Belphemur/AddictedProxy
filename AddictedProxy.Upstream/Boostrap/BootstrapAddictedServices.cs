@@ -41,7 +41,7 @@ public class BootstrapAddictedServices : IBootstrap,
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>(client =>
             {
-                client.Timeout = TimeSpan.FromMilliseconds(2);
+                client.Timeout = TimeSpan.FromMinutes(2);
                 client.BaseAddress = new Uri("https://www.addic7ed.com");
             })
             .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
