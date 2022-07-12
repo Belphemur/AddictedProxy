@@ -4,7 +4,6 @@ using System.Net;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.EnvVar.Http;
 using AngleSharp.Html.Parser;
-using Bogus;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
-using Polly.RateLimit;
 using Polly.Timeout;
 using Sentry;
 
@@ -48,7 +46,6 @@ public class BootstrapAddictedServices : IBootstrap,
             .AddPolicyHandler(GetRetryPolicy())
             .AddPolicyHandler(GetTimeoutPolicy());
 
-        services.AddSingleton<Faker>();
         services.AddSingleton<HttpUtils>();
     }
 
