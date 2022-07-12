@@ -15,7 +15,7 @@ public class HttpUtils
         Firefox,
     }
 
-    private readonly Dictionary<Browser, string[]> UserAgents = new()
+    private readonly Dictionary<Browser, string[]> _userAgents = new()
     {
         {
             Browser.Chrome, new[]
@@ -56,7 +56,7 @@ public class HttpUtils
             > 71 and < 90 => Browser.Edge,
             _ => Browser.Firefox
         };
-        var userAgents = UserAgents[browser];
+        var userAgents = _userAgents[browser];
 
         return userAgents[percentage % userAgents.Length];
     }
