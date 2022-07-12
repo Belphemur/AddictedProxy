@@ -1,3 +1,10 @@
+## [2.11.3](https://github.com/Belphemur/AddictedProxy/compare/v2.11.2...v2.11.3) (2022-07-12)
+
+
+### Bug Fixes
+
+* **HTTP:** Fix timing for HTTP calls to Addic7ed ([2e3272c](https://github.com/Belphemur/AddictedProxy/commit/2e3272c24b4c3950fb931ed65158166ee3cfae91))
+
 ## [2.11.2](https://github.com/Belphemur/AddictedProxy/compare/v2.11.1...v2.11.2) (2022-07-12)
 
 
