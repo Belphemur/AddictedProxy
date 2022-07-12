@@ -30,22 +30,22 @@ public class BootstrapAddictedServices : IBootstrap,
 
         services.AddHttpClient<IAddic7edClient, Addic7edClient>(client =>
             {
-                client.Timeout = TimeSpan.FromMinutes(12);
+                client.Timeout = TimeSpan.FromMinutes(30);
                 client.BaseAddress = new Uri("https://www.addic7ed.com");
             })
             .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
-            .SetHandlerLifetime(TimeSpan.FromMinutes(15))
+            .SetHandlerLifetime(TimeSpan.FromHours(1))
             .AddPolicyHandler(GetRetryPolicy())
             .AddPolicyHandler(GetCircuitBreaker())
             .AddPolicyHandler(GetTimeoutPolicy());
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>(client =>
             {
-                client.Timeout = TimeSpan.FromMinutes(12);
+                client.Timeout = TimeSpan.FromMilliseconds(2);
                 client.BaseAddress = new Uri("https://www.addic7ed.com");
             })
             .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
-            .SetHandlerLifetime(TimeSpan.FromMinutes(15))
+            .SetHandlerLifetime(TimeSpan.FromHours(1))
             .AddPolicyHandler(GetRetryPolicy())
             .AddPolicyHandler(GetTimeoutPolicy());
 
@@ -68,6 +68,7 @@ public class BootstrapAddictedServices : IBootstrap,
 
     private static IAsyncPolicy<HttpResponseMessage> GetCircuitBreaker() => HttpPolicyExtensions
         .HandleTransientHttpError()
+        .Or<TimeoutRejectedException>()
         .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromMinutes(1), 20, TimeSpan.FromMinutes(5));
 
     private static IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy() => Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(20));
