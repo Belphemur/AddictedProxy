@@ -1,3 +1,10 @@
+## [2.11.2](https://github.com/Belphemur/AddictedProxy/compare/v2.11.1...v2.11.2) (2022-07-12)
+
+
+### Enhancements
+
+* **UserAgents:** Proper generation of valid user agents ([8bfcfef](https://github.com/Belphemur/AddictedProxy/commit/8bfcfef57f2b8de30a2d0b85d2402df0369ccbbc))
+
 ## [2.11.1](https://github.com/Belphemur/AddictedProxy/compare/v2.11.0...v2.11.1) (2022-07-12)
 
 
