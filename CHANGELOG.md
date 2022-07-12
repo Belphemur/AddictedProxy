@@ -1,3 +1,11 @@
+## [2.11.0](https://github.com/Belphemur/AddictedProxy/compare/v2.10.10...v2.11.0) (2022-07-12)
+
+
+### Features
+
+* **Popularity::Downloads:** Add top show by downloads ([04fb846](https://github.com/Belphemur/AddictedProxy/commit/04fb8465f76b5a5bdb13a1d62f307f87cb166de3))
+* **Stats::Downloads:** Add downloads stats to the front-end ([5eb4e02](https://github.com/Belphemur/AddictedProxy/commit/5eb4e0288230b8150277ab29aa27f020c3810477))
+
 ## [2.10.10](https://github.com/Belphemur/AddictedProxy/compare/v2.10.9...v2.10.10) (2022-07-12)
 
 
