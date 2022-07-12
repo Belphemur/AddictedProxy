@@ -28,7 +28,7 @@ public class BootstrapAddictedServices : IBootstrap,
 
         services.AddHttpClient<IAddic7edClient, Addic7edClient>(client =>
             {
-                client.Timeout = TimeSpan.FromMinutes(8);
+                client.Timeout = TimeSpan.FromMinutes(12);
                 client.BaseAddress = new Uri("https://www.addic7ed.com");
             })
             .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
@@ -38,7 +38,7 @@ public class BootstrapAddictedServices : IBootstrap,
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>(client =>
             {
-                client.Timeout = TimeSpan.FromMinutes(8);
+                client.Timeout = TimeSpan.FromMinutes(12);
                 client.BaseAddress = new Uri("https://www.addic7ed.com");
             })
             .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
@@ -67,7 +67,7 @@ public class BootstrapAddictedServices : IBootstrap,
 
     private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
     {
-        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(1), retryCount: 8);
+        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(10), retryCount: 8);
         return HttpPolicyExtensions
             .HandleTransientHttpError()
             //Issue with downloading the subtitle from Addic7ed
