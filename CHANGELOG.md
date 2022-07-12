@@ -1,3 +1,10 @@
+## [2.11.4](https://github.com/Belphemur/AddictedProxy/compare/v2.11.3...v2.11.4) (2022-07-12)
+
+
+### Enhancements
+
+* **Retry:** Improve retries strategy and add circuit breaker ([dc884ec](https://github.com/Belphemur/AddictedProxy/commit/dc884ec04cb351cb3248127d62e4d7a74782684f))
+
 ## [2.11.3](https://github.com/Belphemur/AddictedProxy/compare/v2.11.2...v2.11.3) (2022-07-12)
 
 
