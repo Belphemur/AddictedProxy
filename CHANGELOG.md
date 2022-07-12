@@ -1,3 +1,10 @@
+## [2.10.10](https://github.com/Belphemur/AddictedProxy/compare/v2.10.9...v2.10.10) (2022-07-12)
+
+
+### Bug Fixes
+
+* **Fetch::Subtitle:** Increase max runtime to fetch subtitles. ([62656f8](https://github.com/Belphemur/AddictedProxy/commit/62656f8461b55fecdca3fa40969904b7dc79a6e0))
+
 ## [2.10.9](https://github.com/Belphemur/AddictedProxy/compare/v2.10.8...v2.10.9) (2022-07-11)
 
 
