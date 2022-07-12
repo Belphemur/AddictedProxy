@@ -1,3 +1,10 @@
+## [2.11.6](https://github.com/Belphemur/AddictedProxy/compare/v2.11.5...v2.11.6) (2022-07-12)
+
+
+### Enhancements
+
+* **logs:** reenable logs ([6b497b5](https://github.com/Belphemur/AddictedProxy/commit/6b497b507847afe1348411128841ffb83e6cf0c6))
+
 ## [2.11.5](https://github.com/Belphemur/AddictedProxy/compare/v2.11.4...v2.11.5) (2022-07-12)
 
 
