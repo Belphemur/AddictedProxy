@@ -1,3 +1,16 @@
+## [2.11.5](https://github.com/Belphemur/AddictedProxy/compare/v2.11.4...v2.11.5) (2022-07-12)
+
+
+### Bug Fixes
+
+* **Timeout:** Fix issue with downloading ([9b3a6e2](https://github.com/Belphemur/AddictedProxy/commit/9b3a6e2a35c1a739002c37392cf131c28cea72bc))
+
+
+### Enhancements
+
+* **Timeout:** Improve timeout and waiting to retry ([41c64ee](https://github.com/Belphemur/AddictedProxy/commit/41c64eecaa65a2024c7980efbeff96577f719436))
+* **Timeout:** Improve timeout and waiting to retry ([278f89b](https://github.com/Belphemur/AddictedProxy/commit/278f89baf958c07c6f008c9ff5da402065aecd7e))
+
 ## [2.11.4](https://github.com/Belphemur/AddictedProxy/compare/v2.11.3...v2.11.4) (2022-07-12)
 
 
