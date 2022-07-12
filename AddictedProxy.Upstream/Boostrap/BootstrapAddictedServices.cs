@@ -1,6 +1,8 @@
 ﻿#region
 
 using System.Net;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.EnvVar.Http;
 using AngleSharp.Html.Parser;
@@ -34,6 +36,7 @@ public class BootstrapAddictedServices : IBootstrap,
             .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
             .SetHandlerLifetime(TimeSpan.FromMinutes(15))
             .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreaker())
             .AddPolicyHandler(GetTimeoutPolicy());
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>(client =>
@@ -63,7 +66,11 @@ public class BootstrapAddictedServices : IBootstrap,
         };
     }
 
-    private static IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy() => Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(45));
+    private static IAsyncPolicy<HttpResponseMessage> GetCircuitBreaker() => HttpPolicyExtensions
+        .HandleTransientHttpError()
+        .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromMinutes(1), 20, TimeSpan.FromMinutes(5));
+
+    private static IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy() => Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(20));
 
     private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
     {

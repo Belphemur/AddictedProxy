@@ -10,6 +10,7 @@ using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
 using Locking;
+using Polly.Contrib.WaitAndRetry;
 using Sentry;
 using Sentry.Performance.Model;
 using Sentry.Performance.Service;
@@ -20,6 +21,26 @@ namespace AddictedProxy.Services.Provider.Subtitle.Jobs;
 
 public class FetchSubtitlesJob : IJob
 {
+    private class ExponentialBackoffRetryDecorrelated : IRetryAction
+    {
+        private readonly Queue<TimeSpan> _retryTimes;
+
+        public ExponentialBackoffRetryDecorrelated(TimeSpan medianFirstRetryDelay, int maxRetries)
+        {
+            _retryTimes = new Queue<TimeSpan>(Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: medianFirstRetryDelay, retryCount: maxRetries));
+        }
+
+        public bool ShouldRetry(int currentRetry)
+        {
+            return _retryTimes.Count > 0;
+        }
+
+        public TimeSpan? GetDelayBetweenRetries(int currentRetry)
+        {
+            return _retryTimes.Dequeue();
+        }
+    }
+
     private readonly CultureParser _cultureParser;
 
     private readonly ILogger<FetchSubtitlesJob> _logger;
@@ -43,8 +64,8 @@ public class FetchSubtitlesJob : IJob
     }
 
     public JobData Data { get; set; }
-    
-    public IRetryAction FailRule { get; } = new ExponentialBackoffRetry(TimeSpan.FromSeconds(5), 5);
+
+    public IRetryAction FailRule { get; } = new ExponentialBackoffRetryDecorrelated(TimeSpan.FromMinutes(1), 5);
     public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(15);
 
     public async Task ExecuteAsync(CancellationToken token)
@@ -53,7 +74,7 @@ public class FetchSubtitlesJob : IJob
         using var namedLock = Lock<FetchSubtitlesJob>.GetNamedLock(Data.Key);
         if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
         {
-            _logger.LogInformation("Lock for {key} already taken", Data.Key);
+            _logger.LogWarning("Lock for {key} already taken", Data.Key);
             return;
         }
 
