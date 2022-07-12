@@ -1,3 +1,39 @@
+## [2.11.3](https://github.com/Belphemur/AddictedProxy/compare/v2.11.2...v2.11.3) (2022-07-12)
+
+
+### Bug Fixes
+
+* **HTTP:** Fix timing for HTTP calls to Addic7ed ([2e3272c](https://github.com/Belphemur/AddictedProxy/commit/2e3272c24b4c3950fb931ed65158166ee3cfae91))
+
+## [2.11.2](https://github.com/Belphemur/AddictedProxy/compare/v2.11.1...v2.11.2) (2022-07-12)
+
+
+### Enhancements
+
+* **UserAgents:** Proper generation of valid user agents ([8bfcfef](https://github.com/Belphemur/AddictedProxy/commit/8bfcfef57f2b8de30a2d0b85d2402df0369ccbbc))
+
+## [2.11.1](https://github.com/Belphemur/AddictedProxy/compare/v2.11.0...v2.11.1) (2022-07-12)
+
+
+### Enhancements
+
+* **Logging:** Move prod logging to warning ([dced8fd](https://github.com/Belphemur/AddictedProxy/commit/dced8fdfcc6ad1b54b29da354a6c16e99af2e466))
+
+## [2.11.0](https://github.com/Belphemur/AddictedProxy/compare/v2.10.10...v2.11.0) (2022-07-12)
+
+
+### Features
+
+* **Popularity::Downloads:** Add top show by downloads ([04fb846](https://github.com/Belphemur/AddictedProxy/commit/04fb8465f76b5a5bdb13a1d62f307f87cb166de3))
+* **Stats::Downloads:** Add downloads stats to the front-end ([5eb4e02](https://github.com/Belphemur/AddictedProxy/commit/5eb4e0288230b8150277ab29aa27f020c3810477))
+
+## [2.10.10](https://github.com/Belphemur/AddictedProxy/compare/v2.10.9...v2.10.10) (2022-07-12)
+
+
+### Bug Fixes
+
+* **Fetch::Subtitle:** Increase max runtime to fetch subtitles. ([62656f8](https://github.com/Belphemur/AddictedProxy/commit/62656f8461b55fecdca3fa40969904b7dc79a6e0))
+
 ## [2.10.9](https://github.com/Belphemur/AddictedProxy/compare/v2.10.8...v2.10.9) (2022-07-11)
 
 

@@ -45,7 +45,7 @@ public class FetchSubtitlesJob : IJob
     public JobData Data { get; set; }
     
     public IRetryAction FailRule { get; } = new ExponentialBackoffRetry(TimeSpan.FromSeconds(5), 5);
-    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(5);
+    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(15);
 
     public async Task ExecuteAsync(CancellationToken token)
     {
