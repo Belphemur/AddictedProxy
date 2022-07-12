@@ -483,7 +483,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Gestdown: Addicted Proxy
- * @version 2.10.0
+ * @version 2.10.9
  *
  * Provide a full api to search and download subtitles from Addic7ed website.
  */
@@ -517,6 +517,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     getStats: (top: number, params: RequestParams = {}) =>
       this.request<TopShowDto[], any>({
         path: `/stats/top/${top}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Stats
+     * @name DownloadsDetail
+     * @summary Return the top show by downloads
+     * @request GET:/stats/downloads/{top}
+     */
+    downloadsDetail: (top: number, params: RequestParams = {}) =>
+      this.request<TopShowDto[], any>({
+        path: `/stats/downloads/${top}`,
         method: "GET",
         format: "json",
         ...params,

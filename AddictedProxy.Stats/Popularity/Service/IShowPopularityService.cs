@@ -21,4 +21,11 @@ public interface IShowPopularityService
     /// <param name="limit">Default top 10</param>
     /// <returns></returns>
     IAsyncEnumerable<PopularityRecord> GetTopPopularity(int limit = 10);
+
+    /// <summary>
+    /// Get top shows by downloads
+    /// </summary>
+    /// <param name="limit"></param>
+    /// <returns></returns>
+    IAsyncEnumerable<DownloadPopularity> GetTopDownloadPopularity(int limit = 10);
 }
