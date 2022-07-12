@@ -1,3 +1,15 @@
+## [2.11.7](https://github.com/Belphemur/AddictedProxy/compare/v2.11.6...v2.11.7) (2022-07-12)
+
+
+### Bug Fixes
+
+* **Locking:** Fix deprecation of method ([a030c01](https://github.com/Belphemur/AddictedProxy/commit/a030c017cb3ca807ec0912ca78d6126b216df862))
+
+
+### Enhancements
+
+* **Backoff:** Use an improved version of backoff ([fdd0775](https://github.com/Belphemur/AddictedProxy/commit/fdd07757d74fa83b297f0a36235c2792185076c6))
+
 ## [2.11.6](https://github.com/Belphemur/AddictedProxy/compare/v2.11.5...v2.11.6) (2022-07-12)
 
 
