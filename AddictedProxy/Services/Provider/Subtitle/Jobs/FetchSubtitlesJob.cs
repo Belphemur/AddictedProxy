@@ -42,10 +42,10 @@ public class FetchSubtitlesJob : IJob
         _performanceTracker = performanceTracker;
     }
 
-    public TimeSpan TimeBetweenChecks { get; } = TimeSpan.FromMinutes(30);
     public JobData Data { get; set; }
     
-
+    public IRetryAction FailRule { get; } = new ExponentialBackoffRetry(TimeSpan.FromSeconds(5), 5);
+    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(5);
 
     public async Task ExecuteAsync(CancellationToken token)
     {
@@ -96,9 +96,6 @@ public class FetchSubtitlesJob : IJob
         _logger.LogJobException(exception, "Fetching subtitles info");
         return Task.CompletedTask;
     }
-
-    public IRetryAction FailRule { get; } = new ExponentialBackoffRetry(TimeSpan.FromSeconds(5), 5);
-    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(2);
 
 
     private bool HasMatchingSubtitle(Episode episode)
