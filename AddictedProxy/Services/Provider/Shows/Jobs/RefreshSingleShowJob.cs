@@ -11,9 +11,9 @@ using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
 
-public class RefreshSignleShowJob : IJob
+public class RefreshSingleShowJob : IJob
 {
-    private readonly ILogger<RefreshSignleShowJob> _logger;
+    private readonly ILogger<RefreshSingleShowJob> _logger;
     private readonly IShowRefresher _showRefresher;
     private readonly IPerformanceTracker _performanceTracker;
 
@@ -27,7 +27,7 @@ public class RefreshSignleShowJob : IJob
     /// </summary>
     public string? ConnectionId { get; set; }
 
-    public RefreshSignleShowJob(ILogger<RefreshSignleShowJob> logger, IShowRefresher showRefresher, IPerformanceTracker performanceTracker)
+    public RefreshSingleShowJob(ILogger<RefreshSingleShowJob> logger, IShowRefresher showRefresher, IPerformanceTracker performanceTracker)
     {
         _logger = logger;
         _showRefresher = showRefresher;
@@ -38,7 +38,7 @@ public class RefreshSignleShowJob : IJob
     {
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "refresh-specific-show");
 
-        using var namedLock = Lock<RefreshSignleShowJob>.GetNamedLock(Show.Id.ToString());
+        using var namedLock = Lock<RefreshSingleShowJob>.GetNamedLock(Show.Id.ToString());
         if (!await namedLock.WaitAsync(TimeSpan.Zero, cancellationToken))
         {
             _logger.LogInformation("Lock for {show} already taken", Show.Id);

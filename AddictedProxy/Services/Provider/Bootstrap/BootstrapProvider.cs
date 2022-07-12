@@ -21,7 +21,7 @@ public class BootstrapProvider : IBootstrap
     {
         services.AddJob<StoreSubtitleJob>();
         services.AddJob<FetchSubtitlesJob>();
-        services.AddJob<RefreshSignleShowJob>();
+        services.AddJob<RefreshSingleShowJob>();
         services.AddTransient<IShowRefresher, ShowRefresher>();
         services.AddScoped<ISubtitleProvider, SubtitleProvider>();
         services.AddTransient<ISeasonRefresher, SeasonRefresher>();
