@@ -19,7 +19,7 @@ using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Subtitle.Jobs;
 
-public class FetchSubtitlesJob : IJob
+public class FetchSubtitlesJob : IQueueJob
 {
     private readonly CultureParser _cultureParser;
 
@@ -47,6 +47,9 @@ public class FetchSubtitlesJob : IJob
 
     public IRetryAction FailRule { get; } = new ExponentialDecorrelatedJittedBackoffRetry(5, TimeSpan.FromMinutes(5));
     public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(30);
+
+    public string Key => Data.Key;
+    public string QueueId => nameof(FetchSubtitlesJob);
 
     public async Task ExecuteAsync(CancellationToken token)
     {
