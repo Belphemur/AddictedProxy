@@ -1,3 +1,10 @@
+## [2.11.8](https://github.com/Belphemur/AddictedProxy/compare/v2.11.7...v2.11.8) (2022-07-13)
+
+
+### Bug Fixes
+
+* **FetchSubtitle:** Use a queue for the jobs ([01c0d8d](https://github.com/Belphemur/AddictedProxy/commit/01c0d8d665f9e45d1d664362249e9656408a70a8))
+
 ## [2.11.7](https://github.com/Belphemur/AddictedProxy/compare/v2.11.6...v2.11.7) (2022-07-12)
 
 
