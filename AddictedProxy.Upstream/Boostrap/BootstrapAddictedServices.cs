@@ -36,7 +36,6 @@ public class BootstrapAddictedServices : IBootstrap,
             .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
             .SetHandlerLifetime(TimeSpan.FromHours(1))
             .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreaker())
             .AddPolicyHandler(GetTimeoutPolicy());
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>(client =>
