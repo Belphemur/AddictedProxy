@@ -1,3 +1,10 @@
+## [2.11.9](https://github.com/Belphemur/AddictedProxy/compare/v2.11.8...v2.11.9) (2022-07-15)
+
+
+### Bug Fixes
+
+* **CircuitBreaker:** Remove the circuit breaker, we have enough retries to not need that. ([420b76f](https://github.com/Belphemur/AddictedProxy/commit/420b76f940a800d67adde99baf6210fd3ad1ffbb))
+
 ## [2.11.8](https://github.com/Belphemur/AddictedProxy/compare/v2.11.7...v2.11.8) (2022-07-13)
 
 
