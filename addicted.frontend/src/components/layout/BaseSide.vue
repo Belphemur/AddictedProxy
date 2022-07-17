@@ -10,9 +10,7 @@
           />
           <el-menu-item-group>
             <el-menu-item
-              v-for="route in $router
-                .getRoutes()
-                .sort((a, b) => a.meta.order > b.meta.order)"
+              v-for="route in routes"
               v-bind:key="route.path"
               :route="route"
               :index="route.path"
@@ -42,6 +40,11 @@ import transparent from "~/assets/Logos/Gestdown-logos_transparent.png";
 import black from "~/assets/Logos/Gestdown-logos_black.png";
 import { isDark } from "~/composables/theme";
 import { Sunny, Moon } from "@element-plus/icons-vue";
+import { orderBy } from "lodash/fp";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const routes = orderBy(["meta.order"], ["asc"], router.getRoutes());
 </script>
 
 <style scoped>
