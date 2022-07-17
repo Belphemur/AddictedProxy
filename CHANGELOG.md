@@ -1,3 +1,11 @@
+## [2.11.12](https://github.com/Belphemur/AddictedProxy/compare/v2.11.11...v2.11.12) (2022-07-17)
+
+
+### Bug Fixes
+
+* **sentry:** fix sentry release workflow ([90a84dd](https://github.com/Belphemur/AddictedProxy/commit/90a84dd9bcd5da771eb28ba364d99e3db708a43c))
+* **Sentry:** split sentry from main release ([8e881d1](https://github.com/Belphemur/AddictedProxy/commit/8e881d182730a09d65ec86bb25055ddc6373012e))
+
 ## [2.11.11](https://github.com/Belphemur/AddictedProxy/compare/v2.11.10...v2.11.11) (2022-07-17)
 
 
