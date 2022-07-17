@@ -1,3 +1,17 @@
+## [2.11.10](https://github.com/Belphemur/AddictedProxy/compare/v2.11.9...v2.11.10) (2022-07-17)
+
+
+### Bug Fixes
+
+* **FetchSubtitle:** Fix issue where the span/transaction isn't tagged as failed when an exception arise. ([84c35b4](https://github.com/Belphemur/AddictedProxy/commit/84c35b4fe54c05ea380eb4aeb2a163947150aec6))
+* **FetchSubtitle:** Since jobs are now queued, we should reload the show to be sure we have the right data. ([b62bc14](https://github.com/Belphemur/AddictedProxy/commit/b62bc14312ab93a95ef7c13f9bf9756def3cb475))
+
+
+### Enhancements
+
+* **Season::Refresh:** Only refresh seasons when we can't find the requested one. ([d4b552a](https://github.com/Belphemur/AddictedProxy/commit/d4b552a0d59e72187f7543bf80f79dcdbd7fc635))
+* **UserAgent:** Add Safari ([98cc29f](https://github.com/Belphemur/AddictedProxy/commit/98cc29f2f27ea520c86f46ad8fa5a91cd1758caa))
+
 ## [2.11.9](https://github.com/Belphemur/AddictedProxy/compare/v2.11.8...v2.11.9) (2022-07-15)
 
 
