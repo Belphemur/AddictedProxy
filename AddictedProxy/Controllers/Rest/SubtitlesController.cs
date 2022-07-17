@@ -210,7 +210,7 @@ public class SubtitlesController : Controller
     private void ScheduleJob(SubtitleQueryRequest request, TvShow show)
     {
         var job = _jobBuilder.Create<FetchSubtitlesJob>()
-                             .Configure(subtitlesJob => { subtitlesJob.Data = new FetchSubtitlesJob.JobData(show, request.Season, request.Episode, _cultureParser.FromString(request.LanguageISO), request.FileName); })
+                             .Configure(subtitlesJob => { subtitlesJob.Data = new FetchSubtitlesJob.JobData(show.Id, request.Season, request.Episode, _cultureParser.FromString(request.LanguageISO), request.FileName); })
                              .Build();
         _jobScheduler.ScheduleJob(job);
     }

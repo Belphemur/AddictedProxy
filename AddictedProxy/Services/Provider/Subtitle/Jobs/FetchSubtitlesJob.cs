@@ -2,6 +2,7 @@
 
 using System.Globalization;
 using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Culture;
 using AddictedProxy.Services.Job.Extensions;
 using AddictedProxy.Services.Provider.Episodes;
@@ -27,13 +28,16 @@ public class FetchSubtitlesJob : IQueueJob
     private readonly ISeasonRefresher _seasonRefresher;
     private readonly IEpisodeRefresher _episodeRefresher;
     private readonly IPerformanceTracker _performanceTracker;
+    private readonly ITvShowRepository _tvShowRepository;
+    private TvShow? _show;
 
 
     public FetchSubtitlesJob(ILogger<FetchSubtitlesJob> logger,
-        CultureParser cultureParser,
-        ISeasonRefresher seasonRefresher,
-        IEpisodeRefresher episodeRefresher,
-        IPerformanceTracker performanceTracker
+                             CultureParser cultureParser,
+                             ISeasonRefresher seasonRefresher,
+                             IEpisodeRefresher episodeRefresher,
+                             IPerformanceTracker performanceTracker,
+                             ITvShowRepository tvShowRepository
     )
     {
         _logger = logger;
@@ -41,6 +45,7 @@ public class FetchSubtitlesJob : IQueueJob
         _seasonRefresher = seasonRefresher;
         _episodeRefresher = episodeRefresher;
         _performanceTracker = performanceTracker;
+        _tvShowRepository = tvShowRepository;
     }
 
     public JobData Data { get; set; }
@@ -51,9 +56,20 @@ public class FetchSubtitlesJob : IQueueJob
     public string Key => Data.Key;
     public string QueueId => nameof(FetchSubtitlesJob);
 
+    private async Task<TvShow> GetShow(CancellationToken token)
+    {
+        if (_show != null)
+        {
+            return _show;
+        }
+
+        return (_show = await _tvShowRepository.GetByIdAsync(Data.ShowId, token)) ?? throw new InvalidOperationException($"Expected to find show {Data.ShowId} in db.");
+    }
+
     public async Task ExecuteAsync(CancellationToken token)
     {
-        using var scope = _logger.BeginScope(Data.ScopeName);
+        var show = await GetShow(token);
+        using var scope = _logger.BeginScope(ScopeName(show));
         using var namedLock = Lock<FetchSubtitlesJob>.GetNamedLock(Data.Key);
         if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
         {
@@ -63,12 +79,11 @@ public class FetchSubtitlesJob : IQueueJob
 
         using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), "fetch-subtitles-one-episode");
 
-        var show = Data.Show;
         var season = await _seasonRefresher.GetRefreshSeasonAsync(show, Data.Season, token);
 
         if (season == null)
         {
-            _logger.LogInformation("Couldn't find season {season} for show {showName}", Data.Season, Data.Show.Name);
+            _logger.LogInformation("Couldn't find season {season} for show {showName}", Data.Season, show.Name);
             return;
         }
 
@@ -76,7 +91,7 @@ public class FetchSubtitlesJob : IQueueJob
 
         if (episode == null)
         {
-            _logger.LogInformation("Couldn't find episode S{season}E{episode} for show {showName}", Data.Season, Data.Episode, Data.Show.Name);
+            _logger.LogInformation("Couldn't find episode S{season}E{episode} for show {showName}", Data.Season, Data.Episode, show.Name);
             return;
         }
 
@@ -90,22 +105,27 @@ public class FetchSubtitlesJob : IQueueJob
         }
         else
         {
-            _logger.LogInformation("Couldn't find matching subtitles for {search}", Data.ScopeName);
+            _logger.LogInformation("Couldn't find matching subtitles for {search}", Data.RequestData);
         }
     }
 
-    public Task OnFailure(JobException exception)
+    public async Task OnFailure(JobException exception)
     {
-        using var scope = _logger.BeginScope(Data.ScopeName);
+        var show = await GetShow(default);
+        using var scope = _logger.BeginScope(ScopeName(show));
         _logger.LogJobException(exception, "Fetching subtitles info");
-        return Task.CompletedTask;
+    }
+
+    private string ScopeName(TvShow show)
+    {
+        return $"{show.Name} {Data.RequestData}";
     }
 
 
     private bool HasMatchingSubtitle(Episode episode)
     {
         var list = episode.Subtitles
-            .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), Data.Language));
+                          .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), Data.Language));
         if (Data.FileName != null)
         {
             list = list.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => Data.FileName.ToLowerInvariant().Contains(version)));
@@ -114,9 +134,9 @@ public class FetchSubtitlesJob : IQueueJob
         return list.Any();
     }
 
-    public record JobData(TvShow Show, int Season, int Episode, CultureInfo? Language, string? FileName)
+    public record JobData(long ShowId, int Season, int Episode, CultureInfo? Language, string? FileName)
     {
-        public string Key => $"{Show.Id}-{Season}";
-        public string ScopeName => $"{Show.Name} S{Season}E{Episode} ({Language}) {FileName ?? ""}";
+        public string Key => $"{ShowId}-{Season}";
+        public string RequestData => $"S{Season}E{Episode} ({Language}) {FileName ?? ""}";
     }
 }
