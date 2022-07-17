@@ -1,3 +1,36 @@
+## [2.11.9](https://github.com/Belphemur/AddictedProxy/compare/v2.11.8...v2.11.9) (2022-07-15)
+
+
+### Bug Fixes
+
+* **CircuitBreaker:** Remove the circuit breaker, we have enough retries to not need that. ([420b76f](https://github.com/Belphemur/AddictedProxy/commit/420b76f940a800d67adde99baf6210fd3ad1ffbb))
+
+## [2.11.8](https://github.com/Belphemur/AddictedProxy/compare/v2.11.7...v2.11.8) (2022-07-13)
+
+
+### Bug Fixes
+
+* **FetchSubtitle:** Use a queue for the jobs ([01c0d8d](https://github.com/Belphemur/AddictedProxy/commit/01c0d8d665f9e45d1d664362249e9656408a70a8))
+
+## [2.11.7](https://github.com/Belphemur/AddictedProxy/compare/v2.11.6...v2.11.7) (2022-07-12)
+
+
+### Bug Fixes
+
+* **Locking:** Fix deprecation of method ([a030c01](https://github.com/Belphemur/AddictedProxy/commit/a030c017cb3ca807ec0912ca78d6126b216df862))
+
+
+### Enhancements
+
+* **Backoff:** Use an improved version of backoff ([fdd0775](https://github.com/Belphemur/AddictedProxy/commit/fdd07757d74fa83b297f0a36235c2792185076c6))
+
+## [2.11.6](https://github.com/Belphemur/AddictedProxy/compare/v2.11.5...v2.11.6) (2022-07-12)
+
+
+### Enhancements
+
+* **logs:** reenable logs ([6b497b5](https://github.com/Belphemur/AddictedProxy/commit/6b497b507847afe1348411128841ffb83e6cf0c6))
+
 ## [2.11.5](https://github.com/Belphemur/AddictedProxy/compare/v2.11.4...v2.11.5) (2022-07-12)
 
 
