@@ -1,3 +1,15 @@
+## [2.11.11](https://github.com/Belphemur/AddictedProxy/compare/v2.11.10...v2.11.11) (2022-07-17)
+
+
+### Bug Fixes
+
+* **Menu:** Fix the order of items in the menu ([26bbd94](https://github.com/Belphemur/AddictedProxy/commit/26bbd94146b39b6dbcb8c89660ea87bd5ab6736d))
+
+
+### Enhancements
+
+* **Stats:** Add loading skeleton ([bab29ec](https://github.com/Belphemur/AddictedProxy/commit/bab29ec08539cf024c07cac2820a889239395a8f))
+
 ## [2.11.10](https://github.com/Belphemur/AddictedProxy/compare/v2.11.9...v2.11.10) (2022-07-17)
 
 
