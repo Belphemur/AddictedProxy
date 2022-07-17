@@ -1,6 +1,9 @@
 <template>
   <Suspense>
     <ShowsPopularity />
+    <template #fallback>
+      <el-skeleton :rows="5" animated :loading="true" />
+    </template>
   </Suspense>
   <el-divider>
     <el-icon>
@@ -9,6 +12,9 @@
   </el-divider>
   <Suspense>
     <ShowsDownloads />
+    <template #fallback>
+      <el-skeleton :rows="5" animated :loading="true" />
+    </template>
   </Suspense>
 </template>
 
