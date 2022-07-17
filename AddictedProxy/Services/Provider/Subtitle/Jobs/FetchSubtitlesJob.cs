@@ -78,34 +78,42 @@ public class FetchSubtitlesJob : IQueueJob
         }
 
         using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), "fetch-subtitles-one-episode");
-
-        var season = await _seasonRefresher.GetRefreshSeasonAsync(show, Data.Season, token);
-
-        if (season == null)
+        try
         {
-            _logger.LogInformation("Couldn't find season {season} for show {showName}", Data.Season, show.Name);
-            return;
+
+            var season = await _seasonRefresher.GetRefreshSeasonAsync(show, Data.Season, token);
+
+            if (season == null)
+            {
+                _logger.LogInformation("Couldn't find season {season} for show {showName}", Data.Season, show.Name);
+                return;
+            }
+
+            var episode = await _episodeRefresher.GetRefreshEpisodeAsync(show, season, Data.Episode, token);
+
+            if (episode == null)
+            {
+                _logger.LogInformation("Couldn't find episode S{season}E{episode} for show {showName}", Data.Season, Data.Episode, show.Name);
+                return;
+            }
+
+            var matchingSubtitles = HasMatchingSubtitle(episode);
+
+            var latestDiscovered = episode.Subtitles.Max(subtitle => subtitle.Discovered);
+
+            if (matchingSubtitles || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(180))
+            {
+                _logger.LogInformation("Matching subtitles found or episode was already refreshed");
+            }
+            else
+            {
+                _logger.LogInformation("Couldn't find matching subtitles for {search}", Data.RequestData);
+            }
         }
-
-        var episode = await _episodeRefresher.GetRefreshEpisodeAsync(show, season, Data.Episode, token);
-
-        if (episode == null)
+        catch (Exception)
         {
-            _logger.LogInformation("Couldn't find episode S{season}E{episode} for show {showName}", Data.Season, Data.Episode, show.Name);
-            return;
-        }
-
-        var matchingSubtitles = HasMatchingSubtitle(episode);
-
-        var latestDiscovered = episode.Subtitles.Max(subtitle => subtitle.Discovered);
-
-        if (matchingSubtitles || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(180))
-        {
-            _logger.LogInformation("Matching subtitles found or episode was already refreshed");
-        }
-        else
-        {
-            _logger.LogInformation("Couldn't find matching subtitles for {search}", Data.RequestData);
+            transaction.Finish(Status.InternalError);
+            throw;
         }
     }
 
