@@ -24,13 +24,13 @@ public class SeasonRefresher : ISeasonRefresher
     private readonly ITransactionManager _transactionManager;
 
     public SeasonRefresher(ILogger<SeasonRefresher> logger,
-        ITvShowRepository tvShowRepository,
-        IAddic7edClient addic7EdClient,
-        ICredentialsService credentialsService,
-        ISeasonRepository seasonRepository,
-        IOptions<RefreshConfig> refreshConfig,
-        IPerformanceTracker performanceTracker,
-        ITransactionManager transactionManager
+                           ITvShowRepository tvShowRepository,
+                           IAddic7edClient addic7EdClient,
+                           ICredentialsService credentialsService,
+                           ISeasonRepository seasonRepository,
+                           IOptions<RefreshConfig> refreshConfig,
+                           IPerformanceTracker performanceTracker,
+                           ITransactionManager transactionManager
     )
     {
         _logger = logger;
@@ -45,6 +45,14 @@ public class SeasonRefresher : ISeasonRefresher
 
     public async Task<Season?> GetRefreshSeasonAsync(TvShow show, int seasonNumber, CancellationToken token)
     {
+        //Check first in the show seasons if we can find it, if we can't, then trigger refresh
+        //This will reduce the amount of queries we send to Addic7ed
+        var season = await _seasonRepository.GetSeasonForShowAsync(show.Id, seasonNumber, token);
+        if (season != null)
+        {
+            return season;
+        }
+
         await RefreshSeasonsAsync(show, token);
         return await _seasonRepository.GetSeasonForShowAsync(show.Id, seasonNumber, token);
     }

@@ -80,8 +80,7 @@ public class FetchSubtitlesJob : IQueueJob
         using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), "fetch-subtitles-one-episode");
         try
         {
-
-            var season = await _seasonRefresher.GetRefreshSeasonAsync(show, Data.Season, token);
+            var season =  await _seasonRefresher.GetRefreshSeasonAsync(show, Data.Season, token);
 
             if (season == null)
             {
