@@ -13,6 +13,7 @@ public class HttpUtils
         Chrome,
         Edge,
         Firefox,
+        Safari
     }
 
     private readonly Dictionary<Browser, string[]> _userAgents = new()
@@ -24,7 +25,8 @@ public class HttpUtils
                 "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
                 "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
-                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
             }
         },
         {
@@ -43,6 +45,15 @@ public class HttpUtils
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36 Edg/103.0.1264.49",
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36 Edg/103.0.1264.51"
             }
+        },
+        {
+            Browser.Safari,
+            new[]
+            {
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 12_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Safari/605.1.15",
+                "Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Mobile/15E148 Safari/604.1",
+                "Mozilla/5.0 (iPad; CPU OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.4 Mobile/15E148 Safari/604.1"
+            }
         }
     };
 
@@ -52,9 +63,10 @@ public class HttpUtils
         var percentage = random.Next(0, 100);
         var browser = percentage switch
         {
-            < 70 => Browser.Chrome,
-            > 71 and < 90 => Browser.Edge,
-            _ => Browser.Firefox
+            <= 65           => Browser.Chrome,
+            >= 66 and <= 76 => Browser.Edge,
+            >= 77 and <= 90 => Browser.Safari,
+            _               => Browser.Firefox
         };
         var userAgents = _userAgents[browser];
 
