@@ -91,6 +91,7 @@ jobs:
         run: npx semantic-release -d
 
   main-release:
+    name: "Prepare release"
     needs: [ build ]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -123,6 +124,11 @@ jobs:
           version=$(git describe --tags --abbrev=0 | cut -c 2-)
           echo "::set-output name=version::$version"
         id: version
+  sentry-release:
+    name: "Setup Sentry Release"
+    needs: [main-release]
+    runs-on: ubuntu-latest
+    steps:
       - name: Sentry Release
         uses: getsentry/action-release@v1.1.6
         env:
