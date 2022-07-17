@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@types/jest": "^28.1.6",
+    "@types/lodash": "^4.14.182",
     "@types/node": "^18.0.6",
     "@types/streamsaver": "^2.0.1",
     "@types/swagger-ui": "^3.52.0",

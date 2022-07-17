@@ -4,6 +4,7 @@ specifiers:
   '@element-plus/icons-vue': ^2.0.6
   '@microsoft/signalr': ^6.0.7
   '@types/jest': ^28.1.6
+  '@types/lodash': ^4.14.182
   '@types/node': ^18.0.6
   '@types/streamsaver': ^2.0.1
   '@types/swagger-ui': ^3.52.0
@@ -58,6 +59,7 @@ dependencies:
 
 devDependencies:
   '@types/jest': 28.1.6
+  '@types/lodash': 4.14.182
   '@types/node': 18.0.6
   '@types/streamsaver': 2.0.1
   '@types/swagger-ui': 3.52.0
@@ -922,7 +924,6 @@ packages:
 
   /@types/lodash/4.14.182:
     resolution: {integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==}
-    dev: false
 
   /@types/node/18.0.6:
     resolution: {integrity: sha512-/xUq6H2aQm261exT6iZTMifUySEt4GR5KX8eYyY+C4MSNPqSh9oNIP7tz2GLKTlFaiBbgZNxffoR3CVRG+cljw==}
