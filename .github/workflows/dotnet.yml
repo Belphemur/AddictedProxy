@@ -129,6 +129,10 @@ jobs:
     needs: [main-release]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: v${{ needs.main-release.outputs.version}}
       - name: Sentry Release
         uses: getsentry/action-release@v1.1.6
         env:
@@ -137,7 +141,7 @@ jobs:
           SENTRY_PROJECT: ${{env.SENTRY_NAME}}
         with:
           environment: Production
-          version: "${{env.PROJECT_NAME}}@${{ steps.version.outputs.version }}"
+          version: "${{env.PROJECT_NAME}}@${{ needs.main-release.outputs.version}}"
   
   docker-build-publish:
     needs: [ main-release ]
