@@ -1,3 +1,10 @@
+## [2.11.13](https://github.com/Belphemur/AddictedProxy/compare/v2.11.12...v2.11.13) (2022-07-18)
+
+
+### Bug Fixes
+
+* **API:** Use the dist bundle ([ec1e6b4](https://github.com/Belphemur/AddictedProxy/commit/ec1e6b4afe6c91c4d3e856b2bc50a87f3aca465c))
+
 ## [2.11.12](https://github.com/Belphemur/AddictedProxy/compare/v2.11.11...v2.11.12) (2022-07-17)
 
 
