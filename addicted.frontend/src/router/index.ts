@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import { Search, Collection, DataLine } from "@element-plus/icons-vue";
+import { mevent } from "~/composables/matomo/tracking";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -144,11 +145,7 @@ router.beforeEach((to, from, next) => {
   next();
 });
 router.afterEach((to, from) => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const datalayer = (window.dataLayer = window.dataLayer || []);
-  datalayer.push({
-    event: "virtualPageView", //fixed value you need to use as trigger in GTM
+  mevent("virtual_page_view", {
     virtualPagePath: to.path,
     virtualPageTitle: to.name,
     virtualPageReferer: from.path,

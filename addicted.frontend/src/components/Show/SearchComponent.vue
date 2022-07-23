@@ -59,6 +59,7 @@ import { ShowDto } from "~/api/api";
 import { getName, getAll639_1 } from "all-iso-language-codes";
 import { SelectedShow } from "~/Dto/SelectedShow";
 import { api } from "~/composables/rest/api";
+import { mevent } from "~/composables/matomo/tracking";
 
 const langs = getAll639_1().map((value) => {
   return { value: value, label: getName(value) };
@@ -84,15 +85,14 @@ const querySearch = async (query: string, cb: (param: unknown) => void) => {
     cb([]);
     return;
   }
-  window._mtm.push({ event: "show-search", query: query });
+  mevent("show-search", { query: query });
   const searchResponse = await api.shows.searchCreate({ query: query });
   cb(searchResponse.data.shows);
 };
 
 const updateSelectedShow = async (event: ShowDto) => {
   setSelectedShow(event);
-  window._mtm.push({ event: "show-selected", show: event });
-
+  mevent("show-selected", { show: event });
   //Force refreshing the show
   if (selectedShow.value!.nbSeasons == 0) {
     emit("needRefresh", selectedShow.value!);
