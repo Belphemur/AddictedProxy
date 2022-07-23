@@ -1,3 +1,11 @@
+## [2.11.14](https://github.com/Belphemur/AddictedProxy/compare/v2.11.13...v2.11.14) (2022-07-23)
+
+
+### Enhancements
+
+* **analytics:** track page view ([d4f72a3](https://github.com/Belphemur/AddictedProxy/commit/d4f72a34b98f1e66fc170be6f9fd62f579a41ed9))
+* **analytics:** use GTM ([1475748](https://github.com/Belphemur/AddictedProxy/commit/14757488258482355d55d9b5a1f0b4202dde3dec))
+
 ## [2.11.13](https://github.com/Belphemur/AddictedProxy/compare/v2.11.12...v2.11.13) (2022-07-18)
 
 
