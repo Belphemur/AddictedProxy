@@ -63,6 +63,7 @@ import { EpisodeWithSubtitlesDto, SubtitleDto } from "~/api/api";
 import { ElMessage } from "element-plus";
 import { Download, Check } from "@element-plus/icons-vue";
 import { api } from "~/composables/rest/api";
+import { mevent } from "~/composables/matomo/tracking";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto>;
@@ -74,7 +75,7 @@ streamSaver.mitm = "/mitm.html";
 
 const currentlyDownloading = ref<Map<string, boolean>>(new Map());
 const downloadSubtitle = async (sub: SubtitleDto) => {
-  window._mtm.push({ event: "download-subtitle", subtitle: sub });
+  mevent("download-subtitle", { subtitle: sub });
   currentlyDownloading.value.set(sub.subtitleId!, true);
   ElMessage({
     message: "Subtitle download started ... It might take a moment.",
