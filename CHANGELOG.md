@@ -1,3 +1,10 @@
+## [2.11.15](https://github.com/Belphemur/AddictedProxy/compare/v2.11.14...v2.11.15) (2022-07-23)
+
+
+### Enhancements
+
+* **analytics:** Use matomo ([99326f6](https://github.com/Belphemur/AddictedProxy/commit/99326f637035514184823fde9bb130293c479993))
+
 ## [2.11.14](https://github.com/Belphemur/AddictedProxy/compare/v2.11.13...v2.11.14) (2022-07-23)
 
 
