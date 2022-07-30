@@ -27,7 +27,8 @@ public interface IEpisodeRefresher
     /// <summary>
     /// Does the episode of the season needs to be refreshed
     /// </summary>
+    /// <param name="show"></param>
     /// <param name="season"></param>
     /// <returns></returns>
-    bool IsSeasonNeedRefresh(Season season);
+    bool IsSeasonNeedRefresh(TvShow show, Season season);
 }

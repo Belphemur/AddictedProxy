@@ -188,7 +188,7 @@ public class SubtitlesController : Controller
                 return Ok(new SubtitleSearchResponse(ArraySegment<SubtitleDto>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name)));
             }
 
-            if (season != null && !_episodeRefresher.IsSeasonNeedRefresh(season))
+            if (season != null && !_episodeRefresher.IsSeasonNeedRefresh(show,season))
             {
                 _logger.LogInformation("Don't need to refresh episodes of {season} of show {show} returning empty data", request.Season, show.Name);
                 return Ok(new SubtitleSearchResponse(ArraySegment<SubtitleDto>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name)));
