@@ -24,12 +24,12 @@ public class EpisodeRefresher : IEpisodeRefresher
     private readonly IPerformanceTracker _performanceTracker;
 
     public EpisodeRefresher(IAddic7edClient client,
-        IEpisodeRepository episodeRepository,
-        ISeasonRepository seasonRepository,
-        ICredentialsService credentialsService,
-        IOptions<RefreshConfig> refreshConfig,
-        ILogger<EpisodeRefresher> logger,
-        IPerformanceTracker performanceTracker
+                            IEpisodeRepository episodeRepository,
+                            ISeasonRepository seasonRepository,
+                            ICredentialsService credentialsService,
+                            IOptions<RefreshConfig> refreshConfig,
+                            ILogger<EpisodeRefresher> logger,
+                            IPerformanceTracker performanceTracker
     )
     {
         _client = client;
@@ -73,13 +73,12 @@ public class EpisodeRefresher : IEpisodeRefresher
             return;
         }
 
-        if (!IsSeasonNeedRefresh(season))
+        if (!IsSeasonNeedRefresh(show, season))
         {
             _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
             transaction.Finish(Status.Unavailable);
             return;
         }
-    
 
 
         await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
@@ -89,15 +88,11 @@ public class EpisodeRefresher : IEpisodeRefresher
         await _seasonRepository.SaveChangesAsync(token);
         _logger.LogInformation("Refreshed {episodes} episodes of {show} S{season}", episodes.Length, show.Name, season.Number);
     }
-
-    /// <summary>
-    /// Does the episode of the season needs to be refreshed
-    /// </summary>
-    /// <param name="season"></param>
-    /// <returns></returns>
-    public bool IsSeasonNeedRefresh(Season season)
+    
+    public bool IsSeasonNeedRefresh(TvShow show, Season season)
     {
-        return season.LastRefreshed == null|| DateTime.UtcNow - season.LastRefreshed >= _refreshConfig.Value.EpisodeRefresh;
+        var refreshTime = show.Seasons.Max(s => s.Number) == season.Number ? _refreshConfig.Value.EpisodeRefresh.LastSeasonRefresh : _refreshConfig.Value.EpisodeRefresh.DefaultRefresh;
+        return season.LastRefreshed == null || DateTime.UtcNow - season.LastRefreshed >= refreshTime;
     }
 
     /// <summary>
@@ -123,7 +118,7 @@ public class EpisodeRefresher : IEpisodeRefresher
             }
 
 
-            if (season.LastRefreshed != null && DateTime.UtcNow - season.LastRefreshed <= _refreshConfig.Value.EpisodeRefresh)
+            if (!IsSeasonNeedRefresh(show, season))
             {
                 _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
                 transaction.Finish(Status.Unavailable);
