@@ -1,3 +1,11 @@
+## [2.11.16](https://github.com/Belphemur/AddictedProxy/compare/v2.11.15...v2.11.16) (2022-07-30)
+
+
+### Enhancements
+
+* **analytics:** Use matomo ([1c6fa37](https://github.com/Belphemur/AddictedProxy/commit/1c6fa37bce5c1519635f24bc0c77bb8aeb599282))
+* **Refresh:** Different refresh for different season. Last season refresh more often than older seasons. ([6dfe5b7](https://github.com/Belphemur/AddictedProxy/commit/6dfe5b722b19ef816fc9089d565f8f0687c07249))
+
 ## [2.11.15](https://github.com/Belphemur/AddictedProxy/compare/v2.11.14...v2.11.15) (2022-07-23)
 
 
