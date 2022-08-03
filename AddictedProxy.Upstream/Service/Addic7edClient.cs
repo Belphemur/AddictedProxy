@@ -4,8 +4,6 @@ using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Service.Exception;
-using Polly;
-using Polly.Contrib.WaitAndRetry;
 
 #endregion
 
@@ -35,12 +33,8 @@ public class Addic7edClient : IAddic7edClient
         HttpResponseMessage? response = null;
         try
         {
-            var shows = await Policy()
-                .ExecuteAsync(async cToken =>
-                {
-                    response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(creds, "ajax_getShows.php", HttpMethod.Get), cToken);
-                    return _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken);
-                }, token);
+            response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(creds, "ajax_getShows.php", HttpMethod.Get), token);
+            var shows = _parser.GetShowsAsync(await response.Content.ReadAsStreamAsync(token), token);
             await foreach (var show in shows.WithCancellation(token))
             {
                 yield return show;
@@ -61,14 +55,17 @@ public class Addic7edClient : IAddic7edClient
     /// <returns></returns>
     public async Task<IEnumerable<Season>> GetSeasonsAsync(AddictedUserCredentials credentials, TvShow show, CancellationToken token)
     {
-        return await Policy()
-            .ExecuteAsync(async cToken =>
-            {
-                using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.ExternalId}", HttpMethod.Get), cToken);
-                return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(cToken), cToken)
-                                    .Select(i => new Season { Number = i, TvShowId = show.Id })
-                                    .ToArrayAsync(cToken);
-            }, token);
+        try
+        {
+            using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.ExternalId}", HttpMethod.Get), token);
+            return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(token), token)
+                .Select(i => new Season { Number = i, TvShowId = show.Id })
+                .ToArrayAsync(token);
+        }
+        catch (NothingToParseException)
+        {
+            return Array.Empty<Season>();
+        }
     }
 
     /// <summary>
@@ -81,25 +78,14 @@ public class Addic7edClient : IAddic7edClient
     /// <returns></returns>
     public async Task<IEnumerable<Episode>> GetEpisodesAsync(AddictedUserCredentials credentials, TvShow show, int season, CancellationToken token)
     {
-        return await Policy()
-            .ExecuteAsync(async cToken =>
+        using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_loadShow.php?bot=1&show={show.ExternalId}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get),
+            token);
+        return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(token), token)
+            .Select(episode =>
             {
-                using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_loadShow.php?bot=1&show={show.ExternalId}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get),
-                    token);
-                return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(cToken), cToken)
-                                    .Select(episode =>
-                                    {
-                                        episode.TvShowId = show.Id;
-                                        return episode;
-                                    })
-                                    .ToArrayAsync(cToken);
-            }, token);
-    }
-
-    private AsyncPolicy Policy()
-    {
-        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromMilliseconds(500), retryCount: 8);
-        return Polly.Policy.Handle<NothingToParseException>()
-                    .WaitAndRetryAsync(delay);
+                episode.TvShowId = show.Id;
+                return episode;
+            })
+            .ToArrayAsync(token);
     }
 }
