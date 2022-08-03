@@ -3,6 +3,8 @@
 using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Upstream.Service.Exception;
+
 #endregion
 
 namespace AddictedProxy.Upstream.Service;
@@ -53,10 +55,17 @@ public class Addic7edClient : IAddic7edClient
     /// <returns></returns>
     public async Task<IEnumerable<Season>> GetSeasonsAsync(AddictedUserCredentials credentials, TvShow show, CancellationToken token)
     {
-        using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.ExternalId}", HttpMethod.Get), token);
-        return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(token), token)
-            .Select(i => new Season { Number = i, TvShowId = show.Id })
-            .ToArrayAsync(token);
+        try
+        {
+            using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.ExternalId}", HttpMethod.Get), token);
+            return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(token), token)
+                .Select(i => new Season { Number = i, TvShowId = show.Id })
+                .ToArrayAsync(token);
+        }
+        catch (NothingToParseException)
+        {
+            return Array.Empty<Season>();
+        }
     }
 
     /// <summary>
