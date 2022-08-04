@@ -1,6 +1,6 @@
 ﻿namespace TvMovieDatabaseClient.Service
 {
-    public class TMDBCLient
+    public class TMDBClient
     {
         
     }
