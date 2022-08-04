@@ -6,7 +6,7 @@ using TvMovieDatabaseClient.Model.Show;
 
 namespace TvMovieDatabaseClient.Service;
 
-internal interface ITMDBClient
+public interface ITMDBClient
 {
     /// <summary>
     /// Get show details by Id

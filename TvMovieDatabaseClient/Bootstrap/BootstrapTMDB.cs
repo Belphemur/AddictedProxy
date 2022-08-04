@@ -8,7 +8,7 @@ using TvMovieDatabaseClient.Service;
 
 namespace TvMovieDatabaseClient.Bootstrap;
 
-public class BootstrapTmdb : IBootstrap, IBootstrapEnvironmentVariable<TmdbConfig, TmdbConfigParser>
+public class BootstrapTMDB : IBootstrap, IBootstrapEnvironmentVariable<TmdbConfig, TmdbConfigParser>
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
