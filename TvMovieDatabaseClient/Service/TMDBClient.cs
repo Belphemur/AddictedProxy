@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using TvMovieDatabaseClient.Bootstrap.EnvVar;
 using TvMovieDatabaseClient.Model;
 using TvMovieDatabaseClient.Model.Search;
+using TvMovieDatabaseClient.Model.Show;
 
 namespace TvMovieDatabaseClient.Service;
 
-internal class TMDBClient
+internal class TMDBClient : ITMDBClient
 {
     private readonly TmdbConfig _tmdbConfig;
     private readonly HttpClient _httpClient;
@@ -24,6 +26,31 @@ internal class TMDBClient
         _logger = logger;
     }
 
+    /// <summary>
+    /// Get show details by Id
+    /// </summary>
+    /// <param name="showId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task<ShowDetails?> GetShowDetailsByIdAsync(int showId, CancellationToken token)
+    {
+        var request = PrepareRequest($"tv/{showId}", HttpMethod.Get);
+        var response = await _httpClient.SendAsync(request, token);
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogWarning("Couldn't get the show from TMDB: {request}", request.RequestUri);
+            return null;
+        }
+
+        return await response.Content.ReadFromJsonAsync(JsonContext.Default.ShowDetails, cancellationToken: token);
+    }
+
+    /// <summary>
+    /// Search for tv shows
+    /// </summary>
+    /// <param name="query">query to send</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public async IAsyncEnumerator<ShowSearchResult> SearchTvAsync(string query, CancellationToken token)
     {
         var page = 1;
@@ -60,8 +87,9 @@ internal class TMDBClient
         } while (response.IsSuccessStatusCode && results.TotalPages <= page);
     }
 
-    private HttpRequestMessage PrepareRequest(string url, HttpMethod method, Dictionary<string, string> queryParams)
+    private HttpRequestMessage PrepareRequest(string url, HttpMethod method, Dictionary<string, string>? queryParams = null)
     {
+        queryParams ??= new Dictionary<string, string>();
         queryParams["apiKey"] = _tmdbConfig.ApiKey;
         return new HttpRequestMessage
         {

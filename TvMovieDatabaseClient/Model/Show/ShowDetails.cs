@@ -110,7 +110,7 @@ public class ProductionCountry
     public string Name { get; set; }
 }
 
-public class ShowData
+public class ShowDetails
 {
     [JsonPropertyName("adult")]
     public bool Adult { get; set; }

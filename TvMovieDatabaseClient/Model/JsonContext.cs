@@ -4,7 +4,7 @@ using TvMovieDatabaseClient.Model.Show;
 
 namespace TvMovieDatabaseClient.Model;
 
-[JsonSerializable(typeof(ShowData))]
+[JsonSerializable(typeof(ShowDetails))]
 [JsonSerializable(typeof(Pagination<ShowSearchResult>))]
 internal partial class JsonContext : JsonSerializerContext
 {
