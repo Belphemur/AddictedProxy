@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sentry;
 using Sentry.Performance.Bootstrap;
+using TvMovieDatabaseClient.Bootstrap;
 
 #endregion
 
@@ -54,7 +55,8 @@ var currentAssemblies = new[]
     typeof(BootstrapCompressor).Assembly,
     typeof(BootstrapAddictedServices).Assembly,
     typeof(BootstrapPerformance).Assembly,
-    typeof(BootstrapStatsPopularityShow).Assembly
+    typeof(BootstrapStatsPopularityShow).Assembly,
+    typeof(BootstrapTMDB).Assembly
 };
 
 builder.Services
