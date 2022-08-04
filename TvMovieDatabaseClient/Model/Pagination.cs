@@ -3,12 +3,17 @@ using System.Text.Json.Serialization;
 
 namespace TvMovieDatabaseClient.Model;
 
-public record Pagination<T>(
-    [property: JsonPropertyName("page")] int Page,
-    [property: JsonPropertyName("results")]
-    IReadOnlyList<T> Results,
-    [property: JsonPropertyName("total_pages")]
-    int TotalPages,
-    [property: JsonPropertyName("total_results")]
-    int TotalResults
-);
+public class Pagination<T>
+{
+    [JsonPropertyName("page")]
+    public int Page { get; set; }
+
+    [JsonPropertyName("results")]
+    public IReadOnlyList<T> Results { get; set; }
+
+    [JsonPropertyName("total_pages")]
+    public int TotalPages { get; set; }
+
+    [JsonPropertyName("total_results")]
+    public int TotalResults { get; set; }
+}

@@ -3,101 +3,244 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-public record CreatedBy(
-        [property: JsonPropertyName("id")] int Id,
-        [property: JsonPropertyName("credit_id")] string CreditId,
-        [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("gender")] int Gender,
-        [property: JsonPropertyName("profile_path")] string ProfilePath
-    );
+namespace TvMovieDatabaseClient.Model.Show;
 
-    public record Genre(
-        [property: JsonPropertyName("id")] int Id,
-        [property: JsonPropertyName("name")] string Name
-    );
+public class CreatedBy
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
 
-    public record EpisodeData(
-        [property: JsonPropertyName("air_date")] string AirDate,
-        [property: JsonPropertyName("episode_number")] int EpisodeNumber,
-        [property: JsonPropertyName("id")] int Id,
-        [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("overview")] string Overview,
-        [property: JsonPropertyName("production_code")] string ProductionCode,
-        [property: JsonPropertyName("runtime")] int Runtime,
-        [property: JsonPropertyName("season_number")] int SeasonNumber,
-        [property: JsonPropertyName("show_id")] int ShowId,
-        [property: JsonPropertyName("still_path")] string StillPath,
-        [property: JsonPropertyName("vote_average")] double VoteAverage,
-        [property: JsonPropertyName("vote_count")] int VoteCount
-    );
+    [JsonPropertyName("credit_id")]
+    public string CreditId { get; set; }
 
-    public record Network(
-        [property: JsonPropertyName("id")] int Id,
-        [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("logo_path")] string LogoPath,
-        [property: JsonPropertyName("origin_country")] string OriginCountry
-    );
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
-public record ProductionCompany(
-        [property: JsonPropertyName("id")] int Id,
-        [property: JsonPropertyName("logo_path")] string LogoPath,
-        [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("origin_country")] string OriginCountry
-    );
+    [JsonPropertyName("gender")]
+    public int Gender { get; set; }
 
-    public record ProductionCountry(
-        [property: JsonPropertyName("iso_3166_1")] string Iso31661,
-        [property: JsonPropertyName("name")] string Name
-    );
+    [JsonPropertyName("profile_path")]
+    public string ProfilePath { get; set; }
+}
 
-    public record ShowData(
-        [property: JsonPropertyName("adult")] bool Adult,
-        [property: JsonPropertyName("backdrop_path")] string BackdropPath,
-        [property: JsonPropertyName("created_by")] IReadOnlyList<CreatedBy> CreatedBy,
-        [property: JsonPropertyName("episode_run_time")] IReadOnlyList<int> EpisodeRunTime,
-        [property: JsonPropertyName("first_air_date")] string FirstAirDate,
-        [property: JsonPropertyName("genres")] IReadOnlyList<Genre> Genres,
-        [property: JsonPropertyName("homepage")] string Homepage,
-        [property: JsonPropertyName("id")] int Id,
-        [property: JsonPropertyName("in_production")] bool InProduction,
-        [property: JsonPropertyName("languages")] IReadOnlyList<string> Languages,
-        [property: JsonPropertyName("last_air_date")] string LastAirDate,
-        [property: JsonPropertyName("last_episode_to_air")] EpisodeData EpisodeData,
-        [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("next_episode_to_air")] EpisodeData NextEpisodeToAir,
-        [property: JsonPropertyName("networks")] IReadOnlyList<Network> Networks,
-        [property: JsonPropertyName("number_of_episodes")] int NumberOfEpisodes,
-        [property: JsonPropertyName("number_of_seasons")] int NumberOfSeasons,
-        [property: JsonPropertyName("origin_country")] IReadOnlyList<string> OriginCountry,
-        [property: JsonPropertyName("original_language")] string OriginalLanguage,
-        [property: JsonPropertyName("original_name")] string OriginalName,
-        [property: JsonPropertyName("overview")] string Overview,
-        [property: JsonPropertyName("popularity")] double Popularity,
-        [property: JsonPropertyName("poster_path")] string PosterPath,
-        [property: JsonPropertyName("production_companies")] IReadOnlyList<ProductionCompany> ProductionCompanies,
-        [property: JsonPropertyName("production_countries")] IReadOnlyList<ProductionCountry> ProductionCountries,
-        [property: JsonPropertyName("seasons")] IReadOnlyList<Season> Seasons,
-        [property: JsonPropertyName("spoken_languages")] IReadOnlyList<SpokenLanguage> SpokenLanguages,
-        [property: JsonPropertyName("status")] string Status,
-        [property: JsonPropertyName("tagline")] string Tagline,
-        [property: JsonPropertyName("type")] string Type,
-        [property: JsonPropertyName("vote_average")] double VoteAverage,
-        [property: JsonPropertyName("vote_count")] int VoteCount
-    );
+public class Genre
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
 
-    public record Season(
-        [property: JsonPropertyName("air_date")] string AirDate,
-        [property: JsonPropertyName("episode_count")] int EpisodeCount,
-        [property: JsonPropertyName("id")] int Id,
-        [property: JsonPropertyName("name")] string Name,
-        [property: JsonPropertyName("overview")] string Overview,
-        [property: JsonPropertyName("poster_path")] string PosterPath,
-        [property: JsonPropertyName("season_number")] int SeasonNumber
-    );
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+}
 
-    public record SpokenLanguage(
-        [property: JsonPropertyName("english_name")] string EnglishName,
-        [property: JsonPropertyName("iso_639_1")] string Iso6391,
-        [property: JsonPropertyName("name")] string Name
-    );
+public class Network
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
 
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("logo_path")]
+    public string LogoPath { get; set; }
+
+    [JsonPropertyName("origin_country")]
+    public string OriginCountry { get; set; }
+}
+
+public class EpisodeData
+{
+    [JsonPropertyName("air_date")]
+    public string AirDate { get; set; }
+
+    [JsonPropertyName("episode_number")]
+    public int EpisodeNumber { get; set; }
+
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("overview")]
+    public string Overview { get; set; }
+
+    [JsonPropertyName("production_code")]
+    public string ProductionCode { get; set; }
+
+    [JsonPropertyName("runtime")]
+    public int Runtime { get; set; }
+
+    [JsonPropertyName("season_number")]
+    public int SeasonNumber { get; set; }
+
+    [JsonPropertyName("show_id")]
+    public int ShowId { get; set; }
+
+    [JsonPropertyName("still_path")]
+    public string StillPath { get; set; }
+
+    [JsonPropertyName("vote_average")]
+    public double VoteAverage { get; set; }
+
+    [JsonPropertyName("vote_count")]
+    public int VoteCount { get; set; }
+}
+
+public class ProductionCompany
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("logo_path")]
+    public string LogoPath { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("origin_country")]
+    public string OriginCountry { get; set; }
+}
+
+public class ProductionCountry
+{
+    [JsonPropertyName("iso_3166_1")]
+    public string Iso31661 { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+}
+
+public class ShowData
+{
+    [JsonPropertyName("adult")]
+    public bool Adult { get; set; }
+
+    [JsonPropertyName("backdrop_path")]
+    public string BackdropPath { get; set; }
+
+    [JsonPropertyName("created_by")]
+    public List<CreatedBy> CreatedBy { get; set; }
+
+    [JsonPropertyName("episode_run_time")]
+    public List<int> EpisodeRunTime { get; set; }
+
+    [JsonPropertyName("first_air_date")]
+    public string FirstAirDate { get; set; }
+
+    [JsonPropertyName("genres")]
+    public List<Genre> Genres { get; set; }
+
+    [JsonPropertyName("homepage")]
+    public string Homepage { get; set; }
+
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("in_production")]
+    public bool InProduction { get; set; }
+
+    [JsonPropertyName("languages")]
+    public List<string> Languages { get; set; }
+
+    [JsonPropertyName("last_air_date")]
+    public string LastAirDate { get; set; }
+
+    [JsonPropertyName("last_episode_to_air")]
+    public EpisodeData LastEpisodeToAir { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("next_episode_to_air")]
+    public EpisodeData EpisodeData { get; set; }
+
+    [JsonPropertyName("networks")]
+    public List<Network> Networks { get; set; }
+
+    [JsonPropertyName("number_of_episodes")]
+    public int NumberOfEpisodes { get; set; }
+
+    [JsonPropertyName("number_of_seasons")]
+    public int NumberOfSeasons { get; set; }
+
+    [JsonPropertyName("origin_country")]
+    public List<string> OriginCountry { get; set; }
+
+    [JsonPropertyName("original_language")]
+    public string OriginalLanguage { get; set; }
+
+    [JsonPropertyName("original_name")]
+    public string OriginalName { get; set; }
+
+    [JsonPropertyName("overview")]
+    public string Overview { get; set; }
+
+    [JsonPropertyName("popularity")]
+    public double Popularity { get; set; }
+
+    [JsonPropertyName("poster_path")]
+    public string PosterPath { get; set; }
+
+    [JsonPropertyName("production_companies")]
+    public List<ProductionCompany> ProductionCompanies { get; set; }
+
+    [JsonPropertyName("production_countries")]
+    public List<ProductionCountry> ProductionCountries { get; set; }
+
+    [JsonPropertyName("seasons")]
+    public List<Season> Seasons { get; set; }
+
+    [JsonPropertyName("spoken_languages")]
+    public List<SpokenLanguage> SpokenLanguages { get; set; }
+
+    [JsonPropertyName("status")]
+    public string Status { get; set; }
+
+    [JsonPropertyName("tagline")]
+    public string Tagline { get; set; }
+
+    [JsonPropertyName("type")]
+    public string Type { get; set; }
+
+    [JsonPropertyName("vote_average")]
+    public double VoteAverage { get; set; }
+
+    [JsonPropertyName("vote_count")]
+    public int VoteCount { get; set; }
+}
+
+public class Season
+{
+    [JsonPropertyName("air_date")]
+    public string AirDate { get; set; }
+
+    [JsonPropertyName("episode_count")]
+    public int EpisodeCount { get; set; }
+
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("overview")]
+    public string Overview { get; set; }
+
+    [JsonPropertyName("poster_path")]
+    public string PosterPath { get; set; }
+
+    [JsonPropertyName("season_number")]
+    public int SeasonNumber { get; set; }
+}
+
+public class SpokenLanguage
+{
+    [JsonPropertyName("english_name")]
+    public string EnglishName { get; set; }
+
+    [JsonPropertyName("iso_639_1")]
+    public string Iso6391 { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+}
