@@ -1,3 +1,10 @@
+## [2.13.0](https://github.com/Belphemur/AddictedProxy/compare/v2.12.0...v2.13.0) (2022-08-05)
+
+
+### Features
+
+* **Tmdb::Mapping:** Move show mapping into own job ([1ad5a93](https://github.com/Belphemur/AddictedProxy/commit/1ad5a93505e5674db81e9432c329d3caba62625a))
+
 ## [2.12.0](https://github.com/Belphemur/AddictedProxy/compare/v2.11.17...v2.12.0) (2022-08-05)
 
 
