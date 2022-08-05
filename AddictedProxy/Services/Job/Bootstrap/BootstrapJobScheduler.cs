@@ -17,6 +17,7 @@ public class BootstrapJobScheduler : IBootstrap
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddJob<RefreshAvailableShowsJob>();
+        services.AddJob<MapShowTmdbJob>();
         services.AddJobScheduler(
             config => config
                       .AddStartupJob(builder => builder.Create<RefreshAvailableShowsJob>().Build())
