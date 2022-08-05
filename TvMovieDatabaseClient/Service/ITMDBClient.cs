@@ -22,5 +22,5 @@ public interface ITMDBClient
     /// <param name="query">query to send</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    IAsyncEnumerator<ShowSearchResult> SearchTvAsync(string query, CancellationToken token);
+    IAsyncEnumerable<ShowSearchResult> SearchTvAsync(string query, CancellationToken token);
 }

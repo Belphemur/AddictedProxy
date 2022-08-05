@@ -51,7 +51,7 @@ internal class TMDBClient : ITMDBClient
     /// <param name="query">query to send</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public async IAsyncEnumerator<ShowSearchResult> SearchTvAsync(string query, CancellationToken token)
+    public async IAsyncEnumerable<ShowSearchResult> SearchTvAsync(string query, CancellationToken token)
     {
         var page = 1;
         HttpResponseMessage response;
