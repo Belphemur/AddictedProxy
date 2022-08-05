@@ -91,6 +91,11 @@ public class EpisodeRefresher : IEpisodeRefresher
     
     public bool IsSeasonNeedRefresh(TvShow show, Season season)
     {
+        //Don't refresh season for completed show when it has been refreshed already before and it has been less than the completed refresh delay
+        if (season.LastRefreshed != null && show.IsCompleted && DateTime.UtcNow - season.LastRefreshed < _refreshConfig.Value.EpisodeRefresh.CompletedShowRefresh)
+        {
+            return false;
+        }
         var refreshTime = show.Seasons.Max(s => s.Number) == season.Number ? _refreshConfig.Value.EpisodeRefresh.LastSeasonRefresh : _refreshConfig.Value.EpisodeRefresh.DefaultRefresh;
         return season.LastRefreshed == null || DateTime.UtcNow - season.LastRefreshed >= refreshTime;
     }

@@ -94,6 +94,11 @@ public class SeasonRefresher : ISeasonRefresher
     /// <returns></returns>
     public bool IsShowNeedsRefresh(TvShow show)
     {
+        //Don't refresh season of completed show that were already refreshed
+        if (show.LastSeasonRefreshed != null && show.IsCompleted)
+        {
+            return false;
+        }
         return show.LastSeasonRefreshed == null || DateTime.UtcNow - show.LastSeasonRefreshed >= _refreshConfig.Value.SeasonRefresh;
     }
 }
