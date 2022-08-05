@@ -47,7 +47,7 @@ public class MapShowTmdbJob : IJob
 
             show.TmdbId = details.Id;
             show.IsCompleted = details.Status == "Ended";
-            if (++count % 100 == 0)
+            if (++count % 50 == 0)
             {
                 _logger.LogInformation("Found TMDB info for {count} shows", count);
                 await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
