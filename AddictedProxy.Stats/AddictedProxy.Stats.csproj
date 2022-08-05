@@ -6,7 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AddictedProxy.Database\AddictedProxy.Database.csproj" />
+        <ProjectReference Include="..\AddictedProxy.Database\AddictedProxy.Database.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Job.Scheduler" Version="2.9.0"/>
+        <PackageReference Include="Job.Scheduler.AspNetCore" Version="2.9.0"/>
     </ItemGroup>
 
 </Project>

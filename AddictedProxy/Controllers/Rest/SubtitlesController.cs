@@ -12,6 +12,7 @@ using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
+using AddictedProxy.Stats.Popularity.Jobs;
 using AddictedProxy.Stats.Popularity.Model;
 using AddictedProxy.Stats.Popularity.Service;
 using AddictedProxy.Upstream.Service.Exception;
@@ -175,7 +176,11 @@ public class SubtitlesController : Controller
             return BadRequest(new ErrorResponse($"Couldn't parse language {request.LanguageISO}"));
         }
 
-        await _showPopularityService.RecordPopularityAsync(new RecordPopularityPayload(show, language), token);
+        var recordJob = _jobBuilder.Create<RecordPopularityJob>()
+                   .Configure(job => job.Payload = new RecordPopularityPayload(show, language, DateTime.UtcNow))
+                   .Build();
+
+        _jobScheduler.ScheduleJob(recordJob);
 
         var episode = await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, request.Season, request.Episode, token);
 
