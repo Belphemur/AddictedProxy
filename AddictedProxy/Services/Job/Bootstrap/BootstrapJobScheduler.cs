@@ -4,6 +4,7 @@ using AddictedProxy.Services.Credentials.Job;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Shows.Jobs;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
+using AddictedProxy.Stats.Popularity.Jobs;
 using InversionOfControl.Model;
 using Job.Scheduler.AspNetCore.Extensions;
 using Job.Scheduler.Queue;
@@ -23,6 +24,7 @@ public class BootstrapJobScheduler : IBootstrap
                       .AddStartupJob(builder => builder.Create<RefreshAvailableShowsJob>().Build())
                       .AddStartupJob(builder => builder.Create<DownloadCredsRedeemerJob>().Build())
                       .RegisterQueue(new QueueSettings(nameof(FetchSubtitlesJob), 15))
+                      .RegisterQueue(new QueueSettings(nameof(RecordPopularityJob), 5))
         );
     }
 }
