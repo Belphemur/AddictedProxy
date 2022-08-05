@@ -32,6 +32,6 @@ public class RefreshAvailableShowsJob : IRecurringJob
     }
 
     public IRetryAction FailRule { get; } = new ExponentialBackoffRetry(TimeSpan.FromSeconds(30), null);
-    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(1);
+    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(10);
     public TimeSpan Delay { get; } = TimeSpan.FromDays(1);
 }
