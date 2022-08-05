@@ -38,4 +38,14 @@ public class TvShow : IDiscoverableObject
     /// Priority of the show when searching
     /// </summary>
     public int Priority { get; set; } = 0;
+    
+    /// <summary>
+    /// Id in the Tmdb database for shows
+    /// </summary>
+    public int? TmdbId { get; set; }
+    
+    /// <summary>
+    /// Is the show completed. No more episode coming.
+    /// </summary>
+    public bool IsCompleted { get; set; }
 }

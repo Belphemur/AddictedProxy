@@ -43,7 +43,7 @@ public class TvShowRepository : ITvShowRepository
                                              .Where(show => EF.Functions.Like(show.Name, $"%{name}%"))
                                              .OrderByDescending(show => show.Priority)
                                              .Include(show => show.Seasons))
-            
+
         {
             yield return tvShow;
         }
@@ -53,9 +53,14 @@ public class TvShowRepository : ITvShowRepository
     {
         return _entityContext.TvShows.BulkMergeAsync(tvShows, options =>
         {
-            options.IgnoreOnMergeUpdateExpression = show => new { show.Discovered, show.LastSeasonRefreshed, show.UniqueId, show.Priority };
+            options.IgnoreOnMergeUpdateExpression = show => new { show.Discovered, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted };
             options.ColumnPrimaryKeyExpression = show => show.ExternalId;
         }, token);
+    }
+
+    public Task BulkSaveChangesAsync(CancellationToken token)
+    {
+        return _entityContext.BulkSaveChangesAsync(token);
     }
 
     public IAsyncEnumerable<TvShow> GetAllAsync(CancellationToken token)
@@ -79,5 +84,11 @@ public class TvShowRepository : ITvShowRepository
     {
         return _entityContext.TvShows
                              .Include(show => show.Seasons)
-                             .SingleOrDefaultAsync(show => show.UniqueId == id, cancellationToken: cancellationToken);    }
+                             .SingleOrDefaultAsync(show => show.UniqueId == id, cancellationToken: cancellationToken);
+    }
+
+    public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync()
+    {
+        return _entityContext.TvShows.Where(show => !show.TmdbId.HasValue).ToAsyncEnumerable();
+    }
 }
