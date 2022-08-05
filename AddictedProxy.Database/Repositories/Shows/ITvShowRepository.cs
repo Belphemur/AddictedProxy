@@ -49,4 +49,10 @@ public interface ITvShowRepository
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<TvShow?> GetByGuidAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Get shows that don't have a tmdbId
+    /// </summary>
+    /// <returns></returns>
+    public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync();
 }

@@ -43,7 +43,7 @@ public class TvShowRepository : ITvShowRepository
                                              .Where(show => EF.Functions.Like(show.Name, $"%{name}%"))
                                              .OrderByDescending(show => show.Priority)
                                              .Include(show => show.Seasons))
-            
+
         {
             yield return tvShow;
         }
@@ -79,5 +79,11 @@ public class TvShowRepository : ITvShowRepository
     {
         return _entityContext.TvShows
                              .Include(show => show.Seasons)
-                             .SingleOrDefaultAsync(show => show.UniqueId == id, cancellationToken: cancellationToken);    }
+                             .SingleOrDefaultAsync(show => show.UniqueId == id, cancellationToken: cancellationToken);
+    }
+
+    public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync()
+    {
+        return _entityContext.TvShows.Where(show => !show.TmdbId.HasValue).ToAsyncEnumerable();
+    }
 }
