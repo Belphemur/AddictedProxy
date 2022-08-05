@@ -1,3 +1,17 @@
+## [2.13.3](https://github.com/Belphemur/AddictedProxy/compare/v2.13.2...v2.13.3) (2022-08-05)
+
+
+### Bug Fixes
+
+* **Popularity:** Don't try to save the show ([4756e2a](https://github.com/Belphemur/AddictedProxy/commit/4756e2ae2ddd3cc77ffc6f0a0abbcf0b0a97b6db))
+
+## [2.13.2](https://github.com/Belphemur/AddictedProxy/compare/v2.13.1...v2.13.2) (2022-08-05)
+
+
+### Bug Fixes
+
+* **Tmdb::Mapping:** Save every 50 shows ([7b534d3](https://github.com/Belphemur/AddictedProxy/commit/7b534d313d7b3c5c9e7808422f6dcc90753d46d7))
+
 ## [2.13.1](https://github.com/Belphemur/AddictedProxy/compare/v2.13.0...v2.13.1) (2022-08-05)
 
 
