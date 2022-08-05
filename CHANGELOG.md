@@ -1,3 +1,36 @@
+## [2.11.17](https://github.com/Belphemur/AddictedProxy/compare/v2.11.16...v2.11.17) (2022-08-03)
+
+
+### Enhancements
+
+* **Addic7ed::Season:** Don't crash if there isn't any season ([4a80210](https://github.com/Belphemur/AddictedProxy/commit/4a8021064929217ac2515f68eeb27c58e67b9c7b))
+* **Addic7ed:** Remove retry on nothing to parse ([ef6368e](https://github.com/Belphemur/AddictedProxy/commit/ef6368e05e12ecdd350ce076a489abed05d81614))
+* **Performance:** Reduce sampling rate to not bust sentry limit ([d529d96](https://github.com/Belphemur/AddictedProxy/commit/d529d960b13159ca1cb9d70e5c8c30bb8f90a069))
+* **Perf:** Reduce sampling. Reaching quota. ([0ef4db1](https://github.com/Belphemur/AddictedProxy/commit/0ef4db14f9c61ebd5f64ef3388be2ef981b001ee))
+
+## [2.11.16](https://github.com/Belphemur/AddictedProxy/compare/v2.11.15...v2.11.16) (2022-07-30)
+
+
+### Enhancements
+
+* **analytics:** Use matomo ([1c6fa37](https://github.com/Belphemur/AddictedProxy/commit/1c6fa37bce5c1519635f24bc0c77bb8aeb599282))
+* **Refresh:** Different refresh for different season. Last season refresh more often than older seasons. ([6dfe5b7](https://github.com/Belphemur/AddictedProxy/commit/6dfe5b722b19ef816fc9089d565f8f0687c07249))
+
+## [2.11.15](https://github.com/Belphemur/AddictedProxy/compare/v2.11.14...v2.11.15) (2022-07-23)
+
+
+### Enhancements
+
+* **analytics:** Use matomo ([99326f6](https://github.com/Belphemur/AddictedProxy/commit/99326f637035514184823fde9bb130293c479993))
+
+## [2.11.14](https://github.com/Belphemur/AddictedProxy/compare/v2.11.13...v2.11.14) (2022-07-23)
+
+
+### Enhancements
+
+* **analytics:** track page view ([d4f72a3](https://github.com/Belphemur/AddictedProxy/commit/d4f72a34b98f1e66fc170be6f9fd62f579a41ed9))
+* **analytics:** use GTM ([1475748](https://github.com/Belphemur/AddictedProxy/commit/14757488258482355d55d9b5a1f0b4202dde3dec))
+
 ## [2.11.13](https://github.com/Belphemur/AddictedProxy/compare/v2.11.12...v2.11.13) (2022-07-18)
 
 
