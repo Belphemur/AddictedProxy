@@ -91,10 +91,7 @@ internal class TMDBClient : ITMDBClient
     {
         queryParams ??= new Dictionary<string, string>();
         queryParams["apiKey"] = _tmdbConfig.ApiKey;
-        return new HttpRequestMessage
-        {
-            RequestUri = new Uri(QueryHelpers.AddQueryString(url, queryParams)),
-            Method = method
-        };
+        var urlWithQueryParams = QueryHelpers.AddQueryString(url, queryParams);
+        return new HttpRequestMessage(method, urlWithQueryParams);
     }
 }
