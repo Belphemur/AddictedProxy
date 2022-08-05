@@ -34,7 +34,7 @@ internal class ShowPopularityService : IShowPopularityService
         {
             popularity = new ShowPopularity
             {
-                TvShow = payload.Show,
+                TvShowId = payload.Show.Id,
                 Language = payload.Language.Name,
                 RequestedCount = 0
             };
