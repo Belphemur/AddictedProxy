@@ -58,6 +58,11 @@ public class TvShowRepository : ITvShowRepository
         }, token);
     }
 
+    public Task BulkSaveChangesAsync(CancellationToken token)
+    {
+        return _entityContext.BulkSaveChangesAsync(token);
+    }
+
     public IAsyncEnumerable<TvShow> GetAllAsync(CancellationToken token)
     {
         return _entityContext.TvShows.ToAsyncEnumerable();

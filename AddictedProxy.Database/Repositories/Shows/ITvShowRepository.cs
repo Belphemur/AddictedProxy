@@ -55,4 +55,11 @@ public interface ITvShowRepository
     /// </summary>
     /// <returns></returns>
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync();
+
+    /// <summary>
+    /// Bulk save async the chaanges
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task BulkSaveChangesAsync(CancellationToken token);
 }
