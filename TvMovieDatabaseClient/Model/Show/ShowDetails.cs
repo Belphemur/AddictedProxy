@@ -158,10 +158,10 @@ public class ShowDetails
     public List<Network> Networks { get; set; }
 
     [JsonPropertyName("number_of_episodes")]
-    public int NumberOfEpisodes { get; set; }
+    public int? NumberOfEpisodes { get; set; }
 
     [JsonPropertyName("number_of_seasons")]
-    public int NumberOfSeasons { get; set; }
+    public int? NumberOfSeasons { get; set; }
 
     [JsonPropertyName("origin_country")]
     public List<string> OriginCountry { get; set; }
