@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
@@ -90,8 +91,11 @@ internal class TMDBClient : ITMDBClient
     private HttpRequestMessage PrepareRequest(string url, HttpMethod method, Dictionary<string, string>? queryParams = null)
     {
         queryParams ??= new Dictionary<string, string>();
-        queryParams["apiKey"] = _tmdbConfig.ApiKey;
+        queryParams["api_key"] = _tmdbConfig.ApiKey;
         var urlWithQueryParams = QueryHelpers.AddQueryString(url, queryParams);
-        return new HttpRequestMessage(method, urlWithQueryParams);
+        return new HttpRequestMessage(method, urlWithQueryParams)
+        {
+            Headers = { { "User-Agent", $"TmdbClientNet/{Assembly.GetExecutingAssembly().GetName().Version}" } }
+        };
     }
 }
