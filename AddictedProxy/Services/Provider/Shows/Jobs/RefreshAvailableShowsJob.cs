@@ -19,10 +19,10 @@ public class RefreshAvailableShowsJob : IRecurringJob
     private readonly IPerformanceTracker _performanceTracker;
     private readonly ITMDBClient _tmdbClient;
     private readonly ITvShowRepository _tvShowRepository;
-    private readonly ILogger<RefreshSingleShowJob> _logger;
+    private readonly ILogger<RefreshAvailableShowsJob> _logger;
     private readonly Regex NameCleaner = new Regex(@"\s[\(\[].+[\)\]]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    public RefreshAvailableShowsJob(IShowRefresher showRefresher, IPerformanceTracker performanceTracker, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository, ILogger<RefreshSingleShowJob> logger)
+    public RefreshAvailableShowsJob(IShowRefresher showRefresher, IPerformanceTracker performanceTracker, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository, ILogger<RefreshAvailableShowsJob> logger)
     {
         _showRefresher = showRefresher;
         _performanceTracker = performanceTracker;
@@ -35,11 +35,13 @@ public class RefreshAvailableShowsJob : IRecurringJob
     {
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "refresh-show-list");
         await _showRefresher.RefreshShowsAsync(cancellationToken);
-        await MapTmdbToShow(cancellationToken);
+        await MapTmdbToShowAsync(cancellationToken);
     }
 
-    private async Task MapTmdbToShow(CancellationToken cancellationToken)
+    private async Task MapTmdbToShowAsync(CancellationToken cancellationToken)
     {
+        using var transaction = _performanceTracker.BeginNestedSpan("refresh", "map-tmdb-to-show");
+
         var count = 0;
         await foreach (var show in _tvShowRepository.GetShowWithoutTmdbIdAsync().WithCancellation(cancellationToken))
         {
@@ -75,6 +77,6 @@ public class RefreshAvailableShowsJob : IRecurringJob
     }
 
     public IRetryAction FailRule { get; } = new ExponentialBackoffRetry(TimeSpan.FromSeconds(30), null);
-    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(10);
+    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(15);
     public TimeSpan Delay { get; } = TimeSpan.FromDays(1);
 }
