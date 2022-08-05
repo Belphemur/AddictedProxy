@@ -1,3 +1,23 @@
+## [2.12.0](https://github.com/Belphemur/AddictedProxy/compare/v2.11.17...v2.12.0) (2022-08-05)
+
+
+### Features
+
+* **Refresh:** Don't refresh as often if it's a completed show ([4efb0bf](https://github.com/Belphemur/AddictedProxy/commit/4efb0bfb187e984663a5a95f6bc8d57fb1ba3a8a))
+* **TMDB:** Add getting show details ([f46fec1](https://github.com/Belphemur/AddictedProxy/commit/f46fec1610a17bb9cd1e03a0cbd6274db76f04ad))
+* **TMDB:** Add tv search to tmdb client ([412ee1c](https://github.com/Belphemur/AddictedProxy/commit/412ee1c8ae29bb89bff692a59c331bea8f158ca9))
+* **Tmdb:** Automatically map show to tmdb ([c458a3f](https://github.com/Belphemur/AddictedProxy/commit/c458a3f0154c66ee8105de5407faeaba550b47e0))
+* **TVDB:** Provide information from TVDB ([6891983](https://github.com/Belphemur/AddictedProxy/commit/68919839229805b65ef6027f4165bde9f35acd03))
+
+
+### Bug Fixes
+
+* **ShowDetails:** Runtime is nullable ([bfc892d](https://github.com/Belphemur/AddictedProxy/commit/bfc892d2ddd5e1d025c96f0bf97e85ada3dfc587))
+* **Tmdb::Search:** Fix infinite search when no results ([77438d6](https://github.com/Belphemur/AddictedProxy/commit/77438d69e5d9a41d11049bd222eee52491bca002))
+* **Tmdb::ShowDetails:** Fix show without known number of season and episodes ([256f575](https://github.com/Belphemur/AddictedProxy/commit/256f575b30c74bceffd072da1a0f29bfe8793b3a))
+* **Tmdb:** Fix building uri for the client ([2b8120b](https://github.com/Belphemur/AddictedProxy/commit/2b8120b532c4c60723027f2d1ef8d6865219dcf4))
+* **Tmdb:** Fix the returned type of search ([a96fca8](https://github.com/Belphemur/AddictedProxy/commit/a96fca8aa5610ffc2eccf92bd5d2d130cdf7f922))
+
 ## [2.11.17](https://github.com/Belphemur/AddictedProxy/compare/v2.11.16...v2.11.17) (2022-08-03)
 
 
