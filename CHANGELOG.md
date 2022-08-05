@@ -1,3 +1,10 @@
+## [2.13.3](https://github.com/Belphemur/AddictedProxy/compare/v2.13.2...v2.13.3) (2022-08-05)
+
+
+### Bug Fixes
+
+* **Popularity:** Don't try to save the show ([4756e2a](https://github.com/Belphemur/AddictedProxy/commit/4756e2ae2ddd3cc77ffc6f0a0abbcf0b0a97b6db))
+
 ## [2.13.2](https://github.com/Belphemur/AddictedProxy/compare/v2.13.1...v2.13.2) (2022-08-05)
 
 
