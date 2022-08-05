@@ -1,3 +1,10 @@
+## [2.13.1](https://github.com/Belphemur/AddictedProxy/compare/v2.13.0...v2.13.1) (2022-08-05)
+
+
+### Bug Fixes
+
+* **Popularity:** Use a job to record the popularity of a show ([9e3e565](https://github.com/Belphemur/AddictedProxy/commit/9e3e565a32437e23b50015f7518aad4f2702a0d9))
+
 ## [2.13.0](https://github.com/Belphemur/AddictedProxy/compare/v2.12.0...v2.13.0) (2022-08-05)
 
 
