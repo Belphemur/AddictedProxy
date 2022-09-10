@@ -1,3 +1,10 @@
+## [2.13.4](https://github.com/Belphemur/AddictedProxy/compare/v2.13.3...v2.13.4) (2022-08-05)
+
+
+### Bug Fixes
+
+* **Popularity:** Fix failure to record popularity because of concurrency ([574e48c](https://github.com/Belphemur/AddictedProxy/commit/574e48c53dd1a2bd77aeb608b46b63a2d0441f84))
+
 ## [2.13.3](https://github.com/Belphemur/AddictedProxy/compare/v2.13.2...v2.13.3) (2022-08-05)
 
 
