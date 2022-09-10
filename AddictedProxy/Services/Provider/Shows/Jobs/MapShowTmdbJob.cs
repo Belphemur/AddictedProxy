@@ -31,7 +31,7 @@ public class MapShowTmdbJob : IJob
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "map-tmdb-to-show");
 
         var count = 0;
-        await foreach (var show in _tvShowRepository.GetShowWithoutTmdbIdAsync().WithCancellation(cancellationToken))
+        foreach (var show in await _tvShowRepository.GetShowWithoutTmdbIdAsync().ToArrayAsync(cancellationToken))
         {
             var result = await _tmdbClient.SearchTvAsync(_nameCleaner.Replace(show.Name, ""), cancellationToken).FirstOrDefaultAsync(cancellationToken);
             if (result == null)
