@@ -1,3 +1,15 @@
+## [2.14.0](https://github.com/Belphemur/AddictedProxy/compare/v2.13.4...v2.14.0) (2022-09-10)
+
+
+### Features
+
+* **Show::Completed:** Check regularly if on-going show ended. ([86cb4e5](https://github.com/Belphemur/AddictedProxy/commit/86cb4e5584e7485c0efff378ed615024bb463485))
+
+
+### Bug Fixes
+
+* **Database::Locking:** Fix possible lock of the Show table when checking state in TMDB ([8e78451](https://github.com/Belphemur/AddictedProxy/commit/8e78451af9872bb23e55f255dc6ecce3e7014e04))
+
 ## [2.13.4](https://github.com/Belphemur/AddictedProxy/compare/v2.13.3...v2.13.4) (2022-08-05)
 
 
