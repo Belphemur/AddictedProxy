@@ -19,10 +19,12 @@ public class BootstrapJobScheduler : IBootstrap
     {
         services.AddJob<RefreshAvailableShowsJob>();
         services.AddJob<MapShowTmdbJob>();
+        services.AddJob<CheckCompletedTmdbJob>();
         services.AddJobScheduler(
             config => config
                       .AddStartupJob(builder => builder.Create<RefreshAvailableShowsJob>().Build())
                       .AddStartupJob(builder => builder.Create<DownloadCredsRedeemerJob>().Build())
+                      .AddStartupJob(builder => builder.Create<CheckCompletedTmdbJob>().Build())
                       .RegisterQueue(new QueueSettings(nameof(FetchSubtitlesJob), 15))
                       .RegisterQueue(new QueueSettings(nameof(RecordPopularityJob), 5))
         );

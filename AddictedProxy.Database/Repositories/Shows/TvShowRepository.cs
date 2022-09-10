@@ -58,6 +58,7 @@ public class TvShowRepository : ITvShowRepository
         }, token);
     }
 
+
     public Task BulkSaveChangesAsync(CancellationToken token)
     {
         return _entityContext.BulkSaveChangesAsync(token);
@@ -90,5 +91,10 @@ public class TvShowRepository : ITvShowRepository
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync()
     {
         return _entityContext.TvShows.Where(show => !show.TmdbId.HasValue).ToAsyncEnumerable();
+    }
+
+    public IAsyncEnumerable<TvShow> GetNonCompletedShows()
+    {
+        return _entityContext.TvShows.Where(show => show.TmdbId.HasValue).Where(show => !show.IsCompleted).ToAsyncEnumerable();
     }
 }

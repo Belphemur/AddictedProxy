@@ -55,6 +55,12 @@ public interface ITvShowRepository
     /// </summary>
     /// <returns></returns>
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync();
+    
+    /// <summary>
+    /// Get shows that have a TmdbId but aren't completed
+    /// </summary>
+    /// <returns></returns>
+    public IAsyncEnumerable<TvShow> GetNonCompletedShows();
 
     /// <summary>
     /// Bulk save async the chaanges
