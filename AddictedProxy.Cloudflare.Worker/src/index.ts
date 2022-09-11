@@ -30,7 +30,7 @@ async function handlePostRequest(request: Request, ctx: ExecutionContext) {
     cacheUrl.pathname = '/posts' + cacheUrl.pathname + hash;
 
 
-    const cache = await caches.open("addicted");
+    const cache = caches.default;
 
     // Convert to a GET to be able to cache
     const cacheKey = new Request(cacheUrl.toString(), {
