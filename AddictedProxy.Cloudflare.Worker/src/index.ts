@@ -43,7 +43,17 @@ async function handlePostRequest(request: Request, ctx: ExecutionContext) {
     // Otherwise, fetch response to POST request from origin
     if (!response) {
         response = await fetch(request);
-        ctx.waitUntil(cache.put(cacheKey, response.clone()));
+        switch (response.status) {
+            //Don't cache on 429 or 423
+            //Rate limited reached
+            case 429:
+            //Refreshing show
+            case 423:
+                break;
+            default:
+                ctx.waitUntil(cache.put(cacheKey, response.clone()));
+                break;
+        }
     }
     return response;
 }
