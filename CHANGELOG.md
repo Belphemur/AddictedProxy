@@ -1,3 +1,5 @@
+## [2.14.1](https://github.com/Belphemur/AddictedProxy/compare/v2.14.0...v2.14.1) (2022-09-11)
+
 ## [2.14.0](https://github.com/Belphemur/AddictedProxy/compare/v2.13.4...v2.14.0) (2022-09-10)
 
 
