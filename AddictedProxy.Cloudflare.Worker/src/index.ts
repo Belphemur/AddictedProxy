@@ -66,13 +66,9 @@ export default {
         env: Env,
         ctx: ExecutionContext
     ): Promise<Response> {
-        try {
-            if (request.method.toUpperCase() === 'POST') {
-                return await handlePostRequest(request, ctx);
-            }
-            return await fetch(request);
-        } catch (e: any) {
-            return new Response('Error thrown ' + e.message)
+        if (request.method.toUpperCase() === 'POST') {
+            return await handlePostRequest(request, ctx);
         }
+        return await fetch(request);
     },
 };
