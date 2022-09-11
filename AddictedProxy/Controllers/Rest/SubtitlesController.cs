@@ -123,6 +123,7 @@ public class SubtitlesController : Controller
     [ProducesResponseType(typeof(WrongFormatResponse), 400)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
+    [ResponseCache(Duration = 7200, Location = ResponseCacheLocation.Any)]
     public async Task<IActionResult> Search([FromBody] SearchRequest request, CancellationToken token)
     {
         var match = _searchPattern.Match(request.Search);
@@ -156,6 +157,7 @@ public class SubtitlesController : Controller
     [ProducesResponseType(typeof(ErrorResponse), 423)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
+    [ResponseCache(Duration = 7200, Location = ResponseCacheLocation.Any)]
     public async Task<IActionResult> Query([FromBody] SubtitleQueryRequest request, CancellationToken token)
     {
         return await ProcessQueryRequestAsync(request, token);
