@@ -42,12 +42,8 @@ async function handlePostRequest(request: Request, ctx: ExecutionContext) {
 
     // Otherwise, fetch response to POST request from origin
     if (!response) {
-        console.log("Cache ", false, cacheUrl)
         response = await fetch(request);
-        //response.headers.set("Cache-Control", "public, max-age=7200");
         ctx.waitUntil(cache.put(cacheKey, response.clone()));
-    } else {
-        console.log("Cache ", true, cacheUrl)
     }
     return response;
 }
