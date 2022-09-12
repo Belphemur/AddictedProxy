@@ -138,29 +138,31 @@ public class SubtitlesController : Controller
     }
 
     /// <summary>
-    /// Query for subtitle of a specific episode of a show
+    /// Find specific episode (same as search but easily cacheable)
     /// </summary>
-    /// <remarks>
-    /// The routes are ratelimited to 15 call per seconds.
-    /// </remarks>
-    /// <param name="request"></param>
+    /// <param name="language">Language to search for</param>
+    /// <param name="episode">Episode number to look for</param>
     /// <param name="token"></param>
+    /// <param name="show">Name of the show</param>
+    /// <param name="season">Season number to look for</param>
     /// <returns></returns>
     /// <response code="200">Returns the matching subtitles</response>
     /// <response code="404">Couldn't find the show or its season/episode</response>
+    /// <response code="400">Doesn't follow the right format for the search: Show S00E00</response>
     /// <response code="429">Reached the rate limiting of the endpoint</response>
     /// <response code="423">Refreshing the show, currently don't have data, try again later</response>
-    [Route("query")]
-    [HttpPost]
+    [Route("find/{language}/{show}/{season:int:min(0)}/{episode:int:min(0)}")]
+    [HttpGet]
     [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 404)]
     [ProducesResponseType(typeof(ErrorResponse), 423)]
+    [ProducesResponseType(typeof(WrongFormatResponse), 400)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
-    [ResponseCache(Duration = 7200, Location = ResponseCacheLocation.Any)]
-    public async Task<IActionResult> Query([FromBody] SubtitleQueryRequest request, CancellationToken token)
+    [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any)]
+    public async Task<IActionResult> Find(string language, string show, int season, int episode, CancellationToken token)
     {
-        return await ProcessQueryRequestAsync(request, token);
+        return await ProcessQueryRequestAsync(new SubtitleQueryRequest(show, episode, season, language, null), token);
     }
 
     private async Task<IActionResult> ProcessQueryRequestAsync(SubtitleQueryRequest request, CancellationToken token)
@@ -179,8 +181,8 @@ public class SubtitlesController : Controller
         }
 
         var recordJob = _jobBuilder.Create<RecordPopularityJob>()
-                   .Configure(job => job.Payload = new RecordPopularityPayload(show, language, DateTime.UtcNow))
-                   .Build();
+                                   .Configure(job => job.Payload = new RecordPopularityPayload(show, language, DateTime.UtcNow))
+                                   .Build();
 
         _jobScheduler.ScheduleJob(recordJob);
 
@@ -195,7 +197,7 @@ public class SubtitlesController : Controller
                 return Ok(new SubtitleSearchResponse(ArraySegment<SubtitleDto>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name)));
             }
 
-            if (season != null && !_episodeRefresher.IsSeasonNeedRefresh(show,season))
+            if (season != null && !_episodeRefresher.IsSeasonNeedRefresh(show, season))
             {
                 _logger.LogInformation("Don't need to refresh episodes of {season} of show {show} returning empty data", request.Season, show.Name);
                 return Ok(new SubtitleSearchResponse(ArraySegment<SubtitleDto>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name)));
