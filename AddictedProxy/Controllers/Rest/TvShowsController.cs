@@ -80,7 +80,6 @@ public class TvShowsController : Controller
     [ProducesResponseType(typeof(string), 429)]
     [ProducesResponseType(typeof(string), 404)]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(ShowSearchResponse), 200)]
     [ResponseCache(Duration = 7200, Location = ResponseCacheLocation.Any)]
     public async Task<IActionResult> SearchGet(string search, CancellationToken cancellationToken)
     {
