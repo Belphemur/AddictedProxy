@@ -23,8 +23,11 @@ async function handlePostRequest(request: Request, ctx: ExecutionContext) {
 
     const cache = caches.default;
 
-    // @ts-ignore
-    const {groups: {show, season, episode}} = result;
+    const language = body.language.trim();
+
+    const show = result.groups!["show"].trim();
+    const season = result.groups!["season"].trim();
+    const episode = result.groups!["episode"].trim();
 
     const cacheUrl = new URL(endpoint);
     cacheUrl.pathname = `/shows/search/${show}`;
@@ -35,7 +38,7 @@ async function handlePostRequest(request: Request, ctx: ExecutionContext) {
     })
 
     const finalUrl = new URL(endpoint);
-    finalUrl.pathname = `/subtitles/find/${body.language.trim()}/${show.trim()}/${season.trim()}/${episode.trim()}`;
+    finalUrl.pathname = `/subtitles/find/${language}/${show}/${season}/${episode}`;
 
     const cacheResponse = await cache.match(cacheKey);
     if (cacheResponse != undefined) {
