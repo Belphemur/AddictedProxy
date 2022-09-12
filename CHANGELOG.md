@@ -1,3 +1,10 @@
+## [2.16.0](https://github.com/Belphemur/AddictedProxy/compare/v2.15.0...v2.16.0) (2022-09-12)
+
+
+### Features
+
+* **TvShow::Search:** Add Get route for proper caching ([fdee99c](https://github.com/Belphemur/AddictedProxy/commit/fdee99c6fdeacdb79ecd623cce89cba993daccdb))
+
 ## [2.15.0](https://github.com/Belphemur/AddictedProxy/compare/v2.14.1...v2.15.0) (2022-09-12)
 
 
