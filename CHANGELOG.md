@@ -1,3 +1,10 @@
+## [2.15.0](https://github.com/Belphemur/AddictedProxy/compare/v2.14.1...v2.15.0) (2022-09-12)
+
+
+### Features
+
+* **Find:** Add proper get search that can be easily cached. ([b51b1cf](https://github.com/Belphemur/AddictedProxy/commit/b51b1cf549a1ee8b009666e85ee72884842e2d28))
+
 ## [2.14.1](https://github.com/Belphemur/AddictedProxy/compare/v2.14.0...v2.14.1) (2022-09-11)
 
 ## [2.14.0](https://github.com/Belphemur/AddictedProxy/compare/v2.13.4...v2.14.0) (2022-09-10)
