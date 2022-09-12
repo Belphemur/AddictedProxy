@@ -20,17 +20,45 @@ async function handlePostRequest(request: Request, ctx: ExecutionContext) {
         })
     }
 
+    const cache = caches.default;
+
     // @ts-ignore
     const {groups: {show, season, episode}} = result;
 
-    return await fetch(`https://api.gestdown.info/subtitles/find/${body.language}/${show.trim()}/${season.trim()}/${episode.trim()}`, {
+    const cacheUrl = new URL(request.url);
+    cacheUrl.pathname = `/show/search/${show}`;
+
+    const cacheKey = new Request(cacheUrl.toString(), {
+        method: 'GET',
+        headers: request.headers
+    })
+
+    const finalUrl = new URL("https://api.gestdown.info");
+    finalUrl.pathname = `/subtitles/find/${body.language.trim()}/${show.trim()}/${season.trim()}/${episode.trim()}`;
+
+    const cacheResponse = await cache.match(cacheKey);
+    if (cacheResponse != undefined) {
+        console.log("Used cached response", finalUrl, cacheResponse.status)
+        return cacheResponse;
+    }
+
+    const response = await fetch(finalUrl.toString(), {
         cf: {
             cacheEverything: true,
-            cacheTtl: 7200
+            cacheTtlByStatus: {'200-299': 7200, '423': 30, '429': 0, '404': 43200, '500-599': 0},
         },
         method: 'GET',
         headers: request.headers
     })
+
+    if (response.status == 404) {
+        console.log("cache 404", finalUrl);
+        await cache.put(cacheKey, new Response("Unknown Show", {
+            status: 404,
+            headers: new Headers({"Cache-Control": "public, max-age=43200"})
+        }));
+    }
+    return response;
 }
 
 
