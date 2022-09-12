@@ -1,4 +1,5 @@
 import {SearchRequest} from "./api";
+const endpoint = "https://api.gestdown.info";
 
 async function handlePostRequest(request: Request, ctx: ExecutionContext) {
     const regex = /(?<show>.+)S(?<season>\d+)E(?<episode>\d+)/g;
@@ -25,15 +26,15 @@ async function handlePostRequest(request: Request, ctx: ExecutionContext) {
     // @ts-ignore
     const {groups: {show, season, episode}} = result;
 
-    const cacheUrl = new URL(request.url);
-    cacheUrl.pathname = `/show/search/${show}`;
+    const cacheUrl = new URL(endpoint);
+    cacheUrl.pathname = `/shows/search/${show}`;
 
     const cacheKey = new Request(cacheUrl.toString(), {
         method: 'GET',
         headers: request.headers
     })
 
-    const finalUrl = new URL("https://api.gestdown.info");
+    const finalUrl = new URL(endpoint);
     finalUrl.pathname = `/subtitles/find/${body.language.trim()}/${show.trim()}/${season.trim()}/${episode.trim()}`;
 
     const cacheResponse = await cache.match(cacheKey);
