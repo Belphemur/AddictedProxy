@@ -61,7 +61,7 @@ public class TvShowsController : Controller
     public Task<IActionResult> Search([FromBody] ShowSearchRequest showSearch, CancellationToken cancellationToken)
     {
         return Task.FromResult<IActionResult>(Ok(new ShowSearchResponse(
-                _showRefresher.FindShowsAsync(showSearch.Query, cancellationToken)
+                _showRefresher.FindShowsAsync(showSearch.Query.Trim(), cancellationToken)
                               .Select(show => new ShowDto(show))
             )
         ));
@@ -83,7 +83,7 @@ public class TvShowsController : Controller
     [ResponseCache(Duration = 7200, Location = ResponseCacheLocation.Any)]
     public async Task<IActionResult> SearchGet(string search, CancellationToken cancellationToken)
     {
-        var shows = await _showRefresher.FindShowsAsync(search, cancellationToken)
+        var shows = await _showRefresher.FindShowsAsync(search.Trim(), cancellationToken)
                                         .Select(show => new ShowDto(show))
                                         .ToArrayAsync(cancellationToken);
         if (shows.Length == 0)
