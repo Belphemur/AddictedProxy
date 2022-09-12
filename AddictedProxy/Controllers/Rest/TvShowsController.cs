@@ -23,7 +23,9 @@ public class TvShowsController : Controller
     /// <summary>
     /// Search for a specific show
     /// </summary>
-    public record ShowSearchRequest([Required] [MinLength(3, ErrorMessage = "3 characters are the minimum for the search")] string Query)
+    public record ShowSearchRequest([Required]
+                                    [MinLength(3, ErrorMessage = "3 characters are the minimum for the search")]
+                                    string Query)
     {
         /// <summary>
         /// Name of the show you're looking for
@@ -64,6 +66,35 @@ public class TvShowsController : Controller
             )
         ));
     }
+
+    /// <summary>
+    /// Search shows that contains the given query
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <param name="search">Name of the show to search for</param>
+    /// <response code="200">Returns the matching shows</response>
+    /// <response code="429">Reached the rate limiting of the endpoint</response>
+    [Route("search/{search}")]
+    [HttpGet]
+    [ProducesResponseType(typeof(ShowSearchResponse), 200)]
+    [ProducesResponseType(typeof(string), 429)]
+    [ProducesResponseType(typeof(string), 404)]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(ShowSearchResponse), 200)]
+    [ResponseCache(Duration = 7200, Location = ResponseCacheLocation.Any)]
+    public async Task<IActionResult> SearchGet(string search, CancellationToken cancellationToken)
+    {
+        var shows = await _showRefresher.FindShowsAsync(search, cancellationToken)
+                                        .Select(show => new ShowDto(show))
+                                        .ToArrayAsync(cancellationToken);
+        if (shows.Length == 0)
+        {
+            return NotFound($"Couldn't find show: {search}");
+        }
+
+        return Ok(new ShowSearchResponse(shows.ToAsyncEnumerable()));
+    }
+
 
     /// <summary>
     /// Refresh a specific show
