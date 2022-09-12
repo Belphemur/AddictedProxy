@@ -1,61 +1,36 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `wrangler dev src/index.ts` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `wrangler publish src/index.ts --name my-worker` to publish your worker
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
-
-async function sha256(message: string) {
-    // encode as UTF-8
-    const msgBuffer = new TextEncoder().encode(message);
-
-    // hash the message
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-
-    // convert bytes to hex string
-    return [...new Uint8Array(hashBuffer)].map(b => b.toString(16).padStart(2, '0')).join('');
-}
+import {SearchRequest} from "./api";
 
 async function handlePostRequest(request: Request, ctx: ExecutionContext) {
-    const body = await request.clone().text();
-
-    // Hash the request body to use it as a part of the cache key
-    const hash = await sha256(body);
-    const cacheUrl = new URL(request.url);
-
-    // Store the URL in cache by prepending the body's hash
-    cacheUrl.pathname = '/posts' + cacheUrl.pathname + hash;
-
-
-    const cache = caches.default;
-
-    // Convert to a GET to be able to cache
-    const cacheKey = new Request(cacheUrl.toString(), {
-        headers: request.headers,
-        method: 'GET',
-    });
-    // Find the cache key in the cache
-    let response = await cache.match(cacheKey);
-
-    // Otherwise, fetch response to POST request from origin
-    if (!response) {
-        response = await fetch(request);
-        switch (response.status) {
-            //Don't cache on 429 or 423
-            //Rate limited reached
-            case 429:
-            //Refreshing show
-            case 423:
-                break;
-            default:
-                ctx.waitUntil(cache.put(cacheKey, response.clone()));
-                break;
-        }
+    const regex = /(?<show>.+)S(?<season>\d+)E(?<episode>\d+)/g;
+    const body = await request.json<SearchRequest>();
+    if (body.search == undefined) {
+        return new Response("No search", {
+            status: 400
+        })
     }
-    return response;
+    if (body.language == undefined) {
+        return new Response("No language", {
+            status: 400
+        })
+    }
+    const result = regex.exec(body.search);
+    if (result == null) {
+        return new Response("Bad search", {
+            status: 400
+        })
+    }
+
+    // @ts-ignore
+    const {groups: {show, season, episode}} = result;
+
+    return await fetch(`https://api.gestdown.info/subtitles/find/${body.language}/${show.trim()}/${season.trim()}/${episode.trim()}`, {
+        cf: {
+            cacheEverything: true,
+            cacheTtl: 7200
+        },
+        method: 'GET',
+        headers: request.headers
+    })
 }
 
 
