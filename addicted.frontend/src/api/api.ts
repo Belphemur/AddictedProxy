@@ -207,43 +207,6 @@ export interface SubtitleDto {
   downloadCount: number;
 }
 
-/**
- * Used for different Media Center/Subtitle searchers
- */
-export interface SubtitleQueryRequest {
-  /**
-   * Name of the show
-   * @example NCIS
-   */
-  show: string;
-
-  /**
-   * Episode number
-   * @format int32
-   * @example 1
-   */
-  episode: number;
-
-  /**
-   * Season number
-   * @format int32
-   * @example 1
-   */
-  season: number;
-
-  /**
-   * Name of the file for which you want subtitle, it help find a version of the subtitle that matches it
-   * @example NCIS.S01E01.HDTV.mkv
-   */
-  fileName?: string | null;
-
-  /**
-   * 3 or 2 letter code of the language
-   * @example en
-   */
-  languageISO: string;
-}
-
 export interface SubtitleSearchResponse {
   /** Matching subtitle for the filename and language */
   matchingSubtitles?: SubtitleDto[] | null;
@@ -483,7 +446,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Gestdown: Addicted Proxy
- * @version 2.10.9
+ * @version 2.16.0
  *
  * Provide a full api to search and download subtitles from Addic7ed website.
  */
@@ -573,19 +536,17 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description The routes are ratelimited to 15 call per seconds.
+     * No description
      *
      * @tags Subtitles
-     * @name QueryCreate
-     * @summary Query for subtitle of a specific episode of a show
-     * @request POST:/subtitles/query
+     * @name FindDetail
+     * @summary Find specific episode (same as search but easily cacheable)
+     * @request GET:/subtitles/find/{language}/{show}/{season}/{episode}
      */
-    queryCreate: (data: SubtitleQueryRequest, params: RequestParams = {}) =>
-      this.request<SubtitleSearchResponse, ErrorResponse | string>({
-        path: `/subtitles/query`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
+    findDetail: (language: string, show: string, season: number, episode: number, params: RequestParams = {}) =>
+      this.request<SubtitleSearchResponse, WrongFormatResponse | ErrorResponse | string>({
+        path: `/subtitles/find/${language}/${show}/${season}/${episode}`,
+        method: "GET",
         format: "json",
         ...params,
       }),
@@ -605,6 +566,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: "POST",
         body: data,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags TvShows
+     * @name SearchDetail
+     * @summary Search shows that contains the given query
+     * @request GET:/shows/search/{search}
+     */
+    searchDetail: (search: string, params: RequestParams = {}) =>
+      this.request<ShowSearchResponse, string>({
+        path: `/shows/search/${search}`,
+        method: "GET",
         format: "json",
         ...params,
       }),
