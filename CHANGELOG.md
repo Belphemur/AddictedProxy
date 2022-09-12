@@ -1,3 +1,10 @@
+## [2.16.1](https://github.com/Belphemur/AddictedProxy/compare/v2.16.0...v2.16.1) (2022-09-12)
+
+
+### Bug Fixes
+
+* **TvShow::Search:** Always trim user inputs ([475e814](https://github.com/Belphemur/AddictedProxy/commit/475e814e1534a6d803c3418eb68af933f2ff67a2))
+
 ## [2.16.0](https://github.com/Belphemur/AddictedProxy/compare/v2.15.0...v2.16.0) (2022-09-12)
 
 
