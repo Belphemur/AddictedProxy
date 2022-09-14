@@ -1,3 +1,10 @@
+## [2.16.4](https://github.com/Belphemur/AddictedProxy/compare/v2.16.3...v2.16.4) (2022-09-14)
+
+
+### Bug Fixes
+
+* **caching:** Be sure to cache 404 when the show can't be found ([8b4d311](https://github.com/Belphemur/AddictedProxy/commit/8b4d3113bd22c754d7f5a03a620cd41655347974))
+
 ## [2.16.3](https://github.com/Belphemur/AddictedProxy/compare/v2.16.2...v2.16.3) (2022-09-14)
 
 ## [2.16.2](https://github.com/Belphemur/AddictedProxy/compare/v2.16.1...v2.16.2) (2022-09-12)
