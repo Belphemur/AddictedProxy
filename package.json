@@ -60,6 +60,10 @@
                 "section": "Enhancements"
               },
               {
+                "type": "perf",
+                "section": "Performance improvements"
+              },
+              {
                 "type": "lang",
                 "section": "Languages"
               },
