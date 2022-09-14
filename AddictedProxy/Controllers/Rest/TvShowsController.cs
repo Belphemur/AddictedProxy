@@ -8,6 +8,7 @@ using AddictedProxy.Services.Provider.Shows.Jobs;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 namespace AddictedProxy.Controllers.Rest;
 
@@ -88,6 +89,11 @@ public class TvShowsController : Controller
                                         .ToArrayAsync(cancellationToken);
         if (shows.Length == 0)
         {
+            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+            {
+                Public = true,
+                MaxAge = TimeSpan.FromDays(0.5)
+            };
             return NotFound($"Couldn't find show: {search}");
         }
 

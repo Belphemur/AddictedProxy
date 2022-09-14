@@ -20,7 +20,7 @@ public class DefaultResponseCachingMiddleware : IMiddleware
         context.Response.OnStarting(state =>
         {
             var httpContext = (HttpContext)state;
-            if (httpContext.Response.StatusCode is not (>= 200 and <= 299))
+            if (httpContext.Response.StatusCode is not (>= 200 and <= 299) && httpContext.Response.GetTypedHeaders().CacheControl == null)
             {
                 context.Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
                 {

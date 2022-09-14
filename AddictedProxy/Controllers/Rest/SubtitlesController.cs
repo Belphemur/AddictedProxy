@@ -171,6 +171,11 @@ public class SubtitlesController : Controller
         var show = await _showRefresher.FindShowsAsync(request.Show, token).FirstOrDefaultAsync(token);
         if (show == null)
         {
+            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+            {
+                Public = true,
+                MaxAge = TimeSpan.FromDays(0.5)
+            };
             return NotFound(new ErrorResponse($"Couldn't find the show {request.Show}"));
         }
 
