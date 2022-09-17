@@ -15,10 +15,10 @@ public class BootstrapController : IBootstrap, IBootstrapApp
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddControllers()
-            .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>())
-            .AddJsonOptions(options => options.JsonSerializerOptions.AddContext<SerializationContext>());
+                .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>())
+                .AddJsonOptions(options => options.JsonSerializerOptions.AddContext<SerializationContext>());
         services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
-        services.AddResponseCaching();
+        services.AddResponseCaching(options => options.SizeLimit = 250 * 1024 * 1024);
         services.AddSingleton<DefaultResponseCachingMiddleware>();
     }
 
@@ -28,7 +28,7 @@ public class BootstrapController : IBootstrap, IBootstrapApp
         {
             endpointRouteBuilder.MapControllers();
         }
-        
+
         app.UseCors(policyBuilder =>
         {
             policyBuilder
@@ -51,6 +51,5 @@ public class BootstrapController : IBootstrap, IBootstrapApp
         app.UseMiddleware<DefaultResponseCachingMiddleware>();
         app.UseRouting();
         app.UseAuthorization();
-        
     }
 }
