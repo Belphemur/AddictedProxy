@@ -1,3 +1,10 @@
+## [2.16.6](https://github.com/Belphemur/AddictedProxy/compare/v2.16.5...v2.16.6) (2022-09-18)
+
+
+### Performance improvements
+
+* **Caching:** Increase the cache for response caching ([aa61f8a](https://github.com/Belphemur/AddictedProxy/commit/aa61f8accef30c60a5de9ef6e3fd20df15c230e5))
+
 ## [2.16.5](https://github.com/Belphemur/AddictedProxy/compare/v2.16.4...v2.16.5) (2022-09-14)
 
 
