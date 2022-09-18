@@ -1,3 +1,15 @@
+## [2.16.5](https://github.com/Belphemur/AddictedProxy/compare/v2.16.4...v2.16.5) (2022-09-14)
+
+
+### Bug Fixes
+
+* **changelog:** Add missing key for changelog ([c614d69](https://github.com/Belphemur/AddictedProxy/commit/c614d69fa2307782580a564d688cfd813de853f2))
+
+
+### Performance improvements
+
+* **logging:** remove bad logging for prod ([9280a62](https://github.com/Belphemur/AddictedProxy/commit/9280a62d19c608ed2b25f3f40ed5b6b37acf8af0))
+
 ## [2.16.4](https://github.com/Belphemur/AddictedProxy/compare/v2.16.3...v2.16.4) (2022-09-14)
 
 
