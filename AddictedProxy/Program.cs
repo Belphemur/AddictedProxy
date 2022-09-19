@@ -1,6 +1,7 @@
 #region
 
 using System.Reflection;
+using AddictedProxy.Caching.Bootstrap;
 using AddictedProxy.Controllers.Bootstrap;
 using AddictedProxy.Controllers.Rest.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
@@ -56,7 +57,8 @@ var currentAssemblies = new[]
     typeof(BootstrapAddictedServices).Assembly,
     typeof(BootstrapPerformance).Assembly,
     typeof(BootstrapStatsPopularityShow).Assembly,
-    typeof(BootstrapTMDB).Assembly
+    typeof(BootstrapTMDB).Assembly,
+    typeof(BootstrapDistributedCaching).Assembly
 };
 
 builder.Services

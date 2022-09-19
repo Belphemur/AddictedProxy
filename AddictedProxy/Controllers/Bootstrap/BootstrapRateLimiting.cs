@@ -13,8 +13,7 @@ public class BootstrapRateLimiting : IBootstrap, IBootstrapApp
         //load ip rules from appsettings.json
         services.Configure<IpRateLimitPolicies>(configuration.GetSection("IpRateLimitPolicies"));
 
-        // inject counter and rules stores
-        services.AddInMemoryRateLimiting();
+
         services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
     }
 

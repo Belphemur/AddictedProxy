@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Stats", "Addi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TvMovieDatabaseClient", "TvMovieDatabaseClient\TvMovieDatabaseClient.csproj", "{E1A07EEC-256D-4337-ACD2-E11E09C35F19}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Caching", "AddictedProxy.Caching\AddictedProxy.Caching.csproj", "{6401E13B-E1B0-42BF-A2F4-9FD046CD4EFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{E1A07EEC-256D-4337-ACD2-E11E09C35F19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1A07EEC-256D-4337-ACD2-E11E09C35F19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1A07EEC-256D-4337-ACD2-E11E09C35F19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6401E13B-E1B0-42BF-A2F4-9FD046CD4EFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6401E13B-E1B0-42BF-A2F4-9FD046CD4EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6401E13B-E1B0-42BF-A2F4-9FD046CD4EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6401E13B-E1B0-42BF-A2F4-9FD046CD4EFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

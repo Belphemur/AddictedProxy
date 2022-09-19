@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\AddictedProxy.Caching\AddictedProxy.Caching.csproj" />
         <ProjectReference Include="..\AddictedProxy.Database\AddictedProxy.Database.csproj" />
         <ProjectReference Include="..\AddictedProxy.Stats\AddictedProxy.Stats.csproj" />
         <ProjectReference Include="..\AddictedProxy.Storage\AddictedProxy.Storage.csproj" />
