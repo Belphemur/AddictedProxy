@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.OutputCaching;
 namespace AddictedProxy.Controllers.Rest;
 
 [Route("stats")]
-[OutputCache(PolicyName = nameof(PolicyEnum.Stats))]
+[ResponseCache(Location = ResponseCacheLocation.Any, Duration = 6 * 3600)]
 public class StatsController : Controller
 {
     private readonly IShowPopularityService _showPopularityService;
@@ -25,11 +25,12 @@ public class StatsController : Controller
     /// <returns></returns>
     [HttpGet]
     [Route("top/{top:range(1,50)}")]
-    public ActionResult<IAsyncEnumerable<TopShowDto>> GetTopShows([FromRoute] int top, CancellationToken token)
+    [OutputCache(PolicyName = nameof(PolicyEnum.Stats))]
+    public async Task<ActionResult<TopShowDto[]>> GetTopShows([FromRoute] int top, CancellationToken token)
     {
-        return Ok(_showPopularityService.GetTopPopularity(top).Select(record => new TopShowDto(new ShowDto(record.Show), record.Total)));
+        return Ok(await _showPopularityService.GetTopPopularity(top).Select(record => new TopShowDto(new ShowDto(record.Show), record.Total)).ToArrayAsync(token));
     }
-    
+
     /// <summary>
     /// Return the top show by downloads
     /// </summary>
@@ -38,8 +39,9 @@ public class StatsController : Controller
     /// <returns></returns>
     [HttpGet]
     [Route("downloads/{top:range(1,50)}")]
-    public ActionResult<IAsyncEnumerable<TopShowDto>> GetTopDownloads([FromRoute] int top, CancellationToken token)
+    [OutputCache(PolicyName = nameof(PolicyEnum.Stats))]
+    public async Task<ActionResult<TopShowDto[]>> GetTopDownloads([FromRoute] int top, CancellationToken token)
     {
-        return Ok(_showPopularityService.GetTopDownloadPopularity(top).Select(record => new TopShowDto(new ShowDto(record.Show), record.TotalDownloads)));
+        return Ok(await _showPopularityService.GetTopDownloadPopularity(top).Select(record => new TopShowDto(new ShowDto(record.Show), record.TotalDownloads)).ToArrayAsync(token));
     }
 }

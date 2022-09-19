@@ -84,6 +84,7 @@ public class TvShowsController : Controller
     [ProducesResponseType(typeof(string), 404)]
     [Produces("application/json")]
     [OutputCache(PolicyName = nameof(PolicyEnum.Shows))]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 43200)]
     public async Task<IActionResult> SearchGet(string search, CancellationToken cancellationToken)
     {
         var shows = await _showRefresher.FindShowsAsync(search.Trim(), cancellationToken)

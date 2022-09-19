@@ -79,6 +79,7 @@ public class SubtitlesController : Controller
     [ProducesResponseType(typeof(string), 429)]
     [HttpGet]
     [OutputCache(PolicyName = nameof(PolicyEnum.Download))]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 86400)]
     public async Task<IActionResult> Download([FromRoute] Guid subtitleId, CancellationToken token)
     {
         try
@@ -126,6 +127,7 @@ public class SubtitlesController : Controller
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
     [OutputCache(PolicyName = nameof(PolicyEnum.Shows))]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
     public async Task<IActionResult> Search([FromBody] SearchRequest request, CancellationToken token)
     {
         var match = _searchPattern.Match(request.Search);
@@ -162,6 +164,7 @@ public class SubtitlesController : Controller
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
     [OutputCache(PolicyName = nameof(PolicyEnum.Shows))]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
     public async Task<IActionResult> Find(string language, string show, int season, int episode, CancellationToken token)
     {
         return await ProcessQueryRequestAsync(new SubtitleQueryRequest(show, episode, season, language, null), token);
@@ -173,6 +176,11 @@ public class SubtitlesController : Controller
         var show = await _showRefresher.FindShowsAsync(request.Show, token).FirstOrDefaultAsync(token);
         if (show == null)
         {
+            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+            {
+                Public = true,
+                MaxAge = TimeSpan.FromDays(0.5)
+            };
             return NotFound(new ErrorResponse($"Couldn't find the show {request.Show}"));
         }
 

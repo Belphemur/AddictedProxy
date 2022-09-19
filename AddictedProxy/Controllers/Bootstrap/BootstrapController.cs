@@ -43,8 +43,8 @@ public class BootstrapController : IBootstrap, IBootstrapApp
         });
 
         app.UseHttpLogging();
-        app.UseOutputCache();
         app.UseRouting();
+        app.UseOutputCache();
         app.UseAuthorization();
     }
 }

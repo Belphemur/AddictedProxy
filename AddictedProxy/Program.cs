@@ -47,6 +47,8 @@ builder.Services.AddSwaggerGen(options =>
        })
        .AddEndpointsApiExplorer();
 
+builder.Configuration.AddEnvironmentVariables("A7D_");
+
 //Add our own bootstrapping
 var currentAssemblies = new[]
 {
