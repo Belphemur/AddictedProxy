@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <Version>2.16.6</Version>
@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\AddictedProxy.Caching\AddictedProxy.Caching.csproj" />
         <ProjectReference Include="..\AddictedProxy.Database\AddictedProxy.Database.csproj" />
         <ProjectReference Include="..\AddictedProxy.Stats\AddictedProxy.Stats.csproj" />
         <ProjectReference Include="..\AddictedProxy.Storage\AddictedProxy.Storage.csproj" />

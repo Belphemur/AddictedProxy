@@ -1,14 +1,12 @@
 ﻿#region
 
-using AddictedProxy.Controllers.Middleware;
 using AddictedProxy.Controllers.Rest.Serializer;
 using AddictedProxy.Services.Middleware;
 using InversionOfControl.Model;
-using Microsoft.Net.Http.Headers;
 
 #endregion
 
-namespace AddictedProxy.Controllers.Rest.Bootstrap;
+namespace AddictedProxy.Controllers.Bootstrap;
 
 public class BootstrapController : IBootstrap, IBootstrapApp
 {
@@ -18,8 +16,6 @@ public class BootstrapController : IBootstrap, IBootstrapApp
                 .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>())
                 .AddJsonOptions(options => options.JsonSerializerOptions.AddContext<SerializationContext>());
         services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
-        services.AddResponseCaching(options => options.SizeLimit = 250 * 1024 * 1024);
-        services.AddSingleton<DefaultResponseCachingMiddleware>();
     }
 
     public void ConfigureApp(IApplicationBuilder app)
@@ -47,9 +43,8 @@ public class BootstrapController : IBootstrap, IBootstrapApp
         });
 
         app.UseHttpLogging();
-        app.UseResponseCaching();
-        app.UseMiddleware<DefaultResponseCachingMiddleware>();
         app.UseRouting();
+        app.UseOutputCache();
         app.UseAuthorization();
     }
 }

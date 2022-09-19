@@ -2,6 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using AddictedProxy.Caching.OutputCache.Configuration;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
@@ -19,6 +20,7 @@ using AddictedProxy.Upstream.Service.Exception;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Net.Http.Headers;
 
 #endregion
@@ -76,7 +78,8 @@ public class SubtitlesController : Controller
     [ProducesResponseType(typeof(ErrorResponse), 400, "application/json")]
     [ProducesResponseType(typeof(string), 429)]
     [HttpGet]
-    [ResponseCache(Duration = 86400, Location = ResponseCacheLocation.Any)]
+    [OutputCache(PolicyName = nameof(PolicyEnum.Download))]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 86400)]
     public async Task<IActionResult> Download([FromRoute] Guid subtitleId, CancellationToken token)
     {
         try
@@ -123,7 +126,8 @@ public class SubtitlesController : Controller
     [ProducesResponseType(typeof(WrongFormatResponse), 400)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
-    [ResponseCache(Duration = 7200, Location = ResponseCacheLocation.Any)]
+    [OutputCache(PolicyName = nameof(PolicyEnum.Shows))]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
     public async Task<IActionResult> Search([FromBody] SearchRequest request, CancellationToken token)
     {
         var match = _searchPattern.Match(request.Search);
@@ -159,7 +163,8 @@ public class SubtitlesController : Controller
     [ProducesResponseType(typeof(WrongFormatResponse), 400)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
-    [ResponseCache(Duration = 3600, Location = ResponseCacheLocation.Any)]
+    [OutputCache(PolicyName = nameof(PolicyEnum.Shows))]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
     public async Task<IActionResult> Find(string language, string show, int season, int episode, CancellationToken token)
     {
         return await ProcessQueryRequestAsync(new SubtitleQueryRequest(show, episode, season, language, null), token);

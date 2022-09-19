@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using AddictedProxy.Caching.OutputCache.Configuration;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
@@ -8,6 +9,7 @@ using AddictedProxy.Services.Provider.Shows.Jobs;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Net.Http.Headers;
 
 namespace AddictedProxy.Controllers.Rest;
@@ -81,7 +83,8 @@ public class TvShowsController : Controller
     [ProducesResponseType(typeof(string), 429)]
     [ProducesResponseType(typeof(string), 404)]
     [Produces("application/json")]
-    [ResponseCache(Duration = 7200, Location = ResponseCacheLocation.Any)]
+    [OutputCache(PolicyName = nameof(PolicyEnum.Shows))]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 43200)]
     public async Task<IActionResult> SearchGet(string search, CancellationToken cancellationToken)
     {
         var shows = await _showRefresher.FindShowsAsync(search.Trim(), cancellationToken)

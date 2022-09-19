@@ -15,7 +15,7 @@ env:
   PROJECT_NAME: "AddictedProxy"
   PROJECT_NAME_FRONTEND: "AddictedProxy-frontend"
   NODEJS: 16
-  DOTNET: "6.0.x"
+  DOTNET: "7.0.x"
   DOTNET_PRERELEASE: true
   SENTRY_NAME: "addictedproxy"
   SENTRY_ORG: "soundswitch"

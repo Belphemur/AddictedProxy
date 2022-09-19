@@ -1,8 +1,8 @@
 #region
 
 using System.Reflection;
+using AddictedProxy.Caching.Bootstrap;
 using AddictedProxy.Controllers.Bootstrap;
-using AddictedProxy.Controllers.Rest.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Model.Performance;
@@ -47,6 +47,8 @@ builder.Services.AddSwaggerGen(options =>
        })
        .AddEndpointsApiExplorer();
 
+builder.Configuration.AddEnvironmentVariables("A7D_");
+
 //Add our own bootstrapping
 var currentAssemblies = new[]
 {
@@ -56,7 +58,8 @@ var currentAssemblies = new[]
     typeof(BootstrapAddictedServices).Assembly,
     typeof(BootstrapPerformance).Assembly,
     typeof(BootstrapStatsPopularityShow).Assembly,
-    typeof(BootstrapTMDB).Assembly
+    typeof(BootstrapTMDB).Assembly,
+    typeof(BootstrapDistributedCaching).Assembly
 };
 
 builder.Services
@@ -74,6 +77,8 @@ builder.WebHost.UseSentry(sentryBuilder =>
     sentryBuilder.AddExceptionFilterForType<OperationCanceledException>();
     sentryBuilder.AddExceptionFilterForType<TaskCanceledException>();
 });
+
+builder.Configuration.AddEnvironmentVariables("ADDICT");
 
 var app = builder.Build();
 

@@ -15,6 +15,7 @@ public class BootstrapResponseCompression : IBootstrap, IBootstrapApp
             options.Providers.Add<GzipCompressionProvider>();
             options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Append("text/srt");
         });
+        services.AddRequestDecompression();
 
         services.Configure<BrotliCompressionProviderOptions>(options => { options.Level = CompressionLevel.Fastest; });
         services.Configure<GzipCompressionProviderOptions>(options => { options.Level = CompressionLevel.SmallestSize; });
@@ -23,5 +24,6 @@ public class BootstrapResponseCompression : IBootstrap, IBootstrapApp
     public void ConfigureApp(IApplicationBuilder app)
     {
         app.UseResponseCompression();
+        app.UseRequestDecompression();
     }
 }
