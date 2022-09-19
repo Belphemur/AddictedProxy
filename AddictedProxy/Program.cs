@@ -77,6 +77,8 @@ builder.WebHost.UseSentry(sentryBuilder =>
     sentryBuilder.AddExceptionFilterForType<TaskCanceledException>();
 });
 
+builder.Configuration.AddEnvironmentVariables("ADDICT");
+
 var app = builder.Build();
 
 app.UseBootstrap(currentAssemblies);
