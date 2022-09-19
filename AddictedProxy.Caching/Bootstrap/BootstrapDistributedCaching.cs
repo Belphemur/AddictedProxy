@@ -1,6 +1,7 @@
 using AddictedProxy.Caching.Bootstrap.EnvVar;
 using AddictedProxy.Caching.OutputCache;
 using AddictedProxy.Caching.OutputCache.CacheStore;
+using AddictedProxy.Caching.OutputCache.Configuration;
 using AspNetCoreRateLimit;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
@@ -29,7 +30,10 @@ public class BootstrapDistributedCaching : IBootstrap, IBootstrapConditional
         services.AddDistributedRateLimiting();
 
         services.TryAddSingleton<IOutputCacheStore, DistributedOutputCacheStore>();
-        services.AddOutputCache();
+        services.AddOutputCache(options =>
+        {
+            options.AddOwnPolicies();
+        });
     }
 
     public bool ShouldLoadBootstrap(IConfiguration configuration)

@@ -3,7 +3,6 @@
 using System.Reflection;
 using AddictedProxy.Caching.Bootstrap;
 using AddictedProxy.Controllers.Bootstrap;
-using AddictedProxy.Controllers.Rest.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Model.Performance;

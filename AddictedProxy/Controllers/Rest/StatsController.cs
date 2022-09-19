@@ -1,10 +1,13 @@
-﻿using AddictedProxy.Model.Dto;
+﻿using AddictedProxy.Caching.OutputCache.Configuration;
+using AddictedProxy.Model.Dto;
 using AddictedProxy.Stats.Popularity.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace AddictedProxy.Controllers.Rest;
 
 [Route("stats")]
+[OutputCache(PolicyName = nameof(PolicyEnum.Stats))]
 public class StatsController : Controller
 {
     private readonly IShowPopularityService _showPopularityService;
@@ -21,7 +24,6 @@ public class StatsController : Controller
     /// <param name="token"></param>
     /// <returns></returns>
     [HttpGet]
-    [ResponseCache(Duration = 6 * 3600, Location = ResponseCacheLocation.Any)]
     [Route("top/{top:range(1,50)}")]
     public ActionResult<IAsyncEnumerable<TopShowDto>> GetTopShows([FromRoute] int top, CancellationToken token)
     {
@@ -35,7 +37,6 @@ public class StatsController : Controller
     /// <param name="token"></param>
     /// <returns></returns>
     [HttpGet]
-    [ResponseCache(Duration = 6 * 3600, Location = ResponseCacheLocation.Any)]
     [Route("downloads/{top:range(1,50)}")]
     public ActionResult<IAsyncEnumerable<TopShowDto>> GetTopDownloads([FromRoute] int top, CancellationToken token)
     {
