@@ -1,3 +1,19 @@
+## [2.17.0](https://github.com/Belphemur/AddictedProxy/compare/v2.16.6...v2.17.0) (2022-09-19)
+
+
+### Features
+
+* **.NET:** Update to .NET 7.0 ([a6662e3](https://github.com/Belphemur/AddictedProxy/commit/a6662e3b8dd24d9aa7243ac4abbe2e280f22ff9d))
+* **compression:** add request compression ([0b6090c](https://github.com/Belphemur/AddictedProxy/commit/0b6090c4e7e66111b59586df18a2884b15892837))
+* **DistributedCaching:** Add distributed caching ([0960c35](https://github.com/Belphemur/AddictedProxy/commit/0960c351f6214a4a9928b1fd827d8f3861026095))
+* **DistributedCaching:** Setup distributed caching with env vars ([1a19564](https://github.com/Belphemur/AddictedProxy/commit/1a195641dcfe5cbf26eb443045d2e65778cc8456))
+* **OutputCache:** Replace ResponseCache by output cache ([e3848a7](https://github.com/Belphemur/AddictedProxy/commit/e3848a77097f0755f909a5063da3d8c2b1f7acab))
+
+
+### Bug Fixes
+
+* **Caching:** Be sure to send the right headers for response caching ([1cb0b4e](https://github.com/Belphemur/AddictedProxy/commit/1cb0b4e4d0c1dcc36d3b9608ea7a9bbf10b2bafa))
+
 ## [2.16.6](https://github.com/Belphemur/AddictedProxy/compare/v2.16.5...v2.16.6) (2022-09-18)
 
 
