@@ -1,3 +1,11 @@
+## [2.17.3](https://github.com/Belphemur/AddictedProxy/compare/v2.17.2...v2.17.3) (2022-09-20)
+
+
+### Bug Fixes
+
+* **Caching:** Remove support for tags ([8dc7439](https://github.com/Belphemur/AddictedProxy/commit/8dc74395bcd8c909d5dc0c2910acc98e21e26200))
+* **serialization:** Use context first than fallback to defaultJsonSerializer ([4db0ee7](https://github.com/Belphemur/AddictedProxy/commit/4db0ee74bdef84b379ecaf07faab29ee52b13841))
+
 ## [2.17.2](https://github.com/Belphemur/AddictedProxy/compare/v2.17.1...v2.17.2) (2022-09-20)
 
 
