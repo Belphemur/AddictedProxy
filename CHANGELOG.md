@@ -1,3 +1,11 @@
+## [2.17.1](https://github.com/Belphemur/AddictedProxy/compare/v2.17.0...v2.17.1) (2022-09-20)
+
+
+### Bug Fixes
+
+* **download:** Use proper error object when can't download sub ([091e2b6](https://github.com/Belphemur/AddictedProxy/commit/091e2b6f3197cab45b49fee5a956967992f85650))
+* **JsonSerialization:** Add missing type ([1c38ec4](https://github.com/Belphemur/AddictedProxy/commit/1c38ec448f6be055c430f534c12edaea0309e829))
+
 ## [2.17.0](https://github.com/Belphemur/AddictedProxy/compare/v2.16.6...v2.17.0) (2022-09-19)
 
 
