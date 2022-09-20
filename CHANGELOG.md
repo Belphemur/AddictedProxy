@@ -1,3 +1,10 @@
+## [2.17.2](https://github.com/Belphemur/AddictedProxy/compare/v2.17.1...v2.17.2) (2022-09-20)
+
+
+### Bug Fixes
+
+* **serialization:** Use context first than fallback to defaultJsonSerializer ([4900b04](https://github.com/Belphemur/AddictedProxy/commit/4900b0445038fd8f69c1b12611b4e1601ba799ef))
+
 ## [2.17.1](https://github.com/Belphemur/AddictedProxy/compare/v2.17.0...v2.17.1) (2022-09-20)
 
 
