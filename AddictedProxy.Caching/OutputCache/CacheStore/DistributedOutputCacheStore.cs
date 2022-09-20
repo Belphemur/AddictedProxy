@@ -8,46 +8,27 @@ public class DistributedOutputCacheStore : IOutputCacheStore
 {
     private readonly IDistributedCache _distributedCache;
 
+    private static string Key(string key) => $"Cache.{key}";
+
     public DistributedOutputCacheStore(IDistributedCache distributedCache)
     {
         _distributedCache = distributedCache;
     }
-
-    private static string TagKeyGeneration(string tag) => $"tag/{tag}/keys";
-
-    public async ValueTask EvictByTagAsync(string tag, CancellationToken cancellationToken)
+    public ValueTask EvictByTagAsync(string tag, CancellationToken cancellationToken)
     {
-        var tagKey = TagKeyGeneration(tag);
-        var serializedKeys = await _distributedCache.GetStringAsync(tagKey, cancellationToken) ?? "[]";
-        var keys = JsonSerializer.Deserialize<HashSet<string>>(serializedKeys)!;
-        foreach (var key in keys)
-        {
-            await _distributedCache.RemoveAsync(key, cancellationToken);
-        }
-
-        await _distributedCache.RemoveAsync(tagKey, cancellationToken);
+        return ValueTask.CompletedTask;
     }
 
     public async ValueTask<byte[]?> GetAsync(string key, CancellationToken cancellationToken)
     {
-        return await _distributedCache.GetAsync(key, cancellationToken);
+        return await _distributedCache.GetAsync(Key(key), cancellationToken);
     }
 
     public async ValueTask SetAsync(string key, byte[] value, string[]? tags, TimeSpan validFor, CancellationToken cancellationToken)
     {
-        await _distributedCache.SetAsync(key, value, new DistributedCacheEntryOptions
+        await _distributedCache.SetAsync(Key(key), value, new DistributedCacheEntryOptions
         {
             AbsoluteExpirationRelativeToNow = validFor
         }, cancellationToken);
-        
-        foreach (var tag in tags ?? Array.Empty<string>())
-        {
-            var tagKey = TagKeyGeneration(tag);
-            var serializedKeys = await _distributedCache.GetStringAsync(tagKey, cancellationToken) ?? "[]";
-            var keys = JsonSerializer.Deserialize<HashSet<string>>(serializedKeys)!;
-            keys.Add(key);
-
-            await _distributedCache.SetAsync(tagKey, JsonSerializer.SerializeToUtf8Bytes(keys), cancellationToken);
-        }
     }
 }
