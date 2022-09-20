@@ -76,7 +76,7 @@ public class SubtitlesController : Controller
     [Route("download/{subtitleId:guid}", Name = nameof(Routes.DownloadSubtitle))]
     [ProducesResponseType(200)]
     [ProducesResponseType(typeof(ErrorResponse), 400, "application/json")]
-    [ProducesResponseType(typeof(string), 429)]
+    [ProducesResponseType(typeof(ErrorResponse), 429)]
     [HttpGet]
     [OutputCache(PolicyName = nameof(PolicyEnum.Download))]
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 86400)]
@@ -103,7 +103,7 @@ public class SubtitlesController : Controller
         }
         catch (DownloadLimitExceededException e)
         {
-            return StatusCode(429, e.Message);
+            return StatusCode(429, new ErrorResponse(e.Message));
         }
     }
 

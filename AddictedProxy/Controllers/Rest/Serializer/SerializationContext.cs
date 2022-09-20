@@ -9,7 +9,6 @@ namespace AddictedProxy.Controllers.Rest.Serializer;
 [JsonSerializable(typeof(ErrorResponse))]
 [JsonSerializable(typeof(TopShowDto[]))]
 [JsonSerializable(typeof(ApplicationController.ApplicationInfoDto))]
-[JsonSerializable(typeof(Microsoft.AspNetCore.Mvc.ProblemDetails))]
 internal partial class SerializationContext : JsonSerializerContext
 {
     
