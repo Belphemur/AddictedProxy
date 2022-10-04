@@ -59,7 +59,7 @@ import { ShowDto } from "~/api/api";
 import { getName, getAll639_1 } from "all-iso-language-codes";
 import { SelectedShow } from "~/Dto/SelectedShow";
 import { api } from "~/composables/rest/api";
-import { mevent } from "~/composables/matomo/tracking";
+import { mevent } from "~/composables/matomo/event";
 
 const langs = getAll639_1().map((value) => {
   return { value: value, label: getName(value) };

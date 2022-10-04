@@ -63,7 +63,7 @@ import { EpisodeWithSubtitlesDto, SubtitleDto } from "~/api/api";
 import { ElMessage } from "element-plus";
 import { Download, Check } from "@element-plus/icons-vue";
 import { api } from "~/composables/rest/api";
-import { mevent } from "~/composables/matomo/tracking";
+import { mevent } from "~/composables/matomo/event";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto>;

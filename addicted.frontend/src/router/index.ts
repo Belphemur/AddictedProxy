@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import { Search, Collection, DataLine } from "@element-plus/icons-vue";
-import { mevent } from "~/composables/matomo/tracking";
+import { mevent } from "~/composables/matomo/event";
 
 const routes: Array<RouteRecordRaw> = [
   {
