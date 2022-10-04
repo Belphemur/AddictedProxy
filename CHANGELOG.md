@@ -1,3 +1,10 @@
+## [2.17.4](https://github.com/Belphemur/AddictedProxy/compare/v2.17.3...v2.17.4) (2022-10-04)
+
+
+### Performance improvements
+
+* **Tracing:** Add tracing in the front-end ([ff540f7](https://github.com/Belphemur/AddictedProxy/commit/ff540f783f16e23153ce0dbd19342675c899e769))
+
 ## [2.17.3](https://github.com/Belphemur/AddictedProxy/compare/v2.17.2...v2.17.3) (2022-09-20)
 
 
