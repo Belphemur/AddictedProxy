@@ -1,3 +1,10 @@
+## [2.17.6](https://github.com/Belphemur/AddictedProxy/compare/v2.17.5...v2.17.6) (2022-10-05)
+
+
+### Bug Fixes
+
+* **Sentry:** Be sure we have distributed tracing from the front-end ([143fd44](https://github.com/Belphemur/AddictedProxy/commit/143fd44f46dd5edc1fe992ba7fd83796db319559))
+
 ## [2.17.5](https://github.com/Belphemur/AddictedProxy/compare/v2.17.4...v2.17.5) (2022-10-05)
 
 
