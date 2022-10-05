@@ -1,3 +1,11 @@
+## [2.17.5](https://github.com/Belphemur/AddictedProxy/compare/v2.17.4...v2.17.5) (2022-10-05)
+
+
+### Bug Fixes
+
+* **CORS:** Let the main website have access to the api ([13e20b5](https://github.com/Belphemur/AddictedProxy/commit/13e20b5218b60cce3fe6c55e29ffedec58d65791))
+* **Jobs:** Fix issue with job crashing ([95e7f93](https://github.com/Belphemur/AddictedProxy/commit/95e7f9328ee1b32b856157e415f526250dd7524d))
+
 ## [2.17.4](https://github.com/Belphemur/AddictedProxy/compare/v2.17.3...v2.17.4) (2022-10-04)
 
 
