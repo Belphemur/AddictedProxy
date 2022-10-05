@@ -35,14 +35,15 @@ public class BootstrapController : IBootstrap, IBootstrapApp
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials()
-                .WithExposedHeaders("Content-Disposition");
+                .WithExposedHeaders("Content-Disposition")
+                .WithExposedHeaders("sentry-trace");
             if (app.ApplicationServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
             {
                 policyBuilder.SetIsOriginAllowed(_ => true);
             }
             else
             {
-                policyBuilder.SetIsOriginAllowed(hostname => hostname.EndsWith(".gestdown.info"));
+                policyBuilder.SetIsOriginAllowed(hostname => hostname.EndsWith(".gestdown.info") || hostname == "gestdown.info");
             }
         });
 
