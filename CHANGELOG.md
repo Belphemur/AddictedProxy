@@ -1,3 +1,10 @@
+## [2.17.7](https://github.com/Belphemur/AddictedProxy/compare/v2.17.6...v2.17.7) (2022-10-06)
+
+
+### Performance improvements
+
+* **Sentry:** Use proper project for it ([fe5bdc6](https://github.com/Belphemur/AddictedProxy/commit/fe5bdc641ebb7c30ee4324d3e485b1a188a8dbfa))
+
 ## [2.17.6](https://github.com/Belphemur/AddictedProxy/compare/v2.17.5...v2.17.6) (2022-10-05)
 
 
