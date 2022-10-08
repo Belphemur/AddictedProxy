@@ -48,4 +48,9 @@ public class TvShow : IDiscoverableObject
     /// Is the show completed. No more episode coming.
     /// </summary>
     public bool IsCompleted { get; set; }
+
+    /// <summary>
+    /// Is it a movie or a tv show
+    /// </summary>
+    public ShowType Type { get; set; } = ShowType.Show;
 }

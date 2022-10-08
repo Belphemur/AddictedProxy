@@ -53,7 +53,7 @@ public class TvShowRepository : ITvShowRepository
     {
         return _entityContext.TvShows.BulkMergeAsync(tvShows, options =>
         {
-            options.IgnoreOnMergeUpdateExpression = show => new { show.Discovered, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted };
+            options.IgnoreOnMergeUpdateExpression = show => new { show.Discovered, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted, show.Type };
             options.ColumnPrimaryKeyExpression = show => show.ExternalId;
         }, token);
     }
