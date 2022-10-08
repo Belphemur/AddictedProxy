@@ -1,3 +1,12 @@
+## [2.18.0](https://github.com/Belphemur/AddictedProxy/compare/v2.17.7...v2.18.0) (2022-10-08)
+
+
+### Features
+
+* **Show:** Add Type of Show ([e9a82bc](https://github.com/Belphemur/AddictedProxy/commit/e9a82bc0c4ade034516b5cf26e6bd0edcaa5247f))
+* **Show:** Check if they are movies ([c49c5a0](https://github.com/Belphemur/AddictedProxy/commit/c49c5a02114256310c9875efd46ceac9258ab470))
+* **TMDB:** Add search for movies ([ca59ce7](https://github.com/Belphemur/AddictedProxy/commit/ca59ce7d04840757141e64b0352eb1cd319921f8))
+
 ## [2.17.7](https://github.com/Belphemur/AddictedProxy/compare/v2.17.6...v2.17.7) (2022-10-06)
 
 
