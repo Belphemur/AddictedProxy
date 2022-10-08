@@ -1,7 +1,6 @@
-﻿// Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using TvMovieDatabaseClient.Model.Common;
 
 namespace TvMovieDatabaseClient.Model.Show;
 
@@ -21,15 +20,6 @@ public class CreatedBy
 
     [JsonPropertyName("profile_path")]
     public string ProfilePath { get; set; }
-}
-
-public class Genre
-{
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
 }
 
 public class Network
@@ -84,30 +74,6 @@ public class EpisodeData
 
     [JsonPropertyName("vote_count")]
     public int VoteCount { get; set; }
-}
-
-public class ProductionCompany
-{
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-
-    [JsonPropertyName("logo_path")]
-    public string LogoPath { get; set; }
-
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-
-    [JsonPropertyName("origin_country")]
-    public string OriginCountry { get; set; }
-}
-
-public class ProductionCountry
-{
-    [JsonPropertyName("iso_3166_1")]
-    public string Iso31661 { get; set; }
-
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
 }
 
 public class ShowDetails
@@ -231,16 +197,4 @@ public class Season
 
     [JsonPropertyName("season_number")]
     public int SeasonNumber { get; set; }
-}
-
-public class SpokenLanguage
-{
-    [JsonPropertyName("english_name")]
-    public string EnglishName { get; set; }
-
-    [JsonPropertyName("iso_639_1")]
-    public string Iso6391 { get; set; }
-
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
 }

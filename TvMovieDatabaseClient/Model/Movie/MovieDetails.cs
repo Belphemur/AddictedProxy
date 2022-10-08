@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using TvMovieDatabaseClient.Model.Common;
 
 namespace TvMovieDatabaseClient.Model.Movie;
 
-// Root myDeserializedClass = JsonSerializer.Deserialize<Root>(myJsonResponse);
 public class BelongsToCollection
 {
     [JsonPropertyName("id")]
@@ -17,39 +17,6 @@ public class BelongsToCollection
 
     [JsonPropertyName("backdrop_path")]
     public string BackdropPath { get; set; }
-}
-
-public class Genre
-{
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-}
-
-public class ProductionCompany
-{
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-
-    [JsonPropertyName("logo_path")]
-    public string LogoPath { get; set; }
-
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-
-    [JsonPropertyName("origin_country")]
-    public string OriginCountry { get; set; }
-}
-
-public class ProductionCountry
-{
-    [JsonPropertyName("iso_3166_1")]
-    public string Iso31661 { get; set; }
-
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
 }
 
 public class MovieDetails
@@ -109,7 +76,7 @@ public class MovieDetails
     public int Runtime { get; set; }
 
     [JsonPropertyName("spoken_languages")]
-    public List<SpokenLanguage> SpokenLanguages { get; set; }
+    public List<SpokenLanguage>? SpokenLanguages { get; set; }
 
     [JsonPropertyName("status")]
     public string Status { get; set; }
@@ -128,16 +95,4 @@ public class MovieDetails
 
     [JsonPropertyName("vote_count")]
     public int VoteCount { get; set; }
-}
-
-public class SpokenLanguage
-{
-    [JsonPropertyName("english_name")]
-    public string EnglishName { get; set; }
-
-    [JsonPropertyName("iso_639_1")]
-    public string Iso6391 { get; set; }
-
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
 }
