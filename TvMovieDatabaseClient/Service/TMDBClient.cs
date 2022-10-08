@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using TvMovieDatabaseClient.Bootstrap.EnvVar;
 using TvMovieDatabaseClient.Model;
-using TvMovieDatabaseClient.Model.Search;
+using TvMovieDatabaseClient.Model.Movie;
+using TvMovieDatabaseClient.Model.Movie.Search;
 using TvMovieDatabaseClient.Model.Show;
+using TvMovieDatabaseClient.Model.Show.Search;
 
 namespace TvMovieDatabaseClient.Service;
 
@@ -20,12 +25,18 @@ internal class TMDBClient : ITMDBClient
     private readonly HttpClient _httpClient;
     private readonly ILogger<TMDBClient> _logger;
 
+    private static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web)
+    {
+        TypeInfoResolver = JsonTypeInfoResolver.Combine(JsonContext.Default, new DefaultJsonTypeInfoResolver())
+    };
+
     public TMDBClient(TmdbConfig tmdbConfig, HttpClient httpClient, ILogger<TMDBClient> logger)
     {
         _tmdbConfig = tmdbConfig;
         _httpClient = httpClient;
         _logger = logger;
     }
+
 
     /// <summary>
     /// Get show details by Id
@@ -36,6 +47,23 @@ internal class TMDBClient : ITMDBClient
     public async Task<ShowDetails?> GetShowDetailsByIdAsync(int showId, CancellationToken token)
     {
         var request = PrepareRequest($"tv/{showId}", HttpMethod.Get);
+        return await GetDetails<ShowDetails>(request, token);
+    }
+
+    /// <summary>
+    /// Get movie details by Id
+    /// </summary>
+    /// <param name="showId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task<MovieDetails?> GetMovieDetailsByIdAsync(int showId, CancellationToken token)
+    {
+        var request = PrepareRequest($"movie/{showId}", HttpMethod.Get);
+        return await GetDetails<MovieDetails>(request, token);
+    }
+
+    private async Task<T?> GetDetails<T>(HttpRequestMessage request, CancellationToken token) where T : class
+    {
         var response = await _httpClient.SendAsync(request, token);
         if (!response.IsSuccessStatusCode)
         {
@@ -43,8 +71,9 @@ internal class TMDBClient : ITMDBClient
             return null;
         }
 
-        return await response.Content.ReadFromJsonAsync(JsonContext.Default.ShowDetails, cancellationToken: token);
+        return await response.Content.ReadFromJsonAsync<T?>(cancellationToken: token, options: JsonSerializerOptions);
     }
+
 
     /// <summary>
     /// Search for tv shows
@@ -52,14 +81,34 @@ internal class TMDBClient : ITMDBClient
     /// <param name="query">query to send</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public async IAsyncEnumerable<ShowSearchResult> SearchTvAsync(string query, CancellationToken token)
+    public IAsyncEnumerable<ShowSearchResult> SearchTvAsync(string query, CancellationToken token)
+    {
+        const string searchType = "tv";
+        return SearchAsync<ShowSearchResult>(searchType, query, token);
+    }
+
+    /// <summary>
+    /// Search for movie
+    /// </summary>
+    /// <param name="query">query to send</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public IAsyncEnumerable<MovieSearchResult> SearchMovieAsync(string query, CancellationToken token)
+    {
+        const string searchType = "movie";
+        return SearchAsync<MovieSearchResult>(searchType, query, token);
+    }
+
+
+    private async IAsyncEnumerable<T> SearchAsync<T>(string searchType, string query, [EnumeratorCancellation] CancellationToken token)
     {
         var page = 1;
         HttpResponseMessage response;
-        Pagination<ShowSearchResult>? results;
+        Pagination<T>? results;
+
         do
         {
-            var request = PrepareRequest("search/tv", HttpMethod.Get, new Dictionary<string, string>
+            var request = PrepareRequest($"search/{searchType}", HttpMethod.Get, new Dictionary<string, string>
             {
                 { "language", "en-US" },
                 { "page", page.ToString() },
@@ -72,7 +121,7 @@ internal class TMDBClient : ITMDBClient
                 yield break;
             }
 
-            results = await response.Content.ReadFromJsonAsync(JsonContext.Default.PaginationShowSearchResult, cancellationToken: token);
+            results = await response.Content.ReadFromJsonAsync<Pagination<T>>(cancellationToken: token, options: JsonSerializerOptions);
             if (results == null)
             {
                 _logger.LogWarning("Couldn't parse the JSON from TMDB: {request}", request.RequestUri);
