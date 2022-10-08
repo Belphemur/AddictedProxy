@@ -57,7 +57,11 @@ public class MapShowTmdbJob : IJob
                 await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
             }
         }
+        
+        _logger.LogInformation("Found TMDB info for {count} shows", count);
+        await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
 
+        count = 0;
         foreach (var show in mightBeMovie)
         {
             var result = await _tmdbClient.SearchMovieAsync(_nameCleaner.Replace(show.Name, ""), cancellationToken).FirstOrDefaultAsync(cancellationToken);
@@ -77,12 +81,12 @@ public class MapShowTmdbJob : IJob
             show.Type = ShowType.Movie;
             if (++count % 50 == 0)
             {
-                _logger.LogInformation("Found TMDB info for {count} shows", count);
+                _logger.LogInformation("Found TMDB info for {count} movies", count);
                 await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
             }
         }
 
-        _logger.LogInformation("Found TMDB info for {count} shows", count);
+        _logger.LogInformation("Found TMDB info for {count} movies", count);
         await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
     }
 

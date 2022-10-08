@@ -2,6 +2,7 @@
 
 using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Context;
+using AddictedProxy.Database.Model;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -95,6 +96,6 @@ public class TvShowRepository : ITvShowRepository
 
     public IAsyncEnumerable<TvShow> GetNonCompletedShows()
     {
-        return _entityContext.TvShows.Where(show => show.TmdbId.HasValue).Where(show => !show.IsCompleted).ToAsyncEnumerable();
+        return _entityContext.TvShows.Where(show => show.TmdbId.HasValue).Where(show => !show.IsCompleted).Where(show => show.Type == ShowType.Show).ToAsyncEnumerable();
     }
 }
