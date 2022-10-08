@@ -1,4 +1,6 @@
 ﻿using System.Text.RegularExpressions;
+using AddictedProxy.Database.Model;
+using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Job.Extensions;
 using Job.Scheduler.Job;
@@ -31,11 +33,13 @@ public class MapShowTmdbJob : IJob
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "map-tmdb-to-show");
 
         var count = 0;
+        List<TvShow> mightBeMovie = new();
         foreach (var show in await _tvShowRepository.GetShowWithoutTmdbIdAsync().ToArrayAsync(cancellationToken))
         {
             var result = await _tmdbClient.SearchTvAsync(_nameCleaner.Replace(show.Name, ""), cancellationToken).FirstOrDefaultAsync(cancellationToken);
             if (result == null)
             {
+                mightBeMovie.Add(show);
                 continue;
             }
 
@@ -47,6 +51,30 @@ public class MapShowTmdbJob : IJob
 
             show.TmdbId = details.Id;
             show.IsCompleted = details.Status == "Ended";
+            if (++count % 50 == 0)
+            {
+                _logger.LogInformation("Found TMDB info for {count} shows", count);
+                await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
+            }
+        }
+
+        foreach (var show in mightBeMovie)
+        {
+            var result = await _tmdbClient.SearchMovieAsync(_nameCleaner.Replace(show.Name, ""), cancellationToken).FirstOrDefaultAsync(cancellationToken);
+            if (result == null)
+            {
+                continue;
+            }
+
+            var details = await _tmdbClient.GetMovieDetailsByIdAsync(result.Id, cancellationToken);
+            if (details == null)
+            {
+                continue;
+            }
+
+            show.TmdbId = details.Id;
+            show.IsCompleted = true;
+            show.Type = ShowType.Movie;
             if (++count % 50 == 0)
             {
                 _logger.LogInformation("Found TMDB info for {count} shows", count);
