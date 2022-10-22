@@ -1,3 +1,15 @@
+## [2.18.1](https://github.com/Belphemur/AddictedProxy/compare/v2.18.0...v2.18.1) (2022-10-22)
+
+
+### Bug Fixes
+
+* **Show:** Fix search where we don't use everything from the route as the query ([5566472](https://github.com/Belphemur/AddictedProxy/commit/556647246e997c672cda7c4315bbb455564d4e29))
+
+
+### Performance improvements
+
+* **Caching:** Remove output cache from search show ([3ccdfcf](https://github.com/Belphemur/AddictedProxy/commit/3ccdfcf45ab5472d6fb551870a48b76e8ee5de4e))
+
 ## [2.18.0](https://github.com/Belphemur/AddictedProxy/compare/v2.17.7...v2.18.0) (2022-10-08)
 
 
