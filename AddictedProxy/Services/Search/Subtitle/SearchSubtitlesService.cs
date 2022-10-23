@@ -74,12 +74,13 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         var language = _cultureParser.FromString(request.LanguageIso);
         if (language == null)
         {
-            return Result<SubtitleFound>.Invalid(new AutoConstructedList<ValidationError>
+            return Result<SubtitleFound>.Invalid(new List<ValidationError>
             {
                 new()
                 {
                     Identifier = "language",
-                    ErrorMessage = $"Couldn't parse language {request.LanguageIso}"
+                    ErrorMessage = $"Couldn't parse language {request.LanguageIso}",
+                    Severity = ValidationSeverity.Error
                 }
             });
         }
