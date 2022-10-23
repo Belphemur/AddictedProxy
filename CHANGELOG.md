@@ -1,3 +1,16 @@
+## [2.18.2](https://github.com/Belphemur/AddictedProxy/compare/v2.18.1...v2.18.2) (2022-10-23)
+
+
+### Bug Fixes
+
+* **Search:** Add min length to search ([a4518fc](https://github.com/Belphemur/AddictedProxy/commit/a4518fc17d3246774a1ace6c31441f22d2990303))
+
+
+### Performance improvements
+
+* **Search:** Finish the refactoring for searching subtitles ([cc8dbf1](https://github.com/Belphemur/AddictedProxy/commit/cc8dbf1c02f48e77e531d548c60cda51435573eb))
+* **Subtitle::Search:** Add proper service to take care of searching for subtitles ([0a45e16](https://github.com/Belphemur/AddictedProxy/commit/0a45e169b593f23ad29594eb8a3c6c6b4b572e19))
+
 ## [2.18.1](https://github.com/Belphemur/AddictedProxy/compare/v2.18.0...v2.18.1) (2022-10-22)
 
 
