@@ -100,17 +100,17 @@ public class SearchSubtitlesService : ISearchSubtitlesService
             if (season == null && !_seasonRefresher.IsShowNeedsRefresh(show))
             {
                 _logger.LogInformation("Don't need to refresh seasons of show {show} returning empty data", show.Name);
-                return new SubtitleFound(ArraySegment<Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name));
+                return new SubtitleFound(ArraySegment<Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
             }
 
             if (season != null && !_episodeRefresher.IsSeasonNeedRefresh(show, season))
             {
                 _logger.LogInformation("Don't need to refresh episodes of {season} of show {show} returning empty data", request.Season, show.Name);
-                return new SubtitleFound(ArraySegment<Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name));
+                return new SubtitleFound(ArraySegment<Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
             }
 
             ScheduleJob(request, show);
-            return new SubtitleFound(ArraySegment<Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name));
+            return new SubtitleFound(ArraySegment<Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
         }
 
         var matchingSubtitles = FindMatchingSubtitles(request, episode).ToArray();
@@ -119,7 +119,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
             ScheduleJob(request, show);
         }
 
-        return new SubtitleFound(matchingSubtitles, new EpisodeDto(episode));
+        return new SubtitleFound(matchingSubtitles, new EpisodeDto(episode), language);
     }
 
     private IEnumerable<Subtitle> FindMatchingSubtitles(SearchPayload payload, Episode episode)

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using AddictedProxy.Caching.OutputCache.Configuration;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
@@ -9,7 +8,6 @@ using AddictedProxy.Services.Provider.Shows.Jobs;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Net.Http.Headers;
 
 namespace AddictedProxy.Controllers.Rest;
