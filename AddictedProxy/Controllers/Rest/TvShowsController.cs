@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using AddictedProxy.Caching.OutputCache.Configuration;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
@@ -9,7 +8,6 @@ using AddictedProxy.Services.Provider.Shows.Jobs;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Net.Http.Headers;
 
 namespace AddictedProxy.Controllers.Rest;
@@ -77,7 +75,7 @@ public class TvShowsController : Controller
     /// <param name="search">Name of the show to search for</param>
     /// <response code="200">Returns the matching shows</response>
     /// <response code="429">Reached the rate limiting of the endpoint</response>
-    [Route("search/{**search}")]
+    [Route("search/{**search:minlength(3)}")]
     [HttpGet]
     [ProducesResponseType(typeof(ShowSearchResponse), 200)]
     [ProducesResponseType(typeof(string), 429)]
