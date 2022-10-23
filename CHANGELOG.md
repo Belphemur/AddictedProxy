@@ -1,3 +1,10 @@
+## [2.18.3](https://github.com/Belphemur/AddictedProxy/compare/v2.18.2...v2.18.3) (2022-10-23)
+
+
+### Performance improvements
+
+* **Locking:** Replace underlying lib ([43d5c32](https://github.com/Belphemur/AddictedProxy/commit/43d5c32be752b74d10edd8654865570333a2d129))
+
 ## [2.18.2](https://github.com/Belphemur/AddictedProxy/compare/v2.18.1...v2.18.2) (2022-10-23)
 
 
