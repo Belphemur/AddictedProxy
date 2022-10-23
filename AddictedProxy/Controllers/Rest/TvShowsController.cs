@@ -77,7 +77,7 @@ public class TvShowsController : Controller
     /// <param name="search">Name of the show to search for</param>
     /// <response code="200">Returns the matching shows</response>
     /// <response code="429">Reached the rate limiting of the endpoint</response>
-    [Route("search/{**search}")]
+    [Route("search/{**search:minlength(3)}")]
     [HttpGet]
     [ProducesResponseType(typeof(ShowSearchResponse), 200)]
     [ProducesResponseType(typeof(string), 429)]
