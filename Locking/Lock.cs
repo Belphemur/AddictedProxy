@@ -1,13 +1,15 @@
 ﻿#region
 
-using KeyedSemaphores;
-
 #endregion
+
+using AsyncKeyedLock;
 
 namespace Locking;
 
 public static class Lock<T>
 {
+    private static readonly AsyncKeyedLocker<string> AsyncKeyedLocker = new();
+
     /// <summary>
     /// Get a named lock
     /// </summary>
@@ -15,7 +17,7 @@ public static class Lock<T>
     /// <returns></returns>
     public static ILockContainer GetNamedLock(string name)
     {
-        return new Container(KeyedSemaphore.Provide(GetLockKey(name)));
+        return new Container(AsyncKeyedLocker.SemaphoreSlims.GetOrAdd(GetLockKey(name)));
     }
 
     private static string GetLockKey(string key)
@@ -25,9 +27,9 @@ public static class Lock<T>
 
     private class Container : ILockContainer
     {
-        private readonly IKeyedSemaphore<string> _semaphore;
+        private readonly AsyncKeyedLockReferenceCounter<string> _semaphore;
 
-        public Container(IKeyedSemaphore<string> semaphore)
+        public Container(AsyncKeyedLockReferenceCounter<string> semaphore)
         {
             _semaphore = semaphore;
         }
@@ -40,12 +42,12 @@ public static class Lock<T>
         /// <returns>True if got the lock before <see cref="timeSpan"/> expires</returns>
         public Task<bool> WaitAsync(TimeSpan timeSpan, CancellationToken token)
         {
-            return _semaphore.WaitAsync(timeSpan, token);
+            return _semaphore.SemaphoreSlim.WaitAsync(timeSpan, token);
         }
 
         public void Dispose()
         {
-            _semaphore.Dispose();
+            _semaphore.Releaser.Dispose();
         }
     }
 }
