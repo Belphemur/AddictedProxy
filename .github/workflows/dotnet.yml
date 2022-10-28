@@ -49,7 +49,7 @@ jobs:
             node:
               - 'package.json'
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3.0.2
+        uses: actions/setup-dotnet@v3.0.3
         if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
         with:
           dotnet-version: ${{ env.DOTNET }}
