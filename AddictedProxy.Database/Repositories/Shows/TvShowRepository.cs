@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model;
@@ -25,6 +26,7 @@ public class TvShowRepository : ITvShowRepository
     }
 
 
+    [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
     public async IAsyncEnumerable<TvShow> FindAsync(string name, [EnumeratorCancellation] CancellationToken token)
     {
         _logger.LogInformation("Looking for show: {show}", name);

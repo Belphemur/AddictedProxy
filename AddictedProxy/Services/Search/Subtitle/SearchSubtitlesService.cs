@@ -63,6 +63,12 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         return show == null ? Result.NotFound($"Couldn't find show {showName}") : show;
     }
 
+    public async Task<Result<TvShow>> GetByShowUniqueIdAsync(Guid showUniqueId, CancellationToken token)
+    {
+        var show = await _showRefresher.GetShowByGuidAsync(showUniqueId, token);
+        return show == null ? Result.NotFound($"Couldn't find show {showUniqueId}") : show;
+    }
+
     /// <summary>
     /// Find subtitles
     /// </summary>
