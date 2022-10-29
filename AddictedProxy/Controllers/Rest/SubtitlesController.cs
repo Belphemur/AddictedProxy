@@ -1,8 +1,10 @@
 ﻿#region
 
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using AddictedProxy.Caching.OutputCache.Configuration;
+using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
 using AddictedProxy.Model.Search;
@@ -115,16 +117,18 @@ public class SubtitlesController : Controller
         var episode = int.Parse(match.Groups["episode"].Value);
         var season = int.Parse(match.Groups["season"].Value);
         var lang = request.Language;
-
-
-        return await SearchSubtitles(show, episode, season, lang, token);
-    }
-
-    private async Task<ActionResult<SubtitleSearchResponse>> SearchSubtitles(string show, int episode, int season, string lang, CancellationToken token)
-    {
+        
         var findShow = await _searchSubtitlesService.FindShowAsync(show, token);
 
-        if (!findShow.IsSuccess)
+        return await SearchSubtitles(findShow, episode, season, lang, token);
+    }
+
+
+
+    [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
+    private async Task<ActionResult<SubtitleSearchResponse>> SearchSubtitles(Result<TvShow> showResult, int episode, int season, string lang, CancellationToken token)
+    {
+        if (!showResult.IsSuccess)
         {
             Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
             {
@@ -134,7 +138,7 @@ public class SubtitlesController : Controller
         }
 
         var response =
-            await findShow
+            await showResult
                   .MapAsync(tvShow => _searchSubtitlesService.FindSubtitlesAsync(new SearchPayload(tvShow, episode, season, lang, null), token))
                   .MapAsync(found =>
                   {
@@ -178,7 +182,24 @@ public class SubtitlesController : Controller
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
     public async Task<ActionResult<SubtitleSearchResponse>> Find(string language, string show, int season, int episode, CancellationToken token)
     {
-        return await SearchSubtitles(show, episode, season, language, token);
+        var findShow = await _searchSubtitlesService.FindShowAsync(show, token);
+
+        return await SearchSubtitles(findShow, episode, season, language, token);
+    }
+    
+    [Route("get/{showUniqueId:guid}/{season:int:min(0)}/{episode:int:min(0)}/{language:alpha}")]
+    [HttpGet]
+    [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
+    [ProducesResponseType(typeof(ErrorResponse), 404)]
+    [ProducesResponseType(typeof(WrongFormatResponse), 400)]
+    [ProducesResponseType(typeof(string), 429)]
+    [Produces("application/json")]
+    [OutputCache(PolicyName = nameof(PolicyEnum.Shows))]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
+    public async Task<ActionResult<SubtitleSearchResponse>> GetSubtitles(string language, Guid showUniqueId, int season, int episode, CancellationToken token)
+    {
+        var findShow = await _searchSubtitlesService.GetByShowUniqueIdAsync(showUniqueId, token);
+        return await SearchSubtitles(findShow, episode, season, language, token);
     }
 
     /// <summary>
