@@ -1,3 +1,10 @@
+## [2.19.0](https://github.com/Belphemur/AddictedProxy/compare/v2.18.3...v2.19.0) (2022-10-29)
+
+
+### Features
+
+* **Subtitles:** Get subtitles using show Unique ID ([af803b2](https://github.com/Belphemur/AddictedProxy/commit/af803b2b2c9e3f5050216399b368a980c4c334fc))
+
 ## [2.18.3](https://github.com/Belphemur/AddictedProxy/compare/v2.18.2...v2.18.3) (2022-10-23)
 
 
