@@ -55,8 +55,6 @@
 
 <script setup lang="ts">
 import { defineProps, ref } from "vue";
-import { createWriteStream } from "streamsaver";
-import streamSaver from "streamsaver";
 import HearingOffIcon from "vue-material-design-icons/EarHearingOff.vue";
 
 import { EpisodeWithSubtitlesDto, SubtitleDto } from "~/api/api";
@@ -70,8 +68,6 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-// eslint-disable-next-line no-import-assign,@typescript-eslint/no-unused-vars
-streamSaver.mitm = "/mitm.html";
 
 const currentlyDownloading = ref<Map<string, boolean>>(new Map());
 const downloadSubtitle = async (sub: SubtitleDto) => {
@@ -81,36 +77,23 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
     message: "Subtitle download started ... It might take a moment.",
     type: "success",
   });
-  const response = await api.subtitles.downloadSubtitle(sub.subtitleId!);
-  const header = response.headers.get("Content-Disposition");
-  const parts = header!.split(";");
-  const filename = parts[1].split("=")[1] ?? "sub.srt";
-
-  const fileStream = createWriteStream(filename);
-  const readableStream = response.body;
-
   const UpdateDownloaded = () => {
     sub.downloadCount!++;
     currentlyDownloading.value.delete(sub.subtitleId!);
   };
 
-  // More optimized
-  if (window.WritableStream && readableStream?.pipeTo) {
-    return readableStream.pipeTo(fileStream).then(UpdateDownloaded);
-  }
+  const response = await api.subtitles.downloadSubtitle(sub.subtitleId!);
+  const header = response.headers.get("Content-Disposition");
+  const parts = header!.split(";");
+  const filename = parts[1].split("=")[1] ?? "sub.srt";
 
-  const writer = fileStream.getWriter();
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(await response.blob());
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
 
-  const reader = response!.body!.getReader();
-  const pump = (): unknown =>
-    reader
-      .read()
-      .then((res) =>
-        res.done ? writer.close() : writer.write(res.value).then(pump)
-      )
-      .then(UpdateDownloaded);
-
-  await pump();
+  UpdateDownloaded();
 };
 </script>
 <style scoped>

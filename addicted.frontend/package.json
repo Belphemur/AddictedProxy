@@ -20,7 +20,6 @@
     "core-js": "^3.26.0",
     "element-plus": "^2.2.19",
     "lodash": "^4.17.21",
-    "streamsaver": "^2.0.6",
     "swagger-ui-dist": "^4.15.2",
     "url": "^0.11.0",
     "vue": "^3.2.41",

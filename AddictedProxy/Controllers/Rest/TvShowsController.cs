@@ -49,28 +49,6 @@ public class TvShowsController : Controller
     /// <summary>
     /// Search shows that contains the given query
     /// </summary>
-    /// <param name="showSearch"></param>
-    /// <param name="cancellationToken"></param>
-    /// <response code="200">Returns the matching shows</response>
-    /// <response code="429">Reached the rate limiting of the endpoint</response>
-    [Route("search")]
-    [HttpPost]
-    [ProducesResponseType(typeof(ShowSearchResponse), 200)]
-    [ProducesResponseType(typeof(string), 429)]
-    [Produces("application/json")]
-    [ProducesResponseType(typeof(ShowSearchResponse), 200)]
-    public Task<IActionResult> Search([FromBody] ShowSearchRequest showSearch, CancellationToken cancellationToken)
-    {
-        return Task.FromResult<IActionResult>(Ok(new ShowSearchResponse(
-                _showRefresher.FindShowsAsync(showSearch.Query.Trim(), cancellationToken)
-                              .Select(show => new ShowDto(show))
-            )
-        ));
-    }
-
-    /// <summary>
-    /// Search shows that contains the given query
-    /// </summary>
     /// <param name="cancellationToken"></param>
     /// <param name="search">Name of the show to search for</param>
     /// <response code="200">Returns the matching shows</response>
@@ -82,7 +60,7 @@ public class TvShowsController : Controller
     [ProducesResponseType(typeof(string), 404)]
     [Produces("application/json")]
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
-    public async Task<IActionResult> SearchGet(string search, CancellationToken cancellationToken)
+    public async Task<IActionResult> Search(string search, CancellationToken cancellationToken)
     {
         var shows = await _showRefresher.FindShowsAsync(search.Trim(), cancellationToken)
                                         .Select(show => new ShowDto(show))
