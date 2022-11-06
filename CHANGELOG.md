@@ -1,3 +1,17 @@
+## [2.19.4](https://github.com/Belphemur/AddictedProxy/compare/v2.19.3...v2.19.4) (2022-11-06)
+
+
+### Bug Fixes
+
+* **Outputcache:** Remove output cache for subtitles ([73b6651](https://github.com/Belphemur/AddictedProxy/commit/73b665148a60e69e065189c1fef38977d89a30de))
+* **Subtitle::Download:** Fix UI download subtitle. ([9de7a36](https://github.com/Belphemur/AddictedProxy/commit/9de7a3634eaaae1226a09a19120ed9069767a22b))
+
+
+### Performance improvements
+
+* **Find:** Deprecate endpoint ([af58ec3](https://github.com/Belphemur/AddictedProxy/commit/af58ec3239c80a52528e1000836fbffe9f010695))
+* **Search:** Remove old post api for show search ([66e00b3](https://github.com/Belphemur/AddictedProxy/commit/66e00b3545f051005daa5b7fdfef39f3cfa73d5f))
+
 ## [2.19.3](https://github.com/Belphemur/AddictedProxy/compare/v2.19.2...v2.19.3) (2022-11-06)
 
 
