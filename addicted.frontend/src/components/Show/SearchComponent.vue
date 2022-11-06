@@ -86,7 +86,7 @@ const querySearch = async (query: string, cb: (param: unknown) => void) => {
     return;
   }
   mevent("show-search", { query: query });
-  const searchResponse = await api.shows.searchCreate({ query: query });
+  const searchResponse = await api.shows.searchDetail(query);
   cb(searchResponse.data.shows);
 };
 

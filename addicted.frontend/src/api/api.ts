@@ -133,15 +133,6 @@ export interface ShowDto {
   seasons: number[];
 }
 
-/** Search for a specific show */
-export interface ShowSearchRequest {
-  /**
-   * Name of the show you're looking for
-   * @example "Wellington"
-   */
-  query?: string | null;
-}
-
 export interface ShowSearchResponse {
   shows?: ShowDto[] | null;
 }
@@ -260,7 +251,7 @@ export enum ContentType {
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = "https://api.gestdown.info";
+  public baseUrl: string = "";
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
@@ -426,8 +417,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Gestdown: Addicted Proxy
- * @version 2.19.3
- * @baseUrl https://api.gestdown.info
+ * @version 2.19.2
  *
  * Provide a full api to search and download subtitles from Addic7ed website.
  */
@@ -554,24 +544,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
   };
   shows = {
-    /**
-     * No description
-     *
-     * @tags TvShows
-     * @name SearchCreate
-     * @summary Search shows that contains the given query
-     * @request POST:/shows/search
-     */
-    searchCreate: (data: ShowSearchRequest, params: RequestParams = {}) =>
-      this.request<ShowSearchResponse, string>({
-        path: `/shows/search`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
     /**
      * No description
      *
