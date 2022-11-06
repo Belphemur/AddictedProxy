@@ -213,7 +213,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: NEW_RELIC_KEY=LICENSE_KEY
+          build-args: NEW_RELIC_KEY=$LICENSE_KEY
       
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
