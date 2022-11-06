@@ -178,13 +178,28 @@ public class SubtitlesController : Controller
     [Produces("application/json")]
     [OutputCache(PolicyName = nameof(PolicyEnum.Shows))]
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
+    [Obsolete("Use " + nameof(GetSubtitles))]
     public async Task<ActionResult<SubtitleSearchResponse>> Find(string language, string show, int season, int episode, CancellationToken token)
     {
         var findShow = await _searchSubtitlesService.FindShowAsync(show, token);
 
         return await SearchSubtitles(findShow, episode, season, language, token);
     }
-
+    
+    /// <summary>
+    /// Get subtitles for an episode of a given show in the wanted language
+    /// </summary>
+    /// <param name="language">Language to search for</param>
+    /// <param name="episode">Episode number to look for</param>
+    /// <param name="token"></param>
+    /// <param name="showUniqueId">Name of the show</param>
+    /// <param name="season">Season number to look for</param>
+    /// <returns></returns>
+    /// <response code="200">Returns the matching subtitles</response>
+    /// <response code="404">Couldn't find the show or its season/episode</response>
+    /// <response code="400">Doesn't follow the right format for the search: Show S00E00</response>
+    /// <response code="429">Reached the rate limiting of the endpoint</response>
+    /// <response code="423">Refreshing the show, currently don't have data, try again later</response>
     [Route("get/{showUniqueId:guid}/{season:int:min(0)}/{episode:int:min(0)}/{language:alpha}")]
     [HttpGet]
     [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
