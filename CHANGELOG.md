@@ -1,3 +1,10 @@
+## [2.19.5](https://github.com/Belphemur/AddictedProxy/compare/v2.19.4...v2.19.5) (2022-11-06)
+
+
+### Performance improvements
+
+* **Transaction:** Add new relic transaction ([8d1bcf7](https://github.com/Belphemur/AddictedProxy/commit/8d1bcf794c17d9f8f7d14525a5298589e3fad056))
+
 ## [2.19.4](https://github.com/Belphemur/AddictedProxy/compare/v2.19.3...v2.19.4) (2022-11-06)
 
 
