@@ -11,6 +11,7 @@ using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
 using Locking;
+using NewRelic.Api.Agent;
 using Polly.Contrib.WaitAndRetry;
 using Sentry;
 using Sentry.Performance.Model;
@@ -66,6 +67,7 @@ public class FetchSubtitlesJob : IQueueJob
         return (_show = await _tvShowRepository.GetByIdAsync(Data.ShowId, token)) ?? throw new InvalidOperationException($"Expected to find show {Data.ShowId} in db.");
     }
 
+    [Transaction(Web = false)]
     public async Task ExecuteAsync(CancellationToken token)
     {
         var show = await GetShow(token);
