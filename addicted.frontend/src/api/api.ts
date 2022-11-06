@@ -513,6 +513,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name FindDetail
      * @summary Find specific episode (same as search but easily cacheable)
      * @request GET:/subtitles/find/{language}/{show}/{season}/{episode}
+     * @deprecated
      */
     findDetail: (language: string, show: string, season: number, episode: number, params: RequestParams = {}) =>
       this.request<SubtitleSearchResponse, WrongFormatResponse | ErrorResponse | string>({
@@ -527,6 +528,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags Subtitles
      * @name GetSubtitles
+     * @summary Get subtitles for an episode of a given show in the wanted language
      * @request GET:/subtitles/get/{showUniqueId}/{season}/{episode}/{language}
      */
     getSubtitles: (
@@ -536,7 +538,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       episode: number,
       params: RequestParams = {},
     ) =>
-      this.request<SubtitleSearchResponse, WrongFormatResponse | ErrorResponse | string>({
+      this.request<SubtitleSearchResponse, WrongFormatResponse | ErrorResponse | void | string>({
         path: `/subtitles/get/${showUniqueId}/${season}/${episode}/${language}`,
         method: "GET",
         format: "json",
