@@ -55,8 +55,7 @@ public class SubtitlesController : Controller
     [ProducesResponseType(typeof(ErrorResponse), 400, "application/json")]
     [ProducesResponseType(typeof(ErrorResponse), 429)]
     [HttpGet]
-    [OutputCache(PolicyName = nameof(PolicyEnum.Download))]
-    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 86400)]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 8 * 86400)]
     public async Task<IActionResult> Download([FromRoute] Guid subtitleId, CancellationToken token)
     {
         try
@@ -117,12 +116,11 @@ public class SubtitlesController : Controller
         var episode = int.Parse(match.Groups["episode"].Value);
         var season = int.Parse(match.Groups["season"].Value);
         var lang = request.Language;
-        
+
         var findShow = await _searchSubtitlesService.FindShowAsync(show, token);
 
         return await SearchSubtitles(findShow, episode, season, lang, token);
     }
-
 
 
     [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
@@ -186,7 +184,7 @@ public class SubtitlesController : Controller
 
         return await SearchSubtitles(findShow, episode, season, language, token);
     }
-    
+
     [Route("get/{showUniqueId:guid}/{season:int:min(0)}/{episode:int:min(0)}/{language:alpha}")]
     [HttpGet]
     [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
