@@ -1,3 +1,11 @@
+## [2.19.1](https://github.com/Belphemur/AddictedProxy/compare/v2.19.0...v2.19.1) (2022-11-06)
+
+
+### Performance improvements
+
+* **APM:** Add new relic ([2f0957c](https://github.com/Belphemur/AddictedProxy/commit/2f0957cbc76a853f29ba15465823d80b62204033))
+* **APM:** Add new relic front-end ([e97db8d](https://github.com/Belphemur/AddictedProxy/commit/e97db8d98547d821fe06145a1614d42e29327561))
+
 ## [2.19.0](https://github.com/Belphemur/AddictedProxy/compare/v2.18.3...v2.19.0) (2022-10-29)
 
 
