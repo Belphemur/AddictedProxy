@@ -12,14 +12,13 @@
 export interface ApplicationInfoDto {
   /**
    * Version of the application
-   * @example 2.9.5
+   * @minLength 1
+   * @example "2.9.5"
    */
   applicationVersion: string;
 }
 
-/**
- * Episode information
- */
+/** Episode information */
 export interface EpisodeDto {
   /**
    * Season of the episode
@@ -27,30 +26,28 @@ export interface EpisodeDto {
    * @example 1
    */
   season: number;
-
   /**
    * Number of the episode
    * @format int32
    * @example 1
    */
   number: number;
-
   /**
    * Title of the episode
-   * @example Demon Girl
+   * @minLength 1
+   * @example "Demon Girl"
    */
   title: string;
-
   /**
    * For which show
-   * @example Wellington Paranormal
+   * @minLength 1
+   * @example "Wellington Paranormal"
    */
   show: string;
-
   /**
    * When was the Episode discovered
    * @format date-time
-   * @example 2022-04-02T05:16:45.3996669
+   * @example "2022-04-02T05:16:45.3996669"
    */
   discovered: string;
 }
@@ -62,85 +59,73 @@ export interface EpisodeWithSubtitlesDto {
    * @example 1
    */
   season: number;
-
   /**
    * Number of the episode
    * @format int32
    * @example 1
    */
   number: number;
-
   /**
    * Title of the episode
-   * @example Demon Girl
+   * @minLength 1
+   * @example "Demon Girl"
    */
   title: string;
-
   /**
    * For which show
-   * @example Wellington Paranormal
+   * @minLength 1
+   * @example "Wellington Paranormal"
    */
   show: string;
-
   /**
    * When was the Episode discovered
    * @format date-time
-   * @example 2022-04-02T05:16:45.3996669
+   * @example "2022-04-02T05:16:45.3996669"
    */
   discovered: string;
-
   /** Subtitles for this episode */
   subtitles?: SubtitleDto[] | null;
 }
 
-/**
- * Returns when there is an error
- */
+/** Returns when there is an error */
 export interface ErrorResponse {
   error?: string | null;
 }
 
-/**
- * Use for the website to provide easy search for the user
- */
+/** Use for the website to provide easy search for the user */
 export interface SearchRequest {
   /**
    * Search for specific subtitle
-   * @example Wellington Paranormal S01E05
+   * @example "Wellington Paranormal S01E05"
    */
   search?: string | null;
-
   /**
    * Language of the subtitle
-   * @example English
+   * @example "English"
    */
   language?: string | null;
 }
 
-/**
- * Represent the information relating to a show
- */
+/** Represent the information relating to a show */
 export interface ShowDto {
   /**
    * Unique ID of the show
    * @format uuid
-   * @example E9C1FA23-55AF-4711-8E34-3B31E2A75533
+   * @example "E9C1FA23-55AF-4711-8E34-3B31E2A75533"
    */
   id: string;
-
   /**
    * Name of the show
-   * @example Wellington Paranormal
+   * @minLength 1
+   * @example "Wellington Paranormal"
    */
   name: string;
-
   /**
    * How many season the show has
    * @format int32
    * @example 5
    */
   nbSeasons: number;
-
   /**
    * Seasons available
    * @example [2,3,4,5,6]
@@ -148,13 +133,11 @@ export interface ShowDto {
   seasons: number[];
 }
 
-/**
- * Search for a specific show
- */
+/** Search for a specific show */
 export interface ShowSearchRequest {
   /**
    * Name of the show you're looking for
-   * @example Wellington
+   * @example "Wellington"
    */
   query?: string | null;
 }
@@ -166,39 +149,38 @@ export interface ShowSearchResponse {
 export interface SubtitleDto {
   /**
    * Unique Id of the subtitle
-   * @example 1086727A-EB71-4B24-A209-7CF22374574D
+   * @minLength 1
+   * @example "1086727A-EB71-4B24-A209-7CF22374574D"
    */
   subtitleId: string;
-
   /**
    * Version of the subtitle
-   * @example HDTV
+   * @minLength 1
+   * @example "HDTV"
    */
   version: string;
   completed: boolean;
   hearingImpaired: boolean;
   corrected: boolean;
   hd: boolean;
-
   /**
    * Url to download the subtitle
-   * @example /download/1086727A-EB71-4B24-A209-7CF22374574D
+   * @minLength 1
+   * @example "/download/1086727A-EB71-4B24-A209-7CF22374574D"
    */
   downloadUri: string;
-
   /**
    * Language of the subtitle (in English)
-   * @example English
+   * @minLength 1
+   * @example "English"
    */
   language: string;
-
   /**
    * When was the subtitle discovered in UTC
    * @format date-time
-   * @example 2022-04-02T05:16:45.4001274
+   * @example "2022-04-02T05:16:45.4001274"
    */
   discovered: string;
-
   /**
    * Number of times the subtitle was downloaded from the proxy
    * @format int64
@@ -210,7 +192,6 @@ export interface SubtitleDto {
 export interface SubtitleSearchResponse {
   /** Matching subtitle for the filename and language */
   matchingSubtitles?: SubtitleDto[] | null;
-
   /** Episode information */
   episode?: EpisodeDto;
 }
@@ -218,7 +199,6 @@ export interface SubtitleSearchResponse {
 export interface TopShowDto {
   /** Represent the information relating to a show */
   show?: ShowDto;
-
   /** @format int64 */
   popularity?: number;
 }
@@ -228,9 +208,7 @@ export interface TvShowSubtitleResponse {
   episodes?: EpisodeWithSubtitlesDto[] | null;
 }
 
-/**
- * Returned when the search wasn't formatted properly
- */
+/** Returned when the search wasn't formatted properly */
 export interface WrongFormatResponse {
   error?: string | null;
   search?: string | null;
@@ -278,10 +256,11 @@ export enum ContentType {
   Json = "application/json",
   FormData = "multipart/form-data",
   UrlEncoded = "application/x-www-form-urlencoded",
+  Text = "text/plain",
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = "";
+  public baseUrl: string = "https://api.gestdown.info";
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
@@ -302,16 +281,16 @@ export class HttpClient<SecurityDataType = unknown> {
     this.securityData = data;
   };
 
-  private encodeQueryParam(key: string, value: any) {
+  protected encodeQueryParam(key: string, value: any) {
     const encodedKey = encodeURIComponent(key);
     return `${encodedKey}=${encodeURIComponent(typeof value === "number" ? value : `${value}`)}`;
   }
 
-  private addQueryParam(query: QueryParamsType, key: string) {
+  protected addQueryParam(query: QueryParamsType, key: string) {
     return this.encodeQueryParam(key, query[key]);
   }
 
-  private addArrayQueryParam(query: QueryParamsType, key: string) {
+  protected addArrayQueryParam(query: QueryParamsType, key: string) {
     const value = query[key];
     return value.map((v: any) => this.encodeQueryParam(key, v)).join("&");
   }
@@ -332,6 +311,7 @@ export class HttpClient<SecurityDataType = unknown> {
   private contentFormatters: Record<ContentType, (input: any) => any> = {
     [ContentType.Json]: (input: any) =>
       input !== null && (typeof input === "object" || typeof input === "string") ? JSON.stringify(input) : input,
+    [ContentType.Text]: (input: any) => (input !== null && typeof input !== "string" ? JSON.stringify(input) : input),
     [ContentType.FormData]: (input: any) =>
       Object.keys(input || {}).reduce((formData, key) => {
         const property = input[key];
@@ -348,7 +328,7 @@ export class HttpClient<SecurityDataType = unknown> {
     [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
   };
 
-  private mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
+  protected mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
     return {
       ...this.baseApiParams,
       ...params1,
@@ -361,7 +341,7 @@ export class HttpClient<SecurityDataType = unknown> {
     };
   }
 
-  private createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
+  protected createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
     if (this.abortControllers.has(cancelToken)) {
       const abortController = this.abortControllers.get(cancelToken);
       if (abortController) {
@@ -408,10 +388,10 @@ export class HttpClient<SecurityDataType = unknown> {
     return this.customFetch(`${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`, {
       ...requestParams,
       headers: {
-        ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
         ...(requestParams.headers || {}),
+        ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
       },
-      signal: cancelToken ? this.createAbortSignal(cancelToken) : void 0,
+      signal: cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal,
       body: typeof body === "undefined" || body === null ? null : payloadFormatter(body),
     }).then(async (response) => {
       const r = response as HttpResponse<T, E>;
@@ -446,7 +426,8 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Gestdown: Addicted Proxy
- * @version 2.16.0
+ * @version 2.19.3
+ * @baseUrl https://api.gestdown.info
  *
  * Provide a full api to search and download subtitles from Addic7ed website.
  */
@@ -511,7 +492,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/subtitles/download/{subtitleId}
      */
     downloadSubtitle: (subtitleId: string, params: RequestParams = {}) =>
-      this.request<void, void | string>({
+      this.request<void, void | ErrorResponse>({
         path: `/subtitles/download/${subtitleId}`,
         method: "GET",
         ...params,
@@ -546,6 +527,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     findDetail: (language: string, show: string, season: number, episode: number, params: RequestParams = {}) =>
       this.request<SubtitleSearchResponse, WrongFormatResponse | ErrorResponse | string>({
         path: `/subtitles/find/${language}/${show}/${season}/${episode}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Subtitles
+     * @name GetSubtitles
+     * @request GET:/subtitles/get/{showUniqueId}/{season}/{episode}/{language}
+     */
+    getSubtitles: (
+      language: string,
+      showUniqueId: string,
+      season: number,
+      episode: number,
+      params: RequestParams = {},
+    ) =>
+      this.request<SubtitleSearchResponse, WrongFormatResponse | ErrorResponse | string>({
+        path: `/subtitles/get/${showUniqueId}/${season}/${episode}/${language}`,
         method: "GET",
         format: "json",
         ...params,
