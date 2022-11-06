@@ -1,3 +1,10 @@
+## [2.19.3](https://github.com/Belphemur/AddictedProxy/compare/v2.19.2...v2.19.3) (2022-11-06)
+
+
+### Bug Fixes
+
+* **APM:** new relic license key ([ee73f8a](https://github.com/Belphemur/AddictedProxy/commit/ee73f8a926241010b6f52f956dadbb3724623820))
+
 ## [2.19.2](https://github.com/Belphemur/AddictedProxy/compare/v2.19.1...v2.19.2) (2022-11-06)
 
 
