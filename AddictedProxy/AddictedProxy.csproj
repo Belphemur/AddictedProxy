@@ -11,7 +11,7 @@
         <PackageReference Include="Ardalis.Result.AspNetCore" Version="4.1.0" />
         <PackageReference Include="AspNetCoreRateLimit" Version="4.0.2" />
         <PackageReference Include="Job.Scheduler.AspNetCore" Version="3.0.2" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0-rc.2.22472.3" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0" />
         <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
         <PackageReference Include="Sentry.AspNetCore" Version="3.23.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
