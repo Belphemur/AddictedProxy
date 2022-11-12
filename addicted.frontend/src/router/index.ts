@@ -82,7 +82,7 @@ const router = createRouter({
   history: createWebHistory("/"),
   routes,
   scrollBehavior() {
-    document.getElementById("app").scrollIntoView({ behavior: "smooth" });
+    document.getElementById("app")?.scrollIntoView({ behavior: "smooth" });
   },
 });
 
