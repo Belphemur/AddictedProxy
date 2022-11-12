@@ -35,7 +35,7 @@ Sentry.init({
       // content through to `maskTextFn` before sending to server.
       //
       // Defaults to true, uncomment to change
-      // maskAllText: true,
+       maskAllText: false,
 
       // Block all media elements (img, svg, video, object,
       // picture, embed, map, audio)
