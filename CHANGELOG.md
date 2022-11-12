@@ -1,3 +1,10 @@
+## [2.19.6](https://github.com/Belphemur/AddictedProxy/compare/v2.19.5...v2.19.6) (2022-11-12)
+
+
+### Performance improvements
+
+* **Deps:** Update deps ([2caa806](https://github.com/Belphemur/AddictedProxy/commit/2caa806fda164c280f8c56a9a71b23b55d7c5ff9))
+
 ## [2.19.5](https://github.com/Belphemur/AddictedProxy/compare/v2.19.4...v2.19.5) (2022-11-06)
 
 
