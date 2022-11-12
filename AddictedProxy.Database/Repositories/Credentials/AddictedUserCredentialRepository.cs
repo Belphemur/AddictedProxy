@@ -79,6 +79,6 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
 
     public async Task SaveChangesAsync(CancellationToken token)
     {
-        await _context.BulkSaveChangesAsync(token);
+        await _context.SaveChangesAsync(token);
     }
 }
