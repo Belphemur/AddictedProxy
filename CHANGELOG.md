@@ -1,3 +1,17 @@
+## [2.19.7](https://github.com/Belphemur/AddictedProxy/compare/v2.19.6...v2.19.7) (2022-11-12)
+
+
+### Bug Fixes
+
+* **Creds:** Fix method use to save changes ([89ad1ab](https://github.com/Belphemur/AddictedProxy/commit/89ad1ab6ee09115bdd19a2be7e52964c0c9fdcf6))
+* **EntityFramework:** Fix Bulk lib ([1baad3d](https://github.com/Belphemur/AddictedProxy/commit/1baad3d578598c09b1d59dca14387c9ba5ac85f3))
+
+
+### Performance improvements
+
+* **sentry:** Add session replay ([8d1d9a5](https://github.com/Belphemur/AddictedProxy/commit/8d1d9a5d83bf646b3f9b475a2fc1b117e535a007))
+* **Sentry:** Session replay keep text ([c46c286](https://github.com/Belphemur/AddictedProxy/commit/c46c28644cfb4928145c0653241ed0c57f2410c6))
+
 ## [2.19.6](https://github.com/Belphemur/AddictedProxy/compare/v2.19.5...v2.19.6) (2022-11-12)
 
 
