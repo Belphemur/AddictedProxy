@@ -12,6 +12,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",
     "@microsoft/signalr": "^7.0.0",
+    "@sentry/replay": "^0.6.13",
     "@sentry/tracing": "^7.19.0",
     "@sentry/vue": "^7.19.0",
     "@vueuse/core": "^9.5.0",
