@@ -17,7 +17,7 @@ public static class Lock<T>
     /// <returns></returns>
     public static ILockContainer GetNamedLock(string name)
     {
-        return new Container(AsyncKeyedLocker.SemaphoreSlims.GetOrAdd(GetLockKey(name)));
+        return new Container(AsyncKeyedLocker.GetOrAdd(GetLockKey(name)));
     }
 
     private static string GetLockKey(string key)
@@ -27,9 +27,9 @@ public static class Lock<T>
 
     private class Container : ILockContainer
     {
-        private readonly AsyncKeyedLockReferenceCounter<string> _semaphore;
+        private readonly IAsyncKeyedLockReleaser<string> _semaphore;
 
-        public Container(AsyncKeyedLockReferenceCounter<string> semaphore)
+        public Container(IAsyncKeyedLockReleaser<string> semaphore)
         {
             _semaphore = semaphore;
         }
@@ -47,7 +47,7 @@ public static class Lock<T>
 
         public void Dispose()
         {
-            _semaphore.Releaser.Dispose();
+            _semaphore.Dispose();
         }
     }
 }
