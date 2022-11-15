@@ -1,3 +1,13 @@
+## [2.19.8](https://github.com/Belphemur/AddictedProxy/compare/v2.19.7...v2.19.8) (2022-11-15)
+
+
+### Performance improvements
+
+* **NewRelic:** Remove it ([bb39fc3](https://github.com/Belphemur/AddictedProxy/commit/bb39fc3c80c7c4293b70e359bf795b5a1a9a5e05))
+* **NewRelic:** Remove it from frontend ([d76e14a](https://github.com/Belphemur/AddictedProxy/commit/d76e14a1a45b983a8e601dc856662a3661fd8679))
+* **Router:** Scrolling when changing page ([d8c700e](https://github.com/Belphemur/AddictedProxy/commit/d8c700e7fff5ddbbe7036c698438e00da94ecf8a))
+* **Subtitle:** Retire endpoint ([eb59bfc](https://github.com/Belphemur/AddictedProxy/commit/eb59bfc392dc7909d2f5631049cc8df7ec6f3b9f))
+
 ## [2.19.7](https://github.com/Belphemur/AddictedProxy/compare/v2.19.6...v2.19.7) (2022-11-12)
 
 
