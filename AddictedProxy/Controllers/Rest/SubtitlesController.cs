@@ -104,6 +104,7 @@ public class SubtitlesController : Controller
     [Produces("application/json")]
     [OutputCache(PolicyName = nameof(PolicyEnum.Shows))]
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
+    [Obsolete("Use " + nameof(GetSubtitles))]
     public async Task<ActionResult<SubtitleSearchResponse>> Search([FromBody] SearchRequest request, CancellationToken token)
     {
         var match = _searchPattern.Match(request.Search);
@@ -185,7 +186,7 @@ public class SubtitlesController : Controller
 
         return await SearchSubtitles(findShow, episode, season, language, token);
     }
-    
+
     /// <summary>
     /// Get subtitles for an episode of a given show in the wanted language
     /// </summary>
