@@ -27,9 +27,9 @@ public static class Lock<T>
 
     private class Container : ILockContainer
     {
-        private readonly IAsyncKeyedLockReleaser<string> _semaphore;
+        private readonly AsyncKeyedLockReleaser<string> _semaphore;
 
-        public Container(IAsyncKeyedLockReleaser<string> semaphore)
+        public Container(AsyncKeyedLockReleaser<string> semaphore)
         {
             _semaphore = semaphore;
         }
