@@ -29,7 +29,8 @@ public class BootstrapDistributedCaching : IBootstrap, IBootstrapConditional
         });
         services.AddDistributedRateLimiting();
 
-        services.TryAddSingleton<IOutputCacheStore, DistributedOutputCacheStore>();
+        //Disable distributed output cache, causes too many issues
+        //services.TryAddSingleton<IOutputCacheStore, DistributedOutputCacheStore>();
         services.AddOutputCache(options =>
         {
             options.AddOwnPolicies();
