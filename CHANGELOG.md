@@ -1,3 +1,14 @@
+## [3.0.0](https://github.com/Belphemur/AddictedProxy/compare/v2.19.8...v3.0.0) (2022-11-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* **DB:** Won't work anymore with sqlite
+
+### Features
+
+* **DB:** Use Mariadb as database ([a3a899d](https://github.com/Belphemur/AddictedProxy/commit/a3a899d22ed9b14a92ed2a3b81b65368854e27af))
+
 ## [2.19.8](https://github.com/Belphemur/AddictedProxy/compare/v2.19.7...v2.19.8) (2022-11-15)
 
 
