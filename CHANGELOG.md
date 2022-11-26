@@ -1,3 +1,10 @@
+## [3.0.2](https://github.com/Belphemur/AddictedProxy/compare/v3.0.1...v3.0.2) (2022-11-26)
+
+
+### Bug Fixes
+
+* **Popularity:** Disable popularity tracking ([1d72297](https://github.com/Belphemur/AddictedProxy/commit/1d7229721a5b129d62a84c2bbd1fa466c81d178a))
+
 ## [3.0.1](https://github.com/Belphemur/AddictedProxy/compare/v3.0.0...v3.0.1) (2022-11-26)
 
 
