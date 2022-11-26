@@ -15,10 +15,7 @@ public class BootstrapController : IBootstrap, IBootstrapApp
     {
         services.AddControllers()
                 .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>())
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.TypeInfoResolver = JsonTypeInfoResolver.Combine(SerializationContext.Default, new DefaultJsonTypeInfoResolver());
-                });
+                .AddJsonOptions(options => { options.JsonSerializerOptions.TypeInfoResolver = JsonTypeInfoResolver.Combine(SerializationContext.Default, new DefaultJsonTypeInfoResolver()); });
         services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
     }
 
