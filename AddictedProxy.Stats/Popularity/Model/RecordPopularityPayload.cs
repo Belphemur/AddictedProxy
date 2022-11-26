@@ -7,7 +7,7 @@ namespace AddictedProxy.Stats.Popularity.Model;
 /// <summary>
 /// 
 /// </summary>
-/// <param name="Show"></param>
+/// <param name="TvShowId"></param>
 /// <param name="Language"></param>
 /// <param name="Requested">If null, will use DateTime.UtcNow</param>
-public record RecordPopularityPayload(TvShow Show, CultureInfo Language, DateTime? Requested = null);
+public record RecordPopularityPayload(long TvShowId, CultureInfo Language, DateTime? Requested = null);
