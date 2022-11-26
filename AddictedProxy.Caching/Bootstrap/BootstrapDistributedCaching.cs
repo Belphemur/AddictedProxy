@@ -29,7 +29,8 @@ public class BootstrapDistributedCaching : IBootstrap, IBootstrapConditional
         });
         services.AddDistributedRateLimiting();
 
-        services.TryAddSingleton<IOutputCacheStore, DistributedOutputCacheStore>();
+        //Disable output caching in Redis, more problem than solution
+        //services.TryAddSingleton<IOutputCacheStore, DistributedOutputCacheStore>();
         services.AddOutputCache(options =>
         {
             options.AddOwnPolicies();
