@@ -1,3 +1,10 @@
+## [3.0.3](https://github.com/Belphemur/AddictedProxy/compare/v3.0.2...v3.0.3) (2022-11-26)
+
+
+### Bug Fixes
+
+* **Ids:** Don't override ids when bulk update ([ddb4fc4](https://github.com/Belphemur/AddictedProxy/commit/ddb4fc468c4a45bf4b9ce7d69a36aea3ce41bbab))
+
 ## [3.0.2](https://github.com/Belphemur/AddictedProxy/compare/v3.0.1...v3.0.2) (2022-11-26)
 
 
