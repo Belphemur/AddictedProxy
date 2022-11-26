@@ -42,16 +42,11 @@ public class EntityContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString));
+        optionsBuilder.UseNpgsql(_connectionString);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TvShow>()
-                    .Property(c => c.Name)
-                    .UseCollation("utf8mb4_general_ci");
-
-
         modelBuilder.Entity<ShowPopularity>().HasKey(popularity => new { popularity.TvShowId, popularity.Language });
     }
 }

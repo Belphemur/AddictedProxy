@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -12,65 +12,57 @@ namespace AddictedProxy.Database.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
-
             migrationBuilder.CreateTable(
                 name: "AddictedUserCredentials",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Cookie = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Usage = table.Column<int>(type: "int", nullable: false),
-                    DownloadUsage = table.Column<int>(type: "int", nullable: false),
-                    LastUsage = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    DownloadExceededDate = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cookie = table.Column<string>(type: "text", nullable: false),
+                    Usage = table.Column<int>(type: "integer", nullable: false),
+                    DownloadUsage = table.Column<int>(type: "integer", nullable: false),
+                    LastUsage = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DownloadExceededDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AddictedUserCredentials", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "TvShows",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UniqueId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UniqueId = table.Column<Guid>(type: "uuid", nullable: false),
                     ExternalId = table.Column<long>(type: "bigint", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: false, collation: "utf8mb4_general_ci")
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastUpdated = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    LastSeasonRefreshed = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    Discovered = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Priority = table.Column<int>(type: "int", nullable: false),
-                    TmdbId = table.Column<int>(type: "int", nullable: true),
-                    IsCompleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    LastUpdated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastSeasonRefreshed = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Discovered = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Priority = table.Column<int>(type: "integer", nullable: false),
+                    TmdbId = table.Column<int>(type: "integer", nullable: true),
+                    IsCompleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TvShows", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "Episodes",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ExternalId = table.Column<long>(type: "bigint", nullable: false),
                     TvShowId = table.Column<long>(type: "bigint", nullable: false),
-                    Season = table.Column<int>(type: "int", nullable: false),
-                    Number = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Discovered = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                    Season = table.Column<int>(type: "integer", nullable: false),
+                    Number = table.Column<int>(type: "integer", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Discovered = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,18 +73,17 @@ namespace AddictedProxy.Database.Migrations
                         principalTable: "TvShows",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "Seasons",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TvShowId = table.Column<long>(type: "bigint", nullable: false),
-                    Number = table.Column<int>(type: "int", nullable: false),
-                    LastRefreshed = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    Number = table.Column<int>(type: "integer", nullable: false),
+                    LastRefreshed = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -103,18 +94,16 @@ namespace AddictedProxy.Database.Migrations
                         principalTable: "TvShows",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "ShowPopularity",
                 columns: table => new
                 {
                     TvShowId = table.Column<long>(type: "bigint", nullable: false),
-                    Language = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Language = table.Column<string>(type: "text", nullable: false),
                     RequestedCount = table.Column<long>(type: "bigint", nullable: false),
-                    LastRequestedDate = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    LastRequestedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -125,33 +114,28 @@ namespace AddictedProxy.Database.Migrations
                         principalTable: "TvShows",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateTable(
                 name: "Subtitles",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     EpisodeId = table.Column<long>(type: "bigint", nullable: false),
-                    Scene = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Version = table.Column<int>(type: "int", nullable: false),
-                    Completed = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    CompletionPct = table.Column<double>(type: "double", nullable: false),
-                    HearingImpaired = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    Corrected = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    HD = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    DownloadUri = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Language = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    StoragePath = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    StoredAt = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    UniqueId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Discovered = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Scene = table.Column<string>(type: "text", nullable: false),
+                    Version = table.Column<int>(type: "integer", nullable: false),
+                    Completed = table.Column<bool>(type: "boolean", nullable: false),
+                    CompletionPct = table.Column<double>(type: "double precision", nullable: false),
+                    HearingImpaired = table.Column<bool>(type: "boolean", nullable: false),
+                    Corrected = table.Column<bool>(type: "boolean", nullable: false),
+                    HD = table.Column<bool>(type: "boolean", nullable: false),
+                    DownloadUri = table.Column<string>(type: "text", nullable: false),
+                    Language = table.Column<string>(type: "text", nullable: false),
+                    StoragePath = table.Column<string>(type: "text", nullable: true),
+                    StoredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UniqueId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Discovered = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DownloadCount = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -163,8 +147,7 @@ namespace AddictedProxy.Database.Migrations
                         principalTable: "Episodes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AddictedUserCredentials_Cookie",
