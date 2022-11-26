@@ -93,11 +93,11 @@ public class SearchSubtitlesService : ISearchSubtitlesService
 
         var show = request.Show;
 
-        // var recordJob = _jobBuilder.Create<RecordPopularityJob>()
-        //                            .Configure(job => job.Payload = new RecordPopularityPayload(show.Id, language, DateTime.UtcNow))
-        //                            .Build();
-        //
-        // _jobScheduler.ScheduleJob(recordJob);
+        var recordJob = _jobBuilder.Create<RecordPopularityJob>()
+                                   .Configure(job => job.Payload = new RecordPopularityPayload(show.Id, language, DateTime.UtcNow))
+                                   .Build();
+
+        _jobScheduler.ScheduleJob(recordJob);
 
         var episode = await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, request.Season, request.Episode, token);
 
