@@ -1,3 +1,11 @@
+## [3.0.1](https://github.com/Belphemur/AddictedProxy/compare/v3.0.0...v3.0.1) (2022-11-26)
+
+
+### Bug Fixes
+
+* **Popularity:** Use the show Id ([829bf92](https://github.com/Belphemur/AddictedProxy/commit/829bf92220f4a975331e03c5621716fa53891b24))
+* **UserAgent:** Add new user agents ([dde0862](https://github.com/Belphemur/AddictedProxy/commit/dde08623bfaa73ae3a5a8c3112ffa66acd629bf2))
+
 ## [3.0.0](https://github.com/Belphemur/AddictedProxy/compare/v2.19.8...v3.0.0) (2022-11-26)
 
 
