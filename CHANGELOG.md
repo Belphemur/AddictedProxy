@@ -1,3 +1,33 @@
+## [3.0.0](https://github.com/Belphemur/AddictedProxy/compare/v2.19.8...v3.0.0) (2022-11-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* **DB:** Won't work anymore with sqlite
+
+### Features
+
+* **DB:** Use Mariadb as database ([a3a899d](https://github.com/Belphemur/AddictedProxy/commit/a3a899d22ed9b14a92ed2a3b81b65368854e27af))
+
+
+### Bug Fixes
+
+* **caching:** disable distributed caching for output cache ([2cf38e4](https://github.com/Belphemur/AddictedProxy/commit/2cf38e4757e69d8525f1c78dfc1862298c409000))
+* **concurrency::db:** Fix issue with concurrency and database ([9d24eb3](https://github.com/Belphemur/AddictedProxy/commit/9d24eb3f44a726aff27b24b4069a5bec1c067355))
+* **db:** Update seq number ([159f779](https://github.com/Belphemur/AddictedProxy/commit/159f7791b9a4008c03ce379356bdbb8372c967ce))
+* **Fetch:** Reduce concurrency ([ab55497](https://github.com/Belphemur/AddictedProxy/commit/ab554974bdcf84c95962fbd21df065b134e9918d))
+* **Ids:** Don't override ids when bulk update ([ddb4fc4](https://github.com/Belphemur/AddictedProxy/commit/ddb4fc468c4a45bf4b9ce7d69a36aea3ce41bbab))
+* **Popularity:** Use the show Id ([829bf92](https://github.com/Belphemur/AddictedProxy/commit/829bf92220f4a975331e03c5621716fa53891b24))
+* **RefreshShow::Concurrency:** Fix issue with refreshing 2 seasons at once ([4c67ec4](https://github.com/Belphemur/AddictedProxy/commit/4c67ec4089b2c993dab787e7b27c23292a108f04))
+* **UserAgent:** Add new user agents ([dde0862](https://github.com/Belphemur/AddictedProxy/commit/dde08623bfaa73ae3a5a8c3112ffa66acd629bf2))
+
+
+### Performance improvements
+
+* **Client:** Remove bot param ([eab09bd](https://github.com/Belphemur/AddictedProxy/commit/eab09bd30686d2e927038632b4eb9cdecbae29f4))
+* **refresher:** make them scoped ([922d0bd](https://github.com/Belphemur/AddictedProxy/commit/922d0bdfd7f9c2e9d115f9fab22f6ec1908d1206))
+* **Season:** Update how to refresh seasons ([fd96f1c](https://github.com/Belphemur/AddictedProxy/commit/fd96f1cc1dd35fba5d817c6cf8bea4cdeb8a65f5))
+
 ## [2.19.8](https://github.com/Belphemur/AddictedProxy/compare/v2.19.7...v2.19.8) (2022-11-26)
 
 
