@@ -22,10 +22,10 @@ public class BootstrapProvider : IBootstrap
         services.AddJob<StoreSubtitleJob>();
         services.AddJob<FetchSubtitlesJob>();
         services.AddJob<RefreshSingleShowJob>();
-        services.AddTransient<IShowRefresher, ShowRefresher>();
+        services.AddScoped<IShowRefresher, ShowRefresher>();
         services.AddScoped<ISubtitleProvider, SubtitleProvider>();
-        services.AddTransient<ISeasonRefresher, SeasonRefresher>();
-        services.AddTransient<IEpisodeRefresher, EpisodeRefresher>();
+        services.AddScoped<ISeasonRefresher, SeasonRefresher>();
+        services.AddScoped<IEpisodeRefresher, EpisodeRefresher>();
         services.Configure<RefreshConfig>(configuration.GetSection("Refresh"));
         services.AddSingleton<IRefreshHubManager, RefreshHubManager>();
         services.AddScoped<SubtitleCounterUpdater>();
