@@ -94,7 +94,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         var show = request.Show;
 
         var recordJob = _jobBuilder.Create<RecordPopularityJob>()
-                                   .Configure(job => job.Payload = new RecordPopularityPayload(show, language, DateTime.UtcNow))
+                                   .Configure(job => job.Payload = new RecordPopularityPayload(show.Id, language, DateTime.UtcNow))
                                    .Build();
 
         _jobScheduler.ScheduleJob(recordJob);

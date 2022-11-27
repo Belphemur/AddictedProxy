@@ -18,9 +18,11 @@ public interface IAddictedUserCredentialRepository
     /// <summary>
     /// Update the data of the creds
     /// </summary>
+    /// <param name="credentials"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task SaveChangesAsync(CancellationToken token);
+    public Task SingleUpdateAsync(AddictedUserCredentials credentials, CancellationToken token);
+
 
     /// <summary>
     /// Get the least used credential for download
@@ -39,4 +41,12 @@ public interface IAddictedUserCredentialRepository
     /// </summary>
     /// <returns></returns>
     IAsyncEnumerable<AddictedUserCredentials> GetDownloadExceededCredentialsAsync();
+
+    /// <summary>
+    /// Bulk update multiple creds
+    /// </summary>
+    /// <param name="credentials"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task BulkUpdateAsync(IEnumerable<AddictedUserCredentials> credentials, CancellationToken token);
 }

@@ -43,7 +43,7 @@ public class TvShowRepository : ITvShowRepository
         }
 
         foreach (var tvShow in _entityContext.TvShows
-                                             .Where(show => EF.Functions.Like(show.Name, $"%{name}%"))
+                                             .Where(show => EF.Functions.ILike(show.Name, $"%{name}%"))
                                              .OrderByDescending(show => show.Priority)
                                              .Include(show => show.Seasons))
 
@@ -56,7 +56,7 @@ public class TvShowRepository : ITvShowRepository
     {
         return _entityContext.TvShows.BulkMergeAsync(tvShows, options =>
         {
-            options.IgnoreOnMergeUpdateExpression = show => new { show.Discovered, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted, show.Type };
+            options.IgnoreOnMergeUpdateExpression = show => new { show.Id, show.Discovered, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted, show.Type };
             options.ColumnPrimaryKeyExpression = show => show.ExternalId;
         }, token);
     }

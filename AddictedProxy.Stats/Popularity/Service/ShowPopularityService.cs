@@ -30,19 +30,19 @@ internal class ShowPopularityService : IShowPopularityService
     /// <returns></returns>
     public async Task RecordPopularityAsync(RecordPopularityPayload payload, CancellationToken cancellationToken)
     {
-        using var namedLock = Lock<ShowPopularityService>.GetNamedLock(payload.Show.Id.ToString());
+        using var namedLock = Lock<ShowPopularityService>.GetNamedLock(payload.TvShowId.ToString());
 
         if (!await namedLock.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken))
         {
             return;
         }
 
-        var popularity = await _entityContext.ShowPopularity.FindAsync(new object?[] { payload.Show.Id, payload.Language.Name }, cancellationToken: cancellationToken);
+        var popularity = await _entityContext.ShowPopularity.FindAsync(new object?[] { payload.TvShowId, payload.Language.Name }, cancellationToken: cancellationToken);
         if (popularity == null)
         {
             popularity = new ShowPopularity
             {
-                TvShowId = payload.Show.Id,
+                TvShowId = payload.TvShowId,
                 Language = payload.Language.Name,
                 RequestedCount = 0
             };

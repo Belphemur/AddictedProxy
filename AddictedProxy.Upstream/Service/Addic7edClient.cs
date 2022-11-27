@@ -78,7 +78,7 @@ public class Addic7edClient : IAddic7edClient
     /// <returns></returns>
     public async Task<IEnumerable<Episode>> GetEpisodesAsync(AddictedUserCredentials credentials, TvShow show, int season, CancellationToken token)
     {
-        using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_loadShow.php?bot=1&show={show.ExternalId}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get),
+        using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_loadShow.php?show={show.ExternalId}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get),
             token);
         return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(token), token)
             .Select(episode =>
