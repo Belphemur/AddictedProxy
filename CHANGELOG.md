@@ -1,3 +1,10 @@
+## [3.0.2](https://github.com/Belphemur/AddictedProxy/compare/v3.0.1...v3.0.2) (2022-11-27)
+
+
+### Performance improvements
+
+* **Show:** Set case insensitive collation for name of show ([6380a2f](https://github.com/Belphemur/AddictedProxy/commit/6380a2fd8f43fc7ccf95611e134046523570af6f))
+
 ## [3.0.1](https://github.com/Belphemur/AddictedProxy/compare/v3.0.0...v3.0.1) (2022-11-27)
 
 
