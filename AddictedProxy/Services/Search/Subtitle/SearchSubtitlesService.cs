@@ -9,7 +9,6 @@ using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
-using AddictedProxy.Stats.Popularity.Jobs;
 using AddictedProxy.Stats.Popularity.Model;
 using Amazon.Runtime.Internal;
 using Ardalis.Result;
@@ -92,12 +91,6 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         }
 
         var show = request.Show;
-
-        var recordJob = _jobBuilder.Create<RecordPopularityJob>()
-                                   .Configure(job => job.Payload = new RecordPopularityPayload(show.Id, language, DateTime.UtcNow))
-                                   .Build();
-
-        _jobScheduler.ScheduleJob(recordJob);
 
         var episode = await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, request.Season, request.Episode, token);
 
