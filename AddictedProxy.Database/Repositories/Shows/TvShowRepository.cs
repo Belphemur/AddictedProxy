@@ -43,7 +43,7 @@ public class TvShowRepository : ITvShowRepository
         }
 
         foreach (var tvShow in _entityContext.TvShows
-                                             .Where(show => EF.Functions.ILike(show.Name, $"%{name}%"))
+                                             .Where(show => EF.Functions.Collate(EF.Functions.ILike(show.Name, $"%{name}%"), "en_US"))
                                              .OrderByDescending(show => show.Priority)
                                              .Include(show => show.Seasons))
 
