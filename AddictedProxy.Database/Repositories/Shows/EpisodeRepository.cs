@@ -30,6 +30,11 @@ public class EpisodeRepository : IEpisodeRepository
     {
         await using var transaction = await _transactionManager.BeginNestedAsync(token);
         var enumerable = episodes as Episode[] ?? episodes.ToArray();
+        //Nothing to do, no new episodes
+        if (enumerable.Length == 0)
+        {
+            return;
+        }
         await _entityContext.Episodes.BulkMergeAsync(enumerable, options =>
         {
             options.IncludeGraph = true;

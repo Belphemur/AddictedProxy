@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Service.Exception;
+using Microsoft.Extensions.Logging;
 
 #endregion
 
@@ -13,13 +14,15 @@ public class Addic7edClient : IAddic7edClient
 {
     private readonly HttpClient _httpClient;
     private readonly HttpUtils _httpUtils;
+    private readonly ILogger<Addic7edClient> _logger;
     private readonly Parser _parser;
 
-    public Addic7edClient(HttpClient httpClient, Parser parser, HttpUtils httpUtils)
+    public Addic7edClient(HttpClient httpClient, Parser parser, HttpUtils httpUtils, ILogger<Addic7edClient> logger)
     {
         _httpClient = httpClient;
         _parser = parser;
         _httpUtils = httpUtils;
+        _logger = logger;
     }
 
     /// <summary>
@@ -78,6 +81,7 @@ public class Addic7edClient : IAddic7edClient
     /// <returns></returns>
     public async Task<IEnumerable<Episode>> GetEpisodesAsync(AddictedUserCredentials credentials, TvShow show, int season, CancellationToken token)
     {
+        using var scope = _logger.BeginScope("Getting episode for {Show} {Season}", show.Name, season);
         using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_loadShow.php?show={show.ExternalId}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get),
             token);
         return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(token), token)
