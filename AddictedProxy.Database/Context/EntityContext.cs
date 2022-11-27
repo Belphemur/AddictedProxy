@@ -47,7 +47,6 @@ public class EntityContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TvShow>().Property(show => show.Name).UseCollation("case_insensitive");
         modelBuilder.Entity<ShowPopularity>().HasKey(popularity => new { popularity.TvShowId, popularity.Language });
     }
 }

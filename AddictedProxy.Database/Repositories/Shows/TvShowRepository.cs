@@ -31,7 +31,7 @@ public class TvShowRepository : ITvShowRepository
     {
         _logger.LogInformation("Looking for show: {show}", name);
         var strictMatch = await _entityContext.TvShows
-                                              .Where(show => show.Name == name)
+                                              .Where(show => show.Name.ToLower() == name.ToLower())
                                               .Include(show => show.Seasons)
                                               .OrderByDescending(show => show.Priority)
                                               .FirstOrDefaultAsync(token);
@@ -43,7 +43,7 @@ public class TvShowRepository : ITvShowRepository
         }
 
         foreach (var tvShow in _entityContext.TvShows
-                                             .Where(show => EF.Functions.Collate(EF.Functions.ILike(show.Name, $"%{name}%"), "en_US"))
+                                             .Where(show => EF.Functions.ILike(show.Name, $"%{name}%"))
                                              .OrderByDescending(show => show.Priority)
                                              .Include(show => show.Seasons))
 
