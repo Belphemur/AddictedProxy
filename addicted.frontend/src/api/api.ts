@@ -417,7 +417,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Gestdown: Addicted Proxy
- * @version 2.19.2
+ * @version 3.1.0
  *
  * Provide a full api to search and download subtitles from Addic7ed website.
  */
@@ -440,22 +440,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
   };
   stats = {
-    /**
-     * No description
-     *
-     * @tags Stats
-     * @name GetStats
-     * @summary Return the top show by popularity
-     * @request GET:/stats/top/{top}
-     */
-    getStats: (top: number, params: RequestParams = {}) =>
-      this.request<TopShowDto[], any>({
-        path: `/stats/top/${top}`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
     /**
      * No description
      *
@@ -495,6 +479,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @name SearchCreate
      * @summary Search for a specific episode
      * @request POST:/subtitles/search
+     * @deprecated
      */
     searchCreate: (data: SearchRequest, params: RequestParams = {}) =>
       this.request<SubtitleSearchResponse, WrongFormatResponse | ErrorResponse | string>({
