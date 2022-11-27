@@ -1,3 +1,10 @@
+## [3.2.1](https://github.com/Belphemur/AddictedProxy/compare/v3.2.0...v3.2.1) (2022-11-27)
+
+
+### Bug Fixes
+
+* **TvShow::Search:** Fix Case Insensitive search ([7d3f4b5](https://github.com/Belphemur/AddictedProxy/commit/7d3f4b59b89507e29b8d523c82d28e99bad08b48))
+
 ## [3.2.0](https://github.com/Belphemur/AddictedProxy/compare/v3.1.0...v3.2.0) (2022-11-27)
 
 
