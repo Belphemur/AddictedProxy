@@ -12,6 +12,7 @@ namespace AddictedProxy.Database.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql("CREATE COLLATION case_insensitive (provider = icu, locale = 'und-u-ks-level2', deterministic = false);");
+            
         }
 
         /// <inheritdoc />
