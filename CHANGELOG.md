@@ -1,3 +1,12 @@
+## [3.2.2](https://github.com/Belphemur/AddictedProxy/compare/v3.2.1...v3.2.2) (2022-11-27)
+
+
+### Performance improvements
+
+* **FetchJob:** Improve concurrency ([19b24bf](https://github.com/Belphemur/AddictedProxy/commit/19b24bfcd5c9d92611e17e997d64e5c0dc42b64a))
+* **popularity:** delete recording popularity ([2585ebf](https://github.com/Belphemur/AddictedProxy/commit/2585ebf9b1a9047dcdc3cedb215ff00f33cafe38))
+* **popularity:** delete show popularity ([7c623a1](https://github.com/Belphemur/AddictedProxy/commit/7c623a173d6e603c3b694c5540fb5b8a2643ab8e))
+
 ## [3.2.1](https://github.com/Belphemur/AddictedProxy/compare/v3.2.0...v3.2.1) (2022-11-27)
 
 
