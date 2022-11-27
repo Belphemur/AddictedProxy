@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/Belphemur/AddictedProxy/compare/v3.0.0...v3.0.1) (2022-11-27)
+
+
+### Bug Fixes
+
+* **Subtitles:** Fix issue when the season exists but don't have subtitles ([450e397](https://github.com/Belphemur/AddictedProxy/commit/450e3979677a3f3da5026551c2d649682a399193))
+
 ## [3.0.0](https://github.com/Belphemur/AddictedProxy/compare/v2.19.8...v3.0.0) (2022-11-27)
 
 
