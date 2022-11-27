@@ -11,7 +11,7 @@ public interface ISeasonRepository
     /// <summary>
     ///     Upsert season in the database
     /// </summary>
-    Task UpsertSeasonAsync(IEnumerable<Season> seasons, CancellationToken token);
+    Task InsertNewSeasonsAsync(long showId, IEnumerable<Season> seasons, CancellationToken token);
 
     Task<Season?> GetSeasonForShowAsync(long showId, int seasonNumber, CancellationToken token);
 

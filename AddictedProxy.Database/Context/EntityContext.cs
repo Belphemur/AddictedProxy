@@ -12,10 +12,18 @@ namespace AddictedProxy.Database.Context;
 
 public class EntityContext : DbContext
 {
+    /// <summary>
+    /// Only needed for MariaDB/MYSQL
+    /// </summary>
+    private readonly string? _connectionString;
+
     public EntityContext(DbContextOptions options) : base(options)
     {
-        var folder = Environment.GetEnvironmentVariable("DB_PATH") ?? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        DbPath = Path.Join(folder, "addicted.db");
+        _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
+        if (_connectionString == null)
+        {
+            throw new ArgumentException("Need to have a DB_CONNECTION Env variable to connect to Mysql/MariaDB");
+        }
     }
 
     internal EntityContext() : this(new DbContextOptions<EntityContext>())
@@ -26,25 +34,19 @@ public class EntityContext : DbContext
     public DbSet<Subtitle> Subtitles { get; set; } = null!;
     public DbSet<Episode> Episodes { get; set; } = null!;
     public DbSet<Season> Seasons { get; set; } = null!;
-    
+
     public DbSet<ShowPopularity> ShowPopularity { get; set; } = null!;
 
     public DbSet<AddictedUserCredentials> AddictedUserCreds { get; set; } = null!;
 
-    private string DbPath { get; }
-
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite($"Data Source={DbPath};Cache=Shared", builder => builder.CommandTimeout(30));
+        optionsBuilder.UseNpgsql(_connectionString);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TvShow>()
-                    .Property(c => c.Name)
-                    .UseCollation("NOCASE");
-
         modelBuilder.Entity<ShowPopularity>().HasKey(popularity => new { popularity.TvShowId, popularity.Language });
     }
 }

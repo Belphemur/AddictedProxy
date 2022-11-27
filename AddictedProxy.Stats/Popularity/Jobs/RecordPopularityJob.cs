@@ -38,6 +38,6 @@ public class RecordPopularityJob : IQueueJob
 
     public IRetryAction FailRule { get; } = new ExponentialDecorrelatedJittedBackoffRetry(5, TimeSpan.FromSeconds(10));
     public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(2);
-    public string Key => $"{Payload.Show.Id}-{Payload.Language.TwoLetterISOLanguageName}";
+    public string Key => $"{Payload.TvShowId}-{Payload.Language.TwoLetterISOLanguageName}";
     public string QueueId => nameof(RecordPopularityJob);
 }

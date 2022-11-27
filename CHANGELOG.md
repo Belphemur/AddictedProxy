@@ -1,3 +1,46 @@
+## [3.0.3](https://github.com/Belphemur/AddictedProxy/compare/v3.0.2...v3.0.3) (2022-11-26)
+
+
+### Bug Fixes
+
+* **Ids:** Don't override ids when bulk update ([ddb4fc4](https://github.com/Belphemur/AddictedProxy/commit/ddb4fc468c4a45bf4b9ce7d69a36aea3ce41bbab))
+
+## [3.0.2](https://github.com/Belphemur/AddictedProxy/compare/v3.0.1...v3.0.2) (2022-11-26)
+
+
+### Bug Fixes
+
+* **Popularity:** Disable popularity tracking ([1d72297](https://github.com/Belphemur/AddictedProxy/commit/1d7229721a5b129d62a84c2bbd1fa466c81d178a))
+
+## [3.0.1](https://github.com/Belphemur/AddictedProxy/compare/v3.0.0...v3.0.1) (2022-11-26)
+
+
+### Bug Fixes
+
+* **Popularity:** Use the show Id ([829bf92](https://github.com/Belphemur/AddictedProxy/commit/829bf92220f4a975331e03c5621716fa53891b24))
+* **UserAgent:** Add new user agents ([dde0862](https://github.com/Belphemur/AddictedProxy/commit/dde08623bfaa73ae3a5a8c3112ffa66acd629bf2))
+
+## [3.0.0](https://github.com/Belphemur/AddictedProxy/compare/v2.19.8...v3.0.0) (2022-11-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* **DB:** Won't work anymore with sqlite
+
+### Features
+
+* **DB:** Use Mariadb as database ([a3a899d](https://github.com/Belphemur/AddictedProxy/commit/a3a899d22ed9b14a92ed2a3b81b65368854e27af))
+
+## [2.19.8](https://github.com/Belphemur/AddictedProxy/compare/v2.19.7...v2.19.8) (2022-11-15)
+
+
+### Performance improvements
+
+* **NewRelic:** Remove it ([bb39fc3](https://github.com/Belphemur/AddictedProxy/commit/bb39fc3c80c7c4293b70e359bf795b5a1a9a5e05))
+* **NewRelic:** Remove it from frontend ([d76e14a](https://github.com/Belphemur/AddictedProxy/commit/d76e14a1a45b983a8e601dc856662a3661fd8679))
+* **Router:** Scrolling when changing page ([d8c700e](https://github.com/Belphemur/AddictedProxy/commit/d8c700e7fff5ddbbe7036c698438e00da94ecf8a))
+* **Subtitle:** Retire endpoint ([eb59bfc](https://github.com/Belphemur/AddictedProxy/commit/eb59bfc392dc7909d2f5631049cc8df7ec6f3b9f))
+
 ## [2.19.7](https://github.com/Belphemur/AddictedProxy/compare/v2.19.6...v2.19.7) (2022-11-12)
 
 

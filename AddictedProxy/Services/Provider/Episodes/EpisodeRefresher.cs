@@ -22,6 +22,7 @@ public class EpisodeRefresher : IEpisodeRefresher
     private readonly IOptions<RefreshConfig> _refreshConfig;
     private readonly ILogger<EpisodeRefresher> _logger;
     private readonly IPerformanceTracker _performanceTracker;
+    private readonly IServiceProvider _serviceProvider;
 
     public EpisodeRefresher(IAddic7edClient client,
                             IEpisodeRepository episodeRepository,
@@ -29,7 +30,8 @@ public class EpisodeRefresher : IEpisodeRefresher
                             ICredentialsService credentialsService,
                             IOptions<RefreshConfig> refreshConfig,
                             ILogger<EpisodeRefresher> logger,
-                            IPerformanceTracker performanceTracker
+                            IPerformanceTracker performanceTracker,
+                            IServiceProvider serviceProvider
     )
     {
         _client = client;
@@ -39,6 +41,7 @@ public class EpisodeRefresher : IEpisodeRefresher
         _refreshConfig = refreshConfig;
         _logger = logger;
         _performanceTracker = performanceTracker;
+        _serviceProvider = serviceProvider;
     }
 
     /// <summary>
@@ -130,7 +133,9 @@ public class EpisodeRefresher : IEpisodeRefresher
                 return null;
             }
 
-            await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
+            await using var scope = _serviceProvider.CreateAsyncScope();
+
+            await using var credentials = await scope.ServiceProvider.GetRequiredService<ICredentialsService>().GetLeastUsedCredsQueryingAsync(token);
             var episodes = (await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, show, season.Number, token)).ToArray();
             season.LastRefreshed = DateTime.UtcNow;
             return episodes;
