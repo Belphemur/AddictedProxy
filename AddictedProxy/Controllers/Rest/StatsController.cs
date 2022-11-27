@@ -18,20 +18,6 @@ public class StatsController : Controller
     }
 
     /// <summary>
-    /// Return the top show by popularity
-    /// </summary>
-    /// <param name="top"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    [HttpGet]
-    [Route("top/{top:range(1,50)}")]
-    [OutputCache(PolicyName = nameof(PolicyEnum.Stats))]
-    public async Task<ActionResult<TopShowDto[]>> GetTopShows([FromRoute] int top, CancellationToken token)
-    {
-        return Ok(await _showPopularityService.GetTopPopularity(top).Select(record => new TopShowDto(new ShowDto(record.Show), record.Total)).ToArrayAsync(token));
-    }
-
-    /// <summary>
     /// Return the top show by downloads
     /// </summary>
     /// <param name="top"></param>
