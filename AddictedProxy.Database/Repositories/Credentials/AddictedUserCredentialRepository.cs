@@ -32,6 +32,7 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
                 _logger.LogWarning("Couldn't find credential to use for querying");
                 return null;
             }
+
             return await _context.AddictedUserCreds.Where(credentials => credentials.Usage <= min).FirstOrDefaultAsync(token);
         }
         catch (InvalidOperationException e) when (e.Message == "Sequence contains no elements.")
@@ -39,6 +40,7 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
             return null;
         }
     }
+
 
     public async Task<AddictedUserCredentials?> GetLeastUsedCredDownloadAsync(CancellationToken token)
     {
@@ -52,6 +54,7 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
                 _logger.LogWarning("Couldn't find credential to use for download");
                 return null;
             }
+
             return await _context.AddictedUserCreds.Where(credentials => credentials.DownloadUsage <= min && credentials.DownloadExceededDate == null).FirstOrDefaultAsync(token);
         }
         catch (InvalidOperationException e) when (e.Message == "Sequence contains no elements.")
@@ -77,8 +80,19 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
         return _context.AddictedUserCreds.ToAsyncEnumerable();
     }
 
-    public async Task SaveChangesAsync(CancellationToken token)
+    public Task SingleUpdateAsync(AddictedUserCredentials credentials, CancellationToken token)
     {
-        await _context.SaveChangesAsync(token);
+        return _context.SingleUpdateAsync(credentials, token);
+    }
+
+    /// <summary>
+    /// Bulk update multiple creds
+    /// </summary>
+    /// <param name="credentials"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task BulkUpdateAsync(IEnumerable<AddictedUserCredentials> credentials, CancellationToken token)
+    {
+        return _context.BulkUpdateAsync(credentials, token);
     }
 }

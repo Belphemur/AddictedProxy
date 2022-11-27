@@ -19,8 +19,8 @@ public class CredentialsService : ICredentialsService
     private readonly ILogger<CredentialsService> _logger;
 
     public CredentialsService(IAddictedUserCredentialRepository addictedUserCredentialRepository,
-        IOptions<RefreshConfig> refreshConfig,
-        ILogger<CredentialsService> logger
+                              IOptions<RefreshConfig> refreshConfig,
+                              ILogger<CredentialsService> logger
     )
     {
         _addictedUserCredentialRepository = addictedUserCredentialRepository;
@@ -77,10 +77,11 @@ public class CredentialsService : ICredentialsService
             count = ++credentials.Usage;
             usageType = "querying";
         }
+
         _logger.LogInformation("Update usage of {Cred} to {Count} for {Type}", credentials.Id, count, usageType);
 
         credentials.LastUsage = DateTime.UtcNow;
-        await _addictedUserCredentialRepository.SaveChangesAsync(token);
+        await _addictedUserCredentialRepository.SingleUpdateAsync(credentials, token);
     }
 
     /// <summary>
@@ -88,23 +89,24 @@ public class CredentialsService : ICredentialsService
     /// </summary>
     public async Task RedeemDownloadCredentialsAsync(DateTime currentDateTime, CancellationToken token)
     {
-        var hasRedeemedCreds = false;
         _logger.LogInformation("[Redeem] Fetching creds to be redeemed for download usage");
-        var ids = new List<long>();
-        await foreach (var cred in _addictedUserCredentialRepository.GetDownloadExceededCredentialsAsync().Where(cred => currentDateTime - cred.DownloadExceededDate >= _refreshConfig.Value.DownloadExceededTimeout).WithCancellation(token))
+        var redeemedCreds = new List<AddictedUserCredentials>();
+        await foreach (var cred in _addictedUserCredentialRepository.GetDownloadExceededCredentialsAsync()
+                                                                    .Where(cred => currentDateTime - cred.DownloadExceededDate >= _refreshConfig.Value.DownloadExceededTimeout)
+                                                                    .WithCancellation(token))
         {
             cred.DownloadExceededDate = null;
             cred.DownloadUsage = 0;
-            hasRedeemedCreds = true;
-            ids.Add(cred.Id);
+            redeemedCreds.Add(cred);
         }
-        _logger.LogInformation("[Redeem] Redeemed those creds: [{Ids}]", string.Join(", ", ids));
 
-        if (!hasRedeemedCreds)
+        _logger.LogInformation("[Redeem] Redeemed those creds: [{Ids}]", string.Join(", ", redeemedCreds.Select(credentials => credentials.Id)));
+
+        if (redeemedCreds.Count == 0)
         {
             return;
         }
 
-        await _addictedUserCredentialRepository.SaveChangesAsync(token);
+        await _addictedUserCredentialRepository.BulkUpdateAsync(redeemedCreds, token);
     }
 }
