@@ -1,3 +1,15 @@
+## [3.2.0](https://github.com/Belphemur/AddictedProxy/compare/v3.1.0...v3.2.0) (2022-11-27)
+
+
+### Features
+
+* **Postgres:** Use postgresql ([d27a5e4](https://github.com/Belphemur/AddictedProxy/commit/d27a5e49eb0e75daaf84c54f1ab05768505f2feb))
+
+
+### Bug Fixes
+
+* **TvShow::Search:** Fix search for TvShow ([8168008](https://github.com/Belphemur/AddictedProxy/commit/81680089061edd086395216ccbf9888005e72560))
+
 ## [3.1.0](https://github.com/Belphemur/AddictedProxy/compare/v3.0.1...v3.1.0) (2022-11-27)
 
 
