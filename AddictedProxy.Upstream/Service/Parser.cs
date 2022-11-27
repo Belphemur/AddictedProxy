@@ -7,6 +7,7 @@ using AddictedProxy.Upstream.Model;
 using AddictedProxy.Upstream.Service.Exception;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
+using Microsoft.Extensions.Logging;
 
 #endregion
 
@@ -15,11 +16,13 @@ namespace AddictedProxy.Upstream.Service;
 public class Parser
 {
     private readonly IHtmlParser _parser;
+    private readonly ILogger<Parser> _logger;
     private readonly Regex _completionRegex = new(@"(?<completion>\d+\.?\d+)%", RegexOptions.Compiled);
 
-    public Parser(IHtmlParser parser)
+    public Parser(IHtmlParser parser, ILogger<Parser> logger)
     {
         _parser = parser;
+        _logger = logger;
     }
 
     public async IAsyncEnumerable<TvShow> GetShowsAsync(Stream html, [EnumeratorCancellation] CancellationToken token)
@@ -162,7 +165,8 @@ public class Parser
 
         if (!subtitlesRows.Any())
         {
-            throw new NothingToParseException("No subtitle", null);
+            _logger.LogWarning("Couldn't find subtitles");
+            yield break;
         }
 
         var episodeGroups = subtitlesRows.GroupBy(r => (r.Season, r.Number));
