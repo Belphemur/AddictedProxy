@@ -12,11 +12,8 @@ public class BootstrapInMemory : IBootstrapConditional, IBootstrap
     {
         // inject counter and rules stores
         services.AddInMemoryRateLimiting();
-        services.AddOutputCache(options =>
-        {
-            options.SizeLimit = 250 * 1024 * 1024;
-            options.AddOwnPolicies();
-        });
+        
+        services.AddDistributedMemoryCache();
     }
 
     public bool ShouldLoadBootstrap(IConfiguration configuration)

@@ -46,7 +46,6 @@ public class BootstrapController : IBootstrap, IBootstrapApp
 
         app.UseHttpLogging();
         app.UseRouting();
-        app.UseOutputCache();
         app.UseAuthorization();
     }
 }

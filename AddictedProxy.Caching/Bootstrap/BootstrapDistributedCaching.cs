@@ -28,12 +28,6 @@ public class BootstrapDistributedCaching : IBootstrap, IBootstrapConditional
             options.Configuration = config.Connection;
         });
         services.AddDistributedRateLimiting();
-
-        services.TryAddSingleton<IOutputCacheStore, DistributedOutputCacheStore>();
-        services.AddOutputCache(options =>
-        {
-            options.AddOwnPolicies();
-        });
     }
 
     public bool ShouldLoadBootstrap(IConfiguration configuration)
