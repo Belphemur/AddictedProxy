@@ -120,7 +120,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
             return new SubtitleFound(ArraySegment<Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
         }
 
-        var matchingSubtitles = FindMatchingSubtitles(request, episode).ToArray();
+        var matchingSubtitles = FindMatchingSubtitles(request, episode);
         if (matchingSubtitles.Length == 0)
         {
             ScheduleJob(request, show);
@@ -129,7 +129,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         return new SubtitleFound(matchingSubtitles, new EpisodeDto(episode), language);
     }
 
-    private IEnumerable<Subtitle> FindMatchingSubtitles(SearchPayload payload, Episode episode)
+    private Subtitle[] FindMatchingSubtitles(SearchPayload payload, Episode episode)
     {
         using var _ = _performanceTracker.BeginNestedSpan("find-matching-subtitles", $"Episode [{episode.Id}] S{episode.Season}E{episode.Number}");
         var searchLanguage = _cultureParser.FromString(payload.LanguageIso)!;
@@ -140,7 +140,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
             search = search.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => payload.FileName.ToLowerInvariant().Contains(version)));
         }
 
-        return search;
+        return search.ToArray();
     }
 
     private void ScheduleJob(SearchPayload payload, TvShow show)
