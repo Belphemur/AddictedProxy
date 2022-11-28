@@ -1,3 +1,10 @@
+## [3.2.5](https://github.com/Belphemur/AddictedProxy/compare/v3.2.4...v3.2.5) (2022-11-28)
+
+
+### Bug Fixes
+
+* **Performance:** Only start transaction when there isn't one already ([e533934](https://github.com/Belphemur/AddictedProxy/commit/e533934b15d6049cef0b1d2d20111f3d9a06c3bd))
+
 ## [3.2.4](https://github.com/Belphemur/AddictedProxy/compare/v3.2.3...v3.2.4) (2022-11-28)
 
 
