@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Database.Model.Shows;
 
-[Index("TvShowId", nameof(Season), nameof(Number), IsUnique = true)]
+[Index(nameof(TvShowId), nameof(Season), nameof(Number), IsUnique = true)]
 public class Episode : IDiscoverableObject
 {
     [Key]
@@ -18,7 +18,7 @@ public class Episode : IDiscoverableObject
 
     public long TvShowId { get; set; }
 
-    [ForeignKey("TvShowId")]
+    [ForeignKey(nameof(TvShowId))]
     public virtual TvShow TvShow { get; set; }
 
     public int Season { get; set; }
