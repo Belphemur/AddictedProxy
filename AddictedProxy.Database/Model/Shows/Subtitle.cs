@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace AddictedProxy.Database.Model.Shows;
 
 [Index(nameof(DownloadUri), IsUnique = true)]
-[Index("EpisodeId", nameof(Language), nameof(Version), IsUnique = false)]
+[Index(nameof(EpisodeId), nameof(Language), nameof(Version), IsUnique = false)]
 [Index(nameof(UniqueId), IsUnique = true)]
 public class Subtitle : IDiscoverableObject
 {
@@ -18,7 +18,7 @@ public class Subtitle : IDiscoverableObject
 
     public long EpisodeId { get; set; }
 
-    [ForeignKey("EpisodeId")]
+    [ForeignKey(nameof(EpisodeId))]
     public virtual Episode Episode { get; set; }
 
     public string Scene { get; set; }
@@ -31,6 +31,10 @@ public class Subtitle : IDiscoverableObject
     public bool HD { get; set; }
     public Uri DownloadUri { get; set; }
     public string Language { get; set; }
+
+    [Column(TypeName = "VARCHAR")]
+    [StringLength(3)]
+    public string? LanguageCodeIso3Letters { get; set; }
 
     public string? StoragePath { get; set; }
 
