@@ -1,3 +1,10 @@
+## [3.2.7](https://github.com/Belphemur/AddictedProxy/compare/v3.2.6...v3.2.7) (2022-11-28)
+
+
+### Bug Fixes
+
+* **Subtitle:** Add missing designer file ([3162b43](https://github.com/Belphemur/AddictedProxy/commit/3162b43eb9fd2f31513ba9a652152d81f2d5c951))
+
 ## [3.2.6](https://github.com/Belphemur/AddictedProxy/compare/v3.2.5...v3.2.6) (2022-11-28)
 
 
