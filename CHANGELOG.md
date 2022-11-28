@@ -1,3 +1,10 @@
+## [3.2.3](https://github.com/Belphemur/AddictedProxy/compare/v3.2.2...v3.2.3) (2022-11-28)
+
+
+### Performance improvements
+
+* **outputCache:** Remove output cache middleware ([8bb7101](https://github.com/Belphemur/AddictedProxy/commit/8bb7101f21964ba3e35b3ee1d519434294614f0e))
+
 ## [3.2.2](https://github.com/Belphemur/AddictedProxy/compare/v3.2.1...v3.2.2) (2022-11-27)
 
 
