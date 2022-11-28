@@ -1,3 +1,10 @@
+## [3.2.4](https://github.com/Belphemur/AddictedProxy/compare/v3.2.3...v3.2.4) (2022-11-28)
+
+
+### Performance improvements
+
+* **Tracking:** Improve performance monitoring ([68942a1](https://github.com/Belphemur/AddictedProxy/commit/68942a16d5fd04301d45f044ada4a197059abc2c))
+
 ## [3.2.3](https://github.com/Belphemur/AddictedProxy/compare/v3.2.2...v3.2.3) (2022-11-28)
 
 
