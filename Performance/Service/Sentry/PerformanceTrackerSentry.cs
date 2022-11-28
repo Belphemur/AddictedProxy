@@ -46,12 +46,15 @@ public class PerformanceTrackerSentry : IPerformanceTracker
                     var transaction = _sentryHub.StartTransaction(operation, description);
                     _sentryHub.ConfigureScope(scope => { scope.Transaction = transaction; });
                     span = transaction;
+                    _currentSpan = new SpanSentry(span, null);
+                }
+                else
+                {
+                    var childSpan = span.StartChild(operation, description);
+                    _currentSpan = new SpanSentry(childSpan, new SpanSentry(span, null));
                 }
 
-                var currentTransaction = new SpanSentry(span, null);
-
-
-                return _currentSpan = currentTransaction;
+                return _currentSpan;
             }
         }
     }
