@@ -40,10 +40,16 @@ public class PerformanceTrackerSentry : IPerformanceTracker
             }
             case null:
             {
-                var transaction = _sentryHub.StartTransaction(operation, description);
-                var currentTransaction = new SpanSentry(transaction, null);
+                var scope = _sentryHub.GetSpan();
+                if (scope == null)
+                {
+                    var transaction = _sentryHub.StartTransaction(operation, description);
+                    _sentryHub.ConfigureScope(scope => { scope.Transaction = transaction; });
+                    scope = transaction;
+                }
 
-                _sentryHub.ConfigureScope(scope => { scope.Transaction = transaction; });
+                var currentTransaction = new SpanSentry(scope, null);
+
 
                 return _currentSpan = currentTransaction;
             }
