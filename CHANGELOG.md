@@ -1,3 +1,11 @@
+## [3.2.8](https://github.com/Belphemur/AddictedProxy/compare/v3.2.7...v3.2.8) (2022-11-28)
+
+
+### Performance improvements
+
+* **Fetch:** Increase concurrency ([0ea67b0](https://github.com/Belphemur/AddictedProxy/commit/0ea67b0292f06864c074096367723924c3ab0169))
+* **Tracking:** improve tracking ([8004e7a](https://github.com/Belphemur/AddictedProxy/commit/8004e7a4e51b3e4cc29a4adda2ebd61eff013aa8))
+
 ## [3.2.7](https://github.com/Belphemur/AddictedProxy/compare/v3.2.6...v3.2.7) (2022-11-28)
 
 
