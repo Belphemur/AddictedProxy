@@ -124,7 +124,6 @@ public class SubtitlesController : Controller
     }
 
 
-    [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
     private async Task<ActionResult<SubtitleSearchResponse>> SearchSubtitles(Result<TvShow> showResult, int episode, int season, string lang, CancellationToken token)
     {
         if (!showResult.IsSuccess)
