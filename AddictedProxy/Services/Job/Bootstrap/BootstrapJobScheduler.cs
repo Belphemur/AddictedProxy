@@ -24,7 +24,7 @@ public class BootstrapJobScheduler : IBootstrap
                       .AddStartupJob(builder => builder.Create<RefreshAvailableShowsJob>().Build())
                       .AddStartupJob(builder => builder.Create<DownloadCredsRedeemerJob>().Build())
                       .AddStartupJob(builder => builder.Create<CheckCompletedTmdbJob>().Build())
-                      .RegisterQueue(new QueueSettings(nameof(FetchSubtitlesJob), 8))
+                      .RegisterQueue(new QueueSettings(nameof(FetchSubtitlesJob), 12))
         );
     }
 }
