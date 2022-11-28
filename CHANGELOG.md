@@ -1,3 +1,17 @@
+## [3.2.6](https://github.com/Belphemur/AddictedProxy/compare/v3.2.5...v3.2.6) (2022-11-28)
+
+
+### Bug Fixes
+
+* **perf:** fix starting span properly when already one present ([abaf485](https://github.com/Belphemur/AddictedProxy/commit/abaf485bda483776358f81299766b500c264d418))
+* **Perf:** naming ([f6793c6](https://github.com/Belphemur/AddictedProxy/commit/f6793c634e3176cfe33ac6882d1fed195cc19379))
+* **Performance:** Only start transaction when there isn't one already ([9e633ed](https://github.com/Belphemur/AddictedProxy/commit/9e633edbd4bde684f4c85179c626fd57a133bab8))
+
+
+### Performance improvements
+
+* **Subtitle::Language:** Store proper language for subtitles ([7279f90](https://github.com/Belphemur/AddictedProxy/commit/7279f90dd897061f1d6196fde25d369bf47dc15e))
+
 ## [3.2.5](https://github.com/Belphemur/AddictedProxy/compare/v3.2.4...v3.2.5) (2022-11-28)
 
 
