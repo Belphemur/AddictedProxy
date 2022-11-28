@@ -3,10 +3,10 @@
 using System.Globalization;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Services.Culture;
 using AddictedProxy.Services.Job.Extensions;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
+using AddictedProxy.Upstream.Service.Culture;
 using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;

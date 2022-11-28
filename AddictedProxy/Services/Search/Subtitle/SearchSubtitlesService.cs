@@ -4,12 +4,12 @@ using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
 using AddictedProxy.Model.Search;
-using AddictedProxy.Services.Culture;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
 using AddictedProxy.Stats.Popularity.Model;
+using AddictedProxy.Upstream.Service.Culture;
 using Amazon.Runtime.Internal;
 using Ardalis.Result;
 using Job.Scheduler.AspNetCore.Builder;
@@ -132,9 +132,9 @@ public class SearchSubtitlesService : ISearchSubtitlesService
     private IEnumerable<Subtitle> FindMatchingSubtitles(SearchPayload payload, Episode episode)
     {
         using var _ = _performanceTracker.BeginNestedSpan("find-matching-subtitles", $"Episode [{episode.Id}] S{episode.Season}E{episode.Number}");
-        var searchLanguage = _cultureParser.FromString(payload.LanguageIso);
+        var searchLanguage = _cultureParser.FromString(payload.LanguageIso)!;
         var search = episode.Subtitles
-                            .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), searchLanguage));
+                            .Where(subtitle => subtitle.LanguageCodeIso3Letters == searchLanguage.ThreeLetterISOLanguageName || Equals(_cultureParser.FromString(subtitle.Language), searchLanguage));
         if (payload.FileName != null)
         {
             search = search.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => payload.FileName.ToLowerInvariant().Contains(version)));

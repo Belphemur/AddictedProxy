@@ -154,6 +154,10 @@ namespace AddictedProxy.Database.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("LanguageCodeIso3Letters")
+                        .HasMaxLength(3)
+                        .HasColumnType("VARCHAR");
+
                     b.Property<string>("Scene")
                         .IsRequired()
                         .HasColumnType("text");

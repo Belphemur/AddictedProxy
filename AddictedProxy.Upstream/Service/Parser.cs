@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Model;
+using AddictedProxy.Upstream.Service.Culture;
 using AddictedProxy.Upstream.Service.Exception;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
@@ -17,12 +18,14 @@ public class Parser
 {
     private readonly IHtmlParser _parser;
     private readonly ILogger<Parser> _logger;
+    private readonly CultureParser _cultureParser;
     private readonly Regex _completionRegex = new(@"(?<completion>\d+\.?\d+)%", RegexOptions.Compiled);
 
-    public Parser(IHtmlParser parser, ILogger<Parser> logger)
+    public Parser(IHtmlParser parser, ILogger<Parser> logger, CultureParser cultureParser)
     {
         _parser = parser;
         _logger = logger;
+        _cultureParser = cultureParser;
     }
 
     public async IAsyncEnumerable<TvShow> GetShowsAsync(Stream html, [EnumeratorCancellation] CancellationToken token)
@@ -194,7 +197,8 @@ public class Parser
                 CompletionPct = subtitleRow.CompletionPercentage,
                 Discovered = DateTime.UtcNow,
                 Episode = episode,
-                Version = subtitleRow.Version
+                Version = subtitleRow.Version,
+                LanguageCodeIso3Letters = _cultureParser.FromString(subtitleRow.Language)?.ThreeLetterISOLanguageName
             });
             episode.Subtitles = subtitles.ToList();
             yield return episode;
