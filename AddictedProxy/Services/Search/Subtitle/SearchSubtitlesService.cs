@@ -16,6 +16,7 @@ using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Sentry.Performance.Service;
 using ErrorResponse = AddictedProxy.Model.Responses.ErrorResponse;
 
 namespace AddictedProxy.Services.Search;
@@ -30,6 +31,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
     private readonly IEpisodeRepository _episodeRepository;
     private readonly ISeasonRefresher _seasonRefresher;
     private readonly IEpisodeRefresher _episodeRefresher;
+    private readonly IPerformanceTracker _performanceTracker;
 
     public SearchSubtitlesService(IShowRefresher showRefresher,
                                   CultureParser cultureParser,
@@ -38,7 +40,8 @@ public class SearchSubtitlesService : ISearchSubtitlesService
                                   ILogger<SearchSubtitlesService> logger,
                                   IEpisodeRepository episodeRepository,
                                   ISeasonRefresher seasonRefresher,
-                                  IEpisodeRefresher episodeRefresher)
+                                  IEpisodeRefresher episodeRefresher,
+                                  IPerformanceTracker performanceTracker)
     {
         _showRefresher = showRefresher;
         _cultureParser = cultureParser;
@@ -48,6 +51,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         _episodeRepository = episodeRepository;
         _seasonRefresher = seasonRefresher;
         _episodeRefresher = episodeRefresher;
+        _performanceTracker = performanceTracker;
     }
 
     /// <summary>
@@ -64,6 +68,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
 
     public async Task<Result<TvShow>> GetByShowUniqueIdAsync(Guid showUniqueId, CancellationToken token)
     {
+        using var _ = _performanceTracker.BeginNestedSpan("get-show-uuid", $"Show {showUniqueId}");
         var show = await _showRefresher.GetShowByGuidAsync(showUniqueId, token);
         return show == null ? Result.NotFound($"Couldn't find show {showUniqueId}") : show;
     }
@@ -76,6 +81,8 @@ public class SearchSubtitlesService : ISearchSubtitlesService
     /// <returns></returns>
     public async Task<Result<SubtitleFound>> FindSubtitlesAsync(SearchPayload request, CancellationToken token)
     {
+        using var _ = _performanceTracker.BeginNestedSpan("find-subtitles", $"Show {request.Show.UniqueId}/{request.Show.Name}");
+
         var language = _cultureParser.FromString(request.LanguageIso);
         if (language == null)
         {
@@ -124,6 +131,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
 
     private IEnumerable<Subtitle> FindMatchingSubtitles(SearchPayload payload, Episode episode)
     {
+        using var _ = _performanceTracker.BeginNestedSpan("find-matching-subtitles", $"Episode [{episode.Id}] S{episode.Season}E{episode.Number}");
         var searchLanguage = _cultureParser.FromString(payload.LanguageIso);
         var search = episode.Subtitles
                             .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), searchLanguage));
