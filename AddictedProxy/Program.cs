@@ -3,6 +3,7 @@
 using System.Reflection;
 using AddictedProxy.Caching.Bootstrap;
 using AddictedProxy.Controllers.Bootstrap;
+using AddictedProxy.Culture.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Model.Performance;
@@ -59,7 +60,8 @@ var currentAssemblies = new[]
     typeof(BootstrapPerformance).Assembly,
     typeof(BootstrapStatsPopularityShow).Assembly,
     typeof(BootstrapTMDB).Assembly,
-    typeof(BootstrapDistributedCaching).Assembly
+    typeof(BootstrapDistributedCaching).Assembly,
+    typeof(BootstrapCulture).Assembly
 };
 
 builder.Services

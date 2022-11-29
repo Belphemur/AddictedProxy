@@ -18,6 +18,7 @@
 
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\AddictedProxy.Culture\AddictedProxy.Culture.csproj" />
         <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
     </ItemGroup>
     <ItemGroup>

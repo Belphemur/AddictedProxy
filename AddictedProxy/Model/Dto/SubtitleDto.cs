@@ -6,7 +6,7 @@ namespace AddictedProxy.Model.Dto;
 
 public class SubtitleDto
 {
-    public SubtitleDto(Subtitle subtitle, string downloadUri, CultureInfo? language)
+    public SubtitleDto(Subtitle subtitle, string downloadUri, Culture.Model.Culture? language)
     {
         Version = subtitle.Scene;
         Completed = subtitle.Completed;

@@ -2,9 +2,9 @@
 
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Model;
-using AddictedProxy.Upstream.Service.Culture;
 using AddictedProxy.Upstream.Service.Exception;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
@@ -185,7 +185,7 @@ public class Parser
                 Discovered = DateTime.UtcNow
             };
 
-            var subtitles = episodeGroup.Select(subtitleRow => new Subtitle
+            var subtitles = episodeGroup.ToAsyncEnumerable().SelectAwait(async subtitleRow => new Subtitle
             {
                 Scene = subtitleRow.Scene.Trim(),
                 Corrected = subtitleRow.Corrected,
@@ -198,9 +198,9 @@ public class Parser
                 Discovered = DateTime.UtcNow,
                 Episode = episode,
                 Version = subtitleRow.Version,
-                LanguageCodeIso3Letters = _cultureParser.FromString(subtitleRow.Language)?.ThreeLetterISOLanguageName
+                LanguageCodeIso3Letters = (await _cultureParser.FromStringAsync(subtitleRow.Language, token))?.ThreeLetterISOLanguageName
             });
-            episode.Subtitles = subtitles.ToList();
+            episode.Subtitles = await subtitles.ToListAsync(token);
             yield return episode;
         }
     }
