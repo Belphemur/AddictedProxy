@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Shows.Jobs;
-using AddictedProxy.Upstream.Service.Culture;
 using Job.Scheduler.AspNetCore.Builder;
 using Job.Scheduler.Scheduler;
 using Microsoft.AspNetCore.Mvc;
@@ -132,7 +132,7 @@ public class TvShowsController : Controller
             return NotFound();
         }
 
-        var searchLanguage = _cultureParser.FromString(language);
+        var searchLanguage = await _cultureParser.FromStringAsync(language, cancellationToken);
 
         if (searchLanguage == null)
         {

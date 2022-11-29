@@ -1,12 +1,12 @@
 ﻿#region
 
 using System.Globalization;
+using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Job.Extensions;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
-using AddictedProxy.Upstream.Service.Culture;
 using Job.Scheduler.Job;
 using Job.Scheduler.Job.Action;
 using Job.Scheduler.Job.Exception;
@@ -82,7 +82,7 @@ public class FetchSubtitlesJob : IQueueJob
         using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), "fetch-subtitles-one-episode");
         try
         {
-            var season =  await _seasonRefresher.GetRefreshSeasonAsync(show, Data.Season, token);
+            var season = await _seasonRefresher.GetRefreshSeasonAsync(show, Data.Season, token);
 
             if (season == null)
             {
@@ -98,7 +98,7 @@ public class FetchSubtitlesJob : IQueueJob
                 return;
             }
 
-            var matchingSubtitles = HasMatchingSubtitle(episode);
+            var matchingSubtitles = await HasMatchingSubtitleAsync(episode, token);
 
             var latestDiscovered = episode.Subtitles.Max(subtitle => subtitle.Discovered);
 
@@ -131,19 +131,20 @@ public class FetchSubtitlesJob : IQueueJob
     }
 
 
-    private bool HasMatchingSubtitle(Episode episode)
+    private async Task<bool> HasMatchingSubtitleAsync(Episode episode, CancellationToken token)
     {
         var list = episode.Subtitles
-                          .Where(subtitle => Equals(_cultureParser.FromString(subtitle.Language), Data.Language));
+                          .ToAsyncEnumerable()
+                          .WhereAwait(async subtitle => Data.Language == await _cultureParser.FromStringAsync(subtitle.Language, token));
         if (Data.FileName != null)
         {
             list = list.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => Data.FileName.ToLowerInvariant().Contains(version)));
         }
 
-        return list.Any();
+        return await list.AnyAsync(token);
     }
 
-    public record JobData(long ShowId, int Season, int Episode, CultureInfo? Language, string? FileName)
+    public record JobData(long ShowId, int Season, int Episode, Culture.Model.Culture? Language, string? FileName)
     {
         public string Key => $"{ShowId}-{Season}";
         public string RequestData => $"S{Season}E{Episode} ({Language}) {FileName ?? ""}";

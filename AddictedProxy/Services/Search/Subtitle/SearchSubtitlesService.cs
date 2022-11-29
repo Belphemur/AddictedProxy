@@ -1,4 +1,5 @@
 ﻿using AddictedProxy.Controllers.Rest;
+using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
@@ -9,7 +10,6 @@ using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
 using AddictedProxy.Stats.Popularity.Model;
-using AddictedProxy.Upstream.Service.Culture;
 using Amazon.Runtime.Internal;
 using Ardalis.Result;
 using Job.Scheduler.AspNetCore.Builder;
@@ -83,7 +83,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
     {
         using var _ = _performanceTracker.BeginNestedSpan("find-subtitles", $"Show {request.Show.UniqueId}/{request.Show.Name}");
 
-        var language = _cultureParser.FromString(request.LanguageIso);
+        var language = await _cultureParser.FromStringAsync(request.LanguageIso, token);
         if (language == null)
         {
             return Result<SubtitleFound>.Invalid(new List<ValidationError>
@@ -116,37 +116,38 @@ public class SearchSubtitlesService : ISearchSubtitlesService
                 return new SubtitleFound(ArraySegment<Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
             }
 
-            ScheduleJob(request, show);
+            ScheduleJob(request, show, language);
             return new SubtitleFound(ArraySegment<Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
         }
 
-        var matchingSubtitles = FindMatchingSubtitles(request, episode);
+        var matchingSubtitles = await FindMatchingSubtitlesAsync(request, episode, token);
         if (matchingSubtitles.Length == 0)
         {
-            ScheduleJob(request, show);
+            ScheduleJob(request, show, language);
         }
 
         return new SubtitleFound(matchingSubtitles, new EpisodeDto(episode), language);
     }
 
-    private Subtitle[] FindMatchingSubtitles(SearchPayload payload, Episode episode)
+    private async Task<Subtitle[]> FindMatchingSubtitlesAsync(SearchPayload payload, Episode episode, CancellationToken token)
     {
         using var _ = _performanceTracker.BeginNestedSpan("find-matching-subtitles", $"Episode [{episode.Id}] S{episode.Season}E{episode.Number}");
-        var searchLanguage = _cultureParser.FromString(payload.LanguageIso)!;
+        var searchLanguage = (await _cultureParser.FromStringAsync(payload.LanguageIso, token))!;
         var search = episode.Subtitles
-                            .Where(subtitle => subtitle.LanguageCodeIso3Letters == searchLanguage.ThreeLetterISOLanguageName || Equals(_cultureParser.FromString(subtitle.Language), searchLanguage));
-        if (payload.FileName != null)
-        {
-            search = search.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => payload.FileName.ToLowerInvariant().Contains(version)));
-        }
+                            .ToAsyncEnumerable()
+                            .WhereAwait(async subtitle =>
+                                subtitle.LanguageCodeIso3Letters == searchLanguage.ThreeLetterISOLanguageName || searchLanguage == await _cultureParser.FromStringAsync(subtitle.Language, token));
 
-        return search.ToArray();
+        return await search.ToArrayAsync(token);
     }
 
-    private void ScheduleJob(SearchPayload payload, TvShow show)
+    private void ScheduleJob(SearchPayload payload, TvShow show, Culture.Model.Culture language)
     {
         var job = _jobBuilder.Create<FetchSubtitlesJob>()
-                             .Configure(subtitlesJob => { subtitlesJob.Data = new FetchSubtitlesJob.JobData(show.Id, payload.Season, payload.Episode, _cultureParser.FromString(payload.LanguageIso), payload.FileName); })
+                             .Configure(subtitlesJob =>
+                             {
+                                 subtitlesJob.Data = new FetchSubtitlesJob.JobData(show.Id, payload.Season, payload.Episode, language, payload.FileName);
+                             })
                              .Build();
         _jobScheduler.ScheduleJob(job);
     }

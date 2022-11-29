@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using AddictedProxy.Caching.OutputCache.Configuration;
+using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
 using AddictedProxy.Model.Search;
 using AddictedProxy.Services.Provider.Subtitle;
 using AddictedProxy.Services.Search;
-using AddictedProxy.Upstream.Service.Culture;
 using AddictedProxy.Upstream.Service.Exception;
 using AddictedProxy.Utils;
 using Ardalis.Result;
@@ -69,7 +69,7 @@ public class SubtitlesController : Controller
             var subtitleStream = await _subtitleProvider.GetSubtitleFileAsync(subtitle, token);
 
             var fileName =
-                $"{subtitle.Episode.TvShow.Name.Replace(" ", ".")}.S{subtitle.Episode.Season:D2}E{subtitle.Episode.Number:D2}.{_cultureParser.FromString(subtitle.Language)?.TwoLetterISOLanguageName.ToLowerInvariant()}{(subtitle.HearingImpaired ? ".hi" : "")}.srt";
+                $"{subtitle.Episode.TvShow.Name.Replace(" ", ".")}.S{subtitle.Episode.Season:D2}E{subtitle.Episode.Number:D2}.{(await _cultureParser.FromStringAsync(subtitle.Language, token))?.TwoLetterISOLanguageName.ToLowerInvariant()}{(subtitle.HearingImpaired ? ".hi" : "")}.srt";
             return new FileStreamResult(subtitleStream, new MediaTypeHeaderValue("text/srt"))
             {
                 EntityTag = new EntityTagHeaderValue('"' + $"{subtitle.UniqueId}{(subtitle.StoredAt.HasValue ? "-" + subtitle.StoredAt.Value.Ticks : "")}" + '"'),
