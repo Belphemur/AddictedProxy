@@ -1,3 +1,10 @@
+## [3.2.9](https://github.com/Belphemur/AddictedProxy/compare/v3.2.8...v3.2.9) (2022-11-29)
+
+
+### Performance improvements
+
+* **Culture::Parsing:** Refactor language parsing to use distributed cache and own object ([9cfe84e](https://github.com/Belphemur/AddictedProxy/commit/9cfe84e607a1b7c2647fdc0db57c48e191bcf943))
+
 ## [3.2.8](https://github.com/Belphemur/AddictedProxy/compare/v3.2.7...v3.2.8) (2022-11-28)
 
 
