@@ -70,7 +70,7 @@ public class BootstrapAddictedServices : IBootstrap,
         .Or<TimeoutRejectedException>()
         .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromMinutes(1), 20, TimeSpan.FromMinutes(5));
 
-    private static IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy() => Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(20));
+    private static IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy() => Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(35));
 
     private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
     {
