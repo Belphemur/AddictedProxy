@@ -1,3 +1,11 @@
+## [3.2.10](https://github.com/Belphemur/AddictedProxy/compare/v3.2.9...v3.2.10) (2022-11-30)
+
+
+### Performance improvements
+
+* **Addicted:** Change timeout to 35 seconds ([3737f40](https://github.com/Belphemur/AddictedProxy/commit/3737f4025cc5d5dcd9e8208698951423f929a1ba))
+* **Debugging:** Add debugging tool to the image ([5b6b40e](https://github.com/Belphemur/AddictedProxy/commit/5b6b40e19d7da6bf246634f83bf2aa71be6390a6))
+
 ## [3.2.9](https://github.com/Belphemur/AddictedProxy/compare/v3.2.8...v3.2.9) (2022-11-29)
 
 
