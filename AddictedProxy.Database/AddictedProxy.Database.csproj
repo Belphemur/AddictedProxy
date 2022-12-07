@@ -13,7 +13,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0" />
-        <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="7.17.2" />
+        <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="7.18.0" />
         <PackageReference Include="System.Linq.Async" Version="6.0.1" />
 
     </ItemGroup>
