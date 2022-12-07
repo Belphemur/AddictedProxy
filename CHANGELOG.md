@@ -1,3 +1,10 @@
+## [3.2.11](https://github.com/Belphemur/AddictedProxy/compare/v3.2.10...v3.2.11) (2022-12-07)
+
+
+### Performance improvements
+
+* **Fetch:** reducing concurrency on fetch job ([d308c31](https://github.com/Belphemur/AddictedProxy/commit/d308c310f35b53f95b476763baf8bfc5199d8b41))
+
 ## [3.2.10](https://github.com/Belphemur/AddictedProxy/compare/v3.2.9...v3.2.10) (2022-11-30)
 
 
