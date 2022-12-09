@@ -37,7 +37,8 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
                     new BasicAuthAuthorizationFilterOptions
                     {
                         // Require secure connection for dashboard
-                        RequireSsl = true,
+                        RequireSsl = false,
+                        SslRedirect = false,
                         // Case sensitive login checking
                         LoginCaseSensitive = true,
                         // Users
