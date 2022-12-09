@@ -47,7 +47,7 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
                             {
                                 Login = "admin",
                                 // Password as plain text, SHA1 will be used
-                                PasswordClear = "test"
+                                Password = new byte[] { 0x96, 0x25, 0x68, 0x2a, 0x0a, 0xe0, 0x32, 0x52, 0x0a, 0x76, 0x0e, 0x64, 0xe5, 0x6a, 0x5d, 0xac, 0xba, 0xe7, 0x4b, 0xaa }
                             }
                         }
                     })
