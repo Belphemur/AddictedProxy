@@ -1,7 +1,6 @@
 ﻿using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Database.Transaction;
-using AddictedProxy.Model.Crendentials;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Upstream.Service;

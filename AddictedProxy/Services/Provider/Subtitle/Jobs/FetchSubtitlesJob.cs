@@ -1,19 +1,13 @@
 ﻿#region
 
-using System.Globalization;
 using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Services.Job.Extensions;
+using AddictedProxy.Services.Job.Filter;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
-using Job.Scheduler.Job;
-using Job.Scheduler.Job.Action;
-using Job.Scheduler.Job.Exception;
+using Hangfire;
 using Locking;
-using NewRelic.Api.Agent;
-using Polly.Contrib.WaitAndRetry;
-using Sentry;
 using Sentry.Performance.Model;
 using Sentry.Performance.Service;
 
@@ -21,7 +15,7 @@ using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Subtitle.Jobs;
 
-public class FetchSubtitlesJob : IQueueJob
+public class FetchSubtitlesJob
 {
     private readonly CultureParser _cultureParser;
 
@@ -49,56 +43,52 @@ public class FetchSubtitlesJob : IQueueJob
         _tvShowRepository = tvShowRepository;
     }
 
-    public JobData Data { get; set; }
 
-    public IRetryAction FailRule { get; } = new ExponentialDecorrelatedJittedBackoffRetry(5, TimeSpan.FromMinutes(5));
-    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(30);
-
-    public string Key => Data.Key;
-    public string QueueId => nameof(FetchSubtitlesJob);
-
-    private async Task<TvShow> GetShow(CancellationToken token)
+    private async Task<TvShow> GetShow(JobData data, CancellationToken token)
     {
         if (_show != null)
         {
             return _show;
         }
 
-        return (_show = await _tvShowRepository.GetByIdAsync(Data.ShowId, token)) ?? throw new InvalidOperationException($"Expected to find show {Data.ShowId} in db.");
+        return (_show = await _tvShowRepository.GetByIdAsync(data.ShowId, token)) ?? throw new InvalidOperationException($"Expected to find show {data.ShowId} in db.");
     }
 
-    [Transaction(Web = false)]
-    public async Task ExecuteAsync(CancellationToken token)
+
+    [DisableMultipleQueuedItemsFilter(Order = 10)]
+    [MaximumConcurrentExecutions(5, 300)]
+    [Queue("fetch-subtitles")]
+    public async Task ExecuteAsync(JobData data, CancellationToken token)
     {
-        var show = await GetShow(token);
-        using var scope = _logger.BeginScope(ScopeName(show));
-        using var namedLock = Lock<FetchSubtitlesJob>.GetNamedLock(Data.Key);
+        var show = await GetShow(data, token);
+        using var scope = _logger.BeginScope(ScopeName(data, show));
+        using var namedLock = Lock<FetchSubtitlesJob>.GetNamedLock(data.Key);
         if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
         {
-            _logger.LogInformation("Lock for {key} already taken", Data.Key);
+            _logger.LogInformation("Lock for {key} already taken", data.Key);
             return;
         }
 
         using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), "fetch-subtitles-one-episode");
         try
         {
-            var season = await _seasonRefresher.GetRefreshSeasonAsync(show, Data.Season, token);
+            var season = await _seasonRefresher.GetRefreshSeasonAsync(show, data.Season, token);
 
             if (season == null)
             {
-                _logger.LogInformation("Couldn't find season {season} for show {showName}", Data.Season, show.Name);
+                _logger.LogInformation("Couldn't find season {season} for show {showName}", data.Season, show.Name);
                 return;
             }
 
-            var episode = await _episodeRefresher.GetRefreshEpisodeAsync(show, season, Data.Episode, token);
+            var episode = await _episodeRefresher.GetRefreshEpisodeAsync(show, season, data.Episode, token);
 
             if (episode == null)
             {
-                _logger.LogInformation("Couldn't find episode S{season}E{episode} for show {showName}", Data.Season, Data.Episode, show.Name);
+                _logger.LogInformation("Couldn't find episode S{season}E{episode} for show {showName}", data.Season, data.Episode, show.Name);
                 return;
             }
 
-            var matchingSubtitles = await HasMatchingSubtitleAsync(episode, token);
+            var matchingSubtitles = await HasMatchingSubtitleAsync(data, episode, token);
 
             var latestDiscovered = episode.Subtitles.Max(subtitle => subtitle.Discovered);
 
@@ -108,7 +98,7 @@ public class FetchSubtitlesJob : IQueueJob
             }
             else
             {
-                _logger.LogInformation("Couldn't find matching subtitles for {search}", Data.RequestData);
+                _logger.LogInformation("Couldn't find matching subtitles for {search}", data.RequestData);
             }
         }
         catch (Exception)
@@ -118,33 +108,26 @@ public class FetchSubtitlesJob : IQueueJob
         }
     }
 
-    public async Task OnFailure(JobException exception)
+    private string ScopeName(JobData data, TvShow show)
     {
-        var show = await GetShow(default);
-        using var scope = _logger.BeginScope(ScopeName(show));
-        _logger.LogJobException(exception, "Fetching subtitles info");
-    }
-
-    private string ScopeName(TvShow show)
-    {
-        return $"{show.Name} {Data.RequestData}";
+        return $"{show.Name} {data.RequestData}";
     }
 
 
-    private async Task<bool> HasMatchingSubtitleAsync(Episode episode, CancellationToken token)
+    private async Task<bool> HasMatchingSubtitleAsync(JobData data, Episode episode, CancellationToken token)
     {
         var list = episode.Subtitles
                           .ToAsyncEnumerable()
-                          .WhereAwait(async subtitle => Data.Language == await _cultureParser.FromStringAsync(subtitle.Language, token));
-        if (Data.FileName != null)
+                          .WhereAwait(async subtitle => data.Language == await _cultureParser.FromStringAsync(subtitle.Language, token));
+        if (data.FileName != null)
         {
-            list = list.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => Data.FileName.ToLowerInvariant().Contains(version)));
+            list = list.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => data.FileName.ToLowerInvariant().Contains(version)));
         }
 
         return await list.AnyAsync(token);
     }
 
-    public record JobData(long ShowId, int Season, int Episode, Culture.Model.Culture? Language, string? FileName)
+    public readonly record struct JobData(long ShowId, int Season, int Episode, Culture.Model.Culture? Language, string? FileName)
     {
         public string Key => $"{ShowId}-{Season}";
         public string RequestData => $"S{Season}E{Episode} ({Language}) {FileName ?? ""}";

@@ -1,5 +1,4 @@
 ﻿using AddictedProxy.Database.Model.Shows;
-using AddictedProxy.Model.Crendentials;
 
 namespace AddictedProxy.Services.Provider.Seasons;
 

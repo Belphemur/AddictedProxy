@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using AddictedProxy.Database.Model.Shows;
 
 namespace AddictedProxy.Model.Dto;

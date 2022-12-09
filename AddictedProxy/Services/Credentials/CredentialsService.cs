@@ -1,9 +1,7 @@
 ﻿#region
 
-using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Repositories.Credentials;
-using AddictedProxy.Database.Transaction;
 using AddictedProxy.Model.Crendentials;
 using AddictedProxy.Services.Provider.Config;
 using Microsoft.Extensions.Options;

@@ -1,6 +1,5 @@
 ﻿#region
 
-using AddictedProxy.Controllers.Hub;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
@@ -8,7 +7,6 @@ using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Upstream.Service;
-using Microsoft.AspNetCore.SignalR;
 using Sentry.Performance.Service;
 
 #endregion
@@ -62,19 +60,21 @@ public class ShowRefresher : IShowRefresher
     /// <summary>
     /// Refresh the seasons and episodes of the show
     /// </summary>
-    /// <param name="tvShow"></param>
+    /// <param name="showId"></param>
     /// <param name="token"></param>
-    public async Task RefreshShowAsync(TvShow tvShow, CancellationToken token)
+    public async Task RefreshShowAsync(long showId, CancellationToken token)
     {
+        
         using var transaction = _performanceTracker.BeginNestedSpan(nameof(ShowRefresher), "refresh-show");
+        var show = (await _tvShowRepository.GetByIdAsync(showId, token))!;
+
         var progressMin = 25;
         var progressMax = 100;
 
-        await _refreshHubManager.SendProgressAsync(tvShow, 1, token);
-        await _seasonRefresher.RefreshSeasonsAsync(tvShow, token: token);
-        await _refreshHubManager.SendProgressAsync(tvShow, progressMin, token);
+        await _refreshHubManager.SendProgressAsync(show, 1, token);
+        await _seasonRefresher.RefreshSeasonsAsync(show, token: token);
+        await _refreshHubManager.SendProgressAsync(show, progressMin, token);
 
-        var show = (await _tvShowRepository.GetByIdAsync(tvShow.Id, token))!;
         var seasonToSync = show.Seasons;
 
         _logger.LogInformation("Refreshing episode for {number} seasons of {show}", seasonToSync.Count, show.Name);
@@ -82,7 +82,7 @@ public class ShowRefresher : IShowRefresher
         async Task SendProgress(int progress)
         {
             var refreshValue = Convert.ToInt32(Math.Ceiling(progressMin + (progressMax - progressMin) * progress / 100.0));
-            await _refreshHubManager.SendProgressAsync(tvShow, refreshValue, token);
+            await _refreshHubManager.SendProgressAsync(show, refreshValue, token);
         }
 
         await _episodeRefresher.RefreshEpisodesAsync(show, seasonToSync, SendProgress, token);

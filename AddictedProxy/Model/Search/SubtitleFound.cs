@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using AddictedProxy.Database.Model.Shows;
+﻿using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Model.Dto;
 
 namespace AddictedProxy.Model.Search;

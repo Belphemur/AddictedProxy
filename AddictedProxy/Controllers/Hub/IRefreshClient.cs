@@ -1,5 +1,4 @@
-﻿using AddictedProxy.Database.Model.Shows;
-using AddictedProxy.Model.Dto;
+﻿using AddictedProxy.Model.Dto;
 
 namespace AddictedProxy.Controllers.Hub;
 

@@ -6,8 +6,7 @@ using AddictedProxy.Services.Provider.Subtitle.Jobs;
 using AddictedProxy.Storage.Store;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.Exception;
-using Job.Scheduler.AspNetCore.Builder;
-using Job.Scheduler.Scheduler;
+using Hangfire;
 
 #endregion
 
@@ -17,8 +16,6 @@ internal class SubtitleProvider : ISubtitleProvider
 {
     private readonly IAddic7edDownloader _addic7EdDownloader;
     private readonly ICredentialsService _credentialsService;
-    private readonly IJobBuilder _jobBuilder;
-    private readonly IJobScheduler _jobScheduler;
     private readonly ILogger<SubtitleProvider> _logger;
     private readonly SubtitleCounterUpdater _subtitleCounterUpdater;
     private readonly IStorageProvider _storageProvider;
@@ -29,8 +26,6 @@ internal class SubtitleProvider : ISubtitleProvider
                             IStorageProvider storageProvider,
                             ISubtitleRepository subtitleRepository,
                             ICredentialsService credentialsService,
-                            IJobBuilder jobBuilder,
-                            IJobScheduler jobScheduler,
                             ILogger<SubtitleProvider> logger,
                             SubtitleCounterUpdater subtitleCounterUpdater)
     {
@@ -38,8 +33,6 @@ internal class SubtitleProvider : ISubtitleProvider
         _storageProvider = storageProvider;
         _subtitleRepository = subtitleRepository;
         _credentialsService = credentialsService;
-        _jobBuilder = jobBuilder;
-        _jobScheduler = jobScheduler;
         _logger = logger;
         _subtitleCounterUpdater = subtitleCounterUpdater;
     }
@@ -94,15 +87,9 @@ internal class SubtitleProvider : ISubtitleProvider
 
             var blob = buffer.ToArray();
 
-            _jobScheduler.ScheduleJob(
-                _jobBuilder.Create<StoreSubtitleJob>()
-                           .Configure(job =>
-                           {
-                               job.SubtitleBlob = blob;
-                               job.SubtitleId = subtitle.UniqueId;
-                           })
-                           .Build()
-            );
+            BackgroundJob.Enqueue<StoreSubtitleJob>(job => job.ExecuteAsync(subtitle.UniqueId, blob, default));
+
+
             await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
             return new MemoryStream(blob);
         }
@@ -110,7 +97,7 @@ internal class SubtitleProvider : ISubtitleProvider
         {
             creds?.TagAsDownloadExceeded();
             await Task.Delay(TimeSpan.FromMilliseconds(100), token);
-            return await DownloadStoreSubtitleAsync(subtitle,  attempts + 1, token);
+            return await DownloadStoreSubtitleAsync(subtitle, attempts + 1, token);
         }
     }
 

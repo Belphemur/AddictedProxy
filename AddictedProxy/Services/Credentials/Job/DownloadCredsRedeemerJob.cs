@@ -1,12 +1,8 @@
-﻿using AddictedProxy.Services.Job.Extensions;
-using Job.Scheduler.Job;
-using Job.Scheduler.Job.Action;
-using Job.Scheduler.Job.Exception;
-using Sentry.Performance.Service;
+﻿using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Credentials.Job;
 
-public class DownloadCredsRedeemerJob : IRecurringJob
+public class DownloadCredsRedeemerJob
 {
     private readonly ILogger<DownloadCredsRedeemerJob> _logger;
     private readonly ICredentialsService _credentialsService;
@@ -27,14 +23,4 @@ public class DownloadCredsRedeemerJob : IRecurringJob
         await _credentialsService.RedeemDownloadCredentialsAsync(DateTime.UtcNow, cancellationToken);
         _lastRun = DateTime.UtcNow;
     }
-
-    public Task OnFailure(JobException exception)
-    {
-        _logger.LogJobException(exception, "Couldn't clean the download credentials");
-        return Task.CompletedTask;
-    }
-
-    public IRetryAction FailRule { get; } = new AlwaysRetry();
-    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(1);
-    public TimeSpan Delay { get; } = TimeSpan.FromHours(1);
 }

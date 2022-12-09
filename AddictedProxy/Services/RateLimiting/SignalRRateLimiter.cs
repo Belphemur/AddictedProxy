@@ -1,8 +1,6 @@
 ﻿using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
-using System;
-using System.Threading.Tasks;
 
 namespace AddictedProxy.Services.RateLimiting;
 
