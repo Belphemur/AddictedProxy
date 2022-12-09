@@ -1,3 +1,10 @@
+## [3.3.1](https://github.com/Belphemur/AddictedProxy/compare/v3.3.0...v3.3.1) (2022-12-09)
+
+
+### Bug Fixes
+
+* **hangfire:** disable require ssl ([eba9038](https://github.com/Belphemur/AddictedProxy/commit/eba903803e0a5d33b3894ea9ca39e701fdf7ec84))
+
 ## [3.3.0](https://github.com/Belphemur/AddictedProxy/compare/v3.2.11...v3.3.0) (2022-12-09)
 
 
