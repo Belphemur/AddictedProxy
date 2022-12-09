@@ -1,4 +1,5 @@
 ﻿
+using AddictedProxy.Services.Job.Filter;
 using Hangfire;
 using Locking;
 using Sentry.Performance.Model;
@@ -19,6 +20,7 @@ public class RefreshSingleShowJob
         _performanceTracker = performanceTracker;
     }
 
+    [DisableMultipleQueuedItemsFilter(Order = 10)]
     [MaximumConcurrentExecutions(3)]
     [Queue("refresh-one-show")]
     public async Task ExecuteAsync(long showId, CancellationToken cancellationToken)
