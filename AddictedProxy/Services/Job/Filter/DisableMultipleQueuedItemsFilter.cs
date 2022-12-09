@@ -79,7 +79,7 @@ public class DisableMultipleQueuedItemsFilter : JobFilterAttribute, IClientFilte
 
         //https://gist.github.com/odinserj/a8332a3f486773baa009#gistcomment-1898401
         var payload = $"{job.Type.FullName}.{job.Method.Name}.{parameters}";
-        var hash = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(payload));
+        var hash = SHA384.HashData(System.Text.Encoding.UTF8.GetBytes(payload));
         var fingerprint = Convert.ToBase64String(hash);
         return fingerprint;
     }
