@@ -1,3 +1,17 @@
+## [3.3.0](https://github.com/Belphemur/AddictedProxy/compare/v3.2.11...v3.3.0) (2022-12-09)
+
+
+### Features
+
+* **JobSystem::Hangfire:** Replace old job system by hangfire ([ec9bdfa](https://github.com/Belphemur/AddictedProxy/commit/ec9bdfaee50d7fb8ab525332054b2a9489c12aed))
+
+
+### Performance improvements
+
+* **Job::Fingerprint:** be sure the finger print is properly generated ([2f463b4](https://github.com/Belphemur/AddictedProxy/commit/2f463b460a83bbc920daa72a98363b0b8f314c62))
+* **Job::Fingerprint:** Use SHA384 to reduce collision chance ([94598a2](https://github.com/Belphemur/AddictedProxy/commit/94598a2f0802d51615d8dc6e6a4543e5fd32f79e))
+* **Refresh:** Disallow multiple refresh job for same show ([17fd245](https://github.com/Belphemur/AddictedProxy/commit/17fd245c2ba3f3c87d9235a999b7008ebb191cd5))
+
 ## [3.2.11](https://github.com/Belphemur/AddictedProxy/compare/v3.2.10...v3.2.11) (2022-12-07)
 
 
