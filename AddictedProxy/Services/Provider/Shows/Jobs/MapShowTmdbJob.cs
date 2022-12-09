@@ -2,16 +2,13 @@
 using AddictedProxy.Database.Model;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Services.Job.Extensions;
-using Job.Scheduler.Job;
-using Job.Scheduler.Job.Action;
-using Job.Scheduler.Job.Exception;
+using Hangfire;
 using Sentry.Performance.Service;
 using TvMovieDatabaseClient.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
 
-public class MapShowTmdbJob : IJob
+public class MapShowTmdbJob
 {
     private readonly ILogger<MapShowTmdbJob> _logger;
     private readonly IPerformanceTracker _performanceTracker;
@@ -27,7 +24,8 @@ public class MapShowTmdbJob : IJob
         _tvShowRepository = tvShowRepository;
         _tmdbClient = tmdbClient;
     }
-
+    
+    [MaximumConcurrentExecutions(1)]
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "map-tmdb-to-show");
@@ -89,13 +87,4 @@ public class MapShowTmdbJob : IJob
         _logger.LogInformation("Found TMDB info for {count} movies", count);
         await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
     }
-
-    public Task OnFailure(JobException exception)
-    {
-        _logger.LogJobException(exception, "Couldn't map shows to tmdb");
-        return Task.CompletedTask;
-    }
-
-    public IRetryAction FailRule { get; } = new ExponentialDecorrelatedJittedBackoffRetry(25, TimeSpan.FromSeconds(5));
-    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(30);
 }

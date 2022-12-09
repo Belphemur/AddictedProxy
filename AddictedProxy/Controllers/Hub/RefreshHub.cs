@@ -1,9 +1,6 @@
-﻿using AddictedProxy.Database.Model.Shows;
-using AddictedProxy.Model.Dto;
-using AddictedProxy.Services.Provider.Shows;
+﻿using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Shows.Jobs;
-using Job.Scheduler.AspNetCore.Builder;
-using Job.Scheduler.Scheduler;
+using Hangfire;
 using Microsoft.AspNetCore.SignalR;
 
 namespace AddictedProxy.Controllers.Hub;
@@ -11,14 +8,10 @@ namespace AddictedProxy.Controllers.Hub;
 public class RefreshHub : Hub<IRefreshClient>
 {
     private readonly IShowRefresher _showRefresher;
-    private readonly IJobBuilder _jobBuilder;
-    private readonly IJobScheduler _jobScheduler;
 
-    public RefreshHub(IShowRefresher showRefresher, IJobBuilder jobBuilder, IJobScheduler jobScheduler)
+    public RefreshHub(IShowRefresher showRefresher)
     {
         _showRefresher = showRefresher;
-        _jobBuilder = jobBuilder;
-        _jobScheduler = jobScheduler;
     }
 
     /// <summary>
@@ -34,10 +27,7 @@ public class RefreshHub : Hub<IRefreshClient>
             return;
         }
 
-        var job = _jobBuilder.Create<RefreshSingleShowJob>()
-                             .Configure(job => job.Show = show)
-                             .Build();
-        _jobScheduler.ScheduleJob(job);
+        BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, default));
     }
 
     /// <summary>

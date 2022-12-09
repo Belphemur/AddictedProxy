@@ -1,30 +1,57 @@
 ﻿#region
 
-using AddictedProxy.Services.Credentials.Job;
-using AddictedProxy.Services.Provider.Shows;
-using AddictedProxy.Services.Provider.Shows.Jobs;
-using AddictedProxy.Services.Provider.Subtitle.Jobs;
+using AddictedProxy.Caching.Bootstrap.EnvVar;
+using AddictedProxy.Services.Job.Service;
+using Hangfire;
+using Hangfire.Dashboard.BasicAuthorization;
 using InversionOfControl.Model;
-using Job.Scheduler.AspNetCore.Extensions;
-using Job.Scheduler.Queue;
+using StackExchange.Redis;
 
 #endregion
 
 namespace AddictedProxy.Services.Job.Bootstrap;
 
-public class BootstrapJobScheduler : IBootstrap
+public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddJob<RefreshAvailableShowsJob>();
-        services.AddJob<MapShowTmdbJob>();
-        services.AddJob<CheckCompletedTmdbJob>();
-        services.AddJobScheduler(
-            config => config
-                      .AddStartupJob(builder => builder.Create<RefreshAvailableShowsJob>().Build())
-                      .AddStartupJob(builder => builder.Create<DownloadCredsRedeemerJob>().Build())
-                      .AddStartupJob(builder => builder.Create<CheckCompletedTmdbJob>().Build())
-                      .RegisterQueue(new QueueSettings(nameof(FetchSubtitlesJob), 3))
-        );
+        var config = configuration.GetSection("Redis").Get<RedisConfig>()!;
+
+        services.AddHangfire(conf => conf
+                                     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                                     .UseSimpleAssemblyNameTypeSerializer()
+                                     .UseRecommendedSerializerSettings()
+                                     .UseRedisStorage(ConnectionMultiplexer.Connect(config.Connection)));
+
+        services.AddHangfireServer(options => options.Queues = new[] { "refresh-one-show", "fetch-subtitles", "store-subtitle" });
+        services.AddHostedService<SchedulerHostedService>();
+    }
+
+    public void ConfigureApp(IApplicationBuilder app)
+    {
+        app.UseHangfireDashboard(options: new DashboardOptions
+        {
+            Authorization = new[]
+            {
+                new BasicAuthAuthorizationFilter(
+                    new BasicAuthAuthorizationFilterOptions
+                    {
+                        // Require secure connection for dashboard
+                        RequireSsl = true,
+                        // Case sensitive login checking
+                        LoginCaseSensitive = true,
+                        // Users
+                        Users = new[]
+                        {
+                            new BasicAuthAuthorizationUser
+                            {
+                                Login = "admin",
+                                // Password as plain text, SHA1 will be used
+                                PasswordClear = "test"
+                            }
+                        }
+                    })
+            }
+        });
     }
 }

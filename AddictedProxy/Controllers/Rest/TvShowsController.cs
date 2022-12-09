@@ -5,8 +5,7 @@ using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Shows.Jobs;
-using Job.Scheduler.AspNetCore.Builder;
-using Job.Scheduler.Scheduler;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
@@ -16,8 +15,6 @@ namespace AddictedProxy.Controllers.Rest;
 public class TvShowsController : Controller
 {
     private readonly IShowRefresher _showRefresher;
-    private readonly IJobBuilder _jobBuilder;
-    private readonly IJobScheduler _jobScheduler;
     private readonly IEpisodeRepository _episodeRepository;
     private readonly CultureParser _cultureParser;
 
@@ -37,11 +34,9 @@ public class TvShowsController : Controller
 
     public record ShowSearchResponse(IAsyncEnumerable<ShowDto> Shows);
 
-    public TvShowsController(IShowRefresher showRefresher, IJobBuilder jobBuilder, IJobScheduler jobScheduler, IEpisodeRepository episodeRepository, CultureParser cultureParser)
+    public TvShowsController(IShowRefresher showRefresher, IEpisodeRepository episodeRepository, CultureParser cultureParser)
     {
-        _showRefresher = showRefresher;
-        _jobBuilder = jobBuilder;
-        _jobScheduler = jobScheduler;
+        _showRefresher = showRefresher; 
         _episodeRepository = episodeRepository;
         _cultureParser = cultureParser;
     }
@@ -99,10 +94,7 @@ public class TvShowsController : Controller
             return NotFound();
         }
 
-        var job = _jobBuilder.Create<RefreshSingleShowJob>()
-                             .Configure(job => job.Show = show)
-                             .Build();
-        _jobScheduler.ScheduleJob(job);
+        BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, default));
 
         return NoContent();
     }

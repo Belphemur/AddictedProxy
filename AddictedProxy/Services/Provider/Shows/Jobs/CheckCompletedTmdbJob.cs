@@ -1,38 +1,27 @@
 ﻿using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Services.Job.Extensions;
-using Amazon.Runtime.Internal.Util;
-using Job.Scheduler.AspNetCore.Builder;
-using Job.Scheduler.Job;
-using Job.Scheduler.Job.Action;
-using Job.Scheduler.Job.Exception;
-using Job.Scheduler.Scheduler;
+using Hangfire;
 using Sentry.Performance.Service;
 using TvMovieDatabaseClient.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
 
-public class CheckCompletedTmdbJob : IRecurringJob
+public class CheckCompletedTmdbJob 
 {
     private ILogger<CheckCompletedTmdbJob> _logger;
     private readonly ITvShowRepository _tvShowRepository;
     private readonly ITMDBClient _tmdbClient;
     private readonly IPerformanceTracker _performanceTracker;
-    private readonly IJobScheduler _jobScheduler;
-    private readonly IJobBuilder _jobBuilder;
 
     public CheckCompletedTmdbJob(ILogger<CheckCompletedTmdbJob> logger,
                                  ITvShowRepository tvShowRepository,
                                  ITMDBClient tmdbClient,
-                                 IPerformanceTracker performanceTracker,
-                                 IJobScheduler jobScheduler,
-                                 IJobBuilder jobBuilder)
+                                 IPerformanceTracker performanceTracker
+                              )
     {
         _logger = logger;
         _tvShowRepository = tvShowRepository;
         _tmdbClient = tmdbClient;
         _performanceTracker = performanceTracker;
-        _jobScheduler = jobScheduler;
-        _jobBuilder = jobBuilder;
     }
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -55,10 +44,7 @@ public class CheckCompletedTmdbJob : IRecurringJob
             show.IsCompleted = true;
             show.LastSeasonRefreshed = null;
 
-            var job = _jobBuilder.Create<RefreshSingleShowJob>()
-                                 .Configure(job => { job.Show = show; })
-                                 .Build();
-            _jobScheduler.ScheduleJob(job);
+            BackgroundJob.Enqueue<RefreshSingleShowJob>(job => job.ExecuteAsync(show.Id, default));
 
   
 
@@ -72,14 +58,4 @@ public class CheckCompletedTmdbJob : IRecurringJob
         _logger.LogInformation("Update completed state for {count} shows", count);
         await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
     }
-
-    public Task OnFailure(JobException exception)
-    {
-        _logger.LogJobException(exception, "Couldn't check completion of running shows");
-        return Task.CompletedTask;
-    }
-
-    public IRetryAction FailRule { get; } = new NoRetry();
-    public TimeSpan? MaxRuntime { get; } = TimeSpan.FromMinutes(10);
-    public TimeSpan Delay { get; } = TimeSpan.FromDays(1);
 }

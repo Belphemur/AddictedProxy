@@ -36,5 +36,5 @@ public interface IShowRefresher
     /// </summary>
     /// <param name="tvShow"></param>
     /// <param name="token"></param>
-    Task RefreshShowAsync(TvShow tvShow, CancellationToken token);
+    Task RefreshShowAsync(long tvShow, CancellationToken token);
 }

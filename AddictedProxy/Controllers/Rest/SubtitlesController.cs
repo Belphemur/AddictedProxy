@@ -1,7 +1,6 @@
 ﻿#region
 
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using AddictedProxy.Caching.OutputCache.Configuration;
 using AddictedProxy.Culture.Service;

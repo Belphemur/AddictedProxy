@@ -1,6 +1,5 @@
 ﻿using AddictedProxy.Stats.Popularity.Service;
 using InversionOfControl.Model;
-using Job.Scheduler.AspNetCore.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,10 +1,7 @@
-﻿using System.Collections.Concurrent;
-using AddictedProxy.Database.Model.Credentials;
-using AddictedProxy.Database.Model.Shows;
+﻿using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Config;
-using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Upstream.Service;
 using Locking;
 using Microsoft.Extensions.Options;

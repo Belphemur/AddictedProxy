@@ -1,5 +1,4 @@
-﻿using AddictedProxy.Database.Model.Credentials;
-using AddictedProxy.Database.Model.Shows;
+﻿using AddictedProxy.Database.Model.Shows;
 
 namespace AddictedProxy.Services.Provider.Episodes;
 

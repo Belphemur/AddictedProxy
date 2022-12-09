@@ -1,23 +1,15 @@
-﻿using AddictedProxy.Controllers.Rest;
-using AddictedProxy.Culture.Service;
+﻿using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
-using AddictedProxy.Model.Responses;
 using AddictedProxy.Model.Search;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
-using AddictedProxy.Stats.Popularity.Model;
-using Amazon.Runtime.Internal;
 using Ardalis.Result;
-using Job.Scheduler.AspNetCore.Builder;
-using Job.Scheduler.Scheduler;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+using Hangfire;
 using Sentry.Performance.Service;
-using ErrorResponse = AddictedProxy.Model.Responses.ErrorResponse;
 
 namespace AddictedProxy.Services.Search;
 
@@ -25,8 +17,6 @@ public class SearchSubtitlesService : ISearchSubtitlesService
 {
     private readonly IShowRefresher _showRefresher;
     private readonly CultureParser _cultureParser;
-    private readonly IJobBuilder _jobBuilder;
-    private readonly IJobScheduler _jobScheduler;
     private readonly ILogger<SearchSubtitlesService> _logger;
     private readonly IEpisodeRepository _episodeRepository;
     private readonly ISeasonRefresher _seasonRefresher;
@@ -35,8 +25,6 @@ public class SearchSubtitlesService : ISearchSubtitlesService
 
     public SearchSubtitlesService(IShowRefresher showRefresher,
                                   CultureParser cultureParser,
-                                  IJobBuilder jobBuilder,
-                                  IJobScheduler jobScheduler,
                                   ILogger<SearchSubtitlesService> logger,
                                   IEpisodeRepository episodeRepository,
                                   ISeasonRefresher seasonRefresher,
@@ -45,8 +33,6 @@ public class SearchSubtitlesService : ISearchSubtitlesService
     {
         _showRefresher = showRefresher;
         _cultureParser = cultureParser;
-        _jobBuilder = jobBuilder;
-        _jobScheduler = jobScheduler;
         _logger = logger;
         _episodeRepository = episodeRepository;
         _seasonRefresher = seasonRefresher;
@@ -143,12 +129,8 @@ public class SearchSubtitlesService : ISearchSubtitlesService
 
     private void ScheduleJob(SearchPayload payload, TvShow show, Culture.Model.Culture language)
     {
-        var job = _jobBuilder.Create<FetchSubtitlesJob>()
-                             .Configure(subtitlesJob =>
-                             {
-                                 subtitlesJob.Data = new FetchSubtitlesJob.JobData(show.Id, payload.Season, payload.Episode, language, payload.FileName);
-                             })
-                             .Build();
-        _jobScheduler.ScheduleJob(job);
+        var jobData = new FetchSubtitlesJob.JobData(show.Id, payload.Season, payload.Episode, language, payload.FileName);
+
+        BackgroundJob.Enqueue<FetchSubtitlesJob>(subtitlesJob => subtitlesJob.ExecuteAsync(jobData, default));
     }
 }
