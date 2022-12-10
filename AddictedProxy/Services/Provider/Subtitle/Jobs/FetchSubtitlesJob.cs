@@ -57,10 +57,14 @@ public class FetchSubtitlesJob
 
 
     [DisableMultipleQueuedItemsFilter(Order = 10)]
-    [MaximumConcurrentExecutions(5, 300)]
+    [MaximumConcurrentExecutions(5)]
     [Queue("fetch-subtitles")]
-    public async Task ExecuteAsync(JobData data, CancellationToken token)
+    public async Task ExecuteAsync(JobData data, CancellationToken cancellationToken)
     {
+        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+        using var ctsLinked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
+        var token = ctsLinked.Token;
+
         var show = await GetShow(data, token);
         using var scope = _logger.BeginScope(ScopeName(data, show));
         using var namedLock = Lock<FetchSubtitlesJob>.GetNamedLock(data.Key);
