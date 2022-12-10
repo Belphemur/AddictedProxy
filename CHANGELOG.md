@@ -1,3 +1,10 @@
+## [3.3.12](https://github.com/Belphemur/AddictedProxy/compare/v3.3.11...v3.3.12) (2022-12-10)
+
+
+### Bug Fixes
+
+* **Show::BBC:** Fix show from the BBC that couldn't be matched with TMDB. ([c5b8fc4](https://github.com/Belphemur/AddictedProxy/commit/c5b8fc4304e70ebbfdfa8e455ad2682b9797b4c6))
+
 ## [3.3.11](https://github.com/Belphemur/AddictedProxy/compare/v3.3.10...v3.3.11) (2022-12-10)
 
 
