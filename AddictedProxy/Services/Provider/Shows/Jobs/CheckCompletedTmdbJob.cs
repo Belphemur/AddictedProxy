@@ -36,7 +36,7 @@ public class CheckCompletedTmdbJob
                 continue;
             }
 
-            if (details.Status != "Ended")
+            if (details.Status != "Ended" && details.Status != "Canceled")
             {
                 continue;
             }
