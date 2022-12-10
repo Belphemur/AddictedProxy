@@ -34,7 +34,7 @@ public class MapShowTmdbJob
         List<TvShow> mightBeMovie = new();
         foreach (var show in await _tvShowRepository.GetShowWithoutTmdbIdAsync().ToArrayAsync(cancellationToken))
         {
-            var result = await _tmdbClient.SearchTvAsync(_nameCleaner.Replace(show.Name, ""), cancellationToken).FirstOrDefaultAsync(cancellationToken);
+            var result = await _tmdbClient.SearchTvAsync(_nameCleaner.Replace(show.Name, "").Replace("BBC ", ""), cancellationToken).FirstOrDefaultAsync(cancellationToken);
             if (result == null)
             {
                 mightBeMovie.Add(show);
