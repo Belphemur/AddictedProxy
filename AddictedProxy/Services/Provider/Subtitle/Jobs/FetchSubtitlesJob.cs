@@ -58,6 +58,7 @@ public class FetchSubtitlesJob
 
     [DisableMultipleQueuedItemsFilter(Order = 10)]
     [MaximumConcurrentExecutions(5)]
+    [AutomaticRetry(Attempts = 15, DelaysInSeconds = new[] { 20, 30, 40, 50, 60, 120, 240, 360 })]
     [Queue("fetch-subtitles")]
     public async Task ExecuteAsync(JobData data, CancellationToken cancellationToken)
     {
