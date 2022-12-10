@@ -142,7 +142,8 @@ public class EpisodeRefresher : IEpisodeRefresher
         var seasonsText = string.Join(", ", seasons.Select(season => $"S{season.Number}"));
         var results = new List<Episode[]>();
         var currentProgress = 0;
-        var progressIncrement = 50 / (int)Math.Ceiling(seasons.Length / 2.0);
+        var seasonCount = seasons.Length != 0 ? seasons.Length : 1;
+        var progressIncrement = 50 / (int)Math.Ceiling(seasonCount / 2.0);
 
         using (var _ = _performanceTracker.BeginNestedSpan("episodes.seasons", $"Fetch episodes and subtitles from addic7ed for {show.Name} and Seasons {seasonsText}"))
         {
