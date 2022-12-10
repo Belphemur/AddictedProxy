@@ -1,3 +1,10 @@
+## [3.3.13](https://github.com/Belphemur/AddictedProxy/compare/v3.3.12...v3.3.13) (2022-12-10)
+
+
+### Performance improvements
+
+* **Sentry:** Create Scope when creating transaction to be sure everything is clean. ([d6118d5](https://github.com/Belphemur/AddictedProxy/commit/d6118d5a2f943abec913dbe0316316f00a3456ba))
+
 ## [3.3.12](https://github.com/Belphemur/AddictedProxy/compare/v3.3.11...v3.3.12) (2022-12-10)
 
 
