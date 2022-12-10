@@ -1,3 +1,10 @@
+## [3.3.10](https://github.com/Belphemur/AddictedProxy/compare/v3.3.9...v3.3.10) (2022-12-10)
+
+
+### Bug Fixes
+
+* **Season:** Fix case where there isn't any season for the show ([a8b2180](https://github.com/Belphemur/AddictedProxy/commit/a8b21809a0f427754dbaa2ff8cbb90f6f34386bc))
+
 ## [3.3.9](https://github.com/Belphemur/AddictedProxy/compare/v3.3.8...v3.3.9) (2022-12-10)
 
 
