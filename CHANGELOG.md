@@ -1,3 +1,10 @@
+## [3.3.4](https://github.com/Belphemur/AddictedProxy/compare/v3.3.3...v3.3.4) (2022-12-10)
+
+
+### Bug Fixes
+
+* **Job:** Be sure the unique key is properly calculated instead of relying on the full args ([6bc0e61](https://github.com/Belphemur/AddictedProxy/commit/6bc0e61aaa205b60ae13bea53a61507598d0ff7f))
+
 ## [3.3.3](https://github.com/Belphemur/AddictedProxy/compare/v3.3.2...v3.3.3) (2022-12-10)
 
 
