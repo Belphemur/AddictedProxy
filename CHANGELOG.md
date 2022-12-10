@@ -1,3 +1,10 @@
+## [3.3.11](https://github.com/Belphemur/AddictedProxy/compare/v3.3.10...v3.3.11) (2022-12-10)
+
+
+### Performance improvements
+
+* **refresh::single:** Add timeout of 8 minute to do the full refresh ([c9d962f](https://github.com/Belphemur/AddictedProxy/commit/c9d962f1e35773c3acc48d8485a8e7f9b2c2dce9))
+
 ## [3.3.10](https://github.com/Belphemur/AddictedProxy/compare/v3.3.9...v3.3.10) (2022-12-10)
 
 
