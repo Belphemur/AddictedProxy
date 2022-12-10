@@ -21,7 +21,10 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
                                      .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                                      .UseSimpleAssemblyNameTypeSerializer()
                                      .UseRecommendedSerializerSettings()
-                                     .UseRedisStorage(ConnectionMultiplexer.Connect(config.Connection)));
+                                     .UseRedisStorage(ConnectionMultiplexer.Connect(config.Connection, options =>
+                                     {
+                                         options.SyncTimeout = (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
+                                     })));
 
         services.AddHangfireServer(options =>
         {
