@@ -1,3 +1,10 @@
+## [3.3.8](https://github.com/Belphemur/AddictedProxy/compare/v3.3.7...v3.3.8) (2022-12-10)
+
+
+### Performance improvements
+
+* **FetchJob::Delay:** Change the retry delay on job failure ([25f0ae1](https://github.com/Belphemur/AddictedProxy/commit/25f0ae1d6c72d5eba3a29febea32c7d5f68551c7))
+
 ## [3.3.7](https://github.com/Belphemur/AddictedProxy/compare/v3.3.6...v3.3.7) (2022-12-10)
 
 
