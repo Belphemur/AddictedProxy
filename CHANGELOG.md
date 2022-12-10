@@ -1,3 +1,10 @@
+## [3.3.3](https://github.com/Belphemur/AddictedProxy/compare/v3.3.2...v3.3.3) (2022-12-10)
+
+
+### Performance improvements
+
+* **Redis:** Increase timeout to 10 secs ([400c228](https://github.com/Belphemur/AddictedProxy/commit/400c22899f66fb473dd037b86d187bda09bc245e))
+
 ## [3.3.2](https://github.com/Belphemur/AddictedProxy/compare/v3.3.1...v3.3.2) (2022-12-10)
 
 
