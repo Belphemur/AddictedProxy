@@ -2,10 +2,11 @@ using Sentry.Performance.Model.Sentry;
 
 namespace Sentry.Performance.Service.Sentry;
 
-public class PerformanceTrackerSentry : IPerformanceTracker
+public class PerformanceTrackerSentry : IPerformanceTracker, IDisposable
 {
     private readonly IHub _sentryHub;
     private SpanSentry? _currentSpan;
+    private IDisposable? _sentryScope;
 
     public PerformanceTrackerSentry(IHub sentryHub)
     {
@@ -43,6 +44,7 @@ public class PerformanceTrackerSentry : IPerformanceTracker
                 var span = _sentryHub.GetSpan();
                 if (span == null)
                 {
+                    _sentryScope = _sentryHub.PushScope();
                     var transaction = _sentryHub.StartTransaction(operation, description);
                     _sentryHub.ConfigureScope(scope => { scope.Transaction = transaction; });
                     span = transaction;
@@ -57,5 +59,11 @@ public class PerformanceTrackerSentry : IPerformanceTracker
                 return _currentSpan;
             }
         }
+    }
+
+    public void Dispose()
+    {
+        _currentSpan?.Dispose();
+        _sentryScope?.Dispose();
     }
 }
