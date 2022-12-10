@@ -15,7 +15,7 @@ using System.Security.Cryptography;
 
 public class DisableMultipleQueuedItemsFilter : JobFilterAttribute, IClientFilter, IApplyStateFilter
 {
-    private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(10);
+    private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(20);
 
     private static bool AddFingerprintIfNotExists(IStorageConnection connection, Job? job)
     {
