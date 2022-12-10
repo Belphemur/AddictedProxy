@@ -23,7 +23,11 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
                                      .UseRecommendedSerializerSettings()
                                      .UseRedisStorage(ConnectionMultiplexer.Connect(config.Connection)));
 
-        services.AddHangfireServer(options => options.Queues = new[] { "refresh-one-show", "fetch-subtitles", "store-subtitle" });
+        services.AddHangfireServer(options =>
+        {
+            options.Queues = new[] { "store-subtitle", "default", "refresh-one-show", "fetch-subtitles" };
+            options.WorkerCount = Environment.ProcessorCount * 6;
+        });
         services.AddHostedService<SchedulerHostedService>();
     }
 
