@@ -1,3 +1,11 @@
+## [3.3.6](https://github.com/Belphemur/AddictedProxy/compare/v3.3.5...v3.3.6) (2022-12-10)
+
+
+### Performance improvements
+
+* **Hangfire:** increase lock timeout ([af50b51](https://github.com/Belphemur/AddictedProxy/commit/af50b51f821ab644bb360179d3585b4593f0258d))
+* **redis:** Increase redis timeout ([6c723fa](https://github.com/Belphemur/AddictedProxy/commit/6c723faa87d9f8dbfeecf39e8fbfb31768f1d89b))
+
 ## [3.3.5](https://github.com/Belphemur/AddictedProxy/compare/v3.3.4...v3.3.5) (2022-12-10)
 
 
