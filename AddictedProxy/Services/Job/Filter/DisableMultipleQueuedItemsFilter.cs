@@ -108,8 +108,8 @@ public class DisableMultipleQueuedItemsFilter : JobFilterAttribute, IClientFilte
 
     public void OnStateApplied(ApplyStateContext context, IWriteOnlyTransaction transaction)
     {
-        if (context.NewState.Name.Equals(Hangfire.States.SucceededState.StateName)
-            || context.NewState.Name.Equals(Hangfire.States.FailedState.StateName))
+        if (context.NewState.Name.Equals(SucceededState.StateName)
+            || context.NewState.Name.Equals(FailedState.StateName))
         {
             RemoveFingerprint(context.Connection, context.BackgroundJob.Job);
         }
