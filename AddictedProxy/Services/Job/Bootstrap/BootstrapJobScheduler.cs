@@ -23,7 +23,7 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
                                      .UseRecommendedSerializerSettings()
                                      .UseRedisStorage(ConnectionMultiplexer.Connect(config.Connection, options =>
                                      {
-                                         options.SyncTimeout = (int)TimeSpan.FromSeconds(10).TotalMilliseconds;
+                                         options.SyncTimeout = (int)TimeSpan.FromSeconds(20).TotalMilliseconds;
                                      })));
 
         services.AddHangfireServer(options =>
