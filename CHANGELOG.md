@@ -1,3 +1,10 @@
+## [3.3.9](https://github.com/Belphemur/AddictedProxy/compare/v3.3.8...v3.3.9) (2022-12-10)
+
+
+### Bug Fixes
+
+* **TVDB:** Fix not mapping Canceled state to Completed show ([4b50dc7](https://github.com/Belphemur/AddictedProxy/commit/4b50dc7d9ea1d8143448e9a075cab960b58234b0))
+
 ## [3.3.8](https://github.com/Belphemur/AddictedProxy/compare/v3.3.7...v3.3.8) (2022-12-10)
 
 
