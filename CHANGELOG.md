@@ -1,3 +1,10 @@
+## [3.3.7](https://github.com/Belphemur/AddictedProxy/compare/v3.3.6...v3.3.7) (2022-12-10)
+
+
+### Performance improvements
+
+* **FetchJob:** Only schedule fetch job when we know it's going to query addic7ed ([4318ea8](https://github.com/Belphemur/AddictedProxy/commit/4318ea89769cf4365f5e179baf6ad2ca7618eab4))
+
 ## [3.3.6](https://github.com/Belphemur/AddictedProxy/compare/v3.3.5...v3.3.6) (2022-12-10)
 
 
