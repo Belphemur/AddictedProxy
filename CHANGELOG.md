@@ -1,3 +1,10 @@
+## [3.3.2](https://github.com/Belphemur/AddictedProxy/compare/v3.3.1...v3.3.2) (2022-12-10)
+
+
+### Performance improvements
+
+* **Hangfire:** Add the default queue back into the processing list. ([5a394f8](https://github.com/Belphemur/AddictedProxy/commit/5a394f8b8a92f9380cea53a00abe471954c4369c))
+
 ## [3.3.1](https://github.com/Belphemur/AddictedProxy/compare/v3.3.0...v3.3.1) (2022-12-09)
 
 
