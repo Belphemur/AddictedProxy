@@ -84,12 +84,12 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         }
 
         var show = request.Show;
+        var season = show.Seasons.FirstOrDefault(season => season.Number == request.Season);
 
         var episode = await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, request.Season, request.Episode, token);
 
         if (episode == null)
         {
-            var season = show.Seasons.FirstOrDefault(season => season.Number == request.Season);
             if (season == null && !_seasonRefresher.IsShowNeedsRefresh(show))
             {
                 _logger.LogInformation("Don't need to refresh seasons of show {show} returning empty data", show.Name);
@@ -107,7 +107,8 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         }
 
         var matchingSubtitles = await FindMatchingSubtitlesAsync(request, episode, token);
-        if (matchingSubtitles.Length == 0)
+        //Only refresh if we couldn't find subtitle and the season list or episode/subtitle list needs to be refreshed
+        if (matchingSubtitles.Length == 0 && (_seasonRefresher.IsShowNeedsRefresh(show) || _episodeRefresher.IsSeasonNeedRefresh(show, season!)))
         {
             ScheduleJob(request, show, language);
         }
