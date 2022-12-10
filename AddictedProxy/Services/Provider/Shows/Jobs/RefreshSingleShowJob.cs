@@ -21,14 +21,19 @@ public class RefreshSingleShowJob
     }
 
     [DisableMultipleQueuedItemsFilter(Order = 10)]
-    [MaximumConcurrentExecutions(3)]
+    [AutomaticRetry(Attempts = 20)]
+    [MaximumConcurrentExecutions(4)]
     [Queue("refresh-one-show")]
     public async Task ExecuteAsync(long showId, CancellationToken cancellationToken)
     {
+        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(8));
+        using var ctsLinked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
+        var token = ctsLinked.Token;
+        
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "refresh-specific-show");
 
         using var namedLock = Lock<RefreshSingleShowJob>.GetNamedLock(showId.ToString());
-        if (!await namedLock.WaitAsync(TimeSpan.Zero, cancellationToken))
+        if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
         {
             _logger.LogInformation("Lock for {show} already taken", showId);
             transaction.Finish(Status.Unavailable);
@@ -36,6 +41,6 @@ public class RefreshSingleShowJob
         }
 
         _logger.LogInformation("Refreshing show: {Show}", showId);
-        await _showRefresher.RefreshShowAsync(showId, cancellationToken);
+        await _showRefresher.RefreshShowAsync(showId, token);
     }
 }
