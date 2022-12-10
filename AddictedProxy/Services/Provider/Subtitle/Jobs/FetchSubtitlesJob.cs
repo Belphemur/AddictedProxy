@@ -4,6 +4,7 @@ using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Job.Filter;
+using AddictedProxy.Services.Job.Model;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
 using Hangfire;
@@ -127,7 +128,7 @@ public class FetchSubtitlesJob
         return await list.AnyAsync(token);
     }
 
-    public readonly record struct JobData(long ShowId, int Season, int Episode, Culture.Model.Culture? Language, string? FileName)
+    public readonly record struct JobData(long ShowId, int Season, int Episode, Culture.Model.Culture? Language, string? FileName) : IUniqueKey
     {
         public string Key => $"{ShowId}-{Season}";
         public string RequestData => $"S{Season}E{Episode} ({Language}) {FileName ?? ""}";
