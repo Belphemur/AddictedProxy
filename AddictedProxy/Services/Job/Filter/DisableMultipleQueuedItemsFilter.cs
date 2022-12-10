@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using AddictedProxy.Services.Job.Model;
 
 namespace AddictedProxy.Services.Job.Filter;
 
@@ -16,7 +17,7 @@ public class DisableMultipleQueuedItemsFilter : JobFilterAttribute, IClientFilte
 {
     private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(5);
 
-    private static bool AddFingerprintIfNotExists(IStorageConnection connection, Job job)
+    private static bool AddFingerprintIfNotExists(IStorageConnection connection, Job? job)
     {
         var fingerprintKey = GetFingerprintKey(job);
         var finterprintLockKey = GetFingerprintLockKey(fingerprintKey);
@@ -42,7 +43,7 @@ public class DisableMultipleQueuedItemsFilter : JobFilterAttribute, IClientFilte
         }
     }
 
-    private static void RemoveFingerprint(IStorageConnection connection, Job job)
+    private static void RemoveFingerprint(IStorageConnection connection, Job? job)
     {
         var fingerprintKey = GetFingerprintKey(job);
         var finterprintLockKey = GetFingerprintLockKey(fingerprintKey);
@@ -56,26 +57,33 @@ public class DisableMultipleQueuedItemsFilter : JobFilterAttribute, IClientFilte
 
     private static string GetFingerprintLockKey(string fingerprintKey)
     {
-        return string.Format("{0}:lock", fingerprintKey);
+        return $"{fingerprintKey}:lock";
     }
 
-    private static string GetFingerprintKey(Job job)
+    private static string GetFingerprintKey(Job? job)
     {
-        return string.Format("fingerprint:{0}", GetFingerprint(job));
+        return $"fingerprint:{GetFingerprint(job)}";
     }
 
-    private static string GetFingerprint(Job job)
+    private static string GetFingerprint(Job? job)
     {
         var parameters = string.Empty;
-        if (job?.Args != null)
-        {
-            parameters = JsonSerializer.Serialize(job.Args.Where(arg => arg is not CancellationToken));
-        }
-
         if (job?.Type == null || job.Method == null)
         {
             return string.Empty;
         }
+
+        var uniqueKey = job.Args?.Where(arg => arg is IUniqueKey).Cast<IUniqueKey>().Select(key => key.Key).ToArray() ?? Array.Empty<string>();
+
+        if (uniqueKey.Length > 0)
+        {
+            parameters = string.Join(".", uniqueKey);
+        }
+        else if (job.Args is { Count: > 0 })
+        {
+            parameters = JsonSerializer.Serialize(job.Args.Where(arg => arg is not CancellationToken));
+        }
+
 
         //https://gist.github.com/odinserj/a8332a3f486773baa009#gistcomment-1898401
         var payload = $"{job.Type.FullName}.{job.Method.Name}.{parameters}";
