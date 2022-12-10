@@ -1,3 +1,10 @@
+## [3.3.5](https://github.com/Belphemur/AddictedProxy/compare/v3.3.4...v3.3.5) (2022-12-10)
+
+
+### Performance improvements
+
+* **FetchJob:** Force fetch job to retry itself if couldn't finish in 2 minutes ([429492a](https://github.com/Belphemur/AddictedProxy/commit/429492a2743b2a8cc7960625351d491f809a0910))
+
 ## [3.3.4](https://github.com/Belphemur/AddictedProxy/compare/v3.3.3...v3.3.4) (2022-12-10)
 
 
