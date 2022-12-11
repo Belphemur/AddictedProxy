@@ -51,7 +51,7 @@ public class UpdateSubtitleLanguageJob
             
             await Parallel.ForEachAsync(subtitles.Chunk(500), token, UpdateSubtitleChunk);
 
-            await db.BulkSaveChangesAsync(token);
+            await db.SaveChangesAsync(token);
             count += subtitles.Length;
             _logger.LogInformation("[Migration] Language: {count}/{total} subtitles updated", count, total);
         } while (subtitles.Length > 0);
