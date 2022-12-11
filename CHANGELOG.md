@@ -1,3 +1,21 @@
+## [3.4.0](https://github.com/Belphemur/AddictedProxy/compare/v3.3.13...v3.4.0) (2022-12-11)
+
+
+### Features
+
+* **Language:** Use proper iso code for language ([d752b01](https://github.com/Belphemur/AddictedProxy/commit/d752b01a772b8a9913f4ecd32a00f782be4a7cf8))
+
+
+### Bug Fixes
+
+* **Culture:** Parsing of culture present on Addic7ed ([16e290e](https://github.com/Belphemur/AddictedProxy/commit/16e290ee60f9e6ad79ab2cd59f047ae7369f06cd))
+
+
+### Performance improvements
+
+* **Performance::Span:** Cleanup parent pointer on disposing ([7f3a0bb](https://github.com/Belphemur/AddictedProxy/commit/7f3a0bb2581dc4e8bb6fd21ccaf8d1e42f5a670d))
+* **Subtitle::Language:** Improve job performance to set the language of subtitles ([afa40c3](https://github.com/Belphemur/AddictedProxy/commit/afa40c3427093b00c6a6f437c0eba1ac46f53db9))
+
 ## [3.3.13](https://github.com/Belphemur/AddictedProxy/compare/v3.3.12...v3.3.13) (2022-12-10)
 
 
