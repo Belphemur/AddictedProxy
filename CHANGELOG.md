@@ -1,3 +1,10 @@
+## [3.4.2](https://github.com/Belphemur/AddictedProxy/compare/v3.4.1...v3.4.2) (2022-12-11)
+
+
+### Bug Fixes
+
+* **Subtitle::Language:** Don't use any bulk operation. Rely on good old entity framework. ([1bdfaf0](https://github.com/Belphemur/AddictedProxy/commit/1bdfaf0dbd3eb5814afb8e7a96c1cf383fc0f4f7))
+
 ## [3.4.1](https://github.com/Belphemur/AddictedProxy/compare/v3.4.0...v3.4.1) (2022-12-11)
 
 
