@@ -1,3 +1,10 @@
+## [3.4.1](https://github.com/Belphemur/AddictedProxy/compare/v3.4.0...v3.4.1) (2022-12-11)
+
+
+### Bug Fixes
+
+* **Subtitle::Language:** Fix updating the subtitle language. ([de27020](https://github.com/Belphemur/AddictedProxy/commit/de2702078f3cf8bc0547b6e8ecaefb5af408fd1f))
+
 ## [3.4.0](https://github.com/Belphemur/AddictedProxy/compare/v3.3.13...v3.4.0) (2022-12-11)
 
 
