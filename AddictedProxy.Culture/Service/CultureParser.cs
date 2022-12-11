@@ -1,5 +1,6 @@
 #region
 
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
@@ -11,6 +12,7 @@ namespace AddictedProxy.Culture.Service;
 public class CultureParser
 {
     private readonly IDistributedCache _cache;
+    private readonly ConcurrentDictionary<string, Model.Culture> _localCache = new();
 
     private static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web)
     {
@@ -32,10 +34,18 @@ public class CultureParser
     {
         var nameLc = name.ToLower();
         var cacheKey = $"Culture.v2.{nameLc}";
+
+        if (_localCache.TryGetValue(cacheKey, out var localCulture))
+        {
+            return localCulture;
+        }
+
         var cachedCultureJson = await _cache.GetStringAsync(cacheKey, token: token);
         if (cachedCultureJson != null)
         {
-            return JsonSerializer.Deserialize<Model.Culture>(cachedCultureJson, JsonSerializerOptions);
+            var cached = JsonSerializer.Deserialize<Model.Culture>(cachedCultureJson, JsonSerializerOptions)!;
+            _localCache.TryAdd(cacheKey, cached);
+            return cached;
         }
 
         var cultureInfo = nameLc switch
@@ -44,6 +54,12 @@ public class CultureParser
             "norwegian"              => CultureInfo.GetCultureInfo("no"),
             "french (canadian)"      => CultureInfo.GetCultureInfo("fr-ca"),
             "galego"                 => CultureInfo.GetCultureInfo("gl"),
+            "tagalog"                => CultureInfo.GetCultureInfo("tl"),
+            "cantonese"              => CultureInfo.GetCultureInfo("yue"),
+            "euskera"                => CultureInfo.GetCultureInfo("eus"),
+            "bengali"                => CultureInfo.GetCultureInfo("bn"),
+            "català"                 => CultureInfo.GetCultureInfo("cat"),
+            "klingon"                => CultureInfo.GetCultureInfo("tlh"),
             _ => CultureInfo.GetCultures(CultureTypes.AllCultures)
                             .FirstOrDefault(info => info.Name.ToLower() == nameLc
                                                     || info.DisplayName.ToLower() == nameLc
@@ -59,6 +75,7 @@ public class CultureParser
             {
                 SlidingExpiration = TimeSpan.FromDays(1)
             }, token);
+            _localCache.TryAdd(cacheKey, culture);
         }
 
         return culture;
