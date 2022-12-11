@@ -3,7 +3,7 @@ namespace Sentry.Performance.Model.Sentry;
 internal class SpanSentry : ISpan
 {
     private global::Sentry.ISpan InternalSpan { get; }
-    public SpanSentry? Parent { get; }
+    public SpanSentry? Parent { get; private set; }
 
     /// <summary>
     /// Id of the span
@@ -82,5 +82,6 @@ internal class SpanSentry : ISpan
         }
 
         Finish(Model.Status.Ok);
+        Parent = null;
     }
 }
