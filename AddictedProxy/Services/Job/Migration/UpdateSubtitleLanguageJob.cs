@@ -6,19 +6,21 @@ using Sentry.Performance.Service;
 
 namespace AddictedProxy.Services.Job.Migration;
 
-public sealed class UpdateSubtitleLanguageJob
+public class UpdateSubtitleLanguageJob
 {
     private readonly EntityContext _entityContext;
     private readonly CultureParser _parser;
     private readonly ILogger<UpdateSubtitleLanguageJob> _logger;
     private readonly IPerformanceTracker _performanceTracker;
+    private readonly IServiceProvider _provider;
 
-    public UpdateSubtitleLanguageJob(EntityContext entityContext, CultureParser parser, ILogger<UpdateSubtitleLanguageJob> logger, IPerformanceTracker performanceTracker)
+    public UpdateSubtitleLanguageJob(EntityContext entityContext, CultureParser parser, ILogger<UpdateSubtitleLanguageJob> logger, IPerformanceTracker performanceTracker, IServiceProvider provider)
     {
         _entityContext = entityContext;
         _parser = parser;
         _logger = logger;
         _performanceTracker = performanceTracker;
+        _provider = provider;
     }
 
     public async Task ProcessAsync(CancellationToken token)
@@ -36,7 +38,6 @@ public sealed class UpdateSubtitleLanguageJob
                 subtitle.LanguageIsoCode = culture.Name;
             }
         }
-
         using var _ = _performanceTracker.BeginNestedSpan("subtitles", "update-language");
         var count = 0L;
         var total = await _entityContext.Subtitles.Where(subtitle => subtitle.LanguageIsoCode == null).CountAsync(token);
@@ -44,11 +45,13 @@ public sealed class UpdateSubtitleLanguageJob
         do
         {
             using var __ = _performanceTracker.BeginNestedSpan("subtitles-chunk", $"chunk {count}/{total}");
-            subtitles = _entityContext.Subtitles.AsNoTracking().Where(subtitle => subtitle.LanguageIsoCode == null).OrderBy(subtitle => subtitle.Id).Take(10000).ToArray();
-
+            await using var scope = _provider.CreateAsyncScope();
+            await using var db = scope.ServiceProvider.GetRequiredService<EntityContext>();
+            subtitles = db.Subtitles.Where(subtitle => subtitle.LanguageIsoCode == null).OrderBy(subtitle => subtitle.Id).Take(10000).ToArray();
+            
             await Parallel.ForEachAsync(subtitles.Chunk(500), token, UpdateSubtitleChunk);
 
-            await _entityContext.Subtitles.BulkUpdateAsync(subtitles, token);
+            await db.BulkSaveChangesAsync(token);
             count += subtitles.Length;
             _logger.LogInformation("[Migration] Language: {count}/{total} subtitles updated", count, total);
         } while (subtitles.Length > 0);
