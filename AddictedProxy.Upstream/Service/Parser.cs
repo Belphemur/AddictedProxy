@@ -198,7 +198,7 @@ public class Parser
                 Discovered = DateTime.UtcNow,
                 Episode = episode,
                 Version = subtitleRow.Version,
-                LanguageCodeIso3Letters = (await _cultureParser.FromStringAsync(subtitleRow.Language, token))?.ThreeLetterISOLanguageName
+                LanguageIsoCode = (await _cultureParser.FromStringAsync(subtitleRow.Language, token))?.Name
             });
             episode.Subtitles = await subtitles.ToListAsync(token);
             yield return episode;

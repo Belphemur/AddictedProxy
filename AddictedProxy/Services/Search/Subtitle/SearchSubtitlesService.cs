@@ -123,7 +123,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         var search = episode.Subtitles
                             .ToAsyncEnumerable()
                             .WhereAwait(async subtitle =>
-                                subtitle.LanguageCodeIso3Letters == searchLanguage.ThreeLetterISOLanguageName || searchLanguage == await _cultureParser.FromStringAsync(subtitle.Language, token));
+                                subtitle.LanguageIsoCode == searchLanguage.Name || searchLanguage == await _cultureParser.FromStringAsync(subtitle.Language, token));
 
         return await search.ToArrayAsync(token);
     }

@@ -31,22 +31,30 @@ public class CultureParser
     public async Task<Model.Culture?> FromStringAsync(string name, CancellationToken token)
     {
         var nameLc = name.ToLower();
-        var cacheKey = $"Culture.{nameLc}";
+        var cacheKey = $"Culture.v2.{nameLc}";
         var cachedCultureJson = await _cache.GetStringAsync(cacheKey, token: token);
         if (cachedCultureJson != null)
         {
             return JsonSerializer.Deserialize<Model.Culture>(cachedCultureJson, JsonSerializerOptions);
         }
 
-        var cultureInfo = CultureInfo.GetCultures(CultureTypes.AllCultures)
-                                     .FirstOrDefault(info => info.Name.ToLower() == nameLc
-                                                             || info.DisplayName.ToLower() == nameLc
-                                                             || info.EnglishName.ToLower() == nameLc
-                                                             || info.ThreeLetterISOLanguageName.ToLower() == nameLc || info.TwoLetterISOLanguageName.ToLower() == nameLc);
+        var cultureInfo = nameLc switch
+        {
+            "portuguese (brazilian)" => CultureInfo.GetCultureInfo("pt-br"),
+            "norwegian"              => CultureInfo.GetCultureInfo("no"),
+            "french (canadian)"      => CultureInfo.GetCultureInfo("fr-ca"),
+            "galego"                 => CultureInfo.GetCultureInfo("gl"),
+            _ => CultureInfo.GetCultures(CultureTypes.AllCultures)
+                            .FirstOrDefault(info => info.Name.ToLower() == nameLc
+                                                    || info.DisplayName.ToLower() == nameLc
+                                                    || info.EnglishName.ToLower() == nameLc
+                                                    || info.ThreeLetterISOLanguageName.ToLower() == nameLc || info.TwoLetterISOLanguageName.ToLower() == nameLc)
+        };
+
         Model.Culture? culture = null;
         if (cultureInfo != null)
         {
-            culture = new Model.Culture(cultureInfo.EnglishName, cultureInfo.ThreeLetterISOLanguageName, cultureInfo.TwoLetterISOLanguageName);
+            culture = new Model.Culture(cultureInfo.EnglishName, cultureInfo.TwoLetterISOLanguageName, cultureInfo.Name);
             await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(culture, JsonSerializerOptions), new DistributedCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromDays(1)

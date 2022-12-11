@@ -21,8 +21,5 @@
         <ProjectReference Include="..\AddictedProxy.Culture\AddictedProxy.Culture.csproj" />
         <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Migrations" />
-    </ItemGroup>
 
 </Project>

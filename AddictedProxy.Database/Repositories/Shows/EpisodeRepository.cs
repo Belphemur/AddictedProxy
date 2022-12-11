@@ -89,7 +89,7 @@ public class EpisodeRepository : IEpisodeRepository
         return _entityContext.Episodes.Where(episode => episode.Season == season)
             .Where(episode => episode.TvShow.Id == tvShowId)
             .Include(episode => episode.TvShow)
-            .Include(episode => episode.Subtitles.Where(subtitle => subtitle.LanguageCodeIso3Letters == language.ThreeLetterISOLanguageName || subtitle.Language == language.EnglishName))
+            .Include(episode => episode.Subtitles.Where(subtitle => subtitle.LanguageIsoCode == language.Name || subtitle.Language == language.EnglishName))
             .AsNoTracking()
             .ToAsyncEnumerable();
     }

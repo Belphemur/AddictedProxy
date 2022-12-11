@@ -31,10 +31,10 @@ public class Subtitle : IDiscoverableObject
     public bool HD { get; set; }
     public Uri DownloadUri { get; set; }
     public string Language { get; set; }
-
+    
     [Column(TypeName = "VARCHAR")]
-    [StringLength(3)]
-    public string? LanguageCodeIso3Letters { get; set; }
+    [StringLength(7)]
+    public string? LanguageIsoCode { get; set; }
 
     public string? StoragePath { get; set; }
 
