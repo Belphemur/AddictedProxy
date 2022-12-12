@@ -1,3 +1,10 @@
+## [3.4.3](https://github.com/Belphemur/AddictedProxy/compare/v3.4.2...v3.4.3) (2022-12-12)
+
+
+### Performance improvements
+
+* **Job:** Remove from recurring job ([6e9808f](https://github.com/Belphemur/AddictedProxy/commit/6e9808ffca94bb1d51a9a3f438224ec86322af12))
+
 ## [3.4.2](https://github.com/Belphemur/AddictedProxy/compare/v3.4.1...v3.4.2) (2022-12-11)
 
 
