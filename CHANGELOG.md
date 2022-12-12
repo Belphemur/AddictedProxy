@@ -1,3 +1,10 @@
+## [3.4.4](https://github.com/Belphemur/AddictedProxy/compare/v3.4.3...v3.4.4) (2022-12-12)
+
+
+### Performance improvements
+
+* **Subtitle::Download:** Disable proxy for downloading subtitles ([5482e30](https://github.com/Belphemur/AddictedProxy/commit/5482e30d6969b75c5c13c276c1bc958d36453da5))
+
 ## [3.4.3](https://github.com/Belphemur/AddictedProxy/compare/v3.4.2...v3.4.3) (2022-12-12)
 
 
