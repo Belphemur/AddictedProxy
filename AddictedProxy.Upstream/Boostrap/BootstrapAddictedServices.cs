@@ -43,8 +43,8 @@ public class BootstrapAddictedServices : IBootstrap,
                 client.Timeout = TimeSpan.FromMinutes(2);
                 client.BaseAddress = new Uri("https://www.addic7ed.com");
             })
-            .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler())
-            .SetHandlerLifetime(TimeSpan.FromHours(1))
+            .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
+            .SetHandlerLifetime(TimeSpan.FromMinutes(1))
             .AddPolicyHandler(GetRetryPolicy())
             .AddPolicyHandler(GetTimeoutPolicy());
 
