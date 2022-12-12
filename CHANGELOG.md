@@ -1,3 +1,10 @@
+## [3.4.5](https://github.com/Belphemur/AddictedProxy/compare/v3.4.4...v3.4.5) (2022-12-12)
+
+
+### Performance improvements
+
+* **Download:** Change handler lifetime to get new IP at download ([f4115db](https://github.com/Belphemur/AddictedProxy/commit/f4115db682b486cb07bfb68a5c7d204b81086164))
+
 ## [3.4.4](https://github.com/Belphemur/AddictedProxy/compare/v3.4.3...v3.4.4) (2022-12-12)
 
 
