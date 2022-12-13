@@ -19,7 +19,7 @@ public partial class Parser
 {
     private readonly IHtmlParser _parser;
     private readonly ILogger<Parser> _logger;
-    private readonly CultureParser _cultureParser;
+    private readonly ICultureParser _cultureParser;
 
     [GeneratedRegex("(?<completion>\\d+\\.?\\d+)%", RegexOptions.Compiled)]
     private static partial Regex CompletionRegex();
@@ -27,7 +27,7 @@ public partial class Parser
     [GeneratedRegex("(?<usage>\\d{1,2}) of (?<total>\\d{1,2})", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
     private static partial Regex DownloadUsageRegex();
 
-    public Parser(IHtmlParser parser, ILogger<Parser> logger, CultureParser cultureParser)
+    public Parser(IHtmlParser parser, ILogger<Parser> logger, ICultureParser cultureParser)
     {
         _parser = parser;
         _logger = logger;
@@ -43,7 +43,7 @@ public partial class Parser
     public async Task<DownloadUsage?> GetDownloadUsageAsync(Stream html, CancellationToken token)
     {
         var document = await _parser.ParseDocumentAsync(html, token);
-        var downloads = document.QuerySelector<IHtmlLinkElement>(
+        var downloads = document.QuerySelector<IHtmlAnchorElement>(
             ".tabel70 > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(7) > td:nth-child(2) > a:nth-child(1)"
         );
         var text = downloads?.Text();

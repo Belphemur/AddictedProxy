@@ -16,7 +16,7 @@ public class TvShowsController : Controller
 {
     private readonly IShowRefresher _showRefresher;
     private readonly IEpisodeRepository _episodeRepository;
-    private readonly CultureParser _cultureParser;
+    private readonly ICultureParser _cultureParser;
 
     /// <summary>
     /// Search for a specific show
@@ -34,7 +34,7 @@ public class TvShowsController : Controller
 
     public record ShowSearchResponse(IAsyncEnumerable<ShowDto> Shows);
 
-    public TvShowsController(IShowRefresher showRefresher, IEpisodeRepository episodeRepository, CultureParser cultureParser)
+    public TvShowsController(IShowRefresher showRefresher, IEpisodeRepository episodeRepository, ICultureParser cultureParser)
     {
         _showRefresher = showRefresher; 
         _episodeRepository = episodeRepository;

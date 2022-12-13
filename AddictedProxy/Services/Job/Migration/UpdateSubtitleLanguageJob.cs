@@ -9,12 +9,12 @@ namespace AddictedProxy.Services.Job.Migration;
 public class UpdateSubtitleLanguageJob
 {
     private readonly EntityContext _entityContext;
-    private readonly CultureParser _parser;
+    private readonly ICultureParser _parser;
     private readonly ILogger<UpdateSubtitleLanguageJob> _logger;
     private readonly IPerformanceTracker _performanceTracker;
     private readonly IServiceProvider _provider;
 
-    public UpdateSubtitleLanguageJob(EntityContext entityContext, CultureParser parser, ILogger<UpdateSubtitleLanguageJob> logger, IPerformanceTracker performanceTracker, IServiceProvider provider)
+    public UpdateSubtitleLanguageJob(EntityContext entityContext, ICultureParser parser, ILogger<UpdateSubtitleLanguageJob> logger, IPerformanceTracker performanceTracker, IServiceProvider provider)
     {
         _entityContext = entityContext;
         _parser = parser;

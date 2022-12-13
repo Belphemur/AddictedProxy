@@ -26,13 +26,13 @@ namespace AddictedProxy.Controllers.Rest;
 [Route("subtitles")]
 public class SubtitlesController : Controller
 {
-    private readonly CultureParser _cultureParser;
+    private readonly ICultureParser _cultureParser;
     private readonly ISubtitleProvider _subtitleProvider;
     private readonly ISearchSubtitlesService _searchSubtitlesService;
     private readonly Regex _searchPattern = new(@"(?<show>.+)S(?<season>\d+)E(?<episode>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     public SubtitlesController(
-        CultureParser cultureParser,
+        ICultureParser cultureParser,
         ISubtitleProvider subtitleProvider,
         ISearchSubtitlesService searchSubtitlesService
     )
