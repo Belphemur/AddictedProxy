@@ -6,6 +6,7 @@ using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Model;
 using AddictedProxy.Upstream.Service.Exception;
+using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using Microsoft.Extensions.Logging;
@@ -14,12 +15,17 @@ using Microsoft.Extensions.Logging;
 
 namespace AddictedProxy.Upstream.Service;
 
-public class Parser
+public partial class Parser
 {
     private readonly IHtmlParser _parser;
     private readonly ILogger<Parser> _logger;
     private readonly CultureParser _cultureParser;
-    private readonly Regex _completionRegex = new(@"(?<completion>\d+\.?\d+)%", RegexOptions.Compiled);
+
+    [GeneratedRegex("(?<completion>\\d+\\.?\\d+)%", RegexOptions.Compiled)]
+    private static partial Regex CompletionRegex();
+
+    [GeneratedRegex("(?<usage>\\d{1,2}) of (?<total>\\d{1,2})", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
+    private static partial Regex DownloadUsageRegex();
 
     public Parser(IHtmlParser parser, ILogger<Parser> logger, CultureParser cultureParser)
     {
@@ -28,10 +34,39 @@ public class Parser
         _cultureParser = cultureParser;
     }
 
+    /// <summary>
+    /// Parse the download usage of the profile page
+    /// </summary>
+    /// <param name="html"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task<DownloadUsage?> GetDownloadUsageAsync(Stream html, CancellationToken token)
+    {
+        var document = await _parser.ParseDocumentAsync(html, token);
+        var downloads = document.QuerySelector<IHtmlLinkElement>(
+            ".tabel70 > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2) > table:nth-child(1) > tbody:nth-child(1) > tr:nth-child(7) > td:nth-child(2) > a:nth-child(1)"
+        );
+        var text = downloads?.Text();
+        if (text == null)
+        {
+            _logger.LogWarning("Couldn't find HTML DOM for the download usage");
+            return null;
+        }
+
+        var match = DownloadUsageRegex().Match(text);
+        if (!match.Success)
+        {
+            _logger.LogWarning("Couldn't parse the download usage: {input}", text);
+            return null;
+        }
+
+        return new DownloadUsage(int.Parse(match.Groups["usage"].Value), int.Parse(match.Groups["total"].Value));
+    }
+
     public async IAsyncEnumerable<TvShow> GetShowsAsync(Stream html, [EnumeratorCancellation] CancellationToken token)
     {
         var document = await _parser.ParseDocumentAsync(html, token);
-        var selectShow = document.QuerySelector("#qsShow") as IHtmlSelectElement;
+        var selectShow = document.QuerySelector<IHtmlSelectElement>("#qsShow");
 
         if (selectShow == null)
         {
@@ -59,7 +94,7 @@ public class Parser
     public async IAsyncEnumerable<int> GetSeasonsAsync(Stream html, [EnumeratorCancellation] CancellationToken token)
     {
         var document = await _parser.ParseDocumentAsync(html, token);
-        var selectSeason = document.QuerySelector("#qsiSeason") as IHtmlSelectElement;
+        var selectSeason = document.QuerySelector<IHtmlSelectElement>("#qsiSeason");
         if (selectSeason == null)
         {
             throw new NothingToParseException("No season found", null);
@@ -87,7 +122,7 @@ public class Parser
         IHtmlTableElement table;
         try
         {
-            table = document.QuerySelector("#season").QuerySelector("table") as IHtmlTableElement;
+            table = document.QuerySelector("#season").QuerySelector<IHtmlTableElement>("table");
         }
         catch (NullReferenceException e)
         {
@@ -128,7 +163,7 @@ public class Parser
                             break;
                         case 5:
                             var state = row.Cells[i].TextContent;
-                            var match = _completionRegex.Match(state);
+                            var match = CompletionRegex().Match(state);
                             //Consider the subtitle completed if there isn't a percentage
                             if (!match.Success)
                             {
@@ -152,9 +187,9 @@ public class Parser
                         case 9:
                             var downloadUri = row.Cells[i].FirstElementChild.Attributes["href"].Value;
                             var splitOnSlash = downloadUri
-                                .Replace("/updated/", "")
-                                .Replace("/original/", "")
-                                .Split('/');
+                                               .Replace("/updated/", "")
+                                               .Replace("/original/", "")
+                                               .Split('/');
                             subtitleRow.EpisodeId = int.Parse(splitOnSlash[1]);
                             subtitleRow.Version = int.Parse(splitOnSlash[^1]);
                             subtitleRow.DownloadUri = new Uri(downloadUri, UriKind.Relative);
@@ -185,21 +220,22 @@ public class Parser
                 Discovered = DateTime.UtcNow
             };
 
-            var subtitles = episodeGroup.ToAsyncEnumerable().SelectAwait(async subtitleRow => new Subtitle
-            {
-                Scene = subtitleRow.Scene.Trim(),
-                Corrected = subtitleRow.Corrected,
-                DownloadUri = subtitleRow.DownloadUri,
-                HD = subtitleRow.HD,
-                HearingImpaired = subtitleRow.HearingImpaired,
-                Language = subtitleRow.Language,
-                Completed = subtitleRow.Completed,
-                CompletionPct = subtitleRow.CompletionPercentage,
-                Discovered = DateTime.UtcNow,
-                Episode = episode,
-                Version = subtitleRow.Version,
-                LanguageIsoCode = (await _cultureParser.FromStringAsync(subtitleRow.Language, token))?.Name
-            });
+            var subtitles = episodeGroup.ToAsyncEnumerable()
+                                        .SelectAwait(async subtitleRow => new Subtitle
+                                        {
+                                            Scene = subtitleRow.Scene.Trim(),
+                                            Corrected = subtitleRow.Corrected,
+                                            DownloadUri = subtitleRow.DownloadUri,
+                                            HD = subtitleRow.HD,
+                                            HearingImpaired = subtitleRow.HearingImpaired,
+                                            Language = subtitleRow.Language,
+                                            Completed = subtitleRow.Completed,
+                                            CompletionPct = subtitleRow.CompletionPercentage,
+                                            Discovered = DateTime.UtcNow,
+                                            Episode = episode,
+                                            Version = subtitleRow.Version,
+                                            LanguageIsoCode = (await _cultureParser.FromStringAsync(subtitleRow.Language, token))?.Name
+                                        });
             episode.Subtitles = await subtitles.ToListAsync(token);
             yield return episode;
         }
