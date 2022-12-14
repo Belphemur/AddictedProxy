@@ -54,6 +54,14 @@ public class SubtitleRepository : ISubtitleRepository
     }
 
     /// <summary>
+    /// Tag subtitle for removal
+    /// </summary>
+    /// <param name="subtitle"></param>
+    public void TagForRemoval(Subtitle subtitle)
+    {
+        _entityContext.Remove(subtitle);
+    }
+    /// <summary>
     /// Update the subtitle
     /// </summary>
     /// <param name="token"></param>

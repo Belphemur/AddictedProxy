@@ -52,6 +52,7 @@ public class SubtitlesController : Controller
     [Route("download/{subtitleId:guid}", Name = nameof(Routes.DownloadSubtitle))]
     [ProducesResponseType(200)]
     [ProducesResponseType(typeof(ErrorResponse), 400, "application/json")]
+    [ProducesResponseType(typeof(ErrorResponse), 404, "application/json")]
     [ProducesResponseType(typeof(ErrorResponse), 429)]
     [HttpGet]
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 8 * 86400)]
@@ -79,6 +80,10 @@ public class SubtitlesController : Controller
         catch (DownloadLimitExceededException e)
         {
             return StatusCode(429, new ErrorResponse(e.Message));
+        }
+        catch (SubtitleFileDeletedException)
+        {
+            return NotFound(new ErrorResponse("Subtitle was deleted from Addicted"));
         }
     }
 

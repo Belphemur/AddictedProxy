@@ -98,6 +98,12 @@ internal class SubtitleProvider : ISubtitleProvider
             {
                 creds?.TagAsDownloadExceeded();
             }
+            catch (SubtitleFileDeletedException)
+            {
+                _subtitleRepository.TagForRemoval(subtitle);
+                await _subtitleRepository.SaveChangeAsync(token);
+                throw;
+            }
         }
 
         await Task.Delay(TimeSpan.FromMilliseconds(100), token);

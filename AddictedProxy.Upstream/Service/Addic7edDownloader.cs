@@ -1,5 +1,6 @@
 #region
 
+using System.Net;
 using System.Net.Http.Headers;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
@@ -26,19 +27,31 @@ public class Addic7edDownloader : IAddic7edDownloader
 
     public async Task<Stream> DownloadSubtitle(AddictedUserCredentials? credentials, Subtitle subtitle, CancellationToken token)
     {
-        return await Policy().ExecuteAsync(async cancellationToken =>
-        {
-            var request = _httpUtils.PrepareRequest(credentials, subtitle.DownloadUri.ToString(), HttpMethod.Get);
-            return await DownloadSubtitleFile(credentials, cancellationToken, request);
-        }, token);
+        return await Policy()
+            .ExecuteAsync(async cancellationToken =>
+            {
+                var request = _httpUtils.PrepareRequest(credentials, subtitle.DownloadUri.ToString(), HttpMethod.Get);
+                return await DownloadSubtitleFile(credentials, cancellationToken, request);
+            }, token);
     }
 
     private async Task<Stream> DownloadSubtitleFile(AddictedUserCredentials? credentials, CancellationToken cancellationToken, HttpRequestMessage request)
     {
         var response = await _httpClient.SendAsync(request, cancellationToken);
-        if (!response.IsSuccessStatusCode || ContentTypeHtml.Equals(response.Content.Headers.ContentType))
+        if (response.StatusCode == HttpStatusCode.Redirect && response.Headers.Location != null)
         {
-            throw new DownloadLimitExceededException($"Reached limit for download for {credentials?.Id}");
+            var path = response.Headers.Location.ToString();
+            if (path.StartsWith("/index.php"))
+            {
+                throw new SubtitleFileDeletedException($"File deleted at location: {request.RequestUri}");
+            }
+
+            if (path.StartsWith("/downloadexceeded.php"))
+            {
+                throw new DownloadLimitExceededException($"Reached limit for download for {credentials?.Id}");
+            }
+
+            throw new FileNotFoundException();
         }
 
         return await response.Content.ReadAsStreamAsync(cancellationToken);
@@ -48,6 +61,6 @@ public class Addic7edDownloader : IAddic7edDownloader
     {
         var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromMilliseconds(500), retryCount: 3);
         return Polly.Policy.Handle<HttpRequestException>(exception => exception.InnerException is IOException)
-            .WaitAndRetryAsync(delay);
+                    .WaitAndRetryAsync(delay);
     }
 }

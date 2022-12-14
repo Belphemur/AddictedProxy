@@ -32,4 +32,10 @@ public interface ISubtitleRepository
     /// <param name="token"></param>
     /// <returns></returns>
     Task SaveChangeAsync(CancellationToken token);
+
+    /// <summary>
+    /// Tag subtitle for removal
+    /// </summary>
+    /// <param name="subtitle"></param>
+    void TagForRemoval(Subtitle subtitle);
 }

@@ -43,7 +43,7 @@ public class BootstrapAddictedServices : IBootstrap,
                 client.Timeout = TimeSpan.FromMinutes(2);
                 client.BaseAddress = new Uri("https://www.addic7ed.com");
             })
-            .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
+            .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>(), false)))
             .SetHandlerLifetime(TimeSpan.FromMinutes(1))
             .AddPolicyHandler(GetRetryPolicy())
             .AddPolicyHandler(GetTimeoutPolicy());
@@ -53,10 +53,11 @@ public class BootstrapAddictedServices : IBootstrap,
 
     public EnvVarRegistration<HttpProxy, HttpProxyParser> EnvVarRegistration => new("PROXY_URL");
 
-    private static HttpMessageHandler BuildProxyHttpMessageHandler(HttpProxy proxy)
+    private static HttpMessageHandler BuildProxyHttpMessageHandler(HttpProxy proxy, bool followRedirect = true)
     {
         return new HttpClientHandler
         {
+            AllowAutoRedirect = followRedirect,
             Proxy = new WebProxy
             {
                 Address = proxy.Address,
