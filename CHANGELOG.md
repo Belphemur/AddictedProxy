@@ -1,3 +1,10 @@
+## [3.5.2](https://github.com/Belphemur/AddictedProxy/compare/v3.5.1...v3.5.2) (2022-12-14)
+
+
+### Bug Fixes
+
+* **Subtitle:Deleted:** Handle properly the deletion of subtitle from Addic7ed ([2d860d4](https://github.com/Belphemur/AddictedProxy/commit/2d860d4c4c277953eae355fad87a04b0c845af62))
+
 ## [3.5.1](https://github.com/Belphemur/AddictedProxy/compare/v3.5.0...v3.5.1) (2022-12-14)
 
 
