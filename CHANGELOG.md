@@ -1,3 +1,10 @@
+## [3.5.1](https://github.com/Belphemur/AddictedProxy/compare/v3.5.0...v3.5.1) (2022-12-14)
+
+
+### Performance improvements
+
+* **DownloadUsage:** Refactor the download usage to be handled by credential service ([04fdb59](https://github.com/Belphemur/AddictedProxy/commit/04fdb5900129b88d73df3d1c867bd9204bce900e))
+
 ## [3.5.0](https://github.com/Belphemur/AddictedProxy/compare/v3.4.5...v3.5.0) (2022-12-14)
 
 
