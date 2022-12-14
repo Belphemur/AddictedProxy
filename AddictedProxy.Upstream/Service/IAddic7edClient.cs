@@ -2,6 +2,7 @@
 
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Upstream.Model;
 
 #endregion
 
@@ -35,4 +36,12 @@ public interface IAddic7edClient
     /// <param name="token"></param>
     /// <returns></returns>
     Task<IEnumerable<Episode>> GetEpisodesAsync(AddictedUserCredentials credentials, TvShow show, int season, CancellationToken token);
+
+    /// <summary>
+    /// Get the download usage of a specific credential
+    /// </summary>
+    /// <param name="credentials"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task<DownloadUsage?> GetDownloadUsageAsync(AddictedUserCredentials credentials, CancellationToken token);
 }

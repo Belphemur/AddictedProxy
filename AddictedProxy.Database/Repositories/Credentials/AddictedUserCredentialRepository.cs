@@ -20,6 +20,17 @@ public class AddictedUserCredentialRepository : IAddictedUserCredentialRepositor
         _logger = logger;
     }
 
+    /// <summary>
+    /// Get a credential by its id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<AddictedUserCredentials?> GetCredByIdAsync(long id, CancellationToken token)
+    {
+        return _context.AddictedUserCreds.SingleOrDefaultAsync(credentials => credentials.Id == id, cancellationToken: token);
+    }
+
     public async Task<AddictedUserCredentials?> GetLeastUsedCredQueryingAsync(CancellationToken token)
     {
         try

@@ -3,7 +3,9 @@
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Repositories.Credentials;
 using AddictedProxy.Model.Crendentials;
+using AddictedProxy.Services.Credentials.Job;
 using AddictedProxy.Services.Provider.Config;
+using Hangfire;
 using Microsoft.Extensions.Options;
 
 #endregion
@@ -88,23 +90,11 @@ public class CredentialsService : ICredentialsService
     public async Task RedeemDownloadCredentialsAsync(DateTime currentDateTime, CancellationToken token)
     {
         _logger.LogInformation("[Redeem] Fetching creds to be redeemed for download usage");
-        var redeemedCreds = new List<AddictedUserCredentials>();
         await foreach (var cred in _addictedUserCredentialRepository.GetDownloadExceededCredentialsAsync()
                                                                     .Where(cred => currentDateTime - cred.DownloadExceededDate >= _refreshConfig.Value.DownloadExceededTimeout)
                                                                     .WithCancellation(token))
         {
-            cred.DownloadExceededDate = null;
-            cred.DownloadUsage = 0;
-            redeemedCreds.Add(cred);
+            BackgroundJob.Enqueue<ResetDownloadCredJob>(job => job.CheckAndResetCredAsync(cred.Id, token));
         }
-
-        _logger.LogInformation("[Redeem] Redeemed those creds: [{Ids}]", string.Join(", ", redeemedCreds.Select(credentials => credentials.Id)));
-
-        if (redeemedCreds.Count == 0)
-        {
-            return;
-        }
-
-        await _addictedUserCredentialRepository.BulkUpdateAsync(redeemedCreds, token);
     }
 }

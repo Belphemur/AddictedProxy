@@ -7,6 +7,7 @@ using AddictedProxy.Culture.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Model.Performance;
+using AddictedProxy.Services.Job.Exception;
 using AddictedProxy.Stats.Popularity.Bootstrap;
 using AddictedProxy.Storage.Compressor.Bootstrap;
 using AddictedProxy.Upstream.Boostrap;
@@ -78,6 +79,7 @@ builder.WebHost.UseSentry(sentryBuilder =>
     sentryBuilder.TracesSampleRate = perf.SampleRate;
     sentryBuilder.AddExceptionFilterForType<OperationCanceledException>();
     sentryBuilder.AddExceptionFilterForType<TaskCanceledException>();
+    sentryBuilder.AddExceptionFilterForType<RetryJobException>();
 });
 
 builder.Configuration.AddEnvironmentVariables("ADDICT");

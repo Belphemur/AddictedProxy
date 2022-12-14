@@ -2,6 +2,8 @@
 
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Services.Credentials;
+using AddictedProxy.Services.Credentials.Job;
+using Hangfire;
 
 #endregion
 
@@ -47,5 +49,9 @@ public class CredsContainerNormalUsage : ICredsContainer
         }
 
         await _credentialsService.UpdateUsageCredentialsAsync(AddictedUserCredentials, _forDownloadOperation, default);
+        if (_addictedUserCredentials.DownloadExceededDate != null)
+        {
+            BackgroundJob.Enqueue<ResetDownloadCredJob>(job => job.CheckAndResetCredAsync(_addictedUserCredentials.Id, default));
+        }
     }
 }
