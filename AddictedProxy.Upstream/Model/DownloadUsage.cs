@@ -4,5 +4,5 @@ public record struct DownloadUsage(int Used, int TotalAvailable)
 {
     public int Remaining => TotalAvailable - Used;
 
-    public bool FullyUsed => Remaining == 0;
+    public bool FullyUsed => Remaining <= 0;
 }

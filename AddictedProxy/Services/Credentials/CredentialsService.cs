@@ -91,7 +91,6 @@ public class CredentialsService : ICredentialsService
     {
         _logger.LogInformation("[Redeem] Fetching creds to be redeemed for download usage");
         await foreach (var cred in _addictedUserCredentialRepository.GetDownloadExceededCredentialsAsync()
-                                                                    .Where(cred => currentDateTime - cred.DownloadExceededDate >= _refreshConfig.Value.DownloadExceededTimeout)
                                                                     .WithCancellation(token))
         {
             BackgroundJob.Enqueue<ResetDownloadCredJob>(job => job.CheckAndResetCredAsync(cred.Id, token));
