@@ -18,7 +18,7 @@ namespace AddictedProxy.Services.Provider.Subtitle.Jobs;
 
 public class FetchSubtitlesJob
 {
-    private readonly CultureParser _cultureParser;
+    private readonly ICultureParser _cultureParser;
 
     private readonly ILogger<FetchSubtitlesJob> _logger;
     private readonly ISeasonRefresher _seasonRefresher;
@@ -29,7 +29,7 @@ public class FetchSubtitlesJob
 
 
     public FetchSubtitlesJob(ILogger<FetchSubtitlesJob> logger,
-                             CultureParser cultureParser,
+                             ICultureParser cultureParser,
                              ISeasonRefresher seasonRefresher,
                              IEpisodeRefresher episodeRefresher,
                              IPerformanceTracker performanceTracker,

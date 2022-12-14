@@ -28,7 +28,7 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
 
         services.AddHangfireServer(options =>
         {
-            options.Queues = new[] { "store-subtitle", "default", "refresh-one-show", "fetch-subtitles" };
+            options.Queues = new[] { "store-subtitle", "download-creds-checker", "default", "refresh-one-show", "fetch-subtitles" };
             options.WorkerCount = Environment.ProcessorCount * 6;
         });
         services.AddHostedService<SchedulerHostedService>();

@@ -13,6 +13,6 @@ public class BootstrapCulture : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<CultureParser>();
+        services.AddSingleton<ICultureParser, CultureParser>();
     }
 }

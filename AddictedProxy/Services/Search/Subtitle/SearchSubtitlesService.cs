@@ -16,7 +16,7 @@ namespace AddictedProxy.Services.Search;
 public class SearchSubtitlesService : ISearchSubtitlesService
 {
     private readonly IShowRefresher _showRefresher;
-    private readonly CultureParser _cultureParser;
+    private readonly ICultureParser _cultureParser;
     private readonly ILogger<SearchSubtitlesService> _logger;
     private readonly IEpisodeRepository _episodeRepository;
     private readonly ISeasonRefresher _seasonRefresher;
@@ -24,7 +24,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
     private readonly IPerformanceTracker _performanceTracker;
 
     public SearchSubtitlesService(IShowRefresher showRefresher,
-                                  CultureParser cultureParser,
+                                  ICultureParser cultureParser,
                                   ILogger<SearchSubtitlesService> logger,
                                   IEpisodeRepository episodeRepository,
                                   ISeasonRefresher seasonRefresher,

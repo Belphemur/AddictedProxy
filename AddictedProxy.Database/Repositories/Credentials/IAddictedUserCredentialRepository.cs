@@ -49,4 +49,12 @@ public interface IAddictedUserCredentialRepository
     /// <param name="token"></param>
     /// <returns></returns>
     public Task BulkUpdateAsync(IEnumerable<AddictedUserCredentials> credentials, CancellationToken token);
+
+    /// <summary>
+    /// Get a credential by its id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task<AddictedUserCredentials?> GetCredByIdAsync(long id, CancellationToken token);
 }

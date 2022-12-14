@@ -9,7 +9,7 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace AddictedProxy.Culture.Service;
 
-public class CultureParser
+internal class CultureParser : ICultureParser
 {
     private readonly IDistributedCache _cache;
     private readonly ConcurrentDictionary<string, Model.Culture> _localCache = new();
