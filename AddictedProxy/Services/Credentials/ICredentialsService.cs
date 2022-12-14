@@ -2,6 +2,7 @@
 
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Model.Crendentials;
+using AddictedProxy.Services.Job.Exception;
 
 #endregion
 
@@ -37,4 +38,12 @@ public interface ICredentialsService
     /// Redeem credentials that are currently expired
     /// </summary>
     Task RedeemDownloadCredentialsAsync(DateTime currentDateTime, CancellationToken token);
+
+    /// <summary>
+    /// Check on the source (addic7ed website) the quota of the credential. If not busted, reset the credential quota.
+    /// </summary>
+    /// <param name="credentialId"></param>
+    /// <param name="token"></param>
+    /// <exception cref="RetryJobException">If something went wrong when parsing the credential from the website</exception>
+    Task CheckAndResetCredentialsAsync(long credentialId, CancellationToken token);
 }

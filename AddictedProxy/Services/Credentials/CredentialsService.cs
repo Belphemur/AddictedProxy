@@ -4,7 +4,9 @@ using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Repositories.Credentials;
 using AddictedProxy.Model.Crendentials;
 using AddictedProxy.Services.Credentials.Job;
+using AddictedProxy.Services.Job.Exception;
 using AddictedProxy.Services.Provider.Config;
+using AddictedProxy.Upstream.Service;
 using Hangfire;
 using Microsoft.Extensions.Options;
 
@@ -15,17 +17,17 @@ namespace AddictedProxy.Services.Credentials;
 public class CredentialsService : ICredentialsService
 {
     private readonly IAddictedUserCredentialRepository _addictedUserCredentialRepository;
-    private readonly IOptions<RefreshConfig> _refreshConfig;
     private readonly ILogger<CredentialsService> _logger;
+    private readonly IAddic7edClient _client;
 
     public CredentialsService(IAddictedUserCredentialRepository addictedUserCredentialRepository,
-                              IOptions<RefreshConfig> refreshConfig,
-                              ILogger<CredentialsService> logger
+                              ILogger<CredentialsService> logger,
+                              IAddic7edClient client
     )
     {
         _addictedUserCredentialRepository = addictedUserCredentialRepository;
-        _refreshConfig = refreshConfig;
         _logger = logger;
+        _client = client;
     }
 
     /// <summary>
@@ -95,5 +97,39 @@ public class CredentialsService : ICredentialsService
         {
             BackgroundJob.Enqueue<ResetDownloadCredJob>(job => job.CheckAndResetCredAsync(cred.Id, token));
         }
+    }
+
+    /// <summary>
+    /// Check on the source (addic7ed website) the quota of the credential. If not busted, reset the credential quota.
+    /// </summary>
+    /// <param name="credentialId"></param>
+    /// <param name="token"></param>
+    /// <exception cref="RetryJobException">If something went wrong when parsing the credential from the website</exception>
+    public async Task CheckAndResetCredentialsAsync(long credentialId, CancellationToken token)
+    {
+        var cred = await _addictedUserCredentialRepository.GetCredByIdAsync(credentialId, token);
+        if (cred == null)
+        {
+            _logger.LogError("Couldn't find credential with ID: {id}", credentialId);
+            return;
+        }
+
+        var downloadCount = await _client.GetDownloadUsageAsync(cred, token);
+        //Something went wrong, let's reschedule the job
+        if (downloadCount == null)
+        {
+            throw new RetryJobException();
+        }
+
+        var downloadUsage = downloadCount.Value;
+        if (downloadUsage.FullyUsed)
+        {
+            _logger.LogInformation("Credentials Id({id}) is fully used for today", credentialId);
+            return;
+        }
+
+        cred.DownloadUsage = downloadUsage.Used;
+        cred.DownloadExceededDate = null;
+        await _addictedUserCredentialRepository.SingleUpdateAsync(cred, token);
     }
 }
