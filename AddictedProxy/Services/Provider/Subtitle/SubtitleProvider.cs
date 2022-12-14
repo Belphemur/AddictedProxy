@@ -69,36 +69,39 @@ internal class SubtitleProvider : ISubtitleProvider
             throw new DownloadLimitExceededException($"Reached maximum attempts ({MAX_ATTEMPTS}) to download subtitle");
         }
 
-        await using var creds = await _credentialsService.GetLeastUsedCredsDownloadAsync(token);
-        try
+        await using (var creds = await _credentialsService.GetLeastUsedCredsDownloadAsync(token))
         {
-            //Subtitle isn't complete, no need to store it, just directly return the download stream
-            if (!subtitle.Completed)
+            try
             {
+                //Subtitle isn't complete, no need to store it, just directly return the download stream
+                if (!subtitle.Completed)
+                {
+                    await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
+                    return await _addic7EdDownloader.DownloadSubtitle(creds?.AddictedUserCredentials, subtitle, token);
+                }
+
+
+                await using var subtitleStream = await _addic7EdDownloader.DownloadSubtitle(creds?.AddictedUserCredentials, subtitle, token);
+                await using var buffer = new MemoryStream();
+
+                await subtitleStream.CopyToAsync(buffer, token);
+
+                var blob = buffer.ToArray();
+
+                BackgroundJob.Enqueue<StoreSubtitleJob>(job => job.ExecuteAsync(subtitle.UniqueId, blob, default));
+
+
                 await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
-                return await _addic7EdDownloader.DownloadSubtitle(creds?.AddictedUserCredentials, subtitle, token);
+                return new MemoryStream(blob);
             }
-
-
-            await using var subtitleStream = await _addic7EdDownloader.DownloadSubtitle(creds?.AddictedUserCredentials, subtitle, token);
-            await using var buffer = new MemoryStream();
-
-            await subtitleStream.CopyToAsync(buffer, token);
-
-            var blob = buffer.ToArray();
-
-            BackgroundJob.Enqueue<StoreSubtitleJob>(job => job.ExecuteAsync(subtitle.UniqueId, blob, default));
-
-
-            await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
-            return new MemoryStream(blob);
+            catch (DownloadLimitExceededException)
+            {
+                creds?.TagAsDownloadExceeded();
+            }
         }
-        catch (DownloadLimitExceededException)
-        {
-            creds?.TagAsDownloadExceeded();
-            await Task.Delay(TimeSpan.FromMilliseconds(100), token);
-            return await DownloadStoreSubtitleAsync(subtitle, attempts + 1, token);
-        }
+
+        await Task.Delay(TimeSpan.FromMilliseconds(100), token);
+        return await DownloadStoreSubtitleAsync(subtitle, attempts + 1, token);
     }
 
     public Task<Database.Model.Shows.Subtitle?> GetSubtitleFullAsync(Guid subtitleId, CancellationToken token)
