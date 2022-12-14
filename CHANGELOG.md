@@ -1,3 +1,17 @@
+## [3.5.0](https://github.com/Belphemur/AddictedProxy/compare/v3.4.5...v3.5.0) (2022-12-14)
+
+
+### Features
+
+* **Download::Usage:** Add function to track download usage of creds ([c0f23f5](https://github.com/Belphemur/AddictedProxy/commit/c0f23f5ba76b89391bba4ce677be9a81c2ab64d0))
+* **DownloadUsage:** Create feature to reset the download usage of credentials hourly and when tagged as used ([1051bee](https://github.com/Belphemur/AddictedProxy/commit/1051bee89f54c886a52d397ecaa630ed11b7dccb))
+
+
+### Bug Fixes
+
+* **Download::Creds:** Be sure the creds get tagged as exceeded before continuing recursion ([0e7ddbe](https://github.com/Belphemur/AddictedProxy/commit/0e7ddbed24a2883101e6d8e5f050e61932bcc5b6))
+* **DownloadUsage:** Be sure to consider overusage as fully used ([1d05e7d](https://github.com/Belphemur/AddictedProxy/commit/1d05e7dd98c50464432f662d5abff0183b16c250))
+
 ## [3.4.5](https://github.com/Belphemur/AddictedProxy/compare/v3.4.4...v3.4.5) (2022-12-12)
 
 
