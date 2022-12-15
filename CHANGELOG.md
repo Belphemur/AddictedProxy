@@ -1,3 +1,10 @@
+## [3.5.3](https://github.com/Belphemur/AddictedProxy/compare/v3.5.2...v3.5.3) (2022-12-15)
+
+
+### Performance improvements
+
+* **FetchJob:** Reduce max attemps, keep the current backoff formula and increase timeout to 3.5 min ([55c1c5e](https://github.com/Belphemur/AddictedProxy/commit/55c1c5ee7b9cd2b08431e74dac852551bb4d6c4b))
+
 ## [3.5.2](https://github.com/Belphemur/AddictedProxy/compare/v3.5.1...v3.5.2) (2022-12-14)
 
 
