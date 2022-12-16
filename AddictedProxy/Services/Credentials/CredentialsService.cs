@@ -121,15 +121,22 @@ public class CredentialsService : ICredentialsService
             throw new RetryJobException();
         }
 
-        var downloadUsage = downloadCount.Value;
-        if (downloadUsage.FullyUsed)
+        try
         {
-            _logger.LogInformation("Credentials Id({id}) is fully used for today", credentialId);
-            return;
-        }
+            var downloadUsage = downloadCount.Value;
+            cred.DownloadUsage = downloadUsage.Used;
 
-        cred.DownloadUsage = downloadUsage.Used;
-        cred.DownloadExceededDate = null;
-        await _addictedUserCredentialRepository.SingleUpdateAsync(cred, token);
+            if (downloadUsage.FullyUsed)
+            {
+                _logger.LogInformation("Credentials Id({id}) is fully used for today", credentialId);
+                return;
+            }
+
+            cred.DownloadExceededDate = null;
+        }
+        finally
+        {
+            await _addictedUserCredentialRepository.SingleUpdateAsync(cred, token);
+        }
     }
 }
