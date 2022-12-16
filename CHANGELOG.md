@@ -1,3 +1,11 @@
+## [3.5.4](https://github.com/Belphemur/AddictedProxy/compare/v3.5.3...v3.5.4) (2022-12-16)
+
+
+### Performance improvements
+
+* **Culture:** Keep cache longer ([741888f](https://github.com/Belphemur/AddictedProxy/commit/741888f9f8033d7e3b3f2a1c253f77ee61491ba8))
+* **DownloadUsage:** Always keep it in sync with addicted ([45d6b05](https://github.com/Belphemur/AddictedProxy/commit/45d6b052d55a3857576b60eaff9e8df0839ba336))
+
 ## [3.5.3](https://github.com/Belphemur/AddictedProxy/compare/v3.5.2...v3.5.3) (2022-12-15)
 
 
