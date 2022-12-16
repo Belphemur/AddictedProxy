@@ -73,7 +73,7 @@ internal class CultureParser : ICultureParser
             culture = new Model.Culture(cultureInfo.EnglishName, cultureInfo.TwoLetterISOLanguageName, cultureInfo.Name);
             await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(culture, JsonSerializerOptions), new DistributedCacheEntryOptions
             {
-                SlidingExpiration = TimeSpan.FromDays(1)
+                SlidingExpiration = TimeSpan.FromDays(30)
             }, token);
             _localCache.TryAdd(cacheKey, culture);
         }
