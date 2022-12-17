@@ -68,13 +68,13 @@ public class FetchSubtitlesJob
 
         var show = await GetShow(data, token);
         using var scope = _logger.BeginScope(ScopeName(data, show));
-        using var lockReleaser = Lock<FetchSubtitlesJob>.GetLockReleaser(data.Key);
-        if (lockReleaser.SemaphoreSlim.CurrentCount == 0)
+        var lockKey = Lock<FetchSubtitlesJob>.GetNamedKey(data.Key);
+        if (Lock<FetchSubtitlesJob>.IsInUse(lockKey))
         {
             _logger.LogInformation("Lock for {key} already taken", data.Key);
             return;
         }
-        await lockReleaser.SemaphoreSlim.WaitAsync(token);
+        using var _ = await Lock<FetchSubtitlesJob>.LockAsync(lockKey, token).ConfigureAwait(false);
 
         using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), "fetch-subtitles-one-episode");
         try

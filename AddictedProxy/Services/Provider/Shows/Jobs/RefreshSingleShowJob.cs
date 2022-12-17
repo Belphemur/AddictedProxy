@@ -32,14 +32,14 @@ public class RefreshSingleShowJob
         
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "refresh-specific-show");
 
-        using var lockReleaser = Lock<RefreshSingleShowJob>.GetLockReleaser(showId.ToString());
-        if (lockReleaser.SemaphoreSlim.CurrentCount == 0)
+        var lockKey = Lock<RefreshSingleShowJob>.GetNamedKey(showId.ToString());
+        if (Lock<RefreshSingleShowJob>.IsInUse(lockKey))
         {
             _logger.LogInformation("Lock for {show} already taken", showId);
             transaction.Finish(Status.Unavailable);
             return;
         }
-        await lockReleaser.SemaphoreSlim.WaitAsync(token);
+        using var _ = await Lock<RefreshSingleShowJob>.LockAsync(lockKey, token).ConfigureAwait(false);
 
         _logger.LogInformation("Refreshing show: {Show}", showId);
         await _showRefresher.RefreshShowAsync(showId, token);

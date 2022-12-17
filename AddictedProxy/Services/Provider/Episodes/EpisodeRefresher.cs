@@ -65,14 +65,14 @@ public class EpisodeRefresher : IEpisodeRefresher
     private async Task RefreshEpisodesAsync(TvShow show, Season season, CancellationToken token)
     {
         using var transaction = _performanceTracker.BeginNestedSpan("episode", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
-        using var lockReleaser = Lock<EpisodeRefresher>.GetLockReleaser($"{show.Id}-{season.Id}");
-        if (lockReleaser.SemaphoreSlim.CurrentCount == 0)
+        var lockKey = Lock<EpisodeRefresher>.GetNamedKey($"{show.Id}-{season.Id}");
+        if (Lock<EpisodeRefresher>.IsInUse(lockKey))
         {
             _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
             transaction.Finish(Status.Unavailable);
             return;
         }
-        await lockReleaser.SemaphoreSlim.WaitAsync(token);
+        using var _ = await Lock<EpisodeRefresher>.LockAsync(lockKey, token).ConfigureAwait(false);
 
         if (!IsSeasonNeedRefresh(show, season))
         {
@@ -111,17 +111,17 @@ public class EpisodeRefresher : IEpisodeRefresher
     {
         async Task<Episode[]?> EpisodeFetch(Season season)
         {
-            using var lockReleaser = Lock<EpisodeRefresher>.GetLockReleaser($"{show.Id}-{season.Id}");
+            var lockKey = Lock<EpisodeRefresher>.GetNamedKey($"{show.Id}-{season.Id}");
 
             using var transaction = _performanceTracker.BeginNestedSpan("episodes.fetch", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
 
-            if (lockReleaser.SemaphoreSlim.CurrentCount == 0)
+            if (Lock<EpisodeRefresher>.IsInUse(lockKey))
             {
                 _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
                 transaction.Finish(Status.Unavailable);
                 return null;
             }
-            await lockReleaser.SemaphoreSlim.WaitAsync(token);
+            using var _ = await Lock<EpisodeRefresher>.LockAsync(lockKey, token).ConfigureAwait(false);
 
             if (!IsSeasonNeedRefresh(show, season))
             {

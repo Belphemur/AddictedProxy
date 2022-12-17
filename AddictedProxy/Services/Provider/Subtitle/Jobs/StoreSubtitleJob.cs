@@ -30,13 +30,13 @@ public class StoreSubtitleJob
     [Queue("store-subtitle")]
     public async Task ExecuteAsync(Guid subtitleId, byte[] subtitleBlob, CancellationToken cancellationToken)
     {
-        using var lockReleaser = Lock<StoreSubtitleJob>.GetLockReleaser(subtitleId.ToString());
-        if (lockReleaser.SemaphoreSlim.CurrentCount == 0)
+        var lockKey = Lock<StoreSubtitleJob>.GetNamedKey(subtitleId.ToString());
+        if (Lock<StoreSubtitleJob>.IsInUse(lockKey))
         {
             _logger.LogInformation("Lock already taken for {subtitleId}", subtitleId);
             return;
         }
-        await lockReleaser.SemaphoreSlim.WaitAsync(cancellationToken);
+        using var _ = await Lock<StoreSubtitleJob>.LockAsync(lockKey, cancellationToken).ConfigureAwait(false);
 
         using var span = _performanceTracker.BeginNestedSpan(nameof(StoreSubtitleJob), "store");
 
