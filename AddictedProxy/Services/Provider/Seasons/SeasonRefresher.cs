@@ -59,14 +59,14 @@ public class SeasonRefresher : ISeasonRefresher
     public async Task RefreshSeasonsAsync(TvShow show, CancellationToken token = default)
     {
         using var span = _performanceTracker.BeginNestedSpan("season", $"refresh-show-seasons for show {show.Name}");
-
-        using var namedLock = Lock<SeasonRefresher>.GetNamedLock(show.Id.ToString());
-        if (!await namedLock.WaitAsync(TimeSpan.Zero, token))
+        using var lockReleaser = Lock<SeasonRefresher>.GetLockReleaser(show.Id.ToString());
+        if (lockReleaser.SemaphoreSlim.CurrentCount == 0)
         {
             _logger.LogInformation("Already refreshing seasons of {show}", show.Name);
             span.Finish(Status.Unavailable);
             return;
         }
+        await lockReleaser.SemaphoreSlim.WaitAsync(token);
 
         await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
 
