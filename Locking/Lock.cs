@@ -1,8 +1,6 @@
-﻿#region
-
-#endregion
-
-using AsyncKeyedLock;
+﻿using AsyncKeyedLock;
+using System.Runtime.CompilerServices;
+using System.Xml.Linq;
 
 namespace Locking;
 
@@ -10,44 +8,21 @@ public static class Lock<T>
 {
     private static readonly AsyncKeyedLocker<string> AsyncKeyedLocker = new();
 
-    /// <summary>
-    /// Get a named lock
-    /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
-    public static ILockContainer GetNamedLock(string name)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string GetNamedKey(string name)
     {
-        return new Container(AsyncKeyedLocker.GetOrAdd(GetLockKey(name)));
+        return $"{typeof(T).Name}_{name}";
     }
 
-    private static string GetLockKey(string key)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ValueTask<IDisposable> LockAsync(string key, CancellationToken token)
     {
-        return $"{typeof(T).Name}_{key}";
+        return AsyncKeyedLocker.LockAsync(key, token);
     }
 
-    private class Container : ILockContainer
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsInUse(string key)
     {
-        private readonly AsyncKeyedLockReleaser<string> _semaphore;
-
-        public Container(AsyncKeyedLockReleaser<string> semaphore)
-        {
-            _semaphore = semaphore;
-        }
-
-        /// <summary>
-        /// Wait for getting the lock
-        /// </summary>
-        /// <param name="timeSpan"></param>
-        /// <param name="token"></param>
-        /// <returns>True if got the lock before <see cref="timeSpan"/> expires</returns>
-        public Task<bool> WaitAsync(TimeSpan timeSpan, CancellationToken token)
-        {
-            return _semaphore.SemaphoreSlim.WaitAsync(timeSpan, token);
-        }
-
-        public void Dispose()
-        {
-            _semaphore.Dispose();
-        }
+        return AsyncKeyedLocker.IsInUse(key);
     }
 }

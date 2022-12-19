@@ -4,6 +4,7 @@ using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Storage.Store;
 using Hangfire;
 using Locking;
+using Newtonsoft.Json.Linq;
 using Sentry.Performance.Service;
 
 #endregion
@@ -29,12 +30,13 @@ public class StoreSubtitleJob
     [Queue("store-subtitle")]
     public async Task ExecuteAsync(Guid subtitleId, byte[] subtitleBlob, CancellationToken cancellationToken)
     {
-        using var namedLock = Lock<StoreSubtitleJob>.GetNamedLock(subtitleId.ToString());
-        if (!await namedLock.WaitAsync(TimeSpan.Zero, cancellationToken))
+        var lockKey = Lock<StoreSubtitleJob>.GetNamedKey(subtitleId.ToString());
+        if (Lock<StoreSubtitleJob>.IsInUse(lockKey))
         {
             _logger.LogInformation("Lock already taken for {subtitleId}", subtitleId);
             return;
         }
+        using var _ = await Lock<StoreSubtitleJob>.LockAsync(lockKey, cancellationToken).ConfigureAwait(false);
 
         using var span = _performanceTracker.BeginNestedSpan(nameof(StoreSubtitleJob), "store");
 
