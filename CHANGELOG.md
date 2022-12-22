@@ -1,3 +1,11 @@
+## [3.5.5](https://github.com/Belphemur/AddictedProxy/compare/v3.5.4...v3.5.5) (2022-12-22)
+
+
+### Bug Fixes
+
+* **DownloadCredJob:** Delete job after 10 failures ([b86cc6a](https://github.com/Belphemur/AddictedProxy/commit/b86cc6a2f5f27f68c227d1255c3b35ed69bddf03))
+* **Subtitle::Search:** Fix language search like 'Chinese (Simplified)' ([0c5b0c6](https://github.com/Belphemur/AddictedProxy/commit/0c5b0c6f376cdb73194c727738c22248fa781c36))
+
 ## [3.5.4](https://github.com/Belphemur/AddictedProxy/compare/v3.5.3...v3.5.4) (2022-12-16)
 
 
