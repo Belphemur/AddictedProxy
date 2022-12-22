@@ -19,7 +19,7 @@ public class ResetDownloadCredJob
         _performanceTracker = performanceTracker;
     }
 
-    [AutomaticRetry(Attempts = 5)]
+    [AutomaticRetry(Attempts = 10, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
     [DisableMultipleQueuedItemsFilter]
     [Queue("download-creds-checker")]
     [MaximumConcurrentExecutions(3)]
