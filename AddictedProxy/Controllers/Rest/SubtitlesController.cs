@@ -204,7 +204,7 @@ public class SubtitlesController : Controller
     /// <response code="400">Doesn't follow the right format for the search: Show S00E00</response>
     /// <response code="429">Reached the rate limiting of the endpoint</response>
     /// <response code="423">Refreshing the show, currently don't have data, try again later</response>
-    [Route("get/{showUniqueId:guid}/{season:int:min(0)}/{episode:int:min(0)}/{language:alpha}")]
+    [Route("get/{showUniqueId:guid}/{season:int:min(0)}/{episode:int:min(0)}/{**language:minlength(2)}")]
     [HttpGet]
     [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 404)]
