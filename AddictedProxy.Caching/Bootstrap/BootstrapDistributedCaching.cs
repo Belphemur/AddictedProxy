@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 
 namespace AddictedProxy.Caching.Bootstrap;
 
@@ -26,6 +27,10 @@ public class BootstrapDistributedCaching : IBootstrap, IBootstrapConditional
         {
             options.InstanceName = config.InstanceName;
             options.Configuration = config.Connection;
+            options.ConfigurationOptions = new ConfigurationOptions
+            {
+                SyncTimeout = (int)config.Timeout.TotalMilliseconds
+            };
         });
         services.AddDistributedRateLimiting();
     }
