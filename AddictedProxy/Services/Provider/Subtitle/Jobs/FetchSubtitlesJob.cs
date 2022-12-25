@@ -56,7 +56,7 @@ public class FetchSubtitlesJob
     }
 
 
-    [DisableMultipleQueuedItemsFilter(Order = 10)]
+    [UniqueJob(Order = 10)]
     [MaximumConcurrentExecutions(5)]
     [AutomaticRetry(Attempts = 10, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
     [Queue("fetch-subtitles")]
