@@ -1,3 +1,15 @@
+## [3.5.6](https://github.com/Belphemur/AddictedProxy/compare/v3.5.5...v3.5.6) (2022-12-25)
+
+
+### Bug Fixes
+
+* **Redis:** fix parsing config ([e8e2f40](https://github.com/Belphemur/AddictedProxy/commit/e8e2f4043ef3833ae9075065cca70b30e1af1e37))
+
+
+### Performance improvements
+
+* **Redis:** Use timeout from the config ([5dae94e](https://github.com/Belphemur/AddictedProxy/commit/5dae94eac6f9f7cf2e9d75c62f6c3ede1bcbf8f5))
+
 ## [3.5.5](https://github.com/Belphemur/AddictedProxy/compare/v3.5.4...v3.5.5) (2022-12-22)
 
 
