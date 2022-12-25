@@ -5,6 +5,7 @@ using AddictedProxy.Caching.OutputCache.Configuration;
 using AspNetCoreRateLimit;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 
 namespace AddictedProxy.Caching.Bootstrap;
 
@@ -24,8 +26,11 @@ public class BootstrapDistributedCaching : IBootstrap, IBootstrapConditional
 
         services.AddStackExchangeRedisCache(options =>
         {
+            var configurationOptions = ConfigurationOptions.Parse(config.Connection);
+            configurationOptions.SyncTimeout = (int)config.Timeout.TotalMilliseconds;
+            
             options.InstanceName = config.InstanceName;
-            options.Configuration = config.Connection;
+            options.ConfigurationOptions = configurationOptions;
         });
         services.AddDistributedRateLimiting();
     }

@@ -20,7 +20,7 @@ public class RefreshSingleShowJob
         _performanceTracker = performanceTracker;
     }
 
-    [DisableMultipleQueuedItemsFilter(Order = 10)]
+    [UniqueJob(Order = 10)]
     [AutomaticRetry(Attempts = 20)]
     [MaximumConcurrentExecutions(4)]
     [Queue("refresh-one-show")]

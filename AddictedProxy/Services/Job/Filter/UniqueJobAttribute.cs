@@ -13,15 +13,15 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 
-public class DisableMultipleQueuedItemsFilter : JobFilterAttribute, IClientFilter, IApplyStateFilter
+public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyStateFilter
 {
     private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(20);
 
     private static bool AddFingerprintIfNotExists(IStorageConnection connection, Job? job)
     {
         var fingerprintKey = GetFingerprintKey(job);
-        var finterprintLockKey = GetFingerprintLockKey(fingerprintKey);
-        var distributedLock = connection.AcquireDistributedLock(finterprintLockKey, LockTimeout);
+        var fingerprintLockKey = GetFingerprintLockKey(fingerprintKey);
+        var distributedLock = connection.AcquireDistributedLock(fingerprintLockKey, LockTimeout);
         using (distributedLock)
         {
             var fingerprint = connection.GetAllEntriesFromHash(fingerprintKey);
@@ -46,8 +46,8 @@ public class DisableMultipleQueuedItemsFilter : JobFilterAttribute, IClientFilte
     private static void RemoveFingerprint(IStorageConnection connection, Job? job)
     {
         var fingerprintKey = GetFingerprintKey(job);
-        var finterprintLockKey = GetFingerprintLockKey(fingerprintKey);
-        using (connection.AcquireDistributedLock(finterprintLockKey, LockTimeout))
+        var fingerprintLockKey = GetFingerprintLockKey(fingerprintKey);
+        using (connection.AcquireDistributedLock(fingerprintLockKey, LockTimeout))
         using (var transaction = connection.CreateWriteTransaction())
         {
             transaction.RemoveHash(fingerprintKey);
