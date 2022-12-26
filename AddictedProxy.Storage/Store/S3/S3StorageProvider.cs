@@ -39,7 +39,11 @@ public class S3StorageProvider : IStorageProvider
         {
             BucketName = _s3Config.Bucket,
             Key = GetFileName(filename),
-            InputStream = await _compressor.CompressAsync(inputStream, cancellationToken)
+            InputStream = await _compressor.CompressAsync(inputStream, cancellationToken),
+            //For Cloudflare R2
+            //see: https://github.com/cloudflare/cloudflare-docs/issues/4683
+            //see: https://community.cloudflare.com/t/putobjectasync-not-working-for-r2-with-aws-s3-net-sdk/427335
+            DisablePayloadSigning = true
         }, cancellationToken);
 
         return result?.HttpStatusCode == HttpStatusCode.OK;
