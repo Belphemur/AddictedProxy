@@ -1,3 +1,15 @@
+## [3.6.0](https://github.com/Belphemur/AddictedProxy/compare/v3.5.7...v3.6.0) (2023-01-01)
+
+
+### Features
+
+* **Search:** Add proper error message when can't find show ([07b3f0e](https://github.com/Belphemur/AddictedProxy/commit/07b3f0e500574c37c4863051e857491351c1510a))
+
+
+### Bug Fixes
+
+* **Search:** Fix not finding show and keeping the loading animation ([e8268c8](https://github.com/Belphemur/AddictedProxy/commit/e8268c89d70434f4867adf234406818962e5368f))
+
 ## [3.5.7](https://github.com/Belphemur/AddictedProxy/compare/v3.5.6...v3.5.7) (2022-12-26)
 
 
