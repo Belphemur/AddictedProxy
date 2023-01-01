@@ -60,6 +60,7 @@ import { getName, getAll639_1 } from "all-iso-language-codes";
 import { SelectedShow } from "~/Dto/SelectedShow";
 import { api } from "~/composables/rest/api";
 import { mevent } from "~/composables/matomo/event";
+import { ElMessage } from "element-plus";
 
 const langs = getAll639_1().map((value) => {
   return { value: value, label: getName(value) };
@@ -91,6 +92,12 @@ const querySearch = async (query: string, cb: (param: unknown) => void) => {
     cb(searchResponse.data.shows);
   } catch (e) {
     cb([]);
+    ElMessage({
+      showClose: true,
+      message: `Couldn't find show: ${searchInput.value}`,
+      type: "error",
+      duration: 5000,
+    });
   }
 };
 
