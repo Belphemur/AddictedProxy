@@ -86,8 +86,12 @@ const querySearch = async (query: string, cb: (param: unknown) => void) => {
     return;
   }
   mevent("show-search", { query: query });
-  const searchResponse = await api.shows.searchDetail(query);
-  cb(searchResponse.data.shows);
+  try {
+    const searchResponse = await api.shows.searchDetail(query);
+    cb(searchResponse.data.shows);
+  } catch (e) {
+    cb([]);
+  }
 };
 
 const updateSelectedShow = async (event: ShowDto) => {
