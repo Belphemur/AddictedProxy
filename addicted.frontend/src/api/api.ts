@@ -417,7 +417,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Gestdown: Addicted Proxy
- * @version 3.1.0
+ * @version 3.5.6
  *
  * Provide a full api to search and download subtitles from Addic7ed website.
  */

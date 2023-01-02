@@ -1,3 +1,10 @@
+## [3.5.7](https://github.com/Belphemur/AddictedProxy/compare/v3.5.6...v3.5.7) (2022-12-26)
+
+
+### Bug Fixes
+
+* **Storage::CloudflareR2:** Fix issue with storing data in R2 ([a0aa194](https://github.com/Belphemur/AddictedProxy/commit/a0aa194589f8f4b516cd8d630c38f960000d321b))
+
 ## [3.5.6](https://github.com/Belphemur/AddictedProxy/compare/v3.5.5...v3.5.6) (2022-12-25)
 
 
