@@ -15,49 +15,46 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         _distributedCache = distributedCache;
     }
 
-    public async Task<bool> StoreAsync(string shardingKey, string filename, Stream inputStream, CancellationToken cancellationToken)
-    {
-        var stored = await _storageProvider.StoreAsync(filename, inputStream, cancellationToken);
-        if (!stored)
-        {
-            return stored;
-        }
-
-        var dataBytes = await GetDataBytesAsync(inputStream, cancellationToken);
-        await _distributedCache.SetAsync(GetCacheKey(shardingKey, filename), dataBytes, new DistributedCacheEntryOptions
-        {
-            SlidingExpiration = TimeSpan.FromDays(1)
-        }, cancellationToken);
-
-        return stored;
-    }
-
-    private static async Task<byte[]> GetDataBytesAsync(Stream inputStream, CancellationToken cancellationToken)
+    private static async Task<MemoryStream> GetMemoryStreamAsync(Stream inputStream, CancellationToken cancellationToken)
     {
         inputStream.ResetPosition();
         if (inputStream is MemoryStream memStream)
         {
-            return memStream.GetBuffer();
+            return memStream;
         }
 
-        using var memoryStream = new MemoryStream();
+        var memoryStream = new MemoryStream();
         await inputStream.CopyToAsync(memoryStream, cancellationToken);
         memoryStream.ResetPosition();
-        var dataBytes = memoryStream.GetBuffer();
-        return dataBytes;
+        return memoryStream;
     }
 
     private string GetCacheKey(string sharding, string filename) => $"{{{sharding}}}/{filename}";
 
 
-    public async Task<Stream?> DownloadAsync(string shardingKey, string filename, CancellationToken cancellationToken)
+    public async Task<Stream?> GetSertAsync(string shardingKey, string filename, CancellationToken cancellationToken)
     {
-        var cachedData = await _distributedCache.GetAsync(GetCacheKey(shardingKey, filename), cancellationToken);
+        var cacheKey = GetCacheKey(shardingKey, filename);
+        var cachedData = await _distributedCache.GetAsync(cacheKey, cancellationToken);
         if (cachedData != null)
         {
             return new MemoryStream(cachedData);
         }
 
-        return await _storageProvider.DownloadAsync(filename, cancellationToken);
+        var stream = await _storageProvider.DownloadAsync(filename, cancellationToken);
+        if (stream == null)
+        {
+            return stream;
+        }
+
+        var memStream = await GetMemoryStreamAsync(stream, cancellationToken);
+
+        await _distributedCache.SetAsync(cacheKey, memStream.GetBuffer(), new DistributedCacheEntryOptions
+        {
+            SlidingExpiration = TimeSpan.FromDays(1)
+        }, cancellationToken);
+
+        memStream.ResetPosition();
+        return memStream;
     }
 }

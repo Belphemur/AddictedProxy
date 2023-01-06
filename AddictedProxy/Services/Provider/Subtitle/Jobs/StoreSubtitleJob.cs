@@ -15,11 +15,11 @@ namespace AddictedProxy.Services.Provider.Subtitle.Jobs;
 public class StoreSubtitleJob
 {
     private readonly ILogger<StoreSubtitleJob> _logger;
-    private readonly ICachedStorageProvider _storageProvider;
+    private readonly IStorageProvider _storageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
     private readonly IPerformanceTracker _performanceTracker;
 
-    public StoreSubtitleJob(ILogger<StoreSubtitleJob> logger, ICachedStorageProvider storageProvider, ISubtitleRepository subtitleRepository, IPerformanceTracker performanceTracker)
+    public StoreSubtitleJob(ILogger<StoreSubtitleJob> logger, IStorageProvider storageProvider, ISubtitleRepository subtitleRepository, IPerformanceTracker performanceTracker)
     {
         _logger = logger;
         _storageProvider = storageProvider;
@@ -52,7 +52,7 @@ public class StoreSubtitleJob
 
         await using var buffer = new MemoryStream(subtitleBlob);
         var storageName = GetStorageName(subtitle);
-        if (!await _storageProvider.StoreAsync(subtitle.EpisodeId.ToString(), storageName, buffer, cancellationToken))
+        if (!await _storageProvider.StoreAsync(storageName, buffer, cancellationToken))
         {
             throw new InvalidOperationException($"Couldn't store the subtitle {subtitleId}");
         }

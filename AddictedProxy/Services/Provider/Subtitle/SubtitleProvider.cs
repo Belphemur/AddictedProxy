@@ -19,19 +19,19 @@ internal class SubtitleProvider : ISubtitleProvider
     private readonly ICredentialsService _credentialsService;
     private readonly ILogger<SubtitleProvider> _logger;
     private readonly SubtitleCounterUpdater _subtitleCounterUpdater;
-    private readonly ICachedStorageProvider _storageProvider;
+    private readonly ICachedStorageProvider _cachedStorageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
     private const int MAX_ATTEMPTS = 3;
 
     public SubtitleProvider(IAddic7edDownloader addic7EdDownloader,
-                            ICachedStorageProvider storageProvider,
+                            ICachedStorageProvider cachedStorageProvider,
                             ISubtitleRepository subtitleRepository,
                             ICredentialsService credentialsService,
                             ILogger<SubtitleProvider> logger,
                             SubtitleCounterUpdater subtitleCounterUpdater)
     {
         _addic7EdDownloader = addic7EdDownloader;
-        _storageProvider = storageProvider;
+        _cachedStorageProvider = cachedStorageProvider;
         _subtitleRepository = subtitleRepository;
         _credentialsService = credentialsService;
         _logger = logger;
@@ -50,7 +50,7 @@ internal class SubtitleProvider : ISubtitleProvider
         //We have the subtitle stored
         if (subtitle.StoragePath != null)
         {
-            var stream = await _storageProvider.DownloadAsync(subtitle.EpisodeId.ToString(), subtitle.StoragePath, token);
+            var stream = await _cachedStorageProvider.GetSertAsync(subtitle.EpisodeId.ToString(), subtitle.StoragePath, token);
             if (stream != null)
             {
                 await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
