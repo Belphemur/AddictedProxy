@@ -17,9 +17,9 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
 
     private static async Task<MemoryStream> GetMemoryStreamAsync(Stream inputStream, CancellationToken cancellationToken)
     {
-        inputStream.ResetPosition();
         if (inputStream is MemoryStream memStream)
         {
+            memStream.ResetPosition();
             return memStream;
         }
 
@@ -54,7 +54,6 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
             SlidingExpiration = TimeSpan.FromDays(1)
         }, cancellationToken);
 
-        memStream.ResetPosition();
         return memStream;
     }
 }
