@@ -1,3 +1,23 @@
+## [3.7.0](https://github.com/Belphemur/AddictedProxy/compare/v3.6.0...v3.7.0) (2023-01-06)
+
+
+### Features
+
+* **Caching:** Add distributed caching to storage provider ([3054091](https://github.com/Belphemur/AddictedProxy/commit/305409184ce1babda49517700537fb2c044ee167))
+* **Caching:** Use distributed caching for subtitles ([ccd5ba5](https://github.com/Belphemur/AddictedProxy/commit/ccd5ba5f48daae7eb6e76e15eab6f931efbea757))
+
+
+### Bug Fixes
+
+* **Caching:** Fix constructor for distributed caching of storage ([08d6b3b](https://github.com/Belphemur/AddictedProxy/commit/08d6b3bd813f9009af516e6fec83cd61a627f973))
+* **Caching:** only reset position for memory streams ([6b56cc6](https://github.com/Belphemur/AddictedProxy/commit/6b56cc690f27128b8ac13d57d2b6223d6a15fa99))
+
+
+### Performance improvements
+
+* **Caching:** Improve the distributed caching of subtitle by using sharding key based on the episode id ([3fdd356](https://github.com/Belphemur/AddictedProxy/commit/3fdd356081d20734dd89e8ea3f8a8396c9a42b2a))
+* **Caching:** Refactor the cache storage provider ([7d8f0cd](https://github.com/Belphemur/AddictedProxy/commit/7d8f0cdf7e62d6b8ee3a471e133ce548b67b65d2))
+
 ## [3.6.0](https://github.com/Belphemur/AddictedProxy/compare/v3.5.7...v3.6.0) (2023-01-01)
 
 
