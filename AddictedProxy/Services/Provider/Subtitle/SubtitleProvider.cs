@@ -50,7 +50,7 @@ internal class SubtitleProvider : ISubtitleProvider
         //We have the subtitle stored
         if (subtitle.StoragePath != null)
         {
-            var stream = await _storageProvider.DownloadAsync(subtitle.StoragePath, token);
+            var stream = await _storageProvider.DownloadAsync(subtitle.EpisodeId.ToString(), subtitle.StoragePath, token);
             if (stream != null)
             {
                 await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);

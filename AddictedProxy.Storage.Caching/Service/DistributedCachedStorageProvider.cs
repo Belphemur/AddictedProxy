@@ -15,7 +15,7 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         _distributedCache = distributedCache;
     }
 
-    public async Task<bool> StoreAsync(string filename, Stream inputStream, CancellationToken cancellationToken)
+    public async Task<bool> StoreAsync(string shardingKey, string filename, Stream inputStream, CancellationToken cancellationToken)
     {
         var stored = await _storageProvider.StoreAsync(filename, inputStream, cancellationToken);
         if (!stored)
@@ -24,7 +24,7 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         }
 
         var dataBytes = await GetDataBytesAsync(inputStream, cancellationToken);
-        await _distributedCache.SetAsync(filename, dataBytes, new DistributedCacheEntryOptions
+        await _distributedCache.SetAsync(GetCacheKey(shardingKey, filename), dataBytes, new DistributedCacheEntryOptions
         {
             SlidingExpiration = TimeSpan.FromDays(1)
         }, cancellationToken);
@@ -47,9 +47,12 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         return dataBytes;
     }
 
-    public async Task<Stream?> DownloadAsync(string filename, CancellationToken cancellationToken)
+    private string GetCacheKey(string sharding, string filename) => $"{{{sharding}}}/{filename}";
+
+
+    public async Task<Stream?> DownloadAsync(string shardingKey, string filename, CancellationToken cancellationToken)
     {
-        var cachedData = await _distributedCache.GetAsync(filename, cancellationToken);
+        var cachedData = await _distributedCache.GetAsync(GetCacheKey(shardingKey, filename), cancellationToken);
         if (cachedData != null)
         {
             return new MemoryStream(cachedData);
