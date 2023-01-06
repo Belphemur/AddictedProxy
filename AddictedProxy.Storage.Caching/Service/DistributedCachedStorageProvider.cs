@@ -9,7 +9,7 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
     private readonly IStorageProvider _storageProvider;
     private readonly IDistributedCache _distributedCache;
 
-    internal DistributedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache)
+    public DistributedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache)
     {
         _storageProvider = storageProvider;
         _distributedCache = distributedCache;
