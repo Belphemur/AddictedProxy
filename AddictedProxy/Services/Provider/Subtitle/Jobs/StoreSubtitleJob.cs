@@ -1,6 +1,7 @@
 ﻿#region
 
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Storage.Caching.Service;
 using AddictedProxy.Storage.Store;
 using Hangfire;
 using Locking;
@@ -25,7 +26,7 @@ public class StoreSubtitleJob
         _subtitleRepository = subtitleRepository;
         _performanceTracker = performanceTracker;
     }
-    
+
 
     [Queue("store-subtitle")]
     public async Task ExecuteAsync(Guid subtitleId, byte[] subtitleBlob, CancellationToken cancellationToken)
@@ -36,6 +37,7 @@ public class StoreSubtitleJob
             _logger.LogInformation("Lock already taken for {subtitleId}", subtitleId);
             return;
         }
+
         using var _ = await Lock<StoreSubtitleJob>.LockAsync(lockKey, cancellationToken).ConfigureAwait(false);
 
         using var span = _performanceTracker.BeginNestedSpan(nameof(StoreSubtitleJob), "store");
@@ -59,7 +61,7 @@ public class StoreSubtitleJob
         subtitle.StoredAt = DateTime.UtcNow;
         await _subtitleRepository.SaveChangeAsync(cancellationToken);
     }
-    
+
     private string GetStorageName(Database.Model.Shows.Subtitle subtitle)
     {
         return $"{subtitle.Episode.TvShowId}/{subtitle.Episode.Season}/{subtitle.Episode.Number}/{subtitle.UniqueId}.srt";

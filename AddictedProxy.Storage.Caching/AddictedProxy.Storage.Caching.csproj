@@ -7,7 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AsyncKeyedLock" Version="6.0.5" />
+      <ProjectReference Include="..\AddictedProxy.Caching\AddictedProxy.Caching.csproj" />
+      <ProjectReference Include="..\AddictedProxy.Storage\AddictedProxy.Storage.csproj" />
     </ItemGroup>
 
 </Project>

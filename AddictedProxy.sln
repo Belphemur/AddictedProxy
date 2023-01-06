@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Culture", "Ad
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Upstream.Tests", "AddictedProxy.Upstream.Tests\AddictedProxy.Upstream.Tests.csproj", "{ECC62363-630E-4F4C-8626-318C7739BEE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Storage.Caching", "AddictedProxy.Storage.Caching\AddictedProxy.Storage.Caching.csproj", "{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,5 +86,9 @@ Global
 		{ECC62363-630E-4F4C-8626-318C7739BEE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECC62363-630E-4F4C-8626-318C7739BEE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECC62363-630E-4F4C-8626-318C7739BEE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

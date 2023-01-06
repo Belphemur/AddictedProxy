@@ -3,6 +3,7 @@
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
+using AddictedProxy.Storage.Caching.Service;
 using AddictedProxy.Storage.Store;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.Exception;
@@ -18,19 +19,19 @@ internal class SubtitleProvider : ISubtitleProvider
     private readonly ICredentialsService _credentialsService;
     private readonly ILogger<SubtitleProvider> _logger;
     private readonly SubtitleCounterUpdater _subtitleCounterUpdater;
-    private readonly IStorageProvider _storageProvider;
+    private readonly ICachedStorageProvider _cachedStorageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
     private const int MAX_ATTEMPTS = 3;
 
     public SubtitleProvider(IAddic7edDownloader addic7EdDownloader,
-                            IStorageProvider storageProvider,
+                            ICachedStorageProvider cachedStorageProvider,
                             ISubtitleRepository subtitleRepository,
                             ICredentialsService credentialsService,
                             ILogger<SubtitleProvider> logger,
                             SubtitleCounterUpdater subtitleCounterUpdater)
     {
         _addic7EdDownloader = addic7EdDownloader;
-        _storageProvider = storageProvider;
+        _cachedStorageProvider = cachedStorageProvider;
         _subtitleRepository = subtitleRepository;
         _credentialsService = credentialsService;
         _logger = logger;
@@ -49,7 +50,7 @@ internal class SubtitleProvider : ISubtitleProvider
         //We have the subtitle stored
         if (subtitle.StoragePath != null)
         {
-            var stream = await _storageProvider.DownloadAsync(subtitle.StoragePath, token);
+            var stream = await _cachedStorageProvider.GetSertAsync(subtitle.EpisodeId.ToString(), subtitle.StoragePath, token);
             if (stream != null)
             {
                 await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
