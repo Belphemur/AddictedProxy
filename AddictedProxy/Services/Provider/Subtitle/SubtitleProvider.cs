@@ -3,6 +3,7 @@
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
+using AddictedProxy.Storage.Caching.Service;
 using AddictedProxy.Storage.Store;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.Exception;
@@ -18,12 +19,12 @@ internal class SubtitleProvider : ISubtitleProvider
     private readonly ICredentialsService _credentialsService;
     private readonly ILogger<SubtitleProvider> _logger;
     private readonly SubtitleCounterUpdater _subtitleCounterUpdater;
-    private readonly IStorageProvider _storageProvider;
+    private readonly ICachedStorageProvider _storageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
     private const int MAX_ATTEMPTS = 3;
 
     public SubtitleProvider(IAddic7edDownloader addic7EdDownloader,
-                            IStorageProvider storageProvider,
+                            ICachedStorageProvider storageProvider,
                             ISubtitleRepository subtitleRepository,
                             ICredentialsService credentialsService,
                             ILogger<SubtitleProvider> logger,

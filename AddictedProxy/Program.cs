@@ -9,6 +9,7 @@ using AddictedProxy.Database.Context;
 using AddictedProxy.Model.Performance;
 using AddictedProxy.Services.Job.Exception;
 using AddictedProxy.Stats.Popularity.Bootstrap;
+using AddictedProxy.Storage.Caching.Bootstrap;
 using AddictedProxy.Storage.Compressor.Bootstrap;
 using AddictedProxy.Upstream.Boostrap;
 using InversionOfControl.Service.Bootstrap;
@@ -62,7 +63,8 @@ var currentAssemblies = new[]
     typeof(BootstrapStatsPopularityShow).Assembly,
     typeof(BootstrapTMDB).Assembly,
     typeof(BootstrapDistributedCaching).Assembly,
-    typeof(BootstrapCulture).Assembly
+    typeof(BootstrapCulture).Assembly,
+    typeof(BootstrapStorageCaching).Assembly
 };
 
 builder.Services

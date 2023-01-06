@@ -28,6 +28,7 @@
         <ProjectReference Include="..\AddictedProxy.Caching\AddictedProxy.Caching.csproj" />
         <ProjectReference Include="..\AddictedProxy.Database\AddictedProxy.Database.csproj" />
         <ProjectReference Include="..\AddictedProxy.Stats\AddictedProxy.Stats.csproj" />
+        <ProjectReference Include="..\AddictedProxy.Storage.Caching\AddictedProxy.Storage.Caching.csproj" />
         <ProjectReference Include="..\AddictedProxy.Storage\AddictedProxy.Storage.csproj" />
         <ProjectReference Include="..\AddictedProxy.Upstream\AddictedProxy.Upstream.csproj" />
         <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
