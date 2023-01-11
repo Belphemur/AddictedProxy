@@ -1,3 +1,8 @@
 namespace AddictedProxy.Caching.Model;
 
-public abstract record CachingConfig(TimeSpan Sliding, TimeSpan Absolute);
+public abstract class CachingConfig
+{
+    public TimeSpan Sliding { get; init; }
+    public TimeSpan Absolute { get; init; }
+    
+}
