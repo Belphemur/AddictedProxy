@@ -1,6 +1,8 @@
+using AddictedProxy.Storage.Caching.Model;
 using AddictedProxy.Storage.Extensions;
 using AddictedProxy.Storage.Store;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
 
 namespace AddictedProxy.Storage.Caching.Service;
 
@@ -8,11 +10,13 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
 {
     private readonly IStorageProvider _storageProvider;
     private readonly IDistributedCache _distributedCache;
+    private readonly IOptions<StorageCachingConfig> _cachingConfig;
 
-    public DistributedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache)
+    public DistributedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache, IOptions<StorageCachingConfig> cachingConfig)
     {
         _storageProvider = storageProvider;
         _distributedCache = distributedCache;
+        _cachingConfig = cachingConfig;
     }
 
     private static async Task<MemoryStream> GetMemoryStreamAsync(Stream inputStream, CancellationToken cancellationToken)
@@ -51,7 +55,8 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
 
         await _distributedCache.SetAsync(cacheKey, memStream.GetBuffer(), new DistributedCacheEntryOptions
         {
-            SlidingExpiration = TimeSpan.FromDays(1)
+            SlidingExpiration = _cachingConfig.Value.Sliding,
+            AbsoluteExpirationRelativeToNow = _cachingConfig.Value.Absolute
         }, cancellationToken);
 
         return memStream;
