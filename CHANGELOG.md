@@ -1,3 +1,10 @@
+## [3.7.1](https://github.com/Belphemur/AddictedProxy/compare/v3.7.0...v3.7.1) (2023-01-11)
+
+
+### Performance improvements
+
+* **Storage::Caching:** Make caching configurable ([de14bd2](https://github.com/Belphemur/AddictedProxy/commit/de14bd2c8225ea8db51b9f747774aa0013bbc69b))
+
 ## [3.7.0](https://github.com/Belphemur/AddictedProxy/compare/v3.6.0...v3.7.0) (2023-01-06)
 
 
