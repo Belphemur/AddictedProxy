@@ -1,3 +1,10 @@
+## [3.7.2](https://github.com/Belphemur/AddictedProxy/compare/v3.7.1...v3.7.2) (2023-01-11)
+
+
+### Bug Fixes
+
+* **CachingConfig:** Fix config deserialization ([38d7133](https://github.com/Belphemur/AddictedProxy/commit/38d7133bcdbf6eac343f28cd8f049ed2d7b120a6))
+
 ## [3.7.1](https://github.com/Belphemur/AddictedProxy/compare/v3.7.0...v3.7.1) (2023-01-11)
 
 
