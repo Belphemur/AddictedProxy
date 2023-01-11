@@ -1,3 +1,4 @@
+using AddictedProxy.Storage.Caching.Model;
 using AddictedProxy.Storage.Caching.Service;
 using InversionOfControl.Model;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ public class BootstrapStorageCaching : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<StorageCachingConfig>(configuration.GetSection("Caching:Storage"));
         services.AddSingleton<ICachedStorageProvider, DistributedCachedStorageProvider>();
     }
 }
