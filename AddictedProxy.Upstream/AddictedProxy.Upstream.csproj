@@ -9,6 +9,7 @@
     <ItemGroup>
         <ProjectReference Include="..\AddictedProxy.Culture\AddictedProxy.Culture.csproj" />
         <ProjectReference Include="..\AddictedProxy.Database\AddictedProxy.Database.csproj" />
+        <ProjectReference Include="..\Performance\Performance.csproj" />
     </ItemGroup>
 
     <ItemGroup>

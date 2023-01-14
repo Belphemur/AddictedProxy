@@ -4,6 +4,7 @@ using System.Text.Json.Serialization.Metadata;
 using AddictedProxy.Controllers.Rest.Serializer;
 using AddictedProxy.Services.Middleware;
 using InversionOfControl.Model;
+using Prometheus;
 
 #endregion
 
@@ -46,6 +47,7 @@ public class BootstrapController : IBootstrap, IBootstrapApp
 
         app.UseHttpLogging();
         app.UseRouting();
+        app.UseHttpMetrics();
         app.UseAuthorization();
     }
 }
