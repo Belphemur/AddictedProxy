@@ -1,3 +1,11 @@
+## [4.0.6](https://github.com/Belphemur/AddictedProxy/compare/v4.0.5...v4.0.6) (2023-01-14)
+
+
+### Performance improvements
+
+* **Redis:** One connection for the full application instead of one for Hangfire and one for caching ([2554993](https://github.com/Belphemur/AddictedProxy/commit/2554993a58e0afa42e69fc681d8c60e59412d6b6))
+* **Swagger:** Improve the styling of dark mode ([ddd7c68](https://github.com/Belphemur/AddictedProxy/commit/ddd7c6840f3a5deba69f12a1e9a6ce546c86c808))
+
 ## [4.0.5](https://github.com/Belphemur/AddictedProxy/compare/v4.0.4...v4.0.5) (2023-01-14)
 
 
