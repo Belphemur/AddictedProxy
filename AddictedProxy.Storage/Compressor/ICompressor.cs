@@ -8,6 +8,13 @@ public interface ICompressor
     string Extension { get; }
 
     /// <summary>
+    /// Get the full file name in the storage
+    /// </summary>
+    /// <param name="file"></param>
+    /// <returns></returns>
+    public string GetFileName(string file) => $"{file}{Extension}";
+
+    /// <summary>
     /// Compress bytes
     /// </summary>
     /// <param name="bytes">Bytes</param>
