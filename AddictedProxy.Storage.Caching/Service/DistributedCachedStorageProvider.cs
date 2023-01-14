@@ -45,13 +45,13 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         var cachedData = await _distributedCache.GetAsync(cacheKey, cancellationToken);
         if (cachedData != null)
         {
-            using var memoryStream = new MemoryStream(cachedData);
+            var memoryStream = new MemoryStream(cachedData);
             return await _compressor.DecompressAsync(memoryStream, cancellationToken);
         }
 
         //We use the normal storage provider that will contain the already compressed file
         //because StoreSubtitle use the compressed storage provider
-        var stream = await _storageProvider.DownloadAsync(filename, cancellationToken);
+        var stream = await _storageProvider.DownloadAsync(_compressor.GetFileName(filename), cancellationToken);
         if (stream == null)
         {
             return stream;
