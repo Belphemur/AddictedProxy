@@ -14,6 +14,7 @@ using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
 using Polly.Timeout;
+using Prometheus;
 using Sentry;
 
 #endregion
@@ -29,24 +30,26 @@ public class BootstrapAddictedServices : IBootstrap,
         services.AddSingleton<Parser>();
 
         services.AddHttpClient<IAddic7edClient, Addic7edClient>(client =>
-            {
-                client.Timeout = TimeSpan.FromMinutes(30);
-                client.BaseAddress = new Uri("https://www.addic7ed.com");
-            })
-            .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
-            .SetHandlerLifetime(TimeSpan.FromHours(1))
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetTimeoutPolicy());
+                {
+                    client.Timeout = TimeSpan.FromMinutes(30);
+                    client.BaseAddress = new Uri("https://www.addic7ed.com");
+                })
+                .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>())))
+                .SetHandlerLifetime(TimeSpan.FromHours(1))
+                .AddPolicyHandler(GetRetryPolicy())
+                .AddPolicyHandler(GetTimeoutPolicy())
+                .UseHttpClientMetrics();
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>(client =>
-            {
-                client.Timeout = TimeSpan.FromMinutes(2);
-                client.BaseAddress = new Uri("https://www.addic7ed.com");
-            })
-            .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>(), false)))
-            .SetHandlerLifetime(TimeSpan.FromMinutes(1))
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetTimeoutPolicy());
+                {
+                    client.Timeout = TimeSpan.FromMinutes(2);
+                    client.BaseAddress = new Uri("https://www.addic7ed.com");
+                })
+                .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>(), false)))
+                .SetHandlerLifetime(TimeSpan.FromMinutes(1))
+                .AddPolicyHandler(GetRetryPolicy())
+                .AddPolicyHandler(GetTimeoutPolicy())
+                .UseHttpClientMetrics();
 
         services.AddSingleton<HttpUtils>();
     }
