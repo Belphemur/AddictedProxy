@@ -1,3 +1,16 @@
+## [4.0.3](https://github.com/Belphemur/AddictedProxy/compare/v4.0.2...v4.0.3) (2023-01-14)
+
+
+### Bug Fixes
+
+* **route:** Fix route not showing ([853336d](https://github.com/Belphemur/AddictedProxy/commit/853336d4e06552289bdd5b13451c5475d9feb241))
+* **swagger:** Fix css issue ([e013f75](https://github.com/Belphemur/AddictedProxy/commit/e013f75573d72428c118a960648d2c4c969db824))
+
+
+### Performance improvements
+
+* **Chunking:** Better chunking the production package ([6931d7c](https://github.com/Belphemur/AddictedProxy/commit/6931d7c2640a4314c5458b5fd735fb682e35b368))
+
 ## [4.0.2](https://github.com/Belphemur/AddictedProxy/compare/v4.0.1...v4.0.2) (2023-01-14)
 
 
