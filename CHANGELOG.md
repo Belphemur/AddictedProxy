@@ -1,3 +1,10 @@
+## [4.0.4](https://github.com/Belphemur/AddictedProxy/compare/v4.0.3...v4.0.4) (2023-01-14)
+
+
+### Bug Fixes
+
+* **chunking:** Fix chunking config for the front-end ([0e915e9](https://github.com/Belphemur/AddictedProxy/commit/0e915e9559b3afc72ae74de379cc11384c438e6a))
+
 ## [4.0.3](https://github.com/Belphemur/AddictedProxy/compare/v4.0.2...v4.0.3) (2023-01-14)
 
 
