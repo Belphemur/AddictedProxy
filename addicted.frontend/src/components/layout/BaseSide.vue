@@ -44,7 +44,7 @@ import * as _ from "lodash-es";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-const routes = _.orderBy(["meta.order"], ["asc"], router.getRoutes());
+const routes = _.orderBy(router.getRoutes(), ["meta.order"], ["asc"]);
 </script>
 
 <style scoped>
