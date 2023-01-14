@@ -1,6 +1,6 @@
 ﻿using AddictedProxy.Storage.Compressor;
 
-namespace AddictedProxy.Storage.Store;
+namespace AddictedProxy.Storage.Store.Compression;
 
 public class CompressedStorageProvider : ICompressedStorageProvider
 {

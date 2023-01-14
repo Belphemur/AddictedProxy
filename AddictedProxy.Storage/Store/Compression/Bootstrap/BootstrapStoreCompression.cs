@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AddictedProxy.Storage.Store.Bootstrap;
+namespace AddictedProxy.Storage.Store.Compression.Bootstrap;
 
-public class BootstrapStore : IBootstrap
+public class BootstrapStoreCompression : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
