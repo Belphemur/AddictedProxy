@@ -6,7 +6,7 @@
 
 <script type="ts" setup>
 import { SwaggerUIBundle } from "swagger-ui-dist";
-import "swagger-ui/dist/swagger-ui.css";
+import "swagger-ui-dist/swagger-ui.css";
 import { onMounted } from "vue";
 
 onMounted(() => {
