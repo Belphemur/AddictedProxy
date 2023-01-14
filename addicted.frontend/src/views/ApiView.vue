@@ -5,13 +5,12 @@
 </template>
 
 <script type="ts" setup>
-import { onMounted } from "vue";
-import SwaggerUI from "swagger-ui";
-
+import { SwaggerUIBundle } from "swagger-ui-dist";
 import "swagger-ui/dist/swagger-ui.css";
+import { onMounted } from "vue";
 
 onMounted(() => {
-  SwaggerUI({
+  SwaggerUIBundle({
     url: import.meta.env.VITE_APP_API_PATH + "/api/v1/swagger.json",
     dom_id: "#swagger"
   });
