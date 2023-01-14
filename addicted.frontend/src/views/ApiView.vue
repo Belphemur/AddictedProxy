@@ -5,12 +5,13 @@
 </template>
 
 <script type="ts" setup>
-import { SwaggerUIBundle } from "swagger-ui-dist";
-import "swagger-ui-dist/swagger-ui.css";
 import { onMounted } from "vue";
+import SwaggerUI from "swagger-ui";
+
+import "swagger-ui-dist/swagger-ui.css";
 
 onMounted(() => {
-  SwaggerUIBundle({
+  SwaggerUI({
     url: import.meta.env.VITE_APP_API_PATH + "/api/v1/swagger.json",
     dom_id: "#swagger"
   });
@@ -29,5 +30,13 @@ html.dark .swagger-ui {
 
 html.dark .swagger-ui .highlight-code {
   filter: invert(100%) hue-rotate(180deg);
+}
+
+html.dark .swagger-ui input {
+  color: black;
+}
+
+html.dark .swagger-ui input::placeholder {
+  color: black;
 }
 </style>
