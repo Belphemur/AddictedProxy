@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AddictedProxy.Storage.Store.S3.Bootstrap;
 
-public class BootstrapS3 : IBootstrapEnvironmentVariable<S3Config, S3ConfigParser>
+public class BootstrapS3 : IBootstrap, IBootstrapEnvironmentVariable<S3Config, S3ConfigParser>
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
