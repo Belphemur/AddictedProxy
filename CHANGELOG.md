@@ -1,3 +1,10 @@
+## [3.7.3](https://github.com/Belphemur/AddictedProxy/compare/v3.7.2...v3.7.3) (2023-01-14)
+
+
+### Performance improvements
+
+* **Prometheus:** Add prometheus Asp.NET metrics ([fb5e75d](https://github.com/Belphemur/AddictedProxy/commit/fb5e75d4b4e9cc7d9a61c1394438fd42182118b8))
+
 ## [3.7.2](https://github.com/Belphemur/AddictedProxy/compare/v3.7.1...v3.7.2) (2023-01-11)
 
 
