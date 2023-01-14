@@ -2,6 +2,7 @@ using AddictedProxy.Caching.Bootstrap.EnvVar;
 using AddictedProxy.Caching.OutputCache;
 using AddictedProxy.Caching.OutputCache.CacheStore;
 using AddictedProxy.Caching.OutputCache.Configuration;
+using AddictedProxy.Caching.Redis;
 using AspNetCoreRateLimit;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
@@ -26,11 +27,8 @@ public class BootstrapDistributedCaching : IBootstrap, IBootstrapConditional
 
         services.AddStackExchangeRedisCache(options =>
         {
-            var configurationOptions = ConfigurationOptions.Parse(config.Connection);
-            configurationOptions.SyncTimeout = (int)config.Timeout.TotalMilliseconds;
-            
+            options.ConnectionMultiplexerFactory = () => RedisConnection.Instance.GetOrCreateConnectionAsync(config);
             options.InstanceName = config.InstanceName;
-            options.ConfigurationOptions = configurationOptions;
         });
         services.AddDistributedRateLimiting();
     }

@@ -36,6 +36,10 @@ html.dark .swagger-ui input {
 }
 
 html.dark .swagger-ui input::placeholder {
+  color: gray;
+}
+
+html.dark .swagger-ui input[disabled]::placeholder {
   color: black;
 }
 </style>

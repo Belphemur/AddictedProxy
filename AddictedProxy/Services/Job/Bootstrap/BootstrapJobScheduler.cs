@@ -1,6 +1,7 @@
 ﻿#region
 
 using AddictedProxy.Caching.Bootstrap.EnvVar;
+using AddictedProxy.Caching.Redis;
 using AddictedProxy.Services.Job.Service;
 using Hangfire;
 using Hangfire.Dashboard.BasicAuthorization;
@@ -21,10 +22,7 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
                                      .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                                      .UseSimpleAssemblyNameTypeSerializer()
                                      .UseRecommendedSerializerSettings()
-                                     .UseRedisStorage(ConnectionMultiplexer.Connect(config.Connection, options =>
-                                     {
-                                         options.SyncTimeout = (int)config.Timeout.TotalMilliseconds;
-                                     })));
+                                     .UseRedisStorage(RedisConnection.Instance.GetOrCreateConnection(config)));
 
         services.AddHangfireServer(options =>
         {
