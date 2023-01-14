@@ -1,3 +1,11 @@
+## [4.0.5](https://github.com/Belphemur/AddictedProxy/compare/v4.0.4...v4.0.5) (2023-01-14)
+
+
+### Bug Fixes
+
+* **swagger:** Use dist package for swagger ([c8b3e5b](https://github.com/Belphemur/AddictedProxy/commit/c8b3e5ba7b9d7f7b2ca6184905a350269026b789))
+* **swagger:** Use dist package for swagger ([91f3661](https://github.com/Belphemur/AddictedProxy/commit/91f3661061fd0ccb28251ff8c1448b5e7e8b8762))
+
 ## [4.0.4](https://github.com/Belphemur/AddictedProxy/compare/v4.0.3...v4.0.4) (2023-01-14)
 
 
