@@ -1,3 +1,24 @@
+## [4.0.0](https://github.com/Belphemur/AddictedProxy/compare/v3.7.3...v4.0.0) (2023-01-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* **Storage:** Remove UpLink
+
+### Features
+
+* **Storage:** Split compression from mean storage provider ([d32a099](https://github.com/Belphemur/AddictedProxy/commit/d32a09911d92cdbf401e1b6e6110ff35724bfccd))
+
+
+### Bug Fixes
+
+* **Storage::Cache:** Fix not finding file in storage provider ([c9c8c64](https://github.com/Belphemur/AddictedProxy/commit/c9c8c649409b33f331053305d5b7bfc08d9b5c37))
+
+
+### Performance improvements
+
+* **Subtitle::Cache:** Compress the subtitle in the database ([c01fa42](https://github.com/Belphemur/AddictedProxy/commit/c01fa420b38416390d0bba9a7166357c6f4ecfe7))
+
 ## [3.7.3](https://github.com/Belphemur/AddictedProxy/compare/v3.7.2...v3.7.3) (2023-01-14)
 
 
