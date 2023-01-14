@@ -41,7 +41,6 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     SearchComponent: typeof import('./components/Show/SearchComponent.vue')['default']
     ShowsDownloads: typeof import('./components/Stats/ShowsDownloads.vue')['default']
-    ShowsPopularity: typeof import('./components/Stats/ShowsPopularity.vue')['default']
     SubtitlesTable: typeof import('./components/Show/SubtitlesTable.vue')['default']
   }
 }

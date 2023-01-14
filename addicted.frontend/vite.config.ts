@@ -7,12 +7,14 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import mkcert from "vite-plugin-mkcert";
 
 import Unocss from "unocss/vite";
+import fs from "fs";
+import { join } from "path";
 import {
   presetAttributify,
   presetIcons,
   presetUno,
   transformerDirectives,
-  transformerVariantGroup,
+  transformerVariantGroup
 } from "unocss";
 
 const pathSrc = path.resolve(__dirname, "src");
@@ -25,27 +27,52 @@ export default defineConfig(({ mode }) => {
     return {
       name: "html-transform",
       transformIndexHtml(html: string) {
-        return html.replace(/%(.*?)%/g, function (match, p1) {
+        return html.replace(/%(.*?)%/g, function(match, p1) {
           return env[p1];
         });
-      },
+      }
     };
   };
   return {
     build: {
       sourcemap: "inline",
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              const [, module] = /node_modules\/(@?[a-z0-9-]+?[a-z0-9-]+)/.exec(
+                id
+              );
+              const path = join(
+                process.cwd(),
+                "node_modules",
+                module,
+                "package.json"
+              );
+              if (fs.existsSync(path)) {
+                try {
+                  const packageJson = require(path);
+                  const version = packageJson.version;
+                  return `@vendor/${module}_${version}.js`;
+                } catch (error) {
+                }
+              }
+            }
+          }
+        }
+      }
     },
     resolve: {
       alias: {
-        "~/": `${pathSrc}/`,
-      },
+        "~/": `${pathSrc}/`
+      }
     },
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@use "~/styles/element/index.scss" as *;`,
-        },
-      },
+          additionalData: `@use "~/styles/element/index.scss" as *;`
+        }
+      }
     },
     server: { https: true },
     plugins: [
@@ -59,13 +86,13 @@ export default defineConfig(({ mode }) => {
         include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
         resolvers: [
           ElementPlusResolver({
-            importStyle: "sass",
-          }),
+            importStyle: "sass"
+          })
         ],
-        dts: "src/components.d.ts",
+        dts: "src/components.d.ts"
       }),
       AutoImport({
-        resolvers: [ElementPlusResolver()],
+        resolvers: [ElementPlusResolver()]
       }),
 
       // https://github.com/antfu/unocss
@@ -76,11 +103,11 @@ export default defineConfig(({ mode }) => {
           presetAttributify(),
           presetIcons({
             scale: 1.2,
-            warn: true,
-          }),
+            warn: true
+          })
         ],
-        transformers: [transformerDirectives(), transformerVariantGroup()],
-      }),
-    ],
+        transformers: [transformerDirectives(), transformerVariantGroup()]
+      })
+    ]
   };
 });

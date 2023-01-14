@@ -40,11 +40,11 @@ import transparent from "~/assets/Logos/Gestdown-logos_transparent.png";
 import black from "~/assets/Logos/Gestdown-logos_black.png";
 import { isDark } from "~/composables/theme";
 import { Sunny, Moon } from "@element-plus/icons-vue";
-import { orderBy } from "lodash/fp";
+import * as _ from "lodash-es";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
-const routes = orderBy(["meta.order"], ["asc"], router.getRoutes());
+const routes = _.orderBy(["meta.order"], ["asc"], router.getRoutes());
 </script>
 
 <style scoped>
