@@ -3,6 +3,7 @@
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Storage.Caching.Service;
 using AddictedProxy.Storage.Store;
+using AddictedProxy.Storage.Store.Compression;
 using Hangfire;
 using Locking;
 using Newtonsoft.Json.Linq;
@@ -15,11 +16,11 @@ namespace AddictedProxy.Services.Provider.Subtitle.Jobs;
 public class StoreSubtitleJob
 {
     private readonly ILogger<StoreSubtitleJob> _logger;
-    private readonly IStorageProvider _storageProvider;
+    private readonly ICompressedStorageProvider _storageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
     private readonly IPerformanceTracker _performanceTracker;
 
-    public StoreSubtitleJob(ILogger<StoreSubtitleJob> logger, IStorageProvider storageProvider, ISubtitleRepository subtitleRepository, IPerformanceTracker performanceTracker)
+    public StoreSubtitleJob(ILogger<StoreSubtitleJob> logger, ICompressedStorageProvider storageProvider, ISubtitleRepository subtitleRepository, IPerformanceTracker performanceTracker)
     {
         _logger = logger;
         _storageProvider = storageProvider;
@@ -52,7 +53,7 @@ public class StoreSubtitleJob
 
         await using var buffer = new MemoryStream(subtitleBlob);
         var storageName = GetStorageName(subtitle);
-        if (!await _storageProvider.StoreAsync(storageName, buffer, cancellationToken))
+        if (!await _storageProvider.StoreAsync(storageName, buffer, cancellationToken: cancellationToken))
         {
             throw new InvalidOperationException($"Couldn't store the subtitle {subtitleId}");
         }

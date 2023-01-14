@@ -1,4 +1,5 @@
 using AddictedProxy.Storage.Caching.Model;
+using AddictedProxy.Storage.Compressor;
 using AddictedProxy.Storage.Extensions;
 using AddictedProxy.Storage.Store;
 using Microsoft.Extensions.Caching.Distributed;
@@ -11,12 +12,14 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
     private readonly IStorageProvider _storageProvider;
     private readonly IDistributedCache _distributedCache;
     private readonly IOptions<StorageCachingConfig> _cachingConfig;
+    private readonly ICompressor _compressor;
 
-    public DistributedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache, IOptions<StorageCachingConfig> cachingConfig)
+    public DistributedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache, IOptions<StorageCachingConfig> cachingConfig, ICompressor compressor)
     {
         _storageProvider = storageProvider;
         _distributedCache = distributedCache;
         _cachingConfig = cachingConfig;
+        _compressor = compressor;
     }
 
     private static async Task<MemoryStream> GetMemoryStreamAsync(Stream inputStream, CancellationToken cancellationToken)
@@ -33,7 +36,7 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         return memoryStream;
     }
 
-    private string GetCacheKey(string sharding, string filename) => $"{{{sharding}}}/{filename}";
+    private string GetCacheKey(string sharding, string filename) => _compressor.GetFileName($"{{{sharding}}}/{filename}");
 
 
     public async Task<Stream?> GetSertAsync(string shardingKey, string filename, CancellationToken cancellationToken)
@@ -42,9 +45,12 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         var cachedData = await _distributedCache.GetAsync(cacheKey, cancellationToken);
         if (cachedData != null)
         {
-            return new MemoryStream(cachedData);
+            using var memoryStream = new MemoryStream(cachedData);
+            return await _compressor.DecompressAsync(memoryStream, cancellationToken);
         }
 
+        //We use the normal storage provider that will contain the already compressed file
+        //because StoreSubtitle use the compressed storage provider
         var stream = await _storageProvider.DownloadAsync(filename, cancellationToken);
         if (stream == null)
         {
@@ -59,6 +65,6 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
             AbsoluteExpirationRelativeToNow = _cachingConfig.Value.Absolute
         }, cancellationToken);
 
-        return memStream;
+        return await _compressor.DecompressAsync(memStream, cancellationToken);
     }
 }
