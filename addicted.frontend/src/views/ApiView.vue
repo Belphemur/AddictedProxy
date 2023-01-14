@@ -8,6 +8,8 @@
 import { onMounted } from "vue";
 import SwaggerUI from "swagger-ui";
 
+import "swagger-ui/dist/swagger-ui.css";
+
 onMounted(() => {
   SwaggerUI({
     url: import.meta.env.VITE_APP_API_PATH + "/api/v1/swagger.json",
