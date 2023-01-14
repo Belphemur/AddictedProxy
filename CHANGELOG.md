@@ -1,3 +1,10 @@
+## [4.0.2](https://github.com/Belphemur/AddictedProxy/compare/v4.0.1...v4.0.2) (2023-01-14)
+
+
+### Bug Fixes
+
+* **SwaggerUi:** Fix dark theme ([46829ec](https://github.com/Belphemur/AddictedProxy/commit/46829ec14e82b5a017cd1a58e484fed2e16f4fee))
+
 ## [4.0.1](https://github.com/Belphemur/AddictedProxy/compare/v4.0.0...v4.0.1) (2023-01-14)
 
 
