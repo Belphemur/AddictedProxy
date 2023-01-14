@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/Belphemur/AddictedProxy/compare/v4.0.0...v4.0.1) (2023-01-14)
+
+
+### Bug Fixes
+
+* **Chart:** Fix chart component for top 10 ([8c174d3](https://github.com/Belphemur/AddictedProxy/commit/8c174d313f7014aaa5ef3c18f6039962bf0cb977))
+
 ## [4.0.0](https://github.com/Belphemur/AddictedProxy/compare/v3.7.3...v4.0.0) (2023-01-14)
 
 
