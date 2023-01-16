@@ -1,3 +1,10 @@
+## [4.0.7](https://github.com/Belphemur/AddictedProxy/compare/v4.0.6...v4.0.7) (2023-01-16)
+
+
+### Bug Fixes
+
+* **Job:** Fix job creation failure ([f262ed7](https://github.com/Belphemur/AddictedProxy/commit/f262ed7d692546c85c0b76ea1ac44d43f86270e8))
+
 ## [4.0.6](https://github.com/Belphemur/AddictedProxy/compare/v4.0.5...v4.0.6) (2023-01-14)
 
 
