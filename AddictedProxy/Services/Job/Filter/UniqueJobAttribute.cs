@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using AddictedProxy.Services.Job.Model;
+using Hangfire;
 
 namespace AddictedProxy.Services.Job.Filter;
 
@@ -9,15 +10,15 @@ using Hangfire.States;
 using Hangfire.Storage;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 
-public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyStateFilter
+public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyStateFilter, IClientExceptionFilter
 {
-    private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(20);
+    private const string FingerprintJobParameterKey = "fingerprint";
+    private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(30);
 
-    private static bool AddFingerprintIfNotExists(IStorageConnection connection, Job? job)
+    private static bool AddFingerprintIfNotExists(IStorageConnection connection, Job? job, CreatingContext creatingContext)
     {
         var fingerprintKey = GetFingerprintKey(job);
         var fingerprintLockKey = GetFingerprintLockKey(fingerprintKey);
@@ -38,14 +39,15 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
             {
                 { "Timestamp", DateTimeOffset.UtcNow.ToString("o") }
             });
+            creatingContext.SetJobParameter(FingerprintJobParameterKey, fingerprintKey);
 
             return true;
         }
     }
 
-    private static void RemoveFingerprint(IStorageConnection connection, Job? job)
+    private static void RemoveFingerprint(IStorageConnection connection, BackgroundJob job)
     {
-        var fingerprintKey = GetFingerprintKey(job);
+        var fingerprintKey = connection.GetJobParameter(job.Id, FingerprintJobParameterKey) ?? GetFingerprintKey(job.Job);
         var fingerprintLockKey = GetFingerprintLockKey(fingerprintKey);
         using (connection.AcquireDistributedLock(fingerprintLockKey, LockTimeout))
         using (var transaction = connection.CreateWriteTransaction())
@@ -94,7 +96,7 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
 
     public void OnCreating(CreatingContext filterContext)
     {
-        if (!AddFingerprintIfNotExists(filterContext.Connection, filterContext.Job))
+        if (!AddFingerprintIfNotExists(filterContext.Connection, filterContext.Job, filterContext))
         {
             filterContext.Canceled = true;
         }
@@ -111,12 +113,20 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
         if (context.NewState.Name.Equals(SucceededState.StateName)
             || context.NewState.Name.Equals(FailedState.StateName))
         {
-            RemoveFingerprint(context.Connection, context.BackgroundJob.Job);
+            RemoveFingerprint(context.Connection, context.BackgroundJob);
         }
     }
 
     public void OnStateUnapplied(ApplyStateContext context, IWriteOnlyTransaction transaction)
     {
         // do nothing
+    }
+
+    public void OnClientException(ClientExceptionContext filterContext)
+    {
+        if (filterContext.Exception is DistributedLockTimeoutException)
+        {
+            filterContext.ExceptionHandled = true;
+        }
     }
 }
