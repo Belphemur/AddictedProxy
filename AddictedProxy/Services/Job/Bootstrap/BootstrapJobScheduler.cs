@@ -5,6 +5,7 @@ using AddictedProxy.Caching.Redis;
 using AddictedProxy.Services.Job.Service;
 using Hangfire;
 using Hangfire.Dashboard.BasicAuthorization;
+using Hangfire.Prometheus.NetCore;
 using InversionOfControl.Model;
 using StackExchange.Redis;
 
@@ -34,6 +35,7 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
 
     public void ConfigureApp(IApplicationBuilder app)
     {
+        app.UsePrometheusHangfireExporter();
         app.UseHangfireDashboard(options: new DashboardOptions
         {
             Authorization = new[]
