@@ -21,8 +21,8 @@ public class CredentialsService : ICredentialsService
     private readonly IAddic7edClient _client;
 
     public CredentialsService(IAddictedUserCredentialRepository addictedUserCredentialRepository,
-                              ILogger<CredentialsService> logger,
-                              IAddic7edClient client
+        ILogger<CredentialsService> logger,
+        IAddic7edClient client
     )
     {
         _addictedUserCredentialRepository = addictedUserCredentialRepository;
@@ -92,8 +92,7 @@ public class CredentialsService : ICredentialsService
     public async Task RedeemDownloadCredentialsAsync(DateTime currentDateTime, CancellationToken token)
     {
         _logger.LogInformation("[Redeem] Fetching creds to be redeemed for download usage");
-        await foreach (var cred in _addictedUserCredentialRepository.GetDownloadExceededCredentialsAsync()
-                                                                    .WithCancellation(token))
+        foreach (var cred in await _addictedUserCredentialRepository.GetDownloadExceededCredentialsAsync().ToArrayAsync(token))
         {
             BackgroundJob.Enqueue<ResetDownloadCredJob>(job => job.CheckAndResetCredAsync(cred.Id, token));
         }
