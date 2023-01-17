@@ -47,7 +47,13 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
 
     private static void RemoveFingerprint(IStorageConnection connection, BackgroundJob job)
     {
-        var fingerprintKey = connection.GetJobParameter(job.Id, FingerprintJobParameterKey) ?? GetFingerprintKey(job.Job);
+        var fingerprintKey = connection.GetJobParameter(job.Id, FingerprintJobParameterKey);
+
+        if (string.IsNullOrEmpty(fingerprintKey))
+        {
+            fingerprintKey = GetFingerprintKey(job.Job);
+        }
+
         var fingerprintLockKey = GetFingerprintLockKey(fingerprintKey);
         using (connection.AcquireDistributedLock(fingerprintLockKey, LockTimeout))
         using (var transaction = connection.CreateWriteTransaction())
