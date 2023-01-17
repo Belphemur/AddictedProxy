@@ -89,7 +89,6 @@ builder.Configuration.AddEnvironmentVariables("ADDICT");
 var app = builder.Build();
 
 app.UseBootstrap(currentAssemblies);
-app.UseSentryTracing();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
