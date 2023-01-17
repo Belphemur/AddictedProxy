@@ -47,7 +47,7 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
 
     private static void RemoveFingerprint(IStorageConnection connection, BackgroundJob job)
     {
-        var fingerprintKey = connection.GetJobParameter(job.Id, FingerprintJobParameterKey);
+        var fingerprintKey = SerializationHelper.Deserialize<string?>(connection.GetJobParameter(job.Id, FingerprintJobParameterKey));
 
         if (string.IsNullOrEmpty(fingerprintKey))
         {
