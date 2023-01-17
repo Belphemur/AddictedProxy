@@ -1,3 +1,11 @@
+## [4.0.10](https://github.com/Belphemur/AddictedProxy/compare/v4.0.9...v4.0.10) (2023-01-17)
+
+
+### Bug Fixes
+
+* **UniqueJob:** Fallback on recalculating the key ([97477dd](https://github.com/Belphemur/AddictedProxy/commit/97477dd4fe3ca86b6904191a600a5db18ca1e60e))
+* **UniqueJob:** Fix deserializing the key properly ([41094d3](https://github.com/Belphemur/AddictedProxy/commit/41094d304a653c33673b08b35ebfe28e652c2746))
+
 ## [4.0.9](https://github.com/Belphemur/AddictedProxy/compare/v4.0.8...v4.0.9) (2023-01-17)
 
 
