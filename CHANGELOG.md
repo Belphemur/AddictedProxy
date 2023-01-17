@@ -1,3 +1,10 @@
+## [4.0.8](https://github.com/Belphemur/AddictedProxy/compare/v4.0.7...v4.0.8) (2023-01-17)
+
+
+### Bug Fixes
+
+* **Cred::Download:** Fix finding account that need to be redeemed ([e4adc9a](https://github.com/Belphemur/AddictedProxy/commit/e4adc9a36187a837f22e3c3acefa11070a74dce8))
+
 ## [4.0.7](https://github.com/Belphemur/AddictedProxy/compare/v4.0.6...v4.0.7) (2023-01-16)
 
 
