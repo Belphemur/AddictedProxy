@@ -1,3 +1,10 @@
+## [4.0.9](https://github.com/Belphemur/AddictedProxy/compare/v4.0.8...v4.0.9) (2023-01-17)
+
+
+### Bug Fixes
+
+* **Sentry:** Fix transaction sent to sentry ([b5d6376](https://github.com/Belphemur/AddictedProxy/commit/b5d637624583f167c095244b00211e2d741b4f51))
+
 ## [4.0.8](https://github.com/Belphemur/AddictedProxy/compare/v4.0.7...v4.0.8) (2023-01-17)
 
 
