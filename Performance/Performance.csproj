@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Hangfire.Prometheus.NetCore" Version="1.0.50" />
         <PackageReference Include="prometheus-net.AspNetCore" Version="7.0.0" />
         <PackageReference Include="Sentry" Version="3.26.0" />
         <PackageReference Include="IsExternalInit" Version="1.0.3">
