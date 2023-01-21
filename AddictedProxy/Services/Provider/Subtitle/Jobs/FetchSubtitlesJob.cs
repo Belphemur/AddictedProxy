@@ -57,12 +57,12 @@ public class FetchSubtitlesJob
 
 
     [UniqueJob(Order = 10)]
-    [MaximumConcurrentExecutions(5)]
+    [MaximumConcurrentExecutions(5, 10)]
     [AutomaticRetry(Attempts = 10, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
     [Queue("fetch-subtitles")]
     public async Task ExecuteAsync(JobData data, CancellationToken cancellationToken)
     {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(3.5));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(4));
         using var ctsLinked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
         var token = ctsLinked.Token;
 
