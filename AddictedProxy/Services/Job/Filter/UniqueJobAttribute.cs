@@ -130,7 +130,7 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
 
     public void OnClientException(ClientExceptionContext filterContext)
     {
-        if (filterContext.Exception is DistributedLockTimeoutException)
+        if (filterContext.Exception is DistributedLockTimeoutException or InvalidOperationException)
         {
             filterContext.ExceptionHandled = true;
         }
