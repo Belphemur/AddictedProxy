@@ -11,4 +11,8 @@
       <ProjectReference Include="..\AddictedProxy.Storage\AddictedProxy.Storage.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Acrobit.AcroFS" Version="2.1.16" />
+    </ItemGroup>
+
 </Project>
