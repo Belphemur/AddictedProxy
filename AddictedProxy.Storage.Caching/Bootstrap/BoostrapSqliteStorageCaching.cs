@@ -17,7 +17,8 @@ public class BoostrapSqliteStorageCaching : IBootstrapConditional
         services.AddSqliteCache(options =>
         {
             options.VacuumOption = SqliteCacheOptions.Vacuum.Full;
-            options.CachePath = string.IsNullOrEmpty(storageConfig?.CachePath) ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Addicted") : storageConfig.CachePath;
+            var storageConfigCachePath = string.IsNullOrEmpty(storageConfig?.CachePath) ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Addicted") : storageConfig.CachePath;
+            options.CachePath = Path.Combine(storageConfigCachePath, "sqlite-cache.db");
         });
     }
 

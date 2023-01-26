@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using DbConnection = Microsoft.Data.Sqlite.SqliteConnection;
 using DbCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Linq;
 
@@ -152,6 +153,7 @@ namespace NeoSmart.Caching.Sqlite
 
             if (db is null)
             {
+                Directory.CreateDirectory(Path.GetDirectoryName(config.CachePath)!);
                 db = new DbConnection(config.ConnectionString);
                 db.Open();
                 Initialize(config, db, logger);
