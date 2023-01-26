@@ -123,7 +123,7 @@
 	"value"	BLOB,
 	"expiry"	INTEGER,
 	"renewal"	INTEGER,
-    "absolute_expiry" INTEGER  
+    "absolute_expiry" INTEGER,
 	PRIMARY KEY("key")
 ) WITHOUT ROWID;
 
