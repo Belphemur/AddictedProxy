@@ -134,8 +134,12 @@ CREATE TABLE "meta" (
 ) WITHOUT ROWID;
 
 CREATE INDEX "cache_expiry" ON "cache" (
-	"expiry",
-    "absolute_expiry"  
-)</value>
+	"expiry"
+);
+
+CREATE INDEX "cache_absolute_expiry" ON "cache" (
+	"absolute_expiry"
+);
+</value>
   </data>
 </root>

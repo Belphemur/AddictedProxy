@@ -92,7 +92,7 @@ namespace NeoSmart.Caching.Sqlite.Tests
                         SlidingExpiration = TimeSpan.FromDays(2),
                     });
 
-                Assert.IsNotNull(cache.Get("hi there"));
+                Assert.IsNull(cache.Get("hi there"));
             }
         }
 

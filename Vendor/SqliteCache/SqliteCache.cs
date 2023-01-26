@@ -19,7 +19,7 @@ namespace NeoSmart.Caching.Sqlite
         , IAsyncDisposable
 #endif
     {
-        public const int SchemaVersion = 1;
+        public const int SchemaVersion = 2;
 
         private readonly SqliteCacheOptions _config;
         private readonly ILogger _logger;
@@ -95,7 +95,7 @@ namespace NeoSmart.Caching.Sqlite
                 {
                     var result = (long)cmd.ExecuteScalar()!;
                     // We are expecting two tables and one additional index
-                    if (result != 3)
+                    if (result != 4)
                     {
                         logger.LogWarning("Incorrect/incompatible existing cache db structure found!");
                         return false;
@@ -395,7 +395,7 @@ namespace NeoSmart.Caching.Sqlite
             int i = 0;
             foreach (var pair in keyValues)
             {
-                sb.Append($"(@key{i}, @value{i}, @expiry, @renewal),");
+                sb.Append($"(@key{i}, @value{i}, @expiry, @absolute_expiry, @renewal),");
                 cmd.Parameters.AddWithValue($"@key{i}", pair.Key);
                 cmd.Parameters.AddWithValue($"@value{i}", pair.Value);
                 i++;

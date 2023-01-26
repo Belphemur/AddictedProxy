@@ -19,22 +19,23 @@ namespace NeoSmart.Caching.Sqlite
 
         // We have two expiry fields, that can be considered a union of these
         // two cases: (AbsoluteExpiry) and (NextExpiry, Ttl)
-        const string NotExpiredClause = " (expiry IS NULL OR MIN(expiry, absolute_expiry) >= @now) ";
+        const string NotExpiredClause = "(expiry IS NULL OR expiry >= @now) AND (absolute_expiry IS NULL OR absolute_expiry >= @now)";
 
         static DbCommands()
         {
             Commands = new string[Count];
 
             Commands[(int) Operation.Insert] =
-                "INSERT OR REPLACE INTO cache (key, value, expiry, renewal) " +
-                "VALUES (@key, @value, @expiry, @renewal)";
+                "INSERT OR REPLACE INTO cache (key, value, expiry, absolute_expiry, renewal) " +
+                "VALUES (@key, @value, @expiry, @absolute_expiry, @renewal)";
 
             Commands[(int)Operation.Refresh] =
                 $"UPDATE cache " +
                 $"SET expiry = (@now + renewal) " +
                 $"WHERE " +
                 $"  key = @key " +
-                $"  AND expiry >= @now " +
+                $"  AND expiry IS NOT NULL"+
+                $"  AND {NotExpiredClause} " +
                 $"  AND renewal IS NOT NULL;";
 
             Commands[(int)Operation.Get] =
@@ -55,7 +56,7 @@ namespace NeoSmart.Caching.Sqlite
                 $"SELECT CHANGES();";
 
             Commands[(int)Operation.BulkInsert] =
-                "INSERT OR REPLACE INTO cache (key, value, expiry, renewal) VALUES ";
+                "INSERT OR REPLACE INTO cache (key, value, expiry, absolute_expiry, renewal) VALUES ";
 
 #if DEBUG
             for (int i = 0; i < Count; ++i)
