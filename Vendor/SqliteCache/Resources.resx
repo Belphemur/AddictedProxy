@@ -123,6 +123,7 @@
 	"value"	BLOB,
 	"expiry"	INTEGER,
 	"renewal"	INTEGER,
+    "absolute_expiry" INTEGER  
 	PRIMARY KEY("key")
 ) WITHOUT ROWID;
 
@@ -133,7 +134,8 @@ CREATE TABLE "meta" (
 ) WITHOUT ROWID;
 
 CREATE INDEX "cache_expiry" ON "cache" (
-	"expiry"
+	"expiry",
+    "absolute_expiry"  
 )</value>
   </data>
 </root>

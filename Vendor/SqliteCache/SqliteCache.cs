@@ -318,7 +318,7 @@ namespace NeoSmart.Caching.Sqlite
 #endif
 #endregion
 
-        public byte[] Get(string key)
+        public byte[]? Get(string key)
         {
             return (byte[]) Commands.Use(Operation.Get, cmd =>
             {
@@ -328,7 +328,7 @@ namespace NeoSmart.Caching.Sqlite
             })!;
         }
 
-        public async Task<byte[]> GetAsync(string key, CancellationToken cancel = default)
+        public async Task<byte[]?> GetAsync(string key, CancellationToken cancel = default)
         {
             return (byte[]) (await Commands.UseAsync(Operation.Get, cmd =>
             {
@@ -407,25 +407,28 @@ namespace NeoSmart.Caching.Sqlite
         private void AddExpirationParameters(DbCommand cmd, DistributedCacheEntryOptions options)
         {
             DateTimeOffset? expiry = null;
+            DateTimeOffset? absoluteExpiry = null;
+
             TimeSpan? renewal = null;
 
             if (options.AbsoluteExpiration.HasValue)
             {
-                expiry = options.AbsoluteExpiration.Value.ToUniversalTime();
+                absoluteExpiry = options.AbsoluteExpiration.Value.ToUniversalTime();
             }
             else if (options.AbsoluteExpirationRelativeToNow.HasValue)
             {
-                expiry = DateTimeOffset.UtcNow
+                absoluteExpiry = DateTimeOffset.UtcNow
                     .Add(options.AbsoluteExpirationRelativeToNow.Value);
             }
 
             if (options.SlidingExpiration.HasValue)
             {
                 renewal = options.SlidingExpiration.Value;
-                expiry = (expiry ?? DateTimeOffset.UtcNow) + renewal;
+                expiry = DateTimeOffset.UtcNow + renewal;
             }
 
             cmd.Parameters.AddWithValue("@expiry", expiry?.Ticks ?? (object) DBNull.Value);
+            cmd.Parameters.AddWithValue("@absolute_expiry", absoluteExpiry?.Ticks ?? (object) DBNull.Value);
             cmd.Parameters.AddWithValue("@renewal", renewal?.Ticks ?? (object) DBNull.Value);
         }
 

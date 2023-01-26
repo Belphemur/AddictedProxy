@@ -19,7 +19,7 @@ namespace NeoSmart.Caching.Sqlite
 
         // We have two expiry fields, that can be considered a union of these
         // two cases: (AbsoluteExpiry) and (NextExpiry, Ttl)
-        const string NotExpiredClause = " (expiry IS NULL OR expiry >= @now) ";
+        const string NotExpiredClause = " (expiry IS NULL OR MIN(expiry, absolute_expiry) >= @now) ";
 
         static DbCommands()
         {
