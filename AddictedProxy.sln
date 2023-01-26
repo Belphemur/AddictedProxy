@@ -28,6 +28,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Upstream.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Storage.Caching", "AddictedProxy.Storage.Caching\AddictedProxy.Storage.Caching.csproj", "{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqliteCache", "Vendor\SqliteCache\SqliteCache.csproj", "{D06021BD-CACB-4DEE-B101-D8B0442A6972}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vendor", "Vendor", "{EE87092D-A90C-461C-AE24-D6C0709BA442}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqliteCache.Tests", "Vendor\SqliteCache.Tests\SqliteCache.Tests.csproj", "{2F53B50A-D412-4998-9D2E-CB5FBDB79007}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,5 +96,17 @@ Global
 		{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D06021BD-CACB-4DEE-B101-D8B0442A6972}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D06021BD-CACB-4DEE-B101-D8B0442A6972}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D06021BD-CACB-4DEE-B101-D8B0442A6972}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D06021BD-CACB-4DEE-B101-D8B0442A6972}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F53B50A-D412-4998-9D2E-CB5FBDB79007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F53B50A-D412-4998-9D2E-CB5FBDB79007}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F53B50A-D412-4998-9D2E-CB5FBDB79007}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F53B50A-D412-4998-9D2E-CB5FBDB79007}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D06021BD-CACB-4DEE-B101-D8B0442A6972} = {EE87092D-A90C-461C-AE24-D6C0709BA442}
+		{2F53B50A-D412-4998-9D2E-CB5FBDB79007} = {EE87092D-A90C-461C-AE24-D6C0709BA442}
 	EndGlobalSection
 EndGlobal
