@@ -1,3 +1,31 @@
+## [4.1.0](https://github.com/Belphemur/AddictedProxy/compare/v4.0.10...v4.1.0) (2023-01-26)
+
+
+### Features
+
+* **FileStorage:** Add ability to use file for caching purpose instead of distributed cache. ([46f1215](https://github.com/Belphemur/AddictedProxy/commit/46f1215f269f0e52e16ae1997711367b89e7c993))
+* **SqliteCache:** Add support for Absolute Expiry ([098b506](https://github.com/Belphemur/AddictedProxy/commit/098b5066b2db3d200a9ed6e4c730f1ced675d685))
+
+
+### Bug Fixes
+
+* **SqlCache:** Check for directory empty too ([a8e16c0](https://github.com/Belphemur/AddictedProxy/commit/a8e16c0b07fece15cd9d21acf0bae506b5abb156))
+* **SqlCache:** Only create directory if needed ([ff42039](https://github.com/Belphemur/AddictedProxy/commit/ff42039d638a0cbaca88684d101fcca2a1027311))
+* **SqliteCache::AbsoluteExpiry:** Check properly the absolute expiry ([45f2780](https://github.com/Belphemur/AddictedProxy/commit/45f2780b056ac1431d2ec7feef1dac1190988eda))
+* **SqliteCache:** Create directory if not exists ([5c7f67f](https://github.com/Belphemur/AddictedProxy/commit/5c7f67f586b179ddf6d7750e09d8093b46a4d1c3))
+* **Sqlite:** Fix missing comma ([7625548](https://github.com/Belphemur/AddictedProxy/commit/7625548ac4757bd8b0b887e6594d6b18f1fe1972))
+* **Storage::Caching:** Fix type ([bba0626](https://github.com/Belphemur/AddictedProxy/commit/bba0626dacb9ca454c9408ca27521fb9d94fd110))
+
+
+### Performance improvements
+
+* **job:** handle weird exceptions ([9acb0a2](https://github.com/Belphemur/AddictedProxy/commit/9acb0a2c5bcc5dc2b7c135dccbcbe80d10b4df66))
+* **Job:** increase timeout ([4f91544](https://github.com/Belphemur/AddictedProxy/commit/4f91544b475d71801724c1cccb5772d5b33f2649))
+* **job:** Make job retry less often ([1c77be6](https://github.com/Belphemur/AddictedProxy/commit/1c77be630e7fd3227b2f7267ff0b174cc7aeb670))
+* **Job:** only wait 10 sec before giving up on scheduling a fetch job ([2a38987](https://github.com/Belphemur/AddictedProxy/commit/2a38987a83fc3c39bac2ed08bcfc513ec611e6b9))
+* **SqliteCache:** Add auto vacuum capability ([3b28d14](https://github.com/Belphemur/AddictedProxy/commit/3b28d14097b2eea97164a90ac427a39bfb75dc8e))
+* **Storage::Caching:** Use sqlite for storage caching ([c27f22f](https://github.com/Belphemur/AddictedProxy/commit/c27f22fd8ed8c6eb4975c11644f02b70793a1954))
+
 ## [4.0.10](https://github.com/Belphemur/AddictedProxy/compare/v4.0.9...v4.0.10) (2023-01-17)
 
 
