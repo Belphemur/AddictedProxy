@@ -153,7 +153,11 @@ namespace NeoSmart.Caching.Sqlite
 
             if (db is null)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(config.CachePath)!);
+                var directoryPath = Path.GetDirectoryName(config.CachePath);
+                if (directoryPath != null)
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
                 db = new DbConnection(config.ConnectionString);
                 db.Open();
                 Initialize(config, db, logger);
