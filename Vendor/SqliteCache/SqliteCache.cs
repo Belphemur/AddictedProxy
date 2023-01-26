@@ -175,6 +175,20 @@ namespace NeoSmart.Caching.Sqlite
             logger.LogInformation("Initializing db cache: {ConnectionString}",
                 config.ConnectionString);
 
+            var command = "PRAGMA auto_vacuum = {0};";
+
+            var vacuumOption = config.VacuumOption switch
+            {
+                SqliteCacheOptions.Vacuum.None        => "NONE",
+                SqliteCacheOptions.Vacuum.Incremental => "INCREMENTAL",
+                SqliteCacheOptions.Vacuum.Full        => "FULL",
+                _                                     => throw new ArgumentOutOfRangeException()
+            };
+            // Explicitly set auto_vacuum
+            using (var cmd = new DbCommand(string.Format(command, vacuumOption), db))
+            {
+                cmd.ExecuteNonQuery();
+            }
             using (var transaction = db.BeginTransaction())
             {
                 using (var cmd = new DbCommand(Resources.TableInitCommand, db))

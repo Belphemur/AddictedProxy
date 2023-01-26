@@ -4,9 +4,14 @@ using System;
 
 namespace NeoSmart.Caching.Sqlite
 {
-    public record SqliteCacheOptions : IOptions<SqliteCacheOptions>
+    public record SqliteCacheOptions
     {
-        SqliteCacheOptions IOptions<SqliteCacheOptions>.Value => this;
+        public enum Vacuum
+        {
+            None,
+            Incremental,
+            Full
+        }
 
         /// <summary>
         /// Takes precedence over <see cref="CachePath"/>
@@ -14,6 +19,8 @@ namespace NeoSmart.Caching.Sqlite
         public bool MemoryOnly { get; set; } = false;
 
         private string _cachePath = "SqliteCache.db";
+
+        public Vacuum VacuumOption { get; set; } = Vacuum.None;
         /// <summary>
         /// Only if <see cref="MemoryOnly" is <c>false</c> />
         /// </summary>

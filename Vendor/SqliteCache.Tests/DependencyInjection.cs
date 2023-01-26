@@ -11,7 +11,7 @@ namespace NeoSmart.Caching.Sqlite.Tests
         public IServiceProvider CreateServices()
         {
             var builder = new ServiceCollection();
-            builder.AddSqliteCache("test.db");
+            builder.AddSqliteCacheAsDistributedCache("test.db");
 
             return builder.BuildServiceProvider();
         }

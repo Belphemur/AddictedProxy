@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace NeoSmart.Caching.Sqlite
 {
@@ -19,10 +20,16 @@ namespace NeoSmart.Caching.Sqlite
                 throw new ArgumentNullException(nameof(setupAction));
             }
 
-            services.AddOptions();
+            services.AddOptions<SqliteCacheOptions>().Configure(setupAction);
             services.AddSingleton<SqliteCache>();
-            services.AddSingleton<IDistributedCache, SqliteCache>(services => services.GetRequiredService<SqliteCache>());
-            services.Configure(setupAction);
+            return services;
+        }
+        
+        public static IServiceCollection AddSqliteCacheAsDistributedCache(this IServiceCollection services,
+                                                        Action<SqliteCacheOptions> setupAction)
+        {
+            AddSqliteCache(services, setupAction);
+            services.AddSingleton<IDistributedCache>(provider => provider.GetRequiredService<SqliteCache>());
             return services;
         }
 
@@ -40,5 +47,14 @@ namespace NeoSmart.Caching.Sqlite
         {
             return AddSqliteCache(services, options => options.CachePath = path);
         }
+        
+        public static IServiceCollection AddSqliteCacheAsDistributedCache(this IServiceCollection services,
+                                                                          string path)
+        {
+            AddSqliteCache(services, path);
+            services.AddSingleton<IDistributedCache>(provider => provider.GetRequiredService<SqliteCache>());
+            return services;
+        }
+
     }
 }
