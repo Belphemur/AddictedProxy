@@ -7,7 +7,7 @@ public class StorageCachingConfig : CachingConfig
     public enum Type
     {
         Distributed,
-        File
+        Sqlite
     }
 
     public Type StorageType { get; set; }

@@ -9,10 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\AddictedProxy.Caching\AddictedProxy.Caching.csproj" />
       <ProjectReference Include="..\AddictedProxy.Storage\AddictedProxy.Storage.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Acrobit.AcroFS" Version="2.1.16" />
+      <ProjectReference Include="..\Vendor\SqliteCache\SqliteCache.csproj" />
     </ItemGroup>
 
 </Project>
