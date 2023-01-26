@@ -57,12 +57,12 @@ public class FetchSubtitlesJob
 
 
     [UniqueJob(Order = 10)]
-    [MaximumConcurrentExecutions(5)]
-    [AutomaticRetry(Attempts = 10, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+    [MaximumConcurrentExecutions(5, 10)]
+    [AutomaticRetry(Attempts = 10, OnAttemptsExceeded = AttemptsExceededAction.Delete, DelaysInSeconds = new[] { 60, 10 * 60, 15 * 60, 45 * 60, 60 * 60, 10 * 60, 20 * 60, 40 * 60, 45 * 60 })]
     [Queue("fetch-subtitles")]
     public async Task ExecuteAsync(JobData data, CancellationToken cancellationToken)
     {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(3.5));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
         using var ctsLinked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
         var token = ctsLinked.Token;
 
@@ -74,6 +74,7 @@ public class FetchSubtitlesJob
             _logger.LogInformation("Lock for {key} already taken", data.Key);
             return;
         }
+
         using var _ = await Lock<FetchSubtitlesJob>.LockAsync(lockKey, token).ConfigureAwait(false);
 
         using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), "fetch-subtitles-one-episode");

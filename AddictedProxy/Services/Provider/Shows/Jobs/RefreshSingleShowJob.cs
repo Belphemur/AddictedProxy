@@ -26,7 +26,7 @@ public class RefreshSingleShowJob
     [Queue("refresh-one-show")]
     public async Task ExecuteAsync(long showId, CancellationToken cancellationToken)
     {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(8));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
         using var ctsLinked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
         var token = ctsLinked.Token;
         
