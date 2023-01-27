@@ -1,3 +1,12 @@
+## [4.1.13](https://github.com/Belphemur/AddictedProxy/compare/v4.1.12...v4.1.13) (2023-01-27)
+
+
+### Performance improvements
+
+* **Cache:** Track cache hit and miss for storage ([fc84b5c](https://github.com/Belphemur/AddictedProxy/commit/fc84b5cf7f61b700ba7ac6882bb468f68bd4d3b5))
+* **Metrics:** No ratelimiting ([97707f1](https://github.com/Belphemur/AddictedProxy/commit/97707f1b37d0565bc83ff31d0d7cfe3f53c7f677))
+* **RateLimiting:** Add metric for rate limiting ([a8e7ef0](https://github.com/Belphemur/AddictedProxy/commit/a8e7ef01cc104ff3444fe757e28196d929f3fbde))
+
 ## [4.1.12](https://github.com/Belphemur/AddictedProxy/compare/v4.1.11...v4.1.12) (2023-01-27)
 
 
