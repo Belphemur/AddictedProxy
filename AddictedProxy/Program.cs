@@ -75,6 +75,7 @@ builder.Services
 builder.Host.UseSystemd();
 builder.WebHost.UseSentry(sentryBuilder =>
 {
+    sentryBuilder.TracePropagationTargets.Clear();
     sentryBuilder.Dsn = Environment.GetEnvironmentVariable("SENTRY_DSN");
 #if DEBUG
     sentryBuilder.Debug = true;
