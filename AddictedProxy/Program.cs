@@ -92,6 +92,7 @@ var app = builder.Build();
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.All,
+    ForwardedForHeaderName = app.Configuration.GetSection("Http:RealIpHeader").Get<string>()!
 });
 
 app.UseBootstrap(currentAssemblies);
