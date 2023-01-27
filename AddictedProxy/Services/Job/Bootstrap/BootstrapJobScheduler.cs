@@ -24,7 +24,6 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
                                      .UseRecommendedSerializerSettings()
                                      .UseRedisStorage(RedisConnection.Instance.GetOrCreateConnection(config), new RedisStorageOptions
                                      {
-                                         Prefix = "hangfire",
                                          InvisibilityTimeout = TimeSpan.FromMinutes(10)
                                      }));
 
