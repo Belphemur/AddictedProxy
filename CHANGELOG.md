@@ -1,3 +1,10 @@
+## [4.1.7](https://github.com/Belphemur/AddictedProxy/compare/v4.1.6...v4.1.7) (2023-01-27)
+
+
+### Bug Fixes
+
+* **SQL:** Include the season at the end of the query ([99177a7](https://github.com/Belphemur/AddictedProxy/commit/99177a7ed5854ad5434a62985293fc7d983d537a))
+
 ## [4.1.6](https://github.com/Belphemur/AddictedProxy/compare/v4.1.5...v4.1.6) (2023-01-27)
 
 
