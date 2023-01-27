@@ -63,7 +63,8 @@ public class BootstrapAddictedServices : IBootstrap,
             {
                 Address = proxy.Address,
                 Credentials = proxy.Credentials
-            }
+            },
+            AutomaticDecompression = DecompressionMethods.All
         };
     }
 
