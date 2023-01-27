@@ -1,3 +1,10 @@
+## [4.1.8](https://github.com/Belphemur/AddictedProxy/compare/v4.1.7...v4.1.8) (2023-01-27)
+
+
+### Bug Fixes
+
+* **SQL:** Use ILIKE instead of lower casing ([1e114cd](https://github.com/Belphemur/AddictedProxy/commit/1e114cd83a6a92f32f60847527512ff3a6586a90))
+
 ## [4.1.7](https://github.com/Belphemur/AddictedProxy/compare/v4.1.6...v4.1.7) (2023-01-27)
 
 
