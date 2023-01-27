@@ -1,3 +1,10 @@
+## [4.1.9](https://github.com/Belphemur/AddictedProxy/compare/v4.1.8...v4.1.9) (2023-01-27)
+
+
+### Performance improvements
+
+* **Hangfire:** Be sure to have the load shared on all the nodes of the cluster ([980e1f2](https://github.com/Belphemur/AddictedProxy/commit/980e1f26270dce87ab7bc5cdb61f0db2a1af050c))
+
 ## [4.1.8](https://github.com/Belphemur/AddictedProxy/compare/v4.1.7...v4.1.8) (2023-01-27)
 
 
