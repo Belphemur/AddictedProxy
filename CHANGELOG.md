@@ -1,3 +1,10 @@
+## [4.1.3](https://github.com/Belphemur/AddictedProxy/compare/v4.1.2...v4.1.3) (2023-01-27)
+
+
+### Bug Fixes
+
+* **RateLimiting:** Fix when to get the ip of request ([4961b24](https://github.com/Belphemur/AddictedProxy/commit/4961b2469e6c3dce62c14a5000a02c86268271e0))
+
 ## [4.1.2](https://github.com/Belphemur/AddictedProxy/compare/v4.1.1...v4.1.2) (2023-01-27)
 
 
