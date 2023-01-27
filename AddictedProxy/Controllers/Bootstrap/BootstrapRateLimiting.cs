@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Net;
 using System.Threading.RateLimiting;
 using AddictedProxy.Model.RateLimiting;
 using AngleSharp.Io;
@@ -22,11 +23,10 @@ public class BootstrapRateLimiting : IBootstrap, IBootstrapApp
         app.UseRateLimiter(new RateLimiterOptions
         {
             RejectionStatusCode = 429,
-            GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+            GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, IPAddress>(context =>
             {
                 var config = app.ApplicationServices.GetRequiredService<IOptions<RateLimitingConfig>>().Value;
-                return new RateLimitPartition<string>(context.Connection.RemoteIpAddress?.ToString() ?? "default",
-                    _ => new TokenBucketRateLimiter(config.Token));
+                return RateLimitPartition.GetTokenBucketLimiter(context.Connection.RemoteIpAddress, _ => config.Token)!;
             }),
             OnRejected = (context, _) =>
             {
