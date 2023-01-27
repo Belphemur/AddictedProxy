@@ -1,3 +1,10 @@
+## [4.1.2](https://github.com/Belphemur/AddictedProxy/compare/v4.1.1...v4.1.2) (2023-01-27)
+
+
+### Performance improvements
+
+* **RateLimiting:** Add ratelimiting logging ([e0044ac](https://github.com/Belphemur/AddictedProxy/commit/e0044ac7ccb13674812a52a9fa20803d1d672640))
+
 ## [4.1.1](https://github.com/Belphemur/AddictedProxy/compare/v4.1.0...v4.1.1) (2023-01-27)
 
 
