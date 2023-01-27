@@ -1,3 +1,10 @@
+## [4.1.10](https://github.com/Belphemur/AddictedProxy/compare/v4.1.9...v4.1.10) (2023-01-27)
+
+
+### Bug Fixes
+
+* **Hangfire:** Keep prefix as the default one ([e1ee489](https://github.com/Belphemur/AddictedProxy/commit/e1ee489874f0276fea1993d85536e90a5bb6f30e))
+
 ## [4.1.9](https://github.com/Belphemur/AddictedProxy/compare/v4.1.8...v4.1.9) (2023-01-27)
 
 
