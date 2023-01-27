@@ -5,6 +5,7 @@ using AngleSharp.Io;
 using InversionOfControl.Model;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
+using Prometheus;
 
 namespace AddictedProxy.Controllers.Bootstrap;
 
@@ -13,12 +14,11 @@ public class BootstrapRateLimiting : IBootstrap, IBootstrapApp
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<RateLimitingConfig>(configuration.GetSection("RateLimiting"));
-
-        services.AddRateLimiter(_ => { });
     }
 
     public void ConfigureApp(IApplicationBuilder app)
     {
+        var rateLimitCounter = Metrics.CreateCounter("http_request_rate_limited", "Number of requests that got rate limited", "controller", "action");
         app.UseRateLimiter(new RateLimiterOptions
         {
             RejectionStatusCode = 429,
@@ -28,8 +28,13 @@ public class BootstrapRateLimiting : IBootstrap, IBootstrapApp
                 return new RateLimitPartition<string>(context.Connection.RemoteIpAddress?.ToString() ?? "default",
                     _ => new TokenBucketRateLimiter(config.Token));
             }),
-            OnRejected = (context, token) =>
+            OnRejected = (context, _) =>
             {
+                var routeValues = context.HttpContext.GetRouteData().Values;
+                var controller = routeValues["controller"]?.ToString() ?? "";
+                var action = routeValues["action"]?.ToString() ?? "";
+                rateLimitCounter.Labels(controller, action).Inc();
+
                 var logger = app.ApplicationServices.GetRequiredService<ILogger<TokenBucketRateLimiter>>();
                 var lease = context.Lease;
                 if (lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
