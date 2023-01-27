@@ -19,7 +19,7 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
     {
         app.UseEndpoints(builder =>
         {
-            builder.MapMetrics();
+            builder.MapMetrics().DisableRateLimiting();
         });
     }
 }
