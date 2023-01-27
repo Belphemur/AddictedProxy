@@ -1,3 +1,176 @@
+## [4.1.10](https://github.com/Belphemur/AddictedProxy/compare/v4.1.9...v4.1.10) (2023-01-27)
+
+
+### Bug Fixes
+
+* **Hangfire:** Keep prefix as the default one ([e1ee489](https://github.com/Belphemur/AddictedProxy/commit/e1ee489874f0276fea1993d85536e90a5bb6f30e))
+
+## [4.1.9](https://github.com/Belphemur/AddictedProxy/compare/v4.1.8...v4.1.9) (2023-01-27)
+
+
+### Performance improvements
+
+* **Hangfire:** Be sure to have the load shared on all the nodes of the cluster ([980e1f2](https://github.com/Belphemur/AddictedProxy/commit/980e1f26270dce87ab7bc5cdb61f0db2a1af050c))
+
+## [4.1.8](https://github.com/Belphemur/AddictedProxy/compare/v4.1.7...v4.1.8) (2023-01-27)
+
+
+### Bug Fixes
+
+* **SQL:** Use ILIKE instead of lower casing ([1e114cd](https://github.com/Belphemur/AddictedProxy/commit/1e114cd83a6a92f32f60847527512ff3a6586a90))
+
+## [4.1.7](https://github.com/Belphemur/AddictedProxy/compare/v4.1.6...v4.1.7) (2023-01-27)
+
+
+### Bug Fixes
+
+* **SQL:** Include the season at the end of the query ([99177a7](https://github.com/Belphemur/AddictedProxy/commit/99177a7ed5854ad5434a62985293fc7d983d537a))
+
+## [4.1.6](https://github.com/Belphemur/AddictedProxy/compare/v4.1.5...v4.1.6) (2023-01-27)
+
+
+### Bug Fixes
+
+* **Hangfire:** Only keep error for retry ([019cc70](https://github.com/Belphemur/AddictedProxy/commit/019cc7084f2cf2e6af5c2f91e24c217f2e4a0c9a))
+
+
+### Performance improvements
+
+* **Hangfire:** Mute logs about retrying jobs ([a5d5b1d](https://github.com/Belphemur/AddictedProxy/commit/a5d5b1dc95475206cb95f1beeffded49f84b8986))
+
+## [4.1.5](https://github.com/Belphemur/AddictedProxy/compare/v4.1.4...v4.1.5) (2023-01-27)
+
+
+### Bug Fixes
+
+* **RateLimiting:** Access header from anywhere ([0547b2f](https://github.com/Belphemur/AddictedProxy/commit/0547b2f96e184d233ef690293d396078fa8cd4d2))
+
+## [4.1.4](https://github.com/Belphemur/AddictedProxy/compare/v4.1.3...v4.1.4) (2023-01-27)
+
+
+### Bug Fixes
+
+* **RateLimiting:** Use Cloudflare header ([afd15a5](https://github.com/Belphemur/AddictedProxy/commit/afd15a5fa8267cdd07a8fe6250fdd9ed13d6c3b2))
+
+## [4.1.3](https://github.com/Belphemur/AddictedProxy/compare/v4.1.2...v4.1.3) (2023-01-27)
+
+
+### Bug Fixes
+
+* **RateLimiting:** Fix when to get the ip of request ([4961b24](https://github.com/Belphemur/AddictedProxy/commit/4961b2469e6c3dce62c14a5000a02c86268271e0))
+
+## [4.1.2](https://github.com/Belphemur/AddictedProxy/compare/v4.1.1...v4.1.2) (2023-01-27)
+
+
+### Performance improvements
+
+* **RateLimiting:** Add ratelimiting logging ([e0044ac](https://github.com/Belphemur/AddictedProxy/commit/e0044ac7ccb13674812a52a9fa20803d1d672640))
+
+## [4.1.1](https://github.com/Belphemur/AddictedProxy/compare/v4.1.0...v4.1.1) (2023-01-27)
+
+
+### Bug Fixes
+
+* **IP:** Get the IP from the forward headers ([790af28](https://github.com/Belphemur/AddictedProxy/commit/790af285664765ffa4e6d8738aaf1f395eff03b6))
+
+
+### Performance improvements
+
+* **RateLimiting:** Use Microsoft rate limiter ([18c630b](https://github.com/Belphemur/AddictedProxy/commit/18c630be22a1920e6abdd7a524063c1dd12b69f3))
+
+## [4.1.0](https://github.com/Belphemur/AddictedProxy/compare/v4.0.10...v4.1.0) (2023-01-26)
+
+
+### Features
+
+* **FileStorage:** Add ability to use file for caching purpose instead of distributed cache. ([46f1215](https://github.com/Belphemur/AddictedProxy/commit/46f1215f269f0e52e16ae1997711367b89e7c993))
+* **SqliteCache:** Add support for Absolute Expiry ([098b506](https://github.com/Belphemur/AddictedProxy/commit/098b5066b2db3d200a9ed6e4c730f1ced675d685))
+
+
+### Bug Fixes
+
+* **SqlCache:** Check for directory empty too ([a8e16c0](https://github.com/Belphemur/AddictedProxy/commit/a8e16c0b07fece15cd9d21acf0bae506b5abb156))
+* **SqlCache:** Only create directory if needed ([ff42039](https://github.com/Belphemur/AddictedProxy/commit/ff42039d638a0cbaca88684d101fcca2a1027311))
+* **SqliteCache::AbsoluteExpiry:** Check properly the absolute expiry ([45f2780](https://github.com/Belphemur/AddictedProxy/commit/45f2780b056ac1431d2ec7feef1dac1190988eda))
+* **SqliteCache:** Create directory if not exists ([5c7f67f](https://github.com/Belphemur/AddictedProxy/commit/5c7f67f586b179ddf6d7750e09d8093b46a4d1c3))
+* **Sqlite:** Fix missing comma ([7625548](https://github.com/Belphemur/AddictedProxy/commit/7625548ac4757bd8b0b887e6594d6b18f1fe1972))
+* **Storage::Caching:** Fix type ([bba0626](https://github.com/Belphemur/AddictedProxy/commit/bba0626dacb9ca454c9408ca27521fb9d94fd110))
+
+
+### Performance improvements
+
+* **job:** handle weird exceptions ([9acb0a2](https://github.com/Belphemur/AddictedProxy/commit/9acb0a2c5bcc5dc2b7c135dccbcbe80d10b4df66))
+* **Job:** increase timeout ([4f91544](https://github.com/Belphemur/AddictedProxy/commit/4f91544b475d71801724c1cccb5772d5b33f2649))
+* **job:** Make job retry less often ([1c77be6](https://github.com/Belphemur/AddictedProxy/commit/1c77be630e7fd3227b2f7267ff0b174cc7aeb670))
+* **Job:** only wait 10 sec before giving up on scheduling a fetch job ([2a38987](https://github.com/Belphemur/AddictedProxy/commit/2a38987a83fc3c39bac2ed08bcfc513ec611e6b9))
+* **SqliteCache:** Add auto vacuum capability ([3b28d14](https://github.com/Belphemur/AddictedProxy/commit/3b28d14097b2eea97164a90ac427a39bfb75dc8e))
+* **Storage::Caching:** Use sqlite for storage caching ([c27f22f](https://github.com/Belphemur/AddictedProxy/commit/c27f22fd8ed8c6eb4975c11644f02b70793a1954))
+
+## [4.0.10](https://github.com/Belphemur/AddictedProxy/compare/v4.0.9...v4.0.10) (2023-01-17)
+
+
+### Bug Fixes
+
+* **UniqueJob:** Fallback on recalculating the key ([97477dd](https://github.com/Belphemur/AddictedProxy/commit/97477dd4fe3ca86b6904191a600a5db18ca1e60e))
+* **UniqueJob:** Fix deserializing the key properly ([41094d3](https://github.com/Belphemur/AddictedProxy/commit/41094d304a653c33673b08b35ebfe28e652c2746))
+
+## [4.0.9](https://github.com/Belphemur/AddictedProxy/compare/v4.0.8...v4.0.9) (2023-01-17)
+
+
+### Bug Fixes
+
+* **Sentry:** Fix transaction sent to sentry ([b5d6376](https://github.com/Belphemur/AddictedProxy/commit/b5d637624583f167c095244b00211e2d741b4f51))
+
+## [4.0.8](https://github.com/Belphemur/AddictedProxy/compare/v4.0.7...v4.0.8) (2023-01-17)
+
+
+### Bug Fixes
+
+* **Cred::Download:** Fix finding account that need to be redeemed ([e4adc9a](https://github.com/Belphemur/AddictedProxy/commit/e4adc9a36187a837f22e3c3acefa11070a74dce8))
+
+## [4.0.7](https://github.com/Belphemur/AddictedProxy/compare/v4.0.6...v4.0.7) (2023-01-16)
+
+
+### Bug Fixes
+
+* **Job:** Fix job creation failure ([f262ed7](https://github.com/Belphemur/AddictedProxy/commit/f262ed7d692546c85c0b76ea1ac44d43f86270e8))
+
+## [4.0.6](https://github.com/Belphemur/AddictedProxy/compare/v4.0.5...v4.0.6) (2023-01-14)
+
+
+### Performance improvements
+
+* **Redis:** One connection for the full application instead of one for Hangfire and one for caching ([2554993](https://github.com/Belphemur/AddictedProxy/commit/2554993a58e0afa42e69fc681d8c60e59412d6b6))
+* **Swagger:** Improve the styling of dark mode ([ddd7c68](https://github.com/Belphemur/AddictedProxy/commit/ddd7c6840f3a5deba69f12a1e9a6ce546c86c808))
+
+## [4.0.5](https://github.com/Belphemur/AddictedProxy/compare/v4.0.4...v4.0.5) (2023-01-14)
+
+
+### Bug Fixes
+
+* **swagger:** Use dist package for swagger ([c8b3e5b](https://github.com/Belphemur/AddictedProxy/commit/c8b3e5ba7b9d7f7b2ca6184905a350269026b789))
+* **swagger:** Use dist package for swagger ([91f3661](https://github.com/Belphemur/AddictedProxy/commit/91f3661061fd0ccb28251ff8c1448b5e7e8b8762))
+
+## [4.0.4](https://github.com/Belphemur/AddictedProxy/compare/v4.0.3...v4.0.4) (2023-01-14)
+
+
+### Bug Fixes
+
+* **chunking:** Fix chunking config for the front-end ([0e915e9](https://github.com/Belphemur/AddictedProxy/commit/0e915e9559b3afc72ae74de379cc11384c438e6a))
+
+## [4.0.3](https://github.com/Belphemur/AddictedProxy/compare/v4.0.2...v4.0.3) (2023-01-14)
+
+
+### Bug Fixes
+
+* **route:** Fix route not showing ([853336d](https://github.com/Belphemur/AddictedProxy/commit/853336d4e06552289bdd5b13451c5475d9feb241))
+* **swagger:** Fix css issue ([e013f75](https://github.com/Belphemur/AddictedProxy/commit/e013f75573d72428c118a960648d2c4c969db824))
+
+
+### Performance improvements
+
+* **Chunking:** Better chunking the production package ([6931d7c](https://github.com/Belphemur/AddictedProxy/commit/6931d7c2640a4314c5458b5fd735fb682e35b368))
+
 ## [4.0.2](https://github.com/Belphemur/AddictedProxy/compare/v4.0.1...v4.0.2) (2023-01-14)
 
 
