@@ -26,12 +26,11 @@ public class TvShowRepository : ITvShowRepository
     }
 
 
-    [SuppressMessage("ReSharper.DPA", "DPA0000: DPA issues")]
     public async IAsyncEnumerable<TvShow> FindAsync(string name, [EnumeratorCancellation] CancellationToken token)
     {
         _logger.LogInformation("Looking for show: {show}", name);
         var strictMatch = await _entityContext.TvShows
-                                              .Where(show => show.Name.ToLower() == name.ToLower())
+                                              .Where(show => EF.Functions.ILike(show.Name, name))
                                               .OrderByDescending(show => show.Priority)
                                               .Include(show => show.Seasons)
                                               .FirstOrDefaultAsync(token);
