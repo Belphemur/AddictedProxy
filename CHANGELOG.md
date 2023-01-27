@@ -1,3 +1,10 @@
+## [4.1.4](https://github.com/Belphemur/AddictedProxy/compare/v4.1.3...v4.1.4) (2023-01-27)
+
+
+### Bug Fixes
+
+* **RateLimiting:** Use Cloudflare header ([afd15a5](https://github.com/Belphemur/AddictedProxy/commit/afd15a5fa8267cdd07a8fe6250fdd9ed13d6c3b2))
+
 ## [4.1.3](https://github.com/Belphemur/AddictedProxy/compare/v4.1.2...v4.1.3) (2023-01-27)
 
 
