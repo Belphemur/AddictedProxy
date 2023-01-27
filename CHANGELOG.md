@@ -1,3 +1,11 @@
+## [4.1.12](https://github.com/Belphemur/AddictedProxy/compare/v4.1.11...v4.1.12) (2023-01-27)
+
+
+### Performance improvements
+
+* **Addicted:** Use compression for all requests/responses ([3e6e46d](https://github.com/Belphemur/AddictedProxy/commit/3e6e46d88fdb3c17bab86e48412d7f54873c43ff))
+* **Sentry:** Don't send trace headers ([680f00c](https://github.com/Belphemur/AddictedProxy/commit/680f00c791c4be8f755d4b0846617c1733dbb7a7))
+
 ## [4.1.11](https://github.com/Belphemur/AddictedProxy/compare/v4.1.10...v4.1.11) (2023-01-27)
 
 
