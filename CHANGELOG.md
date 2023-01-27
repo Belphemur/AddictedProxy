@@ -1,3 +1,10 @@
+## [4.1.5](https://github.com/Belphemur/AddictedProxy/compare/v4.1.4...v4.1.5) (2023-01-27)
+
+
+### Bug Fixes
+
+* **RateLimiting:** Access header from anywhere ([0547b2f](https://github.com/Belphemur/AddictedProxy/commit/0547b2f96e184d233ef690293d396078fa8cd4d2))
+
 ## [4.1.4](https://github.com/Belphemur/AddictedProxy/compare/v4.1.3...v4.1.4) (2023-01-27)
 
 
