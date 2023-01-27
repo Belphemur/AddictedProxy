@@ -1,3 +1,15 @@
+## [4.1.1](https://github.com/Belphemur/AddictedProxy/compare/v4.1.0...v4.1.1) (2023-01-27)
+
+
+### Bug Fixes
+
+* **IP:** Get the IP from the forward headers ([790af28](https://github.com/Belphemur/AddictedProxy/commit/790af285664765ffa4e6d8738aaf1f395eff03b6))
+
+
+### Performance improvements
+
+* **RateLimiting:** Use Microsoft rate limiter ([18c630b](https://github.com/Belphemur/AddictedProxy/commit/18c630be22a1920e6abdd7a524063c1dd12b69f3))
+
 ## [4.1.0](https://github.com/Belphemur/AddictedProxy/compare/v4.0.10...v4.1.0) (2023-01-26)
 
 
