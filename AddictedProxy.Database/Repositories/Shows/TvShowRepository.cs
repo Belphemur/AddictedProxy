@@ -32,9 +32,10 @@ public class TvShowRepository : ITvShowRepository
         _logger.LogInformation("Looking for show: {show}", name);
         var strictMatch = await _entityContext.TvShows
                                               .Where(show => show.Name.ToLower() == name.ToLower())
-                                              .Include(show => show.Seasons)
                                               .OrderByDescending(show => show.Priority)
+                                              .Include(show => show.Seasons)
                                               .FirstOrDefaultAsync(token);
+
         if (strictMatch != null)
         {
             yield return strictMatch;
