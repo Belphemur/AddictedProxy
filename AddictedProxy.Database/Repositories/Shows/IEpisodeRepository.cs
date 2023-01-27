@@ -1,6 +1,5 @@
 #region
 
-using System.Globalization;
 using AddictedProxy.Database.Model.Shows;
 
 #endregion

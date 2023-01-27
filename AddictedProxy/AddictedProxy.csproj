@@ -9,7 +9,6 @@
 
     <ItemGroup>
         <PackageReference Include="Ardalis.Result.AspNetCore" Version="4.1.0" />
-        <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
         <PackageReference Include="Hangfire.AspNetCore" Version="1.7.32" />
         <PackageReference Include="Hangfire.Dashboard.BasicAuthorization" Version="1.0.2" />
         <PackageReference Include="Hangfire.MaximumConcurrentExecutions" Version="1.1.0" />

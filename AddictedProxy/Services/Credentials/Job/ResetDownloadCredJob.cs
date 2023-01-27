@@ -1,7 +1,4 @@
-﻿using AddictedProxy.Database.Repositories.Credentials;
-using AddictedProxy.Services.Job.Exception;
-using AddictedProxy.Services.Job.Filter;
-using AddictedProxy.Upstream.Service;
+﻿using AddictedProxy.Services.Job.Filter;
 using Hangfire;
 using Sentry.Performance.Service;
 

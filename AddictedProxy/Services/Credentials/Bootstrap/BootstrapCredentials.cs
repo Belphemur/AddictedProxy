@@ -1,6 +1,5 @@
 ﻿#region
 
-using AddictedProxy.Services.Credentials.Job;
 using InversionOfControl.Model;
 
 #endregion

@@ -1,6 +1,5 @@
 ﻿#region
 
-using System.Data;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
