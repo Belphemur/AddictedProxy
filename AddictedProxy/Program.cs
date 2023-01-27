@@ -88,12 +88,15 @@ builder.WebHost.UseSentry(sentryBuilder =>
 builder.Configuration.AddEnvironmentVariables("ADDICT");
 
 var app = builder.Build();
-       
-app.UseForwardedHeaders(new ForwardedHeadersOptions
+
+var forwardedHeadersOptions = new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.All,
-    ForwardedForHeaderName = app.Configuration.GetSection("Http:RealIpHeader").Get<string>()!
-});
+    ForwardedForHeaderName = app.Configuration.GetSection("Http:RealIpHeader").Get<string>()!,
+};
+forwardedHeadersOptions.KnownProxies.Clear();
+forwardedHeadersOptions.KnownNetworks.Clear();
+app.UseForwardedHeaders(forwardedHeadersOptions);
 
 app.UseBootstrap(currentAssemblies);
 
