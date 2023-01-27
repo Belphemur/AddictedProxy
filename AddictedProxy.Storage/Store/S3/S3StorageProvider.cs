@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using AddictedProxy.Storage.Compressor;
 using AddictedProxy.Storage.Store.S3.Bootstrap.EnvVar;
 using Amazon.S3;
 using Amazon.S3.Model;

@@ -1,6 +1,5 @@
 using System.Text;
 using AddictedProxy.Culture.Service;
-using AddictedProxy.Upstream.Model;
 using AddictedProxy.Upstream.Service;
 using AngleSharp.Html.Parser;
 using FluentAssertions;

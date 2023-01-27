@@ -1,5 +1,4 @@
 using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Options;
 using System;
 
 namespace NeoSmart.Caching.Sqlite

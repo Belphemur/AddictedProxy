@@ -6,7 +6,6 @@ using AddictedProxy.Services.Job.Service;
 using Hangfire;
 using Hangfire.Dashboard.BasicAuthorization;
 using InversionOfControl.Model;
-using StackExchange.Redis;
 
 #endregion
 

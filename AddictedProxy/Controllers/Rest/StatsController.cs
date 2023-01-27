@@ -1,8 +1,6 @@
-﻿using AddictedProxy.Caching.OutputCache.Configuration;
-using AddictedProxy.Model.Dto;
+﻿using AddictedProxy.Model.Dto;
 using AddictedProxy.Stats.Popularity.Service;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 
 namespace AddictedProxy.Controllers.Rest;
 
@@ -25,7 +23,6 @@ public class StatsController : Controller
     /// <returns></returns>
     [HttpGet]
     [Route("downloads/{top:range(1,50)}")]
-    [OutputCache(PolicyName = nameof(PolicyEnum.Stats))]
     public async Task<ActionResult<TopShowDto[]>> GetTopDownloads([FromRoute] int top, CancellationToken token)
     {
         return Ok(await _showPopularityService.GetTopDownloadPopularity(top).Select(record => new TopShowDto(new ShowDto(record.Show), record.TotalDownloads)).ToArrayAsync(token));

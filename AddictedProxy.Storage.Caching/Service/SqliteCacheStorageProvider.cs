@@ -1,7 +1,6 @@
 using AddictedProxy.Storage.Caching.Model;
 using AddictedProxy.Storage.Compressor;
 using AddictedProxy.Storage.Store;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using NeoSmart.Caching.Sqlite;
 

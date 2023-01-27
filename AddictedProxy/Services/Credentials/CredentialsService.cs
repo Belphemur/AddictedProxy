@@ -5,10 +5,8 @@ using AddictedProxy.Database.Repositories.Credentials;
 using AddictedProxy.Model.Crendentials;
 using AddictedProxy.Services.Credentials.Job;
 using AddictedProxy.Services.Job.Exception;
-using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Upstream.Service;
 using Hangfire;
-using Microsoft.Extensions.Options;
 
 #endregion
 

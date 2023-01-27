@@ -1,8 +1,6 @@
 ﻿#region
 
 using System.Net;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.EnvVar.Http;
 using AngleSharp.Html.Parser;

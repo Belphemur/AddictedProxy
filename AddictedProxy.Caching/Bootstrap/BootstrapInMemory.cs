@@ -1,5 +1,3 @@
-using AddictedProxy.Caching.OutputCache.Configuration;
-using AspNetCoreRateLimit;
 using InversionOfControl.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +9,7 @@ public class BootstrapInMemory : IBootstrapConditional, IBootstrap
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         // inject counter and rules stores
-        services.AddInMemoryRateLimiting();
+        services.AddMemoryCache();
         
         services.AddDistributedMemoryCache();
     }

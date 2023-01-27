@@ -1,12 +1,9 @@
 ﻿#region
 
 using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Storage.Caching.Service;
-using AddictedProxy.Storage.Store;
 using AddictedProxy.Storage.Store.Compression;
 using Hangfire;
 using Locking;
-using Newtonsoft.Json.Linq;
 using Sentry.Performance.Service;
 
 #endregion
