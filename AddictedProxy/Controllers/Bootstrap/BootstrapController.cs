@@ -27,11 +27,6 @@ public class BootstrapController : IBootstrap, IBootstrapApp
         {
             endpointRouteBuilder.MapControllers();
         }
-        
-        app.UseForwardedHeaders(new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = ForwardedHeaders.All
-        });
 
         app.UseCors(policyBuilder =>
         {

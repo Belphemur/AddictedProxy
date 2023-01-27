@@ -13,6 +13,7 @@ using AddictedProxy.Storage.Caching.Bootstrap;
 using AddictedProxy.Storage.Compressor.Bootstrap;
 using AddictedProxy.Upstream.Boostrap;
 using InversionOfControl.Service.Bootstrap;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sentry;
@@ -87,6 +88,11 @@ builder.WebHost.UseSentry(sentryBuilder =>
 builder.Configuration.AddEnvironmentVariables("ADDICT");
 
 var app = builder.Build();
+       
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.All,
+});
 
 app.UseBootstrap(currentAssemblies);
 
