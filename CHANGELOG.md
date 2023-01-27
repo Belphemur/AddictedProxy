@@ -1,3 +1,15 @@
+## [4.1.6](https://github.com/Belphemur/AddictedProxy/compare/v4.1.5...v4.1.6) (2023-01-27)
+
+
+### Bug Fixes
+
+* **Hangfire:** Only keep error for retry ([019cc70](https://github.com/Belphemur/AddictedProxy/commit/019cc7084f2cf2e6af5c2f91e24c217f2e4a0c9a))
+
+
+### Performance improvements
+
+* **Hangfire:** Mute logs about retrying jobs ([a5d5b1d](https://github.com/Belphemur/AddictedProxy/commit/a5d5b1dc95475206cb95f1beeffded49f84b8986))
+
 ## [4.1.5](https://github.com/Belphemur/AddictedProxy/compare/v4.1.4...v4.1.5) (2023-01-27)
 
 
