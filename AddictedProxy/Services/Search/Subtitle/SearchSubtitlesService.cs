@@ -11,7 +11,7 @@ using Ardalis.Result;
 using Hangfire;
 using Sentry.Performance.Service;
 
-namespace AddictedProxy.Services.Search;
+namespace AddictedProxy.Services.Search.Subtitle;
 
 public class SearchSubtitlesService : ISearchSubtitlesService
 {
@@ -93,17 +93,17 @@ public class SearchSubtitlesService : ISearchSubtitlesService
             if (season == null && !_seasonRefresher.IsShowNeedsRefresh(show))
             {
                 _logger.LogInformation("Don't need to refresh seasons of show {show} returning empty data", show.Name);
-                return new SubtitleFound(ArraySegment<Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
+                return new SubtitleFound(ArraySegment<Database.Model.Shows.Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
             }
 
             if (season != null && !_episodeRefresher.IsSeasonNeedRefresh(show, season))
             {
                 _logger.LogInformation("Don't need to refresh episodes of {season} of show {show} returning empty data", request.Season, show.Name);
-                return new SubtitleFound(ArraySegment<Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
+                return new SubtitleFound(ArraySegment<Database.Model.Shows.Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
             }
 
             ScheduleJob(request, show, language);
-            return new SubtitleFound(ArraySegment<Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
+            return new SubtitleFound(ArraySegment<Database.Model.Shows.Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
         }
 
         var matchingSubtitles = await FindMatchingSubtitlesAsync(request, episode, token);
@@ -116,7 +116,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         return new SubtitleFound(matchingSubtitles, new EpisodeDto(episode), language);
     }
 
-    private async Task<Subtitle[]> FindMatchingSubtitlesAsync(SearchPayload payload, Episode episode, CancellationToken token)
+    private async Task<Database.Model.Shows.Subtitle[]> FindMatchingSubtitlesAsync(SearchPayload payload, Episode episode, CancellationToken token)
     {
         using var _ = _performanceTracker.BeginNestedSpan("find-matching-subtitles", $"Episode [{episode.Id}] S{episode.Season}E{episode.Number}");
         var searchLanguage = (await _cultureParser.FromStringAsync(payload.LanguageIso, token))!;

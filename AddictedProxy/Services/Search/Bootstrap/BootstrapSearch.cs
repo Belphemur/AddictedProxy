@@ -1,4 +1,5 @@
-﻿using InversionOfControl.Model;
+﻿using AddictedProxy.Services.Search.Subtitle;
+using InversionOfControl.Model;
 
 namespace AddictedProxy.Services.Search.Bootstrap;
 

@@ -1,6 +1,4 @@
-﻿using AddictedProxy.Services.RateLimiting;
-using InversionOfControl.Model;
-using Microsoft.AspNetCore.SignalR;
+﻿using InversionOfControl.Model;
 
 namespace AddictedProxy.Controllers.Hub.Bootstrap;
 
@@ -8,7 +6,7 @@ public class BootstrapHub : IBootstrap, IBootstrapApp
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSignalR(options => options.AddFilter<SignalRRateLimiter>()).AddJsonProtocol();
+        services.AddSignalR().AddJsonProtocol();
     }
 
     public void ConfigureApp(IApplicationBuilder app)

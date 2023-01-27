@@ -1,5 +1,4 @@
 ﻿using AddictedProxy.Services.Credentials.Job;
-using AddictedProxy.Services.Job.Migration;
 using AddictedProxy.Services.Provider.Shows.Jobs;
 using Hangfire;
 

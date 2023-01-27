@@ -2,7 +2,6 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using AddictedProxy.Caching.OutputCache.Configuration;
 using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Model.Dto;
@@ -15,7 +14,6 @@ using AddictedProxy.Utils;
 using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Net.Http.Headers;
 
 #endregion
@@ -106,7 +104,6 @@ public class SubtitlesController : Controller
     [ProducesResponseType(typeof(WrongFormatResponse), 400)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
-    [OutputCache(PolicyName = nameof(PolicyEnum.Shows))]
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
     [Obsolete("Use " + nameof(GetSubtitles))]
     public async Task<ActionResult<SubtitleSearchResponse>> Search([FromBody] SearchRequest request, CancellationToken token)
@@ -180,7 +177,6 @@ public class SubtitlesController : Controller
     [ProducesResponseType(typeof(WrongFormatResponse), 400)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
-    [OutputCache(PolicyName = nameof(PolicyEnum.Shows))]
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
     [Obsolete("Use " + nameof(GetSubtitles))]
     public async Task<ActionResult<SubtitleSearchResponse>> Find(string language, string show, int season, int episode, CancellationToken token)
@@ -211,7 +207,6 @@ public class SubtitlesController : Controller
     [ProducesResponseType(typeof(WrongFormatResponse), 400)]
     [ProducesResponseType(typeof(string), 429)]
     [Produces("application/json")]
-    [OutputCache(PolicyName = nameof(PolicyEnum.Shows))]
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
     public async Task<ActionResult<SubtitleSearchResponse>> GetSubtitles(string language, Guid showUniqueId, int season, int episode, CancellationToken token)
     {

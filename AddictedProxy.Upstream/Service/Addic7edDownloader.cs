@@ -7,7 +7,6 @@ using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Service.Exception;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
-using Polly.Extensions.Http;
 
 #endregion
 

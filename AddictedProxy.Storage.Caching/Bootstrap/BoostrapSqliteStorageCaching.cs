@@ -3,7 +3,6 @@ using AddictedProxy.Storage.Caching.Service;
 using InversionOfControl.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using NeoSmart.Caching.Sqlite;
 
 namespace AddictedProxy.Storage.Caching.Bootstrap;

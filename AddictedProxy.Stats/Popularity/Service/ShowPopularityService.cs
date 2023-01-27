@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Stats.Popularity.Model;
-using Locking;
 using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Stats.Popularity.Service;

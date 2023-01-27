@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using AddictedProxy.Stats.Popularity.Model;
 
 namespace AddictedProxy.Stats.Popularity.Service;
