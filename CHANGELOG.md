@@ -1,3 +1,10 @@
+## [4.1.11](https://github.com/Belphemur/AddictedProxy/compare/v4.1.10...v4.1.11) (2023-01-27)
+
+
+### Performance improvements
+
+* **Subtitle:** Wait longer before giving up on getting subtitles ([5b3b638](https://github.com/Belphemur/AddictedProxy/commit/5b3b638ba81c09f554e48491aff7f0f5ceeded48))
+
 ## [4.1.10](https://github.com/Belphemur/AddictedProxy/compare/v4.1.9...v4.1.10) (2023-01-27)
 
 
