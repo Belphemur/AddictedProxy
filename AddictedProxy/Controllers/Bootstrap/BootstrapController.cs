@@ -4,6 +4,7 @@ using System.Text.Json.Serialization.Metadata;
 using AddictedProxy.Controllers.Rest.Serializer;
 using AddictedProxy.Services.Middleware;
 using InversionOfControl.Model;
+using Microsoft.AspNetCore.HttpOverrides;
 using Prometheus;
 
 #endregion
@@ -26,6 +27,11 @@ public class BootstrapController : IBootstrap, IBootstrapApp
         {
             endpointRouteBuilder.MapControllers();
         }
+        
+        app.UseForwardedHeaders(new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.All
+        });
 
         app.UseCors(policyBuilder =>
         {

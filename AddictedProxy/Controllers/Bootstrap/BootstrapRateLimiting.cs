@@ -25,7 +25,7 @@ public class BootstrapRateLimiting : IBootstrap, IBootstrapApp
             GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
             {
                 var config = app.ApplicationServices.GetRequiredService<IOptions<RateLimitingConfig>>().Value;
-                return new RateLimitPartition<string>(context.Request.Headers[config.Header].FirstOrDefault() ?? context.Connection.RemoteIpAddress?.ToString() ?? "default",
+                return new RateLimitPartition<string>(context.Connection.RemoteIpAddress?.ToString() ?? "default",
                     _ => new TokenBucketRateLimiter(config.Token));
             }),
             OnRejected = (context, token) =>
