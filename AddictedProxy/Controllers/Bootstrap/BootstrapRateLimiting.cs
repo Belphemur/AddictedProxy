@@ -30,6 +30,7 @@ public class BootstrapRateLimiting : IBootstrap, IBootstrapApp
             }),
             OnRejected = (context, token) =>
             {
+                var logger = app.ApplicationServices.GetRequiredService<ILogger<TokenBucketRateLimiter>>();
                 var lease = context.Lease;
                 if (lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
                 {
@@ -40,6 +41,8 @@ public class BootstrapRateLimiting : IBootstrap, IBootstrapApp
                 {
                     context.HttpContext.Response.Headers.Add("X-Retry-Reason", reason);
                 }
+
+                logger.LogWarning("RateLimiting reached for {IP}: {retryAfter}", context.HttpContext.Connection.RemoteIpAddress, retryAfter);
 
                 return ValueTask.CompletedTask;
             }
