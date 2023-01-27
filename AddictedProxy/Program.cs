@@ -12,6 +12,7 @@ using AddictedProxy.Stats.Popularity.Bootstrap;
 using AddictedProxy.Storage.Caching.Bootstrap;
 using AddictedProxy.Storage.Compressor.Bootstrap;
 using AddictedProxy.Upstream.Boostrap;
+using Hangfire.Storage;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
@@ -83,6 +84,7 @@ builder.WebHost.UseSentry(sentryBuilder =>
     sentryBuilder.AddExceptionFilterForType<OperationCanceledException>();
     sentryBuilder.AddExceptionFilterForType<TaskCanceledException>();
     sentryBuilder.AddExceptionFilterForType<RetryJobException>();
+    sentryBuilder.AddExceptionFilterForType<DistributedLockTimeoutException>();
 });
 
 builder.Configuration.AddEnvironmentVariables("ADDICT");
