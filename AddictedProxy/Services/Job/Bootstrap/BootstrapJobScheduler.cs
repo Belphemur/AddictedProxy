@@ -5,6 +5,7 @@ using AddictedProxy.Caching.Redis;
 using AddictedProxy.Services.Job.Service;
 using Hangfire;
 using Hangfire.Dashboard.BasicAuthorization;
+using Hangfire.Redis;
 using InversionOfControl.Model;
 
 #endregion
@@ -21,7 +22,11 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
                                      .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                                      .UseSimpleAssemblyNameTypeSerializer()
                                      .UseRecommendedSerializerSettings()
-                                     .UseRedisStorage(RedisConnection.Instance.GetOrCreateConnection(config)));
+                                     .UseRedisStorage(RedisConnection.Instance.GetOrCreateConnection(config), new RedisStorageOptions
+                                     {
+                                         Prefix = "hangfire",
+                                         InvisibilityTimeout = TimeSpan.FromMinutes(10)
+                                     }));
 
         services.AddHangfireServer(options =>
         {
