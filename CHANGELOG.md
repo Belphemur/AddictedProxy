@@ -1,3 +1,10 @@
+## [4.1.16](https://github.com/Belphemur/AddictedProxy/compare/v4.1.15...v4.1.16) (2023-01-29)
+
+
+### Bug Fixes
+
+* **Addicted:** Renable proxy ([d5063da](https://github.com/Belphemur/AddictedProxy/commit/d5063dad183b35706c01161668d381ac5732abbf))
+
 ## [4.1.15](https://github.com/Belphemur/AddictedProxy/compare/v4.1.14...v4.1.15) (2023-01-29)
 
 
