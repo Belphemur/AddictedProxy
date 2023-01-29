@@ -3,6 +3,7 @@
 using System.Net;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.EnvVar.Http;
+using AddictedProxy.Upstream.Service.Performance;
 using AngleSharp.Html.Parser;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
@@ -50,6 +51,7 @@ public class BootstrapAddictedServices : IBootstrap,
                 .UseHttpClientMetrics();
 
         services.AddSingleton<HttpUtils>();
+        services.AddSingleton<DownloadCounterWrapper>();
     }
 
     public EnvVarRegistration<HttpProxy, HttpProxyParser> EnvVarRegistration => new("PROXY_URL");
@@ -59,11 +61,11 @@ public class BootstrapAddictedServices : IBootstrap,
         return new HttpClientHandler
         {
             AllowAutoRedirect = followRedirect,
-            Proxy = new WebProxy
-            {
-                Address = proxy.Address,
-                Credentials = proxy.Credentials
-            },
+            // Proxy = new WebProxy
+            // {
+            //     Address = proxy.Address,
+            //     Credentials = proxy.Credentials
+            // },
             AutomaticDecompression = DecompressionMethods.All
         };
     }
