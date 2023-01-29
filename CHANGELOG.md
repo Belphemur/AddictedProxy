@@ -1,3 +1,10 @@
+## [4.1.15](https://github.com/Belphemur/AddictedProxy/compare/v4.1.14...v4.1.15) (2023-01-29)
+
+
+### Performance improvements
+
+* **Upstream::Counter:** Add counter to upstream request done to get subtitles ([a89d216](https://github.com/Belphemur/AddictedProxy/commit/a89d2169879d87e7827d02139897e0f50744fddd))
+
 ## [4.1.14](https://github.com/Belphemur/AddictedProxy/compare/v4.1.13...v4.1.14) (2023-01-27)
 
 
