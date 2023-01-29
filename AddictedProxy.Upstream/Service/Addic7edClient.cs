@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AddictedProxy.Upstream.Service;
 
-public class Addic7edClient : IAddic7edClient
+internal class Addic7edClient : IAddic7edClient
 {
     private readonly HttpClient _httpClient;
     private readonly HttpUtils _httpUtils;

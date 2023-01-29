@@ -5,23 +5,32 @@ using System.Net.Http.Headers;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Service.Exception;
+using AddictedProxy.Upstream.Service.Performance;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
+using Prometheus;
 
 #endregion
 
 namespace AddictedProxy.Upstream.Service;
 
-public class Addic7edDownloader : IAddic7edDownloader
+internal class Addic7edDownloader : IAddic7edDownloader
 {
-    private static readonly MediaTypeHeaderValue ContentTypeHtml = new("text/html");
     private readonly HttpClient _httpClient;
     private readonly HttpUtils _httpUtils;
+    private readonly DownloadCounterWrapper _downloadCounterWrapper;
 
-    public Addic7edDownloader(HttpClient httpClient, HttpUtils httpUtils)
+    private enum SubtitleState
+    {
+        Downloaded,
+        Deleted,
+        DownloadLimitReached
+    }
+    public Addic7edDownloader(HttpClient httpClient, HttpUtils httpUtils, DownloadCounterWrapper downloadCounterWrapper)
     {
         _httpClient = httpClient;
         _httpUtils = httpUtils;
+        _downloadCounterWrapper = downloadCounterWrapper;
     }
 
     public async Task<Stream> DownloadSubtitle(AddictedUserCredentials? credentials, Subtitle subtitle, CancellationToken token)
@@ -42,17 +51,20 @@ public class Addic7edDownloader : IAddic7edDownloader
             var path = response.Headers.Location.ToString();
             if (path.StartsWith("/index.php"))
             {
+                _downloadCounterWrapper.Inc(DownloadCounterWrapper.SubtitleState.Deleted);
                 throw new SubtitleFileDeletedException($"File deleted at location: {request.RequestUri}");
             }
 
             if (path.StartsWith("/downloadexceeded.php"))
             {
+                _downloadCounterWrapper.Inc(DownloadCounterWrapper.SubtitleState.DownloadLimitReached);
                 throw new DownloadLimitExceededException($"Reached limit for download for {credentials?.Id}");
             }
 
             throw new FileNotFoundException();
         }
 
+        _downloadCounterWrapper.Inc(DownloadCounterWrapper.SubtitleState.Downloaded);
         return await response.Content.ReadAsStreamAsync(cancellationToken);
     }
 
