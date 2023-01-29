@@ -6,7 +6,7 @@ internal class DownloadCounterWrapper
 {
     private readonly Counter _downloadCounter;
 
-    internal enum SubtitleState
+    internal enum SubtitleRequestResult
     {
         Downloaded,
         Deleted,
@@ -19,11 +19,11 @@ internal class DownloadCounterWrapper
     }
 
     /// <summary>
-    /// Increment the state of the counter
+    /// Increment the download request counter with the proper label
     /// </summary>
-    /// <param name="state"></param>
-    public void Inc(SubtitleState state)
+    /// <param name="requestResult"></param>
+    public void Inc(SubtitleRequestResult requestResult)
     {
-        _downloadCounter.Labels(state.ToString()).Inc();
+        _downloadCounter.Labels(requestResult.ToString()).Inc();
     }
 }
