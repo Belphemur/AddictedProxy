@@ -1,3 +1,11 @@
+## [4.1.17](https://github.com/Belphemur/AddictedProxy/compare/v4.1.16...v4.1.17) (2023-02-01)
+
+
+### Performance improvements
+
+* **SqliteCache:** track evicted entries ([8adcfb7](https://github.com/Belphemur/AddictedProxy/commit/8adcfb7b1ee4219f60e49a3ee9d1bc4a3b168cff))
+* **Storage::Cache:** Track evictions ([9d06bf4](https://github.com/Belphemur/AddictedProxy/commit/9d06bf4c5225f1b9b4a847689bb661aba081cf95))
+
 ## [4.1.16](https://github.com/Belphemur/AddictedProxy/compare/v4.1.15...v4.1.16) (2023-01-29)
 
 
