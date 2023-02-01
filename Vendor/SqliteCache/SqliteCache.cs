@@ -494,6 +494,7 @@ namespace NeoSmart.Caching.Sqlite
 
             if (removed > 0)
             {
+                _config.Prometheus?.ExpiredCounter.Inc(removed);
                 _logger.LogTrace("Evicted {DeletedCacheEntryCount} expired entries from cache", removed);
             }
         }
@@ -508,6 +509,7 @@ namespace NeoSmart.Caching.Sqlite
 
             if (removed > 0)
             {
+                _config.Prometheus?.ExpiredCounter.Inc(removed);
                 _logger.LogTrace("Evicted {DeletedCacheEntryCount} expired entries from cache", removed);
             }
         }
