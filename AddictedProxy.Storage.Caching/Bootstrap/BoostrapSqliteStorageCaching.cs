@@ -4,6 +4,7 @@ using InversionOfControl.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NeoSmart.Caching.Sqlite;
+using Prometheus;
 
 namespace AddictedProxy.Storage.Caching.Bootstrap;
 
@@ -18,6 +19,7 @@ public class BoostrapSqliteStorageCaching : IBootstrapConditional
             options.VacuumOption = SqliteCacheOptions.Vacuum.Full;
             var storageConfigCachePath = string.IsNullOrEmpty(storageConfig?.CachePath) ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Addicted") : storageConfig.CachePath;
             options.CachePath = Path.Combine(storageConfigCachePath, "sqlite-cache.db");
+            options.Prometheus = new SqliteCacheOptions.Metrics(Metrics.CreateCounter("cache_storage_evictions", "nb of cache eviction"));
         });
     }
 
