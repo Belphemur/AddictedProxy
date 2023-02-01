@@ -54,6 +54,7 @@ Version 3.1:
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
+    <PackageReference Include="prometheus-net" Version="7.0.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.4" />
   </ItemGroup>
 

@@ -1,10 +1,12 @@
 using Microsoft.Data.Sqlite;
 using System;
+using Prometheus;
 
 namespace NeoSmart.Caching.Sqlite
 {
     public record SqliteCacheOptions
     {
+        public record Metrics(Counter ExpiredCounter);
         public enum Vacuum
         {
             None,
@@ -19,7 +21,15 @@ namespace NeoSmart.Caching.Sqlite
 
         private string _cachePath = "SqliteCache.db";
 
+        /// <summary>
+        /// What type of vacuum to set for Sqlite database (only for initialization)
+        /// </summary>
         public Vacuum VacuumOption { get; set; } = Vacuum.None;
+
+        /// <summary>
+        /// Configuration to track metrics in Prometheus
+        /// </summary>
+        public Metrics? Prometheus { get; set; } = null;
         /// <summary>
         /// Only if <see cref="MemoryOnly" is <c>false</c> />
         /// </summary>
