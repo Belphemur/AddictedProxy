@@ -20,6 +20,9 @@ using Microsoft.Net.Http.Headers;
 
 namespace AddictedProxy.Controllers.Rest;
 
+/// <summary>
+/// Use to interact with the subtitle, finding them, downloading them.
+/// </summary>
 [ApiController]
 [Route("subtitles")]
 public class SubtitlesController : Controller
@@ -200,6 +203,11 @@ public class SubtitlesController : Controller
     /// <response code="400">Doesn't follow the right format for the search: Show S00E00</response>
     /// <response code="429">Reached the rate limiting of the endpoint</response>
     /// <response code="423">Refreshing the show, currently don't have data, try again later</response>
+    /// <remarks>
+    /// Start by using the /shows/search/SHOW_NAME to find the showUniqueId of the show you're interested in.
+    ///
+    /// Then use the subtitles/get/ endpoint to get subtitle for the episode you want.
+    /// </remarks>
     [Route("get/{showUniqueId:guid}/{season:int:min(0)}/{episode:int:min(0)}/{**language:minlength(2)}")]
     [HttpGet]
     [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
