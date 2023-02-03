@@ -1,3 +1,15 @@
+## [4.1.18](https://github.com/Belphemur/AddictedProxy/compare/v4.1.17...v4.1.18) (2023-02-03)
+
+
+### Bug Fixes
+
+* **doc:** Fix documentation relating to show uniqueId ([1f45254](https://github.com/Belphemur/AddictedProxy/commit/1f45254d729d6b6fc391c1cc571f1d66742f4e78))
+
+
+### Performance improvements
+
+* **docs:** Improve documentation ([d238590](https://github.com/Belphemur/AddictedProxy/commit/d2385907cad4854154fc707d9d4da6470e15d1d3))
+
 ## [4.1.17](https://github.com/Belphemur/AddictedProxy/compare/v4.1.16...v4.1.17) (2023-02-01)
 
 
