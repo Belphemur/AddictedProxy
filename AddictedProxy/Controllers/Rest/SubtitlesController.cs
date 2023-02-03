@@ -192,7 +192,7 @@ public class SubtitlesController : Controller
     /// <param name="language">Language to search for</param>
     /// <param name="episode">Episode number to look for</param>
     /// <param name="token"></param>
-    /// <param name="showUniqueId">Name of the show</param>
+    /// <param name="showUniqueId">Unique ID of the show, you can get it from Shows::Search</param>
     /// <param name="season">Season number to look for</param>
     /// <returns></returns>
     /// <response code="200">Returns the matching subtitles</response>
