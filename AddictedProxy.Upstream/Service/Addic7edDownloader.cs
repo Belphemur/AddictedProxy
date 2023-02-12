@@ -49,19 +49,15 @@ internal class Addic7edDownloader : IAddic7edDownloader
         if (response.StatusCode == HttpStatusCode.Redirect && response.Headers.Location != null)
         {
             var path = response.Headers.Location.ToString();
-            if (path.StartsWith("/index.php"))
-            {
-                _downloadCounterWrapper.Inc(DownloadCounterWrapper.SubtitleRequestResult.Deleted);
-                throw new SubtitleFileDeletedException($"File deleted at location: {request.RequestUri}");
-            }
-
+ 
             if (path.StartsWith("/downloadexceeded.php"))
             {
                 _downloadCounterWrapper.Inc(DownloadCounterWrapper.SubtitleRequestResult.DownloadLimitReached);
                 throw new DownloadLimitExceededException($"Reached limit for download for {credentials?.Id}");
             }
 
-            throw new FileNotFoundException();
+            _downloadCounterWrapper.Inc(DownloadCounterWrapper.SubtitleRequestResult.Deleted);
+            throw new SubtitleFileDeletedException($"File deleted at location: {request.RequestUri}");
         }
 
         _downloadCounterWrapper.Inc(DownloadCounterWrapper.SubtitleRequestResult.Downloaded);
