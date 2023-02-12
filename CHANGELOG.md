@@ -1,3 +1,10 @@
+## [4.1.19](https://github.com/Belphemur/AddictedProxy/compare/v4.1.18...v4.1.19) (2023-02-12)
+
+
+### Bug Fixes
+
+* **download:** Consider any redirect that isn't a download exceeded to be a deleting of subtitle ([50372cf](https://github.com/Belphemur/AddictedProxy/commit/50372cf277878ddf7916be1e0b9e9dcbccedaf29))
+
 ## [4.1.18](https://github.com/Belphemur/AddictedProxy/compare/v4.1.17...v4.1.18) (2023-02-03)
 
 
