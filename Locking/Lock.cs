@@ -5,7 +5,11 @@ namespace Locking;
 
 public static class Lock<T>
 {
-    private static readonly AsyncKeyedLocker<string> AsyncKeyedLocker = new();
+    private static readonly AsyncKeyedLocker<string> AsyncKeyedLocker = new(o =>
+    {
+        o.PoolSize = 20;
+        o.PoolInitialFill = 1;
+    });
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string GetNamedKey(string name)
