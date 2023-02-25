@@ -6,7 +6,6 @@ using AddictedProxy.Controllers.Bootstrap;
 using AddictedProxy.Culture.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
-using AddictedProxy.Model.Performance;
 using AddictedProxy.Services.Job.Exception;
 using AddictedProxy.Stats.Popularity.Bootstrap;
 using AddictedProxy.Storage.Caching.Bootstrap;
@@ -19,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sentry;
 using Sentry.Performance.Bootstrap;
+using Sentry.Performance.Model;
 using TvMovieDatabaseClient.Bootstrap;
 
 #endregion
@@ -80,8 +80,7 @@ builder.WebHost.UseSentry(sentryBuilder =>
 #if DEBUG
     sentryBuilder.Debug = true;
 #endif
-    var perf = builder.Configuration.GetSection("Performance").Get<Performance>();
-    sentryBuilder.TracesSampleRate = perf.SampleRate;
+    sentryBuilder.TracesSampleRate = 0;
     sentryBuilder.AddExceptionFilterForType<OperationCanceledException>();
     sentryBuilder.AddExceptionFilterForType<TaskCanceledException>();
     sentryBuilder.AddExceptionFilterForType<RetryJobException>();
