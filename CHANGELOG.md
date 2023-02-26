@@ -1,3 +1,11 @@
+## [4.2.13](https://github.com/Belphemur/AddictedProxy/compare/v4.2.12...v4.2.13) (2023-02-26)
+
+
+### Bug Fixes
+
+* **cache:** Fix not loading the right cache ([460c044](https://github.com/Belphemur/AddictedProxy/commit/460c0448e0e84d9049909aeb3da6d905c00d1b5b))
+* **performance:** Make tracker singleton ([987314b](https://github.com/Belphemur/AddictedProxy/commit/987314bdc661a3249804e574ede48ab71af64282))
+
 ## [4.2.12](https://github.com/Belphemur/AddictedProxy/compare/v4.2.11...v4.2.12) (2023-02-26)
 
 
