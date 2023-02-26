@@ -1,3 +1,10 @@
+## [4.2.11](https://github.com/Belphemur/AddictedProxy/compare/v4.2.10...v4.2.11) (2023-02-26)
+
+
+### Bug Fixes
+
+* **Cache::set:** Time it properly ([516aeb4](https://github.com/Belphemur/AddictedProxy/commit/516aeb4f36c74b0502b25b30a2030cf0b8d4d91d))
+
 ## [4.2.10](https://github.com/Belphemur/AddictedProxy/compare/v4.2.9...v4.2.10) (2023-02-26)
 
 
