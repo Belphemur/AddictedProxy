@@ -73,7 +73,7 @@ public class SeasonRefresher : ISeasonRefresher
         if (!IsShowNeedsRefresh(show))
         {
             _logger.LogInformation("Don't need to refresh seasons of {show}", show.Name);
-            span.Finish(Status.Unavailable);
+            span.SetTag("show.state", "refreshed");
             return;
         }
 

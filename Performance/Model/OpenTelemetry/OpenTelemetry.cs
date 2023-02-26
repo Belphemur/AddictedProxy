@@ -64,13 +64,13 @@ public class SpanOtlp : ISpan
 
     public void Finish(Exception exception, Status status)
     {
-        ActivityExtensions.RecordException(_activity, exception);
+        _activity.RecordException(exception);
         Finish(status);
     }
 
     public void Finish(Exception exception)
     {
-        ActivityExtensions.RecordException(_activity, exception);
+        _activity.RecordException(exception);
         Finish(Model.Status.InternalError);
     }
 
