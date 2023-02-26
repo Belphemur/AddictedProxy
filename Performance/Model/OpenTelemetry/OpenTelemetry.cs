@@ -73,4 +73,9 @@ public class SpanOtlp : ISpan
         ActivityExtensions.RecordException(_activity, exception);
         Finish(Model.Status.InternalError);
     }
+
+    public void SetTag(string tag, object value)
+    {
+        _activity.SetTag(tag, value);
+    }
 }

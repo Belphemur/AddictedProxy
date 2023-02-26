@@ -25,4 +25,8 @@ public class EmptySpan : ISpan
     public void Finish(Exception exception)
     {
     }
+
+    public void SetTag(string tag, object value)
+    {
+    }
 }

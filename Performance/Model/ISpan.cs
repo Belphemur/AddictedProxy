@@ -36,4 +36,11 @@ public interface ISpan : IDisposable
     /// Finishes the span with the specified exception and automatically inferred status.
     /// </summary>
     void Finish(Exception exception);
+
+    /// <summary>
+    /// Set a tag on the span
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <param name="value"></param>
+    void SetTag(string tag, object value);
 }

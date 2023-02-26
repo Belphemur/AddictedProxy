@@ -5,6 +5,7 @@ using AddictedProxy.Storage.Store;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Prometheus;
+using Sentry.Performance.Service;
 
 namespace AddictedProxy.Storage.Caching.Service;
 
@@ -14,15 +15,17 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
     private readonly IDistributedCache _distributedCache;
     private readonly IOptions<StorageCachingConfig> _cachingConfig;
     private readonly ICompressor _compressor;
+    private readonly IPerformanceTracker _performanceTracker;
     private readonly Counter _cacheHitCounter;
     private readonly Counter _cacheMissCounter;
 
-    public DistributedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache, IOptions<StorageCachingConfig> cachingConfig, ICompressor compressor)
+    public DistributedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache, IOptions<StorageCachingConfig> cachingConfig, ICompressor compressor, IPerformanceTracker performanceTracker)
     {
         _storageProvider = storageProvider;
         _distributedCache = distributedCache;
         _cachingConfig = cachingConfig;
         _compressor = compressor;
+        _performanceTracker = performanceTracker;
         _cacheHitCounter = Metrics.CreateCounter("cache_storage_hits", "Number of hits of the storage's cache", new CounterConfiguration
         {
             ExemplarBehavior = ExemplarBehavior.NoExemplars()
@@ -52,10 +55,12 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
 
     public async Task<Stream?> GetSertAsync(string shardingKey, string filename, CancellationToken cancellationToken)
     {
+        using var span = _performanceTracker.BeginNestedSpan("getsert-cache-storage", $"Get file {filename}");
         var cacheKey = GetCacheKey(shardingKey, filename);
         var cachedData = await _distributedCache.GetAsync(cacheKey, cancellationToken);
         if (cachedData != null)
         {
+            span.SetTag("cache.result", "hit");
             _cacheHitCounter.Inc();
             var memoryStream = new MemoryStream(cachedData);
             return await _compressor.DecompressAsync(memoryStream, cancellationToken);
@@ -68,6 +73,8 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         {
             return stream;
         }
+
+        span.SetTag("cache.result", "miss");
 
         _cacheMissCounter.Inc();
 

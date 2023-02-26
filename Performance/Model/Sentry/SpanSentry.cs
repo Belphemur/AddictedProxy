@@ -73,6 +73,11 @@ internal class SpanSentry : ISpan
         InternalSpan.Finish(exception);
     }
 
+    public void SetTag(string tag, object value)
+    {
+        InternalSpan.SetTag(tag, value.ToString() ?? string.Empty);
+    }
+
 
     public void Dispose()
     {
