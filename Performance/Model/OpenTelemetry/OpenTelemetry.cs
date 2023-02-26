@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using OpenTelemetry.Trace;
+using Performance.Model;
+using Status = OpenTelemetry.Trace.Status;
 
-namespace Sentry.Performance.Model.OpenTelemetry;
+namespace Performance.Model.OpenTelemetry;
 
 public class SpanOtlp : ISpan
 {
@@ -14,19 +16,19 @@ public class SpanOtlp : ISpan
 
     public void Dispose()
     {
-        Finish(Model.Status.Ok);
+        Finish(Performance.Model.Status.Ok);
         _activity.Dispose();
     }
 
-    public Status? Status
+    public Performance.Model.Status? Status
     {
         get
         {
             return _activity.Status switch
             {
-                ActivityStatusCode.Unset => Model.Status.UnknownError,
-                ActivityStatusCode.Ok    => Model.Status.Ok,
-                ActivityStatusCode.Error => Model.Status.UnknownError,
+                ActivityStatusCode.Unset => Performance.Model.Status.UnknownError,
+                ActivityStatusCode.Ok    => Performance.Model.Status.Ok,
+                ActivityStatusCode.Error => Performance.Model.Status.UnknownError,
                 _                        => throw new ArgumentOutOfRangeException()
             };
         }
@@ -45,7 +47,7 @@ public class SpanOtlp : ISpan
         _activity.Stop();
     }
 
-    public void Finish(Status status)
+    public void Finish(Performance.Model.Status status)
     {
         if (_activity.IsStopped)
         {
@@ -54,10 +56,10 @@ public class SpanOtlp : ISpan
 
         var statusActivity = status switch
         {
-            Model.Status.Ok => ActivityStatusCode.Ok,
+            Performance.Model.Status.Ok => ActivityStatusCode.Ok,
             _               => ActivityStatusCode.Error
         };
-        if (status != Model.Status.Ok)
+        if (status != Performance.Model.Status.Ok)
         {
             _activity.SetTag("fail.detail", status);
         }
@@ -66,7 +68,7 @@ public class SpanOtlp : ISpan
         Finish();
     }
 
-    public void Finish(Exception exception, Status status)
+    public void Finish(Exception exception, Performance.Model.Status status)
     {
         _activity.RecordException(exception);
         Finish(status);
@@ -75,7 +77,7 @@ public class SpanOtlp : ISpan
     public void Finish(Exception exception)
     {
         _activity.RecordException(exception);
-        Finish(Model.Status.InternalError);
+        Finish(Performance.Model.Status.InternalError);
     }
 
     public void SetTag(string tag, object value)

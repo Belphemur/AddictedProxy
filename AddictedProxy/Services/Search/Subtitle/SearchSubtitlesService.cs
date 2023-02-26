@@ -9,7 +9,7 @@ using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
 using Ardalis.Result;
 using Hangfire;
-using Sentry.Performance.Service;
+using Performance.Service;
 
 namespace AddictedProxy.Services.Search.Subtitle;
 

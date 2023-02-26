@@ -4,7 +4,7 @@ using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Storage.Store.Compression;
 using Hangfire;
 using Locking;
-using Sentry.Performance.Service;
+using Performance.Service;
 
 #endregion
 

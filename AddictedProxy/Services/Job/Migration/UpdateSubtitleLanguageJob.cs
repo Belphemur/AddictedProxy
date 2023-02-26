@@ -2,7 +2,7 @@
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
-using Sentry.Performance.Service;
+using Performance.Service;
 
 namespace AddictedProxy.Services.Job.Migration;
 

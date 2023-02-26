@@ -3,7 +3,7 @@ using AddictedProxy.Database.Model;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using Hangfire;
-using Sentry.Performance.Service;
+using Performance.Service;
 using TvMovieDatabaseClient.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;

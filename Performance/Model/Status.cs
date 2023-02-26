@@ -1,4 +1,4 @@
-namespace Sentry.Performance.Model;
+namespace Performance.Model;
 
 public enum Status
 {

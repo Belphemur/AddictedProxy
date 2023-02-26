@@ -7,7 +7,7 @@ using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Upstream.Service;
-using Sentry.Performance.Service;
+using Performance.Service;
 
 #endregion
 

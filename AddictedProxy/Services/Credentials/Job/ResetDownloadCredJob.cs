@@ -1,6 +1,6 @@
 ﻿using AddictedProxy.Services.Job.Filter;
 using Hangfire;
-using Sentry.Performance.Service;
+using Performance.Service;
 
 namespace AddictedProxy.Services.Credentials.Job;
 

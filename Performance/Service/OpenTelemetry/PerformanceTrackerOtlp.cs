@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
-using Sentry.Performance.Model;
+using Performance.Model;
 
-namespace Sentry.Performance.Service.OpenTelemetry;
+namespace Performance.Service.OpenTelemetry;
 
 public class PerformanceTrackerOtlp : IPerformanceTracker
 {
@@ -20,6 +20,6 @@ public class PerformanceTrackerOtlp : IPerformanceTracker
             return new EmptySpan();
         }
         activity.SetTag("Description", description);
-        return new Model.OpenTelemetry.SpanOtlp(activity);
+        return new global::Performance.Model.OpenTelemetry.SpanOtlp(activity);
     }
 }

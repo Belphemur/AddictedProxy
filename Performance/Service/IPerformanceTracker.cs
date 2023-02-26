@@ -1,4 +1,4 @@
-namespace Sentry.Performance.Service;
+namespace Performance.Service;
 
 public interface IPerformanceTracker
 {

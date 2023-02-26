@@ -4,8 +4,8 @@ using AddictedProxy.Storage.Extensions;
 using AddictedProxy.Storage.Store;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
+using Performance.Service;
 using Prometheus;
-using Sentry.Performance.Service;
 
 namespace AddictedProxy.Storage.Caching.Service;
 

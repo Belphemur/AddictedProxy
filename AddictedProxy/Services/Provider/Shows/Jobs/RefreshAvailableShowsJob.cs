@@ -1,7 +1,7 @@
 ﻿#region
 
 using Hangfire;
-using Sentry.Performance.Service;
+using Performance.Service;
 
 #endregion
 
