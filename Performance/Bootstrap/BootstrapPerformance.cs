@@ -37,7 +37,11 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
                         .AddSource(activitySource.Name)
                         .AddHttpClientInstrumentation()
                         .AddAspNetCoreInstrumentation()
-                        .AddEntityFrameworkCoreInstrumentation()
+                        .AddEntityFrameworkCoreInstrumentation(options =>
+                        {
+                            options.SetDbStatementForText = true;
+                            options.SetDbStatementForStoredProcedure = true;
+                        })
                         .AddRedisInstrumentation()
                         .AddOtlpExporter(options =>
                         {
