@@ -77,7 +77,7 @@ public class EpisodeRefresher : IEpisodeRefresher
         if (!IsSeasonNeedRefresh(show, season))
         {
             _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
-            transaction.Finish(Status.Unavailable);
+            transaction.SetTag("season.state", "refreshed");
             return;
         }
 
@@ -126,7 +126,7 @@ public class EpisodeRefresher : IEpisodeRefresher
             if (!IsSeasonNeedRefresh(show, season))
             {
                 _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
-                transaction.Finish(Status.Unavailable);
+                transaction.SetTag("season.state", "refreshed");
                 return null;
             }
 
