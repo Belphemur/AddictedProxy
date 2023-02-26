@@ -5,7 +5,7 @@ public interface ISpan : IDisposable
     /// <summary>
     /// Status of the span
     /// </summary>
-    Status? Status { get; set; }
+    Status? Status { get; }
 
     /// <summary>
     /// Is the span finished

@@ -9,6 +9,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Condition=" '$(Configuration)' == 'Debug' " Include="OpenTelemetry.Exporter.Console" Version="1.4.0" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.4.0" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.4.0" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9.14" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.4" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9.14" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.0.0-rc9.14" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.0.0-rc9.7" />
+        <PackageReference Include="OpenTelemetry.Shims.OpenTracing" Version="1.0.0-rc9.14" />
         <PackageReference Include="prometheus-net.AspNetCore" Version="8.0.0" />
         <PackageReference Include="Sentry" Version="3.28.1" />
         <PackageReference Include="IsExternalInit" Version="1.0.3">
