@@ -1,3 +1,10 @@
+## [4.2.0](https://github.com/Belphemur/AddictedProxy/compare/v4.1.19...v4.2.0) (2023-02-26)
+
+
+### Features
+
+* **otlp:** First version of OpenTelemetry ([65daab8](https://github.com/Belphemur/AddictedProxy/commit/65daab88967b933355c1c029982e68eed9c8ed8a))
+
 ## [4.1.19](https://github.com/Belphemur/AddictedProxy/compare/v4.1.18...v4.1.19) (2023-02-12)
 
 
