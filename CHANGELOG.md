@@ -1,3 +1,10 @@
+## [4.2.14](https://github.com/Belphemur/AddictedProxy/compare/v4.2.13...v4.2.14) (2023-02-26)
+
+
+### Performance improvements
+
+* **SqliteCache:** Add instrumentation ([ad9ae0d](https://github.com/Belphemur/AddictedProxy/commit/ad9ae0d3904939e985083c7151e913ec59af76a0))
+
 ## [4.2.13](https://github.com/Belphemur/AddictedProxy/compare/v4.2.12...v4.2.13) (2023-02-26)
 
 
