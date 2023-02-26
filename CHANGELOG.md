@@ -1,3 +1,30 @@
+## [4.1.19](https://github.com/Belphemur/AddictedProxy/compare/v4.1.18...v4.1.19) (2023-02-12)
+
+
+### Bug Fixes
+
+* **download:** Consider any redirect that isn't a download exceeded to be a deleting of subtitle ([50372cf](https://github.com/Belphemur/AddictedProxy/commit/50372cf277878ddf7916be1e0b9e9dcbccedaf29))
+
+## [4.1.18](https://github.com/Belphemur/AddictedProxy/compare/v4.1.17...v4.1.18) (2023-02-03)
+
+
+### Bug Fixes
+
+* **doc:** Fix documentation relating to show uniqueId ([1f45254](https://github.com/Belphemur/AddictedProxy/commit/1f45254d729d6b6fc391c1cc571f1d66742f4e78))
+
+
+### Performance improvements
+
+* **docs:** Improve documentation ([d238590](https://github.com/Belphemur/AddictedProxy/commit/d2385907cad4854154fc707d9d4da6470e15d1d3))
+
+## [4.1.17](https://github.com/Belphemur/AddictedProxy/compare/v4.1.16...v4.1.17) (2023-02-01)
+
+
+### Performance improvements
+
+* **SqliteCache:** track evicted entries ([8adcfb7](https://github.com/Belphemur/AddictedProxy/commit/8adcfb7b1ee4219f60e49a3ee9d1bc4a3b168cff))
+* **Storage::Cache:** Track evictions ([9d06bf4](https://github.com/Belphemur/AddictedProxy/commit/9d06bf4c5225f1b9b4a847689bb661aba081cf95))
+
 ## [4.1.16](https://github.com/Belphemur/AddictedProxy/compare/v4.1.15...v4.1.16) (2023-01-29)
 
 
