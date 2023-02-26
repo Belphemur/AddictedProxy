@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using DbConnection = Microsoft.Data.Sqlite.SqliteConnection;
 using DbCommand = Microsoft.Data.Sqlite.SqliteCommand;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace NeoSmart.Caching.Sqlite
         private readonly ILogger _logger;
         private readonly Timer? _cleanupTimer;
         private readonly DbConnection _db;
+        private readonly ActivitySource _activitySource = new(nameof(SqliteCache), typeof(SqliteCache).Assembly.GetName().Version?.ToString() ?? "1.0.0");
 
         private DbCommandPool Commands { get; }
 
@@ -324,6 +326,8 @@ namespace NeoSmart.Caching.Sqlite
 
         public byte[]? Get(string key)
         {
+            using var activity = _activitySource.StartActivity("cache-get");
+            activity?.SetTag("cache.key", key);
             return (byte[]) Commands.Use(Operation.Get, cmd =>
             {
                 cmd.Parameters.AddWithValue("@key", key);
@@ -334,6 +338,8 @@ namespace NeoSmart.Caching.Sqlite
 
         public async Task<byte[]?> GetAsync(string key, CancellationToken cancel = default)
         {
+            using var activity = _activitySource.StartActivity("cache-get");
+            activity?.SetTag("cache.key", key);
             return (byte[]) (await Commands.UseAsync(Operation.Get, cmd =>
             {
                 cmd.Parameters.AddWithValue("@key", key);
@@ -344,6 +350,8 @@ namespace NeoSmart.Caching.Sqlite
 
         public void Refresh(string key)
         {
+            using var activity = _activitySource.StartActivity("cache-refresh");
+            activity?.SetTag("cache.key", key);
             Commands.Use(Operation.Refresh, cmd =>
             {
                 cmd.Parameters.AddWithValue("@key", key);
@@ -354,6 +362,8 @@ namespace NeoSmart.Caching.Sqlite
 
         public Task RefreshAsync(string key, CancellationToken cancel = default)
         {
+            using var activity = _activitySource.StartActivity("cache-refresh");
+            activity?.SetTag("cache.key", key);
             return Commands.UseAsync(Operation.Refresh, cmd =>
             {
                 cmd.Parameters.AddWithValue("@key", key);
@@ -364,6 +374,8 @@ namespace NeoSmart.Caching.Sqlite
 
         public void Remove(string key)
         {
+            using var activity = _activitySource.StartActivity("cache-remove");
+            activity?.SetTag("cache.key", key);
             Commands.Use(Operation.Remove, cmd =>
             {
                 cmd.Parameters.AddWithValue("@key", key);
@@ -373,6 +385,8 @@ namespace NeoSmart.Caching.Sqlite
 
         public Task RemoveAsync(string key, CancellationToken cancel = default)
         {
+            using var activity = _activitySource.StartActivity("cache-remove");
+            activity?.SetTag("cache.key", key);
             return Commands.UseAsync(Operation.Remove, cmd =>
             {
                 cmd.Parameters.AddWithValue("@key", key);
@@ -438,6 +452,8 @@ namespace NeoSmart.Caching.Sqlite
 
         public void Set(string key, byte[] value, DistributedCacheEntryOptions options)
         {
+            using var activity = _activitySource.StartActivity("cache-set");
+            activity?.SetTag("cache.key", key);
             Commands.Use(Operation.Insert, cmd =>
             {
                 CreateForSet(cmd, key, value, options);
@@ -448,6 +464,8 @@ namespace NeoSmart.Caching.Sqlite
         public Task SetAsync(string key, byte[] value, DistributedCacheEntryOptions options,
             CancellationToken cancel = default)
         {
+            using var activity = _activitySource.StartActivity("cache-set");
+            activity?.SetTag("cache.key", key);
             return Commands.UseAsync(Operation.Insert, cmd =>
             {
                 CreateForSet(cmd, key, value, options);
@@ -486,11 +504,14 @@ namespace NeoSmart.Caching.Sqlite
 
         public void RemoveExpired()
         {
+            using var activity = _activitySource.StartActivity("cache-clear-expired");
             var removed = (long) Commands.Use(Operation.RemoveExpired, cmd =>
             {
                 cmd.Parameters.AddWithValue("@now", DateTimeOffset.UtcNow.Ticks);
                 return cmd.ExecuteScalar();
             })!;
+
+            activity?.SetTag("cache.removed", removed);
 
             if (removed > 0)
             {
@@ -501,11 +522,15 @@ namespace NeoSmart.Caching.Sqlite
 
         public async Task RemoveExpiredAsync(CancellationToken cancel = default)
         {
-            var removed = (long) (await Commands.UseAsync(Operation.RemoveExpired, cmd =>
+            using var activity = _activitySource.StartActivity("cache-clear-expired");
+
+            var removed = (long)(await Commands.UseAsync(Operation.RemoveExpired, cmd =>
             {
                 cmd.Parameters.AddWithValue("@now", DateTimeOffset.UtcNow.Ticks);
                 return cmd.ExecuteScalarAsync(cancel);
             }))!;
+
+            activity?.SetTag("cache.removed", removed);
 
             if (removed > 0)
             {
