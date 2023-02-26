@@ -43,6 +43,9 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
                             options.Protocol = OtlpExportProtocol.Grpc;
                             options.Endpoint = new Uri(perf.Endpoint);
                         })
+#if DEBUG
+                        .AddConsoleExporter()
+#endif
                         .SetSampler(_ => new TraceIdRatioBasedSampler(perf.SampleRate));
                 });
         services.AddSingleton(activitySource);
