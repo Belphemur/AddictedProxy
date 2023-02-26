@@ -1,3 +1,10 @@
+## [4.2.2](https://github.com/Belphemur/AddictedProxy/compare/v4.2.1...v4.2.2) (2023-02-26)
+
+
+### Bug Fixes
+
+* **otlp:** Fix issue with not getting an activity because of sampling ([7458685](https://github.com/Belphemur/AddictedProxy/commit/7458685f836292a04e6ca1db7f692bd3d25d0d2d))
+
 ## [4.2.1](https://github.com/Belphemur/AddictedProxy/compare/v4.2.0...v4.2.1) (2023-02-26)
 
 
