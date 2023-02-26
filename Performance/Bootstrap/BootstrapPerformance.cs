@@ -22,15 +22,15 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
     {
         var entryAssembly = Assembly.GetEntryAssembly();
 
-        var fullName = entryAssembly?.GetName().FullName ?? "Addicted";
+        var applicationName = entryAssembly?.GetName().Name ?? "Addicted";
         var serviceVersion = entryAssembly?.GetName().Version?.ToString() ?? "1.0.0";
-        var activitySource = new ActivitySource(fullName, serviceVersion);
+        var activitySource = new ActivitySource(applicationName, serviceVersion);
 
 
         var perf = configuration.GetSection("Performance").Get<PerformanceConfig>()!;
 
         services.AddOpenTelemetry()
-                .ConfigureResource(builder => builder.AddService(serviceName: fullName, serviceVersion: serviceVersion, serviceInstanceId: Environment.MachineName))
+                .ConfigureResource(builder => builder.AddService(serviceName: applicationName, serviceVersion: serviceVersion, serviceInstanceId: Environment.MachineName))
                 .WithTracing(builder =>
                 {
                     builder
