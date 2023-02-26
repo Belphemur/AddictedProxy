@@ -19,7 +19,10 @@ public class BoostrapSqliteStorageCaching : IBootstrapConditional
             options.VacuumOption = SqliteCacheOptions.Vacuum.Full;
             var storageConfigCachePath = string.IsNullOrEmpty(storageConfig?.CachePath) ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Addicted") : storageConfig.CachePath;
             options.CachePath = Path.Combine(storageConfigCachePath, "sqlite-cache.db");
-            options.Prometheus = new SqliteCacheOptions.Metrics(Metrics.CreateCounter("cache_storage_evictions", "nb of cache eviction"));
+            options.Prometheus = new SqliteCacheOptions.Metrics(Metrics.CreateCounter("cache_storage_evictions", "nb of cache eviction", new CounterConfiguration
+            {
+                ExemplarBehavior = ExemplarBehavior.NoExemplars()
+            }));
         });
     }
 

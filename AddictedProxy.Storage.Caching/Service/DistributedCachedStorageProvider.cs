@@ -23,9 +23,14 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         _distributedCache = distributedCache;
         _cachingConfig = cachingConfig;
         _compressor = compressor;
-        _cacheHitCounter = Metrics.CreateCounter("cache_storage_hits", "Number of hits of the storage's cache");
-        _cacheMissCounter = Metrics.CreateCounter("cache_storage_miss", "Number of misses of the storage's cache");
-
+        _cacheHitCounter = Metrics.CreateCounter("cache_storage_hits", "Number of hits of the storage's cache", new CounterConfiguration
+        {
+            ExemplarBehavior = ExemplarBehavior.NoExemplars()
+        });
+        _cacheMissCounter = Metrics.CreateCounter("cache_storage_miss", "Number of misses of the storage's cache", new CounterConfiguration
+        {
+            ExemplarBehavior = ExemplarBehavior.NoExemplars()
+        });
     }
 
     private static async Task<MemoryStream> GetMemoryStreamAsync(Stream inputStream, CancellationToken cancellationToken)
@@ -63,7 +68,7 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         {
             return stream;
         }
-        
+
         _cacheMissCounter.Inc();
 
         var memStream = await GetMemoryStreamAsync(stream, cancellationToken);
