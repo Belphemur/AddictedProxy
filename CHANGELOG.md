@@ -1,3 +1,10 @@
+## [4.2.5](https://github.com/Belphemur/AddictedProxy/compare/v4.2.4...v4.2.5) (2023-02-26)
+
+
+### Bug Fixes
+
+* **otlp:** Remove exemplar ([f70c231](https://github.com/Belphemur/AddictedProxy/commit/f70c231ba4884e0e1f3e607a7d475d44c0077a4b))
+
 ## [4.2.4](https://github.com/Belphemur/AddictedProxy/compare/v4.2.3...v4.2.4) (2023-02-26)
 
 
