@@ -1,3 +1,10 @@
+## [4.2.7](https://github.com/Belphemur/AddictedProxy/compare/v4.2.6...v4.2.7) (2023-02-26)
+
+
+### Performance improvements
+
+* **Activity:** Add tags to activity. ([eead1ba](https://github.com/Belphemur/AddictedProxy/commit/eead1baa0d17baea6b090405201d8bd593a72e2d))
+
 ## [4.2.6](https://github.com/Belphemur/AddictedProxy/compare/v4.2.5...v4.2.6) (2023-02-26)
 
 
