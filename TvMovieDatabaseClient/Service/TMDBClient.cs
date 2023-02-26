@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Reflection;
@@ -29,11 +30,14 @@ internal class TMDBClient : ITMDBClient
         TypeInfoResolver = JsonTypeInfoResolver.Combine(JsonContext.Default, new DefaultJsonTypeInfoResolver())
     };
 
+    private readonly Version clientVersion;
+
     public TMDBClient(TmdbConfig tmdbConfig, HttpClient httpClient, ILogger<TMDBClient> logger)
     {
         _tmdbConfig = tmdbConfig;
         _httpClient = httpClient;
         _logger = logger;
+        clientVersion = Assembly.GetEntryAssembly()?.GetName().Version ?? new Version(1, 0, 0);
     }
 
 
@@ -143,7 +147,7 @@ internal class TMDBClient : ITMDBClient
         var urlWithQueryParams = QueryHelpers.AddQueryString(url, queryParams);
         return new HttpRequestMessage(method, urlWithQueryParams)
         {
-            Headers = { { "User-Agent", $"TmdbClientNet/{Assembly.GetExecutingAssembly().GetName().Version}" } }
+            Headers = { { "User-Agent", $"TmdbClientNet/{clientVersion}" } }
         };
     }
 }
