@@ -10,7 +10,7 @@ namespace AddictedProxy.Storage.Caching.Service;
 
 public class SqliteCacheStorageProvider : DistributedCachedStorageProvider
 {
-    public SqliteCacheStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache, IOptions<StorageCachingConfig> cachingConfig, ICompressor compressor, IPerformanceTracker performanceTracker) : base(storageProvider, distributedCache, cachingConfig, compressor, performanceTracker)
+    public SqliteCacheStorageProvider(IStorageProvider storageProvider, SqliteCache distributedCache, IOptions<StorageCachingConfig> cachingConfig, ICompressor compressor, IPerformanceTracker performanceTracker) : base(storageProvider, distributedCache, cachingConfig, compressor, performanceTracker)
     {
     }
 }
