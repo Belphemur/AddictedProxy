@@ -1,3 +1,10 @@
+## [4.2.4](https://github.com/Belphemur/AddictedProxy/compare/v4.2.3...v4.2.4) (2023-02-26)
+
+
+### Bug Fixes
+
+* **otlp:** Disable exemplar on cache metrics ([be43a53](https://github.com/Belphemur/AddictedProxy/commit/be43a53e79810b0bdd456737d302e417ad4d0dab))
+
 ## [4.2.3](https://github.com/Belphemur/AddictedProxy/compare/v4.2.2...v4.2.3) (2023-02-26)
 
 
