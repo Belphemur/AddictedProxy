@@ -109,9 +109,9 @@ public class FetchSubtitlesJob
                 _logger.LogInformation("Couldn't find matching subtitles for {search}", data.RequestData);
             }
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            transaction.Finish(Status.InternalError);
+            transaction.Finish(e, Status.InternalError);
             throw;
         }
     }
