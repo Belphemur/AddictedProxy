@@ -1,3 +1,11 @@
+## [4.2.8](https://github.com/Belphemur/AddictedProxy/compare/v4.2.7...v4.2.8) (2023-02-26)
+
+
+### Performance improvements
+
+* **Span:** Log exception ([1f2c0ab](https://github.com/Belphemur/AddictedProxy/commit/1f2c0ab6f1906cd5141634185924a6ec5fe46553))
+* **state:** Fix state to not be shown as failure ([38a56b2](https://github.com/Belphemur/AddictedProxy/commit/38a56b2cc5c176b855fa068e19bf78c7ef335927))
+
 ## [4.2.7](https://github.com/Belphemur/AddictedProxy/compare/v4.2.6...v4.2.7) (2023-02-26)
 
 
