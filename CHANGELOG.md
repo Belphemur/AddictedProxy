@@ -1,3 +1,10 @@
+## [4.2.10](https://github.com/Belphemur/AddictedProxy/compare/v4.2.9...v4.2.10) (2023-02-26)
+
+
+### Performance improvements
+
+* **SqliteCache::Trace:** Add tracing to sqlitecache ([68c1ca5](https://github.com/Belphemur/AddictedProxy/commit/68c1ca57fea201f4961598e421fa769222499832))
+
 ## [4.2.9](https://github.com/Belphemur/AddictedProxy/compare/v4.2.8...v4.2.9) (2023-02-26)
 
 
