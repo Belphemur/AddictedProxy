@@ -1,3 +1,10 @@
+## [4.2.3](https://github.com/Belphemur/AddictedProxy/compare/v4.2.2...v4.2.3) (2023-02-26)
+
+
+### Bug Fixes
+
+* **version:** Fix version of app ([a5a99ac](https://github.com/Belphemur/AddictedProxy/commit/a5a99ace09f73268dad10c3a668b247b49a610de))
+
 ## [4.2.2](https://github.com/Belphemur/AddictedProxy/compare/v4.2.1...v4.2.2) (2023-02-26)
 
 
