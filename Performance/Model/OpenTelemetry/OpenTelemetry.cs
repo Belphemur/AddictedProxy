@@ -57,7 +57,11 @@ public class SpanOtlp : ISpan
             Model.Status.Ok => ActivityStatusCode.Ok,
             _               => ActivityStatusCode.Error
         };
-        _activity.SetTag("StatusDetail", status);
+        if (status != Model.Status.Ok)
+        {
+            _activity.SetTag("fail.detail", status);
+        }
+
         _activity.SetStatus(statusActivity);
         Finish();
     }
