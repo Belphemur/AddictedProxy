@@ -74,6 +74,7 @@ internal class BootstrapRegister : IDisposable
                         Console.Out.WriteLine($"[Bootstrap] Condition not met to load boostrap: {type}");
                         continue;
                     }
+                    Console.Out.WriteLine($"[Bootstrap] Condition met, loading boostrap: {type}");
                 }
                 if (_bootstrapType.IsAssignableFrom(type))
                 {

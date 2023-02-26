@@ -43,7 +43,7 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
                             options.SetDbStatementForText = true;
                             options.SetDbStatementForStoredProcedure = true;
                         })
-                        .AddRedisInstrumentation()
+                        .AddRedisInstrumentation(configure: options => options.SetVerboseDatabaseStatements = true)
                         .AddOtlpExporter(options =>
                         {
                             options.Protocol = OtlpExportProtocol.Grpc;
