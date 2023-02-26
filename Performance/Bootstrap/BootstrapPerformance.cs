@@ -54,7 +54,7 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
 #endif
                         .SetSampler(_ => new TraceIdRatioBasedSampler(perf.SampleRate));
                 });
-        services.AddScoped<IPerformanceTracker>(provider => new PerformanceTrackerOtlp(activitySource));
+        services.AddSingleton<IPerformanceTracker>(_ => new PerformanceTrackerOtlp(activitySource));
     }
 
     public void ConfigureApp(IApplicationBuilder app)
