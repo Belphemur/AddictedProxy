@@ -1,3 +1,10 @@
+## [4.2.9](https://github.com/Belphemur/AddictedProxy/compare/v4.2.8...v4.2.9) (2023-02-26)
+
+
+### Performance improvements
+
+* **Hangfire:** Add hangfire ([d626a83](https://github.com/Belphemur/AddictedProxy/commit/d626a8303a4dbc5402d02b7fa0fd73d3b8caf101))
+
 ## [4.2.8](https://github.com/Belphemur/AddictedProxy/compare/v4.2.7...v4.2.8) (2023-02-26)
 
 
