@@ -461,12 +461,12 @@ namespace NeoSmart.Caching.Sqlite
             });
         }
 
-        public Task SetAsync(string key, byte[] value, DistributedCacheEntryOptions options,
-            CancellationToken cancel = default)
+        public async Task SetAsync(string key, byte[] value, DistributedCacheEntryOptions options,
+                                   CancellationToken cancel = default)
         {
             using var activity = _activitySource.StartActivity("cache-set");
             activity?.SetTag("cache.key", key);
-            return Commands.UseAsync(Operation.Insert, cmd =>
+            await Commands.UseAsync(Operation.Insert, cmd =>
             {
                 CreateForSet(cmd, key, value, options);
                 return cmd.ExecuteNonQueryAsync(cancel);
