@@ -1,3 +1,11 @@
+## [4.2.1](https://github.com/Belphemur/AddictedProxy/compare/v4.2.0...v4.2.1) (2023-02-26)
+
+
+### Bug Fixes
+
+* **otlp:** Fix bootstrapping ([61d2611](https://github.com/Belphemur/AddictedProxy/commit/61d261160976b780b074722e9e85d0a1a7edb19f))
+* **otlp:** Fix otlp registration ([5ab6c11](https://github.com/Belphemur/AddictedProxy/commit/5ab6c111c8b2679c0cadba131d8d95ecf07ecc38))
+
 ## [4.2.0](https://github.com/Belphemur/AddictedProxy/compare/v4.1.19...v4.2.0) (2023-02-26)
 
 
