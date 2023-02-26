@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
-        <RootNamespace>Sentry.Performance</RootNamespace>
+        <RootNamespace>Performance</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

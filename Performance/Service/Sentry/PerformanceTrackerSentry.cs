@@ -1,6 +1,7 @@
-using Sentry.Performance.Model.Sentry;
+using Performance.Model.Sentry;
+using Sentry;
 
-namespace Sentry.Performance.Service.Sentry;
+namespace Performance.Service.Sentry;
 
 public class PerformanceTrackerSentry : IPerformanceTracker, IDisposable
 {

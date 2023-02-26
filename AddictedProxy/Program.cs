@@ -17,8 +17,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sentry;
-using Sentry.Performance.Bootstrap;
-using Sentry.Performance.Model;
+using Performance.Bootstrap;
 using TvMovieDatabaseClient.Bootstrap;
 
 #endregion

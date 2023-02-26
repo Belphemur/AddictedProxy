@@ -6,15 +6,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Resources;
 using Prometheus;
-using Sentry.Performance.Service;
-using Sentry.Performance.Service.OpenTelemetry;
+using Performance.Service;
+using Performance.Service.OpenTelemetry;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Sentry.Performance.Model;
+using Performance.Model;
 
-namespace Sentry.Performance.Bootstrap;
+namespace Performance.Bootstrap;
 
 public class BootstrapPerformance : IBootstrap, IBootstrapApp
 {

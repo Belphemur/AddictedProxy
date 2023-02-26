@@ -4,7 +4,7 @@ using AddictedProxy.Storage.Store;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using NeoSmart.Caching.Sqlite;
-using Sentry.Performance.Service;
+using Performance.Service;
 
 namespace AddictedProxy.Storage.Caching.Service;
 

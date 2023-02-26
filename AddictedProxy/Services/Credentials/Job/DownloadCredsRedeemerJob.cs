@@ -1,4 +1,4 @@
-﻿using Sentry.Performance.Service;
+﻿using Performance.Service;
 
 namespace AddictedProxy.Services.Credentials.Job;
 

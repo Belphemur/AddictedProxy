@@ -5,8 +5,8 @@ using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Upstream.Service;
 using Locking;
 using Microsoft.Extensions.Options;
-using Sentry.Performance.Model;
-using Sentry.Performance.Service;
+using Performance.Model;
+using Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Episodes;
 

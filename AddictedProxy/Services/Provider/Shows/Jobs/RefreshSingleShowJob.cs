@@ -2,8 +2,8 @@
 using AddictedProxy.Services.Job.Filter;
 using Hangfire;
 using Locking;
-using Sentry.Performance.Model;
-using Sentry.Performance.Service;
+using Performance.Model;
+using Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
 
