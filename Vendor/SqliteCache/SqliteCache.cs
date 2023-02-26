@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Linq;
+using NeoSmart.Caching.Sqlite.Instrumentation;
 
 namespace NeoSmart.Caching.Sqlite
 {
@@ -26,7 +27,7 @@ namespace NeoSmart.Caching.Sqlite
         private readonly ILogger _logger;
         private readonly Timer? _cleanupTimer;
         private readonly DbConnection _db;
-        private readonly ActivitySource _activitySource = new(nameof(SqliteCache), typeof(SqliteCache).Assembly.GetName().Version?.ToString() ?? "1.0.0");
+        private readonly ActivitySource _activitySource = InstrumentationWrapper.ActivitySource;
 
         private DbCommandPool Commands { get; }
 
