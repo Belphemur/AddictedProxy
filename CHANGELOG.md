@@ -1,3 +1,12 @@
+## [4.2.12](https://github.com/Belphemur/AddictedProxy/compare/v4.2.11...v4.2.12) (2023-02-26)
+
+
+### Performance improvements
+
+* **logging:** better logging ([aa1880c](https://github.com/Belphemur/AddictedProxy/commit/aa1880c7f75cc7f1504796f97c00d3228c6002c9))
+* **redis:** verbose trace ([be8b7f5](https://github.com/Belphemur/AddictedProxy/commit/be8b7f5bc32bbc1afb4528ea576ee14038aa3aa6))
+* **Span:** Only set detail when not a success ([e0a6b9e](https://github.com/Belphemur/AddictedProxy/commit/e0a6b9edc899b9e40d863d4d88cda82b61690b0f))
+
 ## [4.2.11](https://github.com/Belphemur/AddictedProxy/compare/v4.2.10...v4.2.11) (2023-02-26)
 
 
