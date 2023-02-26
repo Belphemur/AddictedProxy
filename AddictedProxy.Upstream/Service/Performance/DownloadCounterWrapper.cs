@@ -15,7 +15,10 @@ internal class DownloadCounterWrapper
 
     public DownloadCounterWrapper()
     {
-        _downloadCounter = Metrics.CreateCounter("upstream_subtitle_requests", "Nb of subtitles download request sent to Addic7ed", "result");
+        _downloadCounter = Metrics.CreateCounter("upstream_subtitle_requests", "Nb of subtitles download request sent to Addic7ed", new[] { "result" }, new CounterConfiguration
+        {
+            ExemplarBehavior = ExemplarBehavior.NoExemplars()
+        });
     }
 
     /// <summary>
