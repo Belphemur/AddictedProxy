@@ -25,6 +25,7 @@ public class PerformanceTrackerOtlp : IPerformanceTracker
         public void Dispose()
         {
             Finish(Model.Status.Ok);
+            _activity.Dispose();
         }
 
         public Status? Status
