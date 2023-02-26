@@ -22,14 +22,15 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
     {
         var entryAssembly = Assembly.GetEntryAssembly();
 
-        var entryAssemblyFullName = entryAssembly.FullName ?? "Addicted";
-        var activitySource = new ActivitySource(entryAssemblyFullName);
+        var fullName = entryAssembly?.GetName().FullName ?? "Addicted";
+        var serviceVersion = entryAssembly?.GetName().Version?.ToString() ?? "1.0.0";
+        var activitySource = new ActivitySource(fullName, serviceVersion);
 
 
         var perf = configuration.GetSection("Performance").Get<PerformanceConfig>()!;
 
         services.AddOpenTelemetry()
-                .ConfigureResource(builder => builder.AddService(serviceName: entryAssemblyFullName, serviceVersion: entryAssembly.GetName().Version?.ToString() ?? "1.0.0", serviceInstanceId: Environment.MachineName))
+                .ConfigureResource(builder => builder.AddService(serviceName: fullName, serviceVersion: serviceVersion, serviceInstanceId: Environment.MachineName))
                 .WithTracing(builder =>
                 {
                     builder
@@ -48,8 +49,7 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
 #endif
                         .SetSampler(_ => new TraceIdRatioBasedSampler(perf.SampleRate));
                 });
-        services.AddSingleton(activitySource);
-        services.AddScoped<IPerformanceTracker, PerformanceTrackerOtlp>();
+        services.AddScoped<IPerformanceTracker>(provider => new PerformanceTrackerOtlp(activitySource));
     }
 
     public void ConfigureApp(IApplicationBuilder app)
