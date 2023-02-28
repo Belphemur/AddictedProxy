@@ -12,14 +12,19 @@ public class PerformanceTrackerOtlp : IPerformanceTracker
         _activitySource = activitySource;
     }
 
-    public Model.ISpan BeginNestedSpan(string operation, string description)
+    public Model.ISpan BeginNestedSpan(string operation, string? description)
     {
         var activity = _activitySource.StartActivity(operation);
         if (activity == null)
         {
             return new EmptySpan();
         }
-        activity.SetTag("Description", description);
+
+        if (description != null)
+        {
+            activity.SetTag("Description", description);
+        }
+
         return new global::Performance.Model.OpenTelemetry.SpanOtlp(activity);
     }
 }

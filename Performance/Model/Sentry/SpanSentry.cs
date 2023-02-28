@@ -38,7 +38,7 @@ internal class SpanSentry : ISpan
     /// <param name="operation"></param>
     /// <param name="description"></param>
     /// <returns></returns>
-    internal SpanSentry StartChild(string operation, string description)
+    internal SpanSentry StartChild(string operation, string? description)
     {
         return new SpanSentry(InternalSpan.StartChild(operation, description), this);
     }

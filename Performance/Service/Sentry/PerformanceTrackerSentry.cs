@@ -18,8 +18,9 @@ public class PerformanceTrackerSentry : IPerformanceTracker, IDisposable
     /// Start a transaction.
     /// <remarks>If there is already a ongoing transaction in the scope, create a child from it.</remarks>
     /// </summary>
-    public Model.ISpan BeginNestedSpan(string operation, string description)
+    public Model.ISpan BeginNestedSpan(string operation, string? description)
     {
+        description ??= "N/A";
         switch (_currentSpan)
         {
             //If the current span isn't finished, create a child from it
