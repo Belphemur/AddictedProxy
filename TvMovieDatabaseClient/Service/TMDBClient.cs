@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using TvMovieDatabaseClient.Bootstrap.EnvVar;
 using TvMovieDatabaseClient.Model;
+using TvMovieDatabaseClient.Model.Mapping;
 using TvMovieDatabaseClient.Model.Movie;
 using TvMovieDatabaseClient.Model.Movie.Search;
 using TvMovieDatabaseClient.Model.Show;
@@ -50,9 +51,21 @@ internal class TMDBClient : ITMDBClient
     public async Task<ShowDetails?> GetShowDetailsByIdAsync(int showId, CancellationToken token)
     {
         var request = PrepareRequest($"tv/{showId}", HttpMethod.Get);
-        return await GetDetails<ShowDetails>(request, token);
+        return await GetDataAsync<ShowDetails>(request, token);
     }
-
+    
+    /// <summary>
+    /// Get show external ids by Id
+    /// </summary>
+    /// <param name="showId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task<ExternalIds?> GetShowExternalIdsAsync(int showId, CancellationToken token)
+    {
+        var request = PrepareRequest($"tv/{showId}/external_ids", HttpMethod.Get);
+        return await GetDataAsync<ExternalIds>(request, token);
+    }
+    
     /// <summary>
     /// Get movie details by Id
     /// </summary>
@@ -62,10 +75,22 @@ internal class TMDBClient : ITMDBClient
     public async Task<MovieDetails?> GetMovieDetailsByIdAsync(int showId, CancellationToken token)
     {
         var request = PrepareRequest($"movie/{showId}", HttpMethod.Get);
-        return await GetDetails<MovieDetails>(request, token);
+        return await GetDataAsync<MovieDetails>(request, token);
     }
 
-    private async Task<T?> GetDetails<T>(HttpRequestMessage request, CancellationToken token) where T : class
+    /// <summary>
+    /// Get movie external ids by Id
+    /// </summary>
+    /// <param name="movieId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task<ExternalIds?> GetMovieExternalIdsAsync(int movieId, CancellationToken token)
+    {
+        var request = PrepareRequest($"movie/{movieId}/external_ids", HttpMethod.Get);
+        return await GetDataAsync<ExternalIds>(request, token);
+    }
+
+    private async Task<T?> GetDataAsync<T>(HttpRequestMessage request, CancellationToken token) where T : class
     {
         var response = await _httpClient.SendAsync(request, token);
         if (!response.IsSuccessStatusCode)

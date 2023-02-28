@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using TvMovieDatabaseClient.Model.Mapping;
 using TvMovieDatabaseClient.Model.Movie;
 using TvMovieDatabaseClient.Model.Movie.Search;
 using TvMovieDatabaseClient.Model.Show;
@@ -10,6 +11,7 @@ namespace TvMovieDatabaseClient.Model;
 [JsonSerializable(typeof(Pagination<ShowSearchResult>))]
 [JsonSerializable(typeof(Pagination<MovieSearchResult>))]
 [JsonSerializable(typeof(MovieDetails))]
+[JsonSerializable(typeof(ExternalIds))]
 internal partial class JsonContext : JsonSerializerContext
 {
 }
