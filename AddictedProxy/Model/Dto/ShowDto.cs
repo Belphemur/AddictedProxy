@@ -9,7 +9,7 @@ namespace AddictedProxy.Model.Dto;
 /// <param name="Id"></param>
 /// <param name="Name"></param>
 /// <param name="NbSeasons"></param>
-public record ShowDto(Guid Id, string Name, int NbSeasons, int[] Seasons)
+public record ShowDto(Guid Id, string Name, int NbSeasons, int[] Seasons, int? TvDbId)
 {
     /// <summary>
     /// Unique ID of the show
@@ -39,7 +39,13 @@ public record ShowDto(Guid Id, string Name, int NbSeasons, int[] Seasons)
     [Required]
     public int[] Seasons { get; init; } = Seasons;
 
-    public ShowDto(TvShow show) : this(show.UniqueId, show.Name, show.Seasons.Count, show.Seasons.Select(season => season.Number).ToArray())
+    /// <summary>
+    /// Id of the show on the TvDB
+    /// </summary>
+    /// <example>344280</example>
+    public int? TvDbId { get; init; } = TvDbId;
+
+    public ShowDto(TvShow show) : this(show.UniqueId, show.Name, show.Seasons.Count, show.Seasons.Select(season => season.Number).ToArray(), show.TvdbId)
     {
     }
 }

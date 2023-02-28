@@ -18,10 +18,6 @@ public class EntityContext : DbContext
     public EntityContext(DbContextOptions options) : base(options)
     {
         _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
-        if (_connectionString == null)
-        {
-            throw new ArgumentException("Need to have a DB_CONNECTION Env variable to connect to Mysql/MariaDB");
-        }
     }
 
     internal EntityContext() : this(new DbContextOptions<EntityContext>())
