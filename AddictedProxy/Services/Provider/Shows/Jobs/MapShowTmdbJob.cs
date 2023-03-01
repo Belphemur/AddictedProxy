@@ -15,7 +15,8 @@ public partial class MapShowTmdbJob
     private readonly ITvShowRepository _tvShowRepository;
     private readonly ITMDBClient _tmdbClient;
     private readonly Regex _nameCleaner = NameCleanerRegex();
-    private readonly Regex _getDate = GetDateRegex();
+    private readonly Regex _releaseYear = ReleaseYearRegex();
+    private readonly Regex _country = CountryRegex();
 
 
     public MapShowTmdbJob(ILogger<MapShowTmdbJob> logger, IPerformanceTracker performanceTracker, ITvShowRepository tvShowRepository, ITMDBClient tmdbClient)
@@ -35,7 +36,8 @@ public partial class MapShowTmdbJob
         List<TvShow> mightBeMovie = new();
         foreach (var show in await _tvShowRepository.GetShowWithoutTmdbIdAsync().ToArrayAsync(cancellationToken))
         {
-            var dateMatch = _getDate.Match(show.Name);
+            var dateMatch = _releaseYear.Match(show.Name);
+            var countryMatch = _country.Match(show.Name);
 
             var results = await _tmdbClient.SearchTvAsync(_nameCleaner.Replace(show.Name, "").Replace("BBC ", ""), cancellationToken).ToArrayAsync(cancellationToken);
             if (results.Length == 0)
@@ -49,6 +51,16 @@ public partial class MapShowTmdbJob
             {
                 result = results.FirstOrDefault(searchResult => searchResult.FirstAirDate.StartsWith(dateMatch.Value));
             }
+            else if (countryMatch.Success)
+            {
+                var country = countryMatch.Value switch
+                {
+                    "UK" => "GB",
+                    _    => countryMatch.Value
+                };
+                result = results.FirstOrDefault(searchResult => searchResult.OriginCountry.Contains(country));
+            }
+
 
             if (result == null)
             {
@@ -79,14 +91,14 @@ public partial class MapShowTmdbJob
         count = 0;
         foreach (var show in mightBeMovie)
         {
-            var dateMatch = _getDate.Match(show.Name);
+            var dateMatch = _releaseYear.Match(show.Name);
 
             var results = await _tmdbClient.SearchMovieAsync(_nameCleaner.Replace(show.Name, ""), cancellationToken).ToArrayAsync(cancellationToken);
             if (results.Length == 0)
             {
                 continue;
             }
-            
+
             var result = results[0];
             if (dateMatch.Success)
             {
@@ -125,5 +137,8 @@ public partial class MapShowTmdbJob
     private static partial Regex NameCleanerRegex();
 
     [GeneratedRegex("\\((\\d{4}).*\\)", RegexOptions.Compiled)]
-    private static partial Regex GetDateRegex();
+    private static partial Regex ReleaseYearRegex();
+
+    [GeneratedRegex("\\([A-Z]{2}\\)", RegexOptions.Compiled)]
+    private static partial Regex CountryRegex();
 }
