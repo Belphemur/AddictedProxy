@@ -54,7 +54,7 @@ public class TvShowRepository : ITvShowRepository
 
     public Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token)
     {
-        return _entityContext.TvShows.BulkMergeAsync(tvShows, options =>
+        return _entityContext.TvShows.BulkSynchronizeAsync(tvShows, options =>
         {
             options.IgnoreOnMergeUpdateExpression = show => new { show.Id, show.Discovered, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted, show.Type, show.TvdbId };
             options.ColumnPrimaryKeyExpression = show => show.ExternalId;
