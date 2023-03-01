@@ -131,6 +131,7 @@ internal class TMDBClient : ITMDBClient
     private async IAsyncEnumerable<T> SearchAsync<T>(string searchType, string query, [EnumeratorCancellation] CancellationToken token)
     {
         var page = 1;
+        const int maxPage = 3;
         HttpResponseMessage response;
         Pagination<T>? results;
 
@@ -162,7 +163,7 @@ internal class TMDBClient : ITMDBClient
             }
 
             page++;
-        } while (response.IsSuccessStatusCode && page < results.TotalPages);
+        } while (response.IsSuccessStatusCode && page < results.TotalPages && page < maxPage);
     }
 
     private HttpRequestMessage PrepareRequest(string url, HttpMethod method, Dictionary<string, string>? queryParams = null)
