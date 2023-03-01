@@ -6,7 +6,7 @@ using TvMovieDatabaseClient.Service;
 
 namespace AddictedProxy.Migrations.Services;
 
-[MigrationDate(2023, 02, 28)]
+[MigrationDate(2023, 02, 29)]
 public class PopulateTvDbIdsMigration : IMigration
 {
     private readonly EntityContext _entityContext;
