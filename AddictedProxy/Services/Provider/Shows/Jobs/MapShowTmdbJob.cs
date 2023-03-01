@@ -46,7 +46,13 @@ public partial class MapShowTmdbJob
                 continue;
             }
 
+            if (show.Name.Contains("BBC "))
+            {
+                results = results.Where(searchResult => searchResult.OriginCountry.Contains("UK")).ToArray();
+            }
+            
             var result = results[0];
+
             if (dateMatch.Success)
             {
                 result = results.FirstOrDefault(searchResult => searchResult.FirstAirDate.StartsWith(dateMatch.Groups[1].Value));
