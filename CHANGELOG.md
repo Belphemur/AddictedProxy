@@ -1,3 +1,10 @@
+## [4.4.5](https://github.com/Belphemur/AddictedProxy/compare/v4.4.4...v4.4.5) (2023-03-01)
+
+
+### Bug Fixes
+
+* **doc:** fix documentation of endpoint ([91921c9](https://github.com/Belphemur/AddictedProxy/commit/91921c98fe18d9e5024e8e81154dc0f92e89c35f))
+
 ## [4.4.4](https://github.com/Belphemur/AddictedProxy/compare/v4.4.3...v4.4.4) (2023-03-01)
 
 
