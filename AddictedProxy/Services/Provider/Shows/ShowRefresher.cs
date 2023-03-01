@@ -57,6 +57,11 @@ public class ShowRefresher : IShowRefresher
         await _tvShowRepository.UpsertRefreshedShowsAsync(tvShows, token);
     }
 
+    public IAsyncEnumerable<TvShow> GetShowByTvDbIdAsync(int id, CancellationToken cancellationToken)
+    {
+        return _tvShowRepository.GetByTvdbIdAsync(id, cancellationToken);
+    }
+
     /// <summary>
     /// Refresh the seasons and episodes of the show
     /// </summary>

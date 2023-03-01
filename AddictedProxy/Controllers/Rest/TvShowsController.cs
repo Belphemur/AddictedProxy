@@ -32,11 +32,11 @@ public class TvShowsController : Controller
         public string Query { get; init; } = Query;
     }
 
-    public record ShowSearchResponse(IAsyncEnumerable<ShowDto> Shows);
+    public record ShowSearchResponse(IEnumerable<ShowDto> Shows);
 
     public TvShowsController(IShowRefresher showRefresher, IEpisodeRepository episodeRepository, ICultureParser cultureParser)
     {
-        _showRefresher = showRefresher; 
+        _showRefresher = showRefresher;
         _episodeRepository = episodeRepository;
         _cultureParser = cultureParser;
     }
@@ -60,6 +60,11 @@ public class TvShowsController : Controller
         var shows = await _showRefresher.FindShowsAsync(search.Trim(), cancellationToken)
                                         .Select(show => new ShowDto(show))
                                         .ToArrayAsync(cancellationToken);
+        return ShowsToActionResult(search, shows);
+    }
+
+    private IActionResult ShowsToActionResult<T>(T search, ShowDto[] shows)
+    {
         if (shows.Length == 0)
         {
             Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
@@ -70,7 +75,30 @@ public class TvShowsController : Controller
             return NotFound($"Couldn't find show: {search}");
         }
 
-        return Ok(new ShowSearchResponse(shows.ToAsyncEnumerable()));
+        return Ok(new ShowSearchResponse(shows));
+    }
+
+
+    /// <summary>
+    /// Get a show by it's TvDB id: https://thetvdb.com/
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <param name="tvdbId">Name of the show to search for</param>
+    /// <response code="200">Returns the matching shows</response>
+    /// <response code="429">Reached the rate limiting of the endpoint</response>
+    [Route("external/tvdb/{tvdbId:int}")]
+    [HttpGet]
+    [ProducesResponseType(typeof(ShowSearchResponse), 200)]
+    [ProducesResponseType(typeof(string), 429)]
+    [ProducesResponseType(typeof(string), 404)]
+    [Produces("application/json")]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
+    public async Task<IActionResult> GetByTvdbId(int tvdbId, CancellationToken cancellationToken)
+    {
+        var shows = await _showRefresher.GetShowByTvDbIdAsync(tvdbId, cancellationToken)
+                                        .Select(show => new ShowDto(show))
+                                        .ToArrayAsync(cancellationToken);
+        return ShowsToActionResult(tvdbId, shows);
     }
 
 

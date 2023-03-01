@@ -54,9 +54,9 @@ public class TvShowRepository : ITvShowRepository
 
     public Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token)
     {
-        return _entityContext.TvShows.BulkMergeAsync(tvShows, options =>
+        return _entityContext.TvShows.BulkSynchronizeAsync(tvShows, options =>
         {
-            options.IgnoreOnMergeUpdateExpression = show => new { show.Id, show.Discovered, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted, show.Type };
+            options.IgnoreOnMergeUpdateExpression = show => new { show.Id, show.Discovered, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted, show.Type, show.TvdbId };
             options.ColumnPrimaryKeyExpression = show => show.ExternalId;
         }, token);
     }
@@ -89,6 +89,15 @@ public class TvShowRepository : ITvShowRepository
         return _entityContext.TvShows
                              .Include(show => show.Seasons)
                              .SingleOrDefaultAsync(show => show.UniqueId == id, cancellationToken: cancellationToken);
+    }
+    
+    public  IAsyncEnumerable<TvShow> GetByTvdbIdAsync(int id, CancellationToken cancellationToken)
+    {
+        return _entityContext.TvShows
+                             .Include(show => show.Seasons)
+                             .Where(show => show.TvdbId == id)
+                             .OrderByDescending(show => show.Seasons.Count)
+                             .ToAsyncEnumerable();
     }
 
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync()
