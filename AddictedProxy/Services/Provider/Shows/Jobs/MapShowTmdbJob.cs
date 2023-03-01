@@ -35,6 +35,7 @@ public partial class MapShowTmdbJob
 
         var count = 0;
         List<TvShow> mightBeMovie = new();
+        var countNotMatched = 0;
         foreach (var show in await _tvShowRepository.GetShowWithoutTmdbIdAsync().ToArrayAsync(cancellationToken))
         {
             var dateMatch = _releaseYear.Match(show.Name);
@@ -63,7 +64,8 @@ public partial class MapShowTmdbJob
 
             var showInfo = await results.SelectAwaitWithCancellation(async (result, token) => await _tmdbClient.GetShowDetailsByIdAsync(result.Id, token))
                                      //To find the right show when we have dupe (like The Flash and The Flash (2014)), using the number of season should help
-                                     .Where(details => details != null && show.Seasons.Count == details.NumberOfSeasons)
+                                     //Some shows don't have a number of seasons, we shouldn't eliminate them
+                                     .Where(details => details != null && (details.NumberOfSeasons == null || show.Seasons.Count == details.NumberOfSeasons))
                                      .SelectAwaitWithCancellation(async (details, token) =>
                                      {
                                          var externalIds = await _tmdbClient.GetShowExternalIdsAsync(details!.Id, token);
@@ -73,6 +75,8 @@ public partial class MapShowTmdbJob
 
             if (showInfo == default)
             {
+                mightBeMovie.Add(show);
+                countNotMatched++;
                 continue;
             }
             
@@ -89,6 +93,7 @@ public partial class MapShowTmdbJob
         }
 
         _logger.LogInformation("Found TMDB info for {count} shows", count);
+        _logger.LogWarning("Couldn't find matching for {count} shows", countNotMatched);
         await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
 
         count = 0;
