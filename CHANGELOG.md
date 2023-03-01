@@ -1,3 +1,10 @@
+## [4.4.3](https://github.com/Belphemur/AddictedProxy/compare/v4.4.2...v4.4.3) (2023-03-01)
+
+
+### Performance improvements
+
+* **tmdb:** If show contains BBC that mean it's british, let's look for UK in the origin country directly ([9b41c1f](https://github.com/Belphemur/AddictedProxy/commit/9b41c1f0e9b10ab71b55ae466569c8c679bee0e3))
+
 ## [4.4.2](https://github.com/Belphemur/AddictedProxy/compare/v4.4.1...v4.4.2) (2023-03-01)
 
 
