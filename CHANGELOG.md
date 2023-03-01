@@ -1,3 +1,11 @@
+## [4.4.6](https://github.com/Belphemur/AddictedProxy/compare/v4.4.5...v4.4.6) (2023-03-01)
+
+
+### Bug Fixes
+
+* **Tmdb:** Fix UK matching to GB ([ffa34be](https://github.com/Belphemur/AddictedProxy/commit/ffa34be24b85068e06605c94197f13befa38c34f))
+* **tvDb:** fix weird ordering by number of seasons ([a1262c7](https://github.com/Belphemur/AddictedProxy/commit/a1262c7b0d9d9feb523aca1e080351fb178f19e5))
+
 ## [4.4.5](https://github.com/Belphemur/AddictedProxy/compare/v4.4.4...v4.4.5) (2023-03-01)
 
 
