@@ -50,6 +50,11 @@ public partial class MapShowTmdbJob
             {
                 results = results.Where(searchResult => searchResult.OriginCountry.Contains("UK")).ToArray();
             }
+
+            if (results.Length == 0)
+            {
+                continue;
+            }
             
             var result = results[0];
 
