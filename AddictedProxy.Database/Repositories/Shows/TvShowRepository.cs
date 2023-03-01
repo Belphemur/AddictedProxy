@@ -96,7 +96,6 @@ public class TvShowRepository : ITvShowRepository
         return _entityContext.TvShows
                              .Include(show => show.Seasons)
                              .Where(show => show.TvdbId == id)
-                             .OrderByDescending(show => show.Seasons.Count)
                              .ToAsyncEnumerable();
     }
 

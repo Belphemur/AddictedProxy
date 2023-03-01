@@ -48,7 +48,7 @@ public partial class MapShowTmdbJob
 
             if (show.Name.Contains("BBC "))
             {
-                results = results.Where(searchResult => searchResult.OriginCountry.Contains("UK")).ToArray();
+                results = results.Where(searchResult => searchResult.OriginCountry.Contains("GB")).ToArray();
             }
 
             if (results.Length == 0)
