@@ -63,15 +63,13 @@ public partial class MapShowTmdbJob
             }
 
             var showInfo = await results.SelectAwaitWithCancellation(async (result, token) => await _tmdbClient.GetShowDetailsByIdAsync(result.Id, token))
-                                     //To find the right show when we have dupe (like The Flash and The Flash (2014)), using the number of season should help
-                                     //Some shows don't have a number of seasons, we shouldn't eliminate them
-                                     .Where(details => details != null && (details.NumberOfSeasons == null || show.Seasons.Count == details.NumberOfSeasons))
-                                     .SelectAwaitWithCancellation(async (details, token) =>
-                                     {
-                                         var externalIds = await _tmdbClient.GetShowExternalIdsAsync(details!.Id, token);
-                                         return (Details: details, ExternalIds: externalIds);
-                                     })
-                                     .FirstOrDefaultAsync(cancellationToken);
+                                        .Where(details => details != null)
+                                        .SelectAwaitWithCancellation(async (details, token) =>
+                                        {
+                                            var externalIds = await _tmdbClient.GetShowExternalIdsAsync(details!.Id, token);
+                                            return (Details: details, ExternalIds: externalIds);
+                                        })
+                                        .FirstOrDefaultAsync(cancellationToken);
 
             if (showInfo == default)
             {
@@ -79,11 +77,11 @@ public partial class MapShowTmdbJob
                 countNotMatched++;
                 continue;
             }
-            
+
             show.TmdbId = showInfo.Details.Id;
             show.IsCompleted = showInfo.Details.Status == "Ended";
             show.TvdbId = showInfo.ExternalIds?.TvdbId;
-            
+
 
             if (++count % 50 == 0)
             {
