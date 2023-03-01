@@ -72,4 +72,11 @@ public interface ITvShowRepository
     Task BulkSaveChangesAsync(CancellationToken token);
 
     IAsyncEnumerable<TvShow> GetByTvdbIdAsync(int id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Get duplicate show by TmdbID
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task<IDictionary<int, TvShow[]>> GetDuplicateTvShowByTmdbIdAsync(CancellationToken token);
 }

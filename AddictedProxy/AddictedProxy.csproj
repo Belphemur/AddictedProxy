@@ -66,9 +66,5 @@
         <_ContentIncludedByDefault Remove="publish\appsettings.json" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Model\Performance" />
-    </ItemGroup>
-
 
 </Project>

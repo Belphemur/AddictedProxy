@@ -90,8 +90,8 @@ public class TvShowRepository : ITvShowRepository
                              .Include(show => show.Seasons)
                              .SingleOrDefaultAsync(show => show.UniqueId == id, cancellationToken: cancellationToken);
     }
-    
-    public  IAsyncEnumerable<TvShow> GetByTvdbIdAsync(int id, CancellationToken cancellationToken)
+
+    public IAsyncEnumerable<TvShow> GetByTvdbIdAsync(int id, CancellationToken cancellationToken)
     {
         return _entityContext.TvShows
                              .Include(show => show.Seasons)
@@ -99,11 +99,26 @@ public class TvShowRepository : ITvShowRepository
                              .ToAsyncEnumerable();
     }
 
+    /// <summary>
+    /// Get duplicate show by TmdbID
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task<IDictionary<int, TvShow[]>> GetDuplicateTvShowByTmdbIdAsync(CancellationToken token)
+    {
+        return await _entityContext.TvShows
+                                   .Where(show => show.TmdbId != null)
+                                   .GroupBy(show => show.TmdbId)
+                                   .Where(shows => shows.Count() > 1)
+                                   .ToDictionaryAsync(shows => shows.Key!.Value, shows => shows.ToArray(), cancellationToken: token);
+    }
+
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync()
     {
         return _entityContext.TvShows
                              .Include(show => show.Seasons)
-                             .Where(show => !show.TmdbId.HasValue).ToAsyncEnumerable();
+                             .Where(show => !show.TmdbId.HasValue)
+                             .ToAsyncEnumerable();
     }
 
     public IAsyncEnumerable<TvShow> GetNonCompletedShows()
