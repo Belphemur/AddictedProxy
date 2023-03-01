@@ -192,7 +192,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ matrix.image }}
           tags: |
             type=semver,pattern={{version}},value=${{ needs.main-release.outputs.version}}
-      
+
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image ${{ matrix.image }}
