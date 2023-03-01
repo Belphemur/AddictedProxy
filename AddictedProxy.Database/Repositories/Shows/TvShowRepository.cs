@@ -91,11 +91,13 @@ public class TvShowRepository : ITvShowRepository
                              .SingleOrDefaultAsync(show => show.UniqueId == id, cancellationToken: cancellationToken);
     }
     
-    public Task<TvShow?> GetByTvdbIdAsync(int id, CancellationToken cancellationToken)
+    public  IAsyncEnumerable<TvShow> GetByTvdbIdAsync(int id, CancellationToken cancellationToken)
     {
         return _entityContext.TvShows
                              .Include(show => show.Seasons)
-                             .SingleOrDefaultAsync(show => show.TvdbId == id, cancellationToken: cancellationToken);
+                             .Where(show => show.TvdbId == id)
+                             .OrderByDescending(show => show.Seasons.Count)
+                             .ToAsyncEnumerable();
     }
 
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync()

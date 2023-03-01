@@ -15,6 +15,7 @@ public interface ITvShowRepository
     /// <param name="token"></param>
     /// <returns></returns>
     IAsyncEnumerable<TvShow> FindAsync(string name, CancellationToken token);
+
     /// <summary>
     /// Upsert the information about the shows
     /// </summary>
@@ -22,6 +23,7 @@ public interface ITvShowRepository
     /// <param name="token"></param>
     /// <returns></returns>
     Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token);
+
     /// <summary>
     /// Get all the shows
     /// </summary>
@@ -55,7 +57,7 @@ public interface ITvShowRepository
     /// </summary>
     /// <returns></returns>
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync();
-    
+
     /// <summary>
     /// Get shows that have a TmdbId but aren't completed
     /// </summary>
@@ -69,5 +71,5 @@ public interface ITvShowRepository
     /// <returns></returns>
     Task BulkSaveChangesAsync(CancellationToken token);
 
-    Task<TvShow?> GetByTvdbIdAsync(int id, CancellationToken cancellationToken);
+    IAsyncEnumerable<TvShow> GetByTvdbIdAsync(int id, CancellationToken cancellationToken);
 }

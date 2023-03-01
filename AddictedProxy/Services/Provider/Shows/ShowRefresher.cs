@@ -57,7 +57,7 @@ public class ShowRefresher : IShowRefresher
         await _tvShowRepository.UpsertRefreshedShowsAsync(tvShows, token);
     }
 
-    public Task<TvShow?> GetShowByTvDbIdAsync(int id, CancellationToken cancellationToken)
+    public IAsyncEnumerable<TvShow> GetShowByTvDbIdAsync(int id, CancellationToken cancellationToken)
     {
         return _tvShowRepository.GetByTvdbIdAsync(id, cancellationToken);
     }

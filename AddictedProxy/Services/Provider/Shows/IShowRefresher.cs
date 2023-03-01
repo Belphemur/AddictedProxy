@@ -37,7 +37,7 @@ public interface IShowRefresher
     /// <param name="id"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<TvShow?> GetShowByTvDbIdAsync(int id, CancellationToken cancellationToken);
+    IAsyncEnumerable<TvShow> GetShowByTvDbIdAsync(int id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Refresh the seasons and episodes of the show
