@@ -1,3 +1,10 @@
+## [4.4.7](https://github.com/Belphemur/AddictedProxy/compare/v4.4.6...v4.4.7) (2023-03-01)
+
+
+### Performance improvements
+
+* **tmdb:** No need to go more than 3 pages of results ([4a41e04](https://github.com/Belphemur/AddictedProxy/commit/4a41e04a3eb9a46779a135f54d89f6c6478abf63))
+
 ## [4.4.6](https://github.com/Belphemur/AddictedProxy/compare/v4.4.5...v4.4.6) (2023-03-01)
 
 
