@@ -58,7 +58,7 @@ public partial class MapShowTmdbJob
                     "UK" => "GB",
                     _    => countryMatch.Groups[1].Value
                 };
-                result = results.OrderByDescending(searchResult => DateTime.TryParse(searchResult.FirstAirDate, out var date) ? date : DateTime.UnixEpoch).FirstOrDefault(searchResult => searchResult.OriginCountry.Contains(country));
+                result = results.FirstOrDefault(searchResult => searchResult.OriginCountry.Contains(country));
             }
 
 
