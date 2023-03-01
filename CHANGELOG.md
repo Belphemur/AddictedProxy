@@ -1,3 +1,10 @@
+## [4.5.3](https://github.com/Belphemur/AddictedProxy/compare/v4.5.2...v4.5.3) (2023-03-01)
+
+
+### Bug Fixes
+
+* **tmdb:** Remove requirement on number of seasons ([2c5409f](https://github.com/Belphemur/AddictedProxy/commit/2c5409ffac27ff766e505cd41fe1a4fc03e1363a))
+
 ## [4.5.2](https://github.com/Belphemur/AddictedProxy/compare/v4.5.1...v4.5.2) (2023-03-01)
 
 
