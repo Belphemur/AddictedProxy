@@ -26,6 +26,7 @@ public class RefreshAvailableShowsJob
     {
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "refresh-show-list");
         await _showRefresher.RefreshShowsAsync(cancellationToken);
-        BackgroundJob.Enqueue<MapShowTmdbJob>(job => job.ExecuteAsync(default));
+        var jobId = BackgroundJob.Enqueue<MapShowTmdbJob>(job => job.ExecuteAsync(default));
+        BackgroundJob.ContinueJobWith<CleanDuplicateTmdbJob>(jobId, job => job.ExecuteAsync(default));
     }
 }

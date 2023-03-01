@@ -46,13 +46,12 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
                             options.SetDbStatementForStoredProcedure = true;
                         })
                         .AddRedisInstrumentation(configure: options => options.SetVerboseDatabaseStatements = true)
+#if !DEBUG
                         .AddOtlpExporter(options =>
                         {
                             options.Protocol = OtlpExportProtocol.Grpc;
                             options.Endpoint = new Uri(perf.Endpoint);
                         })
-#if DEBUG
-                        .AddConsoleExporter()
 #endif
                         .SetSampler(_ => new TraceIdRatioBasedSampler(perf.SampleRate));
                 });

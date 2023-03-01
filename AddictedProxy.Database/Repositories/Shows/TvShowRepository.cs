@@ -90,8 +90,8 @@ public class TvShowRepository : ITvShowRepository
                              .Include(show => show.Seasons)
                              .SingleOrDefaultAsync(show => show.UniqueId == id, cancellationToken: cancellationToken);
     }
-    
-    public  IAsyncEnumerable<TvShow> GetByTvdbIdAsync(int id, CancellationToken cancellationToken)
+
+    public IAsyncEnumerable<TvShow> GetByTvdbIdAsync(int id, CancellationToken cancellationToken)
     {
         return _entityContext.TvShows
                              .Include(show => show.Seasons)
@@ -99,11 +99,31 @@ public class TvShowRepository : ITvShowRepository
                              .ToAsyncEnumerable();
     }
 
+    /// <summary>
+    /// Get duplicate show by TmdbID
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task<IDictionary<int, TvShow[]>> GetDuplicateTvShowByTmdbIdAsync(CancellationToken token)
+    {
+        return await _entityContext.TvShows
+                                   .GroupBy(show => show.TmdbId)
+                                   .Where(shows => shows.Count() > 1)
+                                   .Select(shows => new
+                                   {
+                                       TmdbId = shows.Key,
+                                       Shows = shows.ToArray()
+                                   })
+                                   .Where(arg => arg.TmdbId != null)
+                                   .ToDictionaryAsync(shows => shows.TmdbId!.Value, shows => shows.Shows, cancellationToken: token);
+    }
+
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync()
     {
         return _entityContext.TvShows
                              .Include(show => show.Seasons)
-                             .Where(show => !show.TmdbId.HasValue).ToAsyncEnumerable();
+                             .Where(show => !show.TmdbId.HasValue)
+                             .ToAsyncEnumerable();
     }
 
     public IAsyncEnumerable<TvShow> GetNonCompletedShows()
