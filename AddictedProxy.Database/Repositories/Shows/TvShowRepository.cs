@@ -107,10 +107,15 @@ public class TvShowRepository : ITvShowRepository
     public async Task<IDictionary<int, TvShow[]>> GetDuplicateTvShowByTmdbIdAsync(CancellationToken token)
     {
         return await _entityContext.TvShows
-                                   .Where(show => show.TmdbId != null)
                                    .GroupBy(show => show.TmdbId)
                                    .Where(shows => shows.Count() > 1)
-                                   .ToDictionaryAsync(shows => shows.Key!.Value, shows => shows.ToArray(), cancellationToken: token);
+                                   .Select(shows => new
+                                   {
+                                       TmdbId = shows.Key,
+                                       Shows = shows.ToArray()
+                                   })
+                                   .Where(arg => arg.TmdbId != null)
+                                   .ToDictionaryAsync(shows => shows.TmdbId!.Value, shows => shows.Shows, cancellationToken: token);
     }
 
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync()
