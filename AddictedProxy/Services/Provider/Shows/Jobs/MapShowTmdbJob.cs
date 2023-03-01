@@ -8,13 +8,14 @@ using TvMovieDatabaseClient.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
 
-public class MapShowTmdbJob
+public partial class MapShowTmdbJob
 {
     private readonly ILogger<MapShowTmdbJob> _logger;
     private readonly IPerformanceTracker _performanceTracker;
     private readonly ITvShowRepository _tvShowRepository;
     private readonly ITMDBClient _tmdbClient;
-    private readonly Regex _nameCleaner = new Regex(@"\s[\(\[].+[\)\]]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private readonly Regex _nameCleaner = NameCleanerRegex();
+    private readonly Regex _getDate = GetDateRegex();
 
 
     public MapShowTmdbJob(ILogger<MapShowTmdbJob> logger, IPerformanceTracker performanceTracker, ITvShowRepository tvShowRepository, ITMDBClient tmdbClient)
@@ -24,20 +25,33 @@ public class MapShowTmdbJob
         _tvShowRepository = tvShowRepository;
         _tmdbClient = tmdbClient;
     }
-    
+
     [MaximumConcurrentExecutions(1)]
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        using var transaction = _performanceTracker.BeginNestedSpan("refresh", "map-tmdb-to-show");
+        using var transaction = _performanceTracker.BeginNestedSpan("map-tmdb-to-show");
 
         var count = 0;
         List<TvShow> mightBeMovie = new();
         foreach (var show in await _tvShowRepository.GetShowWithoutTmdbIdAsync().ToArrayAsync(cancellationToken))
         {
-            var result = await _tmdbClient.SearchTvAsync(_nameCleaner.Replace(show.Name, "").Replace("BBC ", ""), cancellationToken).FirstOrDefaultAsync(cancellationToken);
-            if (result == null)
+            var dateMatch = _getDate.Match(show.Name);
+
+            var results = await _tmdbClient.SearchTvAsync(_nameCleaner.Replace(show.Name, "").Replace("BBC ", ""), cancellationToken).ToArrayAsync(cancellationToken);
+            if (results.Length == 0)
             {
                 mightBeMovie.Add(show);
+                continue;
+            }
+
+            var result = results[0];
+            if (dateMatch.Success)
+            {
+                result = results.FirstOrDefault(searchResult => searchResult.FirstAirDate.StartsWith(dateMatch.Value));
+            }
+
+            if (result == null)
+            {
                 continue;
             }
 
@@ -58,14 +72,27 @@ public class MapShowTmdbJob
                 await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
             }
         }
-        
+
         _logger.LogInformation("Found TMDB info for {count} shows", count);
         await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
 
         count = 0;
         foreach (var show in mightBeMovie)
         {
-            var result = await _tmdbClient.SearchMovieAsync(_nameCleaner.Replace(show.Name, ""), cancellationToken).FirstOrDefaultAsync(cancellationToken);
+            var dateMatch = _getDate.Match(show.Name);
+
+            var results = await _tmdbClient.SearchMovieAsync(_nameCleaner.Replace(show.Name, ""), cancellationToken).ToArrayAsync(cancellationToken);
+            if (results.Length == 0)
+            {
+                continue;
+            }
+            
+            var result = results[0];
+            if (dateMatch.Success)
+            {
+                result = results.FirstOrDefault(searchResult => searchResult.ReleaseDate.StartsWith(dateMatch.Value));
+            }
+
             if (result == null)
             {
                 continue;
@@ -76,7 +103,7 @@ public class MapShowTmdbJob
             {
                 continue;
             }
-            
+
             var externalIds = await _tmdbClient.GetMovieExternalIdsAsync(result.Id, cancellationToken);
 
             show.TmdbId = details.Id;
@@ -93,4 +120,10 @@ public class MapShowTmdbJob
         _logger.LogInformation("Found TMDB info for {count} movies", count);
         await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
     }
+
+    [GeneratedRegex("\\s[\\(\\[].+[\\)\\]]", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
+    private static partial Regex NameCleanerRegex();
+
+    [GeneratedRegex("\\((\\d{4}).*\\)", RegexOptions.Compiled)]
+    private static partial Regex GetDateRegex();
 }
