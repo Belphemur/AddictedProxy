@@ -1,3 +1,10 @@
+## [4.4.9](https://github.com/Belphemur/AddictedProxy/compare/v4.4.8...v4.4.9) (2023-03-01)
+
+
+### Bug Fixes
+
+* **Metrics:** Rate limiting doesn't support exemplars ([c902965](https://github.com/Belphemur/AddictedProxy/commit/c9029658bf90bee8490d5bf8d6eef7b6fdf4faaf))
+
 ## [4.4.8](https://github.com/Belphemur/AddictedProxy/compare/v4.4.7...v4.4.8) (2023-03-01)
 
 
