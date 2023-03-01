@@ -1,3 +1,11 @@
+## [4.4.8](https://github.com/Belphemur/AddictedProxy/compare/v4.4.7...v4.4.8) (2023-03-01)
+
+
+### Performance improvements
+
+* **tmdb:** Improve the matching logic ([857766e](https://github.com/Belphemur/AddictedProxy/commit/857766e3a062f1b7b82f293fa15b43f585a0ba51))
+* **tmdb:** Match on number of seasons too ([8212e52](https://github.com/Belphemur/AddictedProxy/commit/8212e52ff77f429f696eead877cbf9843ed5a999))
+
 ## [4.4.7](https://github.com/Belphemur/AddictedProxy/compare/v4.4.6...v4.4.7) (2023-03-01)
 
 
