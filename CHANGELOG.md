@@ -1,3 +1,10 @@
+## [4.4.2](https://github.com/Belphemur/AddictedProxy/compare/v4.4.1...v4.4.2) (2023-03-01)
+
+
+### Bug Fixes
+
+* **tmdb:** Trust TMDB for the ordering, no need to do by date, that require to find all results. ([d863e0c](https://github.com/Belphemur/AddictedProxy/commit/d863e0c9c20ecbe2f08be21ba935c80415cd3648))
+
 ## [4.4.1](https://github.com/Belphemur/AddictedProxy/compare/v4.4.0...v4.4.1) (2023-03-01)
 
 
