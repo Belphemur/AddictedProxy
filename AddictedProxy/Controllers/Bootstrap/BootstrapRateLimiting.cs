@@ -19,7 +19,10 @@ public class BootstrapRateLimiting : IBootstrap, IBootstrapApp
 
     public void ConfigureApp(IApplicationBuilder app)
     {
-        var rateLimitCounter = Metrics.CreateCounter("http_request_rate_limited", "Number of requests that got rate limited", new[] { "controller", "action" });
+        var rateLimitCounter = Metrics.CreateCounter("http_request_rate_limited", "Number of requests that got rate limited", new[] { "controller", "action" }, new CounterConfiguration
+        {
+            ExemplarBehavior = ExemplarBehavior.NoExemplars()
+        });
         app.UseRateLimiter(new RateLimiterOptions
         {
             RejectionStatusCode = 429,
