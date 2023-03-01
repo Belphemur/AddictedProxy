@@ -258,9 +258,6 @@ namespace AddictedProxy.Database.Migrations
                     b.HasIndex("ExternalId")
                         .IsUnique();
 
-                    b.HasIndex("TvdbId")
-                        .IsUnique();
-
                     b.HasIndex("UniqueId")
                         .IsUnique();
 
