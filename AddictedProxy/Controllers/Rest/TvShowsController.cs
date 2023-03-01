@@ -83,7 +83,7 @@ public class TvShowsController : Controller
     /// Get a show by it's TvDB id: https://thetvdb.com/
     /// </summary>
     /// <param name="cancellationToken"></param>
-    /// <param name="tvdbId">Name of the show to search for</param>
+    /// <param name="tvdbId">Id of the show on TvDB</param>
     /// <response code="200">Returns the matching shows</response>
     /// <response code="429">Reached the rate limiting of the endpoint</response>
     [Route("external/tvdb/{tvdbId:int}")]
