@@ -1,3 +1,16 @@
+## [4.5.0](https://github.com/Belphemur/AddictedProxy/compare/v4.4.9...v4.5.0) (2023-03-01)
+
+
+### Features
+
+* **Show:Dedupe:** Dedupe show that have different year/country ([f182639](https://github.com/Belphemur/AddictedProxy/commit/f182639fb597284886a1ca188d43c8559c2f8420))
+
+
+### Performance improvements
+
+* **Dedupe:** Optimize sql query ([493ca0d](https://github.com/Belphemur/AddictedProxy/commit/493ca0d562abf5e9da9b2c82dae87a2827f52654))
+* **Performance:** Remove exporter when in debug mode ([f27849f](https://github.com/Belphemur/AddictedProxy/commit/f27849fb2398eea2a87f570209ae77a281055c74))
+
 ## [4.4.9](https://github.com/Belphemur/AddictedProxy/compare/v4.4.8...v4.4.9) (2023-03-01)
 
 
