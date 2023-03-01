@@ -162,7 +162,7 @@ internal class TMDBClient : ITMDBClient
             }
 
             page++;
-        } while (response.IsSuccessStatusCode && results.TotalPages < page);
+        } while (response.IsSuccessStatusCode && page < results.TotalPages);
     }
 
     private HttpRequestMessage PrepareRequest(string url, HttpMethod method, Dictionary<string, string>? queryParams = null)
