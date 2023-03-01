@@ -90,6 +90,13 @@ public class TvShowRepository : ITvShowRepository
                              .Include(show => show.Seasons)
                              .SingleOrDefaultAsync(show => show.UniqueId == id, cancellationToken: cancellationToken);
     }
+    
+    public Task<TvShow?> GetByTvdbIdAsync(int id, CancellationToken cancellationToken)
+    {
+        return _entityContext.TvShows
+                             .Include(show => show.Seasons)
+                             .SingleOrDefaultAsync(show => show.TvdbId == id, cancellationToken: cancellationToken);
+    }
 
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync()
     {

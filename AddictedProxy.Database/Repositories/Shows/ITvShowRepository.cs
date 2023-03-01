@@ -68,4 +68,6 @@ public interface ITvShowRepository
     /// <param name="token"></param>
     /// <returns></returns>
     Task BulkSaveChangesAsync(CancellationToken token);
+
+    Task<TvShow?> GetByTvdbIdAsync(int id, CancellationToken cancellationToken);
 }

@@ -72,6 +72,38 @@ public class TvShowsController : Controller
 
         return Ok(new ShowSearchResponse(shows.ToAsyncEnumerable()));
     }
+    
+    
+    /// <summary>
+    /// Get a show by it's TvDB id: https://thetvdb.com/
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <param name="tvdbId">Name of the show to search for</param>
+    /// <response code="200">Returns the matching shows</response>
+    /// <response code="429">Reached the rate limiting of the endpoint</response>
+    [Route("external/tvdb/{tvdbId:int}")]
+    [HttpGet]
+    [ProducesResponseType(typeof(ShowDto), 200)]
+    [ProducesResponseType(typeof(string), 429)]
+    [ProducesResponseType(typeof(string), 404)]
+    [Produces("application/json")]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
+    public async Task<IActionResult> GetByTvdbId(int tvdbId, CancellationToken cancellationToken)
+    {
+        var show = await _showRefresher.GetShowByTvDbIdAsync(tvdbId, cancellationToken);
+        if (show == null)
+        {
+            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+            {
+                Public = true,
+                MaxAge = TimeSpan.FromDays(0.5)
+            };
+            return NotFound($"Couldn't find show: {tvdbId}");
+        }
+
+        return Ok(new ShowDto(show));
+    }
+
 
 
     /// <summary>
