@@ -49,16 +49,16 @@ public partial class MapShowTmdbJob
             var result = results[0];
             if (dateMatch.Success)
             {
-                result = results.FirstOrDefault(searchResult => searchResult.FirstAirDate.StartsWith(dateMatch.Value));
+                result = results.FirstOrDefault(searchResult => searchResult.FirstAirDate.StartsWith(dateMatch.Groups[1].Value));
             }
             else if (countryMatch.Success)
             {
-                var country = countryMatch.Value switch
+                var country = countryMatch.Groups[1].Value switch
                 {
                     "UK" => "GB",
-                    _    => countryMatch.Value
+                    _    => countryMatch.Groups[1].Value
                 };
-                result = results.FirstOrDefault(searchResult => searchResult.OriginCountry.Contains(country));
+                result = results.OrderByDescending(searchResult => DateTime.TryParse(searchResult.FirstAirDate, out var date) ? date : DateTime.UnixEpoch).FirstOrDefault(searchResult => searchResult.OriginCountry.Contains(country));
             }
 
 
@@ -102,7 +102,7 @@ public partial class MapShowTmdbJob
             var result = results[0];
             if (dateMatch.Success)
             {
-                result = results.FirstOrDefault(searchResult => searchResult.ReleaseDate.StartsWith(dateMatch.Value));
+                result = results.FirstOrDefault(searchResult => searchResult.ReleaseDate.StartsWith(dateMatch.Groups[1].Value));
             }
 
             if (result == null)
@@ -136,9 +136,9 @@ public partial class MapShowTmdbJob
     [GeneratedRegex("\\s[\\(\\[].+[\\)\\]]", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
     private static partial Regex NameCleanerRegex();
 
-    [GeneratedRegex("\\((\\d{4}).*\\)", RegexOptions.Compiled)]
+    [GeneratedRegex(@"\((\d{4})\)", RegexOptions.Compiled)]
     private static partial Regex ReleaseYearRegex();
 
-    [GeneratedRegex("\\([A-Z]{2}\\)", RegexOptions.Compiled)]
+    [GeneratedRegex(@"\(([A-Z]{2})\)", RegexOptions.Compiled)]
     private static partial Regex CountryRegex();
 }
