@@ -101,7 +101,9 @@ public class TvShowRepository : ITvShowRepository
 
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync()
     {
-        return _entityContext.TvShows.Where(show => !show.TmdbId.HasValue).ToAsyncEnumerable();
+        return _entityContext.TvShows
+                             .Include(show => show.Seasons)
+                             .Where(show => !show.TmdbId.HasValue).ToAsyncEnumerable();
     }
 
     public IAsyncEnumerable<TvShow> GetNonCompletedShows()

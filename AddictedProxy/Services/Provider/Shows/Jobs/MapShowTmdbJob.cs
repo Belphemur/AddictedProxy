@@ -4,6 +4,7 @@ using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using Hangfire;
 using Performance.Service;
+using TvMovieDatabaseClient.Model.Mapping;
 using TvMovieDatabaseClient.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
@@ -34,33 +35,22 @@ public partial class MapShowTmdbJob
 
         var count = 0;
         List<TvShow> mightBeMovie = new();
+        var countNotMatched = 0;
         foreach (var show in await _tvShowRepository.GetShowWithoutTmdbIdAsync().ToArrayAsync(cancellationToken))
         {
             var dateMatch = _releaseYear.Match(show.Name);
             var countryMatch = _country.Match(show.Name);
 
-            var results = await _tmdbClient.SearchTvAsync(_nameCleaner.Replace(show.Name, "").Replace("BBC ", ""), cancellationToken).ToArrayAsync(cancellationToken);
-            if (results.Length == 0)
-            {
-                mightBeMovie.Add(show);
-                continue;
-            }
+            var results = _tmdbClient.SearchTvAsync(_nameCleaner.Replace(show.Name, "").Replace("BBC ", ""), cancellationToken);
 
             if (show.Name.Contains("BBC "))
             {
-                results = results.Where(searchResult => searchResult.OriginCountry.Contains("GB")).ToArray();
+                results = results.Where(searchResult => searchResult.OriginCountry.Contains("GB"));
             }
-
-            if (results.Length == 0)
-            {
-                continue;
-            }
-            
-            var result = results[0];
 
             if (dateMatch.Success)
             {
-                result = results.FirstOrDefault(searchResult => searchResult.FirstAirDate.StartsWith(dateMatch.Groups[1].Value));
+                results = results.Where(searchResult => searchResult.FirstAirDate.StartsWith(dateMatch.Groups[1].Value));
             }
             else if (countryMatch.Success)
             {
@@ -69,26 +59,32 @@ public partial class MapShowTmdbJob
                     "UK" => "GB",
                     _    => countryMatch.Groups[1].Value
                 };
-                result = results.FirstOrDefault(searchResult => searchResult.OriginCountry.Contains(country));
+                results = results.Where(searchResult => searchResult.OriginCountry.Contains(country));
             }
 
+            var showInfo = await results.SelectAwaitWithCancellation(async (result, token) => await _tmdbClient.GetShowDetailsByIdAsync(result.Id, token))
+                                     //To find the right show when we have dupe (like The Flash and The Flash (2014)), using the number of season should help
+                                     //Some shows don't have a number of seasons, we shouldn't eliminate them
+                                     .Where(details => details != null && (details.NumberOfSeasons == null || show.Seasons.Count == details.NumberOfSeasons))
+                                     .SelectAwaitWithCancellation(async (details, token) =>
+                                     {
+                                         var externalIds = await _tmdbClient.GetShowExternalIdsAsync(details!.Id, token);
+                                         return (Details: details, ExternalIds: externalIds);
+                                     })
+                                     .FirstOrDefaultAsync(cancellationToken);
 
-            if (result == null)
+            if (showInfo == default)
             {
+                mightBeMovie.Add(show);
+                countNotMatched++;
                 continue;
             }
+            
+            show.TmdbId = showInfo.Details.Id;
+            show.IsCompleted = showInfo.Details.Status == "Ended";
+            show.TvdbId = showInfo.ExternalIds?.TvdbId;
+            
 
-            var details = await _tmdbClient.GetShowDetailsByIdAsync(result.Id, cancellationToken);
-            if (details == null)
-            {
-                continue;
-            }
-
-            var externalIds = await _tmdbClient.GetShowExternalIdsAsync(result.Id, cancellationToken);
-
-            show.TmdbId = details.Id;
-            show.IsCompleted = details.Status == "Ended";
-            show.TvdbId = externalIds?.TvdbId;
             if (++count % 50 == 0)
             {
                 _logger.LogInformation("Found TMDB info for {count} shows", count);
@@ -97,6 +93,7 @@ public partial class MapShowTmdbJob
         }
 
         _logger.LogInformation("Found TMDB info for {count} shows", count);
+        _logger.LogWarning("Couldn't find matching for {count} shows", countNotMatched);
         await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
 
         count = 0;
