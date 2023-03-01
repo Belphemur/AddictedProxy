@@ -1,3 +1,27 @@
+## [4.4.0](https://github.com/Belphemur/AddictedProxy/compare/v4.3.0...v4.4.0) (2023-03-01)
+
+
+### Features
+
+* **Show:** Add finding a show directly with the tvDbId ([17533f4](https://github.com/Belphemur/AddictedProxy/commit/17533f45afe7c98159783beff9ce69245dab53bd))
+
+
+### Bug Fixes
+
+* **tmdb:** Add country matching ([e491d9e](https://github.com/Belphemur/AddictedProxy/commit/e491d9ea42dedd82982ad757581fe9951437002b))
+* **Tmdb:** Fix logic paging ([0170446](https://github.com/Belphemur/AddictedProxy/commit/01704467daa9b57900014b0876b8758d85851f0f))
+* **Tmdb:** Fix matching show logic ([0cf22ca](https://github.com/Belphemur/AddictedProxy/commit/0cf22caa917cc3a35ccf2ab4d9dff3114f064750))
+* **Tmdb:** Redo the pagination logic ([4c877d5](https://github.com/Belphemur/AddictedProxy/commit/4c877d58d84a75a795d924c6ea751a26fe05651a))
+* **tvDbId:** return multiple shows with the tvDbId ([ae44df9](https://github.com/Belphemur/AddictedProxy/commit/ae44df9b42111b7c91fbba51e49640d1a1ee1224))
+* **TvShow:** Don't override the tvdb id ([24eeca6](https://github.com/Belphemur/AddictedProxy/commit/24eeca6537461acb04fcfc008caa0e70cf7e95f1))
+* **TvShow:** Keep the tv shows in sync ([b49f143](https://github.com/Belphemur/AddictedProxy/commit/b49f1435c8089ce925d9e1d728cfb267d6866845))
+
+
+### Performance improvements
+
+* **Tmdb:** Improve mapping using country and latest date for match ([ffec296](https://github.com/Belphemur/AddictedProxy/commit/ffec2960d544b48905e1d80affadc3167477512b))
+* **TvShow:** Add index on tvdbid ([51a615b](https://github.com/Belphemur/AddictedProxy/commit/51a615b2022f4b4905fe73091ed129f6e8a38158))
+
 ## [4.3.0](https://github.com/Belphemur/AddictedProxy/compare/v4.2.14...v4.3.0) (2023-03-01)
 
 
