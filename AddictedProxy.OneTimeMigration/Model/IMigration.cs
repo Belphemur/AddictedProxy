@@ -6,12 +6,11 @@ namespace AddictedProxy.OneTimeMigration.Model;
 [AttributeUsage(AttributeTargets.Class)]
 public class MigrationDateAttribute : Attribute
 {
-    public string Date => _migrationDate.ToString(CultureInfo.InvariantCulture);
-    private readonly DateTime _migrationDate;
+    public readonly string Date; 
 
     public MigrationDateAttribute(int year, int month, int day)
     {
-        _migrationDate = new DateTime(year, month, day);
+        Date = $"{year}-{month}-{day}";
     }
 }
 public interface IMigration
