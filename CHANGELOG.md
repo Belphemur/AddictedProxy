@@ -1,3 +1,10 @@
+## [4.4.4](https://github.com/Belphemur/AddictedProxy/compare/v4.4.3...v4.4.4) (2023-03-01)
+
+
+### Bug Fixes
+
+* **tmdb:** if can't find bbc show, give up ([62f167f](https://github.com/Belphemur/AddictedProxy/commit/62f167fe0648a0b3ccf2350dd038bf708c774a0e))
+
 ## [4.4.3](https://github.com/Belphemur/AddictedProxy/compare/v4.4.2...v4.4.3) (2023-03-01)
 
 
