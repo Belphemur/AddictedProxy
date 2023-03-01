@@ -5,7 +5,7 @@ using TvMovieDatabaseClient.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
 
-public class CheckCompletedTmdbJob 
+public class CheckCompletedTmdbJob
 {
     private ILogger<CheckCompletedTmdbJob> _logger;
     private readonly ITvShowRepository _tvShowRepository;
@@ -16,7 +16,7 @@ public class CheckCompletedTmdbJob
                                  ITvShowRepository tvShowRepository,
                                  ITMDBClient tmdbClient,
                                  IPerformanceTracker performanceTracker
-                              )
+    )
     {
         _logger = logger;
         _tvShowRepository = tvShowRepository;
@@ -28,6 +28,7 @@ public class CheckCompletedTmdbJob
     {
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "check-show-completed");
         var count = 0;
+        var showsToUpdate = new List<long>();
         foreach (var show in await _tvShowRepository.GetNonCompletedShows().ToArrayAsync(cancellationToken))
         {
             var details = await _tmdbClient.GetShowDetailsByIdAsync(show.TmdbId!.Value, cancellationToken);
@@ -40,13 +41,12 @@ public class CheckCompletedTmdbJob
             {
                 continue;
             }
-            
+
             show.IsCompleted = true;
             show.LastSeasonRefreshed = null;
 
-            BackgroundJob.Enqueue<RefreshSingleShowJob>(job => job.ExecuteAsync(show.Id, default));
+            showsToUpdate.Add(show.Id);
 
-  
 
             if (++count % 50 == 0)
             {
@@ -57,5 +57,10 @@ public class CheckCompletedTmdbJob
 
         _logger.LogInformation("Update completed state for {count} shows", count);
         await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
+        
+        foreach (var showId in showsToUpdate)
+        {
+            BackgroundJob.Enqueue<RefreshSingleShowJob>(job => job.ExecuteAsync(showId, default));
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TvMovieDatabaseClient.Model.Mapping;
 using TvMovieDatabaseClient.Model.Movie;
 using TvMovieDatabaseClient.Model.Movie.Search;
 using TvMovieDatabaseClient.Model.Show;
@@ -41,4 +42,20 @@ public interface ITMDBClient
     /// <param name="token"></param>
     /// <returns></returns>
     Task<MovieDetails?> GetMovieDetailsByIdAsync(int showId, CancellationToken token);
+
+    /// <summary>
+    /// Get show external ids by Id
+    /// </summary>
+    /// <param name="showId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task<ExternalIds?> GetShowExternalIdsAsync(int showId, CancellationToken token);
+
+    /// <summary>
+    /// Get movie external ids by Id
+    /// </summary>
+    /// <param name="movieId"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task<ExternalIds?> GetMovieExternalIdsAsync(int movieId, CancellationToken token);
 }

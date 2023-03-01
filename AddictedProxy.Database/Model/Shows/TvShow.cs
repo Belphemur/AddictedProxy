@@ -40,9 +40,14 @@ public class TvShow : IDiscoverableObject
     public int Priority { get; set; } = 0;
     
     /// <summary>
-    /// Id in the Tmdb database for shows
+    /// Id in the Tmdb database for show/movie
     /// </summary>
     public int? TmdbId { get; set; }
+    
+    /// <summary>
+    /// Id in the TvDb database for show
+    /// </summary>
+    public int? TvdbId { get; set; }
     
     /// <summary>
     /// Is the show completed. No more episode coming.

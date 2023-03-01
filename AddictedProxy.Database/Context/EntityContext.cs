@@ -1,6 +1,7 @@
 ﻿#region
 
 using AddictedProxy.Database.Model.Credentials;
+using AddictedProxy.Database.Model.Migration;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,10 +19,6 @@ public class EntityContext : DbContext
     public EntityContext(DbContextOptions options) : base(options)
     {
         _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
-        if (_connectionString == null)
-        {
-            throw new ArgumentException("Need to have a DB_CONNECTION Env variable to connect to Mysql/MariaDB");
-        }
     }
 
     internal EntityContext() : this(new DbContextOptions<EntityContext>())
@@ -33,6 +30,8 @@ public class EntityContext : DbContext
     public DbSet<Episode> Episodes { get; set; } = null!;
     public DbSet<Season> Seasons { get; set; } = null!;
     public DbSet<AddictedUserCredentials> AddictedUserCreds { get; set; } = null!;
+    
+    public DbSet<OneTimeMigrationRelease> OneTimeMigrationRelease { get; set; } = null!;
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

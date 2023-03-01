@@ -47,8 +47,11 @@ public class MapShowTmdbJob
                 continue;
             }
 
+            var externalIds = await _tmdbClient.GetShowExternalIdsAsync(result.Id, cancellationToken);
+
             show.TmdbId = details.Id;
             show.IsCompleted = details.Status == "Ended";
+            show.TvdbId = externalIds?.TvdbId;
             if (++count % 50 == 0)
             {
                 _logger.LogInformation("Found TMDB info for {count} shows", count);
@@ -73,10 +76,13 @@ public class MapShowTmdbJob
             {
                 continue;
             }
+            
+            var externalIds = await _tmdbClient.GetMovieExternalIdsAsync(result.Id, cancellationToken);
 
             show.TmdbId = details.Id;
             show.IsCompleted = true;
             show.Type = ShowType.Movie;
+            show.TvdbId = externalIds?.TvdbId;
             if (++count % 50 == 0)
             {
                 _logger.LogInformation("Found TMDB info for {count} movies", count);
