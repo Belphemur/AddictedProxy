@@ -1,3 +1,29 @@
+## [4.3.0](https://github.com/Belphemur/AddictedProxy/compare/v4.2.14...v4.3.0) (2023-03-01)
+
+
+### Features
+
+* **Migration:** Add migration module for code migration ([9d964fe](https://github.com/Belphemur/AddictedProxy/commit/9d964febf8a108ab3b3e9d01e540403a68960ef0))
+* **Migration:** Add one time migration ([d45eb7e](https://github.com/Belphemur/AddictedProxy/commit/d45eb7e3443210b4a58759b60a7f3bb231ac3c1a))
+* **Tmdb:** Add getting external ids ([2ee2770](https://github.com/Belphemur/AddictedProxy/commit/2ee2770d144f27b87316469dcc4253a4bafe729d))
+* **TvDb:** Add TvDb id to show ([81a3502](https://github.com/Belphemur/AddictedProxy/commit/81a35029e68e8109bee4e5cb9c92727b04967730))
+* **tvdb:** Populate the tvdb ids for existing shows ([ac84ea9](https://github.com/Belphemur/AddictedProxy/commit/ac84ea98bbe5c07482e7f3530f9491583617915c))
+
+
+### Bug Fixes
+
+* **Migration:** be sure the migration run in own scope ([b0e4bc9](https://github.com/Belphemur/AddictedProxy/commit/b0e4bc9f5dce321d712ba9647c7c65fcb752c8cd))
+* **MigrationDate:** Fix date attribute for migration ([3f2f8a2](https://github.com/Belphemur/AddictedProxy/commit/3f2f8a26c375fcdaeda98f7ccfa1a7f2a6ccfbcc))
+* **Project:** Fix project setup ([46f69f7](https://github.com/Belphemur/AddictedProxy/commit/46f69f7efded46bd34f6e4c4bee19381b9c86dac))
+* **Refresh::Ended:** Be sure to refresh ended show after the db has been updated ([1950340](https://github.com/Belphemur/AddictedProxy/commit/195034093a1a5013de95f32be6695612d0a0256b))
+
+
+### Performance improvements
+
+* **ratelimiting:** Keep exemplar ([a5ecff8](https://github.com/Belphemur/AddictedProxy/commit/a5ecff8c77860d09429457409bbb71c04d167c1d))
+* **Telemetry:** make description optional ([33a063d](https://github.com/Belphemur/AddictedProxy/commit/33a063dc0f1553d36192d7a302e9169cc5ff71d4))
+* **Tmdb:** Map the tvdb_id when matching shows ([dd2f037](https://github.com/Belphemur/AddictedProxy/commit/dd2f037f3edeb1fec62eaa724585aef9efd21cd0))
+
 ## [4.2.14](https://github.com/Belphemur/AddictedProxy/compare/v4.2.13...v4.2.14) (2023-02-26)
 
 
