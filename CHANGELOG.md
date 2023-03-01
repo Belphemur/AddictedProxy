@@ -1,3 +1,10 @@
+## [4.5.1](https://github.com/Belphemur/AddictedProxy/compare/v4.5.0...v4.5.1) (2023-03-01)
+
+
+### Bug Fixes
+
+* **Show:** Updating shows losing data ([5495ae7](https://github.com/Belphemur/AddictedProxy/commit/5495ae7847e32533a9f0fa6c7672a0018e11e704))
+
 ## [4.5.0](https://github.com/Belphemur/AddictedProxy/compare/v4.4.9...v4.5.0) (2023-03-01)
 
 
