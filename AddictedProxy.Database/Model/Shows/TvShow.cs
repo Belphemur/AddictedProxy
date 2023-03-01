@@ -9,6 +9,7 @@ namespace AddictedProxy.Database.Model.Shows;
 
 [Index(nameof(ExternalId), IsUnique = true)]
 [Index(nameof(UniqueId), IsUnique = true)]
+[Index(nameof(TvdbId))]
 public class TvShow : IDiscoverableObject
 {
     [Key]
