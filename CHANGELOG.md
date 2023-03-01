@@ -1,3 +1,10 @@
+## [4.4.1](https://github.com/Belphemur/AddictedProxy/compare/v4.4.0...v4.4.1) (2023-03-01)
+
+
+### Bug Fixes
+
+* **TvDb:** Force resyncing the tvDb ([ee83351](https://github.com/Belphemur/AddictedProxy/commit/ee833510f05479a4aefdc3e800d0036865ec476c))
+
 ## [4.4.0](https://github.com/Belphemur/AddictedProxy/compare/v4.3.0...v4.4.0) (2023-03-01)
 
 
