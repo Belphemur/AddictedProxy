@@ -17,8 +17,6 @@ public partial class MapShowTmdbJob
     private readonly IPerformanceTracker _performanceTracker;
     private readonly ITvShowRepository _tvShowRepository;
     private readonly IDetailsProvider _detailsProvider;
-    private readonly Regex _releaseYear = ReleaseYearRegex();
-    private readonly Regex _country = CountryRegex();
 
 
     public MapShowTmdbJob(ILogger<MapShowTmdbJob> logger, IPerformanceTracker performanceTracker, ITvShowRepository tvShowRepository, IDetailsProvider detailsProvider)
@@ -39,8 +37,8 @@ public partial class MapShowTmdbJob
         var countNotMatched = 0;
         foreach (var show in await _tvShowRepository.GetShowWithoutTmdbIdAsync().ToArrayAsync(cancellationToken))
         {
-            var dateMatch = _releaseYear.Match(show.Name);
-            var countryMatch = _country.Match(show.Name);
+            var dateMatch = ShowNameRegexes.ReleaseYearRegex().Match(show.Name);
+            var countryMatch = ShowNameRegexes.CountryRegex().Match(show.Name);
 
             var showInfo = await _detailsProvider.GetShowInfoAsync(show, searchResult =>
             {
@@ -90,7 +88,7 @@ public partial class MapShowTmdbJob
         count = 0;
         foreach (var show in mightBeMovie)
         {
-            var dateMatch = _releaseYear.Match(show.Name);
+            var dateMatch = ShowNameRegexes.ReleaseYearRegex().Match(show.Name);
 
             var movieInfo = await _detailsProvider.GetMovieInfoAsync(show, searchResult =>
             {
@@ -117,10 +115,4 @@ public partial class MapShowTmdbJob
         _logger.LogInformation("Found TMDB info for {count} movies", count);
         await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
     }
-
-    [GeneratedRegex(@"\((\d{4})\)", RegexOptions.Compiled)]
-    private static partial Regex ReleaseYearRegex();
-
-    [GeneratedRegex(@"\(([A-Z]{2})\)", RegexOptions.Compiled)]
-    private static partial Regex CountryRegex();
 }

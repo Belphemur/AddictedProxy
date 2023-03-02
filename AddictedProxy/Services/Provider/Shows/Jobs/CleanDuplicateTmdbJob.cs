@@ -36,13 +36,13 @@ public partial class CleanDuplicateTmdbJob
         //Only works when we have only 2 that are dupe, more than that and its quite complex
         foreach (var (_, shows) in duplicateTvShow.Where(pair => pair.Value.Length == 2))
         {
-            if (await CheckShowWithAsync(shows, ReleaseYearRegex(), (result, year) => !result.FirstAirDate.StartsWith(year), token))
+            if (await CheckShowWithAsync(shows, ShowNameRegexes.ReleaseYearRegex(), (result, year) => !result.FirstAirDate.StartsWith(year), token))
             {
                 count++;
                 continue;
             }
 
-            if (await CheckShowWithAsync(shows, CountryRegex(), (result, country) =>
+            if (await CheckShowWithAsync(shows, ShowNameRegexes.CountryRegex(), (result, country) =>
                 {
                     var cleanCountry = CountryCleanup.AddictedCountryToTmdb(country);
                     return !result.OriginCountry.Contains(cleanCountry);
@@ -84,9 +84,5 @@ public partial class CleanDuplicateTmdbJob
         return true;
     }
 
-    [GeneratedRegex(@"\((\d{4})\)", RegexOptions.Compiled)]
-    private static partial Regex ReleaseYearRegex();
 
-    [GeneratedRegex(@"\(([A-Z]{2})\)", RegexOptions.Compiled)]
-    private static partial Regex CountryRegex();
 }
