@@ -3,6 +3,7 @@
 using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
+using AddictedProxy.Services.Provider.ShowInfo;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Services.Provider.Subtitle;
@@ -23,5 +24,6 @@ public class BootstrapProvider : IBootstrap
         services.Configure<RefreshConfig>(configuration.GetSection("Refresh"));
         services.AddSingleton<IRefreshHubManager, RefreshHubManager>();
         services.AddScoped<SubtitleCounterUpdater>();
+        services.AddScoped<IDetailsProvider, DetailsProvider>();
     }
 }
