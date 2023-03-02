@@ -1,3 +1,12 @@
+## [4.5.4](https://github.com/Belphemur/AddictedProxy/compare/v4.5.3...v4.5.4) (2023-03-02)
+
+
+### Performance improvements
+
+* **tmdb:** Cleanup the code to remove repetitive one ([a38b176](https://github.com/Belphemur/AddictedProxy/commit/a38b176dbb707112f7826214463ca64a663b04d7))
+* **Tmdb:** Improve the code of mapping shows/movie ([6abd7ab](https://github.com/Belphemur/AddictedProxy/commit/6abd7ab2fcf4b0de4b45bc44315c0f6eda9eea51))
+* **tmdb:** Move all regex into own file ([cf39a4a](https://github.com/Belphemur/AddictedProxy/commit/cf39a4aa05d8eaaa834581720ead6e751965a8c3))
+
 ## [4.5.3](https://github.com/Belphemur/AddictedProxy/compare/v4.5.2...v4.5.3) (2023-03-01)
 
 
