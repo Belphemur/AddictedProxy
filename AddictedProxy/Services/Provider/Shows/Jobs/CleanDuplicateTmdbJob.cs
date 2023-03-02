@@ -1,6 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Services.Provider.ShowInfo;
+using AddictedProxy.Utils;
 using Performance.Service;
 using TvMovieDatabaseClient.Model.Mapping;
 using TvMovieDatabaseClient.Model.Show;
@@ -12,16 +14,16 @@ namespace AddictedProxy.Services.Provider.Shows.Jobs;
 public partial class CleanDuplicateTmdbJob
 {
     private readonly ITvShowRepository _tvShowRepository;
-    private readonly ITMDBClient _tmdbClient;
     private readonly IPerformanceTracker _performanceTracker;
     private readonly ILogger<CleanDuplicateTmdbJob> _logger;
+    private readonly IDetailsProvider _detailsProvider;
 
-    public CleanDuplicateTmdbJob(ITvShowRepository tvShowRepository, ITMDBClient tmdbClient, IPerformanceTracker performanceTracker, ILogger<CleanDuplicateTmdbJob> logger)
+    public CleanDuplicateTmdbJob(ITvShowRepository tvShowRepository, IPerformanceTracker performanceTracker, ILogger<CleanDuplicateTmdbJob> logger, IDetailsProvider detailsProvider)
     {
         _tvShowRepository = tvShowRepository;
-        _tmdbClient = tmdbClient;
         _performanceTracker = performanceTracker;
         _logger = logger;
+        _detailsProvider = detailsProvider;
     }
 
     public async Task ExecuteAsync(CancellationToken token)
@@ -42,17 +44,14 @@ public partial class CleanDuplicateTmdbJob
 
             if (await CheckShowWithAsync(shows, CountryRegex(), (result, country) =>
                 {
-                    var cleanCountry = country switch
-                    {
-                        "UK" => "GB",
-                        _    => country
-                    };
+                    var cleanCountry = CountryCleanup.AddictedCountryToTmdb(country);
                     return !result.OriginCountry.Contains(cleanCountry);
                 }, token))
             {
                 count++;
             }
         }
+
         _logger.LogInformation("Deduped {count} shows", count);
         await _tvShowRepository.BulkSaveChangesAsync(token);
     }
@@ -73,7 +72,7 @@ public partial class CleanDuplicateTmdbJob
 
         var showToUpdate = shows.Single(show => show.Id != showWithMatch.Show.Id);
 
-        var showInfo = await GetShowInfoAsync(showToUpdate, result => filter(result, showWithMatch.Match), cancellationToken);
+        var showInfo = await _detailsProvider.GetShowInfoAsync(showToUpdate, result => filter(result, showWithMatch.Match), cancellationToken);
         if (showInfo == default)
         {
             return false;
@@ -85,28 +84,9 @@ public partial class CleanDuplicateTmdbJob
         return true;
     }
 
-    private async Task<(ShowDetails Details, ExternalIds? ExternalIds)> GetShowInfoAsync(TvShow showToUpdate, Func<ShowSearchResult, bool> filter, CancellationToken cancellationToken)
-    {
-        var showInfo = await _tmdbClient.SearchTvAsync(NameCleanerRegex().Replace(showToUpdate.Name, "").Replace("BBC ", ""), cancellationToken)
-                                        .Where(filter)
-                                        .SelectAwaitWithCancellation(async (result, token) => await _tmdbClient.GetShowDetailsByIdAsync(result.Id, token))
-                                        .Where(details => details != null)
-                                        .SelectAwaitWithCancellation(async (details, token) =>
-                                        {
-                                            var externalIds = await _tmdbClient.GetShowExternalIdsAsync(details!.Id, token);
-                                            return (Details: details, ExternalIds: externalIds);
-                                        })
-                                        .FirstOrDefaultAsync(cancellationToken);
-        return showInfo;
-    }
-
-
     [GeneratedRegex(@"\((\d{4})\)", RegexOptions.Compiled)]
     private static partial Regex ReleaseYearRegex();
 
     [GeneratedRegex(@"\(([A-Z]{2})\)", RegexOptions.Compiled)]
     private static partial Regex CountryRegex();
-
-    [GeneratedRegex("\\s[\\(\\[].+[\\)\\]]", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
-    private static partial Regex NameCleanerRegex();
 }
