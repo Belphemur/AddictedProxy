@@ -16,19 +16,16 @@ public partial class MapShowTmdbJob
     private readonly ILogger<MapShowTmdbJob> _logger;
     private readonly IPerformanceTracker _performanceTracker;
     private readonly ITvShowRepository _tvShowRepository;
-    private readonly ITMDBClient _tmdbClient;
     private readonly IDetailsProvider _detailsProvider;
-    private readonly Regex _nameCleaner = NameCleanerRegex();
     private readonly Regex _releaseYear = ReleaseYearRegex();
     private readonly Regex _country = CountryRegex();
 
 
-    public MapShowTmdbJob(ILogger<MapShowTmdbJob> logger, IPerformanceTracker performanceTracker, ITvShowRepository tvShowRepository, ITMDBClient tmdbClient, IDetailsProvider detailsProvider)
+    public MapShowTmdbJob(ILogger<MapShowTmdbJob> logger, IPerformanceTracker performanceTracker, ITvShowRepository tvShowRepository, IDetailsProvider detailsProvider)
     {
         _logger = logger;
         _performanceTracker = performanceTracker;
         _tvShowRepository = tvShowRepository;
-        _tmdbClient = tmdbClient;
         _detailsProvider = detailsProvider;
     }
 
@@ -120,9 +117,6 @@ public partial class MapShowTmdbJob
         _logger.LogInformation("Found TMDB info for {count} movies", count);
         await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
     }
-
-    [GeneratedRegex("\\s[\\(\\[].+[\\)\\]]", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
-    private static partial Regex NameCleanerRegex();
 
     [GeneratedRegex(@"\((\d{4})\)", RegexOptions.Compiled)]
     private static partial Regex ReleaseYearRegex();
