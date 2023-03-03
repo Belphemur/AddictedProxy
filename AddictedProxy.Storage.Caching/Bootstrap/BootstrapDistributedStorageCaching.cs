@@ -1,4 +1,3 @@
-using AddictedProxy.Storage.Caching.Model;
 using AddictedProxy.Storage.Caching.Service;
 using InversionOfControl.Model;
 using Microsoft.Extensions.Caching.Distributed;
