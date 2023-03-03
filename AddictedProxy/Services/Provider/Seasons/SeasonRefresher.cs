@@ -78,12 +78,13 @@ public class SeasonRefresher : ISeasonRefresher
         }
 
         var seasons = (await _addic7EdClient.GetSeasonsAsync(credentials.AddictedUserCredentials, show, token)).ToArray();
-        await using var transaction = await _transactionManager.BeginNestedAsync(token);
-        await _seasonRepository.InsertNewSeasonsAsync(show.Id, seasons, token);
-        show.LastSeasonRefreshed = DateTime.UtcNow;
-        await _tvShowRepository.UpdateShowAsync(show, token);
-        _logger.LogInformation("Fetched {number} seasons of {show}", seasons.Length, show.Name);
-        await transaction.CommitAsync(token);
+        await _transactionManager.WrapInTransactionAsync(async () =>
+        {
+            await _seasonRepository.InsertNewSeasonsAsync(show.Id, seasons, token);
+            show.LastSeasonRefreshed = DateTime.UtcNow;
+            await _tvShowRepository.UpdateShowAsync(show, token);
+            _logger.LogInformation("Fetched {number} seasons of {show}", seasons.Length, show.Name);
+        }, token);
     }
 
     /// <summary>
