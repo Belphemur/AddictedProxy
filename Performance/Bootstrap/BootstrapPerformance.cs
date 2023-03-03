@@ -4,7 +4,6 @@ using InversionOfControl.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NeoSmart.Caching.Sqlite.Instrumentation;
 using OpenTelemetry.Resources;
 using Prometheus;
 using Performance.Service;
@@ -39,13 +38,11 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
                         .AddHttpClientInstrumentation()
                         .AddAspNetCoreInstrumentation()
                         .AddHangfireInstrumentation()
-                        .AddSqlCacheInstrumentation()
                         .AddEntityFrameworkCoreInstrumentation(options =>
                         {
                             options.SetDbStatementForText = true;
                             options.SetDbStatementForStoredProcedure = true;
                         })
-                        .AddRedisInstrumentation(configure: options => options.SetVerboseDatabaseStatements = true)
 #if !DEBUG
                         .AddOtlpExporter(options =>
                         {

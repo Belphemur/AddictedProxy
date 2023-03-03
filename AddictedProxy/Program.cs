@@ -64,7 +64,7 @@ var currentAssemblies = new[]
     typeof(BootstrapPerformance).Assembly,
     typeof(BootstrapStatsPopularityShow).Assembly,
     typeof(BootstrapTMDB).Assembly,
-    typeof(BootstrapDistributedCaching).Assembly,
+    typeof(BootstrapRedisCaching).Assembly,
     typeof(BootstrapCulture).Assembly,
     typeof(BootstrapStorageCaching).Assembly,
     typeof(BootstrapMigration).Assembly

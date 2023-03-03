@@ -7,10 +7,10 @@ public class StorageCachingConfig : CachingConfig
     public enum Type
     {
         Distributed,
-        Sqlite
+        Postgres
     }
 
     public Type StorageType { get; set; }
-    
+
     public string? CachePath { get; set; }
 }
