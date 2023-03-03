@@ -101,6 +101,10 @@ public partial class MapShowTmdbJob
                 return takeResult;
             }, cancellationToken);
 
+            if (movieInfo == default)
+            {
+                continue;
+            }
             show.TmdbId = movieInfo.Details.Id;
             show.IsCompleted = true;
             show.Type = ShowType.Movie;
