@@ -1,3 +1,10 @@
+## [4.5.7](https://github.com/Belphemur/AddictedProxy/compare/v4.5.6...v4.5.7) (2023-03-03)
+
+
+### Bug Fixes
+
+* **db::transaction:** Be sure the transaction is properly wrap into execution strategy. ([92ae5d9](https://github.com/Belphemur/AddictedProxy/commit/92ae5d95bcd9b6984bc10b8ee8c655877ca1ed52))
+
 ## [4.5.6](https://github.com/Belphemur/AddictedProxy/compare/v4.5.5...v4.5.6) (2023-03-03)
 
 
