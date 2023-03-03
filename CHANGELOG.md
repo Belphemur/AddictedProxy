@@ -1,3 +1,16 @@
+## [4.5.5](https://github.com/Belphemur/AddictedProxy/compare/v4.5.4...v4.5.5) (2023-03-03)
+
+
+### Bug Fixes
+
+* **tmdb:** Fix mapping movies ([a951716](https://github.com/Belphemur/AddictedProxy/commit/a951716b754eaa789568f710ac68b24df588053b))
+
+
+### Performance improvements
+
+* **Caching:** Use postgres for caching purpose ([91010cb](https://github.com/Belphemur/AddictedProxy/commit/91010cbbed4d92cad5227ceb491f91ebc0fe40e1))
+* **DB:** Use proper connection strings ([09089cf](https://github.com/Belphemur/AddictedProxy/commit/09089cf27d6f25d5d0c41dd75de5967c919c380b))
+
 ## [4.5.4](https://github.com/Belphemur/AddictedProxy/compare/v4.5.3...v4.5.4) (2023-03-02)
 
 
