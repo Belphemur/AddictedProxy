@@ -27,38 +27,41 @@ public class EpisodeRepository : IEpisodeRepository
     /// </summary>
     public async Task UpsertEpisodes(IEnumerable<Episode> episodes, CancellationToken token)
     {
-        await using var transaction = await _transactionManager.BeginNestedAsync(token);
-        var enumerable = episodes as Episode[] ?? episodes.ToArray();
-        //Nothing to do, no new episodes
-        if (enumerable.Length == 0)
+        await _transactionManager.WrapInTransactionAsync(async () =>
         {
-            return;
-        }
-        await _entityContext.Episodes.BulkMergeAsync(enumerable, options =>
-        {
-            options.IncludeGraph = true;
-            options.IncludeGraphOperationBuilder = operation =>
+            var enumerable = episodes as Episode[] ?? episodes.ToArray();
+            //Nothing to do, no new episodes
+            if (enumerable.Length == 0)
             {
-                switch (operation)
+                return;
+            }
+
+            await _entityContext.Episodes.BulkMergeAsync(enumerable, options =>
+            {
+                options.IncludeGraph = true;
+                options.IncludeGraphOperationBuilder = operation =>
                 {
-                    case BulkOperation<Subtitle> bulkSub:
-                        bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Id, subtitle.Discovered, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount, subtitle.UniqueId };
-                        bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.DownloadUri };
-                        bulkSub.IgnoreOnMergeInsertExpression = subtitle => new { subtitle.Id };
-                        break;
-                    case BulkOperation<Episode> bulkEp:
-                        bulkEp.ColumnPrimaryKeyExpression = episode => new { episode.TvShowId, episode.Season, episode.Number };
-                        bulkEp.IgnoreOnMergeUpdateExpression = episode => new {episode.Id, episode.Discovered};
-                        bulkEp.IgnoreOnMergeInsertExpression = episode => episode.Id;
-                        break;
-                    case BulkOperation<TvShow> bulkShow:
-                        bulkShow.IsReadOnly = true;
-                        break;
-                }
-            };
+                    switch (operation)
+                    {
+                        case BulkOperation<Subtitle> bulkSub:
+                            bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Id, subtitle.Discovered, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount, subtitle.UniqueId };
+                            bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.DownloadUri };
+                            bulkSub.IgnoreOnMergeInsertExpression = subtitle => new { subtitle.Id };
+                            break;
+                        case BulkOperation<Episode> bulkEp:
+                            bulkEp.ColumnPrimaryKeyExpression = episode => new { episode.TvShowId, episode.Season, episode.Number };
+                            bulkEp.IgnoreOnMergeUpdateExpression = episode => new { episode.Id, episode.Discovered };
+                            bulkEp.IgnoreOnMergeInsertExpression = episode => episode.Id;
+                            break;
+                        case BulkOperation<TvShow> bulkShow:
+                            bulkShow.IsReadOnly = true;
+                            break;
+                    }
+                };
+            }, token);
         }, token);
 
-        await transaction.CommitAsync(token);
+
     }
 
     /// <summary>
