@@ -28,14 +28,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Upstream.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Storage.Caching", "AddictedProxy.Storage.Caching\AddictedProxy.Storage.Caching.csproj", "{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqliteCache", "Vendor\SqliteCache\SqliteCache.csproj", "{D06021BD-CACB-4DEE-B101-D8B0442A6972}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vendor", "Vendor", "{EE87092D-A90C-461C-AE24-D6C0709BA442}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqliteCache.Tests", "Vendor\SqliteCache.Tests\SqliteCache.Tests.csproj", "{2F53B50A-D412-4998-9D2E-CB5FBDB79007}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Instrumentation", "Vendor\Instrumentation\Instrumentation.csproj", "{50148CD5-822F-4C48-97D9-1D8A69AEAA22}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.OneTimeMigration", "AddictedProxy.OneTimeMigration\AddictedProxy.OneTimeMigration.csproj", "{BE2C6CE9-D444-4FE5-B172-7850593DB6E2}"
 EndProject
 Global
@@ -100,26 +92,11 @@ Global
 		{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D06021BD-CACB-4DEE-B101-D8B0442A6972}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D06021BD-CACB-4DEE-B101-D8B0442A6972}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D06021BD-CACB-4DEE-B101-D8B0442A6972}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D06021BD-CACB-4DEE-B101-D8B0442A6972}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F53B50A-D412-4998-9D2E-CB5FBDB79007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F53B50A-D412-4998-9D2E-CB5FBDB79007}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F53B50A-D412-4998-9D2E-CB5FBDB79007}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F53B50A-D412-4998-9D2E-CB5FBDB79007}.Release|Any CPU.Build.0 = Release|Any CPU
-		{50148CD5-822F-4C48-97D9-1D8A69AEAA22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50148CD5-822F-4C48-97D9-1D8A69AEAA22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50148CD5-822F-4C48-97D9-1D8A69AEAA22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50148CD5-822F-4C48-97D9-1D8A69AEAA22}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BE2C6CE9-D444-4FE5-B172-7850593DB6E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BE2C6CE9-D444-4FE5-B172-7850593DB6E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE2C6CE9-D444-4FE5-B172-7850593DB6E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE2C6CE9-D444-4FE5-B172-7850593DB6E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{D06021BD-CACB-4DEE-B101-D8B0442A6972} = {EE87092D-A90C-461C-AE24-D6C0709BA442}
-		{2F53B50A-D412-4998-9D2E-CB5FBDB79007} = {EE87092D-A90C-461C-AE24-D6C0709BA442}
-		{50148CD5-822F-4C48-97D9-1D8A69AEAA22} = {EE87092D-A90C-461C-AE24-D6C0709BA442}
 	EndGlobalSection
 EndGlobal

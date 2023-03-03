@@ -11,14 +11,8 @@ namespace AddictedProxy.Database.Context;
 
 public class EntityContext : DbContext
 {
-    /// <summary>
-    /// Only needed for MariaDB/MYSQL
-    /// </summary>
-    private readonly string? _connectionString;
-
     public EntityContext(DbContextOptions options) : base(options)
     {
-        _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
     }
 
     internal EntityContext() : this(new DbContextOptions<EntityContext>())
@@ -30,12 +24,6 @@ public class EntityContext : DbContext
     public DbSet<Episode> Episodes { get; set; } = null!;
     public DbSet<Season> Seasons { get; set; } = null!;
     public DbSet<AddictedUserCredentials> AddictedUserCreds { get; set; } = null!;
-    
+
     public DbSet<OneTimeMigrationRelease> OneTimeMigrationRelease { get; set; } = null!;
-
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql(_connectionString);
-    }
 }

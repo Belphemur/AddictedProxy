@@ -8,7 +8,7 @@ using StackExchange.Redis;
 
 namespace AddictedProxy.Caching.Bootstrap;
 
-public class BootstrapDistributedCaching : IBootstrap, IBootstrapConditional
+public class BootstrapRedisCaching : IBootstrapConditional
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
@@ -25,6 +25,7 @@ public class BootstrapDistributedCaching : IBootstrap, IBootstrapConditional
 
     public bool ShouldLoadBootstrap(IConfiguration configuration)
     {
-        return Environment.GetEnvironmentVariable("CACHE")?.ToLower() == "redis";
+        return configuration.GetSection("Caching:Provider").Get<string>() == "redis";
+
     }
 }

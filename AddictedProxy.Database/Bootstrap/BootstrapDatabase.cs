@@ -7,6 +7,7 @@ using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Database.Transaction;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,7 +21,11 @@ public class BootstrapDatabase : IBootstrap,
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddHostedService<SetupEfCoreHostedService>();
-        services.AddDbContext<EntityContext>(builder => builder.EnableSensitiveDataLogging());
+        services.AddDbContext<EntityContext>(builder =>
+        {
+            builder.EnableSensitiveDataLogging();
+            builder.UseNpgsql(configuration.GetConnectionString("Addicted"));
+        });
 
         services.AddScoped<ITvShowRepository, TvShowRepository>();
 

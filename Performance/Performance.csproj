@@ -29,7 +29,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
-        <ProjectReference Include="..\Vendor\Instrumentation\Instrumentation.csproj" />
     </ItemGroup>
 
 </Project>
