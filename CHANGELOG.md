@@ -1,3 +1,11 @@
+## [4.5.6](https://github.com/Belphemur/AddictedProxy/compare/v4.5.5...v4.5.6) (2023-03-03)
+
+
+### Bug Fixes
+
+* **Config:** Fix configuration for storage caching ([f755fb4](https://github.com/Belphemur/AddictedProxy/commit/f755fb42e89a932bc4f082149423814e3e00e849))
+* **db:** enable retry on failure ([6cb1ee2](https://github.com/Belphemur/AddictedProxy/commit/6cb1ee263d2d06a54acb85a351fb9d613d694f13))
+
 ## [4.5.5](https://github.com/Belphemur/AddictedProxy/compare/v4.5.4...v4.5.5) (2023-03-03)
 
 
