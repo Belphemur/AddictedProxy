@@ -24,7 +24,10 @@ public class BootstrapDatabase : IBootstrap,
         services.AddDbContext<EntityContext>(builder =>
         {
             builder.EnableSensitiveDataLogging();
-            builder.UseNpgsql(configuration.GetConnectionString("Addicted"));
+            builder.UseNpgsql(configuration.GetConnectionString("Addicted"), optionsBuilder =>
+            {
+                optionsBuilder.EnableRetryOnFailure();
+            });
         });
 
         services.AddScoped<ITvShowRepository, TvShowRepository>();
