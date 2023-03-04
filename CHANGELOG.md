@@ -1,3 +1,10 @@
+## [4.5.11](https://github.com/Belphemur/AddictedProxy/compare/v4.5.10...v4.5.11) (2023-03-04)
+
+
+### Performance improvements
+
+* **uniquejob:** Refact naming ([45b6b06](https://github.com/Belphemur/AddictedProxy/commit/45b6b06a72859dbd3dfe26b8cbd905e75e657e98))
+
 ## [4.5.10](https://github.com/Belphemur/AddictedProxy/compare/v4.5.9...v4.5.10) (2023-03-04)
 
 
