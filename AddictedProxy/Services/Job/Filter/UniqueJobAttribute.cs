@@ -23,6 +23,7 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
         var fingerprintKey = GetFingerprintKey(job);
         var fingerprintLockKey = GetFingerprintLockKey(fingerprintKey);
         var distributedLock = connection.AcquireDistributedLock(fingerprintLockKey, LockTimeout);
+        
         using (distributedLock)
         {
             var fingerprint = connection.GetAllEntriesFromHash(fingerprintKey);
@@ -35,11 +36,13 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
 
             // Fingerprint does not exist, it is invalid (no `Timestamp` key),
             // or it is not actual (timeout expired).
-            connection.SetRangeInHash(fingerprintKey, new Dictionary<string, string>
+            using var writeOnlyTransaction = connection.CreateWriteTransaction();
+            writeOnlyTransaction.SetRangeInHash(fingerprintKey, new Dictionary<string, string>
             {
                 { "Timestamp", DateTimeOffset.UtcNow.ToString("o") }
             });
             creatingContext.SetJobParameter(FingerprintJobParameterKey, fingerprintKey);
+            writeOnlyTransaction.Commit();
 
             return true;
         }
