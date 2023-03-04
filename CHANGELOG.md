@@ -1,3 +1,10 @@
+## [4.5.8](https://github.com/Belphemur/AddictedProxy/compare/v4.5.7...v4.5.8) (2023-03-04)
+
+
+### Performance improvements
+
+* **Job:** Don't use redis anymore, use PGSQL for jobs ([e970414](https://github.com/Belphemur/AddictedProxy/commit/e9704147dd970d54f7b7231a63d69a33cce4a1d5))
+
 ## [4.5.7](https://github.com/Belphemur/AddictedProxy/compare/v4.5.6...v4.5.7) (2023-03-03)
 
 
