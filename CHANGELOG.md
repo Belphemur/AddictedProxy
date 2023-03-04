@@ -1,3 +1,10 @@
+## [4.5.14](https://github.com/Belphemur/AddictedProxy/compare/v4.5.13...v4.5.14) (2023-03-04)
+
+
+### Bug Fixes
+
+* **FetchSubtitle:** Fix empty number of subtitles ([e940f28](https://github.com/Belphemur/AddictedProxy/commit/e940f288cb02ea1e6428cb992180b5516149cb85))
+
 ## [4.5.13](https://github.com/Belphemur/AddictedProxy/compare/v4.5.12...v4.5.13) (2023-03-04)
 
 
