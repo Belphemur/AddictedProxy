@@ -1,3 +1,11 @@
+## [4.5.12](https://github.com/Belphemur/AddictedProxy/compare/v4.5.11...v4.5.12) (2023-03-04)
+
+
+### Performance improvements
+
+* **Deps:** Updates deps ([ec2c00a](https://github.com/Belphemur/AddictedProxy/commit/ec2c00a444a4c0d768bd4a9c932f07d40fb706a8))
+* **FetchJob:** Only schedule when we're sure the job is going to do something ([c3f141e](https://github.com/Belphemur/AddictedProxy/commit/c3f141ebeb0faea709e8f67c5bc138699f6fd43a))
+
 ## [4.5.11](https://github.com/Belphemur/AddictedProxy/compare/v4.5.10...v4.5.11) (2023-03-04)
 
 
