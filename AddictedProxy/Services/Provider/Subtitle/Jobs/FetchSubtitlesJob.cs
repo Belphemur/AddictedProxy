@@ -98,7 +98,7 @@ public class FetchSubtitlesJob
 
             var matchingSubtitles = await HasMatchingSubtitleAsync(data, episode, token);
 
-            var latestDiscovered = episode.Subtitles.Max(subtitle => subtitle.Discovered);
+            var latestDiscovered = episode.Subtitles.MaxBy(subtitle => subtitle.Discovered)?.Discovered ?? DateTime.UtcNow;
 
             if (matchingSubtitles || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(180))
             {
