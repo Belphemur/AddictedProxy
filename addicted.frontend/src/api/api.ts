@@ -131,6 +131,12 @@ export interface ShowDto {
    * @example [2,3,4,5,6]
    */
   seasons: number[];
+  /**
+   * Id of the show on the TvDB
+   * @format int32
+   * @example 344280
+   */
+  tvDbId?: number | null;
 }
 
 export interface ShowSearchResponse {
@@ -417,7 +423,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Gestdown: Addicted Proxy
- * @version 3.5.6
+ * @version 4.5.10
  *
  * Provide a full api to search and download subtitles from Addic7ed website.
  */
@@ -509,7 +515,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Start by using the /shows/search/SHOW_NAME to find the showUniqueId of the show you're interested in. Then use the subtitles/get/ endpoint to get subtitle for the episode you want.
      *
      * @tags Subtitles
      * @name GetSubtitles
@@ -542,6 +548,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     searchDetail: (search: string, params: RequestParams = {}) =>
       this.request<ShowSearchResponse, string>({
         path: `/shows/search/${search}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags TvShows
+     * @name ExternalTvdbDetail
+     * @summary Get a show by it's TvDB id: https://thetvdb.com/
+     * @request GET:/shows/external/tvdb/{tvdbId}
+     */
+    externalTvdbDetail: (tvdbId: number, params: RequestParams = {}) =>
+      this.request<ShowSearchResponse, string>({
+        path: `/shows/external/tvdb/${tvdbId}`,
         method: "GET",
         format: "json",
         ...params,
