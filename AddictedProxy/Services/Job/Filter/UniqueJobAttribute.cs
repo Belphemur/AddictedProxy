@@ -22,30 +22,26 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
     {
         var fingerprintKey = GetFingerprintKey(job);
         var fingerprintLockKey = GetFingerprintLockKey(fingerprintKey);
-        var distributedLock = connection.AcquireDistributedLock(fingerprintLockKey, LockTimeout);
-        
-        using (distributedLock)
+        using var distributedLock = connection.AcquireDistributedLock(fingerprintLockKey, LockTimeout);
+        var fingerprint = connection.GetAllEntriesFromHash(fingerprintKey);
+
+        if (fingerprint != null)
         {
-            var fingerprint = connection.GetAllEntriesFromHash(fingerprintKey);
-
-            if (fingerprint != null)
-            {
-                // Actual fingerprint found, returning.
-                return false;
-            }
-
-            // Fingerprint does not exist, it is invalid (no `Timestamp` key),
-            // or it is not actual (timeout expired).
-            using var transaction = connection.CreateWriteTransaction();
-            transaction.SetRangeInHash(fingerprintKey, new Dictionary<string, string>
-            {
-                { "Timestamp", DateTimeOffset.UtcNow.ToString("o") }
-            });
-            creatingContext.SetJobParameter(FingerprintJobParameterKey, fingerprintKey);
-            transaction.Commit();
-
-            return true;
+            // Actual fingerprint found, returning.
+            return false;
         }
+
+        // Fingerprint does not exist, it is invalid (no `Timestamp` key),
+        // or it is not actual (timeout expired).
+        using var transaction = connection.CreateWriteTransaction();
+        transaction.SetRangeInHash(fingerprintKey, new Dictionary<string, string>
+        {
+            { "Timestamp", DateTimeOffset.UtcNow.ToString("o") }
+        });
+        creatingContext.SetJobParameter(FingerprintJobParameterKey, fingerprintKey);
+        transaction.Commit();
+
+        return true;
     }
 
     private static void RemoveFingerprint(IStorageConnection connection, BackgroundJob job)
@@ -58,12 +54,10 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
         }
 
         var fingerprintLockKey = GetFingerprintLockKey(fingerprintKey);
-        using (connection.AcquireDistributedLock(fingerprintLockKey, LockTimeout))
-        using (var transaction = connection.CreateWriteTransaction())
-        {
-            transaction.RemoveHash(fingerprintKey);
-            transaction.Commit();
-        }
+        using var distributedLock = connection.AcquireDistributedLock(fingerprintLockKey, LockTimeout);
+        using var transaction = connection.CreateWriteTransaction();
+        transaction.RemoveHash(fingerprintKey);
+        transaction.Commit();
     }
 
     private static string GetFingerprintLockKey(string fingerprintKey)

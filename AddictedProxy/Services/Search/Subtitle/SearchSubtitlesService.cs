@@ -90,27 +90,15 @@ public class SearchSubtitlesService : ISearchSubtitlesService
 
         if (episode == null)
         {
-            if (season == null && !_seasonRefresher.IsShowNeedsRefresh(show))
-            {
-                _logger.LogInformation("Don't need to refresh seasons of show {show} returning empty data", show.Name);
-                return new SubtitleFound(ArraySegment<Database.Model.Shows.Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
-            }
-
-            if (season != null && !_episodeRefresher.IsSeasonNeedRefresh(show, season))
-            {
-                _logger.LogInformation("Don't need to refresh episodes of {season} of show {show} returning empty data", request.Season, show.Name);
-                return new SubtitleFound(ArraySegment<Database.Model.Shows.Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
-            }
-
-            ScheduleJob(request, show, language);
+            TryScheduleJob(request, show, season, language);
             return new SubtitleFound(ArraySegment<Database.Model.Shows.Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language);
         }
 
         var matchingSubtitles = await FindMatchingSubtitlesAsync(request, episode, token);
         //Only refresh if we couldn't find subtitle and the season list or episode/subtitle list needs to be refreshed
-        if (matchingSubtitles.Length == 0 && (_seasonRefresher.IsShowNeedsRefresh(show) || _episodeRefresher.IsSeasonNeedRefresh(show, season!)))
+        if (matchingSubtitles.Length == 0)
         {
-            ScheduleJob(request, show, language);
+            TryScheduleJob(request, show, season, language);
         }
 
         return new SubtitleFound(matchingSubtitles, new EpisodeDto(episode), language);
@@ -128,8 +116,21 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         return await search.ToArrayAsync(token);
     }
 
-    private void ScheduleJob(SearchPayload payload, TvShow show, Culture.Model.Culture language)
+    private void TryScheduleJob(SearchPayload payload, TvShow show, Season? season, Culture.Model.Culture language)
     {
+        if (season == null && !_seasonRefresher.IsShowNeedsRefresh(show))
+        {
+            _logger.LogInformation("Don't need to refresh seasons of show {show} returning empty data", show.Name);
+            return;
+        }
+
+        if (season != null && !_episodeRefresher.IsSeasonNeedRefresh(show, season))
+        {
+            _logger.LogInformation("Don't need to refresh episodes of {season} of show {show} returning empty data", payload.Season, show.Name);
+            return;
+        }
+
+
         var jobData = new FetchSubtitlesJob.JobData(show.Id, payload.Season, payload.Episode, language, payload.FileName);
 
         BackgroundJob.Enqueue<FetchSubtitlesJob>(subtitlesJob => subtitlesJob.ExecuteAsync(jobData, default));
