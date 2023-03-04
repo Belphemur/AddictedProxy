@@ -1,3 +1,10 @@
+## [4.5.10](https://github.com/Belphemur/AddictedProxy/compare/v4.5.9...v4.5.10) (2023-03-04)
+
+
+### Bug Fixes
+
+* **uniqueJob:** use proper writeOnlyTransaction ([869facd](https://github.com/Belphemur/AddictedProxy/commit/869facd6c56a6d4f980f96c8792fe1a2fc886b35))
+
 ## [4.5.9](https://github.com/Belphemur/AddictedProxy/compare/v4.5.8...v4.5.9) (2023-03-04)
 
 
