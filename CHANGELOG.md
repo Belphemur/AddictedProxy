@@ -1,3 +1,12 @@
+## [4.5.13](https://github.com/Belphemur/AddictedProxy/compare/v4.5.12...v4.5.13) (2023-03-04)
+
+
+### Bug Fixes
+
+* **ci:** always use LTS for node ([a1d74ee](https://github.com/Belphemur/AddictedProxy/commit/a1d74eecc9c133ae7a689ecd222eac5e750ae5b7))
+* **ci:** disable most github api ([eb9ce4b](https://github.com/Belphemur/AddictedProxy/commit/eb9ce4bc6df6de85dafa285ae05c8f704e2778e3))
+* **ci:** Fix dependencies of Semantic Release ([65400fa](https://github.com/Belphemur/AddictedProxy/commit/65400fa34096aa4196691765f5ad3bff45430c14))
+
 ## [4.5.12](https://github.com/Belphemur/AddictedProxy/compare/v4.5.11...v4.5.12) (2023-03-04)
 
 
