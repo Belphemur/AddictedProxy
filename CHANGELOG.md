@@ -1,3 +1,10 @@
+## [4.5.9](https://github.com/Belphemur/AddictedProxy/compare/v4.5.8...v4.5.9) (2023-03-04)
+
+
+### Performance improvements
+
+* **db:** use native transaction ([51f118d](https://github.com/Belphemur/AddictedProxy/commit/51f118d6f910e36f1fd9f50d7dbeb4ed05c3dd10))
+
 ## [4.5.8](https://github.com/Belphemur/AddictedProxy/compare/v4.5.7...v4.5.8) (2023-03-04)
 
 
