@@ -20,7 +20,11 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
                                      .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                                      .UseSimpleAssemblyNameTypeSerializer()
                                      .UseRecommendedSerializerSettings()
-                                     .UsePostgreSqlStorage(configuration.GetConnectionString("Job")));
+                                     .UsePostgreSqlStorage(configuration.GetConnectionString("Job"), new PostgreSqlStorageOptions
+                                     {
+                                         UseNativeDatabaseTransactions = true,
+                                         DistributedLockTimeout = TimeSpan.FromSeconds(30)
+                                     }));
 
         services.AddHangfireServer(options =>
         {
