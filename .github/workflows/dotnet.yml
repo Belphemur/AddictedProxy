@@ -14,7 +14,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   PROJECT_NAME: "AddictedProxy"
   PROJECT_NAME_FRONTEND: "AddictedProxy-frontend"
-  NODEJS: 16
+  NODEJS: lts
   DOTNET: "7.0.x"
   DOTNET_PRERELEASE: true
   SENTRY_NAME: "addictedproxy"
