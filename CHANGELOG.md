@@ -1,3 +1,10 @@
+## [4.5.15](https://github.com/Belphemur/AddictedProxy/compare/v4.5.14...v4.5.15) (2023-03-11)
+
+
+### Performance improvements
+
+* **deps:** update deps ([ab91fd0](https://github.com/Belphemur/AddictedProxy/commit/ab91fd0474d6a33251770b98d740d2ded6f1290b))
+
 ## [4.5.14](https://github.com/Belphemur/AddictedProxy/compare/v4.5.13...v4.5.14) (2023-03-04)
 
 
