@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import { Search, Collection, DataLine } from "@element-plus/icons-vue";
+import { Search, Collection, DataLine, Document } from "@element-plus/icons-vue";
 import { mevent } from "~/composables/matomo/event";
 
 const routes: Array<RouteRecordRaw> = [
@@ -75,6 +75,30 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "stats" */ "../views/StatsView.vue"),
+  },
+  {
+    path: "/Privacy",
+    name: "Privacy Policy",
+    meta: {
+      order: 30,
+      icon: Document,
+      title: "Gestdown: Privacy Policy",
+      metaTags: [
+        {
+          name: "description",
+          content: "Privacy Policy of Gestdown",
+        },
+        {
+          property: "og:description",
+          content: "Privacy Policy of Gestdown",
+        },
+      ],
+    },
+    // route level code-splitting
+    // this generates a separate chunk (api.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(/* webpackChunkName: "terms" */ "../views/Privacy.vue"),
   },
 ];
 
