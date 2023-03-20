@@ -40,20 +40,29 @@
           We do not share any visitor information with third-party websites or
           services, including Addic7ed.
         </p>
-        <h2>6. Metrics Collection</h2>
+        <h2>6. CDN Usage</h2>
+        <p>
+          We use Cloudflare as a content delivery network (CDN) to improve the
+          speed and security of our website. As part of this service, Cloudflare
+          may collect and process certain information, including IP addresses
+          and other data about website traffic, for the purpose of providing and
+          optimizing their services. For more information about Cloudflare's
+          privacy practices, please visit their website.
+        </p>
+        <h2>7. Metrics Collection</h2>
         <p>
           We aggregate the received requests to provide metrics used to monitor
           the health of the system. This data is not linked to any personal
           information and is used only to maintain the quality and availability
           of our services.
         </p>
-        <h2>7. Changes to this Privacy Policy</h2>
+        <h2>8. Changes to this Privacy Policy</h2>
         <p>
           We reserve the right to modify this Privacy Policy at any time. If we
           make material changes to this Privacy Policy, we will notify you by
           posting the changes on our website.
         </p>
-        <h2>8. Contact Us</h2>
+        <h2>9. Contact Us</h2>
         <p>
           If you have any questions about this Privacy Policy, please contact us
           at support@gestdown.info.
