@@ -1,3 +1,10 @@
+## [4.6.0](https://github.com/Belphemur/AddictedProxy/compare/v4.5.16...v4.6.0) (2023-03-20)
+
+
+### Features
+
+* **Privacy:** Add privacy policy to the website ([586ec7d](https://github.com/Belphemur/AddictedProxy/commit/586ec7d02496b72227c97579ac5e25036e034c26))
+
 ## [4.5.16](https://github.com/Belphemur/AddictedProxy/compare/v4.5.15...v4.5.16) (2023-03-15)
 
 
