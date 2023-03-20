@@ -1,3 +1,10 @@
+## [4.6.2](https://github.com/Belphemur/AddictedProxy/compare/v4.6.1...v4.6.2) (2023-03-20)
+
+
+### Performance improvements
+
+* **Privacy:** Touch up to be GDPR compliant ([f867adb](https://github.com/Belphemur/AddictedProxy/commit/f867adb078e9fc544317831e6b0332aa843e161f))
+
 ## [4.6.1](https://github.com/Belphemur/AddictedProxy/compare/v4.6.0...v4.6.1) (2023-03-20)
 
 
