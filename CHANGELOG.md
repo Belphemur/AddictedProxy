@@ -1,3 +1,10 @@
+## [4.6.1](https://github.com/Belphemur/AddictedProxy/compare/v4.6.0...v4.6.1) (2023-03-20)
+
+
+### Performance improvements
+
+* **Privacy:** Add usage of Cloudflare ([99574cc](https://github.com/Belphemur/AddictedProxy/commit/99574ccba97affd9523457dfd8be999b8599d489))
+
 ## [4.6.0](https://github.com/Belphemur/AddictedProxy/compare/v4.5.16...v4.6.0) (2023-03-20)
 
 
