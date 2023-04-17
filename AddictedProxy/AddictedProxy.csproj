@@ -65,6 +65,4 @@
         <_ContentIncludedByDefault Remove="publish\appsettings.Development.json" />
         <_ContentIncludedByDefault Remove="publish\appsettings.json" />
     </ItemGroup>
-
-
 </Project>
