@@ -37,7 +37,6 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
                         .AddSource(activitySource.Name)
                         .AddHttpClientInstrumentation()
                         .AddAspNetCoreInstrumentation()
-                        .AddHangfireInstrumentation()
                         .AddEntityFrameworkCoreInstrumentation(options =>
                         {
                             options.SetDbStatementForText = true;
