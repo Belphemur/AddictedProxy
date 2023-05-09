@@ -12,8 +12,8 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.3" />
-        <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="7.20.2" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
+        <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="7.21.1" />
         <PackageReference Include="System.Linq.Async" Version="6.0.1" />
 
     </ItemGroup>
