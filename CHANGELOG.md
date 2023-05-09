@@ -1,3 +1,15 @@
+## [4.6.4](https://github.com/Belphemur/AddictedProxy/compare/v4.6.3...v4.6.4) (2023-05-09)
+
+
+### Bug Fixes
+
+* **deps:** Fix missing dep ([55e8aef](https://github.com/Belphemur/AddictedProxy/commit/55e8aeff05128c8f97223d24635f034339986d12))
+
+
+### Performance improvements
+
+* **deps:** update deps ([7985d31](https://github.com/Belphemur/AddictedProxy/commit/7985d318c91a3d3a82e01a728b7bca2801158a1e))
+
 ## [4.6.3](https://github.com/Belphemur/AddictedProxy/compare/v4.6.2...v4.6.3) (2023-04-17)
 
 
