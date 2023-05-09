@@ -1,3 +1,10 @@
+## [4.6.5](https://github.com/Belphemur/AddictedProxy/compare/v4.6.4...v4.6.5) (2023-05-09)
+
+
+### Performance improvements
+
+* **pnpm:** fix version of pnpm ([e832c82](https://github.com/Belphemur/AddictedProxy/commit/e832c82822ace0351c80ee21f6e74f1cb891c51e))
+
 ## [4.6.4](https://github.com/Belphemur/AddictedProxy/compare/v4.6.3...v4.6.4) (2023-05-09)
 
 
