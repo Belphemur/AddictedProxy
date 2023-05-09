@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 FROM node:alpine as pnpm-installed
-ARG PNPM_VERSION=7.30.0
+ARG PNPM_VERSION=latest
 RUN npm i -g pnpm@${PNPM_VERSION}
 
 FROM pnpm-installed AS prod-deps-installed
