@@ -3,6 +3,7 @@ ARG DATA_DIRECTORY="/data"
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine AS base
 WORKDIR /app
+RUN wget -qO- https://github.com/grafana/pyroscope-dotnet/releases/download/v0.8.4-pyroscope/pyroscope.musl.tar.gz | tar xvz -C .
 EXPOSE 80
 EXPOSE 443
 
@@ -15,18 +16,12 @@ RUN dotnet build "${MAIN_PROJECT}.csproj" -c Release -o /app/build
 
 FROM build AS publish
 ARG MAIN_PROJECT
-RUN mkdir /tools && wget -qO- https://github.com/grafana/pyroscope-dotnet/releases/download/v0.8.4-pyroscope/pyroscope.musl.tar.gz | tar xvz -C /tools
 RUN dotnet publish "${MAIN_PROJECT}.csproj" -c Release -o /app/publish
 
 
 FROM base AS final
 ARG MAIN_PROJECT
 ARG NEW_RELIC_KEY
-
-
-# Copy dotnet-tools
-WORKDIR /tools
-COPY --from=publish /tools .
 
 WORKDIR /app
 COPY --from=publish /app/publish .
