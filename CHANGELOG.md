@@ -1,3 +1,10 @@
+## [4.6.10](https://github.com/Belphemur/AddictedProxy/compare/v4.6.9...v4.6.10) (2023-06-22)
+
+
+### Performance improvements
+
+* **pyroscope:** Try in different folder ([85f8ef1](https://github.com/Belphemur/AddictedProxy/commit/85f8ef104187c483dfadcccaa4e931cc4dae02d2))
+
 ## [4.6.9](https://github.com/Belphemur/AddictedProxy/compare/v4.6.8...v4.6.9) (2023-06-22)
 
 
