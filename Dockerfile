@@ -1,9 +1,11 @@
 ARG MAIN_PROJECT=AddictedProxy
 ARG DATA_DIRECTORY="/data"
+ARG PYRSCOPE_AGENT_VERSION="v0.8.4-pyroscope"
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine AS base
+ARG PYRSCOPE_AGENT_VERSION
 WORKDIR /app
-RUN wget -qO- https://github.com/grafana/pyroscope-dotnet/releases/download/v0.8.4-pyroscope/pyroscope.musl.tar.gz | tar xvz -C .
+RUN wget -qO- "https://github.com/grafana/pyroscope-dotnet/releases/download/${PYRSCOPE_AGENT_VERSION}/pyroscope.musl.tar.gz" | tar xvz -C /lib/
 EXPOSE 80
 EXPOSE 443
 
@@ -29,8 +31,8 @@ ENV PYROSCOPE_APPLICATION_NAME=${MAIN_PROJECT}
 ENV PYROSCOPE_APPLICATION_TAGS="env:prod"
 ENV CORECLR_ENABLE_PROFILING=1
 ENV CORECLR_PROFILER={BD1A650D-AC5D-4896-B64F-D6FA25D6B26A}
-ENV CORECLR_PROFILER_PATH=Pyroscope.Profiler.Native.so 
-ENV LD_PRELOAD=Pyroscope.Linux.ApiWrapper.x64.so
+ENV CORECLR_PROFILER_PATH=/lib/Pyroscope.Profiler.Native.so 
+ENV LD_PRELOAD=/lib/Pyroscope.Linux.ApiWrapper.x64.so
 RUN ln -s ${MAIN_PROJECT}.dll app.dll
 
 ENTRYPOINT ["dotnet", "app.dll"]
