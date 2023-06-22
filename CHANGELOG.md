@@ -1,3 +1,10 @@
+## [4.6.11](https://github.com/Belphemur/AddictedProxy/compare/v4.6.10...v4.6.11) (2023-06-22)
+
+
+### Performance improvements
+
+* use non alpine image ([c9f1586](https://github.com/Belphemur/AddictedProxy/commit/c9f1586d66e028828355432a35d82f96ef936445))
+
 ## [4.6.10](https://github.com/Belphemur/AddictedProxy/compare/v4.6.9...v4.6.10) (2023-06-22)
 
 
