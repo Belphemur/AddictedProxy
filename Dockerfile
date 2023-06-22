@@ -1,12 +1,12 @@
 ARG MAIN_PROJECT=AddictedProxy
 ARG DATA_DIRECTORY="/data"
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS build
 ARG MAIN_PROJECT
 WORKDIR /src
 COPY . .
@@ -15,7 +15,7 @@ RUN dotnet build "${MAIN_PROJECT}.csproj" -c Release -o /app/build
 
 FROM build AS publish
 ARG MAIN_PROJECT
-RUN mkdir /tools && wget -qO- https://github.com/grafana/pyroscope-dotnet/releases/download/v0.8.4-pyroscope/pyroscope.glibc.tar.gz | tar xvz -C /tools
+RUN mkdir /tools && wget -qO- https://github.com/grafana/pyroscope-dotnet/releases/download/v0.8.4-pyroscope/pyroscope.musl.tar.gz | tar xvz -C /tools
 RUN dotnet publish "${MAIN_PROJECT}.csproj" -c Release -o /app/publish
 
 
