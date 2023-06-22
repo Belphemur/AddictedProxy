@@ -1,3 +1,10 @@
+## [4.6.9](https://github.com/Belphemur/AddictedProxy/compare/v4.6.8...v4.6.9) (2023-06-22)
+
+
+### Performance improvements
+
+* **pyroscope:** fix missing lib ([5323cd5](https://github.com/Belphemur/AddictedProxy/commit/5323cd5a8d32a95804da2834cb7c43382beb612d))
+
 ## [4.6.8](https://github.com/Belphemur/AddictedProxy/compare/v4.6.7...v4.6.8) (2023-06-22)
 
 
