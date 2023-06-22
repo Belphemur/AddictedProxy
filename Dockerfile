@@ -1,15 +1,15 @@
 ARG MAIN_PROJECT=AddictedProxy
 ARG DATA_DIRECTORY="/data"
-ARG PYRSCOPE_AGENT_VERSION="v0.8.4-pyroscope"
+ARG PYROSCOPE_AGENT_VERSION="v0.8.4-pyroscope"
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine AS base
-ARG PYRSCOPE_AGENT_VERSION
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+ARG PYROSCOPE_AGENT_VERSION
 WORKDIR /app
-RUN wget -qO- "https://github.com/grafana/pyroscope-dotnet/releases/download/${PYRSCOPE_AGENT_VERSION}/pyroscope.musl.tar.gz" | tar xvz -C /lib/
+RUN apt update && apt install wget -y && wget -qO- "https://github.com/grafana/pyroscope-dotnet/releases/download/${PYROSCOPE_AGENT_VERSION}/pyroscope.glibc.tar.gz " | tar xvz -C /lib/ && apt remove wget -y && apt autoremove -y && apt-get clean
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 ARG MAIN_PROJECT
 WORKDIR /src
 COPY . .
