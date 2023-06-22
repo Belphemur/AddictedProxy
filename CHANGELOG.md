@@ -1,3 +1,10 @@
+## [4.6.7](https://github.com/Belphemur/AddictedProxy/compare/v4.6.6...v4.6.7) (2023-06-22)
+
+
+### Performance improvements
+
+* **Pyroscope:** Add Pyroscope to application ([d7fcd40](https://github.com/Belphemur/AddictedProxy/commit/d7fcd403bfa9bfb804527ad5c02b6d261c29e5c5))
+
 ## [4.6.6](https://github.com/Belphemur/AddictedProxy/compare/v4.6.5...v4.6.6) (2023-06-05)
 
 
