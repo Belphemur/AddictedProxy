@@ -15,19 +15,13 @@ RUN dotnet build "${MAIN_PROJECT}.csproj" -c Release -o /app/build
 
 FROM build AS publish
 ARG MAIN_PROJECT
-RUN dotnet tool install --tool-path /tools dotnet-trace \
- && dotnet tool install --tool-path /tools dotnet-counters \
- && dotnet tool install --tool-path /tools dotnet-dump \
- && dotnet tool install --tool-path /tools dotnet-gcdump
+RUN mkdir /tools && wget -qO- https://github.com/grafana/pyroscope-dotnet/releases/download/v0.8.4-pyroscope/pyroscope.glibc.tar.gz | tar xvz -C /tools
 RUN dotnet publish "${MAIN_PROJECT}.csproj" -c Release -o /app/publish
-# Install dotnet debug tools
 
 
 FROM base AS final
 ARG MAIN_PROJECT
-ARG DATA_DIRECTORY
 ARG NEW_RELIC_KEY
-ENV DB_PATH=$DATA_DIRECTORY
 
 
 # Copy dotnet-tools
@@ -36,6 +30,12 @@ COPY --from=publish /tools .
 
 WORKDIR /app
 COPY --from=publish /app/publish .
-RUN ln -s ${MAIN_PROJECT}.dll app.dll && mkdir $DATA_DIRECTORY
-VOLUME $DATA_DIRECTORY
+ENV PYROSCOPE_APPLICATION_NAME=${MAIN_PROJECT}
+ENV PYROSCOPE_APPLICATION_TAGS="env:prod"
+ENV CORECLR_ENABLE_PROFILING=1
+ENV CORECLR_PROFILER={BD1A650D-AC5D-4896-B64F-D6FA25D6B26A}
+ENV CORECLR_PROFILER_PATH=Pyroscope.Profiler.Native.so 
+ENV LD_PRELOAD=Pyroscope.Linux.ApiWrapper.x64.so
+RUN ln -s ${MAIN_PROJECT}.dll app.dll
+
 ENTRYPOINT ["dotnet", "app.dll"]
