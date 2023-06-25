@@ -23,37 +23,43 @@ public class BootstrapRateLimiting : IBootstrap, IBootstrapApp
         {
             ExemplarBehavior = ExemplarBehavior.NoExemplars()
         });
-        app.UseRateLimiter(new RateLimiterOptions
+
+        var config = app.ApplicationServices.GetRequiredService<IOptions<RateLimitingConfig>>();
+
+        if (config.Value.Enabled)
         {
-            RejectionStatusCode = 429,
-            GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, IPAddress>(context =>
+            app.UseRateLimiter(new RateLimiterOptions
             {
-                var config = app.ApplicationServices.GetRequiredService<IOptions<RateLimitingConfig>>().Value;
-                return RateLimitPartition.GetTokenBucketLimiter(context.Connection.RemoteIpAddress, _ => config.Token)!;
-            }),
-            OnRejected = (context, _) =>
-            {
-                var routeValues = context.HttpContext.GetRouteData().Values;
-                var controller = routeValues["controller"]?.ToString() ?? "";
-                var action = routeValues["action"]?.ToString() ?? "";
-                rateLimitCounter.Labels(controller, action).Inc();
-
-                var logger = app.ApplicationServices.GetRequiredService<ILogger<TokenBucketRateLimiter>>();
-                var lease = context.Lease;
-                if (lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+                RejectionStatusCode = 429,
+                GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, IPAddress>(context =>
                 {
-                    context.HttpContext.Response.Headers.Add(HeaderNames.RetryAfter, ((int)retryAfter.TotalSeconds).ToString(NumberFormatInfo.InvariantInfo));
-                }
-
-                if (lease.TryGetMetadata(MetadataName.ReasonPhrase, out var reason) && reason != null)
+                    var config = app.ApplicationServices.GetRequiredService<IOptions<RateLimitingConfig>>().Value;
+                    return RateLimitPartition.GetTokenBucketLimiter(context.Connection.RemoteIpAddress, _ => config.Token)!;
+                }),
+                OnRejected = (context, _) =>
                 {
-                    context.HttpContext.Response.Headers.Add("X-Retry-Reason", reason);
+                    var routeValues = context.HttpContext.GetRouteData().Values;
+                    var controller = routeValues["controller"]?.ToString() ?? "";
+                    var action = routeValues["action"]?.ToString() ?? "";
+                    rateLimitCounter.Labels(controller, action).Inc();
+
+                    var logger = app.ApplicationServices.GetRequiredService<ILogger<TokenBucketRateLimiter>>();
+                    var lease = context.Lease;
+                    if (lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+                    {
+                        context.HttpContext.Response.Headers.Add(HeaderNames.RetryAfter, ((int)retryAfter.TotalSeconds).ToString(NumberFormatInfo.InvariantInfo));
+                    }
+
+                    if (lease.TryGetMetadata(MetadataName.ReasonPhrase, out var reason) && reason != null)
+                    {
+                        context.HttpContext.Response.Headers.Add("X-Retry-Reason", reason);
+                    }
+
+                    logger.LogWarning("RateLimiting reached for {IP}: {retryAfter}", context.HttpContext.Connection.RemoteIpAddress, retryAfter);
+
+                    return ValueTask.CompletedTask;
                 }
-
-                logger.LogWarning("RateLimiting reached for {IP}: {retryAfter}", context.HttpContext.Connection.RemoteIpAddress, retryAfter);
-
-                return ValueTask.CompletedTask;
-            }
-        });
+            });
+        }
     }
 }
