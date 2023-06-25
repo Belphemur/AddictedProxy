@@ -1,3 +1,10 @@
+## [4.6.12](https://github.com/Belphemur/AddictedProxy/compare/v4.6.11...v4.6.12) (2023-06-25)
+
+
+### Performance improvements
+
+* **Ratelimiting:** Add way to disable rate limiting ([5038997](https://github.com/Belphemur/AddictedProxy/commit/50389978fab2c90a93d8d236b1a53df6ae0606d0))
+
 ## [4.6.11](https://github.com/Belphemur/AddictedProxy/compare/v4.6.10...v4.6.11) (2023-06-22)
 
 
