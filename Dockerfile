@@ -35,4 +35,7 @@ ENV CORECLR_PROFILER_PATH=/lib/Pyroscope.Profiler.Native.so
 ENV LD_PRELOAD=/lib/Pyroscope.Linux.ApiWrapper.x64.so
 RUN ln -s ${MAIN_PROJECT}.dll app.dll
 
+HEALTHCHECK --interval=15s --timeout=3s \
+  CMD curl -f http://localhost/health || exit 1
+
 ENTRYPOINT ["dotnet", "app.dll"]
