@@ -1,3 +1,11 @@
+## [4.6.13](https://github.com/Belphemur/AddictedProxy/compare/v4.6.12...v4.6.13) (2023-06-25)
+
+
+### Performance improvements
+
+* **healthcheck:** add healthcheck to the app ([c094633](https://github.com/Belphemur/AddictedProxy/commit/c094633daeafd27b2cc5ce2082ba9fe6367d63f9))
+* **healthcheck:** force docker to check for health ([71d96ba](https://github.com/Belphemur/AddictedProxy/commit/71d96ba80bd9e5d4076b29ebc8a3f364a45e4bfb))
+
 ## [4.6.12](https://github.com/Belphemur/AddictedProxy/compare/v4.6.11...v4.6.12) (2023-06-25)
 
 
