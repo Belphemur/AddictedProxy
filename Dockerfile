@@ -5,7 +5,7 @@ ARG PYROSCOPE_AGENT_VERSION="v0.8.4-pyroscope"
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 ARG PYROSCOPE_AGENT_VERSION
 WORKDIR /app
-RUN apt update && apt install wget -y && wget -qO- "https://github.com/grafana/pyroscope-dotnet/releases/download/${PYROSCOPE_AGENT_VERSION}/pyroscope.glibc.tar.gz " | tar xvz -C /lib/ && apt remove wget -y && apt autoremove -y && apt-get clean
+RUN apt update && apt install wget curl -y && wget -qO- "https://github.com/grafana/pyroscope-dotnet/releases/download/${PYROSCOPE_AGENT_VERSION}/pyroscope.glibc.tar.gz " | tar xvz -C /lib/ && apt remove wget -y && apt autoremove -y && apt-get clean
 EXPOSE 80
 EXPOSE 443
 
