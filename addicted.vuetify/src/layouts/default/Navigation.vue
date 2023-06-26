@@ -19,7 +19,9 @@ const {mobile} = useDisplay()
     :expand-on-hover="!mobile"
     :rail="!mobile"
     v-model="drawer"
-    :location="mobile ? 'bottom': 'left'">
+    :location="mobile ? 'bottom': 'left'"
+
+  >
     <v-list>
       <v-list density="compact" nav>
         <v-list-item v-for="route in routes"

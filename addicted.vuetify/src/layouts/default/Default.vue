@@ -3,27 +3,31 @@
     <div class="bg-image" :style="backgroundStyle"></div>
     <default-bar v-on:drawer-clicked="drawer = !drawer"/>
 
-    <navigation v-model="drawer" />
+    <navigation v-model="drawer"/>
 
-    <default-view />
+    <default-view/>
   </v-app>
 </template>
 
 <script lang="ts" setup>
-  import DefaultBar from './AppBar.vue'
-  import DefaultView from './View.vue'
-  import Navigation from "@/layouts/default/Navigation.vue";
-  import {ref} from "vue";
-  const drawer = ref(true)
+import DefaultBar from './AppBar.vue'
+import DefaultView from './View.vue'
+import Navigation from "@/layouts/default/Navigation.vue";
+import {ref} from "vue";
+import background from "@/assets/background.webp";
+import {useDisplay} from "vuetify";
 
-  import background from "@/assets/background.webp";
+const {mobile} = useDisplay()
 
-  const backgroundStyle = {
-    backgroundImage: `url(${background})`,
-  };
-  const defaultBackground = {
-    background: "none",
-  }
+const drawer = ref<boolean>(!mobile.value)
+
+
+const backgroundStyle = {
+  backgroundImage: `url(${background})`,
+};
+const defaultBackground = {
+  background: "none",
+}
 </script>
 <style scoped>
 .bg-image {
