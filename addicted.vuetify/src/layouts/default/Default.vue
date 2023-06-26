@@ -5,7 +5,7 @@
 
     <navigation v-model="drawer"/>
 
-    <default-view/>
+    <default-view />
   </v-app>
 </template>
 

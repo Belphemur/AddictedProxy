@@ -1,5 +1,5 @@
 <template>
-  <v-main>
+  <v-main style="padding-top: 6rem">
     <router-view />
   </v-main>
 </template>

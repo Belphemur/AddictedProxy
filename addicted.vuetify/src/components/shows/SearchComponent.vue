@@ -19,8 +19,8 @@
                       @update:search="onSearch"
                       @update:modelValue="updateSelectedShow"
                       prepend-inner-icon="mdi-television"
-                      :append-icon="searchInput != '' && searchInput != null ? 'mdi-close' : ''"
-                      @click:append="searchInput=''"
+                      :append-inner-icon="searchInput != '' && searchInput != null ? 'mdi-close' : ''"
+                      @click:append-inner="searchInput=''"
       ></v-autocomplete>
     </v-row>
     <v-slide-y-transition>
@@ -108,12 +108,10 @@ const querySearch = async (query: string) => {
 };
 
 const updateSelectedShow = async (event: ShowDto) => {
-  if (event.seasons.length > 1) {
+  if (event != undefined && event.seasons != undefined && event.seasons.length > 1) {
     event.seasons = event.seasons.sort();
   }
-  if(event.nbSeasons == 0) {
-    error.value = "This show has no seasons";
-  }
+
   setSelectedShow(event);
   mevent("show-selected", {show: event});
   //Force refreshing the show
