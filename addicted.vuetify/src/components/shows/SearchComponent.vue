@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-container>
     <v-slide-y-transition>
       <v-alert v-if="error != null"
         closable
@@ -8,7 +8,6 @@
         type="error"
       ></v-alert>
     </v-slide-y-transition>
-    <v-card-title>Search your favorite show</v-card-title>
     <v-row>
       <v-autocomplete label="Name of the show"
                       v-model="searchInput"
@@ -17,10 +16,10 @@
                       item-title="name"
                       hide-no-data
                       :item-value="item => item"
-                      @update:search="onChange"
+                      @update:search="onSearch"
                       @update:modelValue="updateSelectedShow"
                       prepend-inner-icon="mdi-television"
-                      :append-icon="searchInput != '' ? 'mdi-close' : ''"
+                      :append-icon="searchInput != '' && searchInput != null ? 'mdi-close' : ''"
                       @click:append="searchInput=''"
       ></v-autocomplete>
     </v-row>
@@ -42,7 +41,7 @@
         </v-col>
       </v-row>
     </v-slide-y-transition>
-  </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -79,7 +78,7 @@ let timerId: number = 0;
 
 const error = ref<string | null>(null);
 
-const onChange = async (val: string) => {
+const onSearch = async (val: string) => {
   clearTimeout(timerId)
   timerId = setTimeout(async () => {
     isLoading.value = true;
