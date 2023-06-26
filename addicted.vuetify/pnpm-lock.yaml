@@ -7,6 +7,9 @@ dependencies:
   '@microsoft/signalr':
     specifier: ^7.0.7
     version: 7.0.7
+  all-iso-language-codes:
+    specifier: ^1.0.12
+    version: 1.0.12
   core-js:
     specifier: ^3.31.0
     version: 3.31.0
@@ -726,6 +729,10 @@ packages:
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
     dev: true
+
+  /all-iso-language-codes@1.0.12:
+    resolution: {integrity: sha512-nHyzqfHgyyRrKJyh0RW+xgdBiuwAQqNlZ7VC3tph+ndE5yL9WaCyDaofOYmQkeeIBKV6YyrQu6IzjsUIHxZi+Q==}
+    dev: false
 
   /ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
