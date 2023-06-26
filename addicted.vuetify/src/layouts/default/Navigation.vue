@@ -5,7 +5,9 @@ import * as _ from "lodash-es";
 import {useDisplay} from "vuetify";
 
 const router = useRouter();
-const routes = _.orderBy(router.getRoutes(), ["meta.order"], ["asc"]);
+const routes = _.orderBy(_.filter(router.getRoutes(), (route) => {
+  return route.meta.order != undefined;
+}), ["meta.order"], ["asc"]);
 
 const drawer = defineModel<boolean>()
 const {mobile} = useDisplay()
@@ -20,9 +22,14 @@ const {mobile} = useDisplay()
     :location="mobile ? 'bottom': 'left'">
     <v-list>
       <v-list density="compact" nav>
-        <v-list-item prepend-icon="mdi-home-city" title="Home" value="home"></v-list-item>
-        <v-list-item prepend-icon="mdi-account" title="My Account" value="account"></v-list-item>
-        <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users"></v-list-item>
+        <v-list-item v-for="route in routes"
+                     v-bind:key="route.path"
+                     :route="route"
+                     :title="route.name"
+                     :prepend-icon="route.meta.icon"
+                     :to="route.path"
+                     :value="route">
+        </v-list-item>
       </v-list>
     </v-list>
   </v-navigation-drawer>

@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@mdi/font": "7.2.96",
+    "@microsoft/signalr": "^7.0.7",
     "core-js": "^3.31.0",
     "lodash-es": "^4.17.21",
     "pinia": "^2.1.4",
     "roboto-fontface": "^0.10.0",
+    "swagger-ui-dist": "^5.1.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.2",
     "vuetify": "^3.3.5",
