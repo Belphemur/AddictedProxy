@@ -35,8 +35,6 @@ export default defineConfig(({mode}) => {
               return "perf";
             } else if (id.includes("chart")) {
               return "chart";
-            } else if (id.includes("node_modules")) {
-              return "vendor";
             }
           },
         },
