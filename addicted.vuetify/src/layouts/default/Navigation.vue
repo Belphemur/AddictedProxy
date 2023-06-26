@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
-import {defineModel} from "vue";
 import * as _ from "lodash-es";
 
 export interface Props {
