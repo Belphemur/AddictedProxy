@@ -1,3 +1,22 @@
+## [4.7.0](https://github.com/Belphemur/AddictedProxy/compare/v4.6.13...v4.7.0) (2023-06-26)
+
+
+### Bug Fixes
+
+* **front:mobile:** fix mobile navigation ([d657b58](https://github.com/Belphemur/AddictedProxy/commit/d657b5880446bcbd139e2f14f4e3b05c39f055ee))
+* **front:** fix building image ([462d82b](https://github.com/Belphemur/AddictedProxy/commit/462d82b4e40a6be42d7606395c8e1c11f83aa225))
+
+
+### Features
+
+* **front:api:** add api view ([f4d89ec](https://github.com/Belphemur/AddictedProxy/commit/f4d89ec86c3dbf935f65a1892ccfc1e3dc8dd1b6))
+* **front:privacy:** Add privacy page ([5d656b9](https://github.com/Belphemur/AddictedProxy/commit/5d656b954a34302a14d0d189571eb248272c4f50))
+* **front:search:** Add search box for shows and seasons ([3665b7a](https://github.com/Belphemur/AddictedProxy/commit/3665b7af64cdd986fa404bda68fc92d363e8489b))
+* **front:search:** have searchbox and refresh functionality working ([2f2bca1](https://github.com/Belphemur/AddictedProxy/commit/2f2bca1ef45c7ed04622072443f56f75d1ae7784))
+* **front:subtitles:** show the subtitles in the table ([3d70f29](https://github.com/Belphemur/AddictedProxy/commit/3d70f294ebb4290c6d3a8c13be844772742df34b))
+* **front:** Navigation bar and rest of composables ([88100c1](https://github.com/Belphemur/AddictedProxy/commit/88100c1a57e17a338420ef88723185b06d64ba62))
+* Update front-end to use vuetify ([7c483b7](https://github.com/Belphemur/AddictedProxy/commit/7c483b7b65f3cddd69ea4b272d021ead9d1c5234))
+
 ## [4.6.13](https://github.com/Belphemur/AddictedProxy/compare/v4.6.12...v4.6.13) (2023-06-25)
 
 
