@@ -1,3 +1,25 @@
+## [4.6.13](https://github.com/Belphemur/AddictedProxy/compare/v4.6.12...v4.6.13) (2023-06-25)
+
+
+### Performance improvements
+
+* **healthcheck:** add healthcheck to the app ([c094633](https://github.com/Belphemur/AddictedProxy/commit/c094633daeafd27b2cc5ce2082ba9fe6367d63f9))
+* **healthcheck:** force docker to check for health ([71d96ba](https://github.com/Belphemur/AddictedProxy/commit/71d96ba80bd9e5d4076b29ebc8a3f364a45e4bfb))
+
+## [4.6.12](https://github.com/Belphemur/AddictedProxy/compare/v4.6.11...v4.6.12) (2023-06-25)
+
+
+### Performance improvements
+
+* **Ratelimiting:** Add way to disable rate limiting ([5038997](https://github.com/Belphemur/AddictedProxy/commit/50389978fab2c90a93d8d236b1a53df6ae0606d0))
+
+## [4.6.11](https://github.com/Belphemur/AddictedProxy/compare/v4.6.10...v4.6.11) (2023-06-22)
+
+
+### Performance improvements
+
+* use non alpine image ([c9f1586](https://github.com/Belphemur/AddictedProxy/commit/c9f1586d66e028828355432a35d82f96ef936445))
+
 ## [4.6.10](https://github.com/Belphemur/AddictedProxy/compare/v4.6.9...v4.6.10) (2023-06-22)
 
 
