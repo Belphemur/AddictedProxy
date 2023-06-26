@@ -9,7 +9,7 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'Home',
+        name: 'Search',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
@@ -31,6 +31,32 @@ const routes = [
             },
           ],
         },
+      },
+      {
+        path: "/Api",
+        name: "Api",
+        meta: {
+          order: 20,
+          icon: "mdi-code-braces",
+          title: "Gestdown: API Documentation",
+          metaTags: [
+            {
+              name: "description",
+              content:
+                "API to help you search for subtitle for different show available on Addic7ed",
+            },
+            {
+              property: "og:description",
+              content:
+                "API to help you search for subtitle for different show available on Addic7ed",
+            },
+          ],
+        },
+        // route level code-splitting
+        // this generates a separate chunk (api.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () =>
+          import(/* webpackChunkName: "api" */ "@/views/ApiView.vue"),
       },
 
     ],

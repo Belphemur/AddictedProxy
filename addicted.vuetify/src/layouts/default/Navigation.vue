@@ -28,6 +28,7 @@ const {mobile} = useDisplay()
                      :title="route.name"
                      :prepend-icon="route.meta.icon"
                      :to="route.path"
+                     :active="route.path == router.currentRoute.value.fullPath"
                      :value="route">
         </v-list-item>
       </v-list>
