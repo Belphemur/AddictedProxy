@@ -2,12 +2,9 @@
   <v-row justify="center">
     <v-col cols="10">
       <v-card title="Welcome to Gestdown">
+        <v-card-subtitle> It acts as a proxy for the Addic7ed subtitle website. You can easily
+          search here for subtitle available on the platform and download them.</v-card-subtitle>
         <v-card-text>
-          <p>
-            It acts as a proxy for the Addic7ed subtitle website. You can easily
-            search here for subtitle available on the platform and download them.
-          </p>
-
           <SearchComponent
             ref="searchBox"
             v-on:selected="getSubtitles"
@@ -35,7 +32,7 @@
         </v-col>
         <v-col cols="1" align-self="center">
           <v-btn
-            density="compact" icon="mdi-plus"
+            density="compact"
             color="blue"
             @click="selectShow(key)"
           >
@@ -72,21 +69,13 @@
             </v-tooltip>
           </v-btn>
         </v-card-actions>
-
-
-        <!--        <el-skeleton :rows="5" animated :loading="loadingSubtitles">-->
-        <!--          <template #default>-->
-        <!--            <subtitles-table-->
-        <!--              v-if="episodesWithSubtitles.length > 0"-->
-        <!--              :episodes="episodesWithSubtitles"-->
-        <!--              style="display: flex; flex-grow: 1"-->
-        <!--            ></subtitles-table>-->
-        <!--            <el-empty-->
-        <!--              description="Subtitles will be shown here"-->
-        <!--              v-if="episodesWithSubtitles.length == 0"-->
-        <!--            />-->
-        <!--          </template>-->
-        <!--        </el-skeleton>-->
+        <v-card-item>
+          <subtitles-table
+            v-if="episodesWithSubtitles.length > 0"
+            :episodes="episodesWithSubtitles"
+            style="display: flex; flex-grow: 1"
+          ></subtitles-table>
+        </v-card-item>
       </v-card>
     </v-col>
   </v-row>
@@ -96,7 +85,6 @@
 
 import {onUnmounted, ref} from "vue";
 import {SelectedShow} from "@/composables/dto/SelectedShow";
-//import SubtitlesTable from "@/components/Show/SubtitlesTable.vue";
 import {EpisodeWithSubtitlesDto, ShowDto} from "@/api/api";
 import {
   DoneHandler,
@@ -110,6 +98,7 @@ import {
 } from "@/composables/hub/RefreshHub";
 import {api} from "@/composables/rest/api";
 import SearchComponent from "@/components/shows/SearchComponent.vue";
+import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
 
 interface ProgressShow {
   name: string;

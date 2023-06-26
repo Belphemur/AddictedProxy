@@ -61,11 +61,11 @@ public class BootstrapAddictedServices : IBootstrap,
         return new HttpClientHandler
         {
             AllowAutoRedirect = followRedirect,
-            Proxy = new WebProxy
-            {
-                Address = proxy.Address,
-                Credentials = proxy.Credentials
-            },
+            // Proxy = new WebProxy
+            // {
+            //     Address = proxy.Address,
+            //     Credentials = proxy.Credentials
+            // },
             AutomaticDecompression = DecompressionMethods.All
         };
     }
