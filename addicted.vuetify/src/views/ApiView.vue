@@ -1,13 +1,17 @@
 <template>
-  <v-card id="api-view">
-    <div class="swagger" id="swagger"></div>
-  </v-card>
+  <v-row justify="center">
+    <v-col cols="10" align-self="center">
+      <v-card id="api-view">
+        <div class="swagger" id="swagger"></div>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script type="ts" setup>
-import { SwaggerUIBundle } from "swagger-ui-dist";
+import {SwaggerUIBundle} from "swagger-ui-dist";
 import "swagger-ui-dist/swagger-ui.css";
-import { onMounted } from "vue";
+import {onMounted} from "vue";
 
 onMounted(() => {
   SwaggerUIBundle({

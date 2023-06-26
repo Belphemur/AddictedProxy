@@ -58,6 +58,30 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "api" */ "@/views/ApiView.vue"),
       },
+      {
+        path: "/Privacy",
+        name: "Privacy Policy",
+        meta: {
+          order: 30,
+          icon: "mdi-shield-account",
+          title: "Gestdown: Privacy Policy",
+          metaTags: [
+            {
+              name: "description",
+              content: "Privacy Policy of Gestdown",
+            },
+            {
+              property: "og:description",
+              content: "Privacy Policy of Gestdown",
+            },
+          ],
+        },
+        // route level code-splitting
+        // this generates a separate chunk (api.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () =>
+          import(/* webpackChunkName: "terms" */ "@/views/Privacy.vue"),
+      },
 
     ],
   },
