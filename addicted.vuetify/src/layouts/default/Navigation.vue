@@ -2,7 +2,10 @@
 import {useRouter} from "vue-router";
 import {defineModel} from "vue";
 import * as _ from "lodash-es";
-import {useDisplay} from "vuetify";
+
+export interface Props {
+  mobile: boolean;
+}
 
 const router = useRouter();
 const routes = _.orderBy(_.filter(router.getRoutes(), (route) => {
@@ -10,16 +13,17 @@ const routes = _.orderBy(_.filter(router.getRoutes(), (route) => {
 }), ["meta.order"], ["asc"]);
 
 const drawer = defineModel<boolean>()
-const {mobile} = useDisplay()
+
+const props = defineProps<Props>()
 
 </script>
 
 <template>
   <v-navigation-drawer
-    :expand-on-hover="!mobile"
-    :rail="!mobile"
+    :expand-on-hover="!props.mobile"
+    :rail="!props.mobile"
     v-model="drawer"
-    :location="mobile ? 'bottom': 'left'"
+    :location="props.mobile ? 'bottom': 'left'"
 
   >
     <v-list>

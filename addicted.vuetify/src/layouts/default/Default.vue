@@ -3,7 +3,7 @@
     <div class="bg-image" :style="backgroundStyle"></div>
     <default-bar v-on:drawer-clicked="drawer = !drawer"/>
 
-    <navigation v-model="drawer"/>
+    <navigation v-model="drawer" :mobile="mobile"/>
 
     <default-view />
   </v-app>
