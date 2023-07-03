@@ -98,10 +98,9 @@ definePageMeta({
   name: "Privacy Policy",
   order: 50,
   icon: "mdi-shield-account",
-  title: "Gestdown: Addic7ed Proxy",
 })
 useSeoMeta({
-  title: "Gestdown: Privacy Policy",
+  title: "Gestdown: Addic7ed Proxy",
   description: "Privacy Policy of Gestdown",
   ogDescription: "Privacy Policy of Gestdown",
   ogImage: "/img/logo.png"
