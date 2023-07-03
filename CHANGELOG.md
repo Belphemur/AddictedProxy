@@ -1,3 +1,12 @@
+## [4.8.2](https://github.com/Belphemur/AddictedProxy/compare/v4.8.1...v4.8.2) (2023-07-03)
+
+
+### Bug Fixes
+
+* **robots.txt:** fix robots.txt file ([fea2fe6](https://github.com/Belphemur/AddictedProxy/commit/fea2fe688228f677fb771d6cd2eb67be148b09bf))
+* **sitemap:** Be sure to only list show with episodes ([364b0b7](https://github.com/Belphemur/AddictedProxy/commit/364b0b76a4bdd746dee316d58db1c2758ef758a4))
+* **sitemap:** remove uneeded config ([4bb98e1](https://github.com/Belphemur/AddictedProxy/commit/4bb98e13bd5af17cab8125830188880e7bc49322))
+
 ## [4.8.1](https://github.com/Belphemur/AddictedProxy/compare/v4.8.0...v4.8.1) (2023-07-03)
 
 
