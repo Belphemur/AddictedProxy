@@ -72,6 +72,6 @@ public class MediaController : Controller
             }
         }
 
-        return Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
+        return Ok(new MediaDetailsDto(new ShowDto(show), detailsDto with {PosterPath = $"https://image.tmdb.org/t/p/original{detailsDto.PosterPath}"}));
     }
 }
