@@ -84,5 +84,5 @@ public interface ITvShowRepository
     /// Get shows having at least one season
     /// </summary>
     /// <returns></returns>
-    IAsyncEnumerable<TvShow> GetAllHavingSeasonsAsync();
+    IAsyncEnumerable<TvShow> GetAllHavingEpisodesAsync();
 }

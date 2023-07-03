@@ -19,7 +19,7 @@ public class SitemapDynamicMedia : ISitemapDynamicProvider
 
     public IAsyncEnumerable<SitemapCore.Sitemap> GenerateAsync()
     {
-        return _tvShowRepository.GetAllHavingSeasonsAsync()
+        return _tvShowRepository.GetAllHavingEpisodesAsync()
                                 .Select(show =>
                                 {
                                     var route = $"/shows/{show.UniqueId}/{show.Name}";
