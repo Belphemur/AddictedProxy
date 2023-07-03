@@ -130,6 +130,15 @@ public class TvShowRepository : ITvShowRepository
                              .ToAsyncEnumerable();
     }
 
+    /// <summary>
+    /// Get shows having at least one season
+    /// </summary>
+    /// <returns></returns>
+    public IAsyncEnumerable<TvShow> GetAllHavingSeasonsAsync()
+    {
+        return _entityContext.TvShows.Where(show => show.Seasons.Count > 0).AsNoTracking().ToAsyncEnumerable();
+    }
+
     public IAsyncEnumerable<TvShow> GetNonCompletedShows()
     {
         return _entityContext.TvShows.Where(show => show.TmdbId.HasValue).Where(show => !show.IsCompleted).Where(show => show.Type == ShowType.Show).ToAsyncEnumerable();

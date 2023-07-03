@@ -79,4 +79,10 @@ public interface ITvShowRepository
     /// <param name="token"></param>
     /// <returns></returns>
     Task<IDictionary<int, TvShow[]>> GetDuplicateTvShowByTmdbIdAsync(CancellationToken token);
+
+    /// <summary>
+    /// Get shows having at least one season
+    /// </summary>
+    /// <returns></returns>
+    IAsyncEnumerable<TvShow> GetAllHavingSeasonsAsync();
 }

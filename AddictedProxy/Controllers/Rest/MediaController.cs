@@ -26,7 +26,7 @@ public class MediaController : Controller
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    [Route("/{showId:guid}/details")]
+    [Route("/{showId:guid}/details",  Name = nameof(Routes.MediaDetails))]
     [HttpGet]
     [ProducesResponseType(typeof(MediaDetailsDto), 200)]
     [ProducesResponseType(typeof(string), 429)]
@@ -59,12 +59,12 @@ public class MediaController : Controller
                 case ShowType.Show:
                     var showDetails = await _tmdbClient.GetShowDetailsByIdAsync(show.TmdbId.Value, cancellationToken);
                     if (showDetails != null)
-                        detailsDto = new MediaDetailsDto.DetailsDto(showDetails.PosterPath, showDetails.Overview, showDetails.OriginalName, (MediaDetailsDto.Type)show.Type);
+                        detailsDto = new MediaDetailsDto.DetailsDto(showDetails.PosterPath, showDetails.Overview, showDetails.OriginalName, (MediaDetailsDto.MediaType)show.Type);
                     break;
                 case ShowType.Movie:
                     var movieDetails = await _tmdbClient.GetMovieDetailsByIdAsync(show.TmdbId.Value, cancellationToken);
                     if (movieDetails != null)
-                        detailsDto = new MediaDetailsDto.DetailsDto(movieDetails.PosterPath, movieDetails.Overview, movieDetails.OriginalTitle, (MediaDetailsDto.Type)show.Type);
+                        detailsDto = new MediaDetailsDto.DetailsDto(movieDetails.PosterPath, movieDetails.Overview, movieDetails.OriginalTitle, (MediaDetailsDto.MediaType)show.Type);
 
                     break;
                 default:
