@@ -1,3 +1,25 @@
+## [4.8.0](https://github.com/Belphemur/AddictedProxy/compare/v4.7.0...v4.8.0) (2023-07-03)
+
+
+### Performance improvements
+
+* **lodash:** improve loading of lodash ([c934127](https://github.com/Belphemur/AddictedProxy/commit/c934127ebfcd123164a5208a618151ab175b405c))
+
+
+### Bug Fixes
+
+* **detail:** fix documentation for details ([2c7ffc1](https://github.com/Belphemur/AddictedProxy/commit/2c7ffc13d35f816b13d924220b68f72fc4dd3ea9))
+* **media:poster:** send properly the poster ([4ff50fa](https://github.com/Belphemur/AddictedProxy/commit/4ff50fa9496cd712f8919f259c68b05b3f72ac9c))
+* **media:** fix route ([348d62c](https://github.com/Belphemur/AddictedProxy/commit/348d62cd5e2b0575ca7f6d1e9a02856b2fc437cb))
+
+
+### Features
+
+* **media:info:** Add media info page ([55da38e](https://github.com/Belphemur/AddictedProxy/commit/55da38ed0f0b740802b3d197636f54a18edd67c4))
+* **media:info:** Add media view ([05a2454](https://github.com/Belphemur/AddictedProxy/commit/05a24543547fd08f50c2fd33136cc97b8566640f))
+* **Media:** Add Media details ([1f17670](https://github.com/Belphemur/AddictedProxy/commit/1f17670a84b424827058f17354b12dc58514a103))
+* **sitemap:** add a way for the application to publish a sitemap ([afbcf0e](https://github.com/Belphemur/AddictedProxy/commit/afbcf0e704fed22b0f1e502336a4821fc7f0db9b))
+
 ## [4.7.0](https://github.com/Belphemur/AddictedProxy/compare/v4.6.13...v4.7.0) (2023-06-26)
 
 
