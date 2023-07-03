@@ -1,2 +1,4 @@
 User-agent: *
 Disallow:
+
+Sitemap: https://api.gestdown.info/sitemap.xml
