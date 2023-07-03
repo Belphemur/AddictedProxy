@@ -18,6 +18,26 @@ export interface ApplicationInfoDto {
   applicationVersion: string;
 }
 
+export interface DetailsDto {
+  /**
+   * URL of the poster
+   * @example "https://upload.wikimedia.org/wikipedia/en/thumb/5/54/Bloodhounds_%28South_Korean_TV_series%29.jpg/250px-Bloodhounds_%28South_Korean_TV_series%29.jpg"
+   */
+  posterPath?: string | null;
+  /**
+   * Short description of the media, usually the plot
+   * @example "Bloodhounds depicts a story about two young boxers who set foot in the world of private loans in pursuit of money and get caught up in a huge force"
+   */
+  overview?: string | null;
+  /**
+   * Original name in its own language, useful for non-english shows
+   * @example "사냥개들"
+   */
+  originalName?: string | null;
+  /** Represent the type of media */
+  mediaType?: MediaType;
+}
+
 /** Episode information */
 export interface EpisodeDto {
   /**
@@ -90,6 +110,18 @@ export interface EpisodeWithSubtitlesDto {
 /** Returns when there is an error */
 export interface ErrorResponse {
   error?: string | null;
+}
+
+export interface MediaDetailsDto {
+  /** Represent the information relating to a show */
+  media?: ShowDto;
+  details?: DetailsDto;
+}
+
+/** Represent the type of media */
+export enum MediaType {
+  Show = "Show",
+  Movie = "Movie",
 }
 
 /** Use for the website to provide easy search for the user */
@@ -423,7 +455,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Gestdown: Addicted Proxy
- * @version 4.5.10
+ * @version 4.6.13
  *
  * Provide a full api to search and download subtitles from Addic7ed website.
  */
@@ -440,6 +472,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     infoList: (params: RequestParams = {}) =>
       this.request<ApplicationInfoDto, any>({
         path: `/application/info`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
+  media = {
+    /**
+     * No description
+     *
+     * @tags Media
+     * @name MediaDetails
+     * @summary Get the details of a specific show
+     * @request GET:/media/{showId}/details
+     */
+    mediaDetails: (showId: string, params: RequestParams = {}) =>
+      this.request<MediaDetailsDto, void | string>({
+        path: `/media/${showId}/details`,
         method: "GET",
         format: "json",
         ...params,

@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using AddictedProxy.Controllers.Rest.Serializer;
 using AddictedProxy.Services.Middleware;
@@ -17,7 +18,11 @@ public class BootstrapController : IBootstrap, IBootstrapApp
     {
         services.AddControllers()
                 .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>())
-                .AddJsonOptions(options => { options.JsonSerializerOptions.TypeInfoResolver = JsonTypeInfoResolver.Combine(SerializationContext.Default, new DefaultJsonTypeInfoResolver()); });
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.TypeInfoResolver = JsonTypeInfoResolver.Combine(SerializationContext.Default, new DefaultJsonTypeInfoResolver());
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
         services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
     }
 

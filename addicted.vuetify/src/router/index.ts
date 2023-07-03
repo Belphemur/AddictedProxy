@@ -82,7 +82,29 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "terms" */ "@/views/Privacy.vue"),
       },
-
+      {
+        path: 'shows/:showId/:showName',
+        name: 'Show',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "media" */ '@/views/MediaViewAsync.vue'),
+        meta: {
+          title: "Gestdown: :showName",
+          metaTags: [
+            {
+              name: "description",
+              content:
+                "All the subtitles available for the :showName",
+            },
+            {
+              property: "og:description",
+              content:
+                "Perfect place to find all the subtitles available for the :showName",
+            },
+          ],
+        },
+      },
     ],
   },
 ]
@@ -116,16 +138,23 @@ router.beforeEach((to, from, next) => {
     .reverse()
     .find((r) => r.meta && r.meta.metaTags);
 
+  let title = ""
+
   // If a route with a title was found, set the document (page) title to that value.
   if (nearestWithTitle) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    document.title = nearestWithTitle.meta.title;
+    title = nearestWithTitle.meta.title;
   } else if (previousNearestWithMeta) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    document.title = previousNearestWithMeta.meta.title;
+    title = previousNearestWithMeta.meta.title;
   }
+  Object.keys(to.params).forEach((key) => {
+    // @ts-ignore
+    title = title.replace(`:${key}`, to.params[key]);
+  });
+  document.title = title;
 
   // Remove any stale meta tags from the document using the key attribute we set below.
   Array.from(document.querySelectorAll("[data-vue-router-controlled]")).map(
@@ -143,7 +172,11 @@ router.beforeEach((to, from, next) => {
       const tag = document.createElement("meta");
 
       Object.keys(tagDef).forEach((key) => {
-        tag.setAttribute(key, tagDef[key]);
+        let tagElem = tagDef[key]
+        Object.keys(to.params).forEach((paramKey) => {
+          tagElem = tagElem.replace(`:${paramKey}`, to.params[paramKey]);
+        });
+        tag.setAttribute(key, tagElem);
       });
 
       // We use this to track which meta tags we create so we don't interfere with other ones.

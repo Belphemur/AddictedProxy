@@ -6,6 +6,7 @@ namespace AddictedProxy.Controllers.Rest.Serializer;
 [JsonSerializable(typeof(TvShowsController.ShowSearchResponse))]
 [JsonSerializable(typeof(TvShowSubtitleResponse))]
 [JsonSerializable(typeof(SubtitleSearchResponse))]
+[JsonSerializable(typeof(MediaDetailsDto))]
 [JsonSerializable(typeof(ErrorResponse))]
 [JsonSerializable(typeof(TopShowDto[]))]
 [JsonSerializable(typeof(ApplicationController.ApplicationInfoDto))]

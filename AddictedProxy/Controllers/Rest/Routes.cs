@@ -2,5 +2,6 @@
 
 public enum Routes
 {
-    DownloadSubtitle
+    DownloadSubtitle,
+    MediaDetails,
 }

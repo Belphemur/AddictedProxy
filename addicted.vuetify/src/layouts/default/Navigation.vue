@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
-import * as _ from "lodash-es";
+import {orderBy, filter} from "lodash-es";
 
 export interface Props {
   mobile: boolean;
 }
 
 const router = useRouter();
-const routes = _.orderBy(_.filter(router.getRoutes(), (route) => {
+const routes = orderBy(filter(router.getRoutes(), (route) => {
   return route.meta.order != undefined;
 }), ["meta.order"], ["asc"]);
 
