@@ -104,14 +104,14 @@ interface ProgressShow {
 
 definePageMeta({
   name: "Home",
-  title: "Nuxt Routing",
-  description: "Nuxt Routing set up successfully!",
-  order: 1,
-  icon: "mdi-home"
+  order: 10,
+  icon: "mdi-search-web",
 })
 useSeoMeta({
-  title: "Nuxt Routing",
-
+  title: "Gestdown: Addic7ed Proxy",
+  description: "Help you search for subtitle for different show available on Addic7ed",
+  ogDescription: "Help you search for subtitle for different show available on Addic7ed",
+  ogImage: "/img/logo.png"
 })
 
 const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
