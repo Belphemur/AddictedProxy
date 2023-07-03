@@ -12,6 +12,7 @@
     "@nuxt/devtools": "latest",
     "@types/lodash-es": "^4.17.7",
     "@types/node": "^18",
+    "@types/webfontloader": "^1.6.35",
     "nuxt": "^3.6.1",
     "vite-plugin-vuetify": "^1.0.2"
   },
@@ -20,6 +21,8 @@
     "@microsoft/signalr": "^7.0.7",
     "all-iso-language-codes": "^1.0.12",
     "lodash-es": "^4.17.21",
-    "vuetify": "^3.3.6"
+    "roboto-fontface": "^0.10.0",
+    "vuetify": "^3.3.6",
+    "webfontloader": "^1.6.28"
   }
 }
