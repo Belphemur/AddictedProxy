@@ -1,3 +1,10 @@
+## [4.8.1](https://github.com/Belphemur/AddictedProxy/compare/v4.8.0...v4.8.1) (2023-07-03)
+
+
+### Bug Fixes
+
+* **sitemap:** be sure it's hosted on the same domain ([8a9989a](https://github.com/Belphemur/AddictedProxy/commit/8a9989addcc99f06deac15ffb14fca01f4b8d44d))
+
 ## [4.8.0](https://github.com/Belphemur/AddictedProxy/compare/v4.7.0...v4.8.0) (2023-07-03)
 
 
