@@ -477,18 +477,18 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         ...params,
       }),
   };
-  showId = {
+  media = {
     /**
      * No description
      *
      * @tags Media
      * @name MediaDetails
      * @summary Get the details of a specific show
-     * @request GET:/{showId}/details
+     * @request GET:/media/{showId}/details
      */
     mediaDetails: (showId: string, params: RequestParams = {}) =>
       this.request<MediaDetailsDto, void | string>({
-        path: `/${showId}/details`,
+        path: `/media/${showId}/details`,
         method: "GET",
         format: "json",
         ...params,

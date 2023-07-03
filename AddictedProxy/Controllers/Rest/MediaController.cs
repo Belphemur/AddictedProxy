@@ -26,7 +26,7 @@ public class MediaController : Controller
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    [Route("/{showId:guid}/details",  Name = nameof(Routes.MediaDetails))]
+    [Route("{showId:guid}/details",  Name = nameof(Routes.MediaDetails))]
     [HttpGet]
     [ProducesResponseType(typeof(MediaDetailsDto), 200)]
     [ProducesResponseType(typeof(string), 429)]
