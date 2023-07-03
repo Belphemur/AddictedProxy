@@ -2,10 +2,10 @@
   <v-container>
     <v-slide-y-transition>
       <v-alert v-if="error != null"
-        closable
-        title="Error"
-        :text="error"
-        type="error"
+               closable
+               title="Error"
+               :text="error"
+               type="error"
       ></v-alert>
     </v-slide-y-transition>
     <v-row>
@@ -19,12 +19,12 @@
                       @update:search="onSearch"
                       @update:modelValue="updateSelectedShow"
                       prepend-inner-icon="mdi-television"
-                      :append-inner-icon="searchInput != '' && searchInput != null ? 'mdi-close' : ''"
-                      @click:append-inner="searchInput=''"
+                      append-inner-icon="mdi-close"
+                      @click:append-inner="clearSearch"
       ></v-autocomplete>
     </v-row>
     <v-slide-y-transition>
-      <v-row v-if="selectedShow != null">
+      <v-row v-show="selectedShow != null">
         <v-col cols="12" md="6">
           <v-autocomplete v-model="languageSelect"
                           :items="langs"
@@ -65,7 +65,7 @@ const emit = defineEmits<{
 
 const selectedSeason = ref<number | null>(null);
 const searchInput = ref<string>("");
-const languageSelect = ref<string>(localStorage.getItem("lang") || "en");
+const languageSelect = ref<string>("en");
 
 const selectedShow = ref<ShowDto | null>(null);
 
@@ -78,13 +78,23 @@ let timerId: number = 0;
 
 const error = ref<string | null>(null);
 
+const clearSearch = () => {
+  searchInput.value = "";
+  selectedShow.value = null;
+  selectedSeason.value = null;
+  selectedShowSeason.value = [];
+  emit("cleared");
+};
 const onSearch = async (val: string) => {
+  if(process.server) {
+    return;
+  }
   clearTimeout(timerId)
   timerId = setTimeout(async () => {
     isLoading.value = true;
     results.value = await querySearch(val);
     isLoading.value = false;
-  }, 300);
+  }, 350);
 
 };
 
@@ -108,7 +118,10 @@ const querySearch = async (query: string) => {
 };
 
 const updateSelectedShow = async (event: ShowDto) => {
-  if (event != undefined && event.seasons != undefined && event.seasons.length > 1) {
+  if (event == null) {
+    return;
+  }
+  if (event.seasons != undefined && event.seasons.length > 1) {
     event.seasons = event.seasons.sort();
   }
 
@@ -124,6 +137,9 @@ const updateSelectedShow = async (event: ShowDto) => {
 };
 
 const setSelectedShow = (show: ShowDto) => {
+  if (show == null) {
+    return;
+  }
   selectedShow.value = show;
   searchInput.value = show.name;
   selectedSeason.value = null;
@@ -157,7 +173,7 @@ watch(selectedSeason, (value) => {
 });
 
 watch(languageSelect, (value) => {
-  localStorage.setItem("lang", value);
+  //localStorage.setItem("lang", value);
   if (selectedSeason.value == null || selectedShow.value == null) {
     return;
   }
