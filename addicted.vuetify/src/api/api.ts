@@ -18,6 +18,13 @@ export interface ApplicationInfoDto {
   applicationVersion: string;
 }
 
+export interface DetailsDto {
+  posterPath?: string | null;
+  overview?: string | null;
+  originalName?: string | null;
+  mediaType?: MediaType;
+}
+
 /** Episode information */
 export interface EpisodeDto {
   /**
@@ -90,6 +97,18 @@ export interface EpisodeWithSubtitlesDto {
 /** Returns when there is an error */
 export interface ErrorResponse {
   error?: string | null;
+}
+
+export interface MediaDetailsDto {
+  /** Represent the information relating to a show */
+  media?: ShowDto;
+  details?: DetailsDto;
+}
+
+/** @format int32 */
+export enum MediaType {
+  Value0 = 0,
+  Value1 = 1,
 }
 
 /** Use for the website to provide easy search for the user */
@@ -423,7 +442,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Gestdown: Addicted Proxy
- * @version 4.5.10
+ * @version 4.6.13
  *
  * Provide a full api to search and download subtitles from Addic7ed website.
  */
@@ -440,6 +459,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     infoList: (params: RequestParams = {}) =>
       this.request<ApplicationInfoDto, any>({
         path: `/application/info`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
+  showId = {
+    /**
+     * No description
+     *
+     * @tags Media
+     * @name MediaDetails
+     * @summary Get the details of a specific show
+     * @request GET:/{showId}/details
+     */
+    mediaDetails: (showId: string, params: RequestParams = {}) =>
+      this.request<MediaDetailsDto, void | string>({
+        path: `/${showId}/details`,
         method: "GET",
         format: "json",
         ...params,
