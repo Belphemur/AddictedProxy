@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import MediaDetailLoader from "@/components/media/MediaDetailLoader.vue";
+import MediaDetailLoader from "@/views/MediaDetailView.vue";
 </script>
 
 <template>

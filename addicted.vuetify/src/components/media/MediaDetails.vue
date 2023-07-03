@@ -1,12 +1,55 @@
 <script setup lang="ts">
 
-import {MediaDetailsDto} from "@/api/api";
+import {EpisodeWithSubtitlesDto, MediaDetailsDto, SubtitleDto} from "@/api/api";
+import {ref, watch} from "vue";
+import {api} from "@/composables/rest/api";
+import {getAll639_1, getName} from "all-iso-language-codes";
+import {SelectedShow} from "@/composables/dto/SelectedShow";
 
 export interface Props {
   details: MediaDetailsDto;
 }
 
 const props = defineProps<Props>();
+const seasons = props.details.media!.seasons!.sort();
+const selectedSeason = ref<number>(seasons[seasons.length - 1]);
+
+const languageSelect = ref<string>(localStorage.getItem("lang") || "en");
+
+const langs = getAll639_1().map((value) => {
+  return {value: value, label: getName(value)};
+});
+
+emitSelected();
+
+async function emitSelected() {
+  emit("selected", {
+    show: props.details.media!,
+    season: selectedSeason.value,
+    language: languageSelect.value,
+  })
+}
+
+// eslint-disable-next-line no-undef
+const emit = defineEmits<{
+  (e: "selected", show: SelectedShow): void;
+}>();
+
+watch(selectedSeason, async (value) => {
+  if (value == null) {
+    return;
+  }
+  await emitSelected();
+
+});
+
+watch(languageSelect, async (value) => {
+  if (value == null) {
+    return;
+  }
+  localStorage.setItem("lang", value);
+  await emitSelected();
+});
 </script>
 
 <template>
@@ -32,6 +75,23 @@ const props = defineProps<Props>();
         </v-col>
       </v-row>
     </v-card-text>
+    <v-card-actions>
+      <v-col cols="2">
+        <v-autocomplete v-model="languageSelect"
+                        :items="langs"
+                        label="Language"
+                        item-title="label"
+                        item-value="value"
+        ></v-autocomplete>
+      </v-col>
+      <v-col cols="2" offset="8">
+        <v-select v-model="selectedSeason"
+                  :items="seasons"
+                  label="Season selection"
+        ></v-select>
+      </v-col>
+
+    </v-card-actions>
   </v-card>
 </template>
 
