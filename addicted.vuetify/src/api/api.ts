@@ -19,9 +19,22 @@ export interface ApplicationInfoDto {
 }
 
 export interface DetailsDto {
+  /**
+   * URL of the poster
+   * @example "https://upload.wikimedia.org/wikipedia/en/thumb/5/54/Bloodhounds_%28South_Korean_TV_series%29.jpg/250px-Bloodhounds_%28South_Korean_TV_series%29.jpg"
+   */
   posterPath?: string | null;
+  /**
+   * Short description of the media, usually the plot
+   * @example "Bloodhounds depicts a story about two young boxers who set foot in the world of private loans in pursuit of money and get caught up in a huge force"
+   */
   overview?: string | null;
+  /**
+   * Original name in its own language, useful for non-english shows
+   * @example "사냥개들"
+   */
   originalName?: string | null;
+  /** Represent the type of media */
   mediaType?: MediaType;
 }
 
@@ -105,10 +118,10 @@ export interface MediaDetailsDto {
   details?: DetailsDto;
 }
 
-/** @format int32 */
+/** Represent the type of media */
 export enum MediaType {
-  Value0 = 0,
-  Value1 = 1,
+  Show = "Show",
+  Movie = "Movie",
 }
 
 /** Use for the website to provide easy search for the user */
