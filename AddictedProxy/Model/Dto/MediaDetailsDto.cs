@@ -2,12 +2,12 @@
 
 public record struct MediaDetailsDto(ShowDto Media, MediaDetailsDto.DetailsDto? Details)
 {
-    public enum Type
+    public enum MediaType
     {
         Show,
         Movie
     }
-    public record DetailsDto(string PosterPath, string Overview, string OriginalName, Type Type);
+    public record DetailsDto(string PosterPath, string Overview, string OriginalName, MediaType MediaType);
 
     /// <summary>
     /// Show data
