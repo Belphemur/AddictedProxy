@@ -1,15 +1,9 @@
 <template>
   <v-container>
     <v-row>
-      <v-slide-y-transition>
-        <v-alert v-if="error != null"
-                 closable
-                 title="Error"
-                 :text="error"
-                 type="error"
-        ></v-alert>
-      </v-slide-y-transition>
       <v-autocomplete label="Name of the show"
+                      clearable
+                      :error-messages="error"
                       v-model="searchInput"
                       :items="results"
                       :loading="isLoading"
@@ -19,8 +13,7 @@
                       @update:search="onSearch"
                       @update:modelValue="updateSelectedShow"
                       prepend-inner-icon="mdi-television"
-                      append-inner-icon="mdi-close"
-                      @click:append-inner="clearSearch"
+                      @click:clear="clearSearch"
       ></v-autocomplete>
     </v-row>
     <v-slide-y-transition>
@@ -80,7 +73,7 @@ const isLoading = ref(false);
 
 let timerId: number = 0;
 
-const error = ref<string | null>(null);
+const error = ref<string | undefined>(undefined);
 
 const clearSearch = () => {
   searchInput.value = "";
@@ -104,7 +97,7 @@ const onSearch = async (val: string) => {
 
 
 const querySearch = async (query: string) => {
-  error.value = null;
+  error.value = undefined;
   if (query.length < 3) {
     return [];
   }
@@ -155,14 +148,6 @@ const setSelectedShow = (show: ShowDto) => {
 };
 
 defineExpose({setSelectedShow});
-
-watch(searchInput, (value) => {
-  if (value == "") {
-    selectedSeason.value = null;
-    selectedShowSeason.value = [];
-    selectedShow.value = null;
-  }
-});
 
 watch(selectedSeason, (value) => {
   if (value == null || selectedShow.value == null) {
