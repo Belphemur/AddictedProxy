@@ -13,7 +13,7 @@ const props = defineProps<Props>();
 const seasons = props.details.media!.seasons!.sort();
 const selectedSeason = ref<number>(seasons[seasons.length - 1]);
 
-const languageSelect = ref<string>(localStorage.getItem("lang") || "en");
+const languageSelect = ref<string>("en");
 
 const langs = getAll639_1().map((value) => {
   return {value: value, label: getName(value)};
@@ -46,7 +46,7 @@ watch(languageSelect, async (value) => {
   if (value == null) {
     return;
   }
-  localStorage.setItem("lang", value);
+  //localStorage.setItem("lang", value);
   await emitSelected();
 });
 </script>

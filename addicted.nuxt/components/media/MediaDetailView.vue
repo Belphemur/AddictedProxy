@@ -36,16 +36,20 @@ async function selected(selectedShow: SelectedShow) {
 </script>
 
 <template>
-  <v-container>
+  <div>
     <v-row>
-      <media-details :details="mediaInfo" v-on:selected="selected"/>
+      <v-col cols="12">
+        <media-details :details="mediaInfo" v-on:selected="selected"/>
+      </v-col>
     </v-row>
     <v-row>
-      <!--      <v-skeleton-loader type="card" :loading="loadingEpisodes">-->
-      <subtitles-table v-show="episodes.length >0" :episodes="episodes"></subtitles-table>
-      <!--      </v-skeleton-loader>-->
+      <v-col cols="12">
+        <v-skeleton-loader type="card" :loading="loadingEpisodes">
+          <subtitles-table :episodes="episodes"></subtitles-table>
+        </v-skeleton-loader>
+      </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <style scoped>
