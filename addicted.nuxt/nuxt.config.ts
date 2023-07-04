@@ -32,6 +32,7 @@ export default defineNuxtConfig({
     modules: [
         '@nuxtjs/google-fonts',
         '@nuxtjs/device',
+        'nuxt-lodash',
         // @ts-ignore
         // this adds the vuetify vite plugin
         // also produces type errors in the current beta release
