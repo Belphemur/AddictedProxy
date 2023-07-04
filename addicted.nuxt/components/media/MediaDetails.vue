@@ -1,8 +1,7 @@
 <script setup lang="ts">
 
-import {EpisodeWithSubtitlesDto, MediaDetailsDto, SubtitleDto} from "@/api/api";
+import { MediaDetailsDto} from "@/api/api";
 import {ref, watch} from "vue";
-import {api} from "@/composables/rest/api";
 import {getAll639_1, getName} from "all-iso-language-codes";
 import {SelectedShow} from "@/composables/dto/SelectedShow";
 

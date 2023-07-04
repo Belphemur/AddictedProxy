@@ -50,12 +50,13 @@
 import {defineProps, ref} from "vue";
 
 import {EpisodeWithSubtitlesDto, SubtitleDto} from "@/api/api";
-import {api} from "@/composables/rest/api";
 import {mevent} from "@/composables/matomo/event";
+import {useApi} from "~/composables/rest/api";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto>;
 }
+const api = useApi();
 
 const props = defineProps<Props>();
 

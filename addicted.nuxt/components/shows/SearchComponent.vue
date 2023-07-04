@@ -49,8 +49,8 @@ import {ref, watch, defineExpose} from "vue";
 import {ShowDto} from "@/api/api";
 import {getName, getAll639_1} from "all-iso-language-codes";
 import {SelectedShow} from "@/composables/dto/SelectedShow";
-import {api} from "@/composables/rest/api";
 import {mevent} from "@/composables/matomo/event";
+import {useApi} from "~/composables/rest/api";
 
 const langs = getAll639_1().map((value) => {
   return {value: value, label: getName(value)};
@@ -62,6 +62,8 @@ const emit = defineEmits<{
   (e: "cleared"): void;
   (e: "needRefresh", show: ShowDto): void;
 }>();
+
+const api = useApi();
 
 const selectedSeason = ref<number | null>(null);
 const searchInput = ref<string>("");

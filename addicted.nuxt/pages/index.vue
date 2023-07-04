@@ -92,9 +92,9 @@ import {
   ProgressHandler,
   useRefreshHub
 } from "@/composables/hub/RefreshHub";
-import {api} from "@/composables/rest/api";
 import SearchComponent from "@/components/shows/SearchComponent.vue";
 import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
+import {useApi} from "~/composables/rest/api";
 
 interface ProgressShow {
   name: string;
@@ -114,6 +114,7 @@ useSeoMeta({
   ogImage: "/img/logo.png"
 })
 
+const api = useApi();
 const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
 
 const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
