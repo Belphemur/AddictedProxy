@@ -1,3 +1,10 @@
+## [4.9.3](https://github.com/Belphemur/AddictedProxy/compare/v4.9.2...v4.9.3) (2023-07-04)
+
+
+### Performance improvements
+
+* **search:** Improve the usability of the search component ([9c80456](https://github.com/Belphemur/AddictedProxy/commit/9c804562b9fd5a5d8fd23b30a77a33b75754f917))
+
 ## [4.9.2](https://github.com/Belphemur/AddictedProxy/compare/v4.9.1...v4.9.2) (2023-07-04)
 
 
