@@ -34,6 +34,9 @@ devDependencies:
   '@nuxt/devtools':
     specifier: latest
     version: 0.6.6(nuxt@3.6.1)(vite@4.3.9)
+  '@nuxtjs/device':
+    specifier: ^3.1.0
+    version: 3.1.0
   '@types/lodash-es':
     specifier: ^4.17.7
     version: 4.17.7
@@ -1180,6 +1183,16 @@ packages:
       - vls
       - vti
       - vue-tsc
+    dev: true
+
+  /@nuxtjs/device@3.1.0:
+    resolution: {integrity: sha512-jXWCVuPmzsGpn86GTA9/TOmfWulf9h3r2g6o5LpoZk4P1a9McMlpbDiaMPmyG5erfCj6H+XoZ6HBPCN9DtoCDA==}
+    dependencies:
+      '@nuxt/kit': 3.6.1
+      defu: 6.1.2
+    transitivePeerDependencies:
+      - rollup
+      - supports-color
     dev: true
 
   /@pkgjs/parseargs@0.11.0:

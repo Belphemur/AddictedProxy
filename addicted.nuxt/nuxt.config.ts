@@ -25,6 +25,7 @@ export default defineNuxtConfig({
         }
     },
     modules: [
+        '@nuxtjs/device',
         // @ts-ignore
         // this adds the vuetify vite plugin
         // also produces type errors in the current beta release

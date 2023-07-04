@@ -50,7 +50,7 @@
 import {defineProps, ref} from "vue";
 
 import {EpisodeWithSubtitlesDto, SubtitleDto} from "@/api/api";
-import {mevent} from "@/composables/matomo/event";
+import {mevent} from "~/composables/data/event";
 import {useApi} from "~/composables/rest/api";
 
 interface Props {

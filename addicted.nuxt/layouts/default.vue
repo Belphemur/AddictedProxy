@@ -3,7 +3,7 @@
     <div class="bg-image" :style="backgroundStyle"></div>
     <default-bar v-on:drawer-clicked="drawer = !drawer"/>
 
-    <navigation v-model="drawer" :mobile="mobile"/>
+    <navigation v-model="drawer" :mobile="isMobile"/>
 
     <default-view/>
   </v-app>
@@ -15,11 +15,9 @@ import DefaultView from '@/layouts/default/View.vue';
 import Navigation from "@/layouts/default/Navigation.vue";
 import {ref} from "vue";
 import background from "@/assets/background.webp";
-import {useDisplay} from "vuetify";
+const { isMobile } = useDevice();
 
-const {mobile} = useDisplay()
-
-const drawer = ref<boolean>(!mobile.value)
+const drawer = ref<boolean>(!isMobile)
 
 
 const backgroundStyle = {

@@ -1,14 +1,14 @@
 <template>
   <v-container>
-    <v-slide-y-transition>
-      <v-alert v-if="error != null"
-               closable
-               title="Error"
-               :text="error"
-               type="error"
-      ></v-alert>
-    </v-slide-y-transition>
     <v-row>
+      <v-slide-y-transition>
+        <v-alert v-if="error != null"
+                 closable
+                 title="Error"
+                 :text="error"
+                 type="error"
+        ></v-alert>
+      </v-slide-y-transition>
       <v-autocomplete label="Name of the show"
                       v-model="searchInput"
                       :items="results"
@@ -49,7 +49,7 @@ import {ref, watch, defineExpose} from "vue";
 import {ShowDto} from "@/api/api";
 import {getName, getAll639_1} from "all-iso-language-codes";
 import {SelectedShow} from "@/composables/dto/SelectedShow";
-import {mevent} from "@/composables/matomo/event";
+import {mevent} from "~/composables/data/event";
 import {useApi} from "~/composables/rest/api";
 
 const langs = getAll639_1().map((value) => {
@@ -88,7 +88,7 @@ const clearSearch = () => {
   emit("cleared");
 };
 const onSearch = async (val: string) => {
-  if(process.server) {
+  if (process.server) {
     return;
   }
   clearTimeout(timerId)
