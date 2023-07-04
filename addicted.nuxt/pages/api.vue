@@ -25,9 +25,11 @@ useSeoMeta({
   ogImage: "/img/logo.png"
 })
 
+const config = useRuntimeConfig();
+
 onMounted(() => {
   SwaggerUIBundle({
-    url: import.meta.env.VITE_APP_API_PATH + "/api/v1/swagger.json",
+    url: config.public.api.url + "/api/v1/swagger.json",
     dom_id: "#swagger"
   });
 });
