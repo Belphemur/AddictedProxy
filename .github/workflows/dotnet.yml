@@ -154,7 +154,7 @@ jobs:
             context: "."
           - package: "addictedproxy-frontend"
             image: ${{ github.repository }}-frontend
-            context: "addicted.vuetify/"
+            context: "addicted.nuxt/"
     permissions:
       contents: read
       packages: write
