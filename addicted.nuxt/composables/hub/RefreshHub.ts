@@ -1,14 +1,18 @@
-import {HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
+import {HubConnection, HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
 import {ShowDto} from "@/api/api";
 
 let started = false;
-const connection = new HubConnectionBuilder()
-    .withUrl(import.meta.env.VITE_APP_API_PATH + "/refresh")
-    .configureLogging(LogLevel.Information)
-    .withAutomaticReconnect()
-    .build();
+let connection: HubConnection;
 
 export function useRefreshHub() {
+
+    const config = useRuntimeConfig();
+    connection ??= new HubConnectionBuilder()
+        // @ts-ignore
+        .withUrl(config.public.api.url + "/refresh")
+        .configureLogging(LogLevel.Information)
+        .withAutomaticReconnect()
+        .build();
 
     async function start() {
         if (started) return;
