@@ -76,7 +76,7 @@ watch(languageSelect, async (value) => {
       </v-row>
     </v-card-text>
     <v-card-actions>
-      <v-col lg="2" cols="5">
+      <v-col lg="2" cols="6">
         <v-autocomplete v-model="languageSelect"
                         :items="langs"
                         label="Language"
@@ -84,7 +84,7 @@ watch(languageSelect, async (value) => {
                         item-value="value"
         ></v-autocomplete>
       </v-col>
-      <v-col lg="2" cols="5" offset-lg="8" offset="2">
+      <v-col lg="2" cols="6" offset-lg="8">
         <v-select v-model="selectedSeason"
                   :items="seasons"
                   label="Season selection"
