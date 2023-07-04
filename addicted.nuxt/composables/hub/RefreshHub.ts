@@ -3,9 +3,6 @@ import {ShowDto} from "@/api/api";
 
 
 export function useRefreshHub() {
-    if (process.server) {
-        return {start: () => {}, sendRefreshAsync: () => {}, unsubscribeShowAsync: () => {}, onProgress: () => {}, offProgress: () => {}, onDone: () => {}, offDone: () => {}};
-    }
 
     const connection = new HubConnectionBuilder()
         .withUrl(import.meta.env.VITE_APP_API_PATH + "/refresh")

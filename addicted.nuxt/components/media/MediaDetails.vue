@@ -65,19 +65,18 @@ watch(languageSelect, async (value) => {
       <v-row align="center" no-gutters>
         <v-col
           class="text-h2"
-          lg="2"
           cols="4"
         >
           <v-img class="align-end ml-auto" :src="props.details.details!.posterPath!" height="320"></v-img>
         </v-col>
 
-        <v-col lg="10" cols="8" class="text-right">
+        <v-col cols="8" class="text-right">
           {{ props.details.details!.overview }}
         </v-col>
       </v-row>
     </v-card-text>
     <v-card-actions>
-      <v-col lg="2" cols="6">
+      <v-col xl="4" cols="6">
         <v-autocomplete v-model="languageSelect"
                         :items="langs"
                         label="Language"
@@ -85,7 +84,7 @@ watch(languageSelect, async (value) => {
                         item-value="value"
         ></v-autocomplete>
       </v-col>
-      <v-col lg="2" cols="6" offset-lg="8">
+      <v-col xl="4" cols="6" offset-xl="4">
         <v-select v-model="selectedSeason"
                   :items="seasons"
                   label="Season selection"

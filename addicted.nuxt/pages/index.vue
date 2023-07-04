@@ -71,11 +71,13 @@
           </v-btn>
         </v-card-actions>
         <v-card-item>
-          <subtitles-table
-              v-if="episodesWithSubtitles.length > 0"
-              :episodes="episodesWithSubtitles"
-              style="display: flex; flex-grow: 1"
-          ></subtitles-table>
+          <v-skeleton-loader :loading="loadingSubtitles" type="card">
+            <subtitles-table
+                v-if="episodesWithSubtitles.length > 0"
+                :episodes="episodesWithSubtitles"
+                style="display: flex; flex-grow: 1"
+            ></subtitles-table>
+          </v-skeleton-loader>
         </v-card-item>
       </v-card>
     </v-col>
