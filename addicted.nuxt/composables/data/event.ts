@@ -6,6 +6,6 @@ const mtag = (data: any) => {
     (window._mtm as any).push(data);
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mevent = (eventName: string, eventData: any) => {
+export const mevent = (eventName: string, eventData: any) => {
     mtag({event: eventName, ...eventData});
 };
