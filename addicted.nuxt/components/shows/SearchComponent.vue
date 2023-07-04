@@ -4,7 +4,6 @@
       <v-autocomplete label="Name of the show"
                       clearable
                       :error-messages="error"
-                      v-model="searchInput"
                       :items="results"
                       :loading="isLoading"
                       item-title="name"
@@ -61,7 +60,6 @@ const api = useApi();
 const language = useLanguage();
 
 const selectedSeason = ref<number | null>(null);
-const searchInput = ref<string>("");
 const languageSelect = ref<string>(language.lang);
 
 const selectedShow = ref<ShowDto | null>(null);
@@ -76,7 +74,6 @@ let timerId: number = 0;
 const error = ref<string | undefined>(undefined);
 
 const clearSearch = () => {
-  searchInput.value = "";
   selectedShow.value = null;
   selectedSeason.value = null;
   selectedShowSeason.value = [];
@@ -138,7 +135,6 @@ const setSelectedShow = (show: ShowDto) => {
     return;
   }
   selectedShow.value = show;
-  searchInput.value = show.name;
   selectedSeason.value = null;
   selectedShowSeason.value = show.seasons;
   if (show.nbSeasons > 0) {
