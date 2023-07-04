@@ -1,3 +1,10 @@
+## [4.9.2](https://github.com/Belphemur/AddictedProxy/compare/v4.9.1...v4.9.2) (2023-07-04)
+
+
+### Bug Fixes
+
+* **api:ssr:** Fix route for api page ([9a92b08](https://github.com/Belphemur/AddictedProxy/commit/9a92b08262c9b0242f10f150cccde2bfc6c90b18))
+
 ## [4.9.1](https://github.com/Belphemur/AddictedProxy/compare/v4.9.0...v4.9.1) (2023-07-04)
 
 
