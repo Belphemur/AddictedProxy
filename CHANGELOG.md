@@ -1,3 +1,29 @@
+## [4.9.0](https://github.com/Belphemur/AddictedProxy/compare/v4.8.2...v4.9.0) (2023-07-04)
+
+
+### Performance improvements
+
+* **Loading:** improve the loading of pages ([60a3d11](https://github.com/Belphemur/AddictedProxy/commit/60a3d11ba5d6d4faf933ee81cc84e2290c2b364b))
+* **matomo:** don't touch the router ([817afb3](https://github.com/Belphemur/AddictedProxy/commit/817afb3bd48a10bbadc22c07c5eaf7721f596a13))
+* **matomo:** Fix loading matomo ([11edb03](https://github.com/Belphemur/AddictedProxy/commit/11edb03ecc5f4f7263867b20e69c95a0cb68da8e))
+* **store:** use store for the language ([6adc21a](https://github.com/Belphemur/AddictedProxy/commit/6adc21ac516340442bc7ad37436f4ea704a91581))
+* **webfont:** add webfont ([15c40d9](https://github.com/Belphemur/AddictedProxy/commit/15c40d9a41322b6f710f5febac777e6decbba041))
+
+
+### Bug Fixes
+
+* **matomo:** fix tracking ([c35fa24](https://github.com/Belphemur/AddictedProxy/commit/c35fa24d1fc11775e9dca2f93dd1a17e3c67cea4))
+* **media:view:** Fix mobile view ([b11041b](https://github.com/Belphemur/AddictedProxy/commit/b11041b4f0d002e37af4dcb6d5006c7ae59e864d))
+* **media:view:** Fix the view of media ([06c2a8c](https://github.com/Belphemur/AddictedProxy/commit/06c2a8cd751941a7620fde55116965961bf0a127))
+* **tracking:** Fix issue with tracking ([2c43201](https://github.com/Belphemur/AddictedProxy/commit/2c4320141bb5cfde6df5f63b8b5c57b456c730d2))
+
+
+### Features
+
+* **ssr:api:** Add api page ([2a60fad](https://github.com/Belphemur/AddictedProxy/commit/2a60fad8d2887f65e9d5d8388977d345a5555155))
+* **ssr:privacy:** add privacy policy page ([d0b5f24](https://github.com/Belphemur/AddictedProxy/commit/d0b5f24cead3456afe809176ebe3fc18eceb7e81))
+* **ssr:** get the home page to work ([26e06e0](https://github.com/Belphemur/AddictedProxy/commit/26e06e05297581625ebe850bccbaa3be70c72167))
+
 ## [4.8.2](https://github.com/Belphemur/AddictedProxy/compare/v4.8.1...v4.8.2) (2023-07-03)
 
 
