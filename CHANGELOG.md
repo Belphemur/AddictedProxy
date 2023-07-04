@@ -1,3 +1,10 @@
+## [4.9.4](https://github.com/Belphemur/AddictedProxy/compare/v4.9.3...v4.9.4) (2023-07-04)
+
+
+### Performance improvements
+
+* **search:** clean up the code to be more efficient ([79dec5f](https://github.com/Belphemur/AddictedProxy/commit/79dec5f7f3b2c684b0918cd47c078a900762f92d))
+
 ## [4.9.3](https://github.com/Belphemur/AddictedProxy/compare/v4.9.2...v4.9.3) (2023-07-04)
 
 
