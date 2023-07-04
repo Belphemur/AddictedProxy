@@ -21,7 +21,9 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             VITE_APP_API_PATH: process.env.VITE_APP_API_PATH,
-            VITE_APP_MATOMO: process.env.VITE_APP_MATOMO,
+            matomo: {
+                url: process.env.VITE_APP_MATOMO
+            }
         }
     },
     googleFonts: {

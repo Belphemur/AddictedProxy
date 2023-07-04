@@ -1,19 +1,21 @@
 import {HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
 import {ShowDto} from "@/api/api";
 
+let started = false;
+const connection = new HubConnectionBuilder()
+    .withUrl(import.meta.env.VITE_APP_API_PATH + "/refresh")
+    .configureLogging(LogLevel.Information)
+    .withAutomaticReconnect()
+    .build();
 
 export function useRefreshHub() {
 
-    const connection = new HubConnectionBuilder()
-        .withUrl(import.meta.env.VITE_APP_API_PATH + "/refresh")
-        .configureLogging(LogLevel.Information)
-        .withAutomaticReconnect()
-        .build();
-
     async function start() {
+        if (started) return;
         try {
             await connection.start();
             console.log("SignalR Connected.");
+            started = true;
         } catch (err) {
             console.log(err);
             setTimeout(start, 5000);

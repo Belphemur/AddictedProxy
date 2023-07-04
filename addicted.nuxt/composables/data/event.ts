@@ -1,13 +1,11 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-
-const datalayer = process.browser ? (window._mtm = window._mtm || []) : [];
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const mtag = (data: any) => {
-  datalayer.push(data);
+const mtag = (data: any) => {
+    // @ts-ignore
+    if (process.server || window == undefined || window._mtm == undefined) return;
+    // @ts-ignore
+    (window._mtm as any).push(data);
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const mevent = (eventName: string, eventData: any) => {
-  mtag({ event: eventName, ...eventData });
+const mevent = (eventName: string, eventData: any) => {
+    mtag({event: eventName, ...eventData});
 };
