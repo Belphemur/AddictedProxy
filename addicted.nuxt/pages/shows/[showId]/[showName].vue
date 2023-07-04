@@ -7,7 +7,7 @@ const showId = route.params.showId.toString();
 
 <template>
   <v-row justify="center">
-    <v-col cols="6">
+    <v-col cols="10" lg="6" >
       <suspense>
         <template #default>
           <media-detail-view :show-id="showId"></media-detail-view>

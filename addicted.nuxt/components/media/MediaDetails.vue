@@ -10,7 +10,7 @@ export interface Props {
 }
 
 const props = defineProps<Props>();
-const seasons = props.details.media!.seasons!.sort();
+const seasons = props.details.media!.seasons!;
 const selectedSeason = ref<number>(seasons[seasons.length - 1]);
 
 const languageSelect = ref<string>("en");
@@ -64,18 +64,19 @@ watch(languageSelect, async (value) => {
       <v-row align="center" no-gutters>
         <v-col
           class="text-h2"
-          cols="2"
+          lg="2"
+          cols="4"
         >
           <v-img class="align-end ml-auto" :src="props.details.details!.posterPath!" height="320"></v-img>
         </v-col>
 
-        <v-col cols="10" class="text-right">
+        <v-col lg="10" cols="8" class="text-right">
           {{ props.details.details!.overview }}
         </v-col>
       </v-row>
     </v-card-text>
     <v-card-actions>
-      <v-col cols="2">
+      <v-col lg="2" cols="5">
         <v-autocomplete v-model="languageSelect"
                         :items="langs"
                         label="Language"
@@ -83,7 +84,7 @@ watch(languageSelect, async (value) => {
                         item-value="value"
         ></v-autocomplete>
       </v-col>
-      <v-col cols="2" offset="8">
+      <v-col lg="2" cols="5" offset-lg="8" offset="2">
         <v-select v-model="selectedSeason"
                   :items="seasons"
                   label="Season selection"
