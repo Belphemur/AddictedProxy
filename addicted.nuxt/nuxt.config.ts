@@ -29,8 +29,17 @@ export default defineNuxtConfig({
             Roboto: [100, 300, 400, 500, 700, 900],
         }
     },
+    imports: {
+        dirs: ['./stores'],
+    },
+
+    pinia: {
+        autoImports: ['defineStore', 'acceptHMRUpdate'],
+    },
     modules: [
         '@nuxtjs/google-fonts',
+        '@pinia/nuxt',
+        '@pinia-plugin-persistedstate/nuxt',
         '@nuxtjs/device',
         'nuxt-lodash',
         // @ts-ignore

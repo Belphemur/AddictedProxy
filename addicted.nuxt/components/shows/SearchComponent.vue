@@ -65,9 +65,11 @@ const emit = defineEmits<{
 
 const api = useApi();
 
+const language = useLanguage();
+
 const selectedSeason = ref<number | null>(null);
 const searchInput = ref<string>("");
-const languageSelect = ref<string>("en");
+const languageSelect = ref<string>(language.lang);
 
 const selectedShow = ref<ShowDto | null>(null);
 
@@ -175,7 +177,7 @@ watch(selectedSeason, (value) => {
 });
 
 watch(languageSelect, (value) => {
-  //localStorage.setItem("lang", value);
+  language.lang = value;
   if (selectedSeason.value == null || selectedShow.value == null) {
     return;
   }
