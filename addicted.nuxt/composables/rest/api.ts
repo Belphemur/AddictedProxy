@@ -7,6 +7,7 @@ export function useApi() {
     const config = useRuntimeConfig();
 
     return api = new Api({
-        baseUrl: config.public.VITE_APP_API_PATH,
+        // @ts-ignore
+        baseUrl: config.public.api.url,
     });
 }

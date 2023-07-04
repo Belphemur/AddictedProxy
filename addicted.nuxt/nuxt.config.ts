@@ -20,9 +20,11 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
         public: {
-            VITE_APP_API_PATH: process.env.VITE_APP_API_PATH,
+            api: {
+                url: process.env.APP_API_PATH
+            },
             matomo: {
-                url: process.env.VITE_APP_MATOMO
+                url: process.env.APP_MATOMO
             }
         }
     },
