@@ -24,7 +24,13 @@ export default defineNuxtConfig({
             VITE_APP_MATOMO: process.env.VITE_APP_MATOMO,
         }
     },
+    googleFonts: {
+        families: {
+            Roboto: [100, 300, 400, 500, 700, 900],
+        }
+    },
     modules: [
+        '@nuxtjs/google-fonts',
         '@nuxtjs/device',
         // @ts-ignore
         // this adds the vuetify vite plugin

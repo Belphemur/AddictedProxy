@@ -26,9 +26,6 @@ dependencies:
   vuetify:
     specifier: ^3.3.6
     version: 3.3.6(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
-  webfontloader:
-    specifier: ^1.6.28
-    version: 1.6.28
 
 devDependencies:
   '@nuxt/devtools':
@@ -37,6 +34,9 @@ devDependencies:
   '@nuxtjs/device':
     specifier: ^3.1.0
     version: 3.1.0
+  '@nuxtjs/google-fonts':
+    specifier: ^3.0.1
+    version: 3.0.1
   '@types/lodash-es':
     specifier: ^4.17.7
     version: 4.17.7
@@ -1190,6 +1190,17 @@ packages:
     dependencies:
       '@nuxt/kit': 3.6.1
       defu: 6.1.2
+    transitivePeerDependencies:
+      - rollup
+      - supports-color
+    dev: true
+
+  /@nuxtjs/google-fonts@3.0.1:
+    resolution: {integrity: sha512-9W5jZhpJ4UTmiPebljdoxs+ju89rOBVD5gb0sPRe73BVXCUUv46lV2Q0ynPZPsnono5WlTB6nyZbOCECa7IWDQ==}
+    dependencies:
+      '@nuxt/kit': 3.6.1
+      google-fonts-helper: 3.3.0
+      pathe: 1.1.1
     transitivePeerDependencies:
       - rollup
       - supports-color
@@ -3320,6 +3331,15 @@ packages:
       ignore: 5.2.4
       merge2: 1.4.1
       slash: 4.0.0
+    dev: true
+
+  /google-fonts-helper@3.3.0:
+    resolution: {integrity: sha512-aFEVbmaavTY6wN3m6jZaWXQHfakMy6XNqdWN8YzHqHWCGpGma91zp8MiWsyb5i8gXQXYeGUWegb9ca/Jf/Q7Yw==}
+    dependencies:
+      deepmerge: 4.3.1
+      hookable: 5.5.3
+      ofetch: 1.1.1
+      ufo: 1.1.2
     dev: true
 
   /gopd@1.0.1:
@@ -6618,10 +6638,6 @@ packages:
     resolution: {integrity: sha512-e0MO3wdXWKrLbL0DgGnUV7WHVuw9OUvL4hjgnPkIeEvESk74gAITi5G606JtZPp39cd8HA9VQzCIvA49LpPN5Q==}
     engines: {node: '>= 8'}
     dev: true
-
-  /webfontloader@1.6.28:
-    resolution: {integrity: sha512-Egb0oFEga6f+nSgasH3E0M405Pzn6y3/9tOVanv/DLfa1YBIgcv90L18YyWnvXkRbIM17v5Kv6IT2N6g1x5tvQ==}
-    dev: false
 
   /webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}

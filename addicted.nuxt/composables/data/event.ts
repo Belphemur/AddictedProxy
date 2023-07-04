@@ -2,6 +2,7 @@
 // @ts-ignore
 
 const datalayer = process.browser ? (window._mtm = window._mtm || []) : [];
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const mtag = (data: any) => {
   datalayer.push(data);
