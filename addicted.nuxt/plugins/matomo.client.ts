@@ -22,13 +22,12 @@ export default defineNuxtPlugin((app) => {
         ],
     })
     const router = useRouter();
-    router.beforeEach((to, from, next) => {
+    router.afterEach((to, from) => {
         _mtm.push({
             event: 'virtual_page_view',
             virtualPagePath: to.path,
             virtualPageTitle: to.name,
             virtualPageReferer: from.path,
         })
-        next()
     });
 })
