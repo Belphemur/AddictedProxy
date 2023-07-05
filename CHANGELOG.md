@@ -1,3 +1,15 @@
+## [4.10.0](https://github.com/Belphemur/AddictedProxy/compare/v4.9.4...v4.10.0) (2023-07-05)
+
+
+### Bug Fixes
+
+* **sitemap:** proper change frequency depending if completed ([0279b1a](https://github.com/Belphemur/AddictedProxy/commit/0279b1aaacd93c9803a2652c81a9222c209c42ab))
+
+
+### Features
+
+* **sitemap:** Use new lib for generating sitemap ([1e4bf2f](https://github.com/Belphemur/AddictedProxy/commit/1e4bf2f3b8da2f414e524e554f5f3f46dba965a6))
+
 ## [4.9.4](https://github.com/Belphemur/AddictedProxy/compare/v4.9.3...v4.9.4) (2023-07-04)
 
 
