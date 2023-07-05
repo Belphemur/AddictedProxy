@@ -1,3 +1,10 @@
+## [4.10.1](https://github.com/Belphemur/AddictedProxy/compare/v4.10.0...v4.10.1) (2023-07-05)
+
+
+### Bug Fixes
+
+* **sitemap:** fix route for swagger ([302626d](https://github.com/Belphemur/AddictedProxy/commit/302626db32b45fa77b9f90531770de77cad25231))
+
 ## [4.10.0](https://github.com/Belphemur/AddictedProxy/compare/v4.9.4...v4.10.0) (2023-07-05)
 
 
