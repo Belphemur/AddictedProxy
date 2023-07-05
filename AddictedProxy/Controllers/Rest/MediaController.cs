@@ -87,7 +87,11 @@ public class MediaController : Controller
                     throw new ArgumentOutOfRangeException();
             }
 
-            detailsDto = detailsDto! with { PosterPath = $"https://image.tmdb.org/t/p/original{detailsDto.PosterPath}", BackdropPath = $"https://image.tmdb.org/t/p/original{detailsDto.BackdropPath}" };
+            detailsDto = detailsDto! with {
+                PosterPath = $"https://image.tmdb.org/t/p/original{detailsDto.PosterPath}", 
+                BackdropPath = $"https://image.tmdb.org/t/p/original{detailsDto.BackdropPath}",
+                VoteAverage = Math.Round( detailsDto.VoteAverage, 1)
+            };
         }
 
         return Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
