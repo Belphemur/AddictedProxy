@@ -137,7 +137,6 @@ const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
 const loadingSubtitles = ref(false);
 const refreshingShows = ref(new Map<string, ProgressShow>());
 const currentShow = ref<SelectedShow | null>(null);
-const router = useRouter();
 
 const {start, sendRefreshAsync, unsubscribeShowAsync, onProgress, offProgress, onDone, offDone} = useRefreshHub();
 
@@ -165,7 +164,7 @@ const getSubtitles = async (show: SelectedShow) => {
   loadingSubtitles.value = false;
 };
 
-const clear = async () => {
+const clear = () => {
   episodesWithSubtitles.value = [];
   currentShow.value = null;
 };
