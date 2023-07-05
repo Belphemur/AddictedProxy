@@ -36,6 +36,27 @@ export interface DetailsDto {
   originalName?: string | null;
   /** Represent the type of media */
   mediaType?: MediaType;
+  /**
+   * URL of the backdrop image for the show
+   * @example "https://upload.wikimedia.org/wikipedia/en/thumb/5/54/Bloodhounds_%28South_Korean_TV_series%29.jpg/250px-Bloodhounds_%28South_Korean_TV_series%29.jpg"
+   */
+  backdropPath?: string | null;
+  /**
+   * Percentage of user votes
+   * @format double
+   * @example 0.85
+   */
+  voteAverage?: number;
+  /**
+   * Genre of the media
+   * @example ["action","horror"]
+   */
+  genre?: string[] | null;
+  /**
+   * Tagline of the media
+   * @example "The best show on earth"
+   */
+  tagLine?: string | null;
 }
 
 /** Episode information */
@@ -159,7 +180,7 @@ export interface ShowDto {
    */
   nbSeasons: number;
   /**
-   * Seasons available
+   * Seasons available in ascending order
    * @example [2,3,4,5,6]
    */
   seasons: number[];
@@ -455,7 +476,7 @@ export class HttpClient<SecurityDataType = unknown> {
 
 /**
  * @title Gestdown: Addicted Proxy
- * @version 4.6.13
+ * @version 4.10.0
  *
  * Provide a full api to search and download subtitles from Addic7ed website.
  */
@@ -491,6 +512,36 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/media/${showId}/details`,
         method: "GET",
         format: "json",
+        ...params,
+      }),
+  };
+  sitemap = {
+    /**
+     * No description
+     *
+     * @tags Sitemap
+     * @name MediaSitemap
+     * @request GET:/sitemap/media/{page}
+     */
+    mediaSitemap: (page: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/sitemap/media/${page}`,
+        method: "GET",
+        ...params,
+      }),
+  };
+  sitemapXml = {
+    /**
+     * No description
+     *
+     * @tags Sitemap
+     * @name SitemapXmlList
+     * @request GET:/sitemap.xml
+     */
+    sitemapXmlList: (page: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/sitemap.xml`,
+        method: "GET",
         ...params,
       }),
   };
