@@ -1,3 +1,15 @@
+## [4.11.0](https://github.com/Belphemur/AddictedProxy/compare/v4.10.1...v4.11.0) (2023-07-05)
+
+
+### Bug Fixes
+
+* **sitemap:** be sure to define the argument from route ([f4d1254](https://github.com/Belphemur/AddictedProxy/commit/f4d125460f39e0461f6f0572b8b4dd9016cfd4b0))
+
+
+### Features
+
+* **show:detail:** add detail link to search results ([e7c7556](https://github.com/Belphemur/AddictedProxy/commit/e7c75562df49e55900a2d6b47f133368ed51d9ed))
+
 ## [4.10.1](https://github.com/Belphemur/AddictedProxy/compare/v4.10.0...v4.10.1) (2023-07-05)
 
 
