@@ -18,13 +18,16 @@ const response = await api.media.mediaDetails(props.showId);
 const mediaInfo = response.data;
 const loadingEpisodes = ref(false);
 const episodes = ref<EpisodeWithSubtitlesDto[]>([]);
+const language = useLanguage();
 
+const responseEpisode = await api.shows.showsDetail(props.showId, <number>useLast(mediaInfo.media?.seasons), language.lang);
+episodes.value = responseEpisode.data.episodes!;
 
 useSeoMeta({
   title: `Gestdown: Subtitles of ${mediaInfo.media?.name}`,
   description: `Find all the subtitle you need for your favorite show ${mediaInfo.media?.name}`,
   ogDescription: `Find all the subtitle you need for your favorite show ${mediaInfo.media?.name}`,
-  ogImage: mediaInfo.details?.posterPath
+  ogImage: mediaInfo.details?.backdropPath ?? mediaInfo.details?.posterPath
 })
 
 async function selected(selectedShow: SelectedShow) {
