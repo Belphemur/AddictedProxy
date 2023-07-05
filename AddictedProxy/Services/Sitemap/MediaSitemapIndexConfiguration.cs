@@ -30,7 +30,7 @@ public class MediaSitemapIndexConfiguration : SitemapIndexConfiguration<TvShow>
         return new SitemapNode($"/shows/{show.UniqueId}/{HttpUtility.UrlEncode(show.Name)}")
         {
             LastModificationDate = show.LastUpdated,
-            ChangeFrequency = ChangeFrequency.Monthly
+            ChangeFrequency = show.IsCompleted? ChangeFrequency.Monthly : ChangeFrequency.Daily
         };
     }
 }
