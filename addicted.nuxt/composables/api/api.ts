@@ -57,6 +57,11 @@ export interface DetailsDto {
    * @example "The best show on earth"
    */
   tagLine?: string | null;
+  /**
+   * Year of release
+   * @format int32
+   */
+  releaseYear?: number;
 }
 
 /** Episode information */

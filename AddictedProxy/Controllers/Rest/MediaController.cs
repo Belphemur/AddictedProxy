@@ -66,7 +66,8 @@ public class MediaController : Controller
                             showDetails.BackdropPath,
                             showDetails.VoteAverage,
                             showDetails.Genres.Select(genre => genre.Name).ToArray(),
-                            showDetails.Tagline);
+                            showDetails.Tagline,
+                            DateTime.Parse(showDetails.FirstAirDate).Year);
                     break;
                 case ShowType.Movie:
                     var movieDetails = await _tmdbClient.GetMovieDetailsByIdAsync(show.TmdbId.Value, cancellationToken);
@@ -78,7 +79,8 @@ public class MediaController : Controller
                             movieDetails.BackdropPath,
                             movieDetails.VoteAverage,
                             movieDetails.Genres.Select(genre => genre.Name).ToArray(),
-                            movieDetails.Tagline);
+                            movieDetails.Tagline,
+                            DateTime.Parse(movieDetails.ReleaseDate).Year);
 
                     break;
                 default:
