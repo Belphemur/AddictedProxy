@@ -127,6 +127,16 @@ internal class TMDBClient : ITMDBClient
     {
         return PaginateAsync<ShowSearchResult>($"trending/tv/{timeWindow.ToString()}", new Dictionary<string, string>(), token);
     }
+    
+    /// <summary>
+    /// Get all the genre for TV
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<ShowGenre?> GetTvGenresAsync(CancellationToken token = default)
+    {
+        return GetDataAsync<ShowGenre>(PrepareRequest("genre/tv/list", HttpMethod.Get), token);
+    }
 
     /// <summary>
     /// Search for movie

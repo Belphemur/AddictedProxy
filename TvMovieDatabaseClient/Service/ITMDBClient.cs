@@ -67,4 +67,11 @@ public interface ITMDBClient
     /// <param name="token"></param>
     /// <returns></returns>
     IAsyncEnumerable<ShowSearchResult> GetTrendingTvAsync(TimeWindowEnum timeWindow = TimeWindowEnum.week, CancellationToken token = default);
+
+    /// <summary>
+    /// Get all the genre for TV
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task<ShowGenre?> GetTvGenresAsync(CancellationToken token = default);
 }

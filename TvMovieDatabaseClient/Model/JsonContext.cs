@@ -12,6 +12,7 @@ namespace TvMovieDatabaseClient.Model;
 [JsonSerializable(typeof(Pagination<MovieSearchResult>))]
 [JsonSerializable(typeof(MovieDetails))]
 [JsonSerializable(typeof(ExternalIds))]
+[JsonSerializable(typeof(ShowGenre))]
 internal partial class JsonContext : JsonSerializerContext
 {
 }
