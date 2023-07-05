@@ -1,5 +1,5 @@
 import {HubConnection, HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
-import {ShowDto} from "@/api/api";
+import {ShowDto} from "~/composables/api/api";
 
 let started = false;
 let connection: HubConnection;

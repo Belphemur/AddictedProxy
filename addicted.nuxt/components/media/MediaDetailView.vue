@@ -3,7 +3,7 @@ import {useApi} from "@/composables/rest/api";
 import MediaDetails from "@/components/media/MediaDetails.vue";
 import {SelectedShow} from "@/composables/dto/SelectedShow";
 import {ref} from "vue";
-import {EpisodeWithSubtitlesDto} from "@/api/api";
+import {EpisodeWithSubtitlesDto} from "~/composables/api/api";
 import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
 
 

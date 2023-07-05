@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { MediaDetailsDto} from "@/api/api";
+import { MediaDetailsDto} from "~/composables/api/api";
 import {ref, watch} from "vue";
 import {getAll639_1, getName} from "all-iso-language-codes";
 import {SelectedShow} from "@/composables/dto/SelectedShow";

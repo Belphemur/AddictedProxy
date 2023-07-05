@@ -1,4 +1,4 @@
-import { ShowDto } from "@/api/api";
+import { ShowDto } from "~/composables/api/api";
 
 export interface SelectedShow {
   show: ShowDto;

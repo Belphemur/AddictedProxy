@@ -101,7 +101,7 @@
 
 import {onUnmounted, ref} from "vue";
 import {SelectedShow} from "@/composables/dto/SelectedShow";
-import {EpisodeWithSubtitlesDto, ShowDto} from "@/api/api";
+import {EpisodeWithSubtitlesDto, ShowDto} from "~/composables/api/api";
 import {
   DoneHandler,
   ProgressHandler,

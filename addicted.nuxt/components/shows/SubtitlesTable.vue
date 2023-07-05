@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import {defineProps, ref} from "vue";
 
-import {EpisodeWithSubtitlesDto, SubtitleDto} from "@/api/api";
+import {EpisodeWithSubtitlesDto, SubtitleDto} from "~/composables/api/api";
 import {mevent} from "~/composables/data/event";
 import {useApi} from "~/composables/rest/api";
 
