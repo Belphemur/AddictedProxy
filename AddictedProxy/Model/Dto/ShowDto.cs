@@ -33,11 +33,11 @@ public record ShowDto(Guid Id, string Name, int NbSeasons, int[] Seasons, int? T
     public int NbSeasons { get; init; } = NbSeasons;
 
     /// <summary>
-    /// Seasons available
+    /// Seasons available in ascending order
     /// </summary>
     /// <example>[2,3,4,5,6]</example>
     [Required]
-    public int[] Seasons { get; init; } = Seasons;
+    public int[] Seasons { get; init; } = Seasons.OrderBy(season => season).ToArray();
 
     /// <summary>
     /// Id of the show on the TvDB
