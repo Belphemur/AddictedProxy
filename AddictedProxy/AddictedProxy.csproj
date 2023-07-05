@@ -16,6 +16,7 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0" />
         <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
         <PackageReference Include="Sentry.AspNetCore" Version="3.33.1" />
+        <PackageReference Include="SimpleMvcSitemap.Core" Version="4.3.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
         <PackageReference Include="AngleSharp" Version="1.0.4" />
         <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.8" />
@@ -27,7 +28,6 @@
         <ProjectReference Include="..\AddictedProxy.Caching\AddictedProxy.Caching.csproj" />
         <ProjectReference Include="..\AddictedProxy.Database\AddictedProxy.Database.csproj" />
         <ProjectReference Include="..\AddictedProxy.OneTimeMigration\AddictedProxy.OneTimeMigration.csproj" />
-        <ProjectReference Include="..\AddictedProxy.Sitemap\AddictedProxy.Sitemap.csproj" />
         <ProjectReference Include="..\AddictedProxy.Stats\AddictedProxy.Stats.csproj" />
         <ProjectReference Include="..\AddictedProxy.Storage.Caching\AddictedProxy.Storage.Caching.csproj" />
         <ProjectReference Include="..\AddictedProxy.Storage\AddictedProxy.Storage.csproj" />
