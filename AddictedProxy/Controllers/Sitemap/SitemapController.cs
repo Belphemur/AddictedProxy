@@ -21,6 +21,8 @@ public class SitemapController : Controller
 
     [Route("/sitemap/media/{page?}", Name = nameof(Routes.MediaSitemap))]
     [Route("/sitemap.xml")]
+    [HttpGet]
+    [Produces("text/xml")]
     public async Task<ActionResult> Media(int? page, CancellationToken cancellationToken)
     {
         var shows = _tvShowRepository.GetAllHavingSubtitlesAsync();
