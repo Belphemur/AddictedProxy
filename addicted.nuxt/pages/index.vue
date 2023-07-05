@@ -56,19 +56,32 @@
           {{ currentShow.season }}
         </v-card-title>
         <v-card-actions>
+          <v-row>
+            <v-col cols="4">
 
-          <v-btn
-              prepend-icon="mdi-refresh"
-              class="text-none mb-4"
-              color="indigo-lighten-3"
-              @click="refreshShow(currentShow.show)"
-          >Refresh
-            <v-tooltip
-                activator="parent"
-                location="end"
-            >Fetch from Addic7ed
-            </v-tooltip>
-          </v-btn>
+              <v-btn
+                  prepend-icon="mdi-refresh"
+                  class="text-none mb-4"
+                  color="indigo-lighten-3"
+                  @click="refreshShow(currentShow.show)"
+              >Refresh
+                <v-tooltip
+                    activator="parent"
+                    location="end"
+                >Fetch from Addic7ed
+                </v-tooltip>
+              </v-btn>
+            </v-col>
+            <v-col offset="7">
+              <v-btn
+                  :to="{name: 'show-details', params: {showId: currentShow.show.id, showName: currentShow.show.name}}"
+                  prepend-icon="mdi-ballot">Details
+                <v-tooltip activator="parent" location="end">
+                  See details of the show {{ currentShow.show.name }}
+                </v-tooltip>
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-actions>
         <v-card-item>
           <v-skeleton-loader :loading="loadingSubtitles" type="card">
@@ -124,6 +137,7 @@ const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
 const loadingSubtitles = ref(false);
 const refreshingShows = ref(new Map<string, ProgressShow>());
 const currentShow = ref<SelectedShow | null>(null);
+const router = useRouter();
 
 const {start, sendRefreshAsync, unsubscribeShowAsync, onProgress, offProgress, onDone, offDone} = useRefreshHub();
 
@@ -151,7 +165,7 @@ const getSubtitles = async (show: SelectedShow) => {
   loadingSubtitles.value = false;
 };
 
-const clear = () => {
+const clear = async () => {
   episodesWithSubtitles.value = [];
   currentShow.value = null;
 };

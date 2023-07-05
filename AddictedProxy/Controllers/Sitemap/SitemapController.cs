@@ -23,12 +23,10 @@ public class SitemapController : Controller
     [Route("/sitemap.xml")]
     [HttpGet]
     [Produces("text/xml")]
-    public async Task<ActionResult> Media(int? page, CancellationToken cancellationToken)
+    public async Task<ActionResult> Media([FromRoute] int? page, CancellationToken cancellationToken)
     {
         var shows = _tvShowRepository.GetAllHavingSubtitlesAsync();
         var indexConfiguration = new MediaSitemapIndexConfiguration(shows, page, Url);
         return _dynamicSitemapIndexProvider.CreateSitemapIndex(_sitemapProvider, indexConfiguration);
     }
-    
-    
 }
