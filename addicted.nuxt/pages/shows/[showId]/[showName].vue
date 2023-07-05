@@ -3,6 +3,10 @@ import MediaDetailView from "~/components/media/MediaDetailView.vue";
 
 const route = useRoute();
 const showId = route.params.showId.toString();
+
+definePageMeta({
+  name: "show-details",
+})
 </script>
 
 <template>
