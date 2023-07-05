@@ -84,5 +84,5 @@ public interface ITvShowRepository
     /// Get shows having at least one season
     /// </summary>
     /// <returns></returns>
-    IAsyncEnumerable<TvShow> GetAllHavingEpisodesAsync();
+    IQueryable<TvShow> GetAllHavingSubtitlesAsync();
 }

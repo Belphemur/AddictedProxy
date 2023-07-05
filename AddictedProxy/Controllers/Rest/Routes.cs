@@ -4,4 +4,5 @@ public enum Routes
 {
     DownloadSubtitle,
     MediaDetails,
+    MediaSitemap
 }

@@ -134,9 +134,9 @@ public class TvShowRepository : ITvShowRepository
     /// Get shows having at least one season
     /// </summary>
     /// <returns></returns>
-    public IAsyncEnumerable<TvShow> GetAllHavingEpisodesAsync()
+    public IQueryable<TvShow> GetAllHavingSubtitlesAsync()
     {
-        return _entityContext.TvShows.Where(show => show.Episodes.Count > 0).AsNoTracking().ToAsyncEnumerable();
+        return _entityContext.TvShows.Where(show => show.Episodes.First().Subtitles.Count > 0).AsNoTracking();
     }
 
     public IAsyncEnumerable<TvShow> GetNonCompletedShows()
