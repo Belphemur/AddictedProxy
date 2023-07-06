@@ -1,3 +1,12 @@
+## [4.14.1](https://github.com/Belphemur/AddictedProxy/compare/v4.14.0...v4.14.1) (2023-07-06)
+
+
+### Performance improvements
+
+* **connection:** split connection settings between server and client ([f1da7a7](https://github.com/Belphemur/AddictedProxy/commit/f1da7a725800d209bda9dd6ecf876d0edaeab8bf))
+* **log:** log when can't find details of media ([4abc4b8](https://github.com/Belphemur/AddictedProxy/commit/4abc4b800ee4d0bda2e55c77f8d56ac6a6a57294))
+* **media:view:** Only show details if we have them. ([b3f3129](https://github.com/Belphemur/AddictedProxy/commit/b3f3129a60b26276c77f92efd8d23bbd72c13ad9))
+
 ## [4.14.0](https://github.com/Belphemur/AddictedProxy/compare/v4.13.1...v4.14.0) (2023-07-06)
 
 
