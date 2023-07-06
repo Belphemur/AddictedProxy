@@ -133,9 +133,9 @@ internal class TMDBClient : ITMDBClient
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<ShowGenre?> GetTvGenresAsync(CancellationToken token = default)
+    public Task<ShowGenres?> GetTvGenresAsync(CancellationToken token = default)
     {
-        return GetDataAsync<ShowGenre>(PrepareRequest("genre/tv/list", HttpMethod.Get), token);
+        return GetDataAsync<ShowGenres>(PrepareRequest("genre/tv/list", HttpMethod.Get), token);
     }
 
     /// <summary>

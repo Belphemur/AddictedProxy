@@ -73,5 +73,5 @@ public interface ITMDBClient
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<ShowGenre?> GetTvGenresAsync(CancellationToken token = default);
+    Task<ShowGenres?> GetTvGenresAsync(CancellationToken token = default);
 }
