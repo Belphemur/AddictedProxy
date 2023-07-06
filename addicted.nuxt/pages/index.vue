@@ -8,16 +8,6 @@
         <v-card-text>
           <v-row>
             <v-col>
-              <h2 class="text-h4">Trending</h2>
-            </v-col>
-          </v-row>
-          <v-row justify-lg="center">
-            <v-col align-self="center">
-              <media-trending :medias="trendingMedias"></media-trending>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
               <h2 class="text-h4">Search</h2>
 
               <SearchComponent
@@ -27,6 +17,17 @@
               />
             </v-col>
           </v-row>
+          <v-row>
+            <v-col>
+              <h2 class="text-h4">Trending</h2>
+            </v-col>
+          </v-row>
+          <v-row justify-lg="center">
+            <v-col align-self="center">
+              <media-trending :medias="trendingMedias"></media-trending>
+            </v-col>
+          </v-row>
+
         </v-card-text>
       </v-card>
     </v-col>
