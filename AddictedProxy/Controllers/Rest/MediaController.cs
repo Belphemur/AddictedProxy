@@ -52,15 +52,18 @@ public class MediaController : Controller
         {
             var showDto = new ShowDto(show);
             var showDetails = tmdbShows[show.TmdbId!.Value];
+            var genreNames = showDetails.GenreIds.Select(i => genres[i]).ToArray();
+            
+            int? year = DateTime.TryParse(showDetails.FirstAirDate, out var releaseDate) ? releaseDate.Year : null;
             var details = new MediaDetailsDto.DetailsDto(showDetails.PosterPath,
                 showDetails.Overview,
                 showDetails.OriginalName,
                 (MediaDetailsDto.MediaType)show.Type,
                 showDetails.BackdropPath,
                 showDetails.VoteAverage,
-                showDetails.GenreIds.Select(i => genres[i]).ToArray(),
+                genreNames,
                 "",
-                DateTime.Parse(showDetails.FirstAirDate).Year,
+                year,
                 showDetails.Name);
             details = UpdatePathAndVoteDetailsDto(details);
 
@@ -107,32 +110,41 @@ public class MediaController : Controller
             switch (show.Type)
             {
                 case ShowType.Show:
+                {
                     var showDetails = await _tmdbClient.GetShowDetailsByIdAsync(show.TmdbId.Value, cancellationToken);
-                    if (showDetails != null)
-                        detailsDto = new MediaDetailsDto.DetailsDto(showDetails.PosterPath,
-                            showDetails.Overview,
-                            showDetails.OriginalName,
-                            (MediaDetailsDto.MediaType)show.Type,
-                            showDetails.BackdropPath,
-                            showDetails.VoteAverage,
-                            showDetails.Genres.Select(genre => genre.Name).ToArray(),
-                            showDetails.Tagline,
-                            DateTime.Parse(showDetails.FirstAirDate).Year,
-                            showDetails.Name);
+                    if (showDetails == null) break;
+                    int? year = DateTime.TryParse(showDetails.FirstAirDate, out var releaseDate) ? releaseDate.Year : null;
+
+                    detailsDto = new MediaDetailsDto.DetailsDto(showDetails.PosterPath,
+                        showDetails.Overview,
+                        showDetails.OriginalName,
+                        (MediaDetailsDto.MediaType)show.Type,
+                        showDetails.BackdropPath,
+                        showDetails.VoteAverage,
+                        showDetails.Genres.Select(genre => genre.Name).ToArray(),
+                        showDetails.Tagline,
+                        year,
+                        showDetails.Name);
+                }
                     break;
                 case ShowType.Movie:
+                {
                     var movieDetails = await _tmdbClient.GetMovieDetailsByIdAsync(show.TmdbId.Value, cancellationToken);
-                    if (movieDetails != null)
-                        detailsDto = new MediaDetailsDto.DetailsDto(movieDetails.PosterPath,
-                            movieDetails.Overview,
-                            movieDetails.OriginalTitle,
-                            (MediaDetailsDto.MediaType)show.Type,
-                            movieDetails.BackdropPath,
-                            movieDetails.VoteAverage,
-                            movieDetails.Genres.Select(genre => genre.Name).ToArray(),
-                            movieDetails.Tagline,
-                            DateTime.Parse(movieDetails.ReleaseDate).Year,
-                            movieDetails.Title);
+                    if (movieDetails == null) break;
+
+                    int? year = DateTime.TryParse(movieDetails.ReleaseDate, out var releaseDate) ? releaseDate.Year : null;
+
+                    detailsDto = new MediaDetailsDto.DetailsDto(movieDetails.PosterPath,
+                        movieDetails.Overview,
+                        movieDetails.OriginalTitle,
+                        (MediaDetailsDto.MediaType)show.Type,
+                        movieDetails.BackdropPath,
+                        movieDetails.VoteAverage,
+                        movieDetails.Genres.Select(genre => genre.Name).ToArray(),
+                        movieDetails.Tagline,
+                        year,
+                        movieDetails.Title);
+                }
 
                     break;
                 default:
