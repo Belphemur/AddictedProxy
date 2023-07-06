@@ -1,3 +1,10 @@
+## [4.14.0](https://github.com/Belphemur/AddictedProxy/compare/v4.13.1...v4.14.0) (2023-07-06)
+
+
+### Features
+
+* **refresh:** fetch episodes data and show data after refreshing through websocket to get latest data ([bc4667b](https://github.com/Belphemur/AddictedProxy/commit/bc4667bd8839498ca9993b885c83ca80b95aca0d))
+
 ## [4.13.1](https://github.com/Belphemur/AddictedProxy/compare/v4.13.0...v4.13.1) (2023-07-06)
 
 
