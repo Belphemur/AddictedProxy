@@ -1,17 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using TvMovieDatabaseClient.Model.Common;
 
 namespace TvMovieDatabaseClient.Model.Show;
-
-public class Genre
-{
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-
-    [JsonPropertyName("name")]
-    public string Name { get; set; }
-}
-
 public class ShowGenres
 {
     [JsonPropertyName("genres")]

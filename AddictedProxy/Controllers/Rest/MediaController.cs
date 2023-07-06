@@ -37,9 +37,15 @@ public class MediaController : Controller
     [ProducesResponseType(typeof(string), 429)]
     public async Task<Ok<IAsyncEnumerable<MediaDetailsDto>>> GetTrendingTvShowsAsync([FromRoute] int max, CancellationToken cancellationToken)
     {
+        Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+        {
+            Public = true,
+            MaxAge = TimeSpan.FromDays(1)
+        };
+        
         var tmdbShows = await _tmdbClient.GetTrendingTvAsync(TimeWindowEnum.week, cancellationToken).Take(max).ToDictionaryAsync(searchResult => searchResult.Id, cancellationToken);
         var shows = _tvShowRepository.GetShowsByTmdbIdAsync(tmdbShows.Keys.ToArray());
-        var genres = (await _tmdbClient.GetTvGenresAsync(cancellationToken))!.Genres.ToDictionary(genre => genre.Id, genre => genre.Name);
+        var genres = (await _tmdbClient.GetTvGenresAsync(cancellationToken)).ToDictionary(genre => genre.Id, genre => genre.Name);
 
         var result = shows.Select(show =>
         {

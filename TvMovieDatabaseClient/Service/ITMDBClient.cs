@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TvMovieDatabaseClient.Model.Common;
 using TvMovieDatabaseClient.Model.Mapping;
 using TvMovieDatabaseClient.Model.Movie;
 using TvMovieDatabaseClient.Model.Movie.Search;
@@ -73,5 +74,5 @@ public interface ITMDBClient
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<ShowGenres?> GetTvGenresAsync(CancellationToken token = default);
+    Task<Genre[]> GetTvGenresAsync(CancellationToken token = default);
 }

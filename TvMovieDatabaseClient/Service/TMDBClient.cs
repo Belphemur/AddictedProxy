@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using TvMovieDatabaseClient.Bootstrap.EnvVar;
 using TvMovieDatabaseClient.Model;
+using TvMovieDatabaseClient.Model.Common;
 using TvMovieDatabaseClient.Model.Mapping;
 using TvMovieDatabaseClient.Model.Movie;
 using TvMovieDatabaseClient.Model.Movie.Search;
@@ -127,15 +128,15 @@ internal class TMDBClient : ITMDBClient
     {
         return PaginateAsync<ShowSearchResult>($"trending/tv/{timeWindow.ToString()}", new Dictionary<string, string>(), token);
     }
-    
+
     /// <summary>
     /// Get all the genre for TV
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<ShowGenres?> GetTvGenresAsync(CancellationToken token = default)
+    public async Task<Genre[]> GetTvGenresAsync(CancellationToken token = default)
     {
-        return GetDataAsync<ShowGenres>(PrepareRequest("genre/tv/list", HttpMethod.Get), token);
+        return (await GetDataAsync<ShowGenres>(PrepareRequest("genre/tv/list", HttpMethod.Get), token))?.Genres.ToArray() ?? Array.Empty<Genre>();
     }
 
     /// <summary>
@@ -150,7 +151,13 @@ internal class TMDBClient : ITMDBClient
         return SearchAsync<MovieSearchResult>(searchType, query, token);
     }
 
-    private async IAsyncEnumerable<T> SearchAsync<T>(string searchType, string query, CancellationToken token) => PaginateAsync<T>("search/" + searchType, new Dictionary<string, string> { { "query", query } }, token);
+    private async IAsyncEnumerable<T> SearchAsync<T>(string searchType, string query, [EnumeratorCancellation] CancellationToken token)
+    {
+        await foreach (var result in PaginateAsync<T>("search/" + searchType, new Dictionary<string, string> { { "query", query } }, token))
+        {
+            yield return result;
+        }
+    }
 
     private async IAsyncEnumerable<T> PaginateAsync<T>(string url, Dictionary<string, string> query, [EnumeratorCancellation] CancellationToken token)
     {
