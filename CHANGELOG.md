@@ -1,3 +1,12 @@
+## [4.14.4](https://github.com/Belphemur/AddictedProxy/compare/v4.14.3...v4.14.4) (2023-07-06)
+
+
+### Performance improvements
+
+* **caching:** add caching to trending shows from tmdb ([dd6afd8](https://github.com/Belphemur/AddictedProxy/commit/dd6afd8ac1499f052b11471715416d4f3c0ea7a6))
+* **index:** clean up index page to only have coded that is in use ([b82a59f](https://github.com/Belphemur/AddictedProxy/commit/b82a59f34f2c71dd3691e8d2dc4a0a7aa63c1930))
+* **trending:** Improve the trending page to be rendered on the server ([de95dd4](https://github.com/Belphemur/AddictedProxy/commit/de95dd4afd13f74822af1a81acf935f9e79fc358))
+
 ## [4.14.3](https://github.com/Belphemur/AddictedProxy/compare/v4.14.2...v4.14.3) (2023-07-06)
 
 
