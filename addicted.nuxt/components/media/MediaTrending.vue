@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import {MediaDetailsDto} from "~/composables/api/api";
+
+import {MediaDetailsDto} from "~/composables/api/data-contracts";
 
 export interface Props {
   medias: Array<MediaDetailsDto>;

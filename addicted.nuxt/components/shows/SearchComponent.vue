@@ -38,11 +38,11 @@
 
 <script setup lang="ts">
 import {ref, watch, defineExpose} from "vue";
-import {ShowDto} from "~/composables/api/api";
 import {getName, getAll639_1} from "all-iso-language-codes";
 import {SelectedShow} from "@/composables/dto/SelectedShow";
 import {mevent} from "~/composables/data/event";
-import {useApi} from "~/composables/rest/api";
+import {ShowDto} from "~/composables/api/data-contracts";
+import {useShows} from "~/composables/rest/api";
 
 const langs = getAll639_1().map((value) => {
   return {value: value, label: getName(value)};
@@ -55,7 +55,7 @@ const emit = defineEmits<{
   (e: "needRefresh", show: ShowDto): void;
 }>();
 
-const api = useApi();
+const showsApi = useShows();
 
 const language = useLanguage();
 
@@ -100,7 +100,7 @@ const querySearch = async (query: string) => {
   }
   mevent("show-search", {query: query});
   try {
-    const searchResponse = await api.shows.searchDetail(query);
+    const searchResponse = await showsApi.searchDetail(query);
     const shows = searchResponse.data.shows;
     if (shows == null)
       return [];
