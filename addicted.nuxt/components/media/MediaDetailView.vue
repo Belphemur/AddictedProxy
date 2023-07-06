@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {useApi} from "@/composables/rest/api";
 import MediaDetails from "@/components/media/MediaDetails.vue";
 import {ref, onUnmounted} from "vue";
-import {EpisodeWithSubtitlesDto, MediaDetailsDto} from "~/composables/api/api";
 import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
 import {DoneHandler, ProgressHandler, useRefreshHub} from "~/composables/hub/RefreshHub";
+import {EpisodeWithSubtitlesDto, MediaDetailsDto} from "~/composables/api/data-contracts";
+import {useMedia, useShows} from "~/composables/rest/api";
 
 
 export interface Props {
@@ -12,7 +12,8 @@ export interface Props {
 }
 
 const props = defineProps<Props>();
-const api = useApi();
+const mediaApi = useMedia();
+const showsApi = useShows();
 const loadingEpisodes = ref(false);
 const episodes = ref<EpisodeWithSubtitlesDto[]>([]);
 const refreshingProgress = ref<number | null>(null);
@@ -32,7 +33,7 @@ useSeoMeta({
 
 async function loadShowData() {
   loadingEpisodes.value = true;
-  const response = await api.shows.showsDetail(props.showId, currentSeason.value!, language.lang)
+  const response = await showsShowsApiDetail(props.showId, currentSeason.value!, language.lang)
   episodes.value = response.data.episodes!;
   loadingEpisodes.value = false;
 }
@@ -70,7 +71,7 @@ onUnmounted(() => {
 });
 
 async function loadMediaDetails() {
-  const response = await api.media.mediaDetails(props.showId);
+  const response = await mediaApi.mediaDetails(props.showId);
   mediaInfo.value = response.data
   currentSeason.value = useLast(mediaInfo.value.media?.seasons);
 }
@@ -85,7 +86,7 @@ if (currentSeason.value == undefined) {
   await refreshShow();
   loadingEpisodes.value = true;
 } else {
-  const responseEpisode = await api.shows.showsDetail(props.showId, currentSeason.value, language.lang);
+  const responseEpisode = await showsApi.showsDetail(props.showId, currentSeason.value, language.lang);
   episodes.value = responseEpisode.data.episodes!;
 }
 const formattedProgress = computed(() => {

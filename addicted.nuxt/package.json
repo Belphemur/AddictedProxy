@@ -6,7 +6,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "gen-api": "swagger-typescript-api -p https://localhost:5001/api/v1/swagger.json -o .\\composables\\api\\ -n api.ts --route-types --union-enums --modular"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
@@ -18,6 +19,7 @@
     "@types/webfontloader": "^1.6.35",
     "nuxt": "^3.6.1",
     "nuxt-lodash": "^2.5.0",
+    "swagger-typescript-api": "^12.0.4",
     "vite-plugin-vuetify": "^1.0.2"
   },
   "dependencies": {

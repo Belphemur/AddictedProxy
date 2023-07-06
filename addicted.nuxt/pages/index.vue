@@ -117,7 +117,6 @@
 
 import {onUnmounted, ref} from "vue";
 import {SelectedShow} from "@/composables/dto/SelectedShow";
-import {EpisodeWithSubtitlesDto, MediaDetailsDto, ShowDto} from "~/composables/api/api";
 import {
   DoneHandler,
   ProgressHandler,
@@ -125,7 +124,8 @@ import {
 } from "@/composables/hub/RefreshHub";
 import SearchComponent from "@/components/shows/SearchComponent.vue";
 import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
-import {useApi} from "~/composables/rest/api";
+import {EpisodeWithSubtitlesDto, MediaDetailsDto, ShowDto} from "~/composables/api/data-contracts";
+import {useMedia} from "~/composables/rest/api";
 
 interface ProgressShow {
   name: string;
@@ -145,7 +145,7 @@ useSeoMeta({
   ogImage: "/img/logo.png"
 })
 
-const api = useApi();
+const mediaApi = useMedia();
 const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
 
 const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
@@ -161,8 +161,7 @@ const {start, sendRefreshAsync, unsubscribeShowAsync, onProgress, offProgress, o
 
 await start();
 
-const mediaTrendingResponse = await api.media.trendingDetail(10)
-
+const mediaTrendingResponse = await mediaApi.trendingDetail(15)
 mediaTrending.value = mediaTrendingResponse.data;
 
 const selectShow = (showId: string) => {

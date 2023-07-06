@@ -49,14 +49,14 @@
 <script setup lang="ts">
 import {defineProps, ref} from "vue";
 
-import {EpisodeWithSubtitlesDto, SubtitleDto} from "~/composables/api/api";
 import {mevent} from "~/composables/data/event";
-import {useApi} from "~/composables/rest/api";
+import {EpisodeWithSubtitlesDto, SubtitleDto} from "~/composables/api/data-contracts";
+import {useSubtitles} from "~/composables/rest/api";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto>;
 }
-const api = useApi();
+const subtitlesApi = useSubtitles();
 
 const props = defineProps<Props>();
 
@@ -77,7 +77,7 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
     currentlyDownloading.value.delete(sub.subtitleId!);
   };
 
-  const response = await api.subtitles.downloadSubtitle(sub.subtitleId!);
+  const response = await subtitlesApi.downloadSubtitle(sub.subtitleId!);
   const header = response.headers.get("Content-Disposition");
   const parts = header!.split(";");
   const filename = parts[1].split("=")[1] ?? "sub.srt";
