@@ -508,6 +508,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Media
+     * @name TrendingDetail
+     * @summary Get the trending media of the last week
+     * @request GET:/media/trending/{max}
+     */
+    trendingDetail: (max: number, params: RequestParams = {}) =>
+      this.request<MediaDetailsDto[], string>({
+        path: `/media/trending/${max}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Media
      * @name MediaDetails
      * @summary Get the details of a specific show
      * @request GET:/media/{showId}/details
