@@ -1,3 +1,10 @@
+## [4.14.2](https://github.com/Belphemur/AddictedProxy/compare/v4.14.1...v4.14.2) (2023-07-06)
+
+
+### Performance improvements
+
+* **trending:** increase amount of trending shows ([c7f1a15](https://github.com/Belphemur/AddictedProxy/commit/c7f1a158119df44ffb7f3f82268b0307fbfeaf63))
+
 ## [4.14.1](https://github.com/Belphemur/AddictedProxy/compare/v4.14.0...v4.14.1) (2023-07-06)
 
 
