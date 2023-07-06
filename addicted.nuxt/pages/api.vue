@@ -12,6 +12,7 @@
 import {SwaggerUIBundle} from "swagger-ui-dist";
 import "swagger-ui-dist/swagger-ui.css";
 import {onMounted} from "vue";
+import {getApiServerUrl} from "~/composables/rest/api";
 
 definePageMeta({
   order: 20,
@@ -29,7 +30,7 @@ const config = useRuntimeConfig();
 
 onMounted(() => {
   SwaggerUIBundle({
-    url: config.public.api.url + "/api/v1/swagger.json",
+    url: getApiServerUrl() + "/api/v1/swagger.json",
     dom_id: "#swagger"
   });
 });

@@ -38,7 +38,7 @@ public class MediaController : Controller
     [Produces("application/json")]
     [ProducesResponseType(typeof(IAsyncEnumerable<MediaDetailsDto>), 200)]
     [ProducesResponseType(typeof(string), 429)]
-    public async Task<Ok<IAsyncEnumerable<MediaDetailsDto>>> GetTrendingTvShowsAsync([FromRoute] int max, CancellationToken cancellationToken)
+    public async Task<Ok<IEnumerable<MediaDetailsDto>>> GetTrendingTvShowsAsync([FromRoute] int max, CancellationToken cancellationToken)
     {
         Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
         {
@@ -46,31 +46,41 @@ public class MediaController : Controller
             MaxAge = TimeSpan.FromDays(1)
         };
 
-        var tmdbShows = await _tmdbClient.GetTrendingTvAsync(TimeWindowEnum.week, cancellationToken).Take(max).ToDictionaryAsync(searchResult => searchResult.Id, cancellationToken);
-        var shows = _tvShowRepository.GetShowsByTmdbIdAsync(tmdbShows.Keys.ToArray());
+        var tmdbShows = await _tmdbClient.GetTrendingTvAsync(TimeWindowEnum.week, cancellationToken).Take(max).ToArrayAsync(cancellationToken);
+        var shows = (await _tvShowRepository.GetShowsByTmdbIdAsync(tmdbShows.Select(show => show.Id).ToArray()).ToArrayAsync(cancellationToken))
+                    .DistinctBy(show => show.TmdbId)
+                    .ToDictionary(show => show.TmdbId!.Value);
         var genres = (await _tmdbClient.GetTvGenresAsync(cancellationToken)).ToDictionary(genre => genre.Id, genre => genre.Name);
 
-        var result = shows.Select(show =>
-        {
-            var showDto = new ShowDto(show);
-            var showDetails = tmdbShows[show.TmdbId!.Value];
-            var genreNames = showDetails.GenreIds.Select(i => genres[i]).ToArray();
-            
-            int? year = DateTime.TryParse(showDetails.FirstAirDate, out var releaseDate) ? releaseDate.Year : null;
-            var details = new MediaDetailsDto.DetailsDto(showDetails.PosterPath,
-                showDetails.Overview,
-                showDetails.OriginalName,
-                (MediaDetailsDto.MediaType)show.Type,
-                showDetails.BackdropPath,
-                showDetails.VoteAverage,
-                genreNames,
-                "",
-                year,
-                showDetails.Name);
-            details = UpdatePathAndVoteDetailsDto(details);
+        var result = tmdbShows
+                     .Select(showDetails =>
+                     {
+                         if (!shows.TryGetValue(showDetails.Id, out var show))
+                         {
+                             return (MediaDetailsDto?)null;
+                         }
 
-            return new MediaDetailsDto(showDto, details);
-        });
+                         var showDto = new ShowDto(show);
+                         var genreNames = showDetails.GenreIds.Select(i => genres[i]).ToArray();
+
+                         int? year = DateTime.TryParse(showDetails.FirstAirDate, out var releaseDate) ? releaseDate.Year : null;
+                         var details = new MediaDetailsDto.DetailsDto(showDetails.PosterPath,
+                             showDetails.Overview,
+                             showDetails.OriginalName,
+                             (MediaDetailsDto.MediaType)show.Type,
+                             showDetails.BackdropPath,
+                             showDetails.VoteAverage,
+                             genreNames,
+                             "",
+                             year,
+                             showDetails.Name);
+                         details = UpdatePathAndVoteDetailsDto(details);
+
+                         return new MediaDetailsDto(showDto, details);
+                     })
+                     .Where(dto => dto != null)
+                     .Cast<MediaDetailsDto>();
+
         return TypedResults.Ok(result);
     }
 
@@ -118,7 +128,9 @@ public class MediaController : Controller
                     {
                         _logger.LogWarning("Couldn't find show details for TMDB {id}", show.TmdbId);
                         break;
-                    };
+                    }
+
+                    ;
                     int? year = DateTime.TryParse(showDetails.FirstAirDate, out var releaseDate) ? releaseDate.Year : null;
 
                     detailsDto = new MediaDetailsDto.DetailsDto(showDetails.PosterPath,
@@ -173,6 +185,7 @@ public class MediaController : Controller
         {
             return null;
         }
+
         detailsDto = detailsDto with
         {
             PosterPath = $"https://image.tmdb.org/t/p/original{detailsDto.PosterPath}",
