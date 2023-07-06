@@ -68,7 +68,7 @@ const doneHandler: DoneHandler = async (show) => {
 
   mediaInfo.value = {details: mediaInfo.value?.details, media: show}
   if (currentSeason.value == undefined) {
-    currentSeason.value = useLast(mediaInfo.value.media?.seasons);
+    currentSeason.value = useLast(mediaInfo.value?.media?.seasons);
   }
 
   loadingEpisodes.value = true;
@@ -85,9 +85,13 @@ onUnmounted(() => {
 });
 
 async function loadMediaDetails() {
-  const response = await mediaApi.mediaDetails(props.showId);
-  mediaInfo.value = response.data
-  currentSeason.value = useLast(mediaInfo.value.media?.seasons);
+  try {
+    const response = await mediaApi.mediaDetails(props.showId);
+    mediaInfo.value = response.data
+    currentSeason.value = useLast(mediaInfo.value?.media?.seasons);
+  } catch (err) {
+    throw createError({statusCode: 404, statusMessage: `Show ${props.showId} not found`});
+  }
 }
 
 
@@ -100,7 +104,7 @@ if (currentSeason.value == undefined) {
   await refreshShow();
   loadingEpisodes.value = true;
 } else {
-  const responseEpisode = await showsApi.showsDetail(props.showId, currentSeason.value, language.lang);
+  const responseEpisode = await showsApi.showsDetail(props.showId, currentSeason.value!, language.lang);
   episodes.value = responseEpisode.data.episodes!;
 }
 const formattedProgress = computed(() => {
@@ -138,9 +142,9 @@ watch(language, async () => {
 
 <template>
   <div>
-    <v-row>
+    <v-row v-if="mediaInfo?.details != null">
       <v-col cols="12">
-        <media-details :details="mediaInfo!" v-model="currentSeason"/>
+        <media-details :details="mediaInfo" v-model="currentSeason"/>
       </v-col>
     </v-row>
     <v-row justify="center" v-if="refreshingProgress != null">
