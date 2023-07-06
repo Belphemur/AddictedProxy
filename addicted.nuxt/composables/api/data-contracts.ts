@@ -21,42 +21,47 @@ export interface ApplicationInfoDto {
 export interface DetailsDto {
   /**
    * URL of the poster
+   * @minLength 1
    * @example "https://upload.wikimedia.org/wikipedia/en/thumb/5/54/Bloodhounds_%28South_Korean_TV_series%29.jpg/250px-Bloodhounds_%28South_Korean_TV_series%29.jpg"
    */
-  posterPath?: string | null;
+  posterPath: string;
   /**
    * Short description of the media, usually the plot
+   * @minLength 1
    * @example "Bloodhounds depicts a story about two young boxers who set foot in the world of private loans in pursuit of money and get caught up in a huge force"
    */
-  overview?: string | null;
+  overview: string;
   /**
    * Original name in its own language, useful for non-english shows
+   * @minLength 1
    * @example "사냥개들"
    */
-  originalName?: string | null;
+  originalName: string;
   /** Represent the type of media */
-  mediaType?: MediaType;
+  mediaType: MediaType;
   /**
    * URL of the backdrop image for the show
+   * @minLength 1
    * @example "https://upload.wikimedia.org/wikipedia/en/thumb/5/54/Bloodhounds_%28South_Korean_TV_series%29.jpg/250px-Bloodhounds_%28South_Korean_TV_series%29.jpg"
    */
-  backdropPath?: string | null;
+  backdropPath: string;
   /**
    * Percentage of user votes
    * @format double
    * @example 0.85
    */
-  voteAverage?: number;
+  voteAverage: number;
   /**
    * Genre of the media
    * @example ["action","horror"]
    */
-  genre?: string[] | null;
+  genre: string[];
   /**
    * Tagline of the media
+   * @minLength 1
    * @example "The best show on earth"
    */
-  tagLine?: string | null;
+  tagLine: string;
   /**
    * Year of release
    * @format int32
@@ -65,9 +70,10 @@ export interface DetailsDto {
   releaseYear?: number | null;
   /**
    * English name of the show
+   * @minLength 1
    * @example "Bloodhounds"
    */
-  englishName?: string | null;
+  englishName: string;
 }
 
 /** Episode information */
