@@ -1,3 +1,15 @@
+## [4.14.3](https://github.com/Belphemur/AddictedProxy/compare/v4.14.2...v4.14.3) (2023-07-06)
+
+
+### Performance improvements
+
+* **trending:** return shows in order of trending ([7d8f6a0](https://github.com/Belphemur/AddictedProxy/commit/7d8f6a02d6c976b69451babf144a937861525625))
+
+
+### Bug Fixes
+
+* **api:** Fix url issue ([ee1b233](https://github.com/Belphemur/AddictedProxy/commit/ee1b233446cc051f5c7a34074f010125dd575dd4))
+
 ## [4.14.2](https://github.com/Belphemur/AddictedProxy/compare/v4.14.1...v4.14.2) (2023-07-06)
 
 
