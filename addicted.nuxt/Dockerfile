@@ -20,7 +20,7 @@ ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 ENV SENTRY_ORG=${SENTRY_ORG}
 ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 ENV RELEASE_VERSION=${RELEASE_VERSION}
-ENV NODE_ENV=production
+ENV SENTRY_ENVIRONMENT=production
 
 RUN pnpm recursive install --offline --frozen-lockfile
 RUN pnpm run build
@@ -30,7 +30,6 @@ FROM node:alpine as production-stage
 COPY --from=dev /app/ /app/
 WORKDIR /app
 
-ENV NODE_ENV=production
 ENV NUXT_HOST=0.0.0.0
 ENV NUXT_PORT=3000
 

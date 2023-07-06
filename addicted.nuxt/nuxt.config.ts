@@ -27,7 +27,7 @@ export default defineNuxtConfig({
                 org: process.env.SENTRY_ORG,
                 project: process.env.SENTRY_PROJECT,
                 telemetry: false,
-                disable: process.env.NODE_ENV !== 'production',
+                disable: process.env.SENTRY_ENVIRONMENT !== 'production',
                 release: {
                     name: process.env.RELEASE_VERSION,
                 },
