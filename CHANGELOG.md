@@ -1,3 +1,10 @@
+## [4.12.1](https://github.com/Belphemur/AddictedProxy/compare/v4.12.0...v4.12.1) (2023-07-06)
+
+
+### Bug Fixes
+
+* **media:view:** be sure the size is consistent ([3522693](https://github.com/Belphemur/AddictedProxy/commit/3522693078f063f2bc4a0fe5ebcdc98b0aac85dc))
+
 ## [4.12.0](https://github.com/Belphemur/AddictedProxy/compare/v4.11.0...v4.12.0) (2023-07-06)
 
 
