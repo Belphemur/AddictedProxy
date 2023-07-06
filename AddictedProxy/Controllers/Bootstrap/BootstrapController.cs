@@ -6,6 +6,9 @@ using AddictedProxy.Controllers.Rest.Serializer;
 using AddictedProxy.Services.Middleware;
 using InversionOfControl.Model;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Prometheus;
 
 #endregion
@@ -23,6 +26,7 @@ public class BootstrapController : IBootstrap, IBootstrapApp
                     options.JsonSerializerOptions.TypeInfoResolver = JsonTypeInfoResolver.Combine(SerializationContext.Default, new DefaultJsonTypeInfoResolver());
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
+        services.AddHttpContextAccessor();
         services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
     }
 

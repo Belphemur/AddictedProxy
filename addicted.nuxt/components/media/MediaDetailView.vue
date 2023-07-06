@@ -38,7 +38,16 @@ async function loadShowData() {
   loadingEpisodes.value = false;
 }
 
-const {start, sendRefreshAsync, unsubscribeShowAsync, onProgress, offProgress, onDone, offDone} = useRefreshHub();
+const {
+  start,
+  sendRefreshAsync,
+  unsubscribeShowAsync,
+  onProgress,
+  offProgress,
+  onDone,
+  offDone,
+  getEpisodes
+} = useRefreshHub();
 
 await start();
 
@@ -56,10 +65,15 @@ const doneHandler: DoneHandler = async (show) => {
   }
   refreshingProgress.value = null;
   await unsubscribeShowAsync(show.id!);
+
+  mediaInfo.value = {details: mediaInfo.value?.details, media: show}
   if (currentSeason.value == undefined) {
-    await loadMediaDetails();
+    currentSeason.value = useLast(mediaInfo.value.media?.seasons);
   }
-  await loadShowData();
+
+  loadingEpisodes.value = true;
+  episodes.value = await getEpisodes(show.id!, language.lang, currentSeason.value!);
+  loadingEpisodes.value = false;
 };
 
 

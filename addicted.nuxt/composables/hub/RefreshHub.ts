@@ -1,13 +1,11 @@
 import {HubConnection, HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
-import {ShowDto} from "~/composables/api/data-contracts";
+import {EpisodeWithSubtitlesDto, ShowDto} from "~/composables/api/data-contracts";
 
 let started = false;
 let connection: HubConnection;
 
 export function useRefreshHub() {
 
-    // if(!process.client)
-    //     return {start: () => {}, sendRefreshAsync: () => {}, unsubscribeShowAsync: () => {}, onProgress: () => {}, offProgress: () => {}, onDone: () => {}, offDone: () => {}};
     const config = useRuntimeConfig();
     connection ??= new HubConnectionBuilder()
         // @ts-ignore
@@ -32,6 +30,26 @@ export function useRefreshHub() {
         return connection.invoke("RefreshShow", showId);
     }
 
+    function getEpisodes(showId: string, language: string, season: number) {
+        return new Promise<EpisodeWithSubtitlesDto[]>((resolve, reject) => {
+            let episodes: Array<EpisodeWithSubtitlesDto> = [];
+            const subscription = connection.stream<EpisodeWithSubtitlesDto>("GetEpisodes", showId, language, season).subscribe({
+                next: (item) => {
+                    episodes.push(item);
+                },
+                complete: () => {
+                    resolve(episodes);
+                    subscription.dispose();
+                },
+                error: (err) => {
+                    reject(err);
+                    subscription.dispose();
+                }
+            });
+
+        });
+    }
+
     function unsubscribeShowAsync(showId: string) {
         return connection.invoke("UnsubscribeRefreshShow", showId);
     }
@@ -52,7 +70,7 @@ export function useRefreshHub() {
         connection.off("Done", handler);
     }
 
-    return {start, sendRefreshAsync, unsubscribeShowAsync, onProgress, offProgress, onDone, offDone};
+    return {start, sendRefreshAsync, unsubscribeShowAsync, onProgress, offProgress, onDone, offDone, getEpisodes};
 }
 
 export interface Progress {
