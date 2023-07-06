@@ -157,9 +157,13 @@ public class MediaController : Controller
         return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
     }
 
-    private static MediaDetailsDto.DetailsDto UpdatePathAndVoteDetailsDto(MediaDetailsDto.DetailsDto? detailsDto)
+    private static MediaDetailsDto.DetailsDto? UpdatePathAndVoteDetailsDto(MediaDetailsDto.DetailsDto? detailsDto)
     {
-        detailsDto = detailsDto! with
+        if (detailsDto == null)
+        {
+            return null;
+        }
+        detailsDto = detailsDto with
         {
             PosterPath = $"https://image.tmdb.org/t/p/original{detailsDto.PosterPath}",
             BackdropPath = $"https://image.tmdb.org/t/p/original{detailsDto.BackdropPath}",
