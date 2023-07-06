@@ -142,29 +142,31 @@ watch(language, async () => {
       </v-col>
     </v-row>
     <v-row justify="center">
-      <v-skeleton-loader type="card" :loading="loadingEpisodes">
-        <v-card>
-          <v-card-title>Season {{ currentSeason }}</v-card-title>
-          <v-card-actions>
-            <v-btn
-                prepend-icon="mdi-refresh"
-                class="text-none mb-4"
-                color="indigo-lighten-3"
-                @click="refreshShow"
-                :disabled="refreshingProgress != null"
-            >Refresh
-              <v-tooltip
-                  activator="parent"
-                  location="end"
-              >Fetch from Addic7ed
-              </v-tooltip>
-            </v-btn>
-          </v-card-actions>
-          <v-card-text>
-            <subtitles-table :episodes="episodes"></subtitles-table>
-          </v-card-text>
-        </v-card>
-      </v-skeleton-loader>
+      <v-col cols="12">
+        <v-skeleton-loader type="card" :loading="loadingEpisodes">
+          <v-card>
+            <v-card-title>Season {{ currentSeason }}</v-card-title>
+            <v-card-actions>
+              <v-btn
+                  prepend-icon="mdi-refresh"
+                  class="text-none mb-4"
+                  color="indigo-lighten-3"
+                  @click="refreshShow"
+                  :disabled="refreshingProgress != null"
+              >Refresh
+                <v-tooltip
+                    activator="parent"
+                    location="end"
+                >Fetch from Addic7ed
+                </v-tooltip>
+              </v-btn>
+            </v-card-actions>
+            <v-card-text>
+              <subtitles-table :episodes="episodes"></subtitles-table>
+            </v-card-text>
+          </v-card>
+        </v-skeleton-loader>
+      </v-col>
     </v-row>
   </div>
 </template>
