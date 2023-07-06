@@ -1,3 +1,10 @@
+## [4.14.7](https://github.com/Belphemur/AddictedProxy/compare/v4.14.6...v4.14.7) (2023-07-06)
+
+
+### Bug Fixes
+
+* **front:** fix building ([e381b5a](https://github.com/Belphemur/AddictedProxy/commit/e381b5a85158fe6fa44c4d06d09b5ba5454609a9))
+
 ## [4.14.6](https://github.com/Belphemur/AddictedProxy/compare/v4.14.5...v4.14.6) (2023-07-06)
 
 
