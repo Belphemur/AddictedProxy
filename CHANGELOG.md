@@ -1,3 +1,10 @@
+## [4.12.2](https://github.com/Belphemur/AddictedProxy/compare/v4.12.1...v4.12.2) (2023-07-06)
+
+
+### Bug Fixes
+
+* **media:view:** fix size of card ([09dc580](https://github.com/Belphemur/AddictedProxy/commit/09dc580b4441b238dde93e7f03522f508fea058b))
+
 ## [4.12.1](https://github.com/Belphemur/AddictedProxy/compare/v4.12.0...v4.12.1) (2023-07-06)
 
 
