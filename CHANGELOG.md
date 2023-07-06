@@ -1,3 +1,10 @@
+## [4.14.5](https://github.com/Belphemur/AddictedProxy/compare/v4.14.4...v4.14.5) (2023-07-06)
+
+
+### Performance improvements
+
+* **search:** put searching at the top of index page ([f8b61d4](https://github.com/Belphemur/AddictedProxy/commit/f8b61d4ffb6ade3450854ab6f46fb42849b578b3))
+
 ## [4.14.4](https://github.com/Belphemur/AddictedProxy/compare/v4.14.3...v4.14.4) (2023-07-06)
 
 
