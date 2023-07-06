@@ -1,3 +1,12 @@
+## [4.14.8](https://github.com/Belphemur/AddictedProxy/compare/v4.14.7...v4.14.8) (2023-07-06)
+
+
+### Bug Fixes
+
+* **build:** add sourcemap files ([8e0ff43](https://github.com/Belphemur/AddictedProxy/commit/8e0ff43fe2f2ba7b97a12aecc662b3460cff0090))
+* **build:** fix sending the right project to docker for building ([b21dd46](https://github.com/Belphemur/AddictedProxy/commit/b21dd46f4f6c562e33c5f4872611d1b5917973d5))
+* **css:** clean up css ([1283a46](https://github.com/Belphemur/AddictedProxy/commit/1283a46e8a85ad91ab015c1b188f05f2f5293cb9))
+
 ## [4.14.7](https://github.com/Belphemur/AddictedProxy/compare/v4.14.6...v4.14.7) (2023-07-06)
 
 
