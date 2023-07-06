@@ -144,7 +144,7 @@ watch(language, async () => {
     <v-row justify="center">
       <v-col cols="12">
         <v-skeleton-loader type="card" :loading="loadingEpisodes">
-          <v-card>
+          <v-card width="100%">
             <v-card-title>Season {{ currentSeason }}</v-card-title>
             <v-card-actions>
               <v-btn
