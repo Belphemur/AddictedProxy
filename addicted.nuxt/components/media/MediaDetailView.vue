@@ -33,7 +33,7 @@ useSeoMeta({
 
 async function loadShowData() {
   loadingEpisodes.value = true;
-  const response = await showsShowsApiDetail(props.showId, currentSeason.value!, language.lang)
+  const response = await showsApi.showsDetail(props.showId, currentSeason.value!, language.lang)
   episodes.value = response.data.episodes!;
   loadingEpisodes.value = false;
 }

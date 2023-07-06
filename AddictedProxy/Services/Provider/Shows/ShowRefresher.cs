@@ -80,9 +80,9 @@ public class ShowRefresher : IShowRefresher
         await _seasonRefresher.RefreshSeasonsAsync(show, token: token);
         await _refreshHubManager.SendProgressAsync(show, progressMin, token);
 
-        var seasonToSync = show.Seasons;
+        var seasonToSync = show.Seasons.OrderByDescending(season => season.Number).ToArray();
 
-        _logger.LogInformation("Refreshing episode for {number} seasons of {show}", seasonToSync.Count, show.Name);
+        _logger.LogInformation("Refreshing episode for {number} seasons of {show}", seasonToSync.Length, show.Name);
 
         async Task SendProgress(int progress)
         {
