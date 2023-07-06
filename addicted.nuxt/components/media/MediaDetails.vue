@@ -55,8 +55,8 @@ watch(languageSelect, async (value) => {
   <v-card>
     <v-card-title>
       <v-icon :icon=" props.details.details?.mediaType === 'Movie' ? 'mdi-movie' : 'mdi-television'"></v-icon>
-      {{ props.details.media!.name }} <span class="text-light-blue-accent-1 font-bold">({{props.details.details.releaseYear}})</span>
-      <span v-if="props.details.media?.name != props.details.details?.originalName">
+      {{ props.details.details!.englishName }} <span class="text-light-blue-accent-1 font-bold">({{props.details.details.releaseYear}})</span>
+      <span v-if="props.details.details?.englishName != props.details.details?.originalName">
           [<i>{{ props.details.details.originalName }}</i>]
       </span>
     </v-card-title>

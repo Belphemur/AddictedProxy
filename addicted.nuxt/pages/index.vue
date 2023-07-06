@@ -6,12 +6,28 @@
           search here for subtitle available on the platform and download them.
         </v-card-subtitle>
         <v-card-text>
-          <SearchComponent
-              ref="searchBox"
-              v-on:selected="getSubtitles"
-              v-on:cleared="clear"
-              v-on:need-refresh="needRefresh"
-          />
+          <v-row>
+            <v-col>
+              <h2 class="text-h4">Trending</h2>
+            </v-col>
+          </v-row>
+          <v-row justify-lg="center">
+            <v-col lg="8" align-self="center">
+              <MediaTrending :medias="mediaTrending"></MediaTrending>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <h2 class="text-h4">Search</h2>
+
+              <SearchComponent
+                  ref="searchBox"
+                  v-on:selected="getSubtitles"
+                  v-on:cleared="clear"
+                  v-on:need-refresh="needRefresh"
+              />
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-card>
     </v-col>
@@ -101,7 +117,7 @@
 
 import {onUnmounted, ref} from "vue";
 import {SelectedShow} from "@/composables/dto/SelectedShow";
-import {EpisodeWithSubtitlesDto, ShowDto} from "~/composables/api/api";
+import {EpisodeWithSubtitlesDto, MediaDetailsDto, ShowDto} from "~/composables/api/api";
 import {
   DoneHandler,
   ProgressHandler,
@@ -137,11 +153,15 @@ const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
 const loadingSubtitles = ref(false);
 const refreshingShows = ref(new Map<string, ProgressShow>());
 const currentShow = ref<SelectedShow | null>(null);
+const mediaTrending = ref<Array<MediaDetailsDto>>([]);
 
 const {start, sendRefreshAsync, unsubscribeShowAsync, onProgress, offProgress, onDone, offDone} = useRefreshHub();
 
 start();
 
+const mediaTrendingResponse = await api.media.trendingDetail(10)
+
+mediaTrending.value = mediaTrendingResponse.data;
 
 const selectShow = (showId: string) => {
   const showProgress = refreshingShows.value.get(showId);
