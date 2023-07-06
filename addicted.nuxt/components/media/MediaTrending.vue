@@ -40,7 +40,6 @@ const props = defineProps<Props>();
   position: absolute;
   left: 0.5em;
   top: 0.5em;
-  //text-shadow: -0.05em 0 black, 0 0.05em black, 0.05em 0 black, 0 -0.05em black;
   text-shadow: 2px 0 black, -2px 0 black, 0 2px black, 0 -2px black, 1px 1px black, -1px -1px black, -1px 1px black, 1px -1px black;
 }
 .vote {
