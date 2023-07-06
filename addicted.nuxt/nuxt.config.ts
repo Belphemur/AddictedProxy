@@ -5,12 +5,10 @@ import {sentryVitePlugin} from "@sentry/vite-plugin";
 
 export default defineNuxtConfig({
     devtools: {enabled: true},
+    sourcemap: { server: true, client: true },
     // @ts-ignore
     css: ['vuetify/styles', '@mdi/font/css/materialdesignicons.css'],
     vite: {
-        build: {
-            sourcemap: true,
-        },
         // @ts-ignore
         // curently this will lead to a type error, but hopefully will be fixed soon #justBetaThings
         ssr: {
