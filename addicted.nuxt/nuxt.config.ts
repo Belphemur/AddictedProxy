@@ -1,12 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 import vuetify from "vite-plugin-vuetify";
+import {sentryVitePlugin} from "@sentry/vite-plugin";
 
 export default defineNuxtConfig({
     devtools: {enabled: true},
     // @ts-ignore
     css: ['vuetify/styles', '@mdi/font/css/materialdesignicons.css'],
     vite: {
+        build: {
+            sourcemap: true,
+        },
         // @ts-ignore
         // curently this will lead to a type error, but hopefully will be fixed soon #justBetaThings
         ssr: {
@@ -16,7 +20,20 @@ export default defineNuxtConfig({
             script: {
                 defineModel: true,
             }
-        }
+        },
+        plugins: [
+            sentryVitePlugin({
+                authToken: process.env.SENTRY_AUTH_TOKEN,
+                org: process.env.SENTRY_ORG,
+                project: process.env.SENTRY_PROJECT,
+                telemetry: false,
+                disable: process.env.NODE_ENV !== 'production',
+                release: {
+                    name: process.env.RELEASE_VERSION,
+                },
+                debug: true,
+            }),
+        ]
     },
     runtimeConfig: {
         public: {
@@ -26,6 +43,28 @@ export default defineNuxtConfig({
             },
             matomo: {
                 url: process.env.APP_MATOMO
+            },
+            sentry: {
+                config: {
+                    environment: process.env.SENTRY_ENVIRONMENT,
+                    dsn: process.env.SENTRY_DSN,
+                    enabled: true,
+                },
+                serverConfig: {
+                    // Set sampling rate for profiling - this is relative to tracesSampleRate
+                    profilesSampleRate: 1.0,
+                },
+                clientIntegrations: {
+                    Replay: {},
+                },
+                clientConfig: {
+                    // This sets the sample rate to be 10%. You may want this to be 100% while
+                    // in development and sample at a lower rate in production
+                    replaysSessionSampleRate: 0.1,
+                    // If the entire session is not sampled, use the below sample rate to sample
+                    // sessions when an error occurs.
+                    replaysOnErrorSampleRate: 1.0,
+                }
             }
         }
     },
