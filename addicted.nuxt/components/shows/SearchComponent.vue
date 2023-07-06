@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import {ref, watch, defineExpose} from "vue";
-import {ShowDto} from "@/api/api";
+import {ShowDto} from "~/composables/api/api";
 import {getName, getAll639_1} from "all-iso-language-codes";
 import {SelectedShow} from "@/composables/dto/SelectedShow";
 import {mevent} from "~/composables/data/event";

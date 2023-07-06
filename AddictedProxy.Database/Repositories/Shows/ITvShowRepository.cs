@@ -85,4 +85,11 @@ public interface ITvShowRepository
     /// </summary>
     /// <returns></returns>
     IQueryable<TvShow> GetAllHavingSubtitlesAsync();
+
+    /// <summary>
+    /// Get shows with TMDB IDs
+    /// </summary>
+    /// <param name="tmdbIds"></param>
+    /// <returns></returns>
+    IAsyncEnumerable<TvShow> GetShowsByTmdbIdAsync(int[] tmdbIds);
 }

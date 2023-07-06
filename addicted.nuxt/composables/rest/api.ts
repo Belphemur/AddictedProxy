@@ -1,4 +1,4 @@
-import {Api} from "@/api/api";
+import {Api} from "~/composables/api/api";
 
 let api: Api<any>;
 

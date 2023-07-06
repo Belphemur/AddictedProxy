@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TvMovieDatabaseClient.Model.Common;
 using TvMovieDatabaseClient.Model.Mapping;
 using TvMovieDatabaseClient.Model.Movie;
 using TvMovieDatabaseClient.Model.Movie.Search;
 using TvMovieDatabaseClient.Model.Show;
 using TvMovieDatabaseClient.Model.Show.Search;
+using TvMovieDatabaseClient.Service.Model;
 
 namespace TvMovieDatabaseClient.Service;
 
@@ -58,4 +60,19 @@ public interface ITMDBClient
     /// <param name="token"></param>
     /// <returns></returns>
     Task<ExternalIds?> GetMovieExternalIdsAsync(int movieId, CancellationToken token);
+
+    /// <summary>
+    /// Get trending tv shows
+    /// </summary>
+    /// <param name="timeWindow"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    IAsyncEnumerable<ShowSearchResult> GetTrendingTvAsync(TimeWindowEnum timeWindow = TimeWindowEnum.week, CancellationToken token = default);
+
+    /// <summary>
+    /// Get all the genre for TV
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task<Genre[]> GetTvGenresAsync(CancellationToken token = default);
 }

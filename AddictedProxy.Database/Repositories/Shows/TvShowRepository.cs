@@ -103,6 +103,21 @@ public class TvShowRepository : ITvShowRepository
                              .ToAsyncEnumerable();
     }
 
+
+    /// <summary>
+    /// Get shows with TMDB IDs
+    /// </summary>
+    /// <param name="tmdbIds"></param>
+    /// <returns></returns>
+    public IAsyncEnumerable<TvShow> GetShowsByTmdbIdAsync(int[] tmdbIds)
+    {
+        return _entityContext.TvShows
+                             .Where(show => show.TmdbId.HasValue)
+                             .Where(show => tmdbIds.Contains(show.TmdbId!.Value))
+                             .Include(show => show.Seasons)
+                             .ToAsyncEnumerable();
+    }
+
     /// <summary>
     /// Get duplicate show by TmdbID
     /// </summary>
@@ -125,11 +140,11 @@ public class TvShowRepository : ITvShowRepository
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync()
     {
         return _entityContext.TvShows
-                             .Include(show => show.Seasons)
                              .Where(show => !show.TmdbId.HasValue)
+                             .Include(show => show.Seasons)
                              .ToAsyncEnumerable();
     }
-    
+
     /// <summary>
     /// Get shows having at least one season
     /// </summary>

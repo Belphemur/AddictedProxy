@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Reflection;
@@ -12,11 +13,13 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using TvMovieDatabaseClient.Bootstrap.EnvVar;
 using TvMovieDatabaseClient.Model;
+using TvMovieDatabaseClient.Model.Common;
 using TvMovieDatabaseClient.Model.Mapping;
 using TvMovieDatabaseClient.Model.Movie;
 using TvMovieDatabaseClient.Model.Movie.Search;
 using TvMovieDatabaseClient.Model.Show;
 using TvMovieDatabaseClient.Model.Show.Search;
+using TvMovieDatabaseClient.Service.Model;
 
 namespace TvMovieDatabaseClient.Service;
 
@@ -53,7 +56,7 @@ internal class TMDBClient : ITMDBClient
         var request = PrepareRequest($"tv/{showId}", HttpMethod.Get);
         return await GetDataAsync<ShowDetails>(request, token);
     }
-    
+
     /// <summary>
     /// Get show external ids by Id
     /// </summary>
@@ -65,7 +68,7 @@ internal class TMDBClient : ITMDBClient
         var request = PrepareRequest($"tv/{showId}/external_ids", HttpMethod.Get);
         return await GetDataAsync<ExternalIds>(request, token);
     }
-    
+
     /// <summary>
     /// Get movie details by Id
     /// </summary>
@@ -116,6 +119,27 @@ internal class TMDBClient : ITMDBClient
     }
 
     /// <summary>
+    /// Get trending tv shows
+    /// </summary>
+    /// <param name="timeWindow"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public IAsyncEnumerable<ShowSearchResult> GetTrendingTvAsync(TimeWindowEnum timeWindow = TimeWindowEnum.week, CancellationToken token = default)
+    {
+        return PaginateAsync<ShowSearchResult>($"trending/tv/{timeWindow.ToString()}", new Dictionary<string, string>(), token);
+    }
+
+    /// <summary>
+    /// Get all the genre for TV
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task<Genre[]> GetTvGenresAsync(CancellationToken token = default)
+    {
+        return (await GetDataAsync<ShowGenres>(PrepareRequest("genre/tv/list", HttpMethod.Get), token))?.Genres.ToArray() ?? Array.Empty<Genre>();
+    }
+
+    /// <summary>
     /// Search for movie
     /// </summary>
     /// <param name="query">query to send</param>
@@ -127,8 +151,15 @@ internal class TMDBClient : ITMDBClient
         return SearchAsync<MovieSearchResult>(searchType, query, token);
     }
 
-
     private async IAsyncEnumerable<T> SearchAsync<T>(string searchType, string query, [EnumeratorCancellation] CancellationToken token)
+    {
+        await foreach (var result in PaginateAsync<T>("search/" + searchType, new Dictionary<string, string> { { "query", query } }, token))
+        {
+            yield return result;
+        }
+    }
+
+    private async IAsyncEnumerable<T> PaginateAsync<T>(string url, Dictionary<string, string> query, [EnumeratorCancellation] CancellationToken token)
     {
         var page = 1;
         const int maxPage = 3;
@@ -137,12 +168,14 @@ internal class TMDBClient : ITMDBClient
 
         do
         {
-            var request = PrepareRequest($"search/{searchType}", HttpMethod.Get, new Dictionary<string, string>
-            {
-                { "language", "en-US" },
-                { "page", page.ToString() },
-                { "query", query }
-            });
+            var queryParams = query.Union(new Dictionary<string, string>
+                                   {
+                                       { "language", "en-US" },
+                                       { "page", page.ToString() },
+                                   })
+                                   .ToDictionary(x => x.Key, x => x.Value);
+
+            var request = PrepareRequest(url, HttpMethod.Get, queryParams);
             response = await _httpClient.SendAsync(request, token);
             if (!response.IsSuccessStatusCode)
             {
