@@ -77,6 +77,7 @@ async function loadMediaDetails() {
 
 
 const refreshShow = async () => {
+  refreshingProgress.value = 0;
   await sendRefreshAsync(props.showId);
 };
 
@@ -141,28 +142,29 @@ watch(language, async () => {
       </v-col>
     </v-row>
     <v-row justify="center">
-        <v-skeleton-loader type="card" :loading="loadingEpisodes">
-          <v-card>
-            <v-card-title>Season {{ currentSeason }}</v-card-title>
-            <v-card-actions>
-              <v-btn
-                  prepend-icon="mdi-refresh"
-                  class="text-none mb-4"
-                  color="indigo-lighten-3"
-                  @click="refreshShow"
-              >Refresh
-                <v-tooltip
-                    activator="parent"
-                    location="end"
-                >Fetch from Addic7ed
-                </v-tooltip>
-              </v-btn>
-            </v-card-actions>
-            <v-card-text>
-              <subtitles-table :episodes="episodes"></subtitles-table>
-            </v-card-text>
-          </v-card>
-        </v-skeleton-loader>
+      <v-skeleton-loader type="card" :loading="loadingEpisodes">
+        <v-card>
+          <v-card-title>Season {{ currentSeason }}</v-card-title>
+          <v-card-actions>
+            <v-btn
+                prepend-icon="mdi-refresh"
+                class="text-none mb-4"
+                color="indigo-lighten-3"
+                @click="refreshShow"
+                :disabled="refreshingProgress != null"
+            >Refresh
+              <v-tooltip
+                  activator="parent"
+                  location="end"
+              >Fetch from Addic7ed
+              </v-tooltip>
+            </v-btn>
+          </v-card-actions>
+          <v-card-text>
+            <subtitles-table :episodes="episodes"></subtitles-table>
+          </v-card-text>
+        </v-card>
+      </v-skeleton-loader>
     </v-row>
   </div>
 </template>
