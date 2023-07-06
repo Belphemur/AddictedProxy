@@ -1,3 +1,30 @@
+## [4.12.0](https://github.com/Belphemur/AddictedProxy/compare/v4.11.0...v4.12.0) (2023-07-06)
+
+
+### Performance improvements
+
+* Improve the user experience of media detail ([5e313c8](https://github.com/Belphemur/AddictedProxy/commit/5e313c8750ac5353ef0ef2ff30f2004d23e17603))
+
+
+### Bug Fixes
+
+* documentation ([12be099](https://github.com/Belphemur/AddictedProxy/commit/12be09944d6972417f30153230af108e2eeb180a))
+* **genre:** fix getting genres ([5b4fbc3](https://github.com/Belphemur/AddictedProxy/commit/5b4fbc36fedc5c97b5bad068824ad17a635dbf26))
+* **show:** Be sure the season are always ordered ([1b0d8df](https://github.com/Belphemur/AddictedProxy/commit/1b0d8dfa35c711b190a1cd1306d77fc657d7d21c))
+
+
+### Features
+
+* **index:** make index sent user to media info page ([551ebb6](https://github.com/Belphemur/AddictedProxy/commit/551ebb6c08cc9454a3e12ff84dbc55cd6b48f5a5))
+* **media:date:** add air date to media ([6158ca6](https://github.com/Belphemur/AddictedProxy/commit/6158ca6bf03a6a5e0874fc7bb554d83f64f5b992))
+* **Media:Detail:** Provide more date to the media ([c6f0c92](https://github.com/Belphemur/AddictedProxy/commit/c6f0c92ee36c131ab37269c0819048c04e110acf))
+* **media:name:** add tmdb name to media calls ([f61e325](https://github.com/Belphemur/AddictedProxy/commit/f61e325e7425ad1402afba0c7b47894856c72c7d))
+* **media:trending:** add trending to home page ([799e6b1](https://github.com/Belphemur/AddictedProxy/commit/799e6b1959e26b06b4581ad3ab27e7f23baa5267))
+* **media:view:** Be sure it has all refresh feature of the index view ([92c9690](https://github.com/Belphemur/AddictedProxy/commit/92c9690de6b6e49732128d577a6333c4e7b16412))
+* **tmdb:** add genre list ([6140a97](https://github.com/Belphemur/AddictedProxy/commit/6140a978b79a448ec730667fa01361d7094dc2dc))
+* **tmdb:** get trending tv shows ([f8faeb6](https://github.com/Belphemur/AddictedProxy/commit/f8faeb659dc7a1080feb4440d6aa4054de5053bd))
+* **trending:** add trending shows to api ([653e654](https://github.com/Belphemur/AddictedProxy/commit/653e654f8adf85d7d60c896452f6aa2eb42698a5))
+
 ## [4.11.0](https://github.com/Belphemur/AddictedProxy/compare/v4.10.1...v4.11.0) (2023-07-05)
 
 
