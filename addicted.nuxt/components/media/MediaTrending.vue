@@ -11,7 +11,7 @@ const props = defineProps<Props>();
 <template>
   <v-carousel cycle height="400" hide-delimiters show-arrows="hover">
 
-    <v-carousel-item v-for="media in useFilter(props.medias, med => med.media.seasons.length > 0)"
+    <v-carousel-item v-for="media in props.medias"
                      :key="media.media?.id">
       <v-card :to="{name: 'show-details', params: {showId: media.media!.id, showName: media.media!.name}}">
         <v-img

@@ -6,6 +6,8 @@ let connection: HubConnection;
 
 export function useRefreshHub() {
 
+    // if(!process.client)
+    //     return {start: () => {}, sendRefreshAsync: () => {}, unsubscribeShowAsync: () => {}, onProgress: () => {}, offProgress: () => {}, onDone: () => {}, offDone: () => {}};
     const config = useRuntimeConfig();
     connection ??= new HubConnectionBuilder()
         // @ts-ignore

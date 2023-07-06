@@ -5,3 +5,8 @@ export interface SelectedShow {
   language: string;
   season: number;
 }
+
+export interface SelectedLangSeason {
+  language: string;
+  season: number|undefined;
+}
