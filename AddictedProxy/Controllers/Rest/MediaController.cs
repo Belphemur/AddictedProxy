@@ -17,12 +17,14 @@ public class MediaController : Controller
     private readonly IShowRefresher _showRefresher;
     private readonly ITMDBClient _tmdbClient;
     private readonly ITvShowRepository _tvShowRepository;
+    private readonly ILogger<MediaController> _logger;
 
-    public MediaController(IShowRefresher showRefresher, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository)
+    public MediaController(IShowRefresher showRefresher, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository, ILogger<MediaController> logger)
     {
         _showRefresher = showRefresher;
         _tmdbClient = tmdbClient;
         _tvShowRepository = tvShowRepository;
+        _logger = logger;
     }
 
     /// <summary>
@@ -112,7 +114,11 @@ public class MediaController : Controller
                 case ShowType.Show:
                 {
                     var showDetails = await _tmdbClient.GetShowDetailsByIdAsync(show.TmdbId.Value, cancellationToken);
-                    if (showDetails == null) break;
+                    if (showDetails == null)
+                    {
+                        _logger.LogWarning("Couldn't find show details for TMDB {id}", show.TmdbId);
+                        break;
+                    };
                     int? year = DateTime.TryParse(showDetails.FirstAirDate, out var releaseDate) ? releaseDate.Year : null;
 
                     detailsDto = new MediaDetailsDto.DetailsDto(showDetails.PosterPath,
@@ -130,7 +136,11 @@ public class MediaController : Controller
                 case ShowType.Movie:
                 {
                     var movieDetails = await _tmdbClient.GetMovieDetailsByIdAsync(show.TmdbId.Value, cancellationToken);
-                    if (movieDetails == null) break;
+                    if (movieDetails == null)
+                    {
+                        _logger.LogWarning("Couldn't find movie details for TMDB {id}", show.TmdbId);
+                        break;
+                    }
 
                     int? year = DateTime.TryParse(movieDetails.ReleaseDate, out var releaseDate) ? releaseDate.Year : null;
 
