@@ -154,10 +154,12 @@ const loadingSubtitles = ref(false);
 const refreshingShows = ref(new Map<string, ProgressShow>());
 const currentShow = ref<SelectedShow | null>(null);
 const mediaTrending = ref<Array<MediaDetailsDto>>([]);
+const router = useRouter();
+
 
 const {start, sendRefreshAsync, unsubscribeShowAsync, onProgress, offProgress, onDone, offDone} = useRefreshHub();
 
-start();
+await start();
 
 const mediaTrendingResponse = await api.media.trendingDetail(10)
 
@@ -173,15 +175,16 @@ const selectShow = (showId: string) => {
 };
 
 const getSubtitles = async (show: SelectedShow) => {
-  loadingSubtitles.value = true;
-  currentShow.value = show;
-  const response = await api.shows.showsDetail(
-      show.show.id,
-      show.season,
-      show.language
-  );
-  episodesWithSubtitles.value = response.data.episodes || [];
-  loadingSubtitles.value = false;
+  await router.push({name: 'show-details', params: {showId: show.show.id, showName: show.show.name}})
+  // loadingSubtitles.value = true;
+  // currentShow.value = show;
+  // const response = await api.shows.showsDetail(
+  //     show.show.id,
+  //     show.season,
+  //     show.language
+  // );
+  // episodesWithSubtitles.value = response.data.episodes || [];
+  // loadingSubtitles.value = false;
 };
 
 const clear = () => {
