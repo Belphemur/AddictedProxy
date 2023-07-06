@@ -206,4 +206,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            NEW_RELIC_KEY=${{ secrets.NEW_RELIC_KEY }}
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_ORG=${{env.SENTRY_ORG}}
+            SENTRY_PROJECT=${{env.SENTRY_NAME}}-frontend
+            RELEASE_VERSION=${{ needs.main-release.outputs.version}}
