@@ -12,8 +12,8 @@
             </v-col>
           </v-row>
           <v-row justify-lg="center">
-            <v-col lg="8" align-self="center">
-              <MediaTrending :medias="mediaTrending"></MediaTrending>
+            <v-col align-self="center">
+              <media-trending :medias="trendingMedias"></media-trending>
             </v-col>
           </v-row>
           <v-row>
@@ -60,12 +60,12 @@ const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
 const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
 
 const currentShow = ref<SelectedShow | undefined>(undefined);
-const mediaTrending = ref<Array<MediaDetailsDto>>([]);
+const trendingMedias = ref<Array<MediaDetailsDto>>([]);
 
 
 
 const mediaTrendingResponse = await mediaApi.trendingDetail(25)
-mediaTrending.value = mediaTrendingResponse.data;
+trendingMedias.value = mediaTrendingResponse.data;
 
 
 
