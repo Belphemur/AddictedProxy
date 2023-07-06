@@ -1,3 +1,21 @@
+## [4.13.0](https://github.com/Belphemur/AddictedProxy/compare/v4.12.2...v4.13.0) (2023-07-06)
+
+
+### Performance improvements
+
+* **api:** Be sure that proper fields are nullable instead of all of them ([b71cf8d](https://github.com/Belphemur/AddictedProxy/commit/b71cf8d8dd84f1247bfef5d732820ff5de8c0a0e))
+
+
+### Bug Fixes
+
+* **date:** fix issue with date not provided for media from TMDB ([0479a02](https://github.com/Belphemur/AddictedProxy/commit/0479a02eceb09297c454f76d99a80d90b66db0db)), closes [#461](https://github.com/Belphemur/AddictedProxy/issues/461)
+* **media:detail:** fix not finding details ([42ce380](https://github.com/Belphemur/AddictedProxy/commit/42ce38015527edefaaa504a23d2dec83fe1690d3)), closes [#462](https://github.com/Belphemur/AddictedProxy/issues/462)
+
+
+### Features
+
+* **api:** update api to be splitted ([ae74900](https://github.com/Belphemur/AddictedProxy/commit/ae749001bf2dddd91d29144d383c6a9424b30185))
+
 ## [4.12.2](https://github.com/Belphemur/AddictedProxy/compare/v4.12.1...v4.12.2) (2023-07-06)
 
 
