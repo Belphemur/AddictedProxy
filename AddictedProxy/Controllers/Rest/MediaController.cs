@@ -34,6 +34,7 @@ public class MediaController : Controller
     [Route("trending/{max:range(0,15)}")]
     [HttpGet]
     [Produces("application/json")]
+    [ProducesResponseType(typeof(IAsyncEnumerable<MediaDetailsDto>), 200)]
     [ProducesResponseType(typeof(string), 429)]
     public async Task<Ok<IAsyncEnumerable<MediaDetailsDto>>> GetTrendingTvShowsAsync([FromRoute] int max, CancellationToken cancellationToken)
     {
@@ -74,7 +75,9 @@ public class MediaController : Controller
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     [Route("{showId:guid}/details", Name = nameof(Routes.MediaDetails))]
     [HttpGet]
+    [ProducesResponseType(typeof(MediaDetailsDto), 200)]
     [ProducesResponseType(typeof(string), 429)]
+    [ProducesResponseType(404)]
     [Produces("application/json")]
     public async Task<Results<Ok<MediaDetailsDto>, NotFound>> GetDetailsById([FromRoute] Guid showId, CancellationToken cancellationToken)
     {

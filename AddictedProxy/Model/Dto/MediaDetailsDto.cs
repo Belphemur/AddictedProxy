@@ -63,6 +63,7 @@ public record struct MediaDetailsDto(ShowDto Media, MediaDetailsDto.DetailsDto? 
         /// <summary>
         /// Year of release
         /// </summary>
+        /// <example>2023</example>
         public int ReleaseYear { get; init; } = ReleaseYear;
     }
 
