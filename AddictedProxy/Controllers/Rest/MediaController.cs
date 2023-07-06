@@ -43,7 +43,7 @@ public class MediaController : Controller
             Public = true,
             MaxAge = TimeSpan.FromDays(1)
         };
-        
+
         var tmdbShows = await _tmdbClient.GetTrendingTvAsync(TimeWindowEnum.week, cancellationToken).Take(max).ToDictionaryAsync(searchResult => searchResult.Id, cancellationToken);
         var shows = _tvShowRepository.GetShowsByTmdbIdAsync(tmdbShows.Keys.ToArray());
         var genres = (await _tmdbClient.GetTvGenresAsync(cancellationToken)).ToDictionary(genre => genre.Id, genre => genre.Name);
@@ -60,7 +60,10 @@ public class MediaController : Controller
                 showDetails.VoteAverage,
                 showDetails.GenreIds.Select(i => genres[i]).ToArray(),
                 "",
-                DateTime.Parse(showDetails.FirstAirDate).Year);
+                DateTime.Parse(showDetails.FirstAirDate).Year,
+                showDetails.Name);
+            details = UpdatePathAndVoteDetailsDto(details);
+
             return new MediaDetailsDto(showDto, details);
         });
         return TypedResults.Ok(result);
@@ -114,7 +117,8 @@ public class MediaController : Controller
                             showDetails.VoteAverage,
                             showDetails.Genres.Select(genre => genre.Name).ToArray(),
                             showDetails.Tagline,
-                            DateTime.Parse(showDetails.FirstAirDate).Year);
+                            DateTime.Parse(showDetails.FirstAirDate).Year,
+                            showDetails.Name);
                     break;
                 case ShowType.Movie:
                     var movieDetails = await _tmdbClient.GetMovieDetailsByIdAsync(show.TmdbId.Value, cancellationToken);
@@ -127,21 +131,28 @@ public class MediaController : Controller
                             movieDetails.VoteAverage,
                             movieDetails.Genres.Select(genre => genre.Name).ToArray(),
                             movieDetails.Tagline,
-                            DateTime.Parse(movieDetails.ReleaseDate).Year);
+                            DateTime.Parse(movieDetails.ReleaseDate).Year,
+                            movieDetails.Title);
 
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            detailsDto = detailsDto! with
-            {
-                PosterPath = $"https://image.tmdb.org/t/p/original{detailsDto.PosterPath}",
-                BackdropPath = $"https://image.tmdb.org/t/p/original{detailsDto.BackdropPath}",
-                VoteAverage = Math.Round(detailsDto.VoteAverage, 1)
-            };
+            detailsDto = UpdatePathAndVoteDetailsDto(detailsDto);
         }
 
         return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
+    }
+
+    private static MediaDetailsDto.DetailsDto UpdatePathAndVoteDetailsDto(MediaDetailsDto.DetailsDto? detailsDto)
+    {
+        detailsDto = detailsDto! with
+        {
+            PosterPath = $"https://image.tmdb.org/t/p/original{detailsDto.PosterPath}",
+            BackdropPath = $"https://image.tmdb.org/t/p/original{detailsDto.BackdropPath}",
+            VoteAverage = Math.Round(detailsDto.VoteAverage, 1)
+        };
+        return detailsDto;
     }
 }

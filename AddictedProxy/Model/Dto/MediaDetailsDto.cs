@@ -11,7 +11,7 @@ public record struct MediaDetailsDto(ShowDto Media, MediaDetailsDto.DetailsDto? 
         Movie
     }
 
-    public record DetailsDto(string PosterPath, string Overview, string OriginalName, MediaType MediaType, string BackdropPath, double VoteAverage, string[] Genre, string TagLine, int ReleaseYear)
+    public record DetailsDto(string PosterPath, string Overview, string OriginalName, MediaType MediaType, string BackdropPath, double VoteAverage, string[] Genre, string TagLine, int ReleaseYear, string EnglishName)
     {
         /// <summary>
         /// URL of the poster
@@ -65,6 +65,12 @@ public record struct MediaDetailsDto(ShowDto Media, MediaDetailsDto.DetailsDto? 
         /// </summary>
         /// <example>2023</example>
         public int ReleaseYear { get; init; } = ReleaseYear;
+
+        /// <summary>
+        /// English name of the show
+        /// </summary>
+        /// <example>Bloodhounds</example>
+        public string EnglishName { get; init; } = EnglishName;
     }
 
     /// <summary>

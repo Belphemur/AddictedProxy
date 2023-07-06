@@ -60,8 +60,14 @@ export interface DetailsDto {
   /**
    * Year of release
    * @format int32
+   * @example 2023
    */
   releaseYear?: number;
+  /**
+   * English name of the show
+   * @example "Bloodhounds"
+   */
+  englishName?: string | null;
 }
 
 /** Episode information */
