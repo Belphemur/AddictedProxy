@@ -82,6 +82,10 @@ watch(languageSelect, async (value) => {
                 {{ props.details.details?.voteAverage }}
               </v-progress-circular>
             </v-col>
+            <v-col>
+              <h6 class="text-h6">Genres</h6>
+                {{ props.details.details?.genre.join(", ") }}
+            </v-col>
           </v-row>
           <v-row>
             <v-col align-self="end">

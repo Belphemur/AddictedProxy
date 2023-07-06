@@ -20,7 +20,8 @@ const loadingEpisodes = ref(false);
 const episodes = ref<EpisodeWithSubtitlesDto[]>([]);
 const language = useLanguage();
 
-const responseEpisode = await api.shows.showsDetail(props.showId, <number>useLast(mediaInfo.media?.seasons), language.lang);
+const currentSeason = ref<number>(<number>useLast(mediaInfo.media?.seasons))
+const responseEpisode = await api.shows.showsDetail(props.showId, currentSeason.value, language.lang);
 episodes.value = responseEpisode.data.episodes!;
 
 useSeoMeta({
@@ -34,6 +35,7 @@ async function selected(selectedShow: SelectedShow) {
   loadingEpisodes.value = true;
   const response = await api.shows.showsDetail(selectedShow.show.id, selectedShow.season, selectedShow.language);
   episodes.value = response.data.episodes!;
+  currentSeason.value = selectedShow.season;
   loadingEpisodes.value = false;
 }
 </script>
@@ -48,7 +50,10 @@ async function selected(selectedShow: SelectedShow) {
     <v-row>
       <v-col cols="12">
         <v-skeleton-loader type="card" :loading="loadingEpisodes">
-          <subtitles-table :episodes="episodes"></subtitles-table>
+          <v-col>
+            <span class="text-h6">Season {{ currentSeason }}</span>
+            <subtitles-table :episodes="episodes"></subtitles-table>
+          </v-col>
         </v-skeleton-loader>
       </v-col>
     </v-row>
