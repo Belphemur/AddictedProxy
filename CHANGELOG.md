@@ -1,3 +1,15 @@
+## [4.13.1](https://github.com/Belphemur/AddictedProxy/compare/v4.13.0...v4.13.1) (2023-07-06)
+
+
+### Performance improvements
+
+* **refresh:** refresh first latest seasons ([4970375](https://github.com/Belphemur/AddictedProxy/commit/4970375d205d9611d684dd40b18fea6296e687b6))
+
+
+### Bug Fixes
+
+* **media:view:** fix loading episode ([8de772e](https://github.com/Belphemur/AddictedProxy/commit/8de772ebe03074e8930a7acb94b6945f9a951814))
+
 ## [4.13.0](https://github.com/Belphemur/AddictedProxy/compare/v4.12.2...v4.13.0) (2023-07-06)
 
 
