@@ -26,7 +26,8 @@ const season = defineModel<number>();
       <v-col>
         <v-icon :icon=" props.details.details?.mediaType === 'Movie' ? 'mdi-movie' : 'mdi-television'"></v-icon>
         {{ props.details.details!.englishName }} <span
-          class="text-light-blue-accent-1 font-bold" v-if="props.details.details?.releaseYear != null">({{ props.details.details.releaseYear }})</span>
+          class="text-light-blue-accent-1 font-bold"
+          v-if="props.details.details?.releaseYear != null">({{ props.details.details.releaseYear }})</span>
         <span v-if="props.details.details?.englishName != props.details.details?.originalName">
           [<i>{{ props.details.details.originalName }}</i>]
       </span>
@@ -42,7 +43,7 @@ const season = defineModel<number>();
             class="text-left"
             align-self="start"
         >
-          <v-img min-height="320" max-height="450" :src="props.details.details!.posterPath!"></v-img>
+          <nuxt-img style="max-width:100%;" :src="props.details.details!.posterPath!"></nuxt-img>
         </v-col>
 
         <v-col cols="8" class="text-left">

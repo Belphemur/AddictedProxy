@@ -1,4 +1,5 @@
-﻿using AddictedProxy.Database.Model;
+﻿using AddictedProxy.Caching.Extensions;
+using AddictedProxy.Database.Model;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Services.Provider.Shows;
@@ -6,8 +7,10 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Net.Http.Headers;
+using TvMovieDatabaseClient.Model.Show.Search;
 using TvMovieDatabaseClient.Service;
 using TvMovieDatabaseClient.Service.Model;
+using DistributedCacheExtensions = AddictedProxy.Caching.Extensions.DistributedCacheExtensions;
 
 namespace AddictedProxy.Controllers.Rest;
 
@@ -18,13 +21,15 @@ public class MediaController : Controller
     private readonly ITMDBClient _tmdbClient;
     private readonly ITvShowRepository _tvShowRepository;
     private readonly ILogger<MediaController> _logger;
+    private readonly IDistributedCache _distributedCache;
 
-    public MediaController(IShowRefresher showRefresher, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository, ILogger<MediaController> logger)
+    public MediaController(IShowRefresher showRefresher, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository, ILogger<MediaController> logger, IDistributedCache distributedCache)
     {
         _showRefresher = showRefresher;
         _tmdbClient = tmdbClient;
         _tvShowRepository = tvShowRepository;
         _logger = logger;
+        _distributedCache = distributedCache;
     }
 
     /// <summary>
@@ -46,7 +51,7 @@ public class MediaController : Controller
             MaxAge = TimeSpan.FromDays(1)
         };
 
-        var tmdbShows = await _tmdbClient.GetTrendingTvAsync(TimeWindowEnum.week, cancellationToken).Take(max).ToArrayAsync(cancellationToken);
+        var tmdbShows = await GetTrendingShowsCached(max, cancellationToken);
         var shows = (await _tvShowRepository.GetShowsByTmdbIdAsync(tmdbShows.Select(show => show.Id).ToArray()).ToArrayAsync(cancellationToken))
                     .DistinctBy(show => show.TmdbId)
                     .ToDictionary(show => show.TmdbId!.Value);
@@ -82,6 +87,20 @@ public class MediaController : Controller
                      .Cast<MediaDetailsDto>();
 
         return TypedResults.Ok(result);
+    }
+
+    private Task<ShowSearchResult[]> GetTrendingShowsCached(int max, CancellationToken cancellationToken)
+    {
+        return _distributedCache.GetSertAsync($"trending-{max}", async () =>
+        {
+            _logger.LogInformation("Cache miss for trending ({max}) shows ", max);
+            return new DistributedCacheExtensions.CacheData<ShowSearchResult[]>(
+                await _tmdbClient.GetTrendingTvAsync(TimeWindowEnum.week, cancellationToken).Take(max).ToArrayAsync(cancellationToken),
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTimeOffset.UtcNow.AddDays(1)
+                });
+        });
     }
 
     /// <summary>
