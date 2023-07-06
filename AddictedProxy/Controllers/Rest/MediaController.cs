@@ -33,7 +33,7 @@ public class MediaController : Controller
     /// <param name="max"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [Route("trending/{max:range(0,15)}")]
+    [Route("trending/{max:range(0,50)}")]
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(IAsyncEnumerable<MediaDetailsDto>), 200)]

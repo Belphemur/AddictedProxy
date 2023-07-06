@@ -161,7 +161,7 @@ const {start, sendRefreshAsync, unsubscribeShowAsync, onProgress, offProgress, o
 
 await start();
 
-const mediaTrendingResponse = await mediaApi.trendingDetail(15)
+const mediaTrendingResponse = await mediaApi.trendingDetail(25)
 mediaTrending.value = mediaTrendingResponse.data;
 
 const selectShow = (showId: string) => {
