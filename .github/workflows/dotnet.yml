@@ -17,7 +17,7 @@ env:
   NODEJS: lts/*
   DOTNET: "7.0.x"
   DOTNET_PRERELEASE: true
-  SENTRY_NAME: "addictedproxy"
+  sentry_project: "addictedproxy"
   SENTRY_ORG: "soundswitch"
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
@@ -138,7 +138,7 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{env.SENTRY_ORG}}
-          SENTRY_PROJECT: ${{env.SENTRY_NAME}}
+          SENTRY_PROJECT: ${{env.sentry_project}}
         with:
           environment: Production
           version: "${{env.PROJECT_NAME}}@${{ needs.main-release.outputs.version}}"
@@ -152,9 +152,11 @@ jobs:
           - package: "addictedproxy"
             image: ${{ github.repository }}
             context: "."
+            sentry_project: "addictedproxy"
           - package: "addictedproxy-frontend"
             image: ${{ github.repository }}-frontend
             context: "addicted.nuxt/"
+            sentry_project: "addicted-frontend"
     permissions:
       contents: read
       packages: write
@@ -208,5 +210,5 @@ jobs:
           build-args: |
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_ORG=${{env.SENTRY_ORG}}
-            SENTRY_PROJECT=${{env.SENTRY_NAME}}-frontend
+            SENTRY_PROJECT=${{ matrix.sentry_project }}
             RELEASE_VERSION=${{ needs.main-release.outputs.version}}
