@@ -1,15 +1,15 @@
 import {HubConnection, HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
 import {EpisodeWithSubtitlesDto, ShowDto} from "~/composables/api/data-contracts";
+import {getApiServerUrl} from "~/composables/rest/api";
 
 let started = false;
 let connection: HubConnection;
 
 export function useRefreshHub() {
 
-    const config = useRuntimeConfig();
     connection ??= new HubConnectionBuilder()
         // @ts-ignore
-        .withUrl(config.public.api.url + "/refresh")
+        .withUrl(getApiServerUrl() + "/refresh")
         .configureLogging(LogLevel.Information)
         .withAutomaticReconnect()
         .build();

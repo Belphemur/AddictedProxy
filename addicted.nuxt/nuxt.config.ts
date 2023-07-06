@@ -21,7 +21,8 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             api: {
-                url: process.env.APP_API_PATH
+                clientUrl: process.env.APP_API_PATH,
+                serverUrl: process.env.APP_SERVER_PATH,
             },
             matomo: {
                 url: process.env.APP_MATOMO
