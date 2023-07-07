@@ -1,3 +1,10 @@
+## [4.14.9](https://github.com/Belphemur/AddictedProxy/compare/v4.14.8...v4.14.9) (2023-07-07)
+
+
+### Performance improvements
+
+* **trending:** improve trending performance by caching genre list ([51bc218](https://github.com/Belphemur/AddictedProxy/commit/51bc218bf976d81580889c74c8f49f54c0df1e39))
+
 ## [4.14.8](https://github.com/Belphemur/AddictedProxy/compare/v4.14.7...v4.14.8) (2023-07-06)
 
 
