@@ -51,11 +51,11 @@ public class MediaController : Controller
             MaxAge = TimeSpan.FromDays(1)
         };
 
-        var tmdbShows = await GetTrendingShowsCached(max, cancellationToken);
+        var tmdbShows = await GetTrendingShowsCachedAsync(max, cancellationToken);
         var shows = (await _tvShowRepository.GetShowsByTmdbIdAsync(tmdbShows.Select(show => show.Id).ToArray()).ToArrayAsync(cancellationToken))
                     .DistinctBy(show => show.TmdbId)
                     .ToDictionary(show => show.TmdbId!.Value);
-        var genres = (await _tmdbClient.GetTvGenresAsync(cancellationToken)).ToDictionary(genre => genre.Id, genre => genre.Name);
+        var genres = await GetGenresCachedAsync(cancellationToken);
 
         var result = tmdbShows
                      .Select(showDetails =>
@@ -66,7 +66,14 @@ public class MediaController : Controller
                          }
 
                          var showDto = new ShowDto(show);
-                         var genreNames = showDetails.GenreIds.Select(i => genres[i]).ToArray();
+                         var genreNames = showDetails.GenreIds.Select(i =>
+                                                     {
+                                                         genres.TryGetValue(i, out var genreName);
+                                                         return genreName;
+                                                     })
+                                                     .Where(s => s != null)
+                                                     .Cast<string>()
+                                                     .ToArray();
 
                          int? year = DateTime.TryParse(showDetails.FirstAirDate, out var releaseDate) ? releaseDate.Year : null;
                          var details = new MediaDetailsDto.DetailsDto(showDetails.PosterPath,
@@ -89,7 +96,7 @@ public class MediaController : Controller
         return TypedResults.Ok(result);
     }
 
-    private Task<ShowSearchResult[]> GetTrendingShowsCached(int max, CancellationToken cancellationToken)
+    private Task<ShowSearchResult[]> GetTrendingShowsCachedAsync(int max, CancellationToken cancellationToken)
     {
         return _distributedCache.GetSertAsync($"trending-{max}", async () =>
         {
@@ -102,6 +109,20 @@ public class MediaController : Controller
                 });
         });
     }
+
+    private Task<Dictionary<int, string>> GetGenresCachedAsync(CancellationToken cancellationToken)
+    {
+        return _distributedCache.GetSertAsync($"tmdb-genre", async () =>
+        {
+            return new DistributedCacheExtensions.CacheData<Dictionary<int, string>>(
+                (await _tmdbClient.GetTvGenresAsync(cancellationToken)).ToDictionary(genre => genre.Id, genre => genre.Name),
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTimeOffset.UtcNow.AddDays(1)
+                });
+        });
+    }
+
 
     /// <summary>
     /// Get the details of a specific show
