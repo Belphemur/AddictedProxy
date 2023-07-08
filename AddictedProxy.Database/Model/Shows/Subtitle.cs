@@ -40,7 +40,7 @@ public class Subtitle : IDiscoverableObject
 
     public DateTime? StoredAt { get; set; }
 
-    public Guid UniqueId { get; set; } = Guid.NewGuid();
+    public Guid UniqueId { get; set; } = Rule.GenerateUuidv7Postgres();
 
     /// <summary>
     ///     When was the subtitle discovered
