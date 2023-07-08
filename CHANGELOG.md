@@ -1,3 +1,10 @@
+## [4.14.14](https://github.com/Belphemur/AddictedProxy/compare/v4.14.13...v4.14.14) (2023-07-08)
+
+
+### Bug Fixes
+
+* **image:** use lazy-src to be sure we have some space taken for image to come ([d658611](https://github.com/Belphemur/AddictedProxy/commit/d6586116b7e4cfae002d16e2fcda2bc8fcbffb15))
+
 ## [4.14.13](https://github.com/Belphemur/AddictedProxy/compare/v4.14.12...v4.14.13) (2023-07-08)
 
 
