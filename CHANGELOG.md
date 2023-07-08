@@ -1,3 +1,10 @@
+## [4.14.12](https://github.com/Belphemur/AddictedProxy/compare/v4.14.11...v4.14.12) (2023-07-08)
+
+
+### Performance improvements
+
+* **UUID:** Use UUIDv7 for Postgres ([75f37ec](https://github.com/Belphemur/AddictedProxy/commit/75f37ec21041277dc69f5524eb13f4642d932844))
+
 ## [4.14.11](https://github.com/Belphemur/AddictedProxy/compare/v4.14.10...v4.14.11) (2023-07-08)
 
 
