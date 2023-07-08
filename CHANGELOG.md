@@ -1,3 +1,12 @@
+## [4.14.11](https://github.com/Belphemur/AddictedProxy/compare/v4.14.10...v4.14.11) (2023-07-08)
+
+
+### Performance improvements
+
+* **subtitle:** error message when no subtitles available in given language ([23b898e](https://github.com/Belphemur/AddictedProxy/commit/23b898e999eec3cfa3f47fd9c9c4331da292e488))
+* **subtitles:** make language clearable ([7815f04](https://github.com/Belphemur/AddictedProxy/commit/7815f0408bd7164fde40193a66697748bf0b7823))
+* **subtitles:** only show episode with subtitles ([33bae8c](https://github.com/Belphemur/AddictedProxy/commit/33bae8ca6ac63d22b66098a4dee65a85ed0d010b))
+
 ## [4.14.10](https://github.com/Belphemur/AddictedProxy/compare/v4.14.9...v4.14.10) (2023-07-08)
 
 
