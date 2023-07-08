@@ -18,6 +18,16 @@ const langs = getAll639_1().map((value) => {
 
 const season = defineModel<number>();
 
+const setLanguage = (lang: string) => {
+  if (lang == language.lang) {
+    return;
+  }
+  if (lang == null || lang == "" || lang == undefined) {
+    return;
+  }
+  language.lang = lang;
+}
+
 </script>
 
 <template>
@@ -73,11 +83,13 @@ const season = defineModel<number>();
     </v-card-text>
     <v-card-actions>
       <v-col xl="4" cols="6">
-        <v-autocomplete v-model="language.lang"
+        <v-autocomplete :model-value="language.lang"
+                        @update:model-value="setLanguage"
                         :items="langs"
                         label="Language"
                         item-title="label"
                         item-value="value"
+                        clearable=""
         ></v-autocomplete>
       </v-col>
       <v-col xl="4" cols="6" offset-xl="4">
