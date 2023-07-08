@@ -1,3 +1,10 @@
+## [4.14.13](https://github.com/Belphemur/AddictedProxy/compare/v4.14.12...v4.14.13) (2023-07-08)
+
+
+### Performance improvements
+
+* **images:** optimize properly the images ([e78d56d](https://github.com/Belphemur/AddictedProxy/commit/e78d56d7126cbd381d7c8bd04ec244726770adfb))
+
 ## [4.14.12](https://github.com/Belphemur/AddictedProxy/compare/v4.14.11...v4.14.12) (2023-07-08)
 
 
