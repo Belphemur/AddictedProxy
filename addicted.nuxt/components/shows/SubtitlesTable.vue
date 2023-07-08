@@ -14,7 +14,7 @@
     </v-sheet>
     <v-expansion-panels v-else>
       <v-expansion-panel
-          v-for="episode in props.episodes"
+          v-for="episode in useFilter(props.episodes, (episode) => episode.subtitles?.length > 0)"
           v-bind:key="episode.number"
           :title="`Ep. ${episode.number}: ${episode.title}`"
       >
