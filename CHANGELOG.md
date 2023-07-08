@@ -1,3 +1,10 @@
+## [4.14.10](https://github.com/Belphemur/AddictedProxy/compare/v4.14.9...v4.14.10) (2023-07-08)
+
+
+### Bug Fixes
+
+* **display:** fix display issue on smaller resolutions ([d4ff6fe](https://github.com/Belphemur/AddictedProxy/commit/d4ff6fec60eef1a7df95e86f81ea0e70a1cbfcde))
+
 ## [4.14.9](https://github.com/Belphemur/AddictedProxy/compare/v4.14.8...v4.14.9) (2023-07-07)
 
 
