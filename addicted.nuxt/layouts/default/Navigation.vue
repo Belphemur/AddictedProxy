@@ -18,11 +18,11 @@ const props = defineProps<Props>()
 
 <template>
   <v-navigation-drawer
-    :expand-on-hover="!props.mobile"
-    :rail="!props.mobile"
-    v-model="drawer"
-    :location="props.mobile ? 'bottom': 'left'"
-
+      :expand-on-hover="!props.mobile"
+      :rail="!props.mobile"
+      v-model="drawer"
+      :location="props.mobile ? 'bottom': 'left'"
+      :permanent="!props.mobile"
   >
     <v-list>
       <v-list density="compact" nav>
