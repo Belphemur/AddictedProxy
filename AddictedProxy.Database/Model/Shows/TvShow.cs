@@ -2,6 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using RT.Comb;
 
 #endregion
 
@@ -14,8 +15,8 @@ public class TvShow : IDiscoverableObject
 {
     [Key]
     public long Id { get; set; }
-    
-    public Guid UniqueId { get; set; } = Guid.NewGuid();
+
+    public Guid UniqueId { get; set; } = Rule.GenerateUuidv7Postgres();
 
     public long ExternalId { get; set; }
     public string Name { get; set; }
