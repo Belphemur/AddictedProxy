@@ -5,7 +5,7 @@ import {sentryVitePlugin} from "@sentry/vite-plugin";
 
 export default defineNuxtConfig({
     devtools: {enabled: true},
-    sourcemap: { server: true, client: true },
+    sourcemap: {server: true, client: true},
     // @ts-ignore
     css: ['vuetify/styles', '@mdi/font/css/materialdesignicons.css'],
     vite: {
@@ -65,6 +65,10 @@ export default defineNuxtConfig({
                 }
             }
         }
+    },
+    image: {
+        domains: ['image.tmdb.org'],
+        format: ['avif', 'webp']
     },
     googleFonts: {
         families: {
