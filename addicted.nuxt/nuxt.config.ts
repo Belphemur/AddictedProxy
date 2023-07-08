@@ -67,8 +67,8 @@ export default defineNuxtConfig({
         }
     },
     image: {
-        domains: ['image.tmdb.org'],
-        format: ['avif', 'webp']
+        // domains: ['image.tmdb.org'],
+         format: ['avif', 'webp']
     },
     googleFonts: {
         families: {
