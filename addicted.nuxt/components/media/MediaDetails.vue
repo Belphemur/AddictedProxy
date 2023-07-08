@@ -53,7 +53,11 @@ const setLanguage = (lang: string) => {
             class="text-left"
             align-self="start"
         >
-          <nuxt-img style="max-width:100%;" :src="props.details.details!.posterPath!"></nuxt-img>
+          <nuxt-picture class="media-detail-poster"
+                    :src="props.details.details!.posterPath!"
+                    sizes="sm:20vw md:30vw lg:50vw"
+                    >
+          </nuxt-picture>
         </v-col>
 
         <v-col cols="8" class="text-left">
@@ -102,6 +106,8 @@ const setLanguage = (lang: string) => {
   </v-card>
 </template>
 
-<style scoped>
-
+<style>
+.media-detail-poster img {
+  max-width:100%;
+}
 </style>
