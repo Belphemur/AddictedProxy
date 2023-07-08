@@ -1,10 +1,22 @@
 <template>
   <v-container>
-    <v-expansion-panels>
+    <v-sheet v-if="noSubtitles" rounded="xl" color="error" class="text-center">
+      <v-row>
+        <v-col>
+          <v-icon icon="mdi-alert-circle" size="50"></v-icon>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          Sorry, we couldn't find subtitles for your language for this season.
+        </v-col>
+      </v-row>
+    </v-sheet>
+    <v-expansion-panels v-else>
       <v-expansion-panel
-        v-for="episode in props.episodes"
-        v-bind:key="episode.number"
-        :title="`Ep. ${episode.number}: ${episode.title}`"
+          v-for="episode in useFilter(props.episodes, (episode) => episode.subtitles?.length > 0)"
+          v-bind:key="episode.number"
+          :title="`Ep. ${episode.number}: ${episode.title}`"
       >
         <v-expansion-panel-text>
           <v-data-table v-if="episode.subtitles" :items="episode.subtitles" :headers="headers" items-per-page="25">
@@ -25,18 +37,18 @@
             </template>
             <template #item.downloadCount="{ item }">
               <v-btn
-                color="primary"
-                prepend-icon="mdi-download"
-                @click="downloadSubtitle(item.selectable)"
-                :disabled="currentlyDownloading.has(item.selectable.subtitleId)"
+                  color="primary"
+                  prepend-icon="mdi-download"
+                  @click="downloadSubtitle(item.selectable)"
+                  :disabled="currentlyDownloading.has(item.selectable.subtitleId)"
               >
                 {{ item.selectable.downloadCount }}
               </v-btn>
               <v-progress-linear
-                v-show="currentlyDownloading.has(item.selectable.subtitleId)"
-                :value="100"
-                color="success"
-                indeterminate
+                  v-show="currentlyDownloading.has(item.selectable.subtitleId)"
+                  :value="100"
+                  color="success"
+                  indeterminate
               ></v-progress-linear>
             </template>
           </v-data-table>
@@ -56,6 +68,7 @@ import {useSubtitles} from "~/composables/rest/api";
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto>;
 }
+
 const subtitlesApi = useSubtitles();
 
 const props = defineProps<Props>();
@@ -67,6 +80,8 @@ const headers = [
   {title: "HD", key: "hd"},
   {title: "Downloads", key: "downloadCount"},
 ];
+
+const noSubtitles = computed<boolean>(() => props.episodes.every((e) => e.subtitles?.length === 0));
 
 const currentlyDownloading = ref<Map<string, boolean>>(new Map());
 const downloadSubtitle = async (sub: SubtitleDto) => {
