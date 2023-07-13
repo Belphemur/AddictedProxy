@@ -1,66 +1,40 @@
 <template>
   <v-container>
     <v-row>
-      <v-autocomplete label="Name of the show"
-                      clearable
-                      :error-messages="error"
-                      :items="results"
-                      :loading="isLoading"
-                      item-title="name"
-                      hide-no-data
-                      :item-value="item => item"
-                      @update:search="onSearch"
-                      @update:modelValue="updateSelectedShow"
-                      prepend-inner-icon="mdi-television"
-                      @click:clear="clearSearch"
-      ></v-autocomplete>
+      <v-col>
+        <v-autocomplete label="Name of the show"
+                        clearable
+                        :error-messages="error"
+                        :items="results"
+                        :loading="isLoading"
+                        item-title="name"
+                        hide-no-data
+                        :item-value="item => item"
+                        @update:search="onSearch"
+                        @update:modelValue="updateSelectedShow"
+                        prepend-inner-icon="mdi-television"
+                        @click:clear="clearSearch"
+        ></v-autocomplete>
+      </v-col>
     </v-row>
-    <v-slide-y-transition>
-      <v-row v-show="selectedShow != null">
-        <v-col cols="12" md="6">
-          <v-autocomplete v-model="languageSelect"
-                          :items="langs"
-                          label="Language"
-                          item-title="label"
-                          item-value="value"
-          ></v-autocomplete>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-select v-model="selectedSeason"
-                    :items="selectedShowSeason"
-                    label="Season selection"
-          ></v-select>
-        </v-col>
-      </v-row>
-    </v-slide-y-transition>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import {ref, watch, defineExpose} from "vue";
-import {getName, getAll639_1} from "all-iso-language-codes";
-import {SelectedShow} from "@/composables/dto/SelectedShow";
+import {ref,} from "vue";
 import {mevent} from "~/composables/data/event";
 import {ShowDto} from "~/composables/api/data-contracts";
 import {useShows} from "~/composables/rest/api";
 
-const langs = getAll639_1().map((value) => {
-  return {value: value, label: getName(value)};
-});
-
 // eslint-disable-next-line no-undef
 const emit = defineEmits<{
-  (e: "selected", show: SelectedShow): void;
+  (e: "selected", show: ShowDto): void,
   (e: "cleared"): void;
-  (e: "needRefresh", show: ShowDto): void;
 }>();
 
 const showsApi = useShows();
 
-const language = useLanguage();
-
 const selectedSeason = ref<number | null>(null);
-const languageSelect = ref<string>(language.lang);
 
 const selectedShow = ref<ShowDto | null>(null);
 
@@ -119,54 +93,9 @@ const updateSelectedShow = async (event: ShowDto) => {
     event.seasons = event.seasons.sort();
   }
 
-  setSelectedShow(event);
   mevent("show-selected", {show: event});
-  //Force refreshing the show
-  if (selectedShow.value!.nbSeasons == 0) {
-    emit("needRefresh", selectedShow.value!);
-    selectedShow.value = null;
-    selectedShowSeason.value = [];
-    return;
-  }
+  emit("selected", event);
 };
 
-const setSelectedShow = (show: ShowDto) => {
-  if (show == null) {
-    return;
-  }
-  selectedShow.value = show;
-  selectedSeason.value = null;
-  selectedShowSeason.value = show.seasons;
-  if (show.nbSeasons > 0) {
-    const lastSeason = selectedShowSeason.value.length - 1;
-    selectedSeason.value = selectedShowSeason.value[lastSeason];
-  }
-};
-
-defineExpose({setSelectedShow});
-
-watch(selectedSeason, (value) => {
-  if (value == null || selectedShow.value == null) {
-    emit("cleared");
-    return;
-  }
-  emit("selected", {
-    language: languageSelect.value,
-    season: value,
-    show: selectedShow.value,
-  });
-});
-
-watch(languageSelect, (value) => {
-  language.lang = value;
-  if (selectedSeason.value == null || selectedShow.value == null) {
-    return;
-  }
-  emit("selected", {
-    language: value,
-    season: selectedSeason.value,
-    show: selectedShow.value,
-  });
-});
 </script>
 

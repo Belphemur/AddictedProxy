@@ -28,7 +28,6 @@
   "dependencies": {
     "@mdi/font": "^7.2.96",
     "@microsoft/signalr": "^7.0.9",
-    "all-iso-language-codes": "^1.0.12",
     "roboto-fontface": "^0.10.0",
     "vuetify": "^3.3.8"
   }

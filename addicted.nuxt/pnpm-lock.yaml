@@ -11,9 +11,6 @@ dependencies:
   '@microsoft/signalr':
     specifier: ^7.0.9
     version: 7.0.9
-  all-iso-language-codes:
-    specifier: ^1.0.12
-    version: 1.0.12
   roboto-fontface:
     specifier: ^0.10.0
     version: 0.10.0
@@ -1917,10 +1914,6 @@ packages:
       clean-stack: 2.2.0
       indent-string: 4.0.0
     dev: true
-
-  /all-iso-language-codes@1.0.12:
-    resolution: {integrity: sha512-nHyzqfHgyyRrKJyh0RW+xgdBiuwAQqNlZ7VC3tph+ndE5yL9WaCyDaofOYmQkeeIBKV6YyrQu6IzjsUIHxZi+Q==}
-    dev: false
 
   /ansi-align@3.0.1:
     resolution: {integrity: sha512-IOfwwBF5iczOjp/WeY4YxyjqAFMQoZufdQWDd19SEExbVLNXqvpzSJ/M7Za4/sCPmQ0+GRquoA7bGcINcxew6w==}
