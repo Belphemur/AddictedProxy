@@ -39,7 +39,7 @@
 
 import {ref} from "vue";
 import SearchComponent from "@/components/shows/SearchComponent.vue";
-import {EpisodeWithSubtitlesDto, MediaDetailsDto} from "~/composables/api/data-contracts";
+import {EpisodeWithSubtitlesDto, MediaDetailsDto, ShowDto} from "~/composables/api/data-contracts";
 import {useMedia} from "~/composables/rest/api";
 import {SelectedShow} from "~/composables/dto/SelectedShow";
 
@@ -70,9 +70,9 @@ trendingMedias.value = mediaTrendingResponse.data;
 
 
 
-const goToPage = async (show: SelectedShow) => {
+const goToPage = async (show: ShowDto) => {
   const router = useRouter();
-  await router.push({name: 'show-details', params: {showId: show.show.id, showName: show.show.name}})
+  await router.push({name: 'show-details', params: {showId: show.id, showName: show.name}})
 };
 
 const clear = () => {

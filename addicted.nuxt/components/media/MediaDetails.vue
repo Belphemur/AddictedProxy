@@ -1,8 +1,7 @@
 <script setup lang="ts">
 
-import {ref} from "vue";
-import {getAll639_1, getName} from "all-iso-language-codes";
 import {MediaDetailsDto} from "~/composables/api/data-contracts";
+import {langs} from "~/composables/language/lang";
 
 export interface Props {
   details: MediaDetailsDto;
@@ -11,10 +10,6 @@ export interface Props {
 const language = useLanguage();
 const props = defineProps<Props>();
 const seasons = props.details.media!.seasons!;
-
-const langs = getAll639_1().map((value) => {
-  return {value: value, label: getName(value)};
-});
 
 const season = defineModel<number>();
 
@@ -93,8 +88,8 @@ const setLanguage = (lang: string) => {
                         @update:model-value="setLanguage"
                         :items="langs"
                         label="Language"
-                        item-title="label"
-                        item-value="value"
+                        item-title="name"
+                        item-value="code"
                         clearable=""
         ></v-autocomplete>
       </v-col>
