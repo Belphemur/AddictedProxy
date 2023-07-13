@@ -6,6 +6,7 @@ using SimpleMvcSitemap;
 
 namespace AddictedProxy.Controllers.Sitemap;
 
+[ApiExplorerSettings(IgnoreApi = true)]
 public class SitemapController : Controller
 {
     private readonly ISitemapProvider _sitemapProvider;
