@@ -1,3 +1,10 @@
+## [4.14.18](https://github.com/Belphemur/AddictedProxy/compare/v4.14.17...v4.14.18) (2023-07-13)
+
+
+### Performance improvements
+
+* **sentry:** get properly the router ([0030570](https://github.com/Belphemur/AddictedProxy/commit/0030570e17479bef6733e111a48ae02e84749c94))
+
 ## [4.14.17](https://github.com/Belphemur/AddictedProxy/compare/v4.14.16...v4.14.17) (2023-07-13)
 
 
