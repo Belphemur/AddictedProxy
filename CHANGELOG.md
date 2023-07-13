@@ -1,3 +1,11 @@
+## [4.14.15](https://github.com/Belphemur/AddictedProxy/compare/v4.14.14...v4.14.15) (2023-07-13)
+
+
+### Bug Fixes
+
+* **sentry:** disable browser tracing ([12e7202](https://github.com/Belphemur/AddictedProxy/commit/12e72022c3a8e9a51ad0a9d1a1c591c049d51921))
+* **sitemap:** no need for api gen for this controller ([7fdfe65](https://github.com/Belphemur/AddictedProxy/commit/7fdfe6501973c20ac2e0f31e004463708208d5be))
+
 ## [4.14.14](https://github.com/Belphemur/AddictedProxy/compare/v4.14.13...v4.14.14) (2023-07-08)
 
 
