@@ -1,18 +1,25 @@
 <template>
-  <v-row justify="center">
-    <v-col cols="10" align-self="center">
-      <v-card id="api-view">
-        <div class="swagger" id="swagger"></div>
-      </v-card>
-    </v-col>
-  </v-row>
+  <v-container>
+    <v-row justify="center" align-content="center">
+      <v-col cols="10" align-self="center" class="text-center">
+        <v-sheet rounded>
+          <v-row>
+            <v-col>
+              <v-icon size="100" color="primary" class="mb-4">mdi-code-braces</v-icon>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              The api documentation has moved to <a href="https://gestdown.readme.io/" target="_blank">Readme</a>
+            </v-col>
+          </v-row>
+        </v-sheet>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script type="ts" setup>
-import {SwaggerUIBundle} from "swagger-ui-dist";
-import "swagger-ui-dist/swagger-ui.css";
-import {onMounted} from "vue";
-import {getApiServerUrl} from "~/composables/rest/api";
 
 definePageMeta({
   order: 20,
@@ -26,39 +33,11 @@ useSeoMeta({
   ogImage: "/img/logo.png"
 })
 
-const config = useRuntimeConfig();
-
-onMounted(() => {
-  SwaggerUIBundle({
-    url: getApiServerUrl() + "/api/v1/swagger.json",
-    dom_id: "#swagger"
-  });
-});
+if (process.client) {
+  window.open("https://gestdown.readme.io/", "_blank")
+}
 </script>
 
 <style scoped>
-#api-view {
-  text-align: left;
-}
-</style>
-<style>
-.swagger-ui {
-  filter: invert(88%) hue-rotate(180deg);
-}
 
-.swagger-ui .highlight-code {
-  filter: invert(100%) hue-rotate(180deg);
-}
-
-.swagger-ui input {
-  color: black;
-}
-
-.swagger-ui input::placeholder {
-  color: gray;
-}
-
-.swagger-ui input[disabled]::placeholder {
-  color: black;
-}
 </style>
