@@ -1,3 +1,10 @@
+## [4.14.17](https://github.com/Belphemur/AddictedProxy/compare/v4.14.16...v4.14.17) (2023-07-13)
+
+
+### Performance improvements
+
+* **docs:** Move documentation to readme.com ([516c589](https://github.com/Belphemur/AddictedProxy/commit/516c5898443101cbb1a523e62f1c5c9d615e3f4e))
+
 ## [4.14.16](https://github.com/Belphemur/AddictedProxy/compare/v4.14.15...v4.14.16) (2023-07-13)
 
 
