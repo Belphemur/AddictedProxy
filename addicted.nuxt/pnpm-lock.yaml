@@ -17,9 +17,6 @@ dependencies:
   roboto-fontface:
     specifier: ^0.10.0
     version: 0.10.0
-  swagger-ui-dist:
-    specifier: ^5.1.0
-    version: 5.1.0
   vuetify:
     specifier: ^3.3.8
     version: 3.3.8(typescript@5.1.6)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
@@ -6362,10 +6359,6 @@ packages:
     transitivePeerDependencies:
       - encoding
     dev: true
-
-  /swagger-ui-dist@5.1.0:
-    resolution: {integrity: sha512-c1KmAjuVODxw+vwkNLALQZrgdlBAuBbr2xSPfYrJgseEi7gFKcTvShysPmyuDI4kcUa1+5rFpjWvXdusKY74mg==}
-    dev: false
 
   /swagger2openapi@7.0.8:
     resolution: {integrity: sha512-upi/0ZGkYgEcLeGieoz8gT74oWHA0E7JivX7aN9mAf+Tc7BQoRBvnIGHoPDw+f9TXTW4s6kGYCZJtauP6OYp7g==}
