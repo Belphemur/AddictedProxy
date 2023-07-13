@@ -1,3 +1,10 @@
+## [4.14.16](https://github.com/Belphemur/AddictedProxy/compare/v4.14.15...v4.14.16) (2023-07-13)
+
+
+### Bug Fixes
+
+* **image:** remove nuxt/image ([6a67853](https://github.com/Belphemur/AddictedProxy/commit/6a678531e24883cf1d2cfac4bcb9f8665f28880c))
+
 ## [4.14.15](https://github.com/Belphemur/AddictedProxy/compare/v4.14.14...v4.14.15) (2023-07-13)
 
 
