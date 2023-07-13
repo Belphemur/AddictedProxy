@@ -88,7 +88,6 @@ export default defineNuxtConfig({
         '@pinia-plugin-persistedstate/nuxt',
         '@nuxtjs/device',
         'nuxt-lodash',
-        '@nuxt/image',
         // @ts-ignore
         // this adds the vuetify vite plugin
         // also produces type errors in the current beta release
