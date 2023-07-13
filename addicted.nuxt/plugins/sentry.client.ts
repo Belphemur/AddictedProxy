@@ -1,9 +1,9 @@
 import { defineNuxtPlugin, useRuntimeConfig } from '#app'
 import * as Sentry from '@sentry/vue'
-import type { Router } from 'vue-router'
 
 export default defineNuxtPlugin((nuxtApp) => {
     const config = useRuntimeConfig()
+    const router = useRouter();
 
     Sentry.init({
         enabled: config.public.sentry.config.enabled,
@@ -13,17 +13,16 @@ export default defineNuxtPlugin((nuxtApp) => {
         dsn: config.public.sentry.config.dsn,
         environment: config.public.sentry.config.environment,
         integrations: [
-            // new Sentry.BrowserTracing({
-            //     routingInstrumentation: Sentry.vueRouterInstrumentation(nuxtApp.$router as Router),
-            // }),
+            new Sentry.BrowserTracing({
+                routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+            }),
             new Sentry.Replay(),
         ],
-        trackComponents: true,
-        hooks: ['activate', 'create', 'destroy', 'mount', 'update'],
         // Set tracesSampleRate to 1.0 to capture 100%
         // of transactions for performance monitoring.
         // We recommend adjusting this value in production
         tracesSampleRate: config.public.sentry.serverConfig.profilesSampleRate,
+        tracePropagationTargets: ["localhost", config.public.api.clientUrl],
 
         // Capture Replay for 10% of all sessions,
         // plus for 100% of sessions with an error
