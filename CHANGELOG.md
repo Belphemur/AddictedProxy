@@ -1,3 +1,11 @@
+## [4.14.19](https://github.com/Belphemur/AddictedProxy/compare/v4.14.18...v4.14.19) (2023-07-13)
+
+
+### Performance improvements
+
+* **search:** remove uneeded component ([33ee236](https://github.com/Belphemur/AddictedProxy/commit/33ee236068263dbac87495a6a24151471de77997))
+* **sentry:** remove sentry ([cf9d9d9](https://github.com/Belphemur/AddictedProxy/commit/cf9d9d97931e7ddd99fc6bb923009c66d6b08de6))
+
 ## [4.14.18](https://github.com/Belphemur/AddictedProxy/compare/v4.14.17...v4.14.18) (2023-07-13)
 
 
