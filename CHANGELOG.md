@@ -1,3 +1,15 @@
+## [4.15.0](https://github.com/Belphemur/AddictedProxy/compare/v4.14.19...v4.15.0) (2023-07-14)
+
+
+### Performance improvements
+
+* **nuxt-image:** use nuxt image with caching ([03d29fd](https://github.com/Belphemur/AddictedProxy/commit/03d29fdaf3ddd648c6024bbe29f491026065cf3b))
+
+
+### Features
+
+* **nuxt-image:** add back nuxt-image ([f285e44](https://github.com/Belphemur/AddictedProxy/commit/f285e441d5bbd1aa049fd48079cbf8e906f07324))
+
 ## [4.14.19](https://github.com/Belphemur/AddictedProxy/compare/v4.14.18...v4.14.19) (2023-07-13)
 
 
