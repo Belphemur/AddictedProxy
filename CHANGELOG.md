@@ -1,3 +1,10 @@
+## [4.15.2](https://github.com/Belphemur/AddictedProxy/compare/v4.15.1...v4.15.2) (2023-07-14)
+
+
+### Performance improvements
+
+* **ssr:** use proper ssr method to do http calls ([44917ae](https://github.com/Belphemur/AddictedProxy/commit/44917ae9175070c185c62b6e9bcbee121299ec02))
+
 ## [4.15.1](https://github.com/Belphemur/AddictedProxy/compare/v4.15.0...v4.15.1) (2023-07-14)
 
 
