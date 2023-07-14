@@ -1,6 +1,8 @@
 import {Subtitles} from "~/composables/api/Subtitles";
 import {Shows} from "~/composables/api/Shows";
 import {Media} from "~/composables/api/Media";
+import {process} from "unenv/runtime/node/process/_process";
+import {ApiConfig} from "~/composables/api/http-client";
 
 
 let subtitles: Subtitles<any>;
@@ -12,32 +14,29 @@ export function getApiServerUrl(): string {
     return process.client ? config.public.api.clientUrl : config.public.api.serverUrl;
 }
 
-export function useSubtitles() {
-    if (subtitles) return subtitles;
-    const config = useRuntimeConfig();
-
-    return subtitles = new Subtitles({
+function getApiConfig() {
+    const apiConfig : ApiConfig = {
         // @ts-ignore
         baseUrl: getApiServerUrl(),
-    });
+    };
+    return apiConfig;
+}
+
+
+export function useSubtitles() {
+    if (subtitles) return subtitles;
+
+    return subtitles = new Subtitles(getApiConfig());
 }
 
 export function useMedia() {
     if (media) return media;
-    const config = useRuntimeConfig();
 
-    return media = new Media({
-        // @ts-ignore
-        baseUrl: getApiServerUrl(),
-    });
+    return media = new Media(getApiConfig());
 }
 
 export function useShows() {
     if (shows) return shows;
-    const config = useRuntimeConfig();
 
-    return shows = new Shows({
-        // @ts-ignore
-        baseUrl: getApiServerUrl(),
-    });
+    return shows = new Shows(getApiConfig());
 }

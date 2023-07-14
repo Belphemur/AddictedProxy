@@ -66,7 +66,7 @@ import {EpisodeWithSubtitlesDto, SubtitleDto} from "~/composables/api/data-contr
 import {useSubtitles} from "~/composables/rest/api";
 
 interface Props {
-  episodes: Array<EpisodeWithSubtitlesDto>;
+  episodes: Array<EpisodeWithSubtitlesDto> | null;
 }
 
 const subtitlesApi = useSubtitles();
@@ -81,7 +81,10 @@ const headers = [
   {title: "Downloads", key: "downloadCount"},
 ];
 
-const noSubtitles = computed<boolean>(() => props.episodes.every((e) => e.subtitles?.length === 0));
+const noSubtitles = computed<boolean>(() => {
+  if (props.episodes == null) return true;
+  return props.episodes!.every((e) => e.subtitles?.length === 0)
+});
 
 const currentlyDownloading = ref<Map<string, boolean>>(new Map());
 const downloadSubtitle = async (sub: SubtitleDto) => {
