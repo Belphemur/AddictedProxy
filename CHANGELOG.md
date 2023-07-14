@@ -1,3 +1,10 @@
+## [4.15.1](https://github.com/Belphemur/AddictedProxy/compare/v4.15.0...v4.15.1) (2023-07-14)
+
+
+### Bug Fixes
+
+* **docker:** fix building offline ([13eac4d](https://github.com/Belphemur/AddictedProxy/commit/13eac4dca12efca11a7794388cdf7b8d3535051c))
+
 ## [4.15.0](https://github.com/Belphemur/AddictedProxy/compare/v4.14.19...v4.15.0) (2023-07-14)
 
 
