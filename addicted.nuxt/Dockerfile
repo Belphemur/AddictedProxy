@@ -22,7 +22,7 @@ ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 ENV RELEASE_VERSION=${RELEASE_VERSION}
 ENV SENTRY_ENVIRONMENT=production
 
-RUN pnpm recursive install --offline --frozen-lockfile
+RUN pnpm recursive install --frozen-lockfile
 RUN pnpm run build
 
 # production stage
