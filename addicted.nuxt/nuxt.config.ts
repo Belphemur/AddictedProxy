@@ -67,8 +67,12 @@ export default defineNuxtConfig({
         }
     },
     image: {
-        // domains: ['image.tmdb.org'],
-         format: ['avif', 'webp']
+         domains: ['image.tmdb.org'],
+         format: ['avif', 'webp'],
+         ipx: {
+             maxAge: 60 * 60 * 24 * 365,
+             cache: true,
+         }
     },
     googleFonts: {
         families: {
@@ -88,6 +92,7 @@ export default defineNuxtConfig({
         '@pinia-plugin-persistedstate/nuxt',
         '@nuxtjs/device',
         'nuxt-lodash',
+        '@nuxt/image',
         // @ts-ignore
         // this adds the vuetify vite plugin
         // also produces type errors in the current beta release

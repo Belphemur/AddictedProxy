@@ -48,13 +48,11 @@ const setLanguage = (lang: string) => {
             class="text-left"
             align-self="start"
         >
-          <v-img class="media-detail-poster"
-                 :src="props.details.details!.posterPath!"
-                 :lazy-src="props.details.details!.posterPath!"
-                 min-height="300"
-                 sizes="sm:20vw md:30vw lg:50vw"
+          <nuxt-picture class="media-detail-poster"
+                        :src="props.details.details!.posterPath!"
+                        sizes="sm:20vw md:30vw lg:50vw"
           >
-          </v-img>
+          </nuxt-picture>
         </v-col>
 
         <v-col cols="8" class="text-left">
