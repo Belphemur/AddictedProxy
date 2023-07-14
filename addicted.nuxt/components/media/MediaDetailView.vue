@@ -14,8 +14,8 @@ export interface Props {
 const props = defineProps<Props>();
 const mediaApi = useMedia();
 const showsApi = useShows();
-const loadingEpisodes = ref(false);
-const episodes = ref<EpisodeWithSubtitlesDto[]>([]);
+let loadingEpisodes = ref(false);
+let episodes = ref<EpisodeWithSubtitlesDto[] | null>([]);
 const refreshingProgress = ref<number | null>(null);
 const language = useLanguage();
 const currentSeason = ref<number | undefined>(undefined);
@@ -32,10 +32,15 @@ useSeoMeta({
 })
 
 async function loadShowData() {
-  loadingEpisodes.value = true;
-  const response = await showsApi.showsDetail(props.showId, currentSeason.value!, language.lang)
-  episodes.value = response.data.episodes!;
-  loadingEpisodes.value = false;
+  const {
+    data,
+    pending
+  } = await useAsyncData(async () => (await showsApi.showsDetail(props.showId, currentSeason.value!, language.lang)).data.episodes!, {
+    watch: [currentSeason, language]
+  });
+
+  loadingEpisodes = pending;
+  episodes = data;
 }
 
 const {
@@ -85,13 +90,12 @@ onUnmounted(() => {
 });
 
 async function loadMediaDetails() {
-  try {
-    const response = await mediaApi.mediaDetails(props.showId);
-    mediaInfo.value = response.data
-    currentSeason.value = useLast(mediaInfo.value?.media?.seasons);
-  } catch (err) {
+  const {data, error} = await useAsyncData(async () => (await mediaApi.mediaDetails(props.showId)).data!);
+  if (error.value != null) {
     throw createError({statusCode: 404, statusMessage: `Show ${props.showId} not found`});
   }
+  mediaInfo.value = data.value!;
+  currentSeason.value = useLast(mediaInfo.value?.media?.seasons);
 }
 
 
@@ -104,8 +108,7 @@ if (currentSeason.value == undefined) {
   await refreshShow();
   loadingEpisodes.value = true;
 } else {
-  const responseEpisode = await showsApi.showsDetail(props.showId, currentSeason.value!, language.lang);
-  episodes.value = responseEpisode.data.episodes!;
+  await loadShowData();
 }
 const formattedProgress = computed(() => {
   let keyword = "";
@@ -127,17 +130,6 @@ const formattedProgress = computed(() => {
   }
   return `${keyword}: (${refreshingProgress.value}%)`;
 });
-
-watch(currentSeason, async (value) => {
-  if (value == undefined) {
-    return;
-  }
-  await loadShowData();
-})
-watch(language, async () => {
-  await loadShowData();
-});
-
 </script>
 
 <template>

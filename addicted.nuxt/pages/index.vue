@@ -57,18 +57,16 @@ useSeoMeta({
 
 const mediaApi = useMedia();
 const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
-
 const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
-
 const currentShow = ref<SelectedShow | undefined>(undefined);
-const trendingMedias = ref<Array<MediaDetailsDto>>([]);
 
 
+const {data, error} = await useAsyncData(async () => (await mediaApi.trendingDetail(25)).data);
+if (error.value != null) {
+  throw new createError("Couldn't fetch trending medias");
+}
 
-const mediaTrendingResponse = await mediaApi.trendingDetail(25)
-trendingMedias.value = mediaTrendingResponse.data;
-
-
+const trendingMedias = data;
 
 const goToPage = async (show: ShowDto) => {
   const router = useRouter();
