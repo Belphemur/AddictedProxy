@@ -1,3 +1,10 @@
+## [4.15.3](https://github.com/Belphemur/AddictedProxy/compare/v4.15.2...v4.15.3) (2023-07-15)
+
+
+### Performance improvements
+
+* **details:** Cache show details for 14 days ([fce7ea5](https://github.com/Belphemur/AddictedProxy/commit/fce7ea5215b67de9317689c4efad088fa15fd750))
+
 ## [4.15.2](https://github.com/Belphemur/AddictedProxy/compare/v4.15.1...v4.15.2) (2023-07-14)
 
 
