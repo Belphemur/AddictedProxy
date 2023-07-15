@@ -156,12 +156,6 @@ public class MediaController : Controller
             };
             return TypedResults.NotFound();
         }
-
-        if (!show.TmdbId.HasValue)
-        {
-            return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), null));
-        }
-
         var detailsDto = await GetDetailsDtoCachedAsync(show, cancellationToken);
 
         return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
