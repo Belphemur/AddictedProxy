@@ -5,7 +5,7 @@ namespace AddictedProxy.Caching.Extensions;
 
 public static class DistributedCacheExtensions
 {
-    public record struct CacheData<T>(T Value, DistributedCacheEntryOptions Options) where T : class;
+    public record struct CacheData<T>(T Value, DistributedCacheEntryOptions Options) where T : class?;
     /// <summary>
     /// Get a value from the cache and deserialize it
     /// </summary>
@@ -34,7 +34,7 @@ public static class DistributedCacheExtensions
     /// <param name="fallback"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static async Task<T> GetSertAsync<T>(this IDistributedCache cache, string key, Func<Task<CacheData<T>>> fallback) where T : class
+    public static async Task<T> GetSertAsync<T>(this IDistributedCache cache, string key, Func<Task<CacheData<T>>> fallback) where T : class?
     {
         var result = await cache.GetAsync<T>(key);
         if (result is null)

@@ -1,5 +1,6 @@
 ﻿using AddictedProxy.Caching.Extensions;
 using AddictedProxy.Database.Model;
+using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Services.Provider.Shows;
@@ -156,9 +157,22 @@ public class MediaController : Controller
             return TypedResults.NotFound();
         }
 
-        MediaDetailsDto.DetailsDto? detailsDto = null;
-        if (show.TmdbId.HasValue)
+        if (!show.TmdbId.HasValue)
         {
+            return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), null));
+        }
+
+        var detailsDto = await GetDetailsDtoAsync(show, cancellationToken);
+
+        return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
+    }
+
+    private Task<MediaDetailsDto.DetailsDto?> GetDetailsDtoAsync(TvShow show, CancellationToken cancellationToken)
+    {
+        return _distributedCache.GetSertAsync($"details-v1-{show.Id}", async () =>
+        {
+            MediaDetailsDto.DetailsDto? detailsDto = null;
+
             switch (show.Type)
             {
                 case ShowType.Show:
@@ -214,9 +228,12 @@ public class MediaController : Controller
             }
 
             detailsDto = UpdatePathAndVoteDetailsDto(detailsDto);
-        }
-
-        return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
+            return new DistributedCacheExtensions.CacheData<MediaDetailsDto.DetailsDto?>(detailsDto,
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTimeOffset.UtcNow.AddDays(14)
+                });
+        });
     }
 
     private static MediaDetailsDto.DetailsDto? UpdatePathAndVoteDetailsDto(MediaDetailsDto.DetailsDto? detailsDto)
