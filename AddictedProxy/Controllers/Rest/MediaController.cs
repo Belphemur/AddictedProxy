@@ -169,6 +169,11 @@ public class MediaController : Controller
 
     private Task<MediaDetailsDto.DetailsDto?> GetDetailsDtoCachedAsync(TvShow show, CancellationToken cancellationToken)
     {
+        if (!show.TmdbId.HasValue)
+        {
+            return Task.FromResult<MediaDetailsDto.DetailsDto?>(null);
+        }
+
         return _distributedCache.GetSertAsync($"details-v1-{show.Id}", async () =>
         {
             MediaDetailsDto.DetailsDto? detailsDto = null;
