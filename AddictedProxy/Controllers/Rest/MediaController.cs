@@ -156,19 +156,18 @@ public class MediaController : Controller
             };
             return TypedResults.NotFound();
         }
-
-        if (!show.TmdbId.HasValue)
-        {
-            return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), null));
-        }
-
-        var detailsDto = await GetDetailsDtoAsync(show, cancellationToken);
+        var detailsDto = await GetDetailsDtoCachedAsync(show, cancellationToken);
 
         return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
     }
 
-    private Task<MediaDetailsDto.DetailsDto?> GetDetailsDtoAsync(TvShow show, CancellationToken cancellationToken)
+    private Task<MediaDetailsDto.DetailsDto?> GetDetailsDtoCachedAsync(TvShow show, CancellationToken cancellationToken)
     {
+        if (!show.TmdbId.HasValue)
+        {
+            return Task.FromResult<MediaDetailsDto.DetailsDto?>(null);
+        }
+
         return _distributedCache.GetSertAsync($"details-v1-{show.Id}", async () =>
         {
             MediaDetailsDto.DetailsDto? detailsDto = null;
