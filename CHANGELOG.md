@@ -1,3 +1,10 @@
+## [4.15.4](https://github.com/Belphemur/AddictedProxy/compare/v4.15.3...v4.15.4) (2023-07-16)
+
+
+### Performance improvements
+
+* **caching:** force cache ipx fork ([c749c78](https://github.com/Belphemur/AddictedProxy/commit/c749c78e53c2936c42e4506dd7e14924323f7924))
+
 ## [4.15.3](https://github.com/Belphemur/AddictedProxy/compare/v4.15.2...v4.15.3) (2023-07-15)
 
 
