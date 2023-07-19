@@ -2,8 +2,7 @@
 
 import vuetify from "vite-plugin-vuetify";
 import {sentryVitePlugin} from "@sentry/vite-plugin";
-import {createStorage} from "unstorage";
-import lruCacheDriver from "unstorage/drivers/lru-cache";
+
 
 export default defineNuxtConfig({
     devtools: {enabled: true},
@@ -66,21 +65,24 @@ export default defineNuxtConfig({
                     replaysOnErrorSampleRate: 1.0,
                 }
             }
+        },
+        ipx: {
+            maxAge: 60 * 60 * 24 * 365,
+            cache: true,
+            domains: ['image.tmdb.org'],
+            cacheOptions: {
+                ttl: 2 * 24 * 60 * 60 * 1000,
+                max: 50,
+                updateAgeOnGet: true
+            }
         }
     },
     image: {
         domains: ['image.tmdb.org'],
         format: ['avif', 'webp'],
-        ipx: {
-            maxAge: 60 * 60 * 24 * 365,
-            cache: true,
-            cacheMetadataStore: createStorage({
-                driver: lruCacheDriver({
-                    ttl: 2 * 24 * 60 * 60 * 1000,
-                    max: 100,
-                    updateAgeOnGet: true,
-                })
-            })
+        provider: 'ipx',
+        ipx :{
+            baseURL: '/_transform'
         }
     },
     googleFonts: {
