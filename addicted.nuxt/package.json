@@ -19,7 +19,7 @@
     "@sentry/vite-plugin": "^2.4.0",
     "@types/node": "^20.4.2",
     "@types/webfontloader": "^1.6.35",
-    "nuxt": "^3.6.3",
+    "nuxt": "^3.6.4",
     "nuxt-lodash": "^2.5.0",
     "swagger-typescript-api": "^13.0.0",
     "typescript": "^5.1.6",
@@ -29,7 +29,7 @@
     "@mdi/font": "^7.2.96",
     "@microsoft/signalr": "^7.0.9",
     "roboto-fontface": "^0.10.0",
-    "vuetify": "^3.3.8"
+    "vuetify": "^3.3.9"
   },
   "pnpm": {
     "overrides": {

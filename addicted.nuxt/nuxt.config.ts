@@ -3,6 +3,7 @@
 import vuetify from "vite-plugin-vuetify";
 import {sentryVitePlugin} from "@sentry/vite-plugin";
 
+
 export default defineNuxtConfig({
     devtools: {enabled: true},
     sourcemap: {server: true, client: true},
@@ -64,15 +65,25 @@ export default defineNuxtConfig({
                     replaysOnErrorSampleRate: 1.0,
                 }
             }
+        },
+        ipx: {
+            maxAge: 60 * 60 * 24 * 365,
+            cache: true,
+            domains: ['image.tmdb.org'],
+            cacheOptions: {
+                ttl: 2 * 24 * 60 * 60 * 1000,
+                max: 50,
+                updateAgeOnGet: true
+            }
         }
     },
     image: {
-         domains: ['image.tmdb.org'],
-         format: ['avif', 'webp'],
-         ipx: {
-             maxAge: 60 * 60 * 24 * 365,
-             cache: true,
-         }
+        domains: ['image.tmdb.org'],
+        format: ['avif', 'webp'],
+        provider: 'ipx',
+        ipx :{
+            baseURL: '/_transform'
+        }
     },
     googleFonts: {
         families: {
