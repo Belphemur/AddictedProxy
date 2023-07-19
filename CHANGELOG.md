@@ -1,3 +1,11 @@
+## [4.15.5](https://github.com/Belphemur/AddictedProxy/compare/v4.15.4...v4.15.5) (2023-07-19)
+
+
+### Performance improvements
+
+* **caching:** use LRU Cache for Ipx ([f55fb67](https://github.com/Belphemur/AddictedProxy/commit/f55fb67f5232cfaf9cd9c437870f4809de53032b))
+* **caching:** use own middleware to control ipx lib ([1aaa70e](https://github.com/Belphemur/AddictedProxy/commit/1aaa70ea6e135437a31fc21113921a7e451a442e))
+
 ## [4.15.4](https://github.com/Belphemur/AddictedProxy/compare/v4.15.3...v4.15.4) (2023-07-16)
 
 
