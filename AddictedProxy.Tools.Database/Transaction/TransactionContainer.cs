@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace AddictedProxy.Database.Transaction;
+namespace AddictedProxy.Tools.Database.Transaction;
 
 public sealed class TransactionContainer : ITransactionContainer
 {

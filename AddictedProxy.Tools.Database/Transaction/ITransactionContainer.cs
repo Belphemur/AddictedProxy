@@ -1,4 +1,4 @@
-namespace AddictedProxy.Database.Transaction;
+namespace AddictedProxy.Tools.Database.Transaction;
 
 public interface ITransactionContainer : IAsyncDisposable
 {

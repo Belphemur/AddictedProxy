@@ -1,6 +1,8 @@
-namespace AddictedProxy.Database.Transaction;
+using Microsoft.EntityFrameworkCore;
 
-public interface ITransactionManager
+namespace AddictedProxy.Tools.Database.Transaction;
+
+public interface ITransactionManager<TContext> where TContext : DbContext
 {
     /// <summary>
     /// Wrap the code in a DB Transaction

@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace AddictedProxy.Database.Transaction;
+namespace AddictedProxy.Tools.Database.Transaction;
 
-public class TransactionManager<TContext> : ITransactionManager where TContext : DbContext
+public class TransactionManager<TContext> : ITransactionManager<TContext> where TContext : DbContext
 {
     private readonly TContext _dbContext;
     private readonly TransactionCounter _counter = new();
