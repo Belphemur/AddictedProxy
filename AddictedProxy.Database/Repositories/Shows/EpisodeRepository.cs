@@ -2,7 +2,7 @@
 
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
-using AddictedProxy.Database.Transaction;
+using AddictedProxy.Tools.Database.Transaction;
 using Microsoft.EntityFrameworkCore;
 using Z.BulkOperations;
 
@@ -13,10 +13,10 @@ namespace AddictedProxy.Database.Repositories.Shows;
 public class EpisodeRepository : IEpisodeRepository
 {
     private readonly EntityContext _entityContext;
-    private readonly ITransactionManager _transactionManager;
+    private readonly ITransactionManager<EntityContext> _transactionManager;
 
 
-    public EpisodeRepository(EntityContext entityContext, ITransactionManager transactionManager)
+    public EpisodeRepository(EntityContext entityContext, ITransactionManager<EntityContext> transactionManager)
     {
         _entityContext = entityContext;
         _transactionManager = transactionManager;

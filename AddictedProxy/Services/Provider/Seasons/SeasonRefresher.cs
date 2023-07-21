@@ -1,6 +1,7 @@
-﻿using AddictedProxy.Database.Model.Shows;
+﻿using AddictedProxy.Database.Context;
+using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Database.Transaction;
+using AddictedProxy.Tools.Database.Transaction;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Upstream.Service;
@@ -20,7 +21,7 @@ public class SeasonRefresher : ISeasonRefresher
     private readonly ISeasonRepository _seasonRepository;
     private readonly IOptions<RefreshConfig> _refreshConfig;
     private readonly IPerformanceTracker _performanceTracker;
-    private readonly ITransactionManager _transactionManager;
+    private readonly ITransactionManager<EntityContext> _transactionManager;
 
     public SeasonRefresher(ILogger<SeasonRefresher> logger,
                            ITvShowRepository tvShowRepository,
@@ -29,7 +30,7 @@ public class SeasonRefresher : ISeasonRefresher
                            ISeasonRepository seasonRepository,
                            IOptions<RefreshConfig> refreshConfig,
                            IPerformanceTracker performanceTracker,
-                           ITransactionManager transactionManager
+                           ITransactionManager<EntityContext> transactionManager
     )
     {
         _logger = logger;
