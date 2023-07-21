@@ -1,3 +1,10 @@
+## [4.15.6](https://github.com/Belphemur/AddictedProxy/compare/v4.15.5...v4.15.6) (2023-07-21)
+
+
+### Performance improvements
+
+* **database:** put every db tools together ([7fab487](https://github.com/Belphemur/AddictedProxy/commit/7fab48754d5b5b9371f97c6d734a0f4730c8b70e))
+
 ## [4.15.5](https://github.com/Belphemur/AddictedProxy/compare/v4.15.4...v4.15.5) (2023-07-19)
 
 
