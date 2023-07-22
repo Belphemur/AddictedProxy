@@ -43,6 +43,10 @@ export default defineNuxtConfig({
             matomo: {
                 url: process.env.APP_MATOMO
             },
+            faro: {
+                url: process.env.APP_FARO_URL,
+                env: process.env.SENTRY_ENVIRONMENT
+            },
             sentry: {
                 config: {
                     environment: process.env.SENTRY_ENVIRONMENT,
@@ -81,7 +85,7 @@ export default defineNuxtConfig({
         domains: ['image.tmdb.org'],
         format: ['avif', 'webp'],
         provider: 'ipx',
-        ipx :{
+        ipx: {
             baseURL: '/_transform'
         }
     },
