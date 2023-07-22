@@ -1,3 +1,10 @@
+## [4.15.7](https://github.com/Belphemur/AddictedProxy/compare/v4.15.6...v4.15.7) (2023-07-22)
+
+
+### Performance improvements
+
+* **faro:** Add Faro SDK to check performance ([fe23997](https://github.com/Belphemur/AddictedProxy/commit/fe23997dfb7a6a39b1e727eae82018e41c1e5208))
+
 ## [4.15.6](https://github.com/Belphemur/AddictedProxy/compare/v4.15.5...v4.15.6) (2023-07-21)
 
 
