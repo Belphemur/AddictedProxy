@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Ardalis.Result.AspNetCore" Version="7.1.0" />
-        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.3" />
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.4" />
         <PackageReference Include="Hangfire.Dashboard.BasicAuthorization" Version="1.0.2" />
         <PackageReference Include="Hangfire.MaximumConcurrentExecutions" Version="1.1.0" />
         <PackageReference Include="Hangfire.PostgreSql" Version="1.19.13" />
