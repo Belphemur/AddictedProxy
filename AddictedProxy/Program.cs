@@ -108,7 +108,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage()
        .UseSwaggerUI(options => options.RoutePrefix = "api");
-}
+} 
 
 app.UseSwagger(options => options.RouteTemplate = "api/{documentName}/swagger.{json|yaml}");
 
