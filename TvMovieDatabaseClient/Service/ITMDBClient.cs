@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using TvMovieDatabaseClient.Model.Common;
@@ -75,4 +76,20 @@ public interface ITMDBClient
     /// <param name="token"></param>
     /// <returns></returns>
     Task<Genre[]> GetTvGenresAsync(CancellationToken token = default);
+
+    /// <summary>
+    /// Get the image hosted on TMDB
+    /// </summary>
+    /// <param name="imagePath"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<TmdbImage?> GetImageAsync(string imagePath, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Get image metadata
+    /// </summary>
+    /// <param name="imagePath"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<TmdbImageMetadata?> GetImageMetadataAsync(string imagePath, CancellationToken cancellationToken);
 }

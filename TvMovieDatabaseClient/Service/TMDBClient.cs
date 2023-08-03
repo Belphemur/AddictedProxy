@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -68,6 +69,7 @@ internal class TMDBClient : ITMDBClient
         var request = PrepareRequest($"tv/{showId}/external_ids", HttpMethod.Get);
         return await GetDataAsync<ExternalIds>(request, token);
     }
+
 
     /// <summary>
     /// Get movie details by Id
@@ -198,6 +200,50 @@ internal class TMDBClient : ITMDBClient
             page++;
         } while (response.IsSuccessStatusCode && page < results.TotalPages && page < maxPage);
     }
+
+    public async Task<TmdbImage?> GetImageAsync(string imagePath, CancellationToken cancellationToken)
+    {
+        var response = await _httpClient.GetAsync($"https://image.tmdb.org/t/p/original/{imagePath}", cancellationToken);
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogWarning("Couldn't get the image from TMDB: {request}", response.RequestMessage?.RequestUri);
+            return null;
+        }
+
+        return new(
+            await response.Content.ReadAsStreamAsync(),
+            new TmdbImageMetadata(imagePath, response.Content.Headers.LastModified!.Value.UtcDateTime, response.Content.Headers.ContentLength!.Value,
+                response.Content.Headers.ContentType?.MediaType)
+        );
+    }
+
+    /// <summary>
+    /// Get image metadata
+    /// </summary>
+    /// <param name="imagePath"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<TmdbImageMetadata?> GetImageMetadataAsync(string imagePath, CancellationToken cancellationToken)
+    {
+        var response = await _httpClient.SendAsync(new HttpRequestMessage
+        {
+            Method = HttpMethod.Head,
+            RequestUri = new Uri($"https://image.tmdb.org/t/p/original/{imagePath}")
+        }, cancellationToken);
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogWarning("Couldn't get the image from TMDB: {request}", response.RequestMessage?.RequestUri);
+            return null;
+        }
+
+        return new(
+            imagePath,
+            response.Content.Headers.LastModified!.Value.UtcDateTime,
+            response.Content.Headers.ContentLength!.Value,
+            response.Content.Headers.ContentType?.MediaType
+        );
+    }
+
 
     private HttpRequestMessage PrepareRequest(string url, HttpMethod method, Dictionary<string, string>? queryParams = null)
     {
