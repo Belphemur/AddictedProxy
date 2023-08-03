@@ -1,3 +1,18 @@
+## [4.16.0](https://github.com/Belphemur/AddictedProxy/compare/v4.15.8...v4.16.0) (2023-08-03)
+
+
+### Bug Fixes
+
+* **media:** fix image path ([cd19d4d](https://github.com/Belphemur/AddictedProxy/commit/cd19d4dfe46f9ffe70f9ef667162d3764231e077))
+
+
+### Features
+
+* **front:** use own image provider for tmdb images ([243e310](https://github.com/Belphemur/AddictedProxy/commit/243e310c7058abb6f109f9705cda7c97bbd2b361))
+* **image:** add way to dynamically resize images and store a cache ([35355d4](https://github.com/Belphemur/AddictedProxy/commit/35355d46f3160555980d54c567173796f6dd0d16))
+* **image:** be sure to return the path of the image to use the API ([3d308af](https://github.com/Belphemur/AddictedProxy/commit/3d308af59523cbc97615844a2307b98c4d465be1))
+* **tmdb:image:** Add way to get image from tmdb ([161fea2](https://github.com/Belphemur/AddictedProxy/commit/161fea29255f60ef145eaf1f43752c72a3789cb3))
+
 ## [4.15.8](https://github.com/Belphemur/AddictedProxy/compare/v4.15.7...v4.15.8) (2023-07-31)
 
 
