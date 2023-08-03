@@ -244,8 +244,8 @@ public class MediaController : Controller
 
         detailsDto = detailsDto with
         {
-            PosterPath = $"https://image.tmdb.org/t/p/original{detailsDto.PosterPath}",
-            BackdropPath = $"https://image.tmdb.org/t/p/original{detailsDto.BackdropPath}",
+            PosterPath = $"/tmdb/image/{detailsDto.PosterPath}",
+            BackdropPath = $"/tmdb/image/{detailsDto.BackdropPath}",
             VoteAverage = Math.Round(detailsDto.VoteAverage, 1)
         };
         return detailsDto;
