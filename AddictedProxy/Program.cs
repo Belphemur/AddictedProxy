@@ -6,6 +6,7 @@ using AddictedProxy.Controllers.Bootstrap;
 using AddictedProxy.Culture.Bootstrap;
 using AddictedProxy.Database.Bootstrap;
 using AddictedProxy.Database.Context;
+using AddictedProxy.Image.Bootstrap;
 using AddictedProxy.OneTimeMigration.Bootstrap;
 using AddictedProxy.Services.Job.Exception;
 using AddictedProxy.Stats.Popularity.Bootstrap;
@@ -68,6 +69,7 @@ var currentAssemblies = new[]
     typeof(BootstrapCulture).Assembly,
     typeof(BootstrapStorageCaching).Assembly,
     typeof(BootstrapMigration).Assembly,
+    typeof(BootstrapImage).Assembly
 };
 
 builder.Services

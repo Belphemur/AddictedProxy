@@ -38,6 +38,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{147E3CFA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Third-Party", "Third-Party", "{3B3536BE-B7E9-4A82-9BE3-CF8672FE6910}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Image", "AddictedProxy.Image\AddictedProxy.Image.csproj", "{197721BB-E7EC-4351-8BDD-815633C95400}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,6 +110,10 @@ Global
 		{E0683701-54FB-491F-90CE-C50C17C44DC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0683701-54FB-491F-90CE-C50C17C44DC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0683701-54FB-491F-90CE-C50C17C44DC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{197721BB-E7EC-4351-8BDD-815633C95400}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{197721BB-E7EC-4351-8BDD-815633C95400}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{197721BB-E7EC-4351-8BDD-815633C95400}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{197721BB-E7EC-4351-8BDD-815633C95400}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E0683701-54FB-491F-90CE-C50C17C44DC2} = {08B71115-8744-4AB2-8005-0C1EB37BDA2A}

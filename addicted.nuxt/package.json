@@ -12,14 +12,14 @@
   "devDependencies": {
     "@grafana/faro-web-sdk": "^1.1.2",
     "@grafana/faro-web-tracing": "^1.1.2",
-    "@nuxt/devtools": "^0.7.2",
+    "@nuxt/devtools": "^0.7.4",
     "@nuxt/image": "1.0.0-rc.1",
     "@nuxtjs/device": "^3.1.0",
     "@nuxtjs/google-fonts": "^3.0.2",
     "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
     "@pinia/nuxt": "^0.4.11",
     "@sentry/vite-plugin": "^2.5.0",
-    "@types/node": "^20.4.5",
+    "@types/node": "^20.4.6",
     "@types/webfontloader": "^1.6.35",
     "nuxt": "^3.6.5",
     "nuxt-lodash": "^2.5.0",
@@ -31,7 +31,7 @@
     "@mdi/font": "^7.2.96",
     "@microsoft/signalr": "^7.0.9",
     "roboto-fontface": "^0.10.0",
-    "vuetify": "^3.3.10"
+    "vuetify": "^3.3.11"
   },
   "pnpm": {
     "overrides": {

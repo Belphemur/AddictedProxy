@@ -84,9 +84,15 @@ export default defineNuxtConfig({
     image: {
         domains: ['image.tmdb.org'],
         format: ['avif', 'webp'],
-        provider: 'ipx',
+        provider: 'gestdown',
         ipx: {
             baseURL: '/_transform'
+        },
+        providers: {
+            gestdown: {
+                name: 'gestdown', // optional value to overrider provider name
+                provider: '~/server/image/tmdb/gestdown.ts', // Path to custom provider
+            }
         }
     },
     googleFonts: {
