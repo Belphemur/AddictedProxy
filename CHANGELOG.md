@@ -1,3 +1,10 @@
+## [4.16.1](https://github.com/Belphemur/AddictedProxy/compare/v4.16.0...v4.16.1) (2023-08-06)
+
+
+### Performance improvements
+
+* **faro:** remove faro ([fc6930e](https://github.com/Belphemur/AddictedProxy/commit/fc6930e6de5c74b18869ee9ecd342cbdb6aad3a1))
+
 ## [4.16.0](https://github.com/Belphemur/AddictedProxy/compare/v4.15.8...v4.16.0) (2023-08-03)
 
 
