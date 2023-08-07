@@ -1,3 +1,10 @@
+## [4.16.2](https://github.com/Belphemur/AddictedProxy/compare/v4.16.1...v4.16.2) (2023-08-07)
+
+
+### Bug Fixes
+
+* **search:** remove direct matching of Show name ([94ab49e](https://github.com/Belphemur/AddictedProxy/commit/94ab49eac67fd533c0a157253537b0992b2dc132))
+
 ## [4.16.1](https://github.com/Belphemur/AddictedProxy/compare/v4.16.0...v4.16.1) (2023-08-06)
 
 
