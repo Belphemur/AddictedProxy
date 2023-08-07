@@ -1,3 +1,11 @@
+## [4.16.3](https://github.com/Belphemur/AddictedProxy/compare/v4.16.2...v4.16.3) (2023-08-07)
+
+
+### Performance improvements
+
+* **background:** reduce size of the background ([693bc27](https://github.com/Belphemur/AddictedProxy/commit/693bc27831ff0e607364e92b2ab09a64dff9295b))
+* **image:** optimize the size of the images ([41a1a21](https://github.com/Belphemur/AddictedProxy/commit/41a1a211d2c666404900b1db03d3edd427c2ffec))
+
 ## [4.16.2](https://github.com/Belphemur/AddictedProxy/compare/v4.16.1...v4.16.2) (2023-08-07)
 
 
