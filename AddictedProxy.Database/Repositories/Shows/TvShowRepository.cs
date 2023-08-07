@@ -27,30 +27,15 @@ public class TvShowRepository : ITvShowRepository
     }
 
 
-    public async IAsyncEnumerable<TvShow> FindAsync(string name, [EnumeratorCancellation] CancellationToken token)
+    public IAsyncEnumerable<TvShow> FindAsync(string name)
     {
         _logger.LogInformation("Looking for show: {show}", name);
-        var strictMatch = await _entityContext.TvShows
-                                              .Where(show => EF.Functions.ILike(show.Name, name))
-                                              .OrderByDescending(show => show.Priority)
-                                              .Include(show => show.Seasons)
-                                              .FirstOrDefaultAsync(token);
 
-        if (strictMatch != null)
-        {
-            yield return strictMatch;
-            _logger.LogInformation("Found exact match for {show}", name);
-            yield break;
-        }
-
-        foreach (var tvShow in _entityContext.TvShows
-                                             .Where(show => EF.Functions.ILike(show.Name, $"%{name}%"))
-                                             .OrderByDescending(show => show.Priority)
-                                             .Include(show => show.Seasons))
-
-        {
-            yield return tvShow;
-        }
+        return _entityContext.TvShows
+                             .Where(show => EF.Functions.ILike(show.Name, $"%{name}%"))
+                             .OrderByDescending(show => show.Priority)
+                             .Include(show => show.Seasons)
+                             .ToAsyncEnumerable();
     }
 
     public Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token)

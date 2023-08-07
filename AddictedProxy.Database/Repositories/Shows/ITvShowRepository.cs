@@ -12,9 +12,8 @@ public interface ITvShowRepository
     /// Search in the database for the show with it's name
     /// </summary>
     /// <param name="name"></param>
-    /// <param name="token"></param>
     /// <returns></returns>
-    IAsyncEnumerable<TvShow> FindAsync(string name, CancellationToken token);
+    IAsyncEnumerable<TvShow> FindAsync(string name);
 
     /// <summary>
     /// Upsert the information about the shows
