@@ -96,7 +96,7 @@ public class ShowRefresher : IShowRefresher
 
     public IAsyncEnumerable<TvShow> FindShowsAsync(string search, CancellationToken token)
     {
-        return _tvShowRepository.FindAsync(search, token);
+        return _tvShowRepository.FindAsync(search);
     }
 
     public Task<TvShow?> GetShowByGuidAsync(Guid id, CancellationToken cancellationToken)
