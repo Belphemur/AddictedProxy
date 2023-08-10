@@ -17,6 +17,7 @@ public class BootstrapImage : IBootstrap, IBootstrapApp
                 .RemoveProvider<PhysicalFileSystemProvider>()
                 .AddProvider<TmdbImageProvider>()
                 .SetCache<DistributedImageCache>();
+        services.AddMemoryCache(options => options.TrackStatistics = true);
     }
 
     public void ConfigureApp(IApplicationBuilder app)
