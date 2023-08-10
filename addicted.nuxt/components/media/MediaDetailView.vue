@@ -23,7 +23,6 @@ const mediaInfo = ref<MediaDetailsDto>();
 
 await loadMediaDetails();
 
-
 useSeoMeta({
   title: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
   description: `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
@@ -31,11 +30,18 @@ useSeoMeta({
   ogImage: mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath
 })
 
+await loadShowData();
+
 async function loadShowData() {
   const {
     data,
     pending
-  } = await useAsyncData(async () => (await showsApi.showsDetail(props.showId, currentSeason.value!, language.lang)).data.episodes!, {
+  } = await useAsyncData(async () => {
+    if (currentSeason.value == undefined) {
+      return [];
+    }
+    return (await showsApi.showsDetail(props.showId, currentSeason.value!, language.lang)).data.episodes!;
+  }, {
     watch: [currentSeason, language]
   });
 
@@ -107,9 +113,8 @@ const refreshShow = async () => {
 if (currentSeason.value == undefined) {
   await refreshShow();
   loadingEpisodes.value = true;
-} else {
-  await loadShowData();
 }
+
 const formattedProgress = computed(() => {
   let keyword = "";
   if (refreshingProgress.value == null) {
