@@ -1,3 +1,355 @@
+## [4.16.3](https://github.com/Belphemur/AddictedProxy/compare/v4.16.2...v4.16.3) (2023-08-07)
+
+
+### Performance improvements
+
+* **background:** reduce size of the background ([693bc27](https://github.com/Belphemur/AddictedProxy/commit/693bc27831ff0e607364e92b2ab09a64dff9295b))
+* **image:** optimize the size of the images ([41a1a21](https://github.com/Belphemur/AddictedProxy/commit/41a1a211d2c666404900b1db03d3edd427c2ffec))
+
+## [4.16.2](https://github.com/Belphemur/AddictedProxy/compare/v4.16.1...v4.16.2) (2023-08-07)
+
+
+### Bug Fixes
+
+* **search:** remove direct matching of Show name ([94ab49e](https://github.com/Belphemur/AddictedProxy/commit/94ab49eac67fd533c0a157253537b0992b2dc132))
+
+## [4.16.1](https://github.com/Belphemur/AddictedProxy/compare/v4.16.0...v4.16.1) (2023-08-06)
+
+
+### Performance improvements
+
+* **faro:** remove faro ([fc6930e](https://github.com/Belphemur/AddictedProxy/commit/fc6930e6de5c74b18869ee9ecd342cbdb6aad3a1))
+
+## [4.16.0](https://github.com/Belphemur/AddictedProxy/compare/v4.15.8...v4.16.0) (2023-08-03)
+
+
+### Bug Fixes
+
+* **media:** fix image path ([cd19d4d](https://github.com/Belphemur/AddictedProxy/commit/cd19d4dfe46f9ffe70f9ef667162d3764231e077))
+
+
+### Features
+
+* **front:** use own image provider for tmdb images ([243e310](https://github.com/Belphemur/AddictedProxy/commit/243e310c7058abb6f109f9705cda7c97bbd2b361))
+* **image:** add way to dynamically resize images and store a cache ([35355d4](https://github.com/Belphemur/AddictedProxy/commit/35355d46f3160555980d54c567173796f6dd0d16))
+* **image:** be sure to return the path of the image to use the API ([3d308af](https://github.com/Belphemur/AddictedProxy/commit/3d308af59523cbc97615844a2307b98c4d465be1))
+* **tmdb:image:** Add way to get image from tmdb ([161fea2](https://github.com/Belphemur/AddictedProxy/commit/161fea29255f60ef145eaf1f43752c72a3789cb3))
+
+## [4.15.8](https://github.com/Belphemur/AddictedProxy/compare/v4.15.7...v4.15.8) (2023-07-31)
+
+
+### Performance improvements
+
+* **deps:** update deps ([0f1ecd7](https://github.com/Belphemur/AddictedProxy/commit/0f1ecd707eb96c7f5b62d994c95df7bbe3001f0f))
+* **deps:** update frontend deps ([b272f1e](https://github.com/Belphemur/AddictedProxy/commit/b272f1edfe6ad08ecb752038500b1be512f1d481))
+
+## [4.15.7](https://github.com/Belphemur/AddictedProxy/compare/v4.15.6...v4.15.7) (2023-07-22)
+
+
+### Performance improvements
+
+* **faro:** Add Faro SDK to check performance ([fe23997](https://github.com/Belphemur/AddictedProxy/commit/fe23997dfb7a6a39b1e727eae82018e41c1e5208))
+
+## [4.15.6](https://github.com/Belphemur/AddictedProxy/compare/v4.15.5...v4.15.6) (2023-07-21)
+
+
+### Performance improvements
+
+* **database:** put every db tools together ([7fab487](https://github.com/Belphemur/AddictedProxy/commit/7fab48754d5b5b9371f97c6d734a0f4730c8b70e))
+
+## [4.15.5](https://github.com/Belphemur/AddictedProxy/compare/v4.15.4...v4.15.5) (2023-07-19)
+
+
+### Performance improvements
+
+* **caching:** use LRU Cache for Ipx ([f55fb67](https://github.com/Belphemur/AddictedProxy/commit/f55fb67f5232cfaf9cd9c437870f4809de53032b))
+* **caching:** use own middleware to control ipx lib ([1aaa70e](https://github.com/Belphemur/AddictedProxy/commit/1aaa70ea6e135437a31fc21113921a7e451a442e))
+
+## [4.15.4](https://github.com/Belphemur/AddictedProxy/compare/v4.15.3...v4.15.4) (2023-07-16)
+
+
+### Performance improvements
+
+* **caching:** force cache ipx fork ([c749c78](https://github.com/Belphemur/AddictedProxy/commit/c749c78e53c2936c42e4506dd7e14924323f7924))
+
+## [4.15.3](https://github.com/Belphemur/AddictedProxy/compare/v4.15.2...v4.15.3) (2023-07-15)
+
+
+### Performance improvements
+
+* **details:** Cache show details for 14 days ([fce7ea5](https://github.com/Belphemur/AddictedProxy/commit/fce7ea5215b67de9317689c4efad088fa15fd750))
+
+## [4.15.2](https://github.com/Belphemur/AddictedProxy/compare/v4.15.1...v4.15.2) (2023-07-14)
+
+
+### Performance improvements
+
+* **ssr:** use proper ssr method to do http calls ([44917ae](https://github.com/Belphemur/AddictedProxy/commit/44917ae9175070c185c62b6e9bcbee121299ec02))
+
+## [4.15.1](https://github.com/Belphemur/AddictedProxy/compare/v4.15.0...v4.15.1) (2023-07-14)
+
+
+### Bug Fixes
+
+* **docker:** fix building offline ([13eac4d](https://github.com/Belphemur/AddictedProxy/commit/13eac4dca12efca11a7794388cdf7b8d3535051c))
+
+## [4.15.0](https://github.com/Belphemur/AddictedProxy/compare/v4.14.19...v4.15.0) (2023-07-14)
+
+
+### Performance improvements
+
+* **nuxt-image:** use nuxt image with caching ([03d29fd](https://github.com/Belphemur/AddictedProxy/commit/03d29fdaf3ddd648c6024bbe29f491026065cf3b))
+
+
+### Features
+
+* **nuxt-image:** add back nuxt-image ([f285e44](https://github.com/Belphemur/AddictedProxy/commit/f285e441d5bbd1aa049fd48079cbf8e906f07324))
+
+## [4.14.19](https://github.com/Belphemur/AddictedProxy/compare/v4.14.18...v4.14.19) (2023-07-13)
+
+
+### Performance improvements
+
+* **search:** remove uneeded component ([33ee236](https://github.com/Belphemur/AddictedProxy/commit/33ee236068263dbac87495a6a24151471de77997))
+* **sentry:** remove sentry ([cf9d9d9](https://github.com/Belphemur/AddictedProxy/commit/cf9d9d97931e7ddd99fc6bb923009c66d6b08de6))
+
+## [4.14.18](https://github.com/Belphemur/AddictedProxy/compare/v4.14.17...v4.14.18) (2023-07-13)
+
+
+### Performance improvements
+
+* **sentry:** get properly the router ([0030570](https://github.com/Belphemur/AddictedProxy/commit/0030570e17479bef6733e111a48ae02e84749c94))
+
+## [4.14.17](https://github.com/Belphemur/AddictedProxy/compare/v4.14.16...v4.14.17) (2023-07-13)
+
+
+### Performance improvements
+
+* **docs:** Move documentation to readme.com ([516c589](https://github.com/Belphemur/AddictedProxy/commit/516c5898443101cbb1a523e62f1c5c9d615e3f4e))
+
+## [4.14.16](https://github.com/Belphemur/AddictedProxy/compare/v4.14.15...v4.14.16) (2023-07-13)
+
+
+### Bug Fixes
+
+* **image:** remove nuxt/image ([6a67853](https://github.com/Belphemur/AddictedProxy/commit/6a678531e24883cf1d2cfac4bcb9f8665f28880c))
+
+## [4.14.15](https://github.com/Belphemur/AddictedProxy/compare/v4.14.14...v4.14.15) (2023-07-13)
+
+
+### Bug Fixes
+
+* **sentry:** disable browser tracing ([12e7202](https://github.com/Belphemur/AddictedProxy/commit/12e72022c3a8e9a51ad0a9d1a1c591c049d51921))
+* **sitemap:** no need for api gen for this controller ([7fdfe65](https://github.com/Belphemur/AddictedProxy/commit/7fdfe6501973c20ac2e0f31e004463708208d5be))
+
+## [4.14.14](https://github.com/Belphemur/AddictedProxy/compare/v4.14.13...v4.14.14) (2023-07-08)
+
+
+### Bug Fixes
+
+* **image:** use lazy-src to be sure we have some space taken for image to come ([d658611](https://github.com/Belphemur/AddictedProxy/commit/d6586116b7e4cfae002d16e2fcda2bc8fcbffb15))
+
+## [4.14.13](https://github.com/Belphemur/AddictedProxy/compare/v4.14.12...v4.14.13) (2023-07-08)
+
+
+### Performance improvements
+
+* **images:** optimize properly the images ([e78d56d](https://github.com/Belphemur/AddictedProxy/commit/e78d56d7126cbd381d7c8bd04ec244726770adfb))
+
+## [4.14.12](https://github.com/Belphemur/AddictedProxy/compare/v4.14.11...v4.14.12) (2023-07-08)
+
+
+### Performance improvements
+
+* **UUID:** Use UUIDv7 for Postgres ([75f37ec](https://github.com/Belphemur/AddictedProxy/commit/75f37ec21041277dc69f5524eb13f4642d932844))
+
+## [4.14.11](https://github.com/Belphemur/AddictedProxy/compare/v4.14.10...v4.14.11) (2023-07-08)
+
+
+### Performance improvements
+
+* **subtitle:** error message when no subtitles available in given language ([23b898e](https://github.com/Belphemur/AddictedProxy/commit/23b898e999eec3cfa3f47fd9c9c4331da292e488))
+* **subtitles:** make language clearable ([7815f04](https://github.com/Belphemur/AddictedProxy/commit/7815f0408bd7164fde40193a66697748bf0b7823))
+* **subtitles:** only show episode with subtitles ([33bae8c](https://github.com/Belphemur/AddictedProxy/commit/33bae8ca6ac63d22b66098a4dee65a85ed0d010b))
+
+## [4.14.10](https://github.com/Belphemur/AddictedProxy/compare/v4.14.9...v4.14.10) (2023-07-08)
+
+
+### Bug Fixes
+
+* **display:** fix display issue on smaller resolutions ([d4ff6fe](https://github.com/Belphemur/AddictedProxy/commit/d4ff6fec60eef1a7df95e86f81ea0e70a1cbfcde))
+
+## [4.14.9](https://github.com/Belphemur/AddictedProxy/compare/v4.14.8...v4.14.9) (2023-07-07)
+
+
+### Performance improvements
+
+* **trending:** improve trending performance by caching genre list ([51bc218](https://github.com/Belphemur/AddictedProxy/commit/51bc218bf976d81580889c74c8f49f54c0df1e39))
+
+## [4.14.8](https://github.com/Belphemur/AddictedProxy/compare/v4.14.7...v4.14.8) (2023-07-06)
+
+
+### Bug Fixes
+
+* **build:** add sourcemap files ([8e0ff43](https://github.com/Belphemur/AddictedProxy/commit/8e0ff43fe2f2ba7b97a12aecc662b3460cff0090))
+* **build:** fix sending the right project to docker for building ([b21dd46](https://github.com/Belphemur/AddictedProxy/commit/b21dd46f4f6c562e33c5f4872611d1b5917973d5))
+* **css:** clean up css ([1283a46](https://github.com/Belphemur/AddictedProxy/commit/1283a46e8a85ad91ab015c1b188f05f2f5293cb9))
+
+## [4.14.7](https://github.com/Belphemur/AddictedProxy/compare/v4.14.6...v4.14.7) (2023-07-06)
+
+
+### Bug Fixes
+
+* **front:** fix building ([e381b5a](https://github.com/Belphemur/AddictedProxy/commit/e381b5a85158fe6fa44c4d06d09b5ba5454609a9))
+
+## [4.14.6](https://github.com/Belphemur/AddictedProxy/compare/v4.14.5...v4.14.6) (2023-07-06)
+
+
+### Performance improvements
+
+* **sentry:** add support for sentry ([270cd69](https://github.com/Belphemur/AddictedProxy/commit/270cd69e4396e750ccf730338ea5e9ab9187693b))
+
+## [4.14.5](https://github.com/Belphemur/AddictedProxy/compare/v4.14.4...v4.14.5) (2023-07-06)
+
+
+### Performance improvements
+
+* **search:** put searching at the top of index page ([f8b61d4](https://github.com/Belphemur/AddictedProxy/commit/f8b61d4ffb6ade3450854ab6f46fb42849b578b3))
+
+## [4.14.4](https://github.com/Belphemur/AddictedProxy/compare/v4.14.3...v4.14.4) (2023-07-06)
+
+
+### Performance improvements
+
+* **caching:** add caching to trending shows from tmdb ([dd6afd8](https://github.com/Belphemur/AddictedProxy/commit/dd6afd8ac1499f052b11471715416d4f3c0ea7a6))
+* **index:** clean up index page to only have coded that is in use ([b82a59f](https://github.com/Belphemur/AddictedProxy/commit/b82a59f34f2c71dd3691e8d2dc4a0a7aa63c1930))
+* **trending:** Improve the trending page to be rendered on the server ([de95dd4](https://github.com/Belphemur/AddictedProxy/commit/de95dd4afd13f74822af1a81acf935f9e79fc358))
+
+## [4.14.3](https://github.com/Belphemur/AddictedProxy/compare/v4.14.2...v4.14.3) (2023-07-06)
+
+
+### Performance improvements
+
+* **trending:** return shows in order of trending ([7d8f6a0](https://github.com/Belphemur/AddictedProxy/commit/7d8f6a02d6c976b69451babf144a937861525625))
+
+
+### Bug Fixes
+
+* **api:** Fix url issue ([ee1b233](https://github.com/Belphemur/AddictedProxy/commit/ee1b233446cc051f5c7a34074f010125dd575dd4))
+
+## [4.14.2](https://github.com/Belphemur/AddictedProxy/compare/v4.14.1...v4.14.2) (2023-07-06)
+
+
+### Performance improvements
+
+* **trending:** increase amount of trending shows ([c7f1a15](https://github.com/Belphemur/AddictedProxy/commit/c7f1a158119df44ffb7f3f82268b0307fbfeaf63))
+
+## [4.14.1](https://github.com/Belphemur/AddictedProxy/compare/v4.14.0...v4.14.1) (2023-07-06)
+
+
+### Performance improvements
+
+* **connection:** split connection settings between server and client ([f1da7a7](https://github.com/Belphemur/AddictedProxy/commit/f1da7a725800d209bda9dd6ecf876d0edaeab8bf))
+* **log:** log when can't find details of media ([4abc4b8](https://github.com/Belphemur/AddictedProxy/commit/4abc4b800ee4d0bda2e55c77f8d56ac6a6a57294))
+* **media:view:** Only show details if we have them. ([b3f3129](https://github.com/Belphemur/AddictedProxy/commit/b3f3129a60b26276c77f92efd8d23bbd72c13ad9))
+
+## [4.14.0](https://github.com/Belphemur/AddictedProxy/compare/v4.13.1...v4.14.0) (2023-07-06)
+
+
+### Features
+
+* **refresh:** fetch episodes data and show data after refreshing through websocket to get latest data ([bc4667b](https://github.com/Belphemur/AddictedProxy/commit/bc4667bd8839498ca9993b885c83ca80b95aca0d))
+
+## [4.13.1](https://github.com/Belphemur/AddictedProxy/compare/v4.13.0...v4.13.1) (2023-07-06)
+
+
+### Performance improvements
+
+* **refresh:** refresh first latest seasons ([4970375](https://github.com/Belphemur/AddictedProxy/commit/4970375d205d9611d684dd40b18fea6296e687b6))
+
+
+### Bug Fixes
+
+* **media:view:** fix loading episode ([8de772e](https://github.com/Belphemur/AddictedProxy/commit/8de772ebe03074e8930a7acb94b6945f9a951814))
+
+## [4.13.0](https://github.com/Belphemur/AddictedProxy/compare/v4.12.2...v4.13.0) (2023-07-06)
+
+
+### Performance improvements
+
+* **api:** Be sure that proper fields are nullable instead of all of them ([b71cf8d](https://github.com/Belphemur/AddictedProxy/commit/b71cf8d8dd84f1247bfef5d732820ff5de8c0a0e))
+
+
+### Bug Fixes
+
+* **date:** fix issue with date not provided for media from TMDB ([0479a02](https://github.com/Belphemur/AddictedProxy/commit/0479a02eceb09297c454f76d99a80d90b66db0db)), closes [#461](https://github.com/Belphemur/AddictedProxy/issues/461)
+* **media:detail:** fix not finding details ([42ce380](https://github.com/Belphemur/AddictedProxy/commit/42ce38015527edefaaa504a23d2dec83fe1690d3)), closes [#462](https://github.com/Belphemur/AddictedProxy/issues/462)
+
+
+### Features
+
+* **api:** update api to be splitted ([ae74900](https://github.com/Belphemur/AddictedProxy/commit/ae749001bf2dddd91d29144d383c6a9424b30185))
+
+## [4.12.2](https://github.com/Belphemur/AddictedProxy/compare/v4.12.1...v4.12.2) (2023-07-06)
+
+
+### Bug Fixes
+
+* **media:view:** fix size of card ([09dc580](https://github.com/Belphemur/AddictedProxy/commit/09dc580b4441b238dde93e7f03522f508fea058b))
+
+## [4.12.1](https://github.com/Belphemur/AddictedProxy/compare/v4.12.0...v4.12.1) (2023-07-06)
+
+
+### Bug Fixes
+
+* **media:view:** be sure the size is consistent ([3522693](https://github.com/Belphemur/AddictedProxy/commit/3522693078f063f2bc4a0fe5ebcdc98b0aac85dc))
+
+## [4.12.0](https://github.com/Belphemur/AddictedProxy/compare/v4.11.0...v4.12.0) (2023-07-06)
+
+
+### Performance improvements
+
+* Improve the user experience of media detail ([5e313c8](https://github.com/Belphemur/AddictedProxy/commit/5e313c8750ac5353ef0ef2ff30f2004d23e17603))
+
+
+### Bug Fixes
+
+* documentation ([12be099](https://github.com/Belphemur/AddictedProxy/commit/12be09944d6972417f30153230af108e2eeb180a))
+* **genre:** fix getting genres ([5b4fbc3](https://github.com/Belphemur/AddictedProxy/commit/5b4fbc36fedc5c97b5bad068824ad17a635dbf26))
+* **show:** Be sure the season are always ordered ([1b0d8df](https://github.com/Belphemur/AddictedProxy/commit/1b0d8dfa35c711b190a1cd1306d77fc657d7d21c))
+
+
+### Features
+
+* **index:** make index sent user to media info page ([551ebb6](https://github.com/Belphemur/AddictedProxy/commit/551ebb6c08cc9454a3e12ff84dbc55cd6b48f5a5))
+* **media:date:** add air date to media ([6158ca6](https://github.com/Belphemur/AddictedProxy/commit/6158ca6bf03a6a5e0874fc7bb554d83f64f5b992))
+* **Media:Detail:** Provide more date to the media ([c6f0c92](https://github.com/Belphemur/AddictedProxy/commit/c6f0c92ee36c131ab37269c0819048c04e110acf))
+* **media:name:** add tmdb name to media calls ([f61e325](https://github.com/Belphemur/AddictedProxy/commit/f61e325e7425ad1402afba0c7b47894856c72c7d))
+* **media:trending:** add trending to home page ([799e6b1](https://github.com/Belphemur/AddictedProxy/commit/799e6b1959e26b06b4581ad3ab27e7f23baa5267))
+* **media:view:** Be sure it has all refresh feature of the index view ([92c9690](https://github.com/Belphemur/AddictedProxy/commit/92c9690de6b6e49732128d577a6333c4e7b16412))
+* **tmdb:** add genre list ([6140a97](https://github.com/Belphemur/AddictedProxy/commit/6140a978b79a448ec730667fa01361d7094dc2dc))
+* **tmdb:** get trending tv shows ([f8faeb6](https://github.com/Belphemur/AddictedProxy/commit/f8faeb659dc7a1080feb4440d6aa4054de5053bd))
+* **trending:** add trending shows to api ([653e654](https://github.com/Belphemur/AddictedProxy/commit/653e654f8adf85d7d60c896452f6aa2eb42698a5))
+
+## [4.11.0](https://github.com/Belphemur/AddictedProxy/compare/v4.10.1...v4.11.0) (2023-07-05)
+
+
+### Bug Fixes
+
+* **sitemap:** be sure to define the argument from route ([f4d1254](https://github.com/Belphemur/AddictedProxy/commit/f4d125460f39e0461f6f0572b8b4dd9016cfd4b0))
+
+
+### Features
+
+* **show:detail:** add detail link to search results ([e7c7556](https://github.com/Belphemur/AddictedProxy/commit/e7c75562df49e55900a2d6b47f133368ed51d9ed))
+
+## [4.10.1](https://github.com/Belphemur/AddictedProxy/compare/v4.10.0...v4.10.1) (2023-07-05)
+
+
+### Bug Fixes
+
+* **sitemap:** fix route for swagger ([302626d](https://github.com/Belphemur/AddictedProxy/commit/302626db32b45fa77b9f90531770de77cad25231))
+
 ## [4.10.0](https://github.com/Belphemur/AddictedProxy/compare/v4.9.4...v4.10.0) (2023-07-05)
 
 
