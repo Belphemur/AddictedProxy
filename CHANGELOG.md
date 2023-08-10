@@ -1,3 +1,11 @@
+## [4.16.4](https://github.com/Belphemur/AddictedProxy/compare/v4.16.3...v4.16.4) (2023-08-10)
+
+
+### Performance improvements
+
+* **image:** cache metadata in memory ([e678e0d](https://github.com/Belphemur/AddictedProxy/commit/e678e0d78fc0211a3a34ce252ad586b513a3143f))
+* **Media::Details:** Improve the loading time of media page ([309aceb](https://github.com/Belphemur/AddictedProxy/commit/309aceb35f0a52d8b97ed595e080fa09f3595966))
+
 ## [4.16.3](https://github.com/Belphemur/AddictedProxy/compare/v4.16.2...v4.16.3) (2023-08-07)
 
 
