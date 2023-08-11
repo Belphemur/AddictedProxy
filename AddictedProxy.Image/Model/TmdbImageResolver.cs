@@ -17,7 +17,7 @@ public class TmdbImageResolver : IImageResolver
 
     public Task<ImageMetadata> GetMetaDataAsync()
     {
-        return Task.FromResult(new ImageMetadata(_imageMetadata.LastModified, _imageMetadata.ContentLength));
+        return Task.FromResult(new ImageMetadata(_imageMetadata.LastModified, TimeSpan.FromDays(90), _imageMetadata.ContentLength));
     }
 
     public async Task<Stream> OpenReadAsync()
