@@ -1,3 +1,10 @@
+## [4.16.5](https://github.com/Belphemur/AddictedProxy/compare/v4.16.4...v4.16.5) (2023-08-11)
+
+
+### Performance improvements
+
+* **cache:** be sure to keep image in cache for 90 days in browser and cdn ([b32853d](https://github.com/Belphemur/AddictedProxy/commit/b32853d10b0e8809fff1788781b38802d098fcaf))
+
 ## [4.16.4](https://github.com/Belphemur/AddictedProxy/compare/v4.16.3...v4.16.4) (2023-08-10)
 
 
