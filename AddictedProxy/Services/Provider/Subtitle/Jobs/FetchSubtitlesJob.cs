@@ -57,7 +57,7 @@ public class FetchSubtitlesJob
 
 
     [UniqueJob(Order = 10)]
-    [MaximumConcurrentExecutions(3, 10)]
+    [MaximumConcurrentExecutions(5, 15)]
     [AutomaticRetry(Attempts = 15, OnAttemptsExceeded = AttemptsExceededAction.Delete, DelaysInSeconds = new[] { 60, 10 * 60, 15 * 60, 45 * 60, 60 * 60, 10 * 60, 20 * 60, 40 * 60, 45 * 60 })]
     [Queue("fetch-subtitles")]
     public async Task ExecuteAsync(JobData data, CancellationToken cancellationToken)
