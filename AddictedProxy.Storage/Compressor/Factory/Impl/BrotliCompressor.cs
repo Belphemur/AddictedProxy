@@ -1,19 +1,16 @@
 ﻿#region
 
 using System.IO.Compression;
+using AddictedProxy.Storage.Compressor.Factory;
 using AddictedProxy.Storage.Extensions;
 
 #endregion
 
 namespace AddictedProxy.Storage.Compressor;
 
-public class BrotliCompressor : ICompressor
+public class BrotliCompressor : ICompressorService
 {
-    /// <summary>
-    /// Extension related to the compressor
-    /// </summary>
-    public string Extension => ".brotli";
-
+    public CompressorType Enum => CompressorTypes.Brotli;
 
     /// <summary>
     /// Compress bytes

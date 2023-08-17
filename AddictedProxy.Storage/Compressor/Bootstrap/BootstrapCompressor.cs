@@ -12,6 +12,6 @@ public class BootstrapCompressor : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<ICompressor, BrotliCompressor>();
+        services.AddSingleton<ICompressor, Compressor>();
     }
 }

@@ -1,13 +1,29 @@
-﻿namespace AddictedProxy.Storage.Compressor;
+﻿using InversionOfControl.Model.Factory;
 
-public interface ICompressor
+namespace AddictedProxy.Storage.Compressor.Factory;
+
+public interface ICompressorService : IEnumService<CompressorType>
 {
     /// <summary>
     /// Get the full file name in the storage
     /// </summary>
     /// <param name="file"></param>
     /// <returns></returns>
-    public string GetFileName(string file);
+    public string GetFileName(string file) => $"{file}.{Enum.Ext}";
+
+    /// <summary>
+    /// Compress bytes
+    /// </summary>
+    /// <param name="bytes">Bytes</param>
+    /// <returns>Return compressed bytes</returns>
+    byte[] Compress(byte[] bytes);
+
+    /// <summary>
+    /// Decompress bytes
+    /// </summary>
+    /// <param name="compressedBytes">Compressed bytes</param>
+    /// <returns>Return uncompressed bytes</returns>
+    byte[] Decompress(byte[] compressedBytes);
 
     /// <summary>
     /// Compress input stream to output stream
