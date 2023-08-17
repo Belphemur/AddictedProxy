@@ -1,7 +1,7 @@
 ﻿namespace InversionOfControl.Model.Factory;
 
 public class EnumFactory<TEnum, TEnumService>
-    where TEnum : IEquatable<TEnum>, IComparable<TEnum>
+    where TEnum : IEquatable<TEnum>
     where TEnumService : IEnumService<TEnum>
 {
     private readonly Dictionary<TEnum, TEnumService> _services;

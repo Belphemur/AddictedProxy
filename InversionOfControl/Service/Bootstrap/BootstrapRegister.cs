@@ -21,6 +21,7 @@ internal class BootstrapRegister : IDisposable
     private readonly Type _bootstrapApp = typeof(IBootstrapApp);
     private readonly Type _envVarRegistrationType = typeof(EnvVarRegistration<,>);
     private readonly Type _factoryServiceType = typeof(IEnumService<>);
+    private readonly Type _factoryType = typeof(EnumFactory<,>);
 
     /// <summary>
     /// Register all the different services
@@ -64,11 +65,16 @@ internal class BootstrapRegister : IDisposable
 
         void RegisterFactory(Type type)
         {
-            var enumType = type.GetGenericArguments()[0];
-            var enumServiceType = typeof(IEnumService<>).MakeGenericType(enumType);
-            services.Add(new ServiceDescriptor(enumServiceType, type, ServiceLifetime.Singleton));
+            var interfaceServiceType = type.FindInterfaces((interfaceType, _) => interfaceType.IsAssignableFrom(_factoryServiceType), null).SingleOrDefault();
+            if (interfaceServiceType == null)
+            {
+                throw new ArgumentNullException($"{type} isn't implementing an interface of the factory pattern ({_factoryServiceType.Name}).");
+            }
 
-            var enumFactoryType = typeof(EnumFactory<,>).MakeGenericType(enumType, type);
+            var enumType = interfaceServiceType.GetGenericArguments()[0];
+            services.Add(new ServiceDescriptor(interfaceServiceType, type, ServiceLifetime.Singleton));
+
+            var enumFactoryType = _factoryType.MakeGenericType(enumType, interfaceServiceType);
 
             if (!factories.Contains(enumFactoryType))
             {

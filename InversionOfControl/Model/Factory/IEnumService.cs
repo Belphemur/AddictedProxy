@@ -5,7 +5,7 @@
 /// </summary>
 /// <typeparam name="TEnum"></typeparam>
 public interface IEnumService<out TEnum>
-    where TEnum : IEquatable<TEnum>, IComparable<TEnum>
+    where TEnum : IEquatable<TEnum>
 {
     public TEnum Enum { get; }
 }
