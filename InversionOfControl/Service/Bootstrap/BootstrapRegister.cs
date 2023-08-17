@@ -63,18 +63,22 @@ internal class BootstrapRegister : IDisposable
             }, lifeTime));
         }
 
-        void RegisterFactory(Type type)
+        void RegisterFactory(Type type, Type serviceInterface)
         {
-            var interfaceServiceType = type.FindInterfaces((interfaceType, _) => interfaceType.IsAssignableFrom(_factoryServiceType), null).SingleOrDefault();
-            if (interfaceServiceType == null)
+            var interfaceInheritingFromServiceInterface = type.FindInterfaces((interfaceType, _) => interfaceType.GetInterface(_factoryServiceType.FullName) != null, null).SingleOrDefault();
+            if (interfaceInheritingFromServiceInterface == null)
             {
                 throw new ArgumentNullException($"{type} isn't implementing an interface of the factory pattern ({_factoryServiceType.Name}).");
             }
 
-            var enumType = interfaceServiceType.GetGenericArguments()[0];
-            services.Add(new ServiceDescriptor(interfaceServiceType, type, ServiceLifetime.Singleton));
+            var enumType = serviceInterface.GetGenericArguments().SingleOrDefault();
+            if (enumType == null)
+            {
+                throw new ArgumentNullException($"{type} isn't implementing an interface of the factory pattern ({_factoryServiceType.Name}).");
+            }
+            services.Add(new ServiceDescriptor(interfaceInheritingFromServiceInterface, type, ServiceLifetime.Singleton));
 
-            var enumFactoryType = _factoryType.MakeGenericType(enumType, interfaceServiceType);
+            var enumFactoryType = _factoryType.MakeGenericType(enumType, interfaceInheritingFromServiceInterface);
 
             if (!factories.Contains(enumFactoryType))
             {
@@ -89,6 +93,14 @@ internal class BootstrapRegister : IDisposable
 
             foreach (var type in types)
             {
+                //Handle registration of factories
+                var serviceInterface = type.GetInterface(_factoryServiceType.FullName!);
+                if (serviceInterface != null)
+                {
+                    RegisterFactory(type, serviceInterface);
+                    continue;
+                }
+
                 object? bootstrap = null;
                 if (_bootstrapConditionalType.IsAssignableFrom(type))
                 {
@@ -122,12 +134,6 @@ internal class BootstrapRegister : IDisposable
 
                         RegisterEnvVar(genericArguments, registration, type);
                     }
-                }
-
-                //Handle registration of factories
-                if (type.IsAssignableFrom(_factoryServiceType))
-                {
-                    RegisterFactory(type);
                 }
             }
         }
