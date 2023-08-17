@@ -1,3 +1,10 @@
+## [4.16.6](https://github.com/Belphemur/AddictedProxy/compare/v4.16.5...v4.16.6) (2023-08-17)
+
+
+### Performance improvements
+
+* **fetch:** Increase concurrence of the fetch job ([9061a85](https://github.com/Belphemur/AddictedProxy/commit/9061a852eb64fa06b75a6767e3851beee03f48a2))
+
 ## [4.16.5](https://github.com/Belphemur/AddictedProxy/compare/v4.16.4...v4.16.5) (2023-08-11)
 
 
