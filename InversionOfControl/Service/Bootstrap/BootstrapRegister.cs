@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using InversionOfControl.Extensions;
 using InversionOfControl.Model;
+using InversionOfControl.Model.Factory;
 using InversionOfControl.Service.EnvironmentVariable.Exception;
 using InversionOfControl.Service.EnvironmentVariable.Parser;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
@@ -19,6 +20,7 @@ internal class BootstrapRegister : IDisposable
     private readonly Type _bootstrapEnv = typeof(IBootstrapEnvironmentVariable<,>);
     private readonly Type _bootstrapApp = typeof(IBootstrapApp);
     private readonly Type _envVarRegistrationType = typeof(EnvVarRegistration<,>);
+    private readonly Type _factoryServiceType = typeof(IEnumService<>);
 
     /// <summary>
     /// Register all the different services
@@ -31,7 +33,8 @@ internal class BootstrapRegister : IDisposable
     public void RegisterBootstrapServices(IServiceCollection services, IConfiguration configuration, params Assembly[] assemblies)
     {
         var keys = new Dictionary<string, Type>();
-        
+        var factories = new HashSet<Type>();
+
         void RegisterEnvVar(Type[] genericTypes, object registration, Type currentBootstrapType)
         {
             var envVarType = genericTypes[0];
@@ -58,7 +61,22 @@ internal class BootstrapRegister : IDisposable
                 return parserType.GetMethod(nameof(VoidParser.Parse))!.Invoke(parser, new object[] { currentKeys, keyValues });
             }, lifeTime));
         }
-        
+
+        void RegisterFactory(Type type)
+        {
+            var enumType = type.GetGenericArguments()[0];
+            var enumServiceType = typeof(IEnumService<>).MakeGenericType(enumType);
+            services.Add(new ServiceDescriptor(enumServiceType, type, ServiceLifetime.Singleton));
+
+            var enumFactoryType = typeof(EnumFactory<,>).MakeGenericType(enumType, type);
+
+            if (!factories.Contains(enumFactoryType))
+            {
+                services.Add(new ServiceDescriptor(enumFactoryType, enumFactoryType, ServiceLifetime.Singleton));
+                factories.Add(enumFactoryType);
+            }
+        }
+
         foreach (var assembly in assemblies)
         {
             var types = GetSetCachedTypes(assembly);
@@ -74,8 +92,10 @@ internal class BootstrapRegister : IDisposable
                         Console.Out.WriteLine($"[Bootstrap] Condition not met to load boostrap: {type}");
                         continue;
                     }
+
                     Console.Out.WriteLine($"[Bootstrap] Condition met, loading boostrap: {type}");
                 }
+
                 if (_bootstrapType.IsAssignableFrom(type))
                 {
                     bootstrap ??= Activator.CreateInstance(type);
@@ -97,8 +117,15 @@ internal class BootstrapRegister : IDisposable
                         RegisterEnvVar(genericArguments, registration, type);
                     }
                 }
+
+                //Handle registration of factories
+                if (type.IsAssignableFrom(_factoryServiceType))
+                {
+                    RegisterFactory(type);
+                }
             }
         }
+
         Validate(keys.Keys);
     }
 
@@ -153,13 +180,14 @@ internal class BootstrapRegister : IDisposable
                 throw errors[0];
         }
     }
-    
+
     public void Dispose()
     {
         _assemblyTypeCache?.Clear();
         _assemblyTypeCache = null;
         GC.SuppressFinalize(this);
     }
+
     #region MockupBootstrapEnv
 
     private record Void;
