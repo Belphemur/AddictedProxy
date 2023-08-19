@@ -29,7 +29,7 @@ public class CompressedStorageProvider : ICompressedStorageProvider
         }
 
         //old file name format using the extension of the compressor
-        stream = await _storageProvider.DownloadAsync(_compressor.GetFileName(filename), cancellationToken);
+        stream = await _storageProvider.DownloadAsync($"{filename}.brotli", cancellationToken);
         if (stream == null)
         {
             return stream;

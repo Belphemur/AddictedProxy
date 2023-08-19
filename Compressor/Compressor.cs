@@ -14,13 +14,6 @@ public class Compressor : ICompressor
         _factory = factory;
         _config = config;
     }
-    
-    public string GetFileName(string file)
-    {
-        //For backward compatibility, in the past I only had the brotli compressor.
-        //this is to be sure I didn't need to go an rename the file in S3, technically, this extension doesn't represent anymore the real algorithm used.
-        return $"{file}.brotli";
-    }
 
     public Task<Stream> CompressAsync(Stream inputStream, CancellationToken cancellationToken)
     {

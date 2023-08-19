@@ -50,7 +50,7 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         return memoryStream;
     }
 
-    private string GetCacheKey(string sharding, string filename) => _compressor.GetFileName($"{{{sharding}}}/{filename}");
+    private string GetCacheKey(string sharding, string filename) => $"{{{sharding}}}/{filename}";
 
 
     public async Task<Stream?> GetSertAsync(string shardingKey, string filename, CancellationToken cancellationToken)
@@ -68,7 +68,7 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
 
         //We use the normal storage provider that will contain the already compressed file
         //because StoreSubtitle use the compressed storage provider
-        var stream = await _storageProvider.DownloadAsync(_compressor.GetFileName(filename), cancellationToken);
+        var stream = await _storageProvider.DownloadAsync(filename, cancellationToken);
         if (stream == null)
         {
             return stream;

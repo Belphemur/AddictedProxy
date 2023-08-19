@@ -26,8 +26,9 @@ public class CompressorDefinition
 
 public enum AlgorithmEnum
 {
+    Zstd,
+    BrotliWithSignature,
+
     [Obsolete($"Doesn't have magic number/Signature use {nameof(BrotliWithSignature)} instead. Only here for backward compatibility.")]
     BrotliDefault,
-    BrotliWithSignature,
-    Zstd
 }
