@@ -1,3 +1,26 @@
+## [4.17.0](https://github.com/Belphemur/AddictedProxy/compare/v4.16.6...v4.17.0) (2023-08-19)
+
+
+### Performance improvements
+
+* **compressor:** remove unused method ([6755e96](https://github.com/Belphemur/AddictedProxy/commit/6755e961ad4207be899f9a495ac1ac9a39571b9b))
+* improve factory contract to check for existence of service ([995a905](https://github.com/Belphemur/AddictedProxy/commit/995a9057ea91f9840d0d5d62c4e8e7e9a3096981))
+
+
+### Bug Fixes
+
+* **compressor:** continue to support brotli without signature ([2fc269c](https://github.com/Belphemur/AddictedProxy/commit/2fc269cf8309d4433990aafca2d39831c38a7726))
+* **download:** fix not finding the subtitle file when using old file format ([0866512](https://github.com/Belphemur/AddictedProxy/commit/0866512cb239ab7b7ce2a91b293bde122da3073e))
+* **factory:** Fix issue registering the factory ([3d426ff](https://github.com/Belphemur/AddictedProxy/commit/3d426ffcaa6077f8a865215a05e4311c895638e7))
+
+
+### Features
+
+* **compressor:** add zstd as compressor and make it the default ([18d99ad](https://github.com/Belphemur/AddictedProxy/commit/18d99adb546b0f2e42a335935dad8da189e8ab2c))
+* **factory:** Add factory pattern to the IoC ([8d9f2b9](https://github.com/Belphemur/AddictedProxy/commit/8d9f2b9aad7ee9e1b9ea65b776d78443110004a3))
+* Make factory able to use Enum ([605c35b](https://github.com/Belphemur/AddictedProxy/commit/605c35b82cf95745fa7a0a17cdd0dc7cfbdf1bc4))
+* multiple compressor support ([e0fc568](https://github.com/Belphemur/AddictedProxy/commit/e0fc56859355f6a58bb4c556ae4fc2ac89b9b0b0))
+
 ## [4.16.6](https://github.com/Belphemur/AddictedProxy/compare/v4.16.5...v4.16.6) (2023-08-17)
 
 
