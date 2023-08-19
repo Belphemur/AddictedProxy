@@ -14,7 +14,7 @@ public class BrotliCompressor : ICompressorService
 {
     public AlgorithmEnum Enum => AlgorithmEnum.BrotliDefault;
 
-    public CompressorDefinition Definition { get; } = new("");
+    public CompressorDefinition Definition { get; } = new();
 
     /// <summary>
     /// Compress input stream to output stream

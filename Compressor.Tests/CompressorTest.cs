@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Compressor;
 using Compressor.Bootstrap;
 using Compressor.Factory.Impl;
+using FluentAssertions;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,11 +40,11 @@ public class CompressorTest
         await decompressed.CopyToAsync(memoryResult);
 
         var decompressedBytes = memoryResult.ToArray();
-        Assert.AreEqual(text, Encoding.UTF8.GetString(decompressedBytes));
+        Encoding.UTF8.GetString(decompressedBytes).Should().Be(text);
     }
     
     [Test]
-    public async Task CompressDecompressWithBrotli()
+    public async Task CompressDecompressWithBrotliSigned()
     {
         const string text = "Hello World World World World World";
         var buffer = Encoding.UTF8.GetBytes(text);
@@ -56,6 +57,23 @@ public class CompressorTest
         await decompressed.CopyToAsync(memoryResult);
 
         var decompressedBytes = memoryResult.ToArray();
-        Assert.AreEqual(text, Encoding.UTF8.GetString(decompressedBytes));
+        Encoding.UTF8.GetString(decompressedBytes).Should().Be(text);
+    }
+    
+    [Test]
+    public async Task CompressDecompressWithBrotliUnsigned()
+    {
+        const string text = "Hello World World World World World";
+        var buffer = Encoding.UTF8.GetBytes(text);
+        await using var memory = new MemoryStream(buffer);
+        BrotliCompressor signedCompressor = new();
+        await using var compressed = await signedCompressor.CompressAsync(memory, CancellationToken.None);
+
+        await using var decompressed = await _compressor!.DecompressAsync(compressed, CancellationToken.None);
+        await using var memoryResult = new MemoryStream();
+        await decompressed.CopyToAsync(memoryResult);
+
+        var decompressedBytes = memoryResult.ToArray();
+        Encoding.UTF8.GetString(decompressedBytes).Should().Be(text);
     }
 }
