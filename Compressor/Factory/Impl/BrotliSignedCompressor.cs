@@ -12,8 +12,10 @@ namespace Compressor.Factory.Impl;
 /// </summary>
 public class BrotliSignedCompressor : ICompressorService
 {
-    public CompressorType Enum => CompressorTypes.BrotliWithSignature;
-    
+    public AlgorithmEnum Enum => AlgorithmEnum.BrotliWithSignature;
+
+    public CompressorDefinition Definition { get; } =  new("CE-B2-CF-81");
+
     /// <summary>
     /// Compress input stream to output stream
     /// </summary>
@@ -24,7 +26,7 @@ public class BrotliSignedCompressor : ICompressorService
     {
         var outputStream = new MemoryStream();
         {
-            await outputStream.WriteAsync(Enum.MagicNumberByte, cancellationToken);
+            await outputStream.WriteAsync(Definition.MagicNumberByte, cancellationToken);
             await using var brotliStream = new BrotliStream(outputStream, CompressionLevel.Optimal, true);
             await inputStream.CopyToAsync(brotliStream, cancellationToken);
             await brotliStream.FlushAsync(cancellationToken);
@@ -41,7 +43,7 @@ public class BrotliSignedCompressor : ICompressorService
     /// <returns>Task</returns>
     public Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken = default)
     {
-        inputStream.Seek(Enum.MagicNumberLength, SeekOrigin.Current);
+        inputStream.Seek(Definition.MagicNumberLength, SeekOrigin.Current);
         var brotliStream = new BrotliStream(inputStream, CompressionMode.Decompress);
         return Task.FromResult<Stream>(brotliStream);
     }

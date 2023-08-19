@@ -1,9 +1,10 @@
 ﻿using Compressor.Utils;
 using InversionOfControl.Model.Factory;
+using System;
 
 namespace Compressor.Factory;
 
-public class CompressorFactory : EnumFactory<CompressorType, ICompressorService>
+public class CompressorFactory : EnumFactory<AlgorithmEnum, ICompressorService>
 {
     public CompressorFactory(IEnumerable<ICompressorService> services) : base(services)
     {
@@ -16,15 +17,15 @@ public class CompressorFactory : EnumFactory<CompressorType, ICompressorService>
     public async Task<ICompressorService> GetServiceByMagicNumberAsync(MemoryStream stream, CancellationToken token)
     {
         stream.ResetPosition();
-        foreach (var service in Services)
+        foreach (var service in Services.Values)
         {
             try
             {
-                var magicNumber = new byte[service.Key.MagicNumberLength];
-                _ = await stream.ReadAsync(magicNumber, 0, service.Key.MagicNumberLength, token);
-                if (service.Key.MagicNumber == BitConverter.ToString(magicNumber))
+                var magicNumber = new byte[service.Definition.MagicNumberLength];
+                _ = await stream.ReadAsync(magicNumber.AsMemory(0, service.Definition.MagicNumberLength), token);
+                if (service.Definition.MagicNumber == BitConverter.ToString(magicNumber))
                 {
-                    return service.Value;
+                    return service;
                 }
             }
             finally

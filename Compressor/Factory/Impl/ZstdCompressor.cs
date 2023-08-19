@@ -5,10 +5,12 @@ namespace Compressor.Factory.Impl;
 
 public class ZstdCompressor : ICompressorService, IDisposable
 {
-    public CompressorType Enum => CompressorTypes.Zstd;
+    public AlgorithmEnum Enum => AlgorithmEnum.Zstd;
 
     private readonly ZstdSharp.Compressor _compressor = new(3);
     private readonly Decompressor _decompressor = new();
+
+    public CompressorDefinition Definition { get; } =  new("28-B5-2F-FD");
 
     public async Task<Stream> CompressAsync(Stream inputStream, CancellationToken cancellationToken)
     {

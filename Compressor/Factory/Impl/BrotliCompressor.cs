@@ -12,8 +12,10 @@ namespace Compressor.Factory.Impl;
 /// </summary>
 public class BrotliCompressor : ICompressorService
 {
-    public CompressorType Enum => CompressorTypes.BrotliDefault;
-    
+    public AlgorithmEnum Enum => AlgorithmEnum.BrotliDefault;
+
+    public CompressorDefinition Definition { get; } = new("");
+
     /// <summary>
     /// Compress input stream to output stream
     /// </summary>

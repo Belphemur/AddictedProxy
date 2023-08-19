@@ -1,17 +1,20 @@
 ﻿using Compressor.Factory;
+using Compressor.Model;
+using Microsoft.Extensions.Options;
 
 namespace Compressor;
 
 public class Compressor : ICompressor
 {
     private readonly CompressorFactory _factory;
+    private readonly IOptions<CompressorConfig> _config;
 
-    public Compressor(CompressorFactory factory)
+    public Compressor(CompressorFactory factory, IOptions<CompressorConfig> config)
     {
         _factory = factory;
+        _config = config;
     }
     
-    [Obsolete]
     public string GetFileName(string file)
     {
         //For backward compatibility, in the past I only had the brotli compressor.
@@ -21,7 +24,7 @@ public class Compressor : ICompressor
 
     public Task<Stream> CompressAsync(Stream inputStream, CancellationToken cancellationToken)
     {
-        return _factory.GetService(CompressorTypes.Zstd).CompressAsync(inputStream, cancellationToken);
+        return _factory.GetService(_config.Value.Algorithm).CompressAsync(inputStream, cancellationToken);
     }
 
     public async Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken)
@@ -34,7 +37,7 @@ public class Compressor : ICompressor
         }
         catch (ArgumentOutOfRangeException)
         {
-            return await _factory.GetService(CompressorTypes.BrotliDefault).DecompressAsync(memoryStream, cancellationToken);
+            return await _factory.GetService(AlgorithmEnum.BrotliDefault).DecompressAsync(memoryStream, cancellationToken);
         }
     }
 }

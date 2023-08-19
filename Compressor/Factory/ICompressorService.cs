@@ -2,8 +2,9 @@
 
 namespace Compressor.Factory;
 
-public interface ICompressorService : IEnumService<CompressorType>
+public interface ICompressorService : IEnumService<AlgorithmEnum>
 {
+    CompressorDefinition Definition { get; }
     /// <summary>
     /// Compress input stream to output stream
     /// </summary>
