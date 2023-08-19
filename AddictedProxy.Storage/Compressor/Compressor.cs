@@ -23,7 +23,7 @@ public class Compressor : ICompressor
 
     public Task<Stream> CompressAsync(Stream inputStream, CancellationToken cancellationToken)
     {
-        return _factory.GetService(CompressorTypes.Brotli).CompressAsync(inputStream, cancellationToken);
+        return _factory.GetService(CompressorTypes.Zstd).CompressAsync(inputStream, cancellationToken);
     }
 
     public async Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken)

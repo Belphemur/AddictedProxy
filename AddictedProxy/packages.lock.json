@@ -2054,6 +2054,11 @@
           "System.Reflection.TypeExtensions": "4.7.0"
         }
       },
+      "ZstdSharp.Port": {
+        "type": "Transitive",
+        "resolved": "0.7.2",
+        "contentHash": "mT6Pb7qzDGapJ2ic4dAFqbzHpM+qgnasQIGR/Sofrk0fmKTQSTljG55OFXHbDJczLZWnUAFsg4bKR81uHiKzPg=="
+      },
       "addictedproxy.caching": {
         "type": "Project",
         "dependencies": {
@@ -2118,7 +2123,8 @@
         "dependencies": {
           "AWSSDK.S3": "[3.7.202.*, )",
           "InversionOfControl": "[1.0.0, )",
-          "Microsoft.AspNetCore.ResponseCompression": "[2.2.0, )"
+          "Microsoft.AspNetCore.ResponseCompression": "[2.2.0, )",
+          "ZstdSharp.Port": "[0.7.2, )"
         }
       },
       "addictedproxy.storage.caching": {

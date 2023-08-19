@@ -1,12 +1,11 @@
 ﻿#region
 
 using System.IO.Compression;
-using AddictedProxy.Storage.Compressor.Factory;
 using AddictedProxy.Storage.Extensions;
 
 #endregion
 
-namespace AddictedProxy.Storage.Compressor;
+namespace AddictedProxy.Storage.Compressor.Factory.Impl;
 
 public class BrotliCompressor : ICompressorService
 {
