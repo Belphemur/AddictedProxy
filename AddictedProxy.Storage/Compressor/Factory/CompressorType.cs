@@ -1,16 +1,8 @@
 ﻿namespace AddictedProxy.Storage.Compressor.Factory;
 
-public record CompressorType(string Ext)
-{
-    /// <summary>
-    /// Append extension to file
-    /// </summary>
-    /// <param name="file"></param>
-    /// <returns></returns>
-    public string AppendToFile(string file) => $"{file}.{Ext}";
-}
+public record CompressorType(string Ext, string MagicNumber, ushort MagicNumberLength = 4);
 
 public static class CompressorTypes
 {
-    public static CompressorType Brotli = new("brotli");
+    public static CompressorType Brotli = new("brotli", "CE-B2-2F-FD");
 }

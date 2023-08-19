@@ -1,20 +1,24 @@
 ﻿using AddictedProxy.Storage.Compressor.Factory;
+using AddictedProxy.Storage.Extensions;
 using InversionOfControl.Model.Factory;
 
 namespace AddictedProxy.Storage.Compressor;
 
 public class Compressor : ICompressor
 {
-    private readonly EnumFactory<CompressorType, ICompressorService> _factory;
+    private readonly CompressorFactory _factory;
 
-    public Compressor(EnumFactory<CompressorType, ICompressorService> factory)
+    public Compressor(CompressorFactory factory)
     {
         _factory = factory;
     }
     
+    [Obsolete]
     public string GetFileName(string file)
     {
-        return _factory.GetService(CompressorTypes.Brotli).GetFileName(file);
+        //For backward compatibility, in the past I only had the brotli compressor.
+        //this is to be sure I didn't need to go an rename the file in S3, technically, this extension doesn't represent anymore the real algorithm used.
+        return $"{file}.brotli";
     }
 
     public Task<Stream> CompressAsync(Stream inputStream, CancellationToken cancellationToken)
@@ -22,8 +26,11 @@ public class Compressor : ICompressor
         return _factory.GetService(CompressorTypes.Brotli).CompressAsync(inputStream, cancellationToken);
     }
 
-    public Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken)
+    public async Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken)
     {
-        return _factory.GetService(CompressorTypes.Brotli).DecompressAsync(inputStream, cancellationToken);
+        using var memoryStream = new MemoryStream();
+        await inputStream.CopyToAsync(memoryStream, cancellationToken);
+        
+        return await (await _factory.GetServiceByMagicNumberAsync(memoryStream, cancellationToken)).DecompressAsync(memoryStream, cancellationToken);
     }
 }

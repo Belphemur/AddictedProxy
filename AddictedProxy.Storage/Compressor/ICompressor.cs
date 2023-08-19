@@ -7,6 +7,7 @@ public interface ICompressor
     /// </summary>
     /// <param name="file"></param>
     /// <returns></returns>
+    [Obsolete("Will always return the same value as the input parameter + .brotli for backward compatibility")]
     public string GetFileName(string file);
 
     /// <summary>

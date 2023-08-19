@@ -5,13 +5,6 @@ namespace AddictedProxy.Storage.Compressor.Factory;
 public interface ICompressorService : IEnumService<CompressorType>
 {
     /// <summary>
-    /// Get the full file name in the storage
-    /// </summary>
-    /// <param name="file"></param>
-    /// <returns></returns>
-    public string GetFileName(string file) => $"{file}.{Enum.Ext}";
-
-    /// <summary>
     /// Compress bytes
     /// </summary>
     /// <param name="bytes">Bytes</param>
