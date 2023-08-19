@@ -13,7 +13,7 @@ public class BootstrapCompressor : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<ICompressor, global::Compressor.Compressor>();
+        services.AddSingleton<ICompressor, Compressor>();
         services.AddSingleton<CompressorFactory>();
     }
 }

@@ -8,11 +8,11 @@ using Compressor.Utils;
 namespace Compressor.Factory.Impl;
 
 /// <summary>
-/// No signature in the stream, default behavior of .NET currently (7.0) (2023-08-19)
+/// Has the magic number written into the stream
 /// </summary>
-public class BrotliCompressor : ICompressorService
+public class BrotliSignedCompressor : ICompressorService
 {
-    public CompressorType Enum => CompressorTypes.BrotliDefault;
+    public CompressorType Enum => CompressorTypes.BrotliWithSignature;
     
     /// <summary>
     /// Compress input stream to output stream
@@ -24,6 +24,7 @@ public class BrotliCompressor : ICompressorService
     {
         var outputStream = new MemoryStream();
         {
+            await outputStream.WriteAsync(Enum.MagicNumberByte, cancellationToken);
             await using var brotliStream = new BrotliStream(outputStream, CompressionLevel.Optimal, true);
             await inputStream.CopyToAsync(brotliStream, cancellationToken);
             await brotliStream.FlushAsync(cancellationToken);
@@ -40,6 +41,7 @@ public class BrotliCompressor : ICompressorService
     /// <returns>Task</returns>
     public Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken = default)
     {
+        inputStream.Seek(Enum.MagicNumberLength, SeekOrigin.Current);
         var brotliStream = new BrotliStream(inputStream, CompressionMode.Decompress);
         return Task.FromResult<Stream>(brotliStream);
     }

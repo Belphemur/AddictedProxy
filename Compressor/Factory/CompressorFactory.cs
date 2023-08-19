@@ -32,6 +32,7 @@ public class CompressorFactory : EnumFactory<CompressorType, ICompressorService>
                 stream.ResetPosition();
             }
         }
+        
         throw new ArgumentOutOfRangeException(nameof(stream), stream, $"No service ({nameof(ICompressorService)}) found for the given stream");
     }
 }
