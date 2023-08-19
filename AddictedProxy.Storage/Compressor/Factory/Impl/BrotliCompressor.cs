@@ -13,37 +13,6 @@ public class BrotliCompressor : ICompressorService
     public CompressorType Enum => CompressorTypes.Brotli;
 
     /// <summary>
-    /// Compress bytes
-    /// </summary>
-    /// <param name="bytes">Bytes</param>
-    /// <returns>Return compressed bytes</returns>
-    public byte[] Compress(byte[] bytes)
-    {
-        using var inputStream = new MemoryStream(bytes);
-        using var result = new MemoryStream();
-        using var brotliStream = new BrotliStream(result, CompressionLevel.Optimal);
-
-        inputStream.CopyTo(brotliStream);
-        inputStream.Flush();
-        return result.ToArray();
-    }
-
-    /// <summary>
-    /// Decompress bytes
-    /// </summary>
-    /// <param name="compressedBytes">Compressed bytes</param>
-    /// <returns>Return uncompressed bytes</returns>
-    public byte[] Decompress(byte[] compressedBytes)
-    {
-        using var compressedStream = new MemoryStream(compressedBytes);
-        using var result = new MemoryStream();
-        using var brotliStream = new BrotliStream(compressedStream, CompressionMode.Decompress);
-
-        brotliStream.CopyTo(result);
-        return result.ToArray();
-    }
-
-    /// <summary>
     /// Compress input stream to output stream
     /// </summary>
     /// <param name="inputStream">Input stream</param>
