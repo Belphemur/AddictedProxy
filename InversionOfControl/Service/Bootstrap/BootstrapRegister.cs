@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using InversionOfControl.Extensions;
 using InversionOfControl.Model;
+using InversionOfControl.Model.Factory;
 using InversionOfControl.Service.EnvironmentVariable.Exception;
 using InversionOfControl.Service.EnvironmentVariable.Parser;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
@@ -19,6 +20,8 @@ internal class BootstrapRegister : IDisposable
     private readonly Type _bootstrapEnv = typeof(IBootstrapEnvironmentVariable<,>);
     private readonly Type _bootstrapApp = typeof(IBootstrapApp);
     private readonly Type _envVarRegistrationType = typeof(EnvVarRegistration<,>);
+    private readonly Type _factoryServiceType = typeof(IEnumService<>);
+    private readonly Type _factoryType = typeof(EnumFactory<,>);
 
     /// <summary>
     /// Register all the different services
@@ -31,7 +34,8 @@ internal class BootstrapRegister : IDisposable
     public void RegisterBootstrapServices(IServiceCollection services, IConfiguration configuration, params Assembly[] assemblies)
     {
         var keys = new Dictionary<string, Type>();
-        
+        var factories = new HashSet<Type>();
+
         void RegisterEnvVar(Type[] genericTypes, object registration, Type currentBootstrapType)
         {
             var envVarType = genericTypes[0];
@@ -58,13 +62,45 @@ internal class BootstrapRegister : IDisposable
                 return parserType.GetMethod(nameof(VoidParser.Parse))!.Invoke(parser, new object[] { currentKeys, keyValues });
             }, lifeTime));
         }
-        
+
+        void RegisterFactory(Type type, Type serviceInterface)
+        {
+            var interfaceInheritingFromServiceInterface = type.FindInterfaces((interfaceType, _) => interfaceType.GetInterface(_factoryServiceType.FullName) != null, null).SingleOrDefault();
+            if (interfaceInheritingFromServiceInterface == null)
+            {
+                throw new ArgumentNullException($"{type} isn't implementing an interface of the factory pattern ({_factoryServiceType.Name}).");
+            }
+
+            var enumType = serviceInterface.GetGenericArguments().SingleOrDefault();
+            if (enumType == null)
+            {
+                throw new ArgumentNullException($"{type} isn't implementing an interface of the factory pattern ({_factoryServiceType.Name}).");
+            }
+            services.Add(new ServiceDescriptor(interfaceInheritingFromServiceInterface, type, ServiceLifetime.Singleton));
+
+            var enumFactoryType = _factoryType.MakeGenericType(enumType, interfaceInheritingFromServiceInterface);
+
+            if (!factories.Contains(enumFactoryType))
+            {
+                services.Add(new ServiceDescriptor(enumFactoryType, enumFactoryType, ServiceLifetime.Singleton));
+                factories.Add(enumFactoryType);
+            }
+        }
+
         foreach (var assembly in assemblies)
         {
             var types = GetSetCachedTypes(assembly);
 
             foreach (var type in types)
             {
+                //Handle registration of factories
+                var serviceInterface = type.GetInterface(_factoryServiceType.FullName!);
+                if (serviceInterface != null)
+                {
+                    RegisterFactory(type, serviceInterface);
+                    continue;
+                }
+
                 object? bootstrap = null;
                 if (_bootstrapConditionalType.IsAssignableFrom(type))
                 {
@@ -74,8 +110,10 @@ internal class BootstrapRegister : IDisposable
                         Console.Out.WriteLine($"[Bootstrap] Condition not met to load boostrap: {type}");
                         continue;
                     }
+
                     Console.Out.WriteLine($"[Bootstrap] Condition met, loading boostrap: {type}");
                 }
+
                 if (_bootstrapType.IsAssignableFrom(type))
                 {
                     bootstrap ??= Activator.CreateInstance(type);
@@ -99,6 +137,7 @@ internal class BootstrapRegister : IDisposable
                 }
             }
         }
+
         Validate(keys.Keys);
     }
 
@@ -153,13 +192,14 @@ internal class BootstrapRegister : IDisposable
                 throw errors[0];
         }
     }
-    
+
     public void Dispose()
     {
         _assemblyTypeCache?.Clear();
         _assemblyTypeCache = null;
         GC.SuppressFinalize(this);
     }
+
     #region MockupBootstrapEnv
 
     private record Void;

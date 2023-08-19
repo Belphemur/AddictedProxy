@@ -1,23 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.1</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Compressor\Compressor.csproj" />
         <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AWSSDK.S3" Version="3.7.201.*" />
+        <PackageReference Include="AWSSDK.S3" Version="3.7.202.*" />
         <PackageReference Include="IsExternalInit" Version="1.0.3">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
        </ItemGroup>
+
+
+
 
 </Project>

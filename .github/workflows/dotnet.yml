@@ -16,7 +16,6 @@ env:
   PROJECT_NAME_FRONTEND: "AddictedProxy-frontend"
   NODEJS: lts/*
   DOTNET: "7.0.x"
-  DOTNET_PRERELEASE: true
   sentry_project: "addictedproxy"
   SENTRY_ORG: "soundswitch"
   # Use docker.io for Docker Hub if empty
@@ -53,10 +52,11 @@ jobs:
         if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
         with:
           dotnet-version: ${{ env.DOTNET }}
-          include-prerelease: ${{ env.DOTNET_PRERELEASE }}
+          cache: true
+          cache-dependency-path: ${{env.PROJECT_NAME}}/packages.lock.json
       - name: Restore
         if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
-        run: dotnet restore
+        run: dotnet restore --locked-mode
       - name: Build
         if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
         run: dotnet build -c Release --no-restore ${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.csproj
@@ -72,7 +72,7 @@ jobs:
         # Use always() to always run this step to publish test results when there are test failures
       - name: Setup Node.js
         if: steps.filter.outputs.node == 'true'
-        uses: actions/setup-node@v3.8.0
+        uses: actions/setup-node@v3.8.1
         with:
           node-version: ${{env.NODEJS}}
       - name: Cache node modules
@@ -105,7 +105,7 @@ jobs:
           access_token: ${{ github.token }}
       - uses: actions/checkout@v3
       - name: Setup Node.js
-        uses: actions/setup-node@v3.8.0
+        uses: actions/setup-node@v3.8.1
         with:
           node-version: ${{env.NODEJS}}
       - name: Cache node modules

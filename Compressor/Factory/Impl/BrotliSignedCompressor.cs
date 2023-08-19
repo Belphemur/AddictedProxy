@@ -1,50 +1,20 @@
 ﻿#region
 
 using System.IO.Compression;
-using AddictedProxy.Storage.Extensions;
+using Compressor.Utils;
 
 #endregion
 
-namespace AddictedProxy.Storage.Compressor;
+namespace Compressor.Factory.Impl;
 
-public class BrotliCompressor : ICompressor
+/// <summary>
+/// Has the magic number written into the stream
+/// </summary>
+public class BrotliSignedCompressor : ICompressorService
 {
-    /// <summary>
-    /// Extension related to the compressor
-    /// </summary>
-    public string Extension => ".brotli";
+    public AlgorithmEnum Enum => AlgorithmEnum.BrotliWithSignature;
 
-
-    /// <summary>
-    /// Compress bytes
-    /// </summary>
-    /// <param name="bytes">Bytes</param>
-    /// <returns>Return compressed bytes</returns>
-    public byte[] Compress(byte[] bytes)
-    {
-        using var inputStream = new MemoryStream(bytes);
-        using var result = new MemoryStream();
-        using var brotliStream = new BrotliStream(result, CompressionLevel.Optimal);
-
-        inputStream.CopyTo(brotliStream);
-        inputStream.Flush();
-        return result.ToArray();
-    }
-
-    /// <summary>
-    /// Decompress bytes
-    /// </summary>
-    /// <param name="compressedBytes">Compressed bytes</param>
-    /// <returns>Return uncompressed bytes</returns>
-    public byte[] Decompress(byte[] compressedBytes)
-    {
-        using var compressedStream = new MemoryStream(compressedBytes);
-        using var result = new MemoryStream();
-        using var brotliStream = new BrotliStream(compressedStream, CompressionMode.Decompress);
-
-        brotliStream.CopyTo(result);
-        return result.ToArray();
-    }
+    public CompressorDefinition Definition { get; } =  new("CE-B2-CF-81");
 
     /// <summary>
     /// Compress input stream to output stream
@@ -56,6 +26,7 @@ public class BrotliCompressor : ICompressor
     {
         var outputStream = new MemoryStream();
         {
+            await outputStream.WriteAsync(Definition.MagicNumberByte, cancellationToken);
             await using var brotliStream = new BrotliStream(outputStream, CompressionLevel.Optimal, true);
             await inputStream.CopyToAsync(brotliStream, cancellationToken);
             await brotliStream.FlushAsync(cancellationToken);
@@ -72,6 +43,7 @@ public class BrotliCompressor : ICompressor
     /// <returns>Task</returns>
     public Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken = default)
     {
+        inputStream.Seek(Definition.MagicNumberLength, SeekOrigin.Current);
         var brotliStream = new BrotliStream(inputStream, CompressionMode.Decompress);
         return Task.FromResult<Stream>(brotliStream);
     }

@@ -5,10 +5,14 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+
+        <RootNamespace>AddictedProxy.Storage.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="6.11.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
+        <PackageReference Include="NSubstitute" Version="5.0.0" />
         <PackageReference Include="NUnit" Version="3.13.3" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
         <PackageReference Include="coverlet.collector" Version="6.0.0">
@@ -18,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AddictedProxy.Storage\AddictedProxy.Storage.csproj" />
+      <ProjectReference Include="..\Compressor\Compressor.csproj" />
     </ItemGroup>
 
 </Project>

@@ -15,7 +15,7 @@
         <PackageReference Include="Hangfire.PostgreSql" Version="1.20.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0" />
         <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
-        <PackageReference Include="Sentry.AspNetCore" Version="3.35.0" />
+        <PackageReference Include="Sentry.AspNetCore" Version="3.35.1" />
         <PackageReference Include="SimpleMvcSitemap.Core" Version="4.3.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
         <PackageReference Include="AngleSharp" Version="1.0.4" />
@@ -33,6 +33,7 @@
         <ProjectReference Include="..\AddictedProxy.Storage.Caching\AddictedProxy.Storage.Caching.csproj" />
         <ProjectReference Include="..\AddictedProxy.Storage\AddictedProxy.Storage.csproj" />
         <ProjectReference Include="..\AddictedProxy.Upstream\AddictedProxy.Upstream.csproj" />
+        <ProjectReference Include="..\Compressor\Compressor.csproj" />
         <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
         <ProjectReference Include="..\Locking\Locking.csproj" />
         <ProjectReference Include="..\Performance\Performance.csproj" />
@@ -43,21 +44,13 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Remove="publish\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Remove="publish\**" />
-    </ItemGroup>
+    <PropertyGroup>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    </PropertyGroup>
 
     <ItemGroup>
         <None Remove="publish\**" />
         <None Remove="Dockerfile" />
-    </ItemGroup>
-
-    <ItemGroup>
         <Content Remove="publish\**" />
     </ItemGroup>
 
