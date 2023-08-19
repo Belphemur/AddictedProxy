@@ -1,7 +1,7 @@
-﻿using AddictedProxy.Storage.Extensions;
+﻿using Compressor.Utils;
 using InversionOfControl.Model.Factory;
 
-namespace AddictedProxy.Storage.Compressor.Factory;
+namespace Compressor.Factory;
 
 public class CompressorFactory : EnumFactory<CompressorType, ICompressorService>
 {

@@ -1,4 +1,4 @@
-﻿namespace AddictedProxy.Storage.Compressor.Factory;
+﻿namespace Compressor.Factory;
 
 public record CompressorType(string MagicNumber, ushort MagicNumberLength = 4);
 

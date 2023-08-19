@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <PackageReference Include="ZstdSharp.Port" Version="0.7.2" />
+    </ItemGroup>
+
+</Project>

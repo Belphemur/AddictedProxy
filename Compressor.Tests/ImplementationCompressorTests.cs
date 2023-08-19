@@ -4,8 +4,8 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using AddictedProxy.Storage.Compressor;
-using AddictedProxy.Storage.Compressor.Factory.Impl;
+using Compressor.Factory.Impl;
+using FluentAssertions;
 using NUnit.Framework;
 
 #endregion
@@ -28,7 +28,7 @@ public class ImplementationCompressorTests
         await decompressed.CopyToAsync(memoryResult);
 
         var decompressedBytes = memoryResult.ToArray();
-        Assert.AreEqual(text, Encoding.UTF8.GetString(decompressedBytes));
+        Encoding.UTF8.GetString(decompressedBytes).Should().Be(text);
     }
     
     [Test]
@@ -45,6 +45,6 @@ public class ImplementationCompressorTests
         await decompressed.CopyToAsync(memoryResult);
 
         var decompressedBytes = memoryResult.ToArray();
-        Assert.AreEqual(text, Encoding.UTF8.GetString(decompressedBytes));
+        Encoding.UTF8.GetString(decompressedBytes).Should().Be(text);
     }
 }

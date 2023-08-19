@@ -1,9 +1,15 @@
-﻿using InversionOfControl.Model.Factory;
+﻿namespace Compressor;
 
-namespace AddictedProxy.Storage.Compressor.Factory;
-
-public interface ICompressorService : IEnumService<CompressorType>
+public interface ICompressor
 {
+    /// <summary>
+    /// Get the full file name in the storage
+    /// </summary>
+    /// <param name="file"></param>
+    /// <returns></returns>
+    [Obsolete("Will always return the same value as the input parameter + .brotli for backward compatibility")]
+    public string GetFileName(string file);
+
     /// <summary>
     /// Compress input stream to output stream
     /// </summary>

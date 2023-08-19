@@ -1,8 +1,6 @@
-﻿using AddictedProxy.Storage.Compressor.Factory;
-using AddictedProxy.Storage.Extensions;
-using InversionOfControl.Model.Factory;
+﻿using Compressor.Factory;
 
-namespace AddictedProxy.Storage.Compressor;
+namespace Compressor;
 
 public class Compressor : ICompressor
 {

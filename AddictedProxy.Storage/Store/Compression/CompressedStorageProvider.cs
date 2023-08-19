@@ -1,4 +1,4 @@
-﻿using AddictedProxy.Storage.Compressor;
+﻿using Compressor;
 
 namespace AddictedProxy.Storage.Store.Compression;
 
