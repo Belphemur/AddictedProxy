@@ -43,21 +43,13 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Remove="publish\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Remove="publish\**" />
-    </ItemGroup>
+    <PropertyGroup>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    </PropertyGroup>
 
     <ItemGroup>
         <None Remove="publish\**" />
         <None Remove="Dockerfile" />
-    </ItemGroup>
-
-    <ItemGroup>
         <Content Remove="publish\**" />
     </ItemGroup>
 
