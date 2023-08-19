@@ -19,7 +19,8 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
     private readonly Counter _cacheHitCounter;
     private readonly Counter _cacheMissCounter;
 
-    public DistributedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache, IOptions<StorageCachingConfig> cachingConfig, ICompressor compressor, IPerformanceTracker performanceTracker)
+    public DistributedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache, IOptions<StorageCachingConfig> cachingConfig, ICompressor compressor,
+                                            IPerformanceTracker performanceTracker)
     {
         _storageProvider = storageProvider;
         _distributedCache = distributedCache;
@@ -71,7 +72,12 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         var stream = await _storageProvider.DownloadAsync(filename, cancellationToken);
         if (stream == null)
         {
-            return stream;
+            //try with the old file format using the extension of the compressor before it was removed
+            stream = await _storageProvider.DownloadAsync($"{filename}.brotli", cancellationToken);
+            if (stream == null)
+            {
+                return stream;
+            }
         }
 
         span.SetTag("cache.result", "miss");
