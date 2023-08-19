@@ -11,8 +11,9 @@ using AddictedProxy.OneTimeMigration.Bootstrap;
 using AddictedProxy.Services.Job.Exception;
 using AddictedProxy.Stats.Popularity.Bootstrap;
 using AddictedProxy.Storage.Caching.Bootstrap;
-using AddictedProxy.Storage.Compressor.Bootstrap;
+using AddictedProxy.Storage.Store.Compression.Bootstrap;
 using AddictedProxy.Upstream.Boostrap;
+using Compressor.Bootstrap;
 using Hangfire.Storage;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -69,7 +70,8 @@ var currentAssemblies = new[]
     typeof(BootstrapCulture).Assembly,
     typeof(BootstrapStorageCaching).Assembly,
     typeof(BootstrapMigration).Assembly,
-    typeof(BootstrapImage).Assembly
+    typeof(BootstrapImage).Assembly,
+    typeof(BootstrapStoreCompression).Assembly
 };
 
 builder.Services

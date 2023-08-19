@@ -356,16 +356,6 @@
           "Microsoft.Extensions.Primitives": "2.2.0"
         }
       },
-      "Microsoft.AspNetCore.ResponseCompression": {
-        "type": "Transitive",
-        "resolved": "2.2.0",
-        "contentHash": "RvSstOhebIMDdRLd4iWjA6z2o2kGGwEYGPajvTXwndOA3TZpWH3FOIV4L7mehN/HoKrbTbX5vZ54ZFDwWoAFKA==",
-        "dependencies": {
-          "Microsoft.AspNetCore.Http.Extensions": "2.2.0",
-          "Microsoft.Extensions.Logging.Abstractions": "2.2.0",
-          "Microsoft.Extensions.Options": "2.2.0"
-        }
-      },
       "Microsoft.AspNetCore.Routing": {
         "type": "Transitive",
         "resolved": "2.2.0",
@@ -2054,6 +2044,11 @@
           "System.Reflection.TypeExtensions": "4.7.0"
         }
       },
+      "ZstdSharp.Port": {
+        "type": "Transitive",
+        "resolved": "0.7.2",
+        "contentHash": "mT6Pb7qzDGapJ2ic4dAFqbzHpM+qgnasQIGR/Sofrk0fmKTQSTljG55OFXHbDJczLZWnUAFsg4bKR81uHiKzPg=="
+      },
       "addictedproxy.caching": {
         "type": "Project",
         "dependencies": {
@@ -2117,8 +2112,8 @@
         "type": "Project",
         "dependencies": {
           "AWSSDK.S3": "[3.7.202.*, )",
-          "InversionOfControl": "[1.0.0, )",
-          "Microsoft.AspNetCore.ResponseCompression": "[2.2.0, )"
+          "Compressor": "[1.0.0, )",
+          "InversionOfControl": "[1.0.0, )"
         }
       },
       "addictedproxy.storage.caching": {
@@ -2126,6 +2121,7 @@
         "dependencies": {
           "AddictedProxy.Caching": "[1.0.0, )",
           "AddictedProxy.Storage": "[1.0.0, )",
+          "Compressor": "[1.0.0, )",
           "Performance": "[1.0.0, )"
         }
       },
@@ -2149,6 +2145,13 @@
           "Polly.Extensions.Http": "[3.0.0, )",
           "Sentry": "[3.35.1, )",
           "System.Text.Json": "[7.0.3, )"
+        }
+      },
+      "compressor": {
+        "type": "Project",
+        "dependencies": {
+          "InversionOfControl": "[1.0.0, )",
+          "ZstdSharp.Port": "[0.7.2, )"
         }
       },
       "inversionofcontrol": {
