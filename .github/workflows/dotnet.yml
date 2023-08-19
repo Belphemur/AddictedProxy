@@ -16,7 +16,6 @@ env:
   PROJECT_NAME_FRONTEND: "AddictedProxy-frontend"
   NODEJS: lts/*
   DOTNET: "7.0.x"
-  DOTNET_PRERELEASE: true
   sentry_project: "addictedproxy"
   SENTRY_ORG: "soundswitch"
   # Use docker.io for Docker Hub if empty
@@ -53,10 +52,10 @@ jobs:
         if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
         with:
           dotnet-version: ${{ env.DOTNET }}
-          include-prerelease: ${{ env.DOTNET_PRERELEASE }}
+          cache: true
       - name: Restore
         if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
-        run: dotnet restore
+        run: dotnet restore --locked-mode
       - name: Build
         if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
         run: dotnet build -c Release --no-restore ${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.csproj
