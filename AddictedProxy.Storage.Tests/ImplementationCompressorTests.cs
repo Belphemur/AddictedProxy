@@ -11,24 +11,18 @@ using NUnit.Framework;
 
 namespace AddictedProxy.Storage.Tests;
 
-public class CompressorTests
+public class ImplementationCompressorTests
 {
-    private readonly BrotliCompressor _compressor;
-
-    public CompressorTests()
-    {
-        _compressor = new BrotliCompressor();
-    }
-
     [Test]
-    public async Task CompressDecompress()
+    public async Task CompressDecompressBrotli()
     {
         const string text = "Hello World World World World World";
         var buffer = Encoding.UTF8.GetBytes(text);
         await using var memory = new MemoryStream(buffer);
-        await using var compressed = await _compressor.CompressAsync(memory, CancellationToken.None);
+        BrotliCompressor compressor = new();
+        await using var compressed = await compressor.CompressAsync(memory, CancellationToken.None);
 
-        await using var decompressed = await _compressor.DecompressAsync(compressed, CancellationToken.None);
+        await using var decompressed = await compressor.DecompressAsync(compressed, CancellationToken.None);
         await using var memoryResult = new MemoryStream();
         await decompressed.CopyToAsync(memoryResult);
 
