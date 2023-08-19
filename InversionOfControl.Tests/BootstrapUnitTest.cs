@@ -36,16 +36,20 @@ public class Tests
     }
 
     [Test]
-    public void TestFactoryRegistration()
+    public void TestFactoriesRegistration()
     {
         var bootstrapRegister = new BootstrapRegister();
         var serviceCollection = new ServiceCollection();
         bootstrapRegister.RegisterBootstrapServices(serviceCollection, Substitute.For<IConfiguration>(), typeof(BoostrapServiceMock).Assembly);
         var serviceProvider = serviceCollection.BuildServiceProvider();
-        var baseService = serviceProvider.GetRequiredService<EnumFactory<FactType, IFactoryServiceMock>>();
-        baseService.Should().NotBeNull();
-        baseService.GetService(FactType.Foo).Should().BeOfType<FooService>();
-        baseService.GetService(FactType.Test).Should().BeOfType<TestService>();
-
+        var factory1 = serviceProvider.GetRequiredService<EnumFactory<FactType, IFactoryServiceMock>>();
+        factory1.Should().NotBeNull();
+        factory1.GetService(FactType.Foo).Should().BeOfType<FooService>();
+        factory1.GetService(FactType.Test).Should().BeOfType<TestService>();
+        
+        var factory2 = serviceProvider.GetRequiredService<EnumFactory<FactType2, IFactoryServiceMock2>>();
+        factory2.Should().NotBeNull();
+        factory2.GetService(FactType2.Foo).Should().BeOfType<FooService2>();
+        factory2.GetService(FactType2.Test).Should().BeOfType<TestService2>();
     }
 }
