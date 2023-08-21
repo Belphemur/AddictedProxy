@@ -43,7 +43,7 @@ public class BrotliSignedCompressor : ICompressorService
     /// <returns>Task</returns>
     public Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken = default)
     {
-        inputStream.Seek(Definition.MagicNumberLength, SeekOrigin.Current);
+        inputStream.Seek(Definition.MagicNumberLength, SeekOrigin.Begin);
         var brotliStream = new BrotliStream(inputStream, CompressionMode.Decompress);
         return Task.FromResult<Stream>(brotliStream);
     }

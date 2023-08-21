@@ -22,15 +22,21 @@ public class Compressor : ICompressor
 
     public async Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken)
     {
-        var memoryStream = new MemoryStream();
-        await inputStream.CopyToAsync(memoryStream, cancellationToken);
+        var stream = inputStream;
+        //Small optimization, only copy the stream if it is not seekable to avoid copying the stream
+        if (!inputStream.CanSeek)
+        {
+            stream = new MemoryStream();
+            await inputStream.CopyToAsync(stream, cancellationToken);
+        }
+
         try
         {
-            return await (await _factory.GetServiceByMagicNumberAsync(memoryStream, cancellationToken)).DecompressAsync(memoryStream, cancellationToken);
+            return await (await _factory.GetServiceByMagicNumberAsync(stream, cancellationToken)).DecompressAsync(stream, cancellationToken);
         }
         catch (ArgumentOutOfRangeException)
         {
-            return await _factory.GetService(AlgorithmEnum.BrotliDefault).DecompressAsync(memoryStream, cancellationToken);
+            return await _factory.GetService(AlgorithmEnum.BrotliDefault).DecompressAsync(stream, cancellationToken);
         }
     }
 }
