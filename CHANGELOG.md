@@ -1,3 +1,10 @@
+## [4.17.5](https://github.com/Belphemur/AddictedProxy/compare/v4.17.4...v4.17.5) (2023-08-21)
+
+
+### Bug Fixes
+
+* put the lib where .NET expect it ([73f6767](https://github.com/Belphemur/AddictedProxy/commit/73f676792887efabc060f4c0decc85430e0216c9))
+
 ## [4.17.4](https://github.com/Belphemur/AddictedProxy/compare/v4.17.3...v4.17.4) (2023-08-21)
 
 
