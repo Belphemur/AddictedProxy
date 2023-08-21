@@ -1,3 +1,12 @@
+## [4.17.2](https://github.com/Belphemur/AddictedProxy/compare/v4.17.1...v4.17.2) (2023-08-21)
+
+
+### Performance improvements
+
+* **pyroscope:** remove pyroscope ([b2efc81](https://github.com/Belphemur/AddictedProxy/commit/b2efc818e9f1a841b113319d660488a712d0f120))
+* **zstd:** add lib to base image ([5f3f7f8](https://github.com/Belphemur/AddictedProxy/commit/5f3f7f8730e204ca224a75c7053067f4e761c48a))
+* **zstd:** Replace package to use the wrapper to the lib ([77a69fc](https://github.com/Belphemur/AddictedProxy/commit/77a69fc3c68ff603c51fdd8858961515649a7058))
+
 ## [4.17.1](https://github.com/Belphemur/AddictedProxy/compare/v4.17.0...v4.17.1) (2023-08-21)
 
 
