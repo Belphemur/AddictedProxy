@@ -1,3 +1,10 @@
+## [4.17.1](https://github.com/Belphemur/AddictedProxy/compare/v4.17.0...v4.17.1) (2023-08-21)
+
+
+### Performance improvements
+
+* **compressor:** small optimization to avoid memory allocation if not needed ([14cffdc](https://github.com/Belphemur/AddictedProxy/commit/14cffdc826fcef30b997827858a98070db7d6cf0))
+
 ## [4.17.0](https://github.com/Belphemur/AddictedProxy/compare/v4.16.6...v4.17.0) (2023-08-19)
 
 
