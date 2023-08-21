@@ -1,13 +1,13 @@
 ARG MAIN_PROJECT=AddictedProxy
 ARG DATA_DIRECTORY="/data"
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine	 AS base
-RUN apk add --no-cache zstd-libs curl
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+RUN apt update && apt install -y curl zstd && apt-get clean
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 ARG MAIN_PROJECT
 WORKDIR /src
 COPY . .
