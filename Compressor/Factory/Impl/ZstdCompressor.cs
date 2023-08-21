@@ -1,14 +1,12 @@
 ﻿using Compressor.Utils;
-using ZstdSharp;
+using ZstdNet;
 
 namespace Compressor.Factory.Impl;
 
-public class ZstdCompressor : ICompressorService, IDisposable
+public class ZstdCompressor : ICompressorService
 {
     public AlgorithmEnum Enum => AlgorithmEnum.Zstd;
-
-    private readonly ZstdSharp.Compressor _compressor = new(3);
-    private readonly Decompressor _decompressor = new();
+    
 
     public CompressorDefinition Definition { get; } =  new("28-B5-2F-FD");
 
@@ -16,7 +14,7 @@ public class ZstdCompressor : ICompressorService, IDisposable
     {
         var outputStream = new MemoryStream();
         {
-            await using var compressionStream = new CompressionStream(outputStream, _compressor);
+            await using var compressionStream = new CompressionStream(outputStream, new CompressionOptions(5));
             await inputStream.CopyToAsync(compressionStream, cancellationToken);
             await compressionStream.FlushAsync(cancellationToken);
         }
@@ -26,13 +24,7 @@ public class ZstdCompressor : ICompressorService, IDisposable
 
     public Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken)
     {
-        var decompressionStream = new DecompressionStream(inputStream, _decompressor);
+        var decompressionStream = new DecompressionStream(inputStream);
         return Task.FromResult<Stream>(decompressionStream);
-    }
-
-    public void Dispose()
-    {
-        _compressor.Dispose();
-        _decompressor.Dispose();
     }
 }

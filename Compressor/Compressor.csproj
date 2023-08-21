@@ -12,9 +12,6 @@
 
 
     <ItemGroup>
-      <PackageReference Include="ZstdSharp.Port" Version="0.7.2" />
+      <PackageReference Include="ZstdNet" Version="1.4.5" />
     </ItemGroup>
-
-
-
 </Project>

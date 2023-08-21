@@ -2044,10 +2044,10 @@
           "System.Reflection.TypeExtensions": "4.7.0"
         }
       },
-      "ZstdSharp.Port": {
+      "ZstdNet": {
         "type": "Transitive",
-        "resolved": "0.7.2",
-        "contentHash": "mT6Pb7qzDGapJ2ic4dAFqbzHpM+qgnasQIGR/Sofrk0fmKTQSTljG55OFXHbDJczLZWnUAFsg4bKR81uHiKzPg=="
+        "resolved": "1.4.5",
+        "contentHash": "fi9aP1QY3ZenIMUW1pxdSjku6lYAUjScrwfXSXT1qyKtTdLxOIzeBMe+w/hQm0vMsvQnjcFInByMrIT7AlXUHA=="
       },
       "addictedproxy.caching": {
         "type": "Project",
@@ -2151,7 +2151,7 @@
         "type": "Project",
         "dependencies": {
           "InversionOfControl": "[1.0.0, )",
-          "ZstdSharp.Port": "[0.7.2, )"
+          "ZstdNet": "[1.4.5, )"
         }
       },
       "inversionofcontrol": {
