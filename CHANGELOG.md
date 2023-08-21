@@ -1,3 +1,10 @@
+## [4.17.7](https://github.com/Belphemur/AddictedProxy/compare/v4.17.6...v4.17.7) (2023-08-21)
+
+
+### Bug Fixes
+
+* **brotli:** fix issue with brotli compression ([b1645cb](https://github.com/Belphemur/AddictedProxy/commit/b1645cb7c7da1a94fe288a7a0fff0193c538d193))
+
 ## [4.17.6](https://github.com/Belphemur/AddictedProxy/compare/v4.17.5...v4.17.6) (2023-08-21)
 
 
