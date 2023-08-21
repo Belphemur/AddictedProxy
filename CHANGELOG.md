@@ -1,3 +1,10 @@
+## [4.17.4](https://github.com/Belphemur/AddictedProxy/compare/v4.17.3...v4.17.4) (2023-08-21)
+
+
+### Bug Fixes
+
+* libzstd missing ([919f1f1](https://github.com/Belphemur/AddictedProxy/commit/919f1f148dbb907d3541be8ff531776f6c1e5b4b))
+
 ## [4.17.3](https://github.com/Belphemur/AddictedProxy/compare/v4.17.2...v4.17.3) (2023-08-21)
 
 
