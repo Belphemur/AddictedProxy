@@ -39,4 +39,9 @@ public class Compressor : ICompressor
             return await _factory.GetService(AlgorithmEnum.BrotliDefault).DecompressAsync(stream, cancellationToken);
         }
     }
+
+    public Task<Stream> DecompressAsync(AlgorithmEnum compressionAlgo, Stream inputStream, CancellationToken cancellationToken)
+    {
+        return _factory.GetService(compressionAlgo).DecompressAsync(inputStream, cancellationToken);
+    }
 }
