@@ -20,7 +20,9 @@
         </PackageReference>
        </ItemGroup>
 
-
+    <ItemGroup>
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.5" />
+    </ItemGroup>
 
 
 </Project>

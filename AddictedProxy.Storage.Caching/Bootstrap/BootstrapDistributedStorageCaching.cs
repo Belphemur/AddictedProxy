@@ -10,6 +10,6 @@ public class BootstrapDistributedStorageCaching : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<ICachedStorageProvider, DistributedCompressedCachedStorageProvider>();
+        services.AddSingleton<ICachedStorageProvider, DistributedCachedStorageProvider>();
     }
 }
