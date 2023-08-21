@@ -142,15 +142,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.201.1",
-        "contentHash": "GZAtrPaGmJliLErODJFnFJL2HnWVl+qsVz8dBXHfkAGxUejfFB+bAC/FOHd2ejrSL3OrkgIXMne1CHal2wGQKA=="
+        "resolved": "3.7.201.2",
+        "contentHash": "+qogawhVSu1m7T7u5uZKsJeOKze+4Nsj94V45EKZrxKurwKGfJ8eMRbyauHHjfOBENxz6O6nA5qKnfGaZTjSgw=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.202.1",
-        "contentHash": "yF26miXNaqkKEMzyEv4s+Wj2coZWpTCqOCgvie9E6Jl71u8MpRleLK3DYxJBrTydSrYVrDLNpPWavMHXE1NoCg==",
+        "resolved": "3.7.202.2",
+        "contentHash": "Ek0PzrC0mGYUKpOLORaxwINBrhuZjLqdP6Yfi9TfmYsmY7/iHe/0f2yBq/MgkQrdOIDUL9ZLiWi1pHkIGzh3iw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.201.1, 4.0.0)"
+          "AWSSDK.Core": "[3.7.201.2, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -2113,6 +2113,7 @@
         "dependencies": {
           "AWSSDK.S3": "[3.7.202.*, )",
           "Compressor": "[1.0.0, )",
+          "Hangfire.AspNetCore": "[1.8.5, )",
           "InversionOfControl": "[1.0.0, )"
         }
       },

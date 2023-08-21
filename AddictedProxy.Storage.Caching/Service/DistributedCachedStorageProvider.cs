@@ -1,6 +1,7 @@
 using AddictedProxy.Storage.Caching.Model;
 using AddictedProxy.Storage.Extensions;
 using AddictedProxy.Storage.Store;
+using AddictedProxy.Storage.Store.Compression;
 using Compressor;
 using Compressor.Factory;
 using Microsoft.Extensions.Caching.Distributed;
@@ -10,23 +11,23 @@ using Prometheus;
 
 namespace AddictedProxy.Storage.Caching.Service;
 
-public class DistributedCompressedCachedStorageProvider : ICachedStorageProvider
+public class DistributedCachedStorageProvider : ICachedStorageProvider
 {
-    private readonly IStorageProvider _storageProvider;
     private readonly IDistributedCache _distributedCache;
     private readonly IOptions<StorageCachingConfig> _cachingConfig;
-    private readonly ICompressor _compressor;
     private readonly IPerformanceTracker _performanceTracker;
     private readonly Counter _cacheHitCounter;
     private readonly Counter _cacheMissCounter;
+    private readonly ICompressedStorageProvider _compressedStorageProvider;
 
-    public DistributedCompressedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache, IOptions<StorageCachingConfig> cachingConfig, ICompressor compressor,
+    public DistributedCachedStorageProvider(ICompressedStorageProvider compressedCompressedStorageProvider,
+                                                      IDistributedCache distributedCache, 
+                                                      IOptions<StorageCachingConfig> cachingConfig,
                                                       IPerformanceTracker performanceTracker)
     {
-        _storageProvider = storageProvider;
+        _compressedStorageProvider = compressedCompressedStorageProvider;
         _distributedCache = distributedCache;
         _cachingConfig = cachingConfig;
-        _compressor = compressor;
         _performanceTracker = performanceTracker;
         _cacheHitCounter = Metrics.CreateCounter("cache_storage_hits", "Number of hits of the storage's cache", new CounterConfiguration
         {
@@ -52,7 +53,7 @@ public class DistributedCompressedCachedStorageProvider : ICachedStorageProvider
         return memoryStream;
     }
 
-    private string GetCacheKey(string sharding, string filename) => $"{{{sharding}}}/{filename}";
+    private string GetCacheKey(string sharding, string filename) => $"{{{sharding}}}/{filename}/[v2]";
 
 
     public async Task<Stream?> GetSertAsync(string shardingKey, string filename, CancellationToken cancellationToken)
@@ -64,24 +65,15 @@ public class DistributedCompressedCachedStorageProvider : ICachedStorageProvider
         {
             span.SetTag("cache.result", "hit");
             _cacheHitCounter.Inc();
-            var memoryStream = new MemoryStream(cachedData);
-            return await _compressor.DecompressAsync(memoryStream, cancellationToken);
+            return new MemoryStream(cachedData);
         }
 
-        var isOldBrotli = false;
         //We use the normal storage provider that will contain the already compressed file
         //because StoreSubtitle use the compressed storage provider
-        var stream = await _storageProvider.DownloadAsync(filename, cancellationToken);
+        var stream = await _compressedStorageProvider.DownloadAsync(filename, cancellationToken);
         if (stream == null)
         {
-            //try with the old file format using the extension of the compressor before it was removed
-            stream = await _storageProvider.DownloadAsync($"{filename}.brotli", cancellationToken);
-            if (stream == null)
-            {
-                return stream;
-            }
-
-            isOldBrotli = true;
+            return null;
         }
 
         span.SetTag("cache.result", "miss");
@@ -96,11 +88,6 @@ public class DistributedCompressedCachedStorageProvider : ICachedStorageProvider
             AbsoluteExpirationRelativeToNow = _cachingConfig.Value.Absolute
         }, cancellationToken);
 
-        if (isOldBrotli)
-        {
-            return await _compressor.DecompressAsync(AlgorithmEnum.BrotliDefault, memStream, cancellationToken);
-        }
-
-        return await _compressor.DecompressAsync(memStream, cancellationToken);
+        return memStream;
     }
 }

@@ -18,4 +18,11 @@ public interface IStorageProvider
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task<Stream?> DownloadAsync(string filename, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Delete the specific file
+    /// </summary>
+    /// <param name="filename"></param>
+    /// <param name="cancellationToken"></param>
+    Task DeleteAsync(string filename, CancellationToken cancellationToken);
 }

@@ -1,6 +1,8 @@
-﻿using Compressor;
+﻿using AddictedProxy.Storage.Store.Compression.Job;
+using Compressor;
 using Compressor.Factory;
 using Compressor.Factory.Impl;
+using Hangfire;
 
 namespace AddictedProxy.Storage.Store.Compression;
 
@@ -31,12 +33,20 @@ public class CompressedStorageProvider : ICompressedStorageProvider
         }
 
         //old file name format using the extension of the compressor
-        stream = await _storageProvider.DownloadAsync($"{filename}.brotli", cancellationToken);
+        var oldPath = $"{filename}.brotli";
+        stream = await _storageProvider.DownloadAsync(oldPath, cancellationToken);
         if (stream == null)
         {
             return stream;
         }
 
+        BackgroundJob.Enqueue<MigrateCompressionJob>(x => x.ExecuteAsync(oldPath, cancellationToken));
+
         return await _compressor.DecompressAsync(AlgorithmEnum.BrotliDefault, stream, cancellationToken);
+    }
+
+    public Task DeleteAsync(string filename, CancellationToken cancellationToken)
+    {
+        return _storageProvider.DeleteAsync(filename, cancellationToken);
     }
 }

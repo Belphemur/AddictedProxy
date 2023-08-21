@@ -38,6 +38,13 @@ public class S3StorageProvider : IStorageProvider
         return result?.HttpStatusCode == HttpStatusCode.OK;
     }
 
+    /// <summary>
+    /// Delete the specific file
+    /// </summary>
+    /// <param name="filename"></param>
+    /// <param name="cancellationToken"></param>
+    public async Task DeleteAsync(string filename, CancellationToken cancellationToken) => await _awsS3Client.DeleteObjectAsync(_s3Config.Bucket, filename, cancellationToken);
+
     public async Task<Stream?> DownloadAsync(string filename, CancellationToken cancellationToken)
     {
         try
