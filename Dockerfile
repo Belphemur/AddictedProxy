@@ -1,13 +1,13 @@
 ARG MAIN_PROJECT=AddictedProxy
 ARG DATA_DIRECTORY="/data"
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-bookworm-slim AS base
 RUN apt update && apt install -y curl zstd && apt-get clean
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0-bookworm-slim AS build
 ARG MAIN_PROJECT
 WORKDIR /src
 COPY . .
