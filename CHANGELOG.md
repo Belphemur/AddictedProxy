@@ -1,3 +1,10 @@
+## [4.17.3](https://github.com/Belphemur/AddictedProxy/compare/v4.17.2...v4.17.3) (2023-08-21)
+
+
+### Bug Fixes
+
+* **compressor:** fix issue with ZSTD lib ([7ed5d65](https://github.com/Belphemur/AddictedProxy/commit/7ed5d6597437e71c7861a70d620621a78512f378))
+
 ## [4.17.2](https://github.com/Belphemur/AddictedProxy/compare/v4.17.1...v4.17.2) (2023-08-21)
 
 
