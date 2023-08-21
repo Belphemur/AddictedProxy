@@ -2,6 +2,7 @@ ARG MAIN_PROJECT=AddictedProxy
 ARG DATA_DIRECTORY="/data"
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine	 AS base
+RUN apk add --no-cache zstd-libs
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
