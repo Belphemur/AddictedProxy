@@ -1,4 +1,6 @@
-﻿namespace Compressor;
+﻿using Compressor.Factory;
+
+namespace Compressor;
 
 public interface ICompressor
 {
@@ -17,4 +19,13 @@ public interface ICompressor
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Task</returns>
     Task<Stream> DecompressAsync(Stream inputStream, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Decompress using a specific algorithm
+    /// </summary>
+    /// <param name="compressionAlgo"></param>
+    /// <param name="inputStream"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<Stream> DecompressAsync(AlgorithmEnum compressionAlgo, Stream inputStream, CancellationToken cancellationToken);
 }

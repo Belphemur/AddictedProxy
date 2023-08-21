@@ -1,4 +1,6 @@
 ﻿using Compressor;
+using Compressor.Factory;
+using Compressor.Factory.Impl;
 
 namespace AddictedProxy.Storage.Store.Compression;
 
@@ -35,6 +37,6 @@ public class CompressedStorageProvider : ICompressedStorageProvider
             return stream;
         }
 
-        return await _compressor.DecompressAsync(stream, cancellationToken);
+        return await _compressor.DecompressAsync(AlgorithmEnum.BrotliDefault, stream, cancellationToken);
     }
 }

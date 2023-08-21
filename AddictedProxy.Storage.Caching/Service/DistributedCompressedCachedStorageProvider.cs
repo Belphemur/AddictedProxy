@@ -2,6 +2,7 @@ using AddictedProxy.Storage.Caching.Model;
 using AddictedProxy.Storage.Extensions;
 using AddictedProxy.Storage.Store;
 using Compressor;
+using Compressor.Factory;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Performance.Service;
@@ -9,7 +10,7 @@ using Prometheus;
 
 namespace AddictedProxy.Storage.Caching.Service;
 
-public class DistributedCachedStorageProvider : ICachedStorageProvider
+public class DistributedCompressedCachedStorageProvider : ICachedStorageProvider
 {
     private readonly IStorageProvider _storageProvider;
     private readonly IDistributedCache _distributedCache;
@@ -19,8 +20,8 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
     private readonly Counter _cacheHitCounter;
     private readonly Counter _cacheMissCounter;
 
-    public DistributedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache, IOptions<StorageCachingConfig> cachingConfig, ICompressor compressor,
-                                            IPerformanceTracker performanceTracker)
+    public DistributedCompressedCachedStorageProvider(IStorageProvider storageProvider, IDistributedCache distributedCache, IOptions<StorageCachingConfig> cachingConfig, ICompressor compressor,
+                                                      IPerformanceTracker performanceTracker)
     {
         _storageProvider = storageProvider;
         _distributedCache = distributedCache;
@@ -67,6 +68,7 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
             return await _compressor.DecompressAsync(memoryStream, cancellationToken);
         }
 
+        var isOldBrotli = false;
         //We use the normal storage provider that will contain the already compressed file
         //because StoreSubtitle use the compressed storage provider
         var stream = await _storageProvider.DownloadAsync(filename, cancellationToken);
@@ -78,6 +80,8 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
             {
                 return stream;
             }
+
+            isOldBrotli = true;
         }
 
         span.SetTag("cache.result", "miss");
@@ -91,6 +95,11 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
             SlidingExpiration = _cachingConfig.Value.Sliding,
             AbsoluteExpirationRelativeToNow = _cachingConfig.Value.Absolute
         }, cancellationToken);
+
+        if (isOldBrotli)
+        {
+            return await _compressor.DecompressAsync(AlgorithmEnum.BrotliDefault, memStream, cancellationToken);
+        }
 
         return await _compressor.DecompressAsync(memStream, cancellationToken);
     }
