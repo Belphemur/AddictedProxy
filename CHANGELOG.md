@@ -1,3 +1,15 @@
+## [4.17.6](https://github.com/Belphemur/AddictedProxy/compare/v4.17.5...v4.17.6) (2023-08-21)
+
+
+### Performance improvements
+
+* dockerfile improvement for the zstd lib ([6f312b1](https://github.com/Belphemur/AddictedProxy/commit/6f312b14c6fd5d0e63861db3916e58ae72469686))
+
+
+### Bug Fixes
+
+* **compression:** fix issue with decompression brotli file ([432c85d](https://github.com/Belphemur/AddictedProxy/commit/432c85dcc58db5512caf34da45bfd6902daeba91)), closes [#501](https://github.com/Belphemur/AddictedProxy/issues/501)
+
 ## [4.17.5](https://github.com/Belphemur/AddictedProxy/compare/v4.17.4...v4.17.5) (2023-08-21)
 
 
