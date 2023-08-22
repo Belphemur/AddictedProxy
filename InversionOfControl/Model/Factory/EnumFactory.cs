@@ -3,22 +3,22 @@
 public class EnumFactory<TEnum, TEnumService>
     where TEnumService : IEnumService<TEnum>
 {
-    protected readonly Dictionary<TEnum, TEnumService> ServicesByEnum;
+    private readonly Dictionary<TEnum, TEnumService> _servicesByEnum;
 
     public EnumFactory(IEnumerable<TEnumService> services)
     {
-        ServicesByEnum = services.ToDictionary(service => service.Enum);
+        _servicesByEnum = services.ToDictionary(service => service.Enum);
     }
 
     /// <summary>
     /// Keys of the factory
     /// </summary>
-    public IReadOnlyCollection<TEnum> Keys => ServicesByEnum.Keys;
+    public IReadOnlyCollection<TEnum> Keys => _servicesByEnum.Keys;
 
     /// <summary>
     /// All the services of the factory
     /// </summary>
-    public IReadOnlyCollection<TEnumService> Services => ServicesByEnum.Values;
+    public IReadOnlyCollection<TEnumService> Services => _servicesByEnum.Values;
     /// <summary>
     /// Get the service for the given key
     /// </summary>
@@ -27,7 +27,7 @@ public class EnumFactory<TEnum, TEnumService>
     /// <exception cref="ArgumentOutOfRangeException">If the key isn't present in the factory</exception>
     public TEnumService GetService(TEnum key)
     {
-        if (!ServicesByEnum.TryGetValue(key, out var service))
+        if (!_servicesByEnum.TryGetValue(key, out var service))
         {
             throw new ArgumentOutOfRangeException(nameof(key), key, $"No service ({typeof(TEnumService).Name}) found for the given key: {key}");
         }
