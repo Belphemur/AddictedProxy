@@ -3,3 +3,7 @@
 **/publish
 **/bin
 addicted.*/**
+.git
+.idea
+.github
+node_modules
