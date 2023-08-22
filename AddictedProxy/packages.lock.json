@@ -588,6 +588,14 @@
           "Microsoft.Extensions.Primitives": "7.0.0"
         }
       },
+      "Microsoft.Extensions.FileProviders.Embedded": {
+        "type": "Transitive",
+        "resolved": "7.0.10",
+        "contentHash": "XzWmAHg4YZQ9iAWuv0DhaP6jtn1m08xeP6aW8S6SDkYzC3MDjQbvsgskLywigJBnaAZgt+pR52eG84tS1JxQAQ==",
+        "dependencies": {
+          "Microsoft.Extensions.FileProviders.Abstractions": "7.0.0"
+        }
+      },
       "Microsoft.Extensions.FileProviders.Physical": {
         "type": "Transitive",
         "resolved": "7.0.0",
@@ -2152,6 +2160,7 @@
         "type": "Project",
         "dependencies": {
           "InversionOfControl": "[1.0.0, )",
+          "Microsoft.Extensions.FileProviders.Embedded": "[7.0.10, )",
           "ZstdNet": "[1.4.5, )"
         }
       },
