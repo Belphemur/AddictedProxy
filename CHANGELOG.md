@@ -1,3 +1,12 @@
+## [4.17.8](https://github.com/Belphemur/AddictedProxy/compare/v4.17.7...v4.17.8) (2023-08-22)
+
+
+### Performance improvements
+
+* **compressor:** Add ZSTD compressor trained on subtitles ([ea2e3a5](https://github.com/Belphemur/AddictedProxy/commit/ea2e3a5f2f2f44aa9d639dd03b8b15e320f0c090))
+* **compressor:** change default compressor to be the zst srt dict one ([ff74f8f](https://github.com/Belphemur/AddictedProxy/commit/ff74f8f93c72dfa64aeed1d19277db46b97aafbc))
+* **zstd:** use latest version of the lib ([188a8dd](https://github.com/Belphemur/AddictedProxy/commit/188a8dd475b63fb25c669c2c2c69c8846d669ffc))
+
 ## [4.17.7](https://github.com/Belphemur/AddictedProxy/compare/v4.17.6...v4.17.7) (2023-08-21)
 
 
