@@ -31,4 +31,5 @@ public enum AlgorithmEnum
 
     [Obsolete($"Doesn't have magic number/Signature use {nameof(BrotliWithSignature)} instead. Only here for backward compatibility.")]
     BrotliDefault,
+    ZstdSrtDict
 }

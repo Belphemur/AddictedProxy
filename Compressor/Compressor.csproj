@@ -12,6 +12,12 @@
 
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="7.0.10" />
       <PackageReference Include="ZstdNet" Version="1.4.5" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <EmbeddedResource Include="Model\srt-dict" />
     </ItemGroup>
 </Project>

@@ -1,9 +1,11 @@
-﻿using System.IO;
+﻿using System.Collections;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Compressor;
 using Compressor.Bootstrap;
+using Compressor.Factory;
 using Compressor.Factory.Impl;
 using FluentAssertions;
 using InversionOfControl.Service.Bootstrap;
@@ -14,10 +16,27 @@ using NUnit.Framework;
 
 namespace AddictedProxy.Storage.Tests;
 
+
+
 public class CompressorTest
 {
-
+    public class CompressorProvider : IEnumerable
+    {
+        public IEnumerator GetEnumerator()
+        {
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddBootstrap(Substitute.For<IConfiguration>(), typeof(BootstrapCompressor).Assembly);
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+            var factory = serviceProvider.GetRequiredService<CompressorFactory>();
+            foreach (var service in factory.Services)
+            {
+                yield return new object[] { service };
+            }
+        }
+    }
+    
     private ICompressor? _compressor;
+
     [OneTimeSetUp]
     public void OneTimeSetup()
     {
@@ -26,48 +45,69 @@ public class CompressorTest
         var serviceProvider = serviceCollection.BuildServiceProvider();
         _compressor = serviceProvider.GetRequiredService<ICompressor>();
     }
-    [Test]
-    public async Task CompressDecompressWithZstd()
+
+
+    [TestCaseSource(typeof(CompressorProvider))]
+    public async Task CompressAndDecompressUsingMainCompressor(ICompressorService compressor)
     {
-        const string text = "Hello World World World World World";
+        #region srt file
+
+        const string text = @"1
+                              00:00:10,510 --> 00:00:12,044
+                              Quel genre de personne es-tu ?
+                              
+                              2
+                              00:00:12,078 --> 00:00:13,879
+                              Comment peux-tu 
+                              vouloir le garder secret ?
+                              
+                              3
+                              00:00:13,914 --> 00:00:15,714
+                              Calme-toi ! 
+                              Pense aux voisins !
+                              
+                              4
+                              00:00:15,749 --> 00:00:17,650
+                              Les voisins ?! Mais je me 
+                              fous de ces saletés de voisins !
+                              
+                              5
+                              00:00:17,684 --> 00:00:18,901
+                              Je  ne peux pas te parler 
+                              quand t'es comme ça !
+                              
+                              6
+                              00:00:18,902 --> 00:00:20,119
+                              Tu as perdu la tête !
+                              
+                              7
+                              00:00:20,153 --> 00:00:21,854
+                              Tu es un lâche ! Je vais 
+                              le dire à tout le monde !
+                              
+                              8
+                              00:00:21,888 --> 00:00:24,089
+                              C'est arrivé ! 
+                              Que veux-tu que j'y fasse ?!
+                              
+                              9
+                              00:00:24,124 --> 00:00:25,458
+                              Ethan, tu fais quoi ?
+                              
+                              10
+                              00:00:25,492 --> 00:00:28,360
+                              Je t'ai dit d'aller dormir
+                              il y a une heure.
+                              
+                              11
+                              00:00:28,395 --> 00:00:29,895
+                              Maman, regarde.";
+
+        #endregion
+
         var buffer = Encoding.UTF8.GetBytes(text);
         await using var memory = new MemoryStream(buffer);
-        ZstdCompressor compressor = new();
         await using var compressed = await compressor.CompressAsync(memory, CancellationToken.None);
-
-        await using var decompressed = await _compressor!.DecompressAsync(compressed, CancellationToken.None);
-        await using var memoryResult = new MemoryStream();
-        await decompressed.CopyToAsync(memoryResult);
-
-        var decompressedBytes = memoryResult.ToArray();
-        Encoding.UTF8.GetString(decompressedBytes).Should().Be(text);
-    }
-    
-    [Test]
-    public async Task CompressDecompressWithBrotliSigned()
-    {
-        const string text = "Hello World World World World World";
-        var buffer = Encoding.UTF8.GetBytes(text);
-        await using var memory = new MemoryStream(buffer);
-        BrotliSignedCompressor signedCompressor = new();
-        await using var compressed = await signedCompressor.CompressAsync(memory, CancellationToken.None);
-
-        await using var decompressed = await _compressor!.DecompressAsync(compressed, CancellationToken.None);
-        await using var memoryResult = new MemoryStream();
-        await decompressed.CopyToAsync(memoryResult);
-
-        var decompressedBytes = memoryResult.ToArray();
-        Encoding.UTF8.GetString(decompressedBytes).Should().Be(text);
-    }
-    
-    [Test]
-    public async Task CompressDecompressWithBrotliUnsigned()
-    {
-        const string text = "Hello World World World World World";
-        var buffer = Encoding.UTF8.GetBytes(text);
-        await using var memory = new MemoryStream(buffer);
-        BrotliCompressor signedCompressor = new();
-        await using var compressed = await signedCompressor.CompressAsync(memory, CancellationToken.None);
 
         await using var decompressed = await _compressor!.DecompressAsync(compressed, CancellationToken.None);
         await using var memoryResult = new MemoryStream();
