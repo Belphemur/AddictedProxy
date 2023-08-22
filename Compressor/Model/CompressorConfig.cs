@@ -7,5 +7,5 @@ public class CompressorConfig
     /// <summary>
     /// What algorithm to use for compression
     /// </summary>
-    public AlgorithmEnum Algorithm { get; set; } = AlgorithmEnum.Zstd;
+    public AlgorithmEnum Algorithm { get; set; } = AlgorithmEnum.ZstdSrtDict;
 }
