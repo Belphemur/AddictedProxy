@@ -24,7 +24,7 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="all" Version="1.0.3"><IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 </PackageReference>
-    <PackageReference Include="SQlitePCLRaw.bundle_e_sqlite3" PrivateAssets="All" Version="2.1.4" />
+    <PackageReference Include="SQlitePCLRaw.bundle_e_sqlite3" PrivateAssets="All" Version="2.1.6" />
   </ItemGroup>
 
 </Project>
