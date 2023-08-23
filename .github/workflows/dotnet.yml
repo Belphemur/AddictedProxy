@@ -45,6 +45,8 @@ jobs:
               - 'Addicted*/**'
               - 'Locking/**'
               - 'InversionOfControl/**'
+              - 'Compressor/**'
+              - 'TvMovieDatabaseClient/**'
             node:
               - 'package.json'
       - name: Setup .NET
