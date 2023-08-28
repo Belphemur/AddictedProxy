@@ -52,9 +52,9 @@
       },
       "Hangfire.PostgreSql": {
         "type": "Direct",
-        "requested": "[1.20.1, )",
-        "resolved": "1.20.1",
-        "contentHash": "gWZ4qKxTEEIRG+JTCxiyvX7s+DCfWiuJX2nPGJtRMJCbR3dqJc9Pl/AqXMo8k//xQDy7Uq/aO8+xXKdgtfLvqA==",
+        "requested": "[1.20.2, )",
+        "resolved": "1.20.2",
+        "contentHash": "KfugWOYQXvOD2vJzMwzxIe5X/K9AU/vmXr5Q4CTocYi2odb7NSBotjBNd3/Az26sZmao3x5UHcCHuZnrNNYoRA==",
         "dependencies": {
           "Dapper": "2.0.123",
           "Hangfire.Core": "1.8.0",
@@ -142,15 +142,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.201.3",
-        "contentHash": "kCnvOYDiP6pXAlysXwfZP3cEcgpoJiakH0yDkr0c5He8nDn29FPlRx3KG+iEYCxESoDkHpvMGWNTgh4omigyFA=="
+        "resolved": "3.7.201.4",
+        "contentHash": "IE31e8e22Rz+odUqEFv6c2cYgvWKOHY9S9zMpg2L9UhPV/O+5qRKWakUjQgplU5cgpaHzc/q59dwINlQvVIlnQ=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.202.3",
-        "contentHash": "6P6vKyxxzqnEI+Rq/8jP6n5g1ENaToqgGxNXgq8fBZO8qBOfeqXAYb0DC0pAa7DJdVYHe1B+ytZZRCa7lblMZg==",
+        "resolved": "3.7.202.4",
+        "contentHash": "tbVjNOwhiCuTAaumALbWKdJYrZFLtC2vnezBzNcO/E1vxWLwjdf+TckvXibrOJ4BaDHKG6XSjMZG3vsw/R2E0w==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.201.3, 4.0.0)"
+          "AWSSDK.Core": "[3.7.201.4, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
