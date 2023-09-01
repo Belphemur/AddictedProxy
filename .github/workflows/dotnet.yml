@@ -93,6 +93,9 @@ jobs:
         run: npx semantic-release -d
 
   main-release:
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     name: "Prepare release"
     needs: [ build ]
     if: github.ref == 'refs/heads/main'
@@ -100,11 +103,6 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.11.0
-        with:
-          all_but_latest: true
-          access_token: ${{ github.token }}
       - uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v3.8.1
