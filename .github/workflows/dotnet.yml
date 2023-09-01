@@ -84,7 +84,7 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         if: steps.filter.outputs.node == 'true'
-        run: pnpm recursive install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
       - name: Release dry run
         if: steps.filter.outputs.node == 'true'
         run: pnpm run release-test
@@ -111,7 +111,7 @@ jobs:
           node-version: lts/*
           cache: 'pnpm'
       - name: Install dependencies
-        run: pnpm recursive install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
       - name: Release
         run: pnpm run release
       - name: Latest Version
@@ -178,7 +178,7 @@ jobs:
           cache-dependency-path: "${{matrix.context}}pnpm-lock.yaml"
       - name: Install dependencies
         if: matrix.frontend == 'true'
-        run: pnpm recursive install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
         working-directory: ${{ matrix.context }}
       - name: Build app {{ matrix.sentry_project }}
         if: matrix.frontend == 'true'
