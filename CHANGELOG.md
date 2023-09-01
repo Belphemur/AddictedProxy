@@ -1,3 +1,11 @@
+## [4.17.10](https://github.com/Belphemur/AddictedProxy/compare/v4.17.9...v4.17.10) (2023-09-01)
+
+
+### Performance improvements
+
+* detect OS ([35e9ca9](https://github.com/Belphemur/AddictedProxy/commit/35e9ca9ff0365d96019f98688124f3c8bf3fd867))
+* optimize the detection of compression algo ([ed8776d](https://github.com/Belphemur/AddictedProxy/commit/ed8776da60ffbbd7dca96c90b0342178d20da7d4))
+
 ## [4.17.9](https://github.com/Belphemur/AddictedProxy/compare/v4.17.8...v4.17.9) (2023-09-01)
 
 
