@@ -122,5 +122,8 @@
     "@semantic-release/github": "^9.0.4",
     "@semantic-release/release-notes-generator": "^11.0.4",
     "conventional-changelog-conventionalcommits": "^7.0.1"
+  },
+  "dependencies": {
+    "semantic-release": "^21.1.1"
   }
 }
