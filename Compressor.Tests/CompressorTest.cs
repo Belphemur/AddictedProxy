@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Compressor;
 using Compressor.Bootstrap;
 using Compressor.Factory;
-using Compressor.Factory.Impl;
 using FluentAssertions;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.Extensions.Configuration;
@@ -28,27 +27,17 @@ public class CompressorTest
             serviceCollection.AddBootstrap(Substitute.For<IConfiguration>(), typeof(BootstrapCompressor).Assembly);
             var serviceProvider = serviceCollection.BuildServiceProvider();
             var factory = serviceProvider.GetRequiredService<CompressorFactory>();
+            var compressor = serviceProvider.GetRequiredService<ICompressor>();
             foreach (var service in factory.Services)
             {
-                yield return new object[] { service };
+                yield return new object[] { service , compressor};
             }
         }
-    }
-    
-    private ICompressor? _compressor;
-
-    [OneTimeSetUp]
-    public void OneTimeSetup()
-    {
-        var serviceCollection = new ServiceCollection();
-        serviceCollection.AddBootstrap(Substitute.For<IConfiguration>(), typeof(BootstrapCompressor).Assembly);
-        var serviceProvider = serviceCollection.BuildServiceProvider();
-        _compressor = serviceProvider.GetRequiredService<ICompressor>();
     }
 
 
     [TestCaseSource(typeof(CompressorProvider))]
-    public async Task CompressAndDecompressUsingMainCompressor(ICompressorService compressor)
+    public async Task CompressAndDecompressUsingMainCompressor(ICompressorService compressorService, ICompressor compressor)
     {
         #region srt file
 
@@ -107,9 +96,9 @@ public class CompressorTest
 
         var buffer = Encoding.UTF8.GetBytes(text);
         await using var memory = new MemoryStream(buffer);
-        await using var compressed = await compressor.CompressAsync(memory, CancellationToken.None);
+        await using var compressed = await compressorService.CompressAsync(memory, CancellationToken.None);
 
-        await using var decompressed = await _compressor!.DecompressAsync(compressed, CancellationToken.None);
+        await using var decompressed = await compressor.DecompressAsync(compressed, CancellationToken.None);
         await using var memoryResult = new MemoryStream();
         await decompressed.CopyToAsync(memoryResult);
 

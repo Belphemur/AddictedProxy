@@ -12,10 +12,10 @@
         <PackageReference Include="Hangfire.AspNetCore" Version="1.8.5" />
         <PackageReference Include="Hangfire.Dashboard.BasicAuthorization" Version="1.0.2" />
         <PackageReference Include="Hangfire.MaximumConcurrentExecutions" Version="1.1.0" />
-        <PackageReference Include="Hangfire.PostgreSql" Version="1.20.1" />
+        <PackageReference Include="Hangfire.PostgreSql" Version="1.20.2" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0" />
         <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
-        <PackageReference Include="Sentry.AspNetCore" Version="3.35.1" />
+        <PackageReference Include="Sentry.AspNetCore" Version="3.36.0" />
         <PackageReference Include="SimpleMvcSitemap.Core" Version="4.3.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
         <PackageReference Include="AngleSharp" Version="1.0.4" />

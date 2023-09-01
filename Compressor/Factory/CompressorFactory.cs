@@ -17,7 +17,7 @@ public class CompressorFactory : EnumFactory<AlgorithmEnum, ICompressorService>
     public async Task<ICompressorService> GetServiceByMagicNumberAsync(Stream stream, CancellationToken token)
     {
         stream.ResetPosition();
-        foreach (var service in ServicesByEnum.Values.Where(service => service.Definition.HasMagicNumber))
+        foreach (var service in Services.Where(service => service.Definition.HasMagicNumber).OrderByDescending(service => service.Definition.MagicNumberLength))
         {
             try
             {
