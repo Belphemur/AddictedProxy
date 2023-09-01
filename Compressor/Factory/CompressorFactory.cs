@@ -17,23 +17,25 @@ public class CompressorFactory : EnumFactory<AlgorithmEnum, ICompressorService>
     public async Task<ICompressorService> GetServiceByMagicNumberAsync(Stream stream, CancellationToken token)
     {
         stream.ResetPosition();
-        foreach (var service in Services.Where(service => service.Definition.HasMagicNumber).OrderByDescending(service => service.Definition.MagicNumberLength))
+        var maxMagicNumberLength = Services.Where(service => service.Definition.HasMagicNumber).Max(service => service.Definition.MagicNumberLength);
+        var maxMagicNumber = new byte[maxMagicNumberLength];
+        _ = await stream.ReadAsync(maxMagicNumber.AsMemory(0, maxMagicNumberLength), token);
+        try
         {
-            try
+            foreach (var service in Services.Where(service => service.Definition.HasMagicNumber).OrderByDescending(service => service.Definition.MagicNumberLength))
             {
-                var magicNumber = new byte[service.Definition.MagicNumberLength];
-                _ = await stream.ReadAsync(magicNumber.AsMemory(0, service.Definition.MagicNumberLength), token);
-                if (service.Definition.MagicNumber == BitConverter.ToString(magicNumber))
+                var magicNumber = maxMagicNumber.AsSpan(0, service.Definition.MagicNumberLength).ToArray();
+                if (magicNumber.CompareWith(service.Definition.MagicNumberByte))
                 {
                     return service;
                 }
             }
-            finally
-            {
-                stream.ResetPosition();
-            }
         }
-        
+        finally
+        {
+            stream.ResetPosition();
+        }
+
         throw new ArgumentOutOfRangeException(nameof(stream), stream, $"No service ({nameof(ICompressorService)}) found for the given stream");
     }
 }
