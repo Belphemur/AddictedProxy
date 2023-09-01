@@ -185,7 +185,7 @@ jobs:
           cache-dependency-path: "${{matrix.context}}pnpm-lock.yaml"
       - name: Install dependencies
         if: matrix.frontend == 'true'
-        run: pnpm install
+        run: pnpm recursive install --frozen-lockfile
         working-directory: ${{ matrix.context }}
       - name: Build app {{ matrix.sentry_project }}
         if: matrix.frontend == 'true'
