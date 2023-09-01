@@ -1,3 +1,32 @@
+## [4.17.9](https://github.com/Belphemur/AddictedProxy/compare/v4.17.8...v4.17.9) (2023-09-01)
+
+
+### Performance improvements
+
+* ci use debian slim ([f7eb4ef](https://github.com/Belphemur/AddictedProxy/commit/f7eb4ef0acc43e935a26cef2cb6fb6552008560e))
+* **ci:** change build process for nuxt app ([88887c1](https://github.com/Belphemur/AddictedProxy/commit/88887c1f55002dd4baa50930dd209419c9f08f08))
+* **ci:** fix not building front-end ([a6374c9](https://github.com/Belphemur/AddictedProxy/commit/a6374c90a092d52799cf667ab041878ae17ced2c))
+* **ci:** fix working directory ([edf0970](https://github.com/Belphemur/AddictedProxy/commit/edf0970fcd0821121822dd9c312d3916f33f692c))
+* **ci:** use concurrency of github action ([c730173](https://github.com/Belphemur/AddictedProxy/commit/c730173a633fa04d0c26d2c4468cd8212444e48e))
+* force release ([029f13c](https://github.com/Belphemur/AddictedProxy/commit/029f13c580ac5c0129a251b0ccb0d74c2f4c8d07))
+* start with magic number that are longer to avoid conflict with other algorithmn ([f990a4b](https://github.com/Belphemur/AddictedProxy/commit/f990a4b63325146f21e6d6bdfa5ae5df547c702e))
+* update deps ([c95988b](https://github.com/Belphemur/AddictedProxy/commit/c95988bda136cbfa69ce9beea7158b4b704f584e))
+
+
+### Bug Fixes
+
+* add missing package ([a52ad21](https://github.com/Belphemur/AddictedProxy/commit/a52ad210ae44e433589f296fdebf971dd14f59b4))
+* ci recursive ([5104c1a](https://github.com/Belphemur/AddictedProxy/commit/5104c1a99f3eaa74cbb9df9e0093b2a16f9f2d9e))
+* **ci:** fix building ([60a84c8](https://github.com/Belphemur/AddictedProxy/commit/60a84c80fb5beadf0fd5c82f7701bc534dec7d6e))
+* **ci:** fix the building frontend ([aceb6c3](https://github.com/Belphemur/AddictedProxy/commit/aceb6c3b67c398470e44061c93225ac1e1cbaec6))
+* **ci:** lock file missing ([190b3e2](https://github.com/Belphemur/AddictedProxy/commit/190b3e21c8327c9cba1910a716bdf051f3c854be))
+* commit analyzer, currently semantic release isn't compatible with version 7.0 ([be0f8ad](https://github.com/Belphemur/AddictedProxy/commit/be0f8ada25b14a30f6d3d8804e817cf5232b5c80))
+* **ipx:** add ipx as dependency ([9cee91e](https://github.com/Belphemur/AddictedProxy/commit/9cee91e219102782ab14520c3280cec1641f139b))
+* **ipx:** fix building ipx ([23f427c](https://github.com/Belphemur/AddictedProxy/commit/23f427c6859d978414e98c0408ff9099e94f80ec))
+* **ipx:** fix deps for ipx ([8888687](https://github.com/Belphemur/AddictedProxy/commit/8888687238a73e044a8c1950efa6a4bd702d6143))
+* **ipx:** fix deps for ipx (again) ([e123684](https://github.com/Belphemur/AddictedProxy/commit/e123684c80ef847e30ac6061f4054a9fc3ac1221))
+* **ipx:** fix deps for ipx (again) and again ([0069370](https://github.com/Belphemur/AddictedProxy/commit/0069370a39fd821848e4ee6e283a36d0baa7a476))
+
 ## [4.17.8](https://github.com/Belphemur/AddictedProxy/compare/v4.17.7...v4.17.8) (2023-08-22)
 
 
