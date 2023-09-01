@@ -4,9 +4,9 @@ namespace Compressor.Utils;
 
 public static class ByteCompare
 {
-#if NET
+#if _WINDOWS
     [DllImport("msvcrt", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-    private static extern int memcmp(byte[]? firstArray, byte[]? secondArray, long size);
+    private static extern int memcmp(byte[]? firstArray, byte[]? secondArray, ulong size);
 #else
     [DllImport("libc", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
     private static extern int memcmp(byte[] firstArray, byte[] secondArray, ulong size);
@@ -23,6 +23,6 @@ public static class ByteCompare
             return false;
         }
 
-        return memcmp(firstArray, secondArray, firstArray.Length) == 0;
+        return memcmp(firstArray, secondArray, (ulong)firstArray.Length) == 0;
     }
 }

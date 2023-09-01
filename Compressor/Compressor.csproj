@@ -20,4 +20,7 @@
     <ItemGroup>
       <EmbeddedResource Include="Model\srt-dict" />
     </ItemGroup>
+    <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+        <DefineConstants>_WINDOWS</DefineConstants>
+    </PropertyGroup>
 </Project>
