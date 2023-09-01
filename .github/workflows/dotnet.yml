@@ -182,7 +182,7 @@ jobs:
         with:
           node-version: lts/*
           cache: 'pnpm'
-          cache-dependency-path: "${{matrix.context}}package-lock.json"
+          cache-dependency-path: "${{matrix.context}}pnpm-lock.yaml"
       - name: Install dependencies
         if: matrix.frontend == 'true'
         run: pnpm install
