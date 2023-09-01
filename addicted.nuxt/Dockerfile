@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:alpine as pnpm-installed
+FROM node:slim as pnpm-installed
 ARG PNPM_VERSION=latest
 RUN npm i -g pnpm@${PNPM_VERSION}
 
@@ -26,7 +26,7 @@ RUN pnpm recursive install --frozen-lockfile
 RUN pnpm run build
 
 # production stage
-FROM node:alpine as production-stage
+FROM node:slim as production-stage
 COPY --from=dev /app/ /app/
 WORKDIR /app
 
