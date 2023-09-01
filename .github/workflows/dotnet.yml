@@ -155,7 +155,7 @@ jobs:
         include:
           - package: "addictedproxy"
             image: ${{ github.repository }}
-            context: "."
+            context: "./"
             sentry_project: "addictedproxy"
             frontend: "false"
           - package: "addictedproxy-frontend"
@@ -186,12 +186,15 @@ jobs:
         with:
           node-version: lts/*
           cache: 'pnpm'
+          cache-dependency-path: "${{matrix.context}}package-lock.json"
       - name: Install dependencies
         if: matrix.frontend == 'true'
         run: pnpm install
+        working-directory: ${{ matrix.context }}
       - name: Build app {{ matrix.sentry_project }}
         if: matrix.frontend == 'true'
         run: pnpm run build
+        working-directory: ${{ matrix.context }}
       
       
       # Workaround: https://github.com/docker/build-push-action/issues/461
