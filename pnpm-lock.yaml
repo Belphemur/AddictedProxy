@@ -29,7 +29,7 @@ devDependencies:
     specifier: ^11.0.4
     version: 11.0.7(semantic-release@21.1.1)
   conventional-changelog-conventionalcommits:
-    specifier: ^6.1.0
+    specifier: 6.1.0
     version: 6.1.0
 
 packages:
