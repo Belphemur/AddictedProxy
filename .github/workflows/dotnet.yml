@@ -157,12 +157,12 @@ jobs:
             image: ${{ github.repository }}
             context: "."
             sentry_project: "addictedproxy"
-            frontend: false
+            frontend: "false"
           - package: "addictedproxy-frontend"
             image: ${{ github.repository }}-frontend
             context: "addicted.nuxt/"
             sentry_project: "addicted-frontend"
-            frontend: true
+            frontend: "true"
     permissions:
       contents: read
       packages: write
