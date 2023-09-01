@@ -1,17 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:slim as pnpm-installed
-ARG PNPM_VERSION=latest
-RUN npm i -g pnpm@${PNPM_VERSION}
-
-FROM pnpm-installed AS prod-deps-installed
-COPY package*.json pnpm*.yaml ./
-RUN pnpm fetch
-
-
-FROM prod-deps-installed AS dev
-WORKDIR /app
-COPY . ./
+FROM node:slim
 ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
@@ -22,12 +11,7 @@ ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 ENV RELEASE_VERSION=${RELEASE_VERSION}
 ENV SENTRY_ENVIRONMENT=production
 
-RUN pnpm recursive install --frozen-lockfile
-RUN pnpm run build
-
-# production stage
-FROM node:slim as production-stage
-COPY --from=dev /app/ /app/
+COPY . /app/
 WORKDIR /app
 
 ENV NUXT_HOST=0.0.0.0
