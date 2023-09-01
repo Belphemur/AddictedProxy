@@ -1,6 +1,10 @@
 {
   "name": "subtitles",
   "type": "module",
+  "scripts": {
+    "release-test": "semantic-release -d",
+    "release": "semantic-release"
+  },
   "release": {
     "branches": [
       {
@@ -117,6 +121,6 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^9.0.4",
     "@semantic-release/release-notes-generator": "^11.0.4",
-    "conventional-changelog-conventionalcommits": "^7.0.0"
+    "conventional-changelog-conventionalcommits": "^7.0.1"
   }
 }

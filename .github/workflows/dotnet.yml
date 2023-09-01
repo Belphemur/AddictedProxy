@@ -71,26 +71,23 @@ jobs:
         with:
           name: dotnet-results-${{ matrix.dotnet-version }}
           path: TestResults-${{ matrix.dotnet-version }}
-        # Use always() to always run this step to publish test results when there are test failures
-      - name: Setup Node.js
+      - name: Install pnpm
         if: steps.filter.outputs.node == 'true'
-        uses: actions/setup-node@v3.8.1
+        uses: pnpm/action-setup@v2
         with:
-          node-version: ${{env.NODEJS}}
-      - name: Cache node modules
+          version: latest
+      - name: Use Node.js
         if: steps.filter.outputs.node == 'true'
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
+        uses: actions/setup-node@v3
         with:
-          path: npm-cache
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Install semantic-release dependencies
+          node-version: lts/*
+          cache: 'pnpm'
+      - name: Install dependencies
         if: steps.filter.outputs.node == 'true'
-        run: npm ci --prefer-offline --silent --cache npm-cache
+        run: pnpm recursive install --frozen-lockfile
       - name: Release dry run
         if: steps.filter.outputs.node == 'true'
-        run: npx semantic-release -d
+        run: pnpm run release-test
 
   main-release:
     concurrency:
@@ -104,25 +101,23 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3.8.1
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         with:
-          node-version: ${{env.NODEJS}}
-      - name: Cache node modules
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
+          version: latest
+      - name: Use Node.js
+        uses: actions/setup-node@v3
         with:
-          path: npm-cache
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Install semantic-release dependencies
-        run: npm ci --prefer-offline --silent --cache npm-cache
+          node-version: lts/*
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm recursive install --frozen-lockfile
       - name: Release
-        run: npx semantic-release
+        run: pnpm run release
       - name: Latest Version
         run: | 
           version=$(git describe --tags --abbrev=0 | cut -c 2-)
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
         id: version
   sentry-release:
     name: "Setup Sentry Release"
@@ -169,8 +164,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          ref: v${{ needs.main-release.outputs.version}}
       - name: Install pnpm
         if: matrix.frontend == 'true'
         uses: pnpm/action-setup@v2
