@@ -1,3 +1,10 @@
+## [4.17.11](https://github.com/Belphemur/AddictedProxy/compare/v4.17.10...v4.17.11) (2023-09-02)
+
+
+### Performance improvements
+
+* improve speed of compressor factory ([a6693cd](https://github.com/Belphemur/AddictedProxy/commit/a6693cdb8202f1b38f58d44fc53ce4a816c0a490))
+
 ## [4.17.10](https://github.com/Belphemur/AddictedProxy/compare/v4.17.9...v4.17.10) (2023-09-01)
 
 
