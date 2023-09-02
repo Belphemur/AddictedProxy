@@ -6,8 +6,13 @@ namespace Compressor.Factory;
 
 public class CompressorFactory : EnumFactory<AlgorithmEnum, ICompressorService>
 {
+    private readonly ICompressorService[] _servicesByMagicLength;
+    private readonly ushort _maxLength;
+
     public CompressorFactory(IEnumerable<ICompressorService> services) : base(services)
     {
+        _servicesByMagicLength = Services.Where(service => service.Definition.HasMagicNumber).OrderByDescending(service => service.Definition.MagicNumberLength).ToArray();
+        _maxLength = _servicesByMagicLength[0].Definition.MagicNumberLength;
     }
 
     /// <summary>
@@ -17,12 +22,11 @@ public class CompressorFactory : EnumFactory<AlgorithmEnum, ICompressorService>
     public async Task<ICompressorService> GetServiceByMagicNumberAsync(Stream stream, CancellationToken token)
     {
         stream.ResetPosition();
-        var maxMagicNumberLength = Services.Where(service => service.Definition.HasMagicNumber).Max(service => service.Definition.MagicNumberLength);
-        var maxMagicNumber = new byte[maxMagicNumberLength];
-        _ = await stream.ReadAsync(maxMagicNumber.AsMemory(0, maxMagicNumberLength), token);
+        var maxMagicNumber = new byte[_maxLength];
+        _ = await stream.ReadAsync(maxMagicNumber.AsMemory(0, _maxLength), token);
         try
         {
-            foreach (var service in Services.Where(service => service.Definition.HasMagicNumber).OrderByDescending(service => service.Definition.MagicNumberLength))
+            foreach (var service in _servicesByMagicLength)
             {
                 var magicNumber = maxMagicNumber.AsSpan(0, service.Definition.MagicNumberLength).ToArray();
                 if (magicNumber.CompareWith(service.Definition.MagicNumberByte))
