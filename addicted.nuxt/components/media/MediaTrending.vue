@@ -12,7 +12,7 @@ const props = defineProps<Props>();
 <template>
 
   <v-row dense>
-    <v-col cols="6" lg="3" v-for="media in useTake(props.medias, 8)"
+    <v-col cols="12" sm="6" lg="3" v-for="media in useTake(props.medias, 8)"
            :key="media.media?.id">
       <v-card :to="{name: 'show-details', params: {showId: media.media!.id, showName: media.media!.name}}">
         <span
@@ -23,7 +23,7 @@ const props = defineProps<Props>();
             :src="media.details!.backdropPath!"
             fit="cover"
             style="max-width: 100%"
-            sizes="sm:30vw md:40vw xl:42vw"
+            sizes="xs:67vw sm:35vw md:40vw"
             class="media-trending-backdrop"
         >
         </nuxt-picture>
