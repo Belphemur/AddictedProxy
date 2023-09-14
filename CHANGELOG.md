@@ -1,3 +1,10 @@
+## [4.17.14](https://github.com/Belphemur/AddictedProxy/compare/v4.17.13...v4.17.14) (2023-09-14)
+
+
+### Bug Fixes
+
+* **image:** current the backend don't support AVIF ([340ce31](https://github.com/Belphemur/AddictedProxy/commit/340ce31b2f5559b00bc43455045db901111c0aed))
+
 ## [4.17.13](https://github.com/Belphemur/AddictedProxy/compare/v4.17.12...v4.17.13) (2023-09-14)
 
 
