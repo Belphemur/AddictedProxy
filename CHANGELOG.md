@@ -1,3 +1,10 @@
+## [4.17.16](https://github.com/Belphemur/AddictedProxy/compare/v4.17.15...v4.17.16) (2023-09-14)
+
+
+### Bug Fixes
+
+* **image:** be sure the image always cover the full container on XS ([f73e17e](https://github.com/Belphemur/AddictedProxy/commit/f73e17e5bf6ed4fa9e6fd937c039412159550bbf))
+
 ## [4.17.15](https://github.com/Belphemur/AddictedProxy/compare/v4.17.14...v4.17.15) (2023-09-14)
 
 
