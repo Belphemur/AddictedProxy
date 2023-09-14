@@ -1,3 +1,11 @@
+## [4.17.15](https://github.com/Belphemur/AddictedProxy/compare/v4.17.14...v4.17.15) (2023-09-14)
+
+
+### Performance improvements
+
+* **image:** image size of the trending page ([d3e0e69](https://github.com/Belphemur/AddictedProxy/commit/d3e0e69b5aab1ef083b47c318cfa81d33b0b967a))
+* **MediaView:** Rework layout for mobile ([4ad8d1f](https://github.com/Belphemur/AddictedProxy/commit/4ad8d1f6388f1e51918eb993691e60d79b0f913a))
+
 ## [4.17.14](https://github.com/Belphemur/AddictedProxy/compare/v4.17.13...v4.17.14) (2023-09-14)
 
 
