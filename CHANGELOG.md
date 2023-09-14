@@ -1,3 +1,10 @@
+## [4.17.13](https://github.com/Belphemur/AddictedProxy/compare/v4.17.12...v4.17.13) (2023-09-14)
+
+
+### Bug Fixes
+
+* wrong version of nuxt/image ([e1ee97b](https://github.com/Belphemur/AddictedProxy/commit/e1ee97b4a8855c2b2b2959ad918c441cdf6852db))
+
 ## [4.17.12](https://github.com/Belphemur/AddictedProxy/compare/v4.17.11...v4.17.12) (2023-09-14)
 
 
