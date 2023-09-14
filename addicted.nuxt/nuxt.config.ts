@@ -83,7 +83,7 @@ export default defineNuxtConfig({
     },
     image: {
         domains: ['image.tmdb.org'],
-        format: ['avif', 'webp'],
+        format: ['webp', 'jpeg'],
         provider: 'gestdown',
         ipx: {
             baseURL: '/_transform'
