@@ -44,18 +44,19 @@ const setLanguage = (lang: string) => {
     <v-card-text class="py-0">
       <v-row align="center">
         <v-col
-            cols="4"
+            cols="12"
+            sm="4"
             class="text-left"
             align-self="start"
         >
           <nuxt-picture class="media-detail-poster"
                         :src="props.details.details!.posterPath!"
-                        sizes="sm:20vw md:30vw lg:50vw"
+                        sizes="xs:80vw sm:30vw lg:50vw"
           >
           </nuxt-picture>
         </v-col>
 
-        <v-col cols="8" class="text-left">
+        <v-col sm="8" cols="12" class="text-left">
           <v-row align-content="center">
             <v-col>
               <h6 class="text-h6">User Score</h6>
