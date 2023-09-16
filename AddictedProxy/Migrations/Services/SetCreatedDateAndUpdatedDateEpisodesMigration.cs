@@ -21,9 +21,9 @@ public class SetCreatedDateAndUpdatedDateEpisodesMigration : IMigration
         try
         {
             _entityContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(5));
-            _logger.LogInformation("Migrating Subtitles");
+            _logger.LogInformation("Migrating Episodes");
             await _entityContext.Database.ExecuteSqlRawAsync("""UPDATE "Episodes" SET "CreatedAt" = "Discovered", "UpdatedAt" = NOW() at time zone 'utc'""", cancellationToken: token);
-            _logger.LogInformation("Subtitles Migrated");
+            _logger.LogInformation("Episodes Migrated");
         }
         finally
         {
