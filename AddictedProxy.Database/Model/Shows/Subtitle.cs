@@ -2,6 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AddictedProxy.Database.Model.Shared;
 using Microsoft.EntityFrameworkCore;
 
 #endregion
@@ -11,7 +12,7 @@ namespace AddictedProxy.Database.Model.Shows;
 [Index(nameof(DownloadUri), IsUnique = true)]
 [Index(nameof(EpisodeId), nameof(Language), nameof(Version), IsUnique = false)]
 [Index(nameof(UniqueId), IsUnique = true)]
-public class Subtitle : IDiscoverableObject
+public class Subtitle : BaseEntity, IDiscoverableObject
 {
     [Key]
     public long Id { get; set; }

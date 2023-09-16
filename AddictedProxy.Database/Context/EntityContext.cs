@@ -40,6 +40,12 @@ public class EntityContext : DbContext
         return await base.SaveChangesAsync(cancellationToken);
     }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseNpgsql();
+        base.OnConfiguring(optionsBuilder);
+    }
+
     private void AddTimestamps()
     {
         var entities = ChangeTracker.Entries()

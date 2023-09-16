@@ -44,13 +44,13 @@ public class EpisodeRepository : IEpisodeRepository
                     switch (operation)
                     {
                         case BulkOperation<Subtitle> bulkSub:
-                            bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Id, subtitle.Discovered, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount, subtitle.UniqueId };
+                            bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Id, subtitle.Discovered, subtitle.CreatedAt, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount, subtitle.UniqueId };
                             bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.DownloadUri };
                             bulkSub.IgnoreOnMergeInsertExpression = subtitle => new { subtitle.Id };
                             break;
                         case BulkOperation<Episode> bulkEp:
                             bulkEp.ColumnPrimaryKeyExpression = episode => new { episode.TvShowId, episode.Season, episode.Number };
-                            bulkEp.IgnoreOnMergeUpdateExpression = episode => new { episode.Id, episode.Discovered };
+                            bulkEp.IgnoreOnMergeUpdateExpression = episode => new { episode.Id, episode.Discovered, episode.CreatedAt };
                             bulkEp.IgnoreOnMergeInsertExpression = episode => episode.Id;
                             break;
                         case BulkOperation<TvShow> bulkShow:
