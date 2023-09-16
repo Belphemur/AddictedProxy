@@ -9,5 +9,8 @@ public class BootstrapMigration : IBootstrap
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IMigration, PopulateTvDbIdsMigration>();
+        services.AddScoped<IMigration, SetCreatedDateAndUpdatedDateEpisodesMigration>();
+        services.AddScoped<IMigration, SetCreatedDateAndUpdatedDateSubtitlesMigration>();
+
     }
 }
