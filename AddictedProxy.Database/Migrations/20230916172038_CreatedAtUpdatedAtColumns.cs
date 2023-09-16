@@ -16,56 +16,56 @@ namespace AddictedProxy.Database.Migrations
                 table: "TvShows",
                 type: "timestamp with time zone",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+               defaultValueSql: "now() at time zone 'utc'");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "UpdatedAt",
                 table: "TvShows",
                 type: "timestamp with time zone",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+               defaultValueSql: "now() at time zone 'utc'");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreatedAt",
                 table: "Subtitles",
                 type: "timestamp with time zone",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+               defaultValueSql: "now() at time zone 'utc'");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "UpdatedAt",
                 table: "Subtitles",
                 type: "timestamp with time zone",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+               defaultValueSql: "now() at time zone 'utc'");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreatedAt",
                 table: "Seasons",
                 type: "timestamp with time zone",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+               defaultValueSql: "now() at time zone 'utc'");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "UpdatedAt",
                 table: "Seasons",
                 type: "timestamp with time zone",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+               defaultValueSql: "now() at time zone 'utc'");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreatedAt",
                 table: "Episodes",
                 type: "timestamp with time zone",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+               defaultValueSql: "now() at time zone 'utc'");
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "UpdatedAt",
                 table: "Episodes",
                 type: "timestamp with time zone",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+               defaultValueSql: "now() at time zone 'utc'");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TvShows_TvdbId",
@@ -73,8 +73,6 @@ namespace AddictedProxy.Database.Migrations
                 column: "TvdbId");
             
             migrationBuilder.Sql($@"UPDATE ""TvShows"" SET ""CreatedAt"" = ""Discovered"", ""UpdatedAt"" = NOW() at time zone 'utc'");
-            migrationBuilder.Sql($@"UPDATE ""Subtitles"" SET ""CreatedAt"" = ""Discovered"", ""UpdatedAt"" = NOW() at time zone 'utc'");
-            migrationBuilder.Sql($@"UPDATE ""Episodes"" SET ""CreatedAt"" = ""Discovered"", ""UpdatedAt"" = NOW() at time zone 'utc'");
             migrationBuilder.Sql($@"UPDATE ""Seasons"" SET ""CreatedAt"" = NOW() at time zone 'utc', ""UpdatedAt"" = NOW() at time zone 'utc'");
         }
 
