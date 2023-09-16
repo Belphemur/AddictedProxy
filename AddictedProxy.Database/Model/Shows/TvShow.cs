@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.ComponentModel.DataAnnotations;
+using AddictedProxy.Database.Model.Shared;
 using Microsoft.EntityFrameworkCore;
 using RT.Comb;
 
@@ -11,7 +12,7 @@ namespace AddictedProxy.Database.Model.Shows;
 [Index(nameof(ExternalId), IsUnique = true)]
 [Index(nameof(UniqueId), IsUnique = true)]
 [Index(nameof(TvdbId))]
-public class TvShow : IDiscoverableObject
+public class TvShow : BaseEntity, IDiscoverableObject
 {
     [Key]
     public long Id { get; set; }

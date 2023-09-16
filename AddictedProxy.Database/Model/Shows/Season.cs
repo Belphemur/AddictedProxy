@@ -1,6 +1,7 @@
 #region
 
 using System.ComponentModel.DataAnnotations.Schema;
+using AddictedProxy.Database.Model.Shared;
 using Microsoft.EntityFrameworkCore;
 
 #endregion
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace AddictedProxy.Database.Model.Shows;
 
 [Index("TvShowId", nameof(Number), IsUnique = true)]
-public class Season
+public class Season : BaseEntity
 {
     public long Id { get; set; }
 

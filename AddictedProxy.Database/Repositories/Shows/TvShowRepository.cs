@@ -40,7 +40,7 @@ public class TvShowRepository : ITvShowRepository
 
     public Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token)
     {
-        Expression<Func<TvShow, object>> ignoreOnUpdate = show => new { show.Id, show.Discovered, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted, show.Type, show.TvdbId };
+        Expression<Func<TvShow, object>> ignoreOnUpdate = show => new { show.Id, show.Discovered, show.CreatedAt, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted, show.Type, show.TvdbId };
 
         return _entityContext.TvShows.BulkSynchronizeAsync(tvShows, options =>
         {
