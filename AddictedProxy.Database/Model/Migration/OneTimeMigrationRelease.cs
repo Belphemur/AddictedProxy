@@ -21,6 +21,4 @@ public class OneTimeMigrationRelease : BaseEntity
     public string MigrationType { get; set; }
 
     public MigrationState State { get; set; }
-
-    public DateTime RanAt { get; set; }
 }

@@ -42,7 +42,6 @@ internal class RunnerJob
         }
 
         migrationEntry.State = OneTimeMigrationRelease.MigrationState.Running;
-        migrationEntry.RanAt = DateTime.UtcNow;
 
         await _entityContext.SaveChangesAsync(token);
 
