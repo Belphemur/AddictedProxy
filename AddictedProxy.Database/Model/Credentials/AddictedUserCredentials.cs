@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.ComponentModel.DataAnnotations.Schema;
+using AddictedProxy.Database.Model.Shared;
 using Microsoft.EntityFrameworkCore;
 
 #endregion
@@ -9,7 +10,7 @@ namespace AddictedProxy.Database.Model.Credentials;
 
 [Table("AddictedUserCredentials")]
 [Index(nameof(Cookie), IsUnique = true)]
-public class AddictedUserCredentials
+public class AddictedUserCredentials : BaseEntity
 {
     public int Id { get; set; }
     public string Cookie { get; set; }

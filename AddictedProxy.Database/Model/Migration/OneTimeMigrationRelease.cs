@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
+using AddictedProxy.Database.Model.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Database.Model.Migration;
 
 [Table("OneTimeMigrationRelease")]
 [Index(nameof(MigrationType), nameof(State), IsUnique = true)]
-public class OneTimeMigrationRelease
+public class OneTimeMigrationRelease : BaseEntity
 {
     public enum MigrationState
     {
