@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Migrations.Services;
 
+[MigrationDate(2023, 09, 16)]
 public class SetCreatedDateAndUpdatedDateEpisodesMigration : IMigration
 {
     private readonly EntityContext _entityContext;
