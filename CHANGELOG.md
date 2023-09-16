@@ -1,3 +1,11 @@
+## [4.18.0](https://github.com/Belphemur/AddictedProxy/compare/v4.17.16...v4.18.0) (2023-09-16)
+
+
+### Features
+
+* add support for auto created/updated fields ([9054721](https://github.com/Belphemur/AddictedProxy/commit/90547212741391b2252f1de2fac3057f983b7de7))
+* add updated at and created at for all models and populate the data ([c2b188d](https://github.com/Belphemur/AddictedProxy/commit/c2b188dc634487dbf1f912a137a6a47ebbfd405c))
+
 ## [4.17.16](https://github.com/Belphemur/AddictedProxy/compare/v4.17.15...v4.17.16) (2023-09-14)
 
 
