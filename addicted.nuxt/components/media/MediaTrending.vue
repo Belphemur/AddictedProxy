@@ -23,7 +23,7 @@ const props = defineProps<Props>();
             :src="media.details!.backdropPath!"
             fit="cover"
             style="max-width: 100%"
-            sizes="xs:70vw sm:35vw md:40vw"
+            sizes="xs:100vw sm:35vw md:40vw"
             class="media-trending-backdrop"
         >
         </nuxt-picture>
