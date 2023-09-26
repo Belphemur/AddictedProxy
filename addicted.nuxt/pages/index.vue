@@ -52,7 +52,7 @@ useSeoMeta({
   title: "Gestdown: Addic7ed Proxy",
   description: "Help you search for subtitle for different show available on Addic7ed",
   ogDescription: "Help you search for subtitle for different show available on Addic7ed",
-  ogImage: "/img/logo.png"
+  ogImage: new URL("/img/Gestdown-logos.jpeg", useRuntimeConfig().public.url).href,
 })
 
 const mediaApi = useMedia();
