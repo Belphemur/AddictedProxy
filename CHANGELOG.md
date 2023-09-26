@@ -1,3 +1,29 @@
+## [4.18.0](https://github.com/Belphemur/AddictedProxy/compare/v4.17.15...v4.18.0) (2023-09-26)
+
+
+### Performance improvements
+
+* add created/updated to all models ([5c7a577](https://github.com/Belphemur/AddictedProxy/commit/5c7a57747aef1b7ada0f3039d634b146f415e6b6))
+* add retry to download file from S3 ([c84f66b](https://github.com/Belphemur/AddictedProxy/commit/c84f66bc8e2f1a29d53ef85f89930f1dbc2797bd))
+* **media:** update the seo metadata of the media view ([8ced6ba](https://github.com/Belphemur/AddictedProxy/commit/8ced6ba978c5000af9e27a1bc558b0e1d641c0fa))
+* onetime migration remove ran at ([e7627db](https://github.com/Belphemur/AddictedProxy/commit/e7627db6c6a75a3e7df8de27615cb7ca81d756e3))
+* update deps ([5a4ced4](https://github.com/Belphemur/AddictedProxy/commit/5a4ced42e9729b216dcb3f027d7409b0f8994060))
+
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v22 ([31c583d](https://github.com/Belphemur/AddictedProxy/commit/31c583d6f134765bef1970402464fbe0ee6380af))
+* **image:** be sure the image always cover the full container on XS ([329e3ec](https://github.com/Belphemur/AddictedProxy/commit/329e3ec154ace64609af3786340b103546dd18b0))
+* **image:** be sure the image always cover the full container on XS ([f73e17e](https://github.com/Belphemur/AddictedProxy/commit/f73e17e5bf6ed4fa9e6fd937c039412159550bbf))
+* missing migration date ([dd24eb9](https://github.com/Belphemur/AddictedProxy/commit/dd24eb965470350b0ab5b4f9ce31ea08f460508c))
+* updated at and created at for subtitles and episodes ([1f6a9d9](https://github.com/Belphemur/AddictedProxy/commit/1f6a9d96a41105fb0ee7a99c81c36f25f6dbda77))
+
+
+### Features
+
+* add support for auto created/updated fields ([9054721](https://github.com/Belphemur/AddictedProxy/commit/90547212741391b2252f1de2fac3057f983b7de7))
+* add updated at and created at for all models and populate the data ([c2b188d](https://github.com/Belphemur/AddictedProxy/commit/c2b188dc634487dbf1f912a137a6a47ebbfd405c))
+
 ## [4.17.15](https://github.com/Belphemur/AddictedProxy/compare/v4.17.14...v4.17.15) (2023-09-14)
 
 
