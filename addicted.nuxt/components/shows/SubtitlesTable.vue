@@ -20,36 +20,37 @@
       >
         <v-expansion-panel-text>
           <v-data-table v-if="episode.subtitles" :items="episode.subtitles" :headers="headers" items-per-page="25">
-            <template #item.version="{ item }">
-              {{ item.selectable.version }}
-            </template>
-            <template #item.completed="{ item }">
-              <v-icon icon="mdi-check" height="24px" v-if=" item.selectable.completed"/>
-              <span v-else></span>
-            </template>
-            <template #item.hearingImpaired="{ item }">
-              <v-icon icon="mdi-ear-hearing-off" v-if=" item.selectable.hearingImpaired"/>
-              <span v-else></span>
-            </template>
-            <template #item.hd="{ item }">
-              <v-icon icon="mdi-check" height="24px" v-if=" item.selectable.hd"/>
-              <span v-else></span>
-            </template>
-            <template #item.downloadCount="{ item }">
-              <v-btn
-                  color="primary"
-                  prepend-icon="mdi-download"
-                  @click="downloadSubtitle(item.selectable)"
-                  :disabled="currentlyDownloading.has(item.selectable.subtitleId)"
-              >
-                {{ item.selectable.downloadCount }}
-              </v-btn>
-              <v-progress-linear
-                  v-show="currentlyDownloading.has(item.selectable.subtitleId)"
-                  :value="100"
-                  color="success"
-                  indeterminate
-              ></v-progress-linear>
+            <template v-slot:item="{ item }">
+              <tr>
+                <td>{{ item.version }}</td>
+                <td>
+                  <v-icon icon="mdi-check" height="24px" v-if=" item.completed"/>
+                  <span v-else></span>
+                </td>
+
+                <td>
+                  <v-icon icon="mdi-ear-hearing-off" v-if=" item.hearingImpaired"/>
+                  <span v-else></span></td>
+                <td>
+                  <v-icon icon="mdi-check" height="24px" v-if=" item.hd"/>
+                  <span v-else></span></td>
+                <td>
+                  <v-btn
+                      color="primary"
+                      prepend-icon="mdi-download"
+                      @click="downloadSubtitle(item)"
+                      :disabled="currentlyDownloading.has(item.subtitleId)"
+                  >
+                    {{ item.downloadCount }}
+                  </v-btn>
+                  <v-progress-linear
+                      v-show="currentlyDownloading.has(item.subtitleId)"
+                      :value="100"
+                      color="success"
+                      indeterminate
+                  ></v-progress-linear>
+                </td>
+              </tr>
             </template>
           </v-data-table>
         </v-expansion-panel-text>
