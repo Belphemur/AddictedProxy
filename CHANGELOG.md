@@ -1,3 +1,18 @@
+## [4.18.4](https://github.com/Belphemur/AddictedProxy/compare/v4.18.3...v4.18.4) (2023-09-26)
+
+
+### Performance improvements
+
+* improve seo of index page ([dc8b6c2](https://github.com/Belphemur/AddictedProxy/commit/dc8b6c23041c4bc3cfb6bfc74759779ebc9db2e8))
+* improve the seo data ([3251d5b](https://github.com/Belphemur/AddictedProxy/commit/3251d5b9cf372f0b5da02050695e4332fe4a18fc))
+* **subtitles:** keep hearing impaired at the bottom ([43161d2](https://github.com/Belphemur/AddictedProxy/commit/43161d2894c6558e2a0b5e12ce3cf14b1fcb63d2))
+
+
+### Bug Fixes
+
+* subtitle table to display properly the available episodes ([a411686](https://github.com/Belphemur/AddictedProxy/commit/a4116860210ea4f1e5a322b894ad9aed3dc72c04))
+* url of images ([7a746a2](https://github.com/Belphemur/AddictedProxy/commit/7a746a2e8b84a45d73aac195d216b451db44e0b8))
+
 ## [4.18.3](https://github.com/Belphemur/AddictedProxy/compare/v4.18.2...v4.18.3) (2023-09-26)
 
 
