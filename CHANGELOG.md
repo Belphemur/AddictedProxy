@@ -1,3 +1,10 @@
+## [4.18.3](https://github.com/Belphemur/AddictedProxy/compare/v4.18.2...v4.18.3) (2023-09-26)
+
+
+### Bug Fixes
+
+* building app for zstd ([6dfd8a4](https://github.com/Belphemur/AddictedProxy/commit/6dfd8a4c1a6ba9398901bf3b108ed4a11a87c117))
+
 ## [4.18.2](https://github.com/Belphemur/AddictedProxy/compare/v4.18.1...v4.18.2) (2023-09-26)
 
 
