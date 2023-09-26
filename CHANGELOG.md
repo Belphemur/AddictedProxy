@@ -1,3 +1,10 @@
+## [4.18.5](https://github.com/Belphemur/AddictedProxy/compare/v4.18.4...v4.18.5) (2023-09-26)
+
+
+### Bug Fixes
+
+* don't remove curl ([47ed534](https://github.com/Belphemur/AddictedProxy/commit/47ed534430ea486eab5327744c9ea9ff41901da7))
+
 ## [4.18.4](https://github.com/Belphemur/AddictedProxy/compare/v4.18.3...v4.18.4) (2023-09-26)
 
 
