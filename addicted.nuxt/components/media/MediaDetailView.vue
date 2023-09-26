@@ -24,13 +24,23 @@ const mediaInfo = ref<MediaDetailsDto>();
 await loadMediaDetails();
 
 const runtimeConfig = useRuntimeConfig();
+let imageUrl = mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath;
+let twitterUrl = imageUrl;
+if (imageUrl != null) {
+  imageUrl += "?width=512&format=jpeg"
+  twitterUrl += "?width=250&format=jpeg"
+}
+
 useSeoMeta({
   title: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
   ogTitle: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
-  description:  mediaInfo.value!.details?.overview ??  `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
-  ogDescription: mediaInfo.value!.details?.overview ??  `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
-  ogImage: new URL(mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath ?? '', runtimeConfig.public.api.clientUrl).href,
+  description: mediaInfo.value!.details?.overview ?? `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
+  ogDescription: mediaInfo.value!.details?.overview ?? `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
+  ogImage: new URL(imageUrl ?? '', runtimeConfig.public.api.clientUrl).href,
   articleTag: mediaInfo.value!.details?.genre ?? [],
+  twitterImage: new URL(twitterUrl ?? '', runtimeConfig.public.api.clientUrl).href,
+  ogImageAlt: `Poster of ${mediaInfo.value!.media?.name}`,
+  twitterImageAlt: `Poster of ${mediaInfo.value!.media?.name}`,
   ogType: "website",
 })
 
