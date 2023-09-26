@@ -25,9 +25,12 @@ await loadMediaDetails();
 
 useSeoMeta({
   title: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
-  description: `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
-  ogDescription: `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
-  ogImage: mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath
+  ogTitle: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
+  description:  mediaInfo.value!.details?.overview ??  `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
+  ogDescription: mediaInfo.value!.details?.overview ??  `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
+  ogImage: mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath,
+  articleTag: mediaInfo.value!.details?.genre ?? [],
+  ogType: "website",
 })
 
 await loadShowData();
