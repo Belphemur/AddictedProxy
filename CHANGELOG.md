@@ -1,3 +1,10 @@
+## [4.18.2](https://github.com/Belphemur/AddictedProxy/compare/v4.18.1...v4.18.2) (2023-09-26)
+
+
+### Bug Fixes
+
+* release ([4af2367](https://github.com/Belphemur/AddictedProxy/commit/4af23670dc7a8c2e64dd1d217b1266ad8fbc1e45))
+
 ## [4.18.0](https://github.com/Belphemur/AddictedProxy/compare/v4.17.15...v4.18.0) (2023-09-26)
 
 
