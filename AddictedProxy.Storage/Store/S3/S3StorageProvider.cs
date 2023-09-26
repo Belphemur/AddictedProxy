@@ -2,6 +2,9 @@
 using AddictedProxy.Storage.Store.S3.Bootstrap.EnvVar;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Polly;
+using Polly.Contrib.WaitAndRetry;
+using Polly.Retry;
 
 namespace AddictedProxy.Storage.Store.S3;
 
@@ -9,6 +12,7 @@ public class S3StorageProvider : IStorageProvider
 {
     private readonly S3Config _s3Config;
     private readonly AmazonS3Client _awsS3Client;
+    private readonly AsyncRetryPolicy _asyncRetryPolicy;
 
     public S3StorageProvider(S3Config s3Config)
     {
@@ -18,8 +22,9 @@ public class S3StorageProvider : IStorageProvider
             ServiceURL = s3Config.Gateway
         };
         _awsS3Client = new AmazonS3Client(s3Config.AccessKey, s3Config.SecretKey, config);
+        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromMilliseconds(50), retryCount: 3);
+        _asyncRetryPolicy = Policy.Handle<AmazonS3Exception>().WaitAndRetryAsync(delay);
     }
-
 
 
     public async Task<bool> StoreAsync(string filename, Stream inputStream, CancellationToken cancellationToken)
@@ -46,6 +51,11 @@ public class S3StorageProvider : IStorageProvider
     public async Task DeleteAsync(string filename, CancellationToken cancellationToken) => await _awsS3Client.DeleteObjectAsync(_s3Config.Bucket, filename, cancellationToken);
 
     public async Task<Stream?> DownloadAsync(string filename, CancellationToken cancellationToken)
+    {
+        return await _asyncRetryPolicy.ExecuteAsync(token => DownloadInternalAsync(filename, token), cancellationToken);
+    }
+
+    private async Task<Stream?> DownloadInternalAsync(string filename, CancellationToken cancellationToken)
     {
         try
         {
