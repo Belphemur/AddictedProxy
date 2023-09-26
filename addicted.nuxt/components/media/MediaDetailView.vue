@@ -23,12 +23,13 @@ const mediaInfo = ref<MediaDetailsDto>();
 
 await loadMediaDetails();
 
+const runtimeConfig = useRuntimeConfig();
 useSeoMeta({
   title: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
   ogTitle: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
   description:  mediaInfo.value!.details?.overview ??  `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
   ogDescription: mediaInfo.value!.details?.overview ??  `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
-  ogImage: mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath,
+  ogImage: new URL(mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath ?? '', runtimeConfig.public.api.clientUrl).href,
   articleTag: mediaInfo.value!.details?.genre ?? [],
   ogType: "website",
 })
