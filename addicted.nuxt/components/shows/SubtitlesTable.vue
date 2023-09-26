@@ -19,7 +19,7 @@
           :title="`Ep. ${episode.number}: ${episode.title}`"
       >
         <v-expansion-panel-text>
-          <v-data-table v-if="episode.subtitles" :items="episode.subtitles" :headers="headers" items-per-page="25">
+          <v-data-table v-if="episode.subtitles" :items="useOrderBy(episode.subtitles, (subtitle) => subtitle.hearingImpaired)" :headers="headers" items-per-page="25">
             <template v-slot:item="{ item }">
               <tr>
                 <td>{{ item.version }}</td>
