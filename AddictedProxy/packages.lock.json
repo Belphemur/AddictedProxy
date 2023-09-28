@@ -84,9 +84,12 @@
       },
       "Polly": {
         "type": "Direct",
-        "requested": "[7.2.4, )",
-        "resolved": "7.2.4",
-        "contentHash": "bw00Ck5sh6ekduDE3mnCo1ohzuad946uslCDEENu3091+6UKnBuKLo4e+yaNcCzXxOZCXWY2gV4a35+K1d4LDA=="
+        "requested": "[8.0.0, )",
+        "resolved": "8.0.0",
+        "contentHash": "vwIDGI+vUCrufIFi2IpN0EnMyKFRyKHCiJ47yQUvBtAkE76f8xgFjrI7cLmLWv4NwSXZH6DxUG088QmEuHwIFw==",
+        "dependencies": {
+          "Polly.Core": "8.0.0"
+        }
       },
       "Polly.Contrib.WaitAndRetry": {
         "type": "Direct",
@@ -1020,6 +1023,11 @@
         "dependencies": {
           "System.IO.Pipelines": "5.0.0"
         }
+      },
+      "Polly.Core": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "g+8HnRjFTs8Ujz4Si4slrVrEK9M92DjvF75WvNpnF/lbT8M3/xW+tuD2udTiv2KuOsFOsRfOcZ12PddizrtXVA=="
       },
       "Polly.Extensions.Http": {
         "type": "Transitive",
@@ -2123,7 +2131,7 @@
           "Compressor": "[1.0.0, )",
           "Hangfire.AspNetCore": "[1.8.5, )",
           "InversionOfControl": "[1.0.0, )",
-          "Polly": "[7.2.4, )",
+          "Polly": "[8.0.0, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )"
         }
       },
@@ -2151,7 +2159,7 @@
           "Microsoft.Extensions.Http": "[7.0.0, )",
           "Microsoft.Extensions.Http.Polly": "[7.0.11, )",
           "Performance": "[1.0.0, )",
-          "Polly": "[7.2.4, )",
+          "Polly": "[8.0.0, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )",
           "Polly.Extensions.Http": "[3.0.0, )",
           "Sentry": "[3.39.1, )",
