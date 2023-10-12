@@ -1,3 +1,17 @@
+## [4.18.6](https://github.com/Belphemur/AddictedProxy/compare/v4.18.5...v4.18.6) (2023-10-12)
+
+
+### Performance improvements
+
+* deps update ([fd486c2](https://github.com/Belphemur/AddictedProxy/commit/fd486c2c0b6cda8b5004a15e6358f714b34ea1bb))
+* **download:** Use SQL to increment the download count of a subtitle ([cf96800](https://github.com/Belphemur/AddictedProxy/commit/cf96800190b513edf846abb362a00114d7beaf55))
+
+
+### Bug Fixes
+
+* **deps:** update dotnet monorepo to v7.0.12 ([df23422](https://github.com/Belphemur/AddictedProxy/commit/df23422a9ffe14e55e09c604d0f4fbaf01bc544e))
+* **download:** fix wrong sql query to update download count ([4fe75da](https://github.com/Belphemur/AddictedProxy/commit/4fe75da693ce88444133a44e7938b36c6f34a019))
+
 ## [4.18.5](https://github.com/Belphemur/AddictedProxy/compare/v4.18.4...v4.18.5) (2023-09-26)
 
 
