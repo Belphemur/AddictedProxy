@@ -38,4 +38,12 @@ public interface ISubtitleRepository
     /// </summary>
     /// <param name="subtitle"></param>
     void TagForRemoval(Subtitle subtitle);
+
+    /// <summary>
+    /// Increment download count
+    /// </summary>
+    /// <param name="subtitle"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task IncrementDownloadCountAsync(Subtitle subtitle, CancellationToken token);
 }

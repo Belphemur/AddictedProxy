@@ -19,13 +19,7 @@ internal class Addic7edDownloader : IAddic7edDownloader
     private readonly HttpClient _httpClient;
     private readonly HttpUtils _httpUtils;
     private readonly DownloadCounterWrapper _downloadCounterWrapper;
-
-    private enum SubtitleState
-    {
-        Downloaded,
-        Deleted,
-        DownloadLimitReached
-    }
+    
     public Addic7edDownloader(HttpClient httpClient, HttpUtils httpUtils, DownloadCounterWrapper downloadCounterWrapper)
     {
         _httpClient = httpClient;

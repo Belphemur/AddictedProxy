@@ -1,8 +1,11 @@
 #region
 
+using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Tools.Database.Transaction;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 #endregion
 
@@ -11,10 +14,12 @@ namespace AddictedProxy.Database.Repositories.Shows;
 public class SubtitleRepository : ISubtitleRepository
 {
     private readonly EntityContext _entityContext;
+    private readonly ITransactionManager<EntityContext> _transactionManager;
 
-    public SubtitleRepository(EntityContext entityContext)
+    public SubtitleRepository(EntityContext entityContext, ITransactionManager<EntityContext> transactionManager)
     {
         _entityContext = entityContext;
+        _transactionManager = transactionManager;
     }
 
     /// <summary>
@@ -69,5 +74,22 @@ public class SubtitleRepository : ISubtitleRepository
     public Task SaveChangeAsync(CancellationToken token)
     {
         return _entityContext.SaveChangesAsync(token);
+    }
+    
+    /// <summary>
+    /// Increment download count
+    /// </summary>
+    /// <param name="subtitle"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task IncrementDownloadCountAsync(Subtitle subtitle, CancellationToken token)
+    {
+        await _transactionManager.WrapInTransactionAsync(() =>
+        {
+            var sql = FormattableStringFactory.Create("""UPDATE "Subtitles" SET "DownloadCount" = "DownloadCount" + 1 AND "UpdatedAt" = now() WHERE "Id" = {0}""", subtitle.Id);
+
+            return _entityContext.Database.ExecuteSqlAsync(sql, token);
+        }, token);
+
     }
 }
