@@ -4,21 +4,16 @@ namespace AddictedProxy.Upstream.Service.Performance;
 
 internal class DownloadCounterWrapper
 {
-    private readonly Counter _downloadCounter;
+    private readonly Counter _downloadCounter = Metrics.CreateCounter("upstream_subtitle_requests", "Nb of subtitles download request sent to Addic7ed", new[] { "result" }, new CounterConfiguration
+    {
+        ExemplarBehavior = ExemplarBehavior.NoExemplars()
+    });
 
     internal enum SubtitleRequestResult
     {
         Downloaded,
         Deleted,
         DownloadLimitReached
-    }
-
-    public DownloadCounterWrapper()
-    {
-        _downloadCounter = Metrics.CreateCounter("upstream_subtitle_requests", "Nb of subtitles download request sent to Addic7ed", new[] { "result" }, new CounterConfiguration
-        {
-            ExemplarBehavior = ExemplarBehavior.NoExemplars()
-        });
     }
 
     /// <summary>
