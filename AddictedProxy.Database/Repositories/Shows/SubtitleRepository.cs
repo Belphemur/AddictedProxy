@@ -82,13 +82,13 @@ public class SubtitleRepository : ISubtitleRepository
     /// <param name="subtitle"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public async Task IncrementDownloadCountAsync(Subtitle subtitle, CancellationToken token)
+    public Task IncrementDownloadCountAsync(Subtitle subtitle, CancellationToken token)
     {
-        await _transactionManager.WrapInTransactionAsync(() =>
+        return _transactionManager.WrapInTransactionAsync(async () =>
         {
-            var sql = FormattableStringFactory.Create("""UPDATE "Subtitles" SET "DownloadCount" = "DownloadCount" + 1 AND "UpdatedAt" = now() WHERE "Id" = {0}""", subtitle.Id);
+            var sql = FormattableStringFactory.Create("""UPDATE "Subtitles" SET "DownloadCount" = "DownloadCount" + 1, "UpdatedAt" = now() WHERE "Id" = {0}""", subtitle.Id);
 
-            return _entityContext.Database.ExecuteSqlAsync(sql, token);
+            await _entityContext.Database.ExecuteSqlAsync(sql, token);
         }, token);
 
     }
