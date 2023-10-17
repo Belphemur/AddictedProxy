@@ -23,8 +23,8 @@ dependencies:
 
 devDependencies:
   '@nuxt/devtools':
-    specifier: 1.0.0-beta.2
-    version: 1.0.0-beta.2(nuxt@3.7.4)(vite@4.4.11)
+    specifier: 1.0.0-beta.3
+    version: 1.0.0-beta.3(nuxt@3.7.4)(vite@4.4.11)
   '@nuxt/image':
     specifier: 1.0.0-rc.3
     version: 1.0.0-rc.3
@@ -1022,8 +1022,8 @@ packages:
     resolution: {integrity: sha512-GBzP8zOc7CGWyFQS6dv1lQz8VVpz5C2yRszbXufwG/9zhStTIH50EtD87NmWbTMwXDvZLNg8GIpb1UFdH93JCA==}
     dev: true
 
-  /@nuxt/devtools-kit@1.0.0-beta.2(nuxt@3.7.4)(vite@4.4.11):
-    resolution: {integrity: sha512-CLOrUAlerqS2jZw8zFbWM+R5PIfwzFKbmAJDQklqvGcCfi4MtSbOoO7f5O6F6jKzTFkOi1/pW/FSpvpsyMV/gw==}
+  /@nuxt/devtools-kit@1.0.0-beta.3(nuxt@3.7.4)(vite@4.4.11):
+    resolution: {integrity: sha512-jRIlOZ1mGED6S0knH2mjRPeFr3WA/LHJvAhLHLBhE943e5JTmurR9stin86DRZKjLwn5d1AtUHyM9rxaCO0qLw==}
     peerDependencies:
       nuxt: ^3.7.4
       vite: '*'
@@ -1038,8 +1038,8 @@ packages:
       - supports-color
     dev: true
 
-  /@nuxt/devtools-wizard@1.0.0-beta.2:
-    resolution: {integrity: sha512-kHiLfHuRla+kAQO7xHL+jmPk0OINis3ilakbBm6DtTdqg4citHfP5Qm0IyvOXW9PfI0Gr7mOh50ZtvzA3dMNkw==}
+  /@nuxt/devtools-wizard@1.0.0-beta.3:
+    resolution: {integrity: sha512-PBcTqzy0Go4sZvSLsbj/LyK+BMmmGyhswI0Wq5hM3Ydy0rJC6MdfOt/1FIG6S/rQIOcYH0Y9k7miRQ77wh5KaQ==}
     hasBin: true
     dependencies:
       consola: 3.2.3
@@ -1054,16 +1054,16 @@ packages:
       semver: 7.5.4
     dev: true
 
-  /@nuxt/devtools@1.0.0-beta.2(nuxt@3.7.4)(vite@4.4.11):
-    resolution: {integrity: sha512-GEPnPEsTCFDA+r7IAnUKnVJtk6tJLo0pK2DXBEaCXhnFcrneXLzyNFEtKffTzISGTgVISMAo5ps0Twtq0vNspQ==}
+  /@nuxt/devtools@1.0.0-beta.3(nuxt@3.7.4)(vite@4.4.11):
+    resolution: {integrity: sha512-Ah/ho+Y5uv3ky+qDUX+lZMbLSaKt+rmCPuPmRlVWbmQtjlhzCyGAiqJSHhojerG9mp4uu5if99ejxKOj2w4rYQ==}
     hasBin: true
     peerDependencies:
       nuxt: ^3.7.4
       vite: '*'
     dependencies:
       '@antfu/utils': 0.7.6
-      '@nuxt/devtools-kit': 1.0.0-beta.2(nuxt@3.7.4)(vite@4.4.11)
-      '@nuxt/devtools-wizard': 1.0.0-beta.2
+      '@nuxt/devtools-kit': 1.0.0-beta.3(nuxt@3.7.4)(vite@4.4.11)
+      '@nuxt/devtools-wizard': 1.0.0-beta.3
       '@nuxt/kit': 3.7.4
       birpc: 0.2.14
       consola: 3.2.3
