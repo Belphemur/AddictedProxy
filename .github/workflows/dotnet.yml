@@ -78,7 +78,7 @@ jobs:
           version: latest
       - name: Use Node.js
         if: steps.filter.outputs.node == 'true'
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: 'pnpm'
@@ -106,7 +106,7 @@ jobs:
         with:
           version: latest
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: 'pnpm'
@@ -171,7 +171,7 @@ jobs:
           version: latest
       - name: Use Node.js
         if: matrix.frontend == 'true'
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: lts/*
           cache: 'pnpm'
