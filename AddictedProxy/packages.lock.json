@@ -2050,8 +2050,8 @@
       },
       "Z.EntityFramework.Extensions.EFCore": {
         "type": "Transitive",
-        "resolved": "7.100.0.4",
-        "contentHash": "BR9xwjbebi2mhsfhXJvbl80OHev+b3CQncTxRlLpbCJUmhc+iPPpMuvFfpafhWIxsB6OHCoOXxUQ4liL04ZyQA==",
+        "resolved": "7.100.0.5",
+        "contentHash": "F0L5h5pNeBLDsZ7892CQOL+POfvX+VYj1IIig/P/O+xh4/SSW/mbzklnBEXqm97VhDJ/ziMy26TH2TtIOqro8Q==",
         "dependencies": {
           "Microsoft.CSharp": "4.7.0",
           "Microsoft.EntityFrameworkCore.Relational": "[7.0.0, 8.0.0)",
@@ -2095,7 +2095,7 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[7.0.11, )",
           "RT.Comb.AspNetCore": "[4.0.1, )",
           "System.Linq.Async": "[6.0.1, )",
-          "Z.EntityFramework.Extensions.EFCore": "[7.100.0.4, )"
+          "Z.EntityFramework.Extensions.EFCore": "[7.100.0.5, )"
         }
       },
       "addictedproxy.image": {
