@@ -73,9 +73,9 @@
       },
       "Microsoft.Extensions.Http.Polly": {
         "type": "Direct",
-        "requested": "[7.0.12, )",
-        "resolved": "7.0.12",
-        "contentHash": "ydLK3X8c714By7gPzyhqEvNBIFOx/FynhK4CbnjJfjvbZRd05eIfQdTVwC55nOf9uuyUh2G+sz6OXYCuDoE+yg==",
+        "requested": "[7.0.13, )",
+        "resolved": "7.0.13",
+        "contentHash": "KHrizaQ5/qXvSZVrHwoka63OYsxwYX4WBoF+gMTLVoP+8B1wv3POtGAJiw7XO6wKmbSZOr2RXigyyk6HwFscIw==",
         "dependencies": {
           "Microsoft.Extensions.Http": "7.0.0",
           "Polly": "7.2.3",
@@ -415,11 +415,11 @@
       },
       "Microsoft.EntityFrameworkCore": {
         "type": "Transitive",
-        "resolved": "7.0.12",
-        "contentHash": "HRge/bJ5SKMNeqybC4NnRwWZn69QBjVVoVmwhmJ8xgQ50Ye+jTOOf2mef/y4Lrq1HUeMg8cu+3JeFdnp+Y8skA==",
+        "resolved": "7.0.13",
+        "contentHash": "fACONzJtzLJQ29soFqBr0OzgmIYMHV7y9AEZ18hqGx2K0FMJNqezAcfzovc4WI+kT9IvOFQKhDNTl5DMimgkMA==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Abstractions": "7.0.12",
-          "Microsoft.EntityFrameworkCore.Analyzers": "7.0.12",
+          "Microsoft.EntityFrameworkCore.Abstractions": "7.0.13",
+          "Microsoft.EntityFrameworkCore.Analyzers": "7.0.13",
           "Microsoft.Extensions.Caching.Memory": "7.0.0",
           "Microsoft.Extensions.DependencyInjection": "7.0.0",
           "Microsoft.Extensions.Logging": "7.0.0"
@@ -427,20 +427,20 @@
       },
       "Microsoft.EntityFrameworkCore.Abstractions": {
         "type": "Transitive",
-        "resolved": "7.0.12",
-        "contentHash": "GDlY3DzUbpagqb0683NUM2RK9eJFjTfmlLJd5YtvzBf8T4dwanIOSjd2vN7dXJihyZ0JlYaCetyHgxzbrxiUOw=="
+        "resolved": "7.0.13",
+        "contentHash": "VxChscv7EsedfuhMAqJ82IxWBYyScCnMwMb1j4+264rIZteeWhj0CJX+u139JCCE9TcvoT97IsCmbb5Jcav5tg=="
       },
       "Microsoft.EntityFrameworkCore.Analyzers": {
         "type": "Transitive",
-        "resolved": "7.0.12",
-        "contentHash": "feFe61uKUNoHJfo9tnO65BTzcpWEYIr34xWikhYgZl5c9RiiUJLuCoTqoGc9fuuKy+xk9aUa1NwgDGMC4KmBig=="
+        "resolved": "7.0.13",
+        "contentHash": "3GiAd0b30L+31/86mtpLDf0Hf4Fnze4yx7hVXaW4wBd6KomIqacGaf+s9rMYNdJZEyKvUJPaBsghY+FgKOoAHg=="
       },
       "Microsoft.EntityFrameworkCore.Relational": {
         "type": "Transitive",
-        "resolved": "7.0.12",
-        "contentHash": "apLzFyjM3s/voBiaMCJPwIOk5SxA1N6GmSbhqthfbUDn8mX+kxZl4RXNdaoBLzPKfUg4EoqCtt0YON/g9YXruQ==",
+        "resolved": "7.0.13",
+        "contentHash": "lIms3oaIW7XiQy3bLUB2+hcSZ4ISmdh3HKKuNSnewS3wurYaopqBEhYaQdhZeW6itl3skWyqybPGGxIlJrKqFA==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "7.0.12",
+          "Microsoft.EntityFrameworkCore": "7.0.13",
           "Microsoft.Extensions.Configuration.Abstractions": "7.0.0"
         }
       },
@@ -471,8 +471,8 @@
       },
       "Microsoft.Extensions.Caching.StackExchangeRedis": {
         "type": "Transitive",
-        "resolved": "7.0.12",
-        "contentHash": "1BzjdbAYfc2qUI83ysXgrSnKNSfAL3IKawJHlStQIf6XNw2/pps5G1naIK54HDqz0kv3AkjPGfLPCLqqNaID0A==",
+        "resolved": "7.0.13",
+        "contentHash": "GRcmE+agH1FhpLzTUKigKPKyOGQD7rPTOGdCjv2e7jbC5Ecy2DyDsRgkR5I/XbpJEvcgIF/oggjRpa7zCveOFw==",
         "dependencies": {
           "Microsoft.Extensions.Caching.Abstractions": "7.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "7.0.1",
@@ -593,8 +593,8 @@
       },
       "Microsoft.Extensions.FileProviders.Embedded": {
         "type": "Transitive",
-        "resolved": "7.0.12",
-        "contentHash": "Af3M929S/v2NIBfYxRAp+muDKm3nn6KLbtFuFRm0Q6yZKIC/lQovmUHL5c7sycbMjo/gpmR+6w5IcLS/FEm+pw==",
+        "resolved": "7.0.13",
+        "contentHash": "X5jGJ2kSQO6d5fjjC3EdJ6AQp33b+SGG7tjZ68cc7vURs+peIXrsN0Lk4D0JsZThAy5PZirZNqMNUU9B7tXebw==",
         "dependencies": {
           "Microsoft.Extensions.FileProviders.Abstractions": "7.0.0"
         }
@@ -2071,7 +2071,7 @@
           "Community.Microsoft.Extensions.Caching.PostgreSql": "[4.0.4, )",
           "InversionOfControl": "[1.0.0, )",
           "Microsoft.Extensions.Caching.Memory": "[7.0.0, )",
-          "Microsoft.Extensions.Caching.StackExchangeRedis": "[7.0.12, )",
+          "Microsoft.Extensions.Caching.StackExchangeRedis": "[7.0.13, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[7.0.0, )",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "[7.0.0, )"
         }
@@ -2089,8 +2089,8 @@
           "AddictedProxy.Culture": "[1.0.0, )",
           "AddictedProxy.Tools.Database": "[1.0.0, )",
           "InversionOfControl": "[1.0.0, )",
-          "Microsoft.EntityFrameworkCore": "[7.0.12, )",
-          "Microsoft.EntityFrameworkCore.Relational": "[7.0.12, )",
+          "Microsoft.EntityFrameworkCore": "[7.0.13, )",
+          "Microsoft.EntityFrameworkCore.Relational": "[7.0.13, )",
           "Microsoft.Extensions.Hosting": "[7.0.1, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[7.0.11, )",
           "RT.Comb.AspNetCore": "[4.0.1, )",
@@ -2147,7 +2147,7 @@
       "addictedproxy.tools.database": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "[7.0.12, )"
+          "Microsoft.EntityFrameworkCore": "[7.0.13, )"
         }
       },
       "addictedproxy.upstream": {
@@ -2157,7 +2157,7 @@
           "AddictedProxy.Database": "[1.0.0, )",
           "AngleSharp": "[1.0.5, )",
           "Microsoft.Extensions.Http": "[7.0.0, )",
-          "Microsoft.Extensions.Http.Polly": "[7.0.12, )",
+          "Microsoft.Extensions.Http.Polly": "[7.0.13, )",
           "Performance": "[1.0.0, )",
           "Polly": "[8.0.0, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )",
@@ -2170,7 +2170,7 @@
         "type": "Project",
         "dependencies": {
           "InversionOfControl": "[1.0.0, )",
-          "Microsoft.Extensions.FileProviders.Embedded": "[7.0.12, )",
+          "Microsoft.Extensions.FileProviders.Embedded": "[7.0.13, )",
           "ZstdNet": "[1.4.5, )"
         }
       },
