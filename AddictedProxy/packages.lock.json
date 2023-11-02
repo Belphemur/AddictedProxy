@@ -848,8 +848,8 @@
       },
       "OpenTelemetry.Instrumentation.StackExchangeRedis": {
         "type": "Transitive",
-        "resolved": "1.0.0-rc9.11",
-        "contentHash": "A9X/w6SI/gTqCBoVXBpDZAaTK7y2O5gGFw2gwz9oVuBUWQb1rY6cbxBwp05Ua+qE5U2YXPe5+4x9nZTgHWXYaA==",
+        "resolved": "1.0.0-rc9.12",
+        "contentHash": "PLsWAcKRa8I/Jg+z+3k9IqbPLQN4Ca5EtRFWGlA/oY1sy9Yw+zQm9Tga8AvL6NLINFHSiPH3XVQ7ZOVudiXArw==",
         "dependencies": {
           "Microsoft.Extensions.Options": "3.1.0",
           "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.6.0, 2.0.0)",
@@ -2038,7 +2038,7 @@
           "OpenTelemetry.Instrumentation.EntityFrameworkCore": "[1.0.0-beta.8, )",
           "OpenTelemetry.Instrumentation.Http": "[1.0.0-rc9.14, )",
           "OpenTelemetry.Instrumentation.SqlClient": "[1.0.0-rc9.14, )",
-          "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.11, )",
+          "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.12, )",
           "OpenTelemetry.Shims.OpenTracing": "[1.0.0-rc9.14, )",
           "Sentry": "[3.40.1, )",
           "prometheus-net.AspNetCore": "[8.1.0, )"
