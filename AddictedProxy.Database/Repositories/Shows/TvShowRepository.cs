@@ -129,6 +129,14 @@ public class TvShowRepository : ITvShowRepository
                              .Include(show => show.Seasons)
                              .ToAsyncEnumerable();
     }
+    public IAsyncEnumerable<TvShow> GetShowsWithoutTvdbIdWithTmdbIdAsync()
+    {
+        return _entityContext.TvShows
+            .Where(show => !show.TvdbId.HasValue)
+            .Where(show => show.TmdbId.HasValue)
+            .Include(show => show.Seasons)
+            .ToAsyncEnumerable();
+    }
 
     /// <summary>
     /// Get shows having at least one season
