@@ -1,3 +1,10 @@
+## [4.19.0](https://github.com/Belphemur/AddictedProxy/compare/v4.18.6...v4.19.0) (2023-11-08)
+
+
+### Features
+
+* **tvshow:** Find missing TVDBIDs after refreshing shows ([8c56d0f](https://github.com/Belphemur/AddictedProxy/commit/8c56d0f736653ebb89b5c5b84aaf1ef01ddc22a5))
+
 ## [4.18.6](https://github.com/Belphemur/AddictedProxy/compare/v4.18.5...v4.18.6) (2023-10-12)
 
 
