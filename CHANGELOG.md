@@ -1,3 +1,10 @@
+## [4.19.2](https://github.com/Belphemur/AddictedProxy/compare/v4.19.1...v4.19.2) (2023-11-15)
+
+
+### Bug Fixes
+
+* **ci:** fix building image for server ([395484e](https://github.com/Belphemur/AddictedProxy/commit/395484eb9c9f139320c66795654c5058dba57c70))
+
 ## [4.19.1](https://github.com/Belphemur/AddictedProxy/compare/v4.19.0...v4.19.1) (2023-11-15)
 
 
