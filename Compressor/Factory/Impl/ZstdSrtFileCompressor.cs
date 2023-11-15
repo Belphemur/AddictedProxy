@@ -16,7 +16,7 @@ public class ZstdSrtFileCompressor : ICompressorService, IDisposable
     public ZstdSrtFileCompressor()
     {
         var embeddedProvider = new EmbeddedFileProvider(typeof(ZstdSrtFileCompressor).Assembly);
-        var fileInfo = embeddedProvider.GetFileInfo("Model\\srt-dict");
+        var fileInfo = embeddedProvider.GetFileInfo("Model/srt-dict");
         using var stream = fileInfo.CreateReadStream();
         var srtDictionary = new byte[stream.Length];
         _ = stream.Read(srtDictionary, 0, srtDictionary.Length);
