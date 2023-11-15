@@ -27,6 +27,7 @@ public class BootstrapController : IBootstrap, IBootstrapApp
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
         services.AddHttpContextAccessor();
+        services.AddHttpLogging(_ => { });
         services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
     }
 
