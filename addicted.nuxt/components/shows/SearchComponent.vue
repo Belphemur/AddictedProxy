@@ -23,8 +23,8 @@
 <script setup lang="ts">
 import {ref,} from "vue";
 import {mevent} from "~/composables/data/event";
-import {ShowDto} from "~/composables/api/data-contracts";
 import {useShows} from "~/composables/rest/api";
+import type {ShowDto} from "~/composables/api/data-contracts";
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits<{

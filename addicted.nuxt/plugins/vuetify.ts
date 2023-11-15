@@ -1,6 +1,6 @@
 // plugins/vuetify.js
 import {createVuetify} from 'vuetify'
-import {VDataTable, VSkeletonLoader} from "vuetify/labs/components";
+import {VDataTable, VSkeletonLoader} from "vuetify/components";
 
 export default defineNuxtPlugin(nuxtApp => {
     const vuetify = createVuetify({

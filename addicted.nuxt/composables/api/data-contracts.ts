@@ -204,6 +204,12 @@ export interface ShowDto {
    * @example 344280
    */
   tvDbId?: number | null;
+  /**
+   * ID of the show in TMDB if available
+   * @format int32
+   * @example 80475
+   */
+  tmdbId?: number | null;
 }
 
 export interface ShowSearchResponse {

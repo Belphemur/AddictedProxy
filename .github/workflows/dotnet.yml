@@ -15,7 +15,7 @@ env:
   PROJECT_NAME: "AddictedProxy"
   PROJECT_NAME_FRONTEND: "AddictedProxy-frontend"
   NODEJS: lts/*
-  DOTNET: "7.0.x"
+  DOTNET: "8.0.x"
   sentry_project: "addictedproxy"
   SENTRY_ORG: "soundswitch"
   # Use docker.io for Docker Hub if empty

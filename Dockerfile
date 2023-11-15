@@ -1,7 +1,7 @@
 ARG MAIN_PROJECT=AddictedProxy
 ARG DATA_DIRECTORY="/data"
 
-FROM mcr.microsoft.com/dotnet/aspnet:7.0-bookworm-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-bookworm-slim AS base
 RUN apt update && apt install -y curl && apt-get clean
 RUN curl -O http://http.us.debian.org/debian/pool/main/libz/libzstd/libzstd1_1.5.5+dfsg2-2_amd64.deb && dpkg -i libzstd1_1.5.5+dfsg2-2_amd64.deb && rm libzstd1_1.5.5+dfsg2-2_amd64.deb
 # Needed because the zstd lib is loaded as libzstd not libzstd.so.1

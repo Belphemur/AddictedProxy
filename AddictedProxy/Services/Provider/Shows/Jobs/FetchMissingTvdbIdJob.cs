@@ -1,3 +1,4 @@
+using AddictedProxy.Database.Model;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Provider.ShowInfo;
 using Hangfire.Storage.Monitoring;
@@ -25,16 +26,17 @@ public class FetchMissingTvdbIdJob
     {
         using var transaction = _performanceTracker.BeginNestedSpan("find-tvdbid");
         var count = 0;
-        foreach(var show in await _tvShowRepository.GetShowsWithoutTvdbIdWithTmdbIdAsync().ToArrayAsync(cancellationToken))
+        foreach (var show in await _tvShowRepository.GetShowsWithoutTvdbIdWithTmdbIdAsync().ToArrayAsync(cancellationToken))
         {
-            var details = await _tmdbClient.GetShowExternalIdsAsync(show.TmdbId!.Value, cancellationToken) 
-                          ?? await _tmdbClient.GetMovieExternalIdsAsync(show.TmdbId!.Value, cancellationToken);
-            if(details == null)
+            var details = show.Type == ShowType.Show
+                ? await _tmdbClient.GetShowExternalIdsAsync(show.TmdbId!.Value, cancellationToken)
+                : await _tmdbClient.GetMovieExternalIdsAsync(show.TmdbId!.Value, cancellationToken);
+            if (details == null)
             {
-                _logger.LogInformation("No TVDBID for show: {showId}",  show.TmdbId);
+                _logger.LogInformation("No TVDBID for show: {showId}", show.TmdbId);
                 continue;
             }
-            
+
             show.TvdbId = details.TvdbId;
             count++;
             if (++count % 50 == 0)
@@ -43,6 +45,7 @@ public class FetchMissingTvdbIdJob
                 await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
             }
         }
+
         _logger.LogInformation("Found TVDBID for {count} shows", count);
         await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
     }

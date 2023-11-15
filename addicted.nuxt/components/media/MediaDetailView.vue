@@ -2,9 +2,10 @@
 import MediaDetails from "@/components/media/MediaDetails.vue";
 import {ref, onUnmounted} from "vue";
 import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
-import {DoneHandler, ProgressHandler, useRefreshHub} from "~/composables/hub/RefreshHub";
-import {EpisodeWithSubtitlesDto, MediaDetailsDto} from "~/composables/api/data-contracts";
+import type {DoneHandler, ProgressHandler} from "~/composables/hub/RefreshHub";
+import type {EpisodeWithSubtitlesDto, MediaDetailsDto} from "~/composables/api/data-contracts";
 import {useMedia, useShows} from "~/composables/rest/api";
+import {useRefreshHub} from "~/composables/hub/RefreshHub";
 
 
 export interface Props {
