@@ -7,7 +7,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "gen-api": "swagger-typescript-api -p https://localhost:5001/api/v1/swagger.json -o .\\composables\\api\\ -n api.ts --route-types --union-enums --modular"
+    "gen-api": "swagger-typescript-api -p http://localhost/api/v1/swagger.json -o .\\composables\\api\\ -n api.ts --route-types --union-enums --modular"
   },
   "devDependencies": {
     "@nuxt/devtools": "1.0.2",

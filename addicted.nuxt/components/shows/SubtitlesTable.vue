@@ -63,9 +63,8 @@
 import {defineProps, ref} from "vue";
 
 import {mevent} from "~/composables/data/event";
-import {EpisodeWithSubtitlesDto, SubtitleDto} from "~/composables/api/data-contracts";
+import type {EpisodeWithSubtitlesDto, SubtitleDto} from "~/composables/api/data-contracts";
 import {useSubtitles} from "~/composables/rest/api";
-
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto> | null;
 }

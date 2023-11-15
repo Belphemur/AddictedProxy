@@ -1,5 +1,5 @@
 import {HubConnection, HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
-import {EpisodeWithSubtitlesDto, ShowDto} from "~/composables/api/data-contracts";
+import type {EpisodeWithSubtitlesDto, ShowDto} from "~/composables/api/data-contracts";
 import {getApiServerUrl} from "~/composables/rest/api";
 
 let started = false;

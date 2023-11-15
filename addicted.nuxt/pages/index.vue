@@ -39,9 +39,9 @@
 
 import {ref} from "vue";
 import SearchComponent from "@/components/shows/SearchComponent.vue";
-import {EpisodeWithSubtitlesDto, MediaDetailsDto, ShowDto} from "~/composables/api/data-contracts";
+import type {EpisodeWithSubtitlesDto, MediaDetailsDto, ShowDto} from "~/composables/api/data-contracts";
 import {useMedia} from "~/composables/rest/api";
-import {SelectedShow} from "~/composables/dto/SelectedShow";
+import type {SelectedShow} from "~/composables/dto/SelectedShow";
 
 definePageMeta({
   name: "Home",
