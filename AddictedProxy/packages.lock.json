@@ -1931,7 +1931,7 @@
       "addictedproxy.storage": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "[3.7.300.2, )",
+          "AWSSDK.S3": "[3.7.300.*, )",
           "Compressor": "[1.0.0, )",
           "Hangfire.AspNetCore": "[1.8.6, )",
           "InversionOfControl": "[1.0.0, )",
