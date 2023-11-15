@@ -1,3 +1,20 @@
+## [4.19.1](https://github.com/Belphemur/AddictedProxy/compare/v4.19.0...v4.19.1) (2023-11-15)
+
+
+### Performance improvements
+
+* **.NET:** update to .NET 8.0 ([f44e903](https://github.com/Belphemur/AddictedProxy/commit/f44e903cce947d12e97edb94f30d313ce309926c))
+* **deps:** update frontend deps ([e554910](https://github.com/Belphemur/AddictedProxy/commit/e554910dd816ab77ec48f12f09d133b13a4f743c))
+* **tvdb:id:** improve finding the tvdb id ([069b968](https://github.com/Belphemur/AddictedProxy/commit/069b968f6d769d53139bd4dad895c9f4fbdbf6fc))
+
+
+### Bug Fixes
+
+* **compressor:** fix getting dictionary file ([19d1da1](https://github.com/Belphemur/AddictedProxy/commit/19d1da17217fb9584ebeac03544f8159922e0a0d))
+* **deps:** update package deps lock file ([d742649](https://github.com/Belphemur/AddictedProxy/commit/d7426491adfba478cccaa1554187aa306771683f))
+* **frontend:** any issue relating to updating nuxt ([5c423f0](https://github.com/Belphemur/AddictedProxy/commit/5c423f06b7ca14f9e67de4af59438b6b5d5c050a))
+* **httplogging:** fix issue with http logging not loaded ([6717250](https://github.com/Belphemur/AddictedProxy/commit/67172509b344d0a087f41e133e96f9a7e62c3720))
+
 ## [4.19.0](https://github.com/Belphemur/AddictedProxy/compare/v4.18.6...v4.19.0) (2023-11-08)
 
 
