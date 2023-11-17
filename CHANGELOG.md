@@ -1,3 +1,15 @@
+## [4.19.3](https://github.com/Belphemur/AddictedProxy/compare/v4.19.2...v4.19.3) (2023-11-17)
+
+
+### Performance improvements
+
+* **deps:** update deps to net 8.0 ([5bcb4b0](https://github.com/Belphemur/AddictedProxy/commit/5bcb4b056d0f0f6872f76d4f3871ef1f49def2bb))
+
+
+### Bug Fixes
+
+* **ci:** fix building image for server ([3cb828b](https://github.com/Belphemur/AddictedProxy/commit/3cb828b051ca71365630ba4dd923a18a3ae9de1c))
+
 ## [4.19.2](https://github.com/Belphemur/AddictedProxy/compare/v4.19.1...v4.19.2) (2023-11-15)
 
 
