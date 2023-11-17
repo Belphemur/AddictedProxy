@@ -4,11 +4,11 @@
     "net8.0": {
       "AngleSharp": {
         "type": "Direct",
-        "requested": "[1.0.6, )",
-        "resolved": "1.0.6",
-        "contentHash": "OIU4pbC6KjSzYdQZOjV4nme1RgGfCd3TdZgx1/blDUpgagYc9Es1NcyLHNp6tTyHJBp1aU4cvxr9c679bWX0Rw==",
+        "requested": "[1.0.7, )",
+        "resolved": "1.0.7",
+        "contentHash": "jZg7lDcrXRiIC8VBluuGKOCMR9mc4CIRX5vpQJ8fcgafs6T6plOzKHhAn3lJEwXorrltd9p1WtRxxhFpRBACbg==",
         "dependencies": {
-          "System.Text.Encoding.CodePages": "7.0.0"
+          "System.Text.Encoding.CodePages": "8.0.0"
         }
       },
       "Ardalis.Result.AspNetCore": {
@@ -147,15 +147,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.300.2",
-        "contentHash": "5cnuanWJWMEVvSx6XLMrAIgk/l4nztCja/6kxXXA1XkwZ63Dz9eMvCSIaByJI4MwJhTOPkp+GePNwKmoJXWcUA=="
+        "resolved": "3.7.300.4",
+        "contentHash": "+ena3wUXCsDSPwJzPxu6EGPPsrKiP6PAAdDrLuBh/Y422u0B1L4yj6D7L7nnQYySWgi1w1DsvEd7c4eE0cCjOA=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.300.2",
-        "contentHash": "o3hJygSn7wjpQhWf1UZge0KdKLQSeRWhI3Gd3IeLKeCQUCzwjQduvdDXmeC99Hjlj7V6+veQaJIYy8pN2c/1xA==",
+        "resolved": "3.7.300.4",
+        "contentHash": "ik34lfIvxlIubOuKrLHMqFdr2aRG8vk6rKY14Kov3Dh4QH1lRdXXLIOEn/sjTsxhiVTU9q1HiaSB/vnJfJ4s6w==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.300.2, 4.0.0)"
+          "AWSSDK.Core": "[3.7.300.4, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -1737,8 +1737,8 @@
       },
       "System.Text.Encoding.CodePages": {
         "type": "Transitive",
-        "resolved": "7.0.0",
-        "contentHash": "LSyCblMpvOe0N3E+8e0skHcrIhgV2huaNcjUUEa8hRtgEAm36aGkRoC8Jxlb6Ra6GSfF29ftduPNywin8XolzQ=="
+        "resolved": "8.0.0",
+        "contentHash": "OZIsVplFGaVY90G2SbpgU7EnCoOO5pw1t4ic21dBF3/1omrJFpAGoNAVpPyMVOC90/hvgkGG3VFqR13YgZMQfg=="
       },
       "System.Text.Encoding.Extensions": {
         "type": "Transitive",
@@ -1959,7 +1959,7 @@
         "dependencies": {
           "AddictedProxy.Culture": "[1.0.0, )",
           "AddictedProxy.Database": "[1.0.0, )",
-          "AngleSharp": "[1.0.6, )",
+          "AngleSharp": "[1.0.7, )",
           "Microsoft.Extensions.Http": "[8.0.0, )",
           "Microsoft.Extensions.Http.Polly": "[8.0.0, )",
           "Performance": "[1.0.0, )",
