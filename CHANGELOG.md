@@ -1,3 +1,10 @@
+## [4.19.4](https://github.com/Belphemur/AddictedProxy/compare/v4.19.3...v4.19.4) (2023-11-20)
+
+
+### Bug Fixes
+
+* **deps:** force pgsql version ([3589306](https://github.com/Belphemur/AddictedProxy/commit/35893061fe3a7af782a0d7f16fd0c14b7e60d8d7))
+
 ## [4.19.3](https://github.com/Belphemur/AddictedProxy/compare/v4.19.2...v4.19.3) (2023-11-17)
 
 
