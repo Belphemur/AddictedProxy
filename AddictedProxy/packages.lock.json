@@ -1877,7 +1877,8 @@
           "Microsoft.Extensions.Caching.Memory": "[8.0.0, )",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.0, )",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "[8.0.0, )"
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "[8.0.0, )",
+          "Npgsql": "[8.0.0-rc.2, )"
         }
       },
       "addictedproxy.culture": {
