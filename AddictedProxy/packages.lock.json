@@ -750,10 +750,10 @@
       },
       "Npgsql": {
         "type": "Transitive",
-        "resolved": "8.0.0-rc.2",
-        "contentHash": "iTIX8+YztrS0zjlmhmKQY1ExvIEhhko5dzKAKvuxtYaVd/ZDeOGD90RdwCiqwlnqcw8m3k3DJNOFpmAucY8A3w==",
+        "resolved": "8.0.0",
+        "contentHash": "Qiz74U+O7Mv4knrsXgKVYGJjgwoziK+aMFZqz7PtKR3vyGIhZA0tnW6HoUnL3X+YqtmVuhmoKkN8LDWEHMxPbw==",
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.0-rc.2.23479.6"
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         }
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
@@ -1878,7 +1878,7 @@
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "[8.0.0, )",
-          "Npgsql": "[8.0.0-rc.2, )"
+          "Npgsql": "[8.0.0, )"
         }
       },
       "addictedproxy.culture": {
