@@ -1,3 +1,10 @@
+## [4.19.5](https://github.com/Belphemur/AddictedProxy/compare/v4.19.4...v4.19.5) (2023-11-21)
+
+
+### Performance improvements
+
+* **ci:** Better building of the docker image with proper version ([c7cde7f](https://github.com/Belphemur/AddictedProxy/commit/c7cde7fb0c27449060497a14b41047703b9c92e0))
+
 ## [4.19.4](https://github.com/Belphemur/AddictedProxy/compare/v4.19.3...v4.19.4) (2023-11-20)
 
 
