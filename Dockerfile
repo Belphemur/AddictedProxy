@@ -32,7 +32,7 @@ COPY --from=publish /app/publish .
 
 RUN ln -s ${MAIN_PROJECT}.dll app.dll
 
-HEALTHCHECK --interval=15s --timeout=3s \
+HEALTHCHECK --interval=5s --timeout=3s \
   CMD curl -f http://localhost/health || exit 1
 
 ENTRYPOINT ["dotnet", "app.dll"]
