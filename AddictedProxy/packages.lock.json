@@ -98,11 +98,11 @@
       },
       "Sentry.AspNetCore": {
         "type": "Direct",
-        "requested": "[3.41.0, )",
-        "resolved": "3.41.0",
-        "contentHash": "dQP4r3kD9cPQQiuqEohZ5CiUxPX2aVJ1zhV00zmOxqlE+QiioMOnbjwA8r9jNSUHPAEQzCIrExW9MakAXNYLhA==",
+        "requested": "[3.41.1, )",
+        "resolved": "3.41.1",
+        "contentHash": "Ag1+X0cT6yw9wSqSgdnqjxpE6/sFFQLlYsfotlxCyT6OXqkghWAVQfCz1CW/EPX+aBwjPxtO8qRVR4NHtQhbGg==",
         "dependencies": {
-          "Sentry.Extensions.Logging": "3.41.0"
+          "Sentry.Extensions.Logging": "3.41.1"
         }
       },
       "SimpleMvcSitemap.Core": {
@@ -1045,17 +1045,17 @@
       },
       "Sentry": {
         "type": "Transitive",
-        "resolved": "3.41.0",
-        "contentHash": "Qb2BdKQhfy9NVOLnt1W6IOCKAOjIFjeJOQHrGfPz3fBfn8qycWLkVjEaXwVLACT2xMpAjxWfj3w1WQkFjv16sg=="
+        "resolved": "3.41.1",
+        "contentHash": "5qZIMVsJ4/8J46zeyam/sZw5u02I/0zsPen0cLyoWEP89FI9I6DxWz7nfqldlVgLLswTWhPOi/tGR0kz4RNshw=="
       },
       "Sentry.Extensions.Logging": {
         "type": "Transitive",
-        "resolved": "3.41.0",
-        "contentHash": "sR6hkohyoicVUPIEXNb+mXXbuGN2RaFjYqTtkj8hRhhUZ5cFHOrbFNfNSRjiUgcDlWwsQ1fGbwBzWgeeUszHjQ==",
+        "resolved": "3.41.1",
+        "contentHash": "NlnW54OFm7mZlNrkcIRGiL028tfYi23tzeYcT95MpFCpqSb2wfXJrxNDX9ILGsfY0dnfGifEuGrSeCH2mDRXzQ==",
         "dependencies": {
           "Microsoft.Extensions.Http": "6.0.0",
           "Microsoft.Extensions.Logging.Configuration": "6.0.0",
-          "Sentry": "3.41.0"
+          "Sentry": "3.41.1"
         }
       },
       "SixLabors.ImageSharp": {
@@ -1967,7 +1967,7 @@
           "Polly": "[8.2.0, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )",
           "Polly.Extensions.Http": "[3.0.0, )",
-          "Sentry": "[3.41.0, )",
+          "Sentry": "[3.41.1, )",
           "System.Text.Json": "[8.0.0, )"
         }
       },
@@ -2007,7 +2007,7 @@
           "OpenTelemetry.Instrumentation.SqlClient": "[1.0.0-rc9.14, )",
           "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.12, )",
           "OpenTelemetry.Shims.OpenTracing": "[1.0.0-rc9.14, )",
-          "Sentry": "[3.41.0, )",
+          "Sentry": "[3.41.1, )",
           "prometheus-net.AspNetCore": "[8.1.0, )"
         }
       },
