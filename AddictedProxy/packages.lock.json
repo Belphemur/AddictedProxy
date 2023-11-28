@@ -1453,8 +1453,15 @@
       },
       "System.Reflection.Emit": {
         "type": "Transitive",
-        "resolved": "4.7.0",
-        "contentHash": "VR4kk8XLKebQ4MZuKuIni/7oh+QGFmZW3qORd1GvBq/8026OpW501SzT/oypwiQl4TvT8ErnReh/NzY9u+C6wQ=="
+        "resolved": "4.3.0",
+        "contentHash": "228FG0jLcIwTVJyz8CLFKueVqQK36ANazUManGaJHkO0icjiIypKW7YLWLIWahyIkdh5M7mV2dJepllLyA1SKg==",
+        "dependencies": {
+          "System.IO": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Reflection.Emit.ILGeneration": "4.3.0",
+          "System.Reflection.Primitives": "4.3.0",
+          "System.Runtime": "4.3.0"
+        }
       },
       "System.Reflection.Emit.ILGeneration": {
         "type": "Transitive",
@@ -1494,8 +1501,12 @@
       },
       "System.Reflection.TypeExtensions": {
         "type": "Transitive",
-        "resolved": "4.7.0",
-        "contentHash": "VybpaOQQhqE6siHppMktjfGBw1GCwvCqiufqmP8F1nj7fTUNtW35LOEt3UZTEsECfo+ELAl/9o9nJx3U91i7vA=="
+        "resolved": "4.3.0",
+        "contentHash": "7u6ulLcZbyxB5Gq0nMkQttcdBTx57ibzw+4IOXEfR+sXYQoHvjW5LTLyNr8O22UIMrqYbchJQJnos4eooYzYJA==",
+        "dependencies": {
+          "System.Reflection": "4.3.0",
+          "System.Runtime": "4.3.0"
+        }
       },
       "System.Resources.ResourceManager": {
         "type": "Transitive",
@@ -1854,14 +1865,11 @@
       },
       "Z.EntityFramework.Extensions.EFCore": {
         "type": "Transitive",
-        "resolved": "8.101.0",
-        "contentHash": "ZuH5w6NFi8j2s7Ndh2vR3ImjPBW1DC5rREFtx3ifbf/XRy8WZqEKmXDfZlAOcH+1pFCbe0oyLyVID13yOFegqA==",
+        "resolved": "8.101.1",
+        "contentHash": "9Crhd9skPn0enNYnNnwL4kw6/VcWP9GoaLnH+Mp1+qJjUE04LsgwAZ5eaXIG3w7F5V/3D6D/31GNdB881QFQnA==",
         "dependencies": {
-          "Microsoft.CSharp": "4.7.0",
-          "Microsoft.EntityFrameworkCore.Relational": "8.0.0",
-          "System.Configuration.ConfigurationManager": "[8.0.0, 9.0.0)",
-          "System.Reflection.Emit": "4.7.0",
-          "System.Reflection.TypeExtensions": "4.7.0"
+          "Microsoft.EntityFrameworkCore.Relational": "[8.0.0, 9.0.0)",
+          "System.Configuration.ConfigurationManager": "8.0.0"
         }
       },
       "ZstdNet": {
@@ -1900,7 +1908,7 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.0, )",
           "RT.Comb.AspNetCore": "[4.0.1, )",
           "System.Linq.Async": "[6.0.1, )",
-          "Z.EntityFramework.Extensions.EFCore": "[8.101.0, )"
+          "Z.EntityFramework.Extensions.EFCore": "[8.101.1, )"
         }
       },
       "addictedproxy.image": {
