@@ -1,3 +1,16 @@
+## [4.19.6](https://github.com/Belphemur/AddictedProxy/compare/v4.19.5...v4.19.6) (2023-11-30)
+
+
+### Performance improvements
+
+* **deps:** update frontend deps ([27792dd](https://github.com/Belphemur/AddictedProxy/commit/27792dd925352fad5b4edae5eae06f7b7ee21b4e))
+
+
+### Bug Fixes
+
+* **provenance:** don't rely on EF to update the field ([f6a4faa](https://github.com/Belphemur/AddictedProxy/commit/f6a4faaa8c936594b21adedea0a6215ad5e7bd88))
+* **provenance:** use SQL trigger to provide update the updatedat field ([43c3143](https://github.com/Belphemur/AddictedProxy/commit/43c314320bb5137b314336cfb27b577e21d80fc0))
+
 ## [4.19.5](https://github.com/Belphemur/AddictedProxy/compare/v4.19.4...v4.19.5) (2023-11-21)
 
 
