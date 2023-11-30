@@ -14,7 +14,7 @@ namespace AddictedProxy.Database.Migrations
                                  CREATE OR REPLACE FUNCTION updated_set_now()
                                  RETURNS TRIGGER AS $$
                                  BEGIN
-                                   NEW.UpdatedAt := now() at time zone 'utc';
+                                   NEW."UpdatedAt" := now() at time zone 'utc';
                                    RETURN NEW;
                                  END;
                                  $$ LANGUAGE plpgsql;
