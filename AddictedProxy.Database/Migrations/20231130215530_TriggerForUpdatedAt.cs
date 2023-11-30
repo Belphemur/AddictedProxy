@@ -23,10 +23,10 @@ namespace AddictedProxy.Database.Migrations
             foreach (var table in new[]{"AddictedUserCredentials", "Episodes", "OneTimeMigrationRelease", "Seasons", "Subtitles", "TvShows"})
             {
                 migrationBuilder.Sql($"""
-                                     CREATE TRIGGER updateAtTrigger{table}
-                                     BEFORE UPDATE ON {table}
-                                     FOR EACH ROW EXECUTE PROCEDURE updatedAtAsNow();
-                                     """);
+                                      CREATE OR REPLACE TRIGGER updateAtTrigger{table}
+                                      BEFORE UPDATE ON public.{table}
+                                      FOR EACH ROW EXECUTE PROCEDURE updatedAtAsNow();
+                                      """);
             }
         }
 
