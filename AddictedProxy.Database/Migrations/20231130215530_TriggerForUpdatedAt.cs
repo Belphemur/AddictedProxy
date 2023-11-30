@@ -11,7 +11,7 @@ namespace AddictedProxy.Database.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql("""
-                                 CREATE OR REPLACE FUNCTION updatedAtAsNow()
+                                 CREATE OR REPLACE FUNCTION updated_set_now()
                                  RETURNS TRIGGER AS $$
                                  BEGIN
                                    NEW.UpdatedAt := now() at time zone 'utc';
@@ -23,9 +23,9 @@ namespace AddictedProxy.Database.Migrations
             foreach (var table in new[]{"AddictedUserCredentials", "Episodes", "OneTimeMigrationRelease", "Seasons", "Subtitles", "TvShows"})
             {
                 migrationBuilder.Sql($"""
-                                      CREATE OR REPLACE TRIGGER updateAtTrigger{table}
+                                      CREATE OR REPLACE TRIGGER updated_at_trigger_{table}
                                       BEFORE UPDATE ON "{table}"
-                                      FOR EACH ROW EXECUTE PROCEDURE updatedAtAsNow();
+                                      FOR EACH ROW EXECUTE PROCEDURE updated_set_now();
                                       """);
             }
         }
