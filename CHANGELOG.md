@@ -1,3 +1,10 @@
+## [4.19.7](https://github.com/Belphemur/AddictedProxy/compare/v4.19.6...v4.19.7) (2023-11-30)
+
+
+### Bug Fixes
+
+* **provenance:** fix the migration script ([828f669](https://github.com/Belphemur/AddictedProxy/commit/828f669ff6f4c4b2f616004c5e1ce2ed87499705))
+
 ## [4.19.6](https://github.com/Belphemur/AddictedProxy/compare/v4.19.5...v4.19.6) (2023-11-30)
 
 
