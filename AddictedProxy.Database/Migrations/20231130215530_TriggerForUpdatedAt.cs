@@ -24,7 +24,7 @@ namespace AddictedProxy.Database.Migrations
             {
                 migrationBuilder.Sql($"""
                                       CREATE OR REPLACE TRIGGER updateAtTrigger{table}
-                                      BEFORE UPDATE ON public.{table}
+                                      BEFORE UPDATE ON "{table}"
                                       FOR EACH ROW EXECUTE PROCEDURE updatedAtAsNow();
                                       """);
             }
