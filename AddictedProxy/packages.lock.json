@@ -142,8 +142,8 @@
       },
       "AsyncKeyedLock": {
         "type": "Transitive",
-        "resolved": "6.2.2",
-        "contentHash": "LB7iArcNChVfIJ516K57P6/GuCfuRM3Rx+hwOvsez2zvR7WqJyfXvvkJTf1pXkQnk8DURVzjSaBil60uzsKEnw=="
+        "resolved": "6.2.3",
+        "contentHash": "UvyU5Z+BqeYSctFly/sKABs/SSKdoCUvjxMKQcb9G/XKGEgOpahRB2GiN0KjmwuJKeDX9KRJwOKfbciEV7zzKg=="
       },
       "AWSSDK.Core": {
         "type": "Transitive",
@@ -750,8 +750,8 @@
       },
       "Npgsql": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "Qiz74U+O7Mv4knrsXgKVYGJjgwoziK+aMFZqz7PtKR3vyGIhZA0tnW6HoUnL3X+YqtmVuhmoKkN8LDWEHMxPbw==",
+        "resolved": "8.0.1",
+        "contentHash": "/XQX6n2gKQPnRoP5AhOnz33qL5V6CEY2vqluHPIvK4VZqY/sE/dHOFj+/8Ok7Y5Cbkj6/OZOFLZCiaKcryhS9A==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         }
@@ -1060,16 +1060,16 @@
       },
       "SixLabors.ImageSharp": {
         "type": "Transitive",
-        "resolved": "3.0.1",
-        "contentHash": "o0v/J6SJwp3RFrzR29beGx0cK7xcMRgOyIuw8ZNLQyNnBhiyL/vIQKn7cfycthcWUPG3XezUjFwBWzkcUUDFbg=="
+        "resolved": "3.1.0",
+        "contentHash": "ESlqDmrxIFxOd8VcKpyymA6uav51iXFp/j73fYcDMpIXWe2VEsjS2OL8nZGpvgt2Y1LKgQpM5ZpPJa/YlS73Pg=="
       },
       "SixLabors.ImageSharp.Web": {
         "type": "Transitive",
-        "resolved": "3.0.1",
-        "contentHash": "L+UqZ9i9E3P2XosfqM+03uJ1fFOFMdhYGkfO2M8pmmFzpK6J4qeOAefYAKgJdPd3G/RY0NOiUibQtlrQG7r87w==",
+        "resolved": "3.1.0",
+        "contentHash": "LoN28idQwfphN6zygY3X1gK9Mwuy6y7Bs5N03sCwfZqUHJRmayc2HRTZLPO+sctvGvC1U4q+xgOwgFMwH2vGVw==",
         "dependencies": {
           "Microsoft.IO.RecyclableMemoryStream": "2.3.2",
-          "SixLabors.ImageSharp": "3.0.1"
+          "SixLabors.ImageSharp": "3.1.0"
         }
       },
       "StackExchange.Redis": {
@@ -1865,8 +1865,8 @@
       },
       "Z.EntityFramework.Extensions.EFCore": {
         "type": "Transitive",
-        "resolved": "8.101.1",
-        "contentHash": "9Crhd9skPn0enNYnNnwL4kw6/VcWP9GoaLnH+Mp1+qJjUE04LsgwAZ5eaXIG3w7F5V/3D6D/31GNdB881QFQnA==",
+        "resolved": "8.101.1.1",
+        "contentHash": "VscywRBzUY/7N7yCojJGJl8nsH+sWXEMS3KYP75q0yOtLBWfprDxgJGxsuKxd/2uIIMCQ32040SuEuH2DOrWgQ==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Relational": "[8.0.0, 9.0.0)",
           "System.Configuration.ConfigurationManager": "8.0.0"
@@ -1886,7 +1886,7 @@
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.0, )",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "[8.0.0, )",
-          "Npgsql": "[8.0.0, )"
+          "Npgsql": "[8.0.1, )"
         }
       },
       "addictedproxy.culture": {
@@ -1908,7 +1908,7 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.0, )",
           "RT.Comb.AspNetCore": "[4.0.1, )",
           "System.Linq.Async": "[6.0.1, )",
-          "Z.EntityFramework.Extensions.EFCore": "[8.101.1, )"
+          "Z.EntityFramework.Extensions.EFCore": "[8.101.1.1, )"
         }
       },
       "addictedproxy.image": {
@@ -1917,7 +1917,7 @@
           "AddictedProxy.Caching": "[1.0.0, )",
           "InversionOfControl": "[1.0.0, )",
           "Microsoft.AspNetCore.Http.Abstractions": "[2.2.0, )",
-          "SixLabors.ImageSharp.Web": "[3.0.1, )",
+          "SixLabors.ImageSharp.Web": "[3.1.0, )",
           "TvMovieDatabaseClient": "[1.0.0, )"
         }
       },
@@ -1999,7 +1999,7 @@
       "locking": {
         "type": "Project",
         "dependencies": {
-          "AsyncKeyedLock": "[6.2.2, )"
+          "AsyncKeyedLock": "[6.2.3, )"
         }
       },
       "performance": {
