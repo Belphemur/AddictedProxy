@@ -1,3 +1,10 @@
+## [4.19.9](https://github.com/Belphemur/AddictedProxy/compare/v4.19.8...v4.19.9) (2023-12-05)
+
+
+### Performance improvements
+
+* **deps:** update frontend deps ([d010daf](https://github.com/Belphemur/AddictedProxy/commit/d010dafe36f44d55f30d260b885ed2ec6427a4c7))
+
 ## [4.19.8](https://github.com/Belphemur/AddictedProxy/compare/v4.19.7...v4.19.8) (2023-11-30)
 
 
