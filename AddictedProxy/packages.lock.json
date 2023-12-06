@@ -904,8 +904,8 @@
       },
       "prometheus-net": {
         "type": "Transitive",
-        "resolved": "8.1.1",
-        "contentHash": "9/NVt5LtrTwFXoTa67ACkPtwDXQUK9Mrj1r9oOwpf/WHt/aDuLNB/78y+LDzAmeysWpXxNkfqBTCGgfZa3pTdA==",
+        "resolved": "8.2.0",
+        "contentHash": "pLsOu9HbJKJWeyg6IAb57K/JeJa+Ti1uD47c2+SANjga6UuDyeZN/if+9Q2H+s96x8/8DDT8AJ/9UU4+GsK/NA==",
         "dependencies": {
           "Microsoft.Extensions.Http": "3.1.0",
           "Microsoft.Extensions.ObjectPool": "7.0.0"
@@ -913,10 +913,10 @@
       },
       "prometheus-net.AspNetCore": {
         "type": "Transitive",
-        "resolved": "8.1.1",
-        "contentHash": "vcvoQdNMV/qCLXSBlhuHXmJXuiOHw3QBRQNA8P9gNapnSKS1j9EFwjHGFy7UEG0ljbPYFF32riv13FkN2mM79w==",
+        "resolved": "8.2.0",
+        "contentHash": "aAedAb+/SPMzxHzpd+PL7grERwTSckih+weH30tFH/L9+NvF8mhDqp74k9hMSu1sS/BKbKoa+bUpM/BAA6FU7w==",
         "dependencies": {
-          "prometheus-net": "8.1.1"
+          "prometheus-net": "8.2.0"
         }
       },
       "RT.Comb": {
@@ -2016,7 +2016,7 @@
           "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.12, )",
           "OpenTelemetry.Shims.OpenTracing": "[1.0.0-rc9.14, )",
           "Sentry": "[3.41.3, )",
-          "prometheus-net.AspNetCore": "[8.1.1, )"
+          "prometheus-net.AspNetCore": "[8.2.0, )"
         }
       },
       "tvmoviedatabaseclient": {
