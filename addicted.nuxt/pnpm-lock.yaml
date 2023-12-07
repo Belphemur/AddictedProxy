@@ -23,8 +23,8 @@ dependencies:
 
 devDependencies:
   '@nuxt/devtools':
-    specifier: 1.0.4
-    version: 1.0.4(nuxt@3.8.2)(vite@4.5.1)
+    specifier: 1.0.5
+    version: 1.0.5(nuxt@3.8.2)(vite@4.5.1)
   '@nuxt/image':
     specifier: 1.1.0
     version: 1.1.0
@@ -1022,8 +1022,8 @@ packages:
     resolution: {integrity: sha512-GBzP8zOc7CGWyFQS6dv1lQz8VVpz5C2yRszbXufwG/9zhStTIH50EtD87NmWbTMwXDvZLNg8GIpb1UFdH93JCA==}
     dev: true
 
-  /@nuxt/devtools-kit@1.0.4(nuxt@3.8.2)(vite@4.5.1):
-    resolution: {integrity: sha512-AXNeI1dBilNryCmwuTd3lU7CrPBhzUJ5ntTFiXw9MmFwe5QT3NOxDFOv0gX7z1DFnmBEmx5mPKWysCwh7htEnQ==}
+  /@nuxt/devtools-kit@1.0.5(nuxt@3.8.2)(vite@4.5.1):
+    resolution: {integrity: sha512-2SbsYZngD0r6nZCXhEKQ8E6sc10uaYMiN3VicoHj0fZSXNEYjJjLRQ3xD+hbmiqM4dRMGeR06IU6E/Ff0asDcQ==}
     peerDependencies:
       nuxt: ^3.8.1
       vite: '*'
@@ -1038,8 +1038,8 @@ packages:
       - supports-color
     dev: true
 
-  /@nuxt/devtools-wizard@1.0.4:
-    resolution: {integrity: sha512-3QHRfmkiITM67lAzSIOiI6N4Qzi5i705TCQ53pHQbce0+E00f5vck2hPauflN2X0/M3SZdkUV8UayaHc4egmdA==}
+  /@nuxt/devtools-wizard@1.0.5:
+    resolution: {integrity: sha512-1O6uZaR76bu9NGN5qEtxYRf6INLA7FFr4agnw+UUdWKxJqbYoPNrKe9TqgukoPoDdrEG5vm0tDuRMNPIpVJ3mg==}
     hasBin: true
     dependencies:
       consola: 3.2.3
@@ -1054,16 +1054,16 @@ packages:
       semver: 7.5.4
     dev: true
 
-  /@nuxt/devtools@1.0.4(nuxt@3.8.2)(vite@4.5.1):
-    resolution: {integrity: sha512-G1Oo9+TaOYzePIXpNX+Zzalw/rJyIZKZpZmXfzolPlOJSA1i0JKzZX6Z7iQHdqPwNJ8t+HnVaF4PghPIpo1kwg==}
+  /@nuxt/devtools@1.0.5(nuxt@3.8.2)(vite@4.5.1):
+    resolution: {integrity: sha512-kGgxDFD3/Zw0HqCRl+S+ZIZ0NxGJoiseTzKreD2sW8q7otnqSSjte3z4qhGWI2HpvwN0Gwu/C4FtfkAVGUxPTQ==}
     hasBin: true
     peerDependencies:
       nuxt: ^3.8.1
       vite: '*'
     dependencies:
       '@antfu/utils': 0.7.6
-      '@nuxt/devtools-kit': 1.0.4(nuxt@3.8.2)(vite@4.5.1)
-      '@nuxt/devtools-wizard': 1.0.4
+      '@nuxt/devtools-kit': 1.0.5(nuxt@3.8.2)(vite@4.5.1)
+      '@nuxt/devtools-wizard': 1.0.5
       '@nuxt/kit': 3.8.2
       birpc: 0.2.14
       consola: 3.2.3
@@ -1094,9 +1094,9 @@ packages:
       semver: 7.5.4
       simple-git: 3.21.0
       sirv: 2.0.3
-      unimport: 3.6.0(rollup@4.6.1)
+      unimport: 3.6.1
       vite: 4.5.1(@types/node@20.10.3)
-      vite-plugin-inspect: 0.7.42(@nuxt/kit@3.8.2)(vite@4.5.1)
+      vite-plugin-inspect: 0.8.1(@nuxt/kit@3.8.2)(vite@4.5.1)
       vite-plugin-vue-inspector: 4.0.2(vite@4.5.1)
       which: 3.0.1
       ws: 8.14.2
@@ -1163,7 +1163,7 @@ packages:
       semver: 7.5.4
       ufo: 1.3.2
       unctx: 2.3.1
-      unimport: 3.6.0(rollup@4.6.1)
+      unimport: 3.6.1
       untyped: 1.4.0
     transitivePeerDependencies:
       - rollup
@@ -4943,7 +4943,7 @@ packages:
         optional: true
     dependencies:
       '@nuxt/devalue': 2.0.2
-      '@nuxt/devtools': 1.0.4(nuxt@3.8.2)(vite@4.5.1)
+      '@nuxt/devtools': 1.0.5(nuxt@3.8.2)(vite@4.5.1)
       '@nuxt/kit': 3.8.2
       '@nuxt/schema': 3.8.2
       '@nuxt/telemetry': 2.5.3
@@ -6728,6 +6728,24 @@ packages:
       - rollup
     dev: true
 
+  /unimport@3.6.1:
+    resolution: {integrity: sha512-zKzbp8AQ+l8QK3XrONtUBdgBbMI8TkGh8hBYF77ZkVqMLLIAHwGSwJRFolPQMBx/5pezeRKvmu2gzlqnxRZeqQ==}
+    dependencies:
+      '@rollup/pluginutils': 5.1.0(rollup@4.6.1)
+      escape-string-regexp: 5.0.0
+      fast-glob: 3.3.2
+      local-pkg: 0.5.0
+      magic-string: 0.30.5
+      mlly: 1.4.2
+      pathe: 1.1.1
+      pkg-types: 1.0.3
+      scule: 1.1.1
+      strip-literal: 1.3.0
+      unplugin: 1.5.1
+    transitivePeerDependencies:
+      - rollup
+    dev: true
+
   /unique-filename@3.0.0:
     resolution: {integrity: sha512-afXhuC55wkAmZ0P18QsVE6kp8JaxrEokN2HGIoIVv2ijHQd419H0+6EigAFcIzXeMIkcIkNBpB3L/DXB3cTS/g==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -7006,8 +7024,8 @@ packages:
       vscode-uri: 3.0.8
     dev: true
 
-  /vite-plugin-inspect@0.7.42(@nuxt/kit@3.8.2)(vite@4.5.1):
-    resolution: {integrity: sha512-JCyX86wr3siQc+p9Kd0t8VkFHAJag0RaQVIpdFGSv5FEaePEVB6+V/RGtz2dQkkGSXQzRWrPs4cU3dRKg32bXw==}
+  /vite-plugin-inspect@0.8.1(@nuxt/kit@3.8.2)(vite@4.5.1):
+    resolution: {integrity: sha512-oPBPVGp6tBd5KdY/qY6lrbLXqrbHRG0hZLvEaJfiZ/GQfDB+szRuLHblQh1oi1Hhh8GeLit/50l4xfs2SA+TCA==}
     engines: {node: '>=14'}
     peerDependencies:
       '@nuxt/kit': '*'
