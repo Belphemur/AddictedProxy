@@ -22,11 +22,11 @@
       },
       "Hangfire.AspNetCore": {
         "type": "Direct",
-        "requested": "[1.8.6, )",
-        "resolved": "1.8.6",
-        "contentHash": "suPlu9iAnClUUiEptaekzXea+yTPSjDMNLlAwhwYjG1Cr/3IoYjVie7a3I7KKFkyTPBk5/O3pQTKspNIX5WFww==",
+        "requested": "[1.8.7, )",
+        "resolved": "1.8.7",
+        "contentHash": "YPkC/N5jyl5dlxT1p7AHIQcUcW29EOlRhxfR/MV7KV2g/NcBVnzzjwd3u9hYYG6/8a5baaY+hhS20f/szyKa4g==",
         "dependencies": {
-          "Hangfire.NetCore": "[1.8.6]"
+          "Hangfire.NetCore": "[1.8.7]"
         }
       },
       "Hangfire.Dashboard.BasicAuthorization": {
@@ -208,18 +208,18 @@
       },
       "Hangfire.Core": {
         "type": "Transitive",
-        "resolved": "1.8.6",
-        "contentHash": "P50VPSXyQBTOE6eISGusU+8X+ILCE+EPYX8njg4h5tGDhjf6QSuXLonuoD/NlFRh/GUtdL4g6jCKs/HQH6or2g==",
+        "resolved": "1.8.7",
+        "contentHash": "aCd7AcBCVPINE4sBWvoDFVFT8KKZOQIkPnqUjpuR15thsolxTBC+heUS4nI4YF3e2AKmavyS+a7lcMFNS+L76Q==",
         "dependencies": {
           "Newtonsoft.Json": "11.0.1"
         }
       },
       "Hangfire.NetCore": {
         "type": "Transitive",
-        "resolved": "1.8.6",
-        "contentHash": "ARzTqET2prSH8cr1oFISUdJLpHQBcb/2brbMubF0O3q6SORt1lHWn7dQHPu+U2ae73j50da+LMH6CBBHDymWxQ==",
+        "resolved": "1.8.7",
+        "contentHash": "hkHRwrV+89/2gAw6tL3Wom15FeNcrrqGrlTtlCO704WgxzA7vcPUPXYY2wzISpQCuvT+VyIZDdsTkFqtG4ywOA==",
         "dependencies": {
-          "Hangfire.Core": "[1.8.6]",
+          "Hangfire.Core": "[1.8.7]",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "3.0.0",
           "Microsoft.Extensions.Hosting.Abstractions": "3.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "3.0.0"
@@ -1928,7 +1928,7 @@
         "type": "Project",
         "dependencies": {
           "AddictedProxy.Database": "[1.0.0, )",
-          "Hangfire.Core": "[1.8.6, )",
+          "Hangfire.Core": "[1.8.7, )",
           "InversionOfControl": "[1.0.0, )",
           "Performance": "[1.0.0, )"
         }
@@ -1945,7 +1945,7 @@
         "dependencies": {
           "AWSSDK.S3": "[3.7.300.*, )",
           "Compressor": "[1.0.0, )",
-          "Hangfire.AspNetCore": "[1.8.6, )",
+          "Hangfire.AspNetCore": "[1.8.7, )",
           "InversionOfControl": "[1.0.0, )",
           "Polly": "[8.2.0, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )"
