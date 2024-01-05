@@ -834,11 +834,11 @@
       },
       "OpenTelemetry.Instrumentation.EntityFrameworkCore": {
         "type": "Transitive",
-        "resolved": "1.0.0-beta.8",
-        "contentHash": "ilfbH1bDPm9YytgspAnQRVy3Hw0rNkYhjNJSNeT9QFWrwXAjCYVPVGTpHOgzM9gB5bS/u+04IgQainDzthUnVA==",
+        "resolved": "1.0.0-beta.9",
+        "contentHash": "VaieBV6iZTGAh18D3pzElHGuGdZboUWFBoijIncN30PcQQYAalMcuosMYcZ0wWaDmxWM9YPRCdhP/Mazgmr3uw==",
         "dependencies": {
           "Microsoft.Extensions.Options": "3.1.0",
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.6.0, 2.0.0)"
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.7.0, 2.0.0)"
         }
       },
       "OpenTelemetry.Instrumentation.Http": {
@@ -861,11 +861,11 @@
       },
       "OpenTelemetry.Instrumentation.StackExchangeRedis": {
         "type": "Transitive",
-        "resolved": "1.0.0-rc9.12",
-        "contentHash": "PLsWAcKRa8I/Jg+z+3k9IqbPLQN4Ca5EtRFWGlA/oY1sy9Yw+zQm9Tga8AvL6NLINFHSiPH3XVQ7ZOVudiXArw==",
+        "resolved": "1.0.0-rc9.13",
+        "contentHash": "ohcXVP6lw6lxBSTdXvZd5CO8JO6STxHT9F9MORh4D+XUFlHiKwdhgpSUQxXxDMmtmjDNmX3b18NRFjoOtq9cEg==",
         "dependencies": {
           "Microsoft.Extensions.Options": "3.1.0",
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.6.0, 2.0.0)",
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.7.0, 2.0.0)",
           "StackExchange.Redis": "[2.1.58, 3.0.0)",
           "System.Reflection.Emit.Lightweight": "4.7.0"
         }
@@ -2013,10 +2013,10 @@
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.7.0, )",
           "OpenTelemetry.Extensions.Hosting": "[1.7.0, )",
           "OpenTelemetry.Instrumentation.AspNetCore": "[1.7.0, )",
-          "OpenTelemetry.Instrumentation.EntityFrameworkCore": "[1.0.0-beta.8, )",
+          "OpenTelemetry.Instrumentation.EntityFrameworkCore": "[1.0.0-beta.9, )",
           "OpenTelemetry.Instrumentation.Http": "[1.7.0, )",
           "OpenTelemetry.Instrumentation.SqlClient": "[1.0.0-rc9.14, )",
-          "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.12, )",
+          "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.13, )",
           "OpenTelemetry.Shims.OpenTracing": "[1.0.0-rc9.14, )",
           "Sentry": "[3.41.3, )",
           "prometheus-net.AspNetCore": "[8.2.1, )"
