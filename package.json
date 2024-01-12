@@ -124,6 +124,6 @@
     "conventional-changelog-conventionalcommits": "7.0.2"
   },
   "dependencies": {
-    "semantic-release": "^22.0.8"
+    "semantic-release": "^23.0.0"
   }
 }
