@@ -142,8 +142,8 @@
       },
       "AsyncKeyedLock": {
         "type": "Transitive",
-        "resolved": "6.3.2",
-        "contentHash": "xIPwtj7XkTQE42RzbP+ZsyUOl3eyzA/ZAjLPf9FTDhbcztJIMmO2H8+72AMaKjcESXlGzkKgqtyGPB/nUHyo4A=="
+        "resolved": "6.3.3",
+        "contentHash": "uPX+UGl88YMd1bmwAeh9B9DN54GWIRNCcm0Q+4qYrr2NTia3Y9wezZ+meZjCJCTWTay9tF8zjcIycahHVf5oEA=="
       },
       "AWSSDK.Core": {
         "type": "Transitive",
@@ -2002,7 +2002,7 @@
       "locking": {
         "type": "Project",
         "dependencies": {
-          "AsyncKeyedLock": "[6.3.2, )"
+          "AsyncKeyedLock": "[6.3.3, )"
         }
       },
       "performance": {
