@@ -147,15 +147,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.300.4",
-        "contentHash": "+ena3wUXCsDSPwJzPxu6EGPPsrKiP6PAAdDrLuBh/Y422u0B1L4yj6D7L7nnQYySWgi1w1DsvEd7c4eE0cCjOA=="
+        "resolved": "3.7.301.7",
+        "contentHash": "iumPNlshd9fSfiR2fzGG6Q23/ePZb0EFcbBDhfVD6iYqdcGinIRp4Aj0owsKMDH145HayJ6gEM1x7f/3TEpuRQ=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.300.4",
-        "contentHash": "ik34lfIvxlIubOuKrLHMqFdr2aRG8vk6rKY14Kov3Dh4QH1lRdXXLIOEn/sjTsxhiVTU9q1HiaSB/vnJfJ4s6w==",
+        "resolved": "3.7.305.12",
+        "contentHash": "h1tlXKsPGH8IOtf9jeXoGrU32nISD6biUn6zam1FP73cQrWf6lRtCWfcxrj6C7Tocmsr4YXSFPPN6xt9P1+N8g==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.300.4, 4.0.0)"
+          "AWSSDK.Core": "[3.7.301.7, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -1943,7 +1943,7 @@
       "addictedproxy.storage": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "[3.7.300.*, )",
+          "AWSSDK.S3": "[3.7.*, )",
           "Compressor": "[1.0.0, )",
           "Hangfire.AspNetCore": "[1.8.7, )",
           "InversionOfControl": "[1.0.0, )",
