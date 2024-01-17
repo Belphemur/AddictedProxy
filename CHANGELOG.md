@@ -1,3 +1,16 @@
+## [4.19.10](https://github.com/Belphemur/AddictedProxy/compare/v4.19.9...v4.19.10) (2024-01-17)
+
+
+### Performance improvements
+
+* **deps::aws:** fix aws dep S3 ([afdfaf1](https://github.com/Belphemur/AddictedProxy/commit/afdfaf1d77de8028dc8bf58101604da464864338))
+* **deps:** update deps ([68d7387](https://github.com/Belphemur/AddictedProxy/commit/68d7387695077095675ad197e5b4dcd79778dace))
+
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v23 ([032ca3b](https://github.com/Belphemur/AddictedProxy/commit/032ca3b807594eccceb3ea7aba7203f16668284c))
+
 ## [4.19.9](https://github.com/Belphemur/AddictedProxy/compare/v4.19.8...v4.19.9) (2023-12-05)
 
 
