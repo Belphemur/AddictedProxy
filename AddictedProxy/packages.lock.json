@@ -142,20 +142,20 @@
       },
       "AsyncKeyedLock": {
         "type": "Transitive",
-        "resolved": "6.3.3",
-        "contentHash": "uPX+UGl88YMd1bmwAeh9B9DN54GWIRNCcm0Q+4qYrr2NTia3Y9wezZ+meZjCJCTWTay9tF8zjcIycahHVf5oEA=="
+        "resolved": "6.3.4",
+        "contentHash": "+0YPXvamnopzHSgBpv0vg+9/NJH+6jm1ZODuMMs7p43yH7hA/NxNi+/U7T7eazZqW+V+0ZsbreYruhu6i7N4PA=="
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.301.8",
-        "contentHash": "X7448YK4L5PX1j1eAQpTzfbVnW5ZTgVS1YD15mWQCVlvYI6ZFFe76TMgCBKUeJH//8CamW3APD/wnz0RGwWsrw=="
+        "resolved": "3.7.301.9",
+        "contentHash": "7Vu9dQSSxaO6l37GyDMS9Jx/GFaqPn3sJfP8j/o9/E6IF+7UfWv1BYAvxNS93J0mnYW/LqnBVJWQH3P7eWtPgw=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.305.13",
-        "contentHash": "tTXYKEowGXeaLzKloiKmmQ3yXmxDPAst5XriNeErw8WeFRwldk+UJNC9npD6NMNdjWo2bs6XD/hHadAqLXp3ZQ==",
+        "resolved": "3.7.305.14",
+        "contentHash": "fqETieH7Cv+mdGQA3Ehnlp1CsvZ/hXfvpOt/Hv3XxO64g7UGp63HUo1duUM0IXF/QAQp5Qql0o/b/fDmCqlhww==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.301.8, 4.0.0)"
+          "AWSSDK.Core": "[3.7.301.9, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -2002,7 +2002,7 @@
       "locking": {
         "type": "Project",
         "dependencies": {
-          "AsyncKeyedLock": "[6.3.3, )"
+          "AsyncKeyedLock": "[6.3.4, )"
         }
       },
       "performance": {
