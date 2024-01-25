@@ -22,11 +22,11 @@
       },
       "Hangfire.AspNetCore": {
         "type": "Direct",
-        "requested": "[1.8.7, )",
-        "resolved": "1.8.7",
-        "contentHash": "YPkC/N5jyl5dlxT1p7AHIQcUcW29EOlRhxfR/MV7KV2g/NcBVnzzjwd3u9hYYG6/8a5baaY+hhS20f/szyKa4g==",
+        "requested": "[1.8.9, )",
+        "resolved": "1.8.9",
+        "contentHash": "JL4bRGQDPr77boIbbVccWJxdvgRtCk9Dyv583QLNyJ7GkX+IuUQ2SuMCAwhpaASMUKfAvzpsfjsrK2tr7fqmeA==",
         "dependencies": {
-          "Hangfire.NetCore": "[1.8.7]"
+          "Hangfire.NetCore": "[1.8.9]"
         }
       },
       "Hangfire.Dashboard.BasicAuthorization": {
@@ -147,15 +147,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.301.9",
-        "contentHash": "7Vu9dQSSxaO6l37GyDMS9Jx/GFaqPn3sJfP8j/o9/E6IF+7UfWv1BYAvxNS93J0mnYW/LqnBVJWQH3P7eWtPgw=="
+        "resolved": "3.7.301.10",
+        "contentHash": "Mj/L7JwP9YBYioO82u57K20F7u18w2NAjCJx/KHSE52bzN0k07YW9tVIzQHUdKYzQEWkxvgqu+vghDp92wEkFA=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.305.14",
-        "contentHash": "fqETieH7Cv+mdGQA3Ehnlp1CsvZ/hXfvpOt/Hv3XxO64g7UGp63HUo1duUM0IXF/QAQp5Qql0o/b/fDmCqlhww==",
+        "resolved": "3.7.305.16",
+        "contentHash": "rpHspeoQbFpM0wacuARI1m/meCQwihZ1/3yTYxUhsd/dOZRVCCBRedzVUccyDTwmi3eF5xdr5684TpjFUdRhyw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.301.9, 4.0.0)"
+          "AWSSDK.Core": "[3.7.301.10, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -208,18 +208,18 @@
       },
       "Hangfire.Core": {
         "type": "Transitive",
-        "resolved": "1.8.7",
-        "contentHash": "aCd7AcBCVPINE4sBWvoDFVFT8KKZOQIkPnqUjpuR15thsolxTBC+heUS4nI4YF3e2AKmavyS+a7lcMFNS+L76Q==",
+        "resolved": "1.8.9",
+        "contentHash": "BGVEyOfBgWR1WvpDGGh0nlRTIf5JMOHBmsYq70ektjQAlwa/hto2esVv5vCKWXOFE2x8GnuGoDksQVvAbnhRUA==",
         "dependencies": {
           "Newtonsoft.Json": "11.0.1"
         }
       },
       "Hangfire.NetCore": {
         "type": "Transitive",
-        "resolved": "1.8.7",
-        "contentHash": "hkHRwrV+89/2gAw6tL3Wom15FeNcrrqGrlTtlCO704WgxzA7vcPUPXYY2wzISpQCuvT+VyIZDdsTkFqtG4ywOA==",
+        "resolved": "1.8.9",
+        "contentHash": "i0plMCJU+4h2OUpQEfFOFDp2ViTB/2c/Ksc1f+4k+g49hCHscOSpaE3Kl/ChrHu3jjvlAM1ydT6lpnHWfK2rkQ==",
         "dependencies": {
-          "Hangfire.Core": "[1.8.7]",
+          "Hangfire.Core": "[1.8.9]",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "3.0.0",
           "Microsoft.Extensions.Hosting.Abstractions": "3.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "3.0.0"
@@ -1928,7 +1928,7 @@
         "type": "Project",
         "dependencies": {
           "AddictedProxy.Database": "[1.0.0, )",
-          "Hangfire.Core": "[1.8.7, )",
+          "Hangfire.Core": "[1.8.9, )",
           "InversionOfControl": "[1.0.0, )",
           "Performance": "[1.0.0, )"
         }
@@ -1945,7 +1945,7 @@
         "dependencies": {
           "AWSSDK.S3": "[3.7.*, )",
           "Compressor": "[1.0.0, )",
-          "Hangfire.AspNetCore": "[1.8.7, )",
+          "Hangfire.AspNetCore": "[1.8.9, )",
           "InversionOfControl": "[1.0.0, )",
           "Polly": "[8.2.1, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )"
