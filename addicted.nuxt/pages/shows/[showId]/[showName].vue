@@ -11,7 +11,7 @@ definePageMeta({
 
 <template>
   <v-row justify="center">
-    <v-col cols="10" lg="6" >
+    <v-col cols="10" lg="8" >
       <suspense>
         <template #default>
           <media-detail-view :show-id="showId"></media-detail-view>

@@ -155,7 +155,7 @@ const formattedProgress = computed(() => {
 <template>
   <div>
     <v-row v-if="mediaInfo?.details != null">
-      <v-col cols="12">
+      <v-col cols="12" offset="0" lg="8" offset-lg="2" >
         <media-details :details="mediaInfo" v-model="currentSeason"/>
       </v-col>
     </v-row>
