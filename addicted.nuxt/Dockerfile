@@ -11,7 +11,10 @@ ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 ENV RELEASE_VERSION=${RELEASE_VERSION}
 ENV SENTRY_ENVIRONMENT=production
 
-RUN apk update && apk upgrade && apk add dumb-init && adduser -D nuxtuser
+RUN  apt update && \
+     apt install -y dumb-init && \
+     rm -rf /var/cache/apt/archives /var/lib/apt/lists/* && \
+     adduser --disabled-password --gecos '' nuxtuser
 # set non root user
 USER nuxtuser
 
