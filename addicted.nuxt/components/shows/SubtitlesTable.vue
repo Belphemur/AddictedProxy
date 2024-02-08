@@ -84,8 +84,7 @@ const props = defineProps<Props>();
 
 const groupBy = [
   {
-    key: 'title',
-    order: 'asc'
+    key: 'title'
   }
 ]
 const headers = [
