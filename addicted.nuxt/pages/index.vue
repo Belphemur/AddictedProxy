@@ -63,7 +63,7 @@ const currentShow = ref<SelectedShow | undefined>(undefined);
 
 const {data, error} = await useAsyncData(async () => (await mediaApi.trendingDetail(25)).data);
 if (error.value != null) {
-  throw new createError("Couldn't fetch trending medias");
+  throw createError("Couldn't fetch trending medias");
 }
 
 const trendingMedias = data;
