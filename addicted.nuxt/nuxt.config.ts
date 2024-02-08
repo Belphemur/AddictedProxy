@@ -5,6 +5,9 @@ import {sentryVitePlugin} from "@sentry/vite-plugin";
 
 
 export default defineNuxtConfig({
+    experimental: {
+        sharedPrerenderData: true
+    },
     devtools: {enabled: true},
     sourcemap: {server: true, client: true},
     // @ts-ignore

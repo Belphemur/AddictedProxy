@@ -12,50 +12,56 @@
         </v-col>
       </v-row>
     </v-sheet>
-    <v-expansion-panels v-else>
-      <v-expansion-panel
-          v-for="episode in useFilter(props.episodes, (episode) => episode.subtitles?.length > 0)"
-          v-bind:key="episode.number"
-          :title="`Ep. ${episode.number}: ${episode.title}`"
-      >
-        <v-expansion-panel-text>
-          <v-data-table v-if="episode.subtitles" :items="useOrderBy(episode.subtitles, (subtitle) => subtitle.hearingImpaired)" :headers="headers" items-per-page="25">
-            <template v-slot:item="{ item }">
-              <tr>
-                <td>{{ item.version }}</td>
-                <td>
-                  <v-icon icon="mdi-check" height="24px" v-if=" item.completed"/>
-                  <span v-else></span>
-                </td>
+    <v-container v-else>
+      <v-data-table
+          :items="subtitles"
+          :headers="headers" items-per-page="25"
+          :group-by="groupBy">
+        <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
+          <tr>
+            <td :colspan="columns.length" @click="toggleGroup(item)">
+              <v-btn
+                  size="large"
+                  density="comfortable"
+                  variant="text"
+                  :prepend-icon="isGroupOpen(item) ? '$expand' : '$next'"
+              > {{ item.value }}</v-btn>
 
-                <td>
-                  <v-icon icon="mdi-ear-hearing-off" v-if=" item.hearingImpaired"/>
-                  <span v-else></span></td>
-                <td>
-                  <v-icon icon="mdi-check" height="24px" v-if=" item.hd"/>
-                  <span v-else></span></td>
-                <td>
-                  <v-btn
-                      color="primary"
-                      prepend-icon="mdi-download"
-                      @click="downloadSubtitle(item)"
-                      :disabled="currentlyDownloading.has(item.subtitleId)"
-                  >
-                    {{ item.downloadCount }}
-                  </v-btn>
-                  <v-progress-linear
-                      v-show="currentlyDownloading.has(item.subtitleId)"
-                      :value="100"
-                      color="success"
-                      indeterminate
-                  ></v-progress-linear>
-                </td>
-              </tr>
-            </template>
-          </v-data-table>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
+            </td>
+          </tr>
+        </template>
+        <template v-slot:item.subtitle.completed="{item}">
+          <v-icon icon="mdi-check" height="24px" v-if="item.subtitle.completed"/>
+          <span v-else></span>
+        </template>
+        <template v-slot:item.subtitle.hearingImpaired="{item}">
+          <v-icon icon="mdi-ear-hearing-off" v-if=" item.subtitle.hearingImpaired"/>
+          <span v-else></span>
+        </template>
+        <template v-slot:item.subtitle.hd="{item}">
+          <v-icon icon="mdi-check" height="24px" v-if="item.subtitle.hd"/>
+          <span v-else></span>
+        </template>
+
+        <template v-slot:item.subtitle.downloadCount="{item}">
+          <v-btn
+              color="primary"
+              prepend-icon="mdi-download"
+              @click="downloadSubtitle(item.subtitle)"
+              :disabled="currentlyDownloading.has(item.subtitle.subtitleId)"
+          >
+            {{ item.subtitle.downloadCount }}
+          </v-btn>
+          <v-progress-linear
+              v-show="currentlyDownloading.has(item.subtitle.subtitleId)"
+              :value="100"
+              color="success"
+              indeterminate
+          ></v-progress-linear>
+        </template>
+
+      </v-data-table>
+    </v-container>
   </v-container>
 </template>
 
@@ -65,6 +71,9 @@ import {defineProps, ref} from "vue";
 import {mevent} from "~/composables/data/event";
 import type {EpisodeWithSubtitlesDto, SubtitleDto} from "~/composables/api/data-contracts";
 import {useSubtitles} from "~/composables/rest/api";
+import type {SubtitleWithEpisode} from "~/composables/dto/SubtitleWithEpisode";
+import {forEach} from "lodash-es";
+
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto> | null;
 }
@@ -73,17 +82,39 @@ const subtitlesApi = useSubtitles();
 
 const props = defineProps<Props>();
 
+const groupBy = [
+  {
+    key: 'title',
+    order: 'asc'
+  }
+]
 const headers = [
-  {title: "Version", key: "version"},
-  {title: "Completed", key: "completed"},
-  {title: "Hearing Impaired", key: "hearingImpaired"},
-  {title: "HD", key: "hd"},
-  {title: "Downloads", key: "downloadCount"},
+  {title: "Version", key:"subtitle.version"},
+  {title: "Completed", key: "subtitle.completed"},
+  {title: "Hearing Impaired", key:"subtitle.hearingImpaired"},
+  {title: "HD", key:"subtitle.hd"},
+  {title: "Downloads", key:"subtitle.downloadCount"},
 ];
 
 const noSubtitles = computed<boolean>(() => {
   if (props.episodes == null) return true;
   return props.episodes!.every((e) => e.subtitles?.length === 0)
+});
+
+const subtitles = computed<SubtitleWithEpisode[]>(() => {
+  if (props.episodes == null) return [];
+
+  const subtitles: SubtitleWithEpisode[] = [];
+  forEach(props.episodes, (episode: EpisodeWithSubtitlesDto) => {
+    forEach(useOrderBy(episode.subtitles, (subtitle) => subtitle.hearingImpaired), (subtitle: SubtitleDto) => {
+      subtitles.push({
+        subtitle: subtitle,
+        episode: episode,
+        title: `${episode.number} — ${episode.title}`
+      });
+    })
+  })
+  return subtitles;
 });
 
 const currentlyDownloading = ref<Map<string, boolean>>(new Map());
