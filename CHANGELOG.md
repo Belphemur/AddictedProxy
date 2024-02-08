@@ -1,3 +1,40 @@
+## [4.19.12](https://github.com/Belphemur/AddictedProxy/compare/v4.19.11...v4.19.12) (2024-02-08)
+
+
+### Performance improvements
+
+* improve front-end image ([cfb448f](https://github.com/Belphemur/AddictedProxy/commit/cfb448f8ac8d05dc9274fee0a65e7a383f68b635))
+* **style:** improve style for <= 1080p of media page ([6f3e2ac](https://github.com/Belphemur/AddictedProxy/commit/6f3e2ac51d714e9020917996c96e092b5ffec187))
+* **Subtitle:** use button to show it's clickable ([54706a4](https://github.com/Belphemur/AddictedProxy/commit/54706a4d3909bc694dfa6797374f39c2c95f34c9))
+* update deps ([4670b6d](https://github.com/Belphemur/AddictedProxy/commit/4670b6d971d7687411836bbe50b9c868a67747e3))
+
+
+### Bug Fixes
+
+* client/server detection for api calls ([452a3c6](https://github.com/Belphemur/AddictedProxy/commit/452a3c671cc93221582aeed32141d2808303f61c))
+* detecting server or client ([c5bfe6f](https://github.com/Belphemur/AddictedProxy/commit/c5bfe6f31da431319f9984e3fe66a7ead94e2602))
+* **Subtitle:** Fix subtitle table to use grouping ([2507ab3](https://github.com/Belphemur/AddictedProxy/commit/2507ab30969676c5fae98e441a1d80df7a6a60d8))
+
+## [4.19.11](https://github.com/Belphemur/AddictedProxy/compare/v4.19.10...v4.19.11) (2024-02-08)
+
+
+### Performance improvements
+
+* **deps:** update frontend deps ([8e516ec](https://github.com/Belphemur/AddictedProxy/commit/8e516ec87d9ecec757178ec819d9c7bf312099d0))
+
+## [4.19.10](https://github.com/Belphemur/AddictedProxy/compare/v4.19.9...v4.19.10) (2024-01-17)
+
+
+### Performance improvements
+
+* **deps::aws:** fix aws dep S3 ([afdfaf1](https://github.com/Belphemur/AddictedProxy/commit/afdfaf1d77de8028dc8bf58101604da464864338))
+* **deps:** update deps ([68d7387](https://github.com/Belphemur/AddictedProxy/commit/68d7387695077095675ad197e5b4dcd79778dace))
+
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v23 ([032ca3b](https://github.com/Belphemur/AddictedProxy/commit/032ca3b807594eccceb3ea7aba7203f16668284c))
+
 ## [4.19.9](https://github.com/Belphemur/AddictedProxy/compare/v4.19.8...v4.19.9) (2023-12-05)
 
 
