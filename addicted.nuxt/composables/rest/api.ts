@@ -11,7 +11,7 @@ let media: Media<any>;
 
 export function getApiServerUrl(): string {
     const config = useRuntimeConfig();
-    return process.client ? config.public.api.clientUrl : config.public.api.serverUrl;
+    return typeof window !== "undefined" ? config.public.api.clientUrl : config.public.api.serverUrl;
 }
 
 function getApiConfig() {
