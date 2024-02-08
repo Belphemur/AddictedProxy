@@ -1,8 +1,7 @@
 import {Subtitles} from "~/composables/api/Subtitles";
 import {Shows} from "~/composables/api/Shows";
 import {Media} from "~/composables/api/Media";
-import {process} from "unenv/runtime/node/process/_process";
-import {ApiConfig} from "~/composables/api/http-client";
+import type {ApiConfig} from "~/composables/api/http-client";
 
 
 let subtitles: Subtitles<any>;
@@ -11,7 +10,7 @@ let media: Media<any>;
 
 export function getApiServerUrl(): string {
     const config = useRuntimeConfig();
-    return typeof window !== "undefined" ? config.public.api.clientUrl : config.public.api.serverUrl;
+    return typeof window === "undefined" ? config.public.api.serverUrl : config.public.api.clientUrl ;
 }
 
 function getApiConfig() {
