@@ -1,3 +1,20 @@
+## [4.19.12](https://github.com/Belphemur/AddictedProxy/compare/v4.19.11...v4.19.12) (2024-02-08)
+
+
+### Performance improvements
+
+* improve front-end image ([cfb448f](https://github.com/Belphemur/AddictedProxy/commit/cfb448f8ac8d05dc9274fee0a65e7a383f68b635))
+* **style:** improve style for <= 1080p of media page ([6f3e2ac](https://github.com/Belphemur/AddictedProxy/commit/6f3e2ac51d714e9020917996c96e092b5ffec187))
+* **Subtitle:** use button to show it's clickable ([54706a4](https://github.com/Belphemur/AddictedProxy/commit/54706a4d3909bc694dfa6797374f39c2c95f34c9))
+* update deps ([4670b6d](https://github.com/Belphemur/AddictedProxy/commit/4670b6d971d7687411836bbe50b9c868a67747e3))
+
+
+### Bug Fixes
+
+* client/server detection for api calls ([452a3c6](https://github.com/Belphemur/AddictedProxy/commit/452a3c671cc93221582aeed32141d2808303f61c))
+* detecting server or client ([c5bfe6f](https://github.com/Belphemur/AddictedProxy/commit/c5bfe6f31da431319f9984e3fe66a7ead94e2602))
+* **Subtitle:** Fix subtitle table to use grouping ([2507ab3](https://github.com/Belphemur/AddictedProxy/commit/2507ab30969676c5fae98e441a1d80df7a6a60d8))
+
 ## [4.19.11](https://github.com/Belphemur/AddictedProxy/compare/v4.19.10...v4.19.11) (2024-02-08)
 
 
