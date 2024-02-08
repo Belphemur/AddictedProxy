@@ -1,3 +1,10 @@
+## [4.19.13](https://github.com/Belphemur/AddictedProxy/compare/v4.19.12...v4.19.13) (2024-02-08)
+
+
+### Bug Fixes
+
+* **subtitle:** remove ordering to keep the proper numerical order of episodes ([953ec57](https://github.com/Belphemur/AddictedProxy/commit/953ec57bd4d3cd695379b86b4a70949a5b970735))
+
 ## [4.19.12](https://github.com/Belphemur/AddictedProxy/compare/v4.19.11...v4.19.12) (2024-02-08)
 
 
