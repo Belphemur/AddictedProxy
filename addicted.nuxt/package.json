@@ -30,10 +30,5 @@
     "@microsoft/signalr": "^8.0.0",
     "roboto-fontface": "^0.10.0",
     "vuetify": "^3.5.3"
-  },
-  "pnpm": {
-    "overrides": {
-      "ipx": "^1.2.0"
-    }
   }
 }

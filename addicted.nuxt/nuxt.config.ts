@@ -74,23 +74,12 @@ export default defineNuxtConfig({
                 }
             }
         },
-        ipx: {
-            maxAge: 60 * 60 * 24 * 365,
-            cache: true,
-            domains: ['image.tmdb.org'],
-            cacheOptions: {
-                ttl: 2 * 24 * 60 * 60 * 1000,
-                max: 50,
-                updateAgeOnGet: true
-            }
-        }
     },
     image: {
         domains: ['image.tmdb.org'],
         format: ['webp', 'jpeg'],
         provider: 'gestdown',
         ipx: {
-            baseURL: '/_transform'
         },
         providers: {
             gestdown: {
