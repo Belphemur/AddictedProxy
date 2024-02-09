@@ -3,10 +3,18 @@ ARG DATA_DIRECTORY="/data"
 ARG RELEASE_VERSION
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-bookworm-slim AS base
-RUN apt update && apt install -y curl && apt-get clean
-RUN curl -O http://http.us.debian.org/debian/pool/main/libz/libzstd/libzstd1_1.5.5+dfsg2-2_amd64.deb && dpkg -i libzstd1_1.5.5+dfsg2-2_amd64.deb && rm libzstd1_1.5.5+dfsg2-2_amd64.deb
-# Needed because the zstd lib is loaded as libzstd not libzstd.so.1
-RUN ln -srf /lib/x86_64-linux-gnu/libzstd.so.1 /lib/x86_64-linux-gnu/libzstd.so
+RUN apt update && apt install -y curl dumb-init && apt-get clean
+# Install zstd
+RUN echo "deb http://httpredir.debian.org/debian trixie main" > /etc/apt/sources.list.d/trixie.list && \
+    apt-get update && \
+    apt-get -t trixie install -y --no-install-recommends libzstd1 && \
+    apt-get clean && \
+    cd /lib/*-linux-gnu/ && \
+    ln -srf libzstd.so.1 libzstd.so
+
+RUN  adduser --disabled-password --gecos '' dotnetuser
+USER dotnetuser
+
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
@@ -35,4 +43,4 @@ RUN ln -s ${MAIN_PROJECT}.dll app.dll
 HEALTHCHECK --interval=5s --timeout=3s \
   CMD curl -f http://localhost/health || exit 1
 
-ENTRYPOINT ["dotnet", "app.dll"]
+ENTRYPOINT ["dumb-init","dotnet", "app.dll"]

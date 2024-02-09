@@ -98,12 +98,12 @@
       },
       "Sentry.AspNetCore": {
         "type": "Direct",
-        "requested": "[4.0.3, )",
-        "resolved": "4.0.3",
-        "contentHash": "jWB782ere2VGKS52srkOYXSZYbKslNdmFKOydWq7g4iSivm0N42HYLs+ejpSyZ++M3x6iUK6W4UW7LXrOhvERw==",
+        "requested": "[4.1.0, )",
+        "resolved": "4.1.0",
+        "contentHash": "eGR5vljyR1aIx757OSTKXJ0EC9eGKocbUZhiH2r7pH1m6r6cBBayvIrTlc67yaiAilHRlU8mg5J8AM11054ObA==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Binder": "8.0.0",
-          "Sentry.Extensions.Logging": "4.0.3"
+          "Sentry.Extensions.Logging": "4.1.0"
         }
       },
       "SimpleMvcSitemap.Core": {
@@ -1049,18 +1049,18 @@
       },
       "Sentry": {
         "type": "Transitive",
-        "resolved": "4.0.3",
-        "contentHash": "YGltWQxbfXH2dZXZRF95J5ub+CfYlWgW22TZRXGbFwFR1WuQos4oPz5ZCKYWOWcVjfVuX1TrdLXgvXV6j0dTpw=="
+        "resolved": "4.1.0",
+        "contentHash": "SzfQymjOTaCjvxsefNisnhBlIFYFrPLshL+28EDew9HrwaZz04n+bryzyJFy54ltuo0Krn+M3Al6hv9AO9SS4Q=="
       },
       "Sentry.Extensions.Logging": {
         "type": "Transitive",
-        "resolved": "4.0.3",
-        "contentHash": "JNx/yhm6SfIqoB4l1L/5B1kbY7euzs4bIogRp5ZN6O2F882uAR4KOLKVYL7DkOyIR6AZGlj9vHPtAwoCqNdqyQ==",
+        "resolved": "4.1.0",
+        "contentHash": "wrxJNjS0NIfJ9HC+o798e5jWUEviIgRBZZdr39wuC2ge3hAzTEw7t+xiWIKKTQSDf/7sgQ3TWPFwnAqRrIyA6A==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Binder": "8.0.0",
           "Microsoft.Extensions.Http": "8.0.0",
           "Microsoft.Extensions.Logging.Configuration": "8.0.0",
-          "Sentry": "4.0.3"
+          "Sentry": "4.1.0"
         }
       },
       "SixLabors.ImageSharp": {
@@ -1980,7 +1980,7 @@
           "Polly": "[8.3.0, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )",
           "Polly.Extensions.Http": "[3.0.0, )",
-          "Sentry": "[4.0.3, )",
+          "Sentry": "[4.1.0, )",
           "System.Text.Json": "[8.0.1, )"
         }
       },
@@ -2020,7 +2020,7 @@
           "OpenTelemetry.Instrumentation.SqlClient": "[1.0.0-rc9.14, )",
           "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.13, )",
           "OpenTelemetry.Shims.OpenTracing": "[1.0.0-rc9.14, )",
-          "Sentry": "[4.0.3, )",
+          "Sentry": "[4.1.0, )",
           "prometheus-net.AspNetCore": "[8.2.1, )"
         }
       },
