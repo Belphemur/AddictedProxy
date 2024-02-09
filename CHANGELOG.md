@@ -1,3 +1,11 @@
+## [4.19.15](https://github.com/Belphemur/AddictedProxy/compare/v4.19.14...v4.19.15) (2024-02-09)
+
+
+### Bug Fixes
+
+* **background:** fix missing background ([ca35e29](https://github.com/Belphemur/AddictedProxy/commit/ca35e291697f6108143b848dc91b4926ca0666c8))
+* **background:** fix missing background ([cc9b253](https://github.com/Belphemur/AddictedProxy/commit/cc9b253520e9ea595364e27d0495ca7ec38c70fe))
+
 ## [4.19.14](https://github.com/Belphemur/AddictedProxy/compare/v4.19.13...v4.19.14) (2024-02-09)
 
 
