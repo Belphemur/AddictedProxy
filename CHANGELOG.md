@@ -1,3 +1,10 @@
+## [4.19.14](https://github.com/Belphemur/AddictedProxy/compare/v4.19.13...v4.19.14) (2024-02-09)
+
+
+### Performance improvements
+
+* **security:** use dumb-init for launching app and proper user ([62c699a](https://github.com/Belphemur/AddictedProxy/commit/62c699adf118bae775ea620c9661b9b6993b09f7))
+
 ## [4.19.13](https://github.com/Belphemur/AddictedProxy/compare/v4.19.12...v4.19.13) (2024-02-08)
 
 
