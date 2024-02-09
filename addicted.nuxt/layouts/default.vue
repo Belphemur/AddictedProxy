@@ -19,10 +19,7 @@ const {isMobile} = useDevice();
 
 const drawer = ref<boolean>(!isMobile)
 
-const backgroundStyles = computed(() => {
-  const imgUrl = '/img/background.webp'
-  return {backgroundImage: `url('${imgUrl}')`}
-})
+const backgroundStyles = {backgroundImage: `url('/img/background.webp')`}
 
 const defaultBackground = {
   background: "none",
