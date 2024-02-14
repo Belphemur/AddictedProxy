@@ -1,3 +1,10 @@
+## [4.19.16](https://github.com/Belphemur/AddictedProxy/compare/v4.19.15...v4.19.16) (2024-02-14)
+
+
+### Performance improvements
+
+* **deps:** update deps and .net ([3c73e7b](https://github.com/Belphemur/AddictedProxy/commit/3c73e7bb65528639e79bf8c2397d59f510bdd647))
+
 ## [4.19.15](https://github.com/Belphemur/AddictedProxy/compare/v4.19.14...v4.19.15) (2024-02-09)
 
 
