@@ -51,9 +51,9 @@
       },
       "Hangfire.PostgreSql": {
         "type": "Direct",
-        "requested": "[1.20.5, )",
-        "resolved": "1.20.5",
-        "contentHash": "k6P+l2HvP3wpmhCTR8lAIiy3S4RkqT1fMr6rZIBQU1opu2fWw8RSte1oMNY8uOLFkKet8B/psA2A/MS2ynkKyA==",
+        "requested": "[1.20.6, )",
+        "resolved": "1.20.6",
+        "contentHash": "DBAxS7j8wiDfvWY5e5l1H3/0HbC1B8IXJILnNiki3gJNlCaU34MAk7V5BuiTXOP99bSWcWlgVcu5uK8EUcMMAQ==",
         "dependencies": {
           "Dapper": "2.0.123",
           "Hangfire.Core": "1.8.0",
