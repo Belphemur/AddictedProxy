@@ -4,9 +4,9 @@
     "net8.0": {
       "AngleSharp": {
         "type": "Direct",
-        "requested": "[1.1.0, )",
-        "resolved": "1.1.0",
-        "contentHash": "3baCuPkx2Wrpjr2b67wJAf9fCbYSbEVcdCh88S66HLdfHa2b1Mk1FsGpcH76uHLf3MPxopWngT1imHPEmDimAg==",
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "Mp/3KeMPbvqDoEEI+qf4gwaq4+QO1uehmYodPvtVO+tb6AGhTjPF8f7PNG73BJ79p4EryWa/pAH4urrafl9+lQ==",
         "dependencies": {
           "System.Text.Encoding.CodePages": "8.0.0"
         }
@@ -148,15 +148,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.302.14",
-        "contentHash": "WOU0XbUXbFay+rqCq21D/umRHupyCuW2S/m8MWBMpjNNKGP2xwDObnsazYwFJQAtR4RX0OK4n+kaQPQP377rxQ=="
+        "resolved": "3.7.302.15",
+        "contentHash": "DgSlbR4JIthe+iYl4qVfz3Lkh59th/gNPYloxf9iU0pIx3hHYqJ0UJRg9mwBcmpeyBccRSwdNoo9yF9X3tb/rg=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.305.29",
-        "contentHash": "iLSxZ2nz3O0XjoUqS5NYkYodAj6/0DbH9OY04MsgB05FG8j28ec9zdTr7qnitwHSgB2USw0eYaZ526po/SJpdg==",
+        "resolved": "3.7.305.30",
+        "contentHash": "Y0iiT4Rl1pQrr58UXOZaig2D4l7BkFOXcUF5BSBeJIYxmsXodEfvvGemVj1ySg6Cxf+0qWmh5qqQTRN5jCyIwg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.302.14, 4.0.0)"
+          "AWSSDK.Core": "[3.7.302.15, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -1973,7 +1973,7 @@
         "dependencies": {
           "AddictedProxy.Culture": "[1.0.0, )",
           "AddictedProxy.Database": "[1.0.0, )",
-          "AngleSharp": "[1.1.0, )",
+          "AngleSharp": "[1.1.1, )",
           "Microsoft.Extensions.Http": "[8.0.0, )",
           "Microsoft.Extensions.Http.Polly": "[8.0.2, )",
           "Performance": "[1.0.0, )",
