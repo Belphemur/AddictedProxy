@@ -1,3 +1,16 @@
+## [4.19.17](https://github.com/Belphemur/AddictedProxy/compare/v4.19.16...v4.19.17) (2024-03-04)
+
+
+### Performance improvements
+
+* **deps:** update deps ([bb51b7d](https://github.com/Belphemur/AddictedProxy/commit/bb51b7d496c0c7b236c5cd1c16785634a45b46cd))
+
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.5.6 ([383368d](https://github.com/Belphemur/AddictedProxy/commit/383368dde97c4e9529ffbc411f52160faca3d245))
+* **deps:** update dependency vuetify to v3.5.7 ([f87c1f4](https://github.com/Belphemur/AddictedProxy/commit/f87c1f4d3401702115f7983db5a94fddf1758eaa))
+
 ## [4.19.16](https://github.com/Belphemur/AddictedProxy/compare/v4.19.15...v4.19.16) (2024-02-14)
 
 
