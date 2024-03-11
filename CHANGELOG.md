@@ -1,3 +1,16 @@
+## [4.19.18](https://github.com/Belphemur/AddictedProxy/compare/v4.19.17...v4.19.18) (2024-03-11)
+
+
+### Performance improvements
+
+* **subtitles:** Increase concurrency on subtitle fetching ([99c5cc4](https://github.com/Belphemur/AddictedProxy/commit/99c5cc4b0d917a0cc7d4dc5bbccdd3f638c2a16f))
+* **subtitles:** Increase max timeout for fetching data ([fcfee74](https://github.com/Belphemur/AddictedProxy/commit/fcfee74aac0186b35402a85fa4a584c02d60c68e))
+
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.5.8 ([e28f6c4](https://github.com/Belphemur/AddictedProxy/commit/e28f6c4978054def2e9111c7031bedb7c183ca09))
+
 ## [4.19.17](https://github.com/Belphemur/AddictedProxy/compare/v4.19.16...v4.19.17) (2024-03-04)
 
 
