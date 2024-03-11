@@ -4,9 +4,9 @@
     "net8.0": {
       "AngleSharp": {
         "type": "Direct",
-        "requested": "[1.1.1, )",
-        "resolved": "1.1.1",
-        "contentHash": "Mp/3KeMPbvqDoEEI+qf4gwaq4+QO1uehmYodPvtVO+tb6AGhTjPF8f7PNG73BJ79p4EryWa/pAH4urrafl9+lQ==",
+        "requested": "[1.1.2, )",
+        "resolved": "1.1.2",
+        "contentHash": "aRFpAqixbuj1Vmqy2hsWPF0PJygo1SfjvmpBvVWZv6i+/u+C/L4wDdwFIzyCGUbjqr61NsZdPNPqDE8wlmG2qA==",
         "dependencies": {
           "System.Text.Encoding.CodePages": "8.0.0"
         }
@@ -83,11 +83,11 @@
       },
       "Polly": {
         "type": "Direct",
-        "requested": "[8.3.0, )",
-        "resolved": "8.3.0",
-        "contentHash": "vqAQmLO1gZcS8Ox9Ky+hrq0HxYrYVSBS1vzv6o6RZH3vvECutngIxkUHw9YijbG0QrycxvHo0Hbx0/D7MGgdow==",
+        "requested": "[8.3.1, )",
+        "resolved": "8.3.1",
+        "contentHash": "xN9AxOudus8u4a//Tfu6Wxd5Oj7S4pjh/651S6FfIiVrbxQ8TeM+ieZC8c0y7Qto70zKBM5g8rBTqbAJnbetOA==",
         "dependencies": {
-          "Polly.Core": "8.3.0"
+          "Polly.Core": "8.3.1"
         }
       },
       "Polly.Contrib.WaitAndRetry": {
@@ -895,8 +895,8 @@
       },
       "Polly.Core": {
         "type": "Transitive",
-        "resolved": "8.3.0",
-        "contentHash": "A3r4xkWasffyrIJGjA3jWQi86ZGcR9BEbpIIoP9xYRAKYwiaGbKpqpsHdWv5sCeLZdaWpVs7pc4EM8Tei+LluA=="
+        "resolved": "8.3.1",
+        "contentHash": "b9mMAjqXuCXFCtf/RtRPwFUkAm/sz37s7G+taDvS5EqfkJsLiWfO2xO2cSISjIgIY+88oIZTGguP6UrRGRlqzg=="
       },
       "Polly.Extensions.Http": {
         "type": "Transitive",
@@ -1065,16 +1065,16 @@
       },
       "SixLabors.ImageSharp": {
         "type": "Transitive",
-        "resolved": "3.1.0",
-        "contentHash": "ESlqDmrxIFxOd8VcKpyymA6uav51iXFp/j73fYcDMpIXWe2VEsjS2OL8nZGpvgt2Y1LKgQpM5ZpPJa/YlS73Pg=="
+        "resolved": "3.1.3",
+        "contentHash": "wybtaqZQ1ZRZ4ZeU+9h+PaSeV14nyiGKIy7qRbDfSHzHq4ybqyOcjoifeaYbiKLO1u+PVxLBuy7MF/DMmwwbfg=="
       },
       "SixLabors.ImageSharp.Web": {
         "type": "Transitive",
-        "resolved": "3.1.0",
-        "contentHash": "LoN28idQwfphN6zygY3X1gK9Mwuy6y7Bs5N03sCwfZqUHJRmayc2HRTZLPO+sctvGvC1U4q+xgOwgFMwH2vGVw==",
+        "resolved": "3.1.1",
+        "contentHash": "tjsxXOVUkiWGTeAJ4RhWuJipNWk8+AdRgjP1QzTT2OmFzuEbBDqWW859/MODuMB+Wl5P77UH6yiglfxRc2La+Q==",
         "dependencies": {
           "Microsoft.IO.RecyclableMemoryStream": "2.3.2",
-          "SixLabors.ImageSharp": "3.1.0"
+          "SixLabors.ImageSharp": "3.1.3"
         }
       },
       "StackExchange.Redis": {
@@ -1922,7 +1922,7 @@
           "AddictedProxy.Caching": "[1.0.0, )",
           "InversionOfControl": "[1.0.0, )",
           "Microsoft.AspNetCore.Http.Abstractions": "[2.2.0, )",
-          "SixLabors.ImageSharp.Web": "[3.1.0, )",
+          "SixLabors.ImageSharp.Web": "[3.1.1, )",
           "TvMovieDatabaseClient": "[1.0.0, )"
         }
       },
@@ -1949,7 +1949,7 @@
           "Compressor": "[1.0.0, )",
           "Hangfire.AspNetCore": "[1.8.11, )",
           "InversionOfControl": "[1.0.0, )",
-          "Polly": "[8.3.0, )",
+          "Polly": "[8.3.1, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )"
         }
       },
@@ -1973,11 +1973,11 @@
         "dependencies": {
           "AddictedProxy.Culture": "[1.0.0, )",
           "AddictedProxy.Database": "[1.0.0, )",
-          "AngleSharp": "[1.1.1, )",
+          "AngleSharp": "[1.1.2, )",
           "Microsoft.Extensions.Http": "[8.0.0, )",
           "Microsoft.Extensions.Http.Polly": "[8.0.2, )",
           "Performance": "[1.0.0, )",
-          "Polly": "[8.3.0, )",
+          "Polly": "[8.3.1, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )",
           "Polly.Extensions.Http": "[3.0.0, )",
           "Sentry": "[4.1.2, )",
