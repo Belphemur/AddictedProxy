@@ -62,7 +62,7 @@ public class FetchSubtitlesJob
     [Queue("fetch-subtitles")]
     public async Task ExecuteAsync(JobData data, CancellationToken cancellationToken)
     {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(8));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
         using var ctsLinked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
         var token = ctsLinked.Token;
 
