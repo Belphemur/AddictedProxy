@@ -16,7 +16,7 @@
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
         <PackageReference Include="RT.Comb.AspNetCore" Version="4.0.1" />
-        <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="8.102.1.1" />
+        <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="8.102.2" />
         <PackageReference Include="System.Linq.Async" Version="6.0.1" />
 
     </ItemGroup>
