@@ -26,8 +26,8 @@ devDependencies:
     specifier: ^10.0.0
     version: 10.0.2(semantic-release@23.0.6)
   '@semantic-release/release-notes-generator':
-    specifier: ^12.1.0
-    version: 12.1.0(semantic-release@23.0.6)
+    specifier: ^13.0.0
+    version: 13.0.0(semantic-release@23.0.6)
   conventional-changelog-conventionalcommits:
     specifier: 7.0.2
     version: 7.0.2
@@ -301,27 +301,6 @@ packages:
       semver: 7.6.0
       tempy: 3.1.0
 
-  /@semantic-release/release-notes-generator@12.1.0(semantic-release@23.0.6):
-    resolution: {integrity: sha512-g6M9AjUKAZUZnxaJZnouNBeDNTCUrJ5Ltj+VJ60gJeDaRRahcHsry9HW8yKrnKkKNkx5lbWiEP1FPMqVNQz8Kg==}
-    engines: {node: ^18.17 || >=20.6.1}
-    peerDependencies:
-      semantic-release: '>=20.1.0'
-    dependencies:
-      conventional-changelog-angular: 7.0.0
-      conventional-changelog-writer: 7.0.1
-      conventional-commits-filter: 4.0.0
-      conventional-commits-parser: 5.0.0
-      debug: 4.3.4
-      get-stream: 7.0.1
-      import-from-esm: 1.3.3
-      into-stream: 7.0.0
-      lodash-es: 4.17.21
-      read-pkg-up: 11.0.0
-      semantic-release: 23.0.6
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /@semantic-release/release-notes-generator@13.0.0(semantic-release@23.0.6):
     resolution: {integrity: sha512-LEeZWb340keMYuREMyxrODPXJJ0JOL8D/mCl74B4LdzbxhtXV2LrPN2QBEcGJrlQhoqLO0RhxQb6masHytKw+A==}
     engines: {node: '>=20.8.1'}
@@ -551,7 +530,7 @@ packages:
       handlebars: 4.7.8
       json-stringify-safe: 5.0.1
       meow: 12.1.1
-      semver: 7.5.4
+      semver: 7.6.0
       split2: 4.2.0
 
   /conventional-commits-filter@4.0.0:
@@ -1529,13 +1508,6 @@ packages:
   /semver-regex@4.0.5:
     resolution: {integrity: sha512-hunMQrEy1T6Jr2uEVjrAIqjwWcQTgOAcIM52C8MY1EZSD3DDNft04XzvYKPqjED65bNVVko0YI38nYeEHCX3yw==}
     engines: {node: '>=12'}
-
-  /semver@7.5.4:
-    resolution: {integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dependencies:
-      lru-cache: 6.0.0
 
   /semver@7.6.0:
     resolution: {integrity: sha512-EnwXhrlwXMk9gKu5/flx5sv/an57AkRplG3hTK68W7FRDN+k+OWBj65M7719OkA82XLBxrcX0KSHj+X5COhOVg==}
