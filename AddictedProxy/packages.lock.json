@@ -108,9 +108,9 @@
       },
       "SimpleMvcSitemap.Core": {
         "type": "Direct",
-        "requested": "[4.3.0, )",
-        "resolved": "4.3.0",
-        "contentHash": "w5sUSH/0/2j7Yfc/YfNUB20stY/FN5B1hX8TnCrNdUfVXsaTlD9qT7fO6RiG+1hDVu2fTxHKn6zniinvWascnQ=="
+        "requested": "[4.4.0, )",
+        "resolved": "4.4.0",
+        "contentHash": "0cQjzyFyACRAZwbd3tat9lmgYPlgjVbDrff/9TGCls3Vjv6sNmFcmk+KKpnBtylfOQVzyL0qwzKQ3wmrro1xjA=="
       },
       "Swashbuckle.AspNetCore": {
         "type": "Direct",
@@ -148,15 +148,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.303.1",
-        "contentHash": "qJNZcopTMxuFtSktbzBXCmO4zJMOCeJDMZym5+DPa36HOAKG7zhHCFWBifyLIRrrIDP5tEb8+akfffbQH/6Pyw=="
+        "resolved": "3.7.303.5",
+        "contentHash": "IkjyAhd502f87j+MG8G+ENnKsNpB6Rq7aUUxS58VeMOrglT6jX9Y8FALiR6JHpmxphLSAEBzTw1NlWDC2fuZog=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.307.2",
-        "contentHash": "0OpefrhK6YMB0dFKXVCzI2W4764SfWJcozKd/TeKwFp+iKACSiBFBudfOMjP4zKASclHZ1fI8Nz4pob3OvE04g==",
+        "resolved": "3.7.307.6",
+        "contentHash": "Gqk+5rIh8IxOfXDDq54BwFQ4h2iD9t5F5qzee3qv2vCoY3sgZ0o5Hwil6YmNKiILiy/w/r1FkqeKdH0NNQN6tA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.303.1, 4.0.0)"
+          "AWSSDK.Core": "[3.7.303.5, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
