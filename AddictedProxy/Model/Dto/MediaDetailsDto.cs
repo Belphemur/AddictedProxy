@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using AddictedProxy.Culture.Extensions;
 
 namespace AddictedProxy.Model.Dto;
 
@@ -79,7 +80,7 @@ public record struct MediaDetailsDto(ShowDto Media, MediaDetailsDto.DetailsDto? 
         /// <summary>
         /// English name of the show
         /// </summary>
-        /// <example>Bloodhounds</example>
+        /// <example>Bloodhounds (2024)</example>
         [Required]
         public string EnglishName { get; init; } = EnglishName;
     }

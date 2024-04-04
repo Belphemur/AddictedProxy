@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using AddictedProxy.Controllers.Rest;
+using AddictedProxy.Culture.Extensions;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.AspNetCore.Mvc;
 using SimpleMvcSitemap;
@@ -27,7 +28,7 @@ public class MediaSitemapIndexConfiguration : SitemapIndexConfiguration<TvShow>
 
     public override SitemapNode CreateNode(TvShow show)
     {
-        return new SitemapNode($"/shows/{show.UniqueId}/{HttpUtility.UrlEncode(show.Name)}")
+        return new SitemapNode($"/shows/{show.UniqueId}/{HttpUtility.UrlEncode(show.Name.ToSlug())}")
         {
             LastModificationDate = show.LastUpdated,
             ChangeFrequency = show.IsCompleted? ChangeFrequency.Monthly : ChangeFrequency.Daily

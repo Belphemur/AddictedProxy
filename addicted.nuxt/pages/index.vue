@@ -54,6 +54,8 @@ useSeoMeta({
   ogDescription: "Help you search for subtitle for different show available on Addic7ed",
   ogImage: new URL("/img/Gestdown-logos.jpeg", useRuntimeConfig().public.url).href,
   ogLocale: "en-US",
+  ogTitle: "Gestdown: Addic7ed Proxy",
+  ogSiteName: "Gestdown: Search and download subtitles from Addic7ed",
 })
 
 const mediaApi = useMedia();
@@ -71,7 +73,7 @@ const trendingMedias = data;
 
 const goToPage = async (show: ShowDto) => {
   const router = useRouter();
-  await router.push({name: 'show-details', params: {showId: show.id, showName: show.name}})
+  await router.push({name: 'show-details', params: {showId: show.id, showName: show.slug}})
 };
 
 const clear = () => {

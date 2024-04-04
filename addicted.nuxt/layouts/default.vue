@@ -15,6 +15,12 @@ import DefaultView from '@/layouts/default/View.vue';
 import Navigation from "@/layouts/default/Navigation.vue";
 import {ref} from "vue";
 
+useHead({
+  htmlAttrs: {
+    lang: "en-US",
+  }
+})
+
 const {isMobile} = useDevice();
 
 const drawer = ref<boolean>(!isMobile)

@@ -35,14 +35,15 @@ if (imageUrl != null) {
 useSeoMeta({
   title: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
   ogTitle: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
-  description: mediaInfo.value!.details?.overview ?? `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
-  ogDescription: mediaInfo.value!.details?.overview ?? `Find all the subtitle you need for your favorite show ${mediaInfo.value!.media?.name}`,
+  description: `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}`,
+  ogDescription: `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}`,
   ogImage: new URL(imageUrl ?? '', runtimeConfig.public.api.clientUrl).href,
   articleTag: mediaInfo.value!.details?.genre ?? [],
   twitterImage: new URL(twitterUrl ?? '', runtimeConfig.public.api.clientUrl).href,
   ogImageAlt: `Poster of ${mediaInfo.value!.media?.name}`,
   twitterImageAlt: `Poster of ${mediaInfo.value!.media?.name}`,
   ogType: "website",
+  ogSiteName: "Gestdown",
 })
 
 await loadShowData();
