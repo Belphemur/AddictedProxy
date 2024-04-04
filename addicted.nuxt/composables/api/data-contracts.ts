@@ -74,6 +74,11 @@ export interface DetailsDto {
    * @example "Bloodhounds"
    */
   englishName: string;
+  /**
+   * Slug to be used in URL for the show
+   * @minLength 1
+   */
+  slug: string;
 }
 
 /** Episode information */
