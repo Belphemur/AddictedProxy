@@ -44,7 +44,6 @@ useSeoMeta({
   twitterImageAlt: `Poster of ${mediaInfo.value!.media?.name}`,
   ogType: "website",
   ogSiteName: "Gestdown",
-
 })
 
 await loadShowData();
