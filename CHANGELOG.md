@@ -1,3 +1,26 @@
+## [4.19.19](https://github.com/Belphemur/AddictedProxy/compare/v4.19.18...v4.19.19) (2024-04-04)
+
+
+### Performance improvements
+
+* **frontend:** add language ([386ff07](https://github.com/Belphemur/AddictedProxy/commit/386ff07b310366847dfb886ebf05d6d6b24db0e7))
+* **frontend:** have H1 for SEO ([94eb079](https://github.com/Belphemur/AddictedProxy/commit/94eb0793c1bad41e4e4159664815fb672e2f0f2c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v23.0.3 ([8fdc848](https://github.com/Belphemur/AddictedProxy/commit/8fdc84842438d14c34ddb6f2b7736b0f81717079))
+* **deps:** update dependency semantic-release to v23.0.4 ([ab93fad](https://github.com/Belphemur/AddictedProxy/commit/ab93fad97c55b8078f394f583aa69d0b8135496a))
+* **deps:** update dependency semantic-release to v23.0.5 ([31c650f](https://github.com/Belphemur/AddictedProxy/commit/31c650f223061120a60291d9c5a3f4becbe1ed0d))
+* **deps:** update dependency semantic-release to v23.0.6 ([7c88289](https://github.com/Belphemur/AddictedProxy/commit/7c8828921a279f5431cdbbf292dc5edd34f04398))
+* **deps:** update dependency semantic-release to v23.0.7 ([842318c](https://github.com/Belphemur/AddictedProxy/commit/842318ca0f2397190475c9af020c1538a2a4feab))
+* **deps:** update dependency vuetify to v3.5.10 ([068448b](https://github.com/Belphemur/AddictedProxy/commit/068448bc8cb459a81ea77b6286dbc83c2e742241))
+* **deps:** update dependency vuetify to v3.5.11 ([d606a84](https://github.com/Belphemur/AddictedProxy/commit/d606a84c6d566d99bcbad80da0bb4e6fdc66f0d6))
+* **deps:** update dependency vuetify to v3.5.12 ([ccf3b0a](https://github.com/Belphemur/AddictedProxy/commit/ccf3b0af89051435985235b92064ca92cdb0b648))
+* **deps:** update dependency vuetify to v3.5.13 ([c57a651](https://github.com/Belphemur/AddictedProxy/commit/c57a651a1740cd8ff8feb69495764e68de8480a9))
+* **deps:** update dependency vuetify to v3.5.14 ([c648a53](https://github.com/Belphemur/AddictedProxy/commit/c648a5343d877bf348536797d5e758fcb4dc30d5))
+* **deps:** update dependency vuetify to v3.5.9 ([df5a2a8](https://github.com/Belphemur/AddictedProxy/commit/df5a2a8fbb98847494a16fd60fce675aaf177cee))
+
 ## [4.19.18](https://github.com/Belphemur/AddictedProxy/compare/v4.19.17...v4.19.18) (2024-03-11)
 
 
