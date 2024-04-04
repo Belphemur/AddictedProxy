@@ -29,13 +29,15 @@ const setLanguage = (lang: string) => {
   <v-card>
     <v-card-title>
       <v-col>
-        <v-icon :icon=" props.details.details?.mediaType === 'Movie' ? 'mdi-movie' : 'mdi-television'"></v-icon>
-        {{ props.details.details!.englishName }} <span
-          class="text-light-blue-accent-1 font-bold"
-          v-if="props.details.details?.releaseYear != null">({{ props.details.details.releaseYear }})</span>
-        <span v-if="props.details.details?.englishName != props.details.details?.originalName">
+        <h1 class="text-h5">
+          <v-icon :icon=" props.details.details?.mediaType === 'Movie' ? 'mdi-movie' : 'mdi-television'"></v-icon>
+          {{ props.details.details!.englishName }} <span
+            class="text-light-blue-accent-1 font-bold"
+            v-if="props.details.details?.releaseYear != null">({{ props.details.details.releaseYear }})</span>
+          <span v-if="props.details.details?.englishName != props.details.details?.originalName">
           [<i>{{ props.details.details.originalName }}</i>]
       </span>
+        </h1>
       </v-col>
     </v-card-title>
     <v-card-subtitle>
@@ -72,7 +74,7 @@ const setLanguage = (lang: string) => {
           </v-row>
           <v-row>
             <v-col align-self="end">
-              <h4 class="text-h4">Overview</h4>
+              <h5 class="text-h5">Overview</h5>
               <p>
                 {{ props.details.details!.overview }}
               </p>

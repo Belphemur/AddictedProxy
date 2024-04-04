@@ -53,6 +53,7 @@ useSeoMeta({
   description: "Help you search for subtitle for different show available on Addic7ed",
   ogDescription: "Help you search for subtitle for different show available on Addic7ed",
   ogImage: new URL("/img/Gestdown-logos.jpeg", useRuntimeConfig().public.url).href,
+  ogLocale: "en-US",
 })
 
 const mediaApi = useMedia();
