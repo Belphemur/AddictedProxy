@@ -58,12 +58,6 @@ useSeoMeta({
   ogSiteName: "Gestdown: Search and download subtitles from Addic7ed",
 })
 
-useHead({
-  htmlAttrs: {
-    lang: "en-US",
-  }
-})
-
 const mediaApi = useMedia();
 const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
 const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
