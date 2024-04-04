@@ -86,7 +86,7 @@ public record struct MediaDetailsDto(ShowDto Media, MediaDetailsDto.DetailsDto? 
         
         /// <summary>
         /// Slug to be used in URL for the show
-        /// <example></example>
+        /// <example>bloodhounds-2024</example>
         /// </summary>
         [Required]
         public string Slug => EnglishName.ToSlug();
