@@ -74,7 +74,7 @@ const setLanguage = (lang: string) => {
           </v-row>
           <v-row>
             <v-col align-self="end">
-              <h4 class="text-h4">Overview</h4>
+              <h5 class="text-h5">Overview</h5>
               <p>
                 {{ props.details.details!.overview }}
               </p>
