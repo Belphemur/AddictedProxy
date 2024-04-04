@@ -71,11 +71,12 @@ export interface DetailsDto {
   /**
    * English name of the show
    * @minLength 1
-   * @example "Bloodhounds"
+   * @example "Bloodhounds (2024)"
    */
   englishName: string;
   /**
    * Slug to be used in URL for the show
+   * <example>bloodhounds-2024</example>
    * @minLength 1
    */
   slug: string;
