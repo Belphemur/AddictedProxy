@@ -73,7 +73,7 @@ const trendingMedias = data;
 
 const goToPage = async (show: ShowDto) => {
   const router = useRouter();
-  await router.push({name: 'show-details', params: {showId: show.id, showName: show.name}})
+  await router.push({name: 'show-details', params: {showId: show.id, showName: show.slug}})
 };
 
 const clear = () => {

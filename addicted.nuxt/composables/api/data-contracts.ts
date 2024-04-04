@@ -74,12 +74,6 @@ export interface DetailsDto {
    * @example "Bloodhounds (2024)"
    */
   englishName: string;
-  /**
-   * Slug to be used in URL for the show
-   * <example>bloodhounds-2024</example>
-   * @minLength 1
-   */
-  slug: string;
 }
 
 /** Episode information */
@@ -216,6 +210,12 @@ export interface ShowDto {
    * @example 80475
    */
   tmdbId?: number | null;
+  /**
+   * Slug to be used in URL for the show
+   * <example>wellington-paranormal</example>
+   * @minLength 1
+   */
+  slug: string;
 }
 
 export interface ShowSearchResponse {

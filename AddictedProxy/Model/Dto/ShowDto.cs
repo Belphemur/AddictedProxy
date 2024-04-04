@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using AddictedProxy.Culture.Extensions;
 using AddictedProxy.Database.Model.Shows;
 
 namespace AddictedProxy.Model.Dto;
@@ -49,6 +50,13 @@ public record ShowDto(Guid Id, string Name, int NbSeasons, int[] Seasons, int? T
     /// </summary>
     /// <example>80475</example>
     public int? TmdbId { get; init; } = TmdbId;
+    
+    /// <summary>
+    /// Slug to be used in URL for the show
+    /// <example>wellington-paranormal</example>
+    /// </summary>
+    [Required]
+    public string Slug => Name.ToSlug();
 
     public ShowDto(TvShow show) : this(show.UniqueId, show.Name, show.Seasons.Count, show.Seasons.Select(season => season.Number).ToArray(), show.TvdbId, show.TmdbId)
     {

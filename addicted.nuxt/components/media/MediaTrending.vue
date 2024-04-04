@@ -15,7 +15,7 @@ const props = defineProps<Props>();
   <v-row dense>
     <v-col cols="12" sm="6" lg="3" v-for="media in useTake(props.medias, 8)"
            :key="media.media?.id">
-      <v-card :to="{name: 'show-details', params: {showId: media.media!.id, showName: media.media!.name}}">
+      <v-card :to="{name: 'show-details', params: {showId: media.media!.id, showName: media.media!.slug}}">
         <span
             class="text-white text text-h6"
         >{{ media?.details.englishName }} ({{ media!.details?.releaseYear }})
