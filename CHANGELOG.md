@@ -1,3 +1,17 @@
+## [4.20.0](https://github.com/Belphemur/AddictedProxy/compare/v4.19.19...v4.20.0) (2024-04-04)
+
+
+### Performance improvements
+
+* **seo:** improve SEO ([8328af2](https://github.com/Belphemur/AddictedProxy/commit/8328af272d5b8efed77f265773c55eeeee7eabd6))
+* **seo:** improve SEO ([8f80226](https://github.com/Belphemur/AddictedProxy/commit/8f80226efcbde18d6c210051765583b8bb58cfd0))
+* **show:** move the slug to the ShowDto ([2939daa](https://github.com/Belphemur/AddictedProxy/commit/2939daa48d33bc4213f34f839b2a8b67645ff2db))
+
+
+### Features
+
+* **slug:** properly generate slug for media ([e303b2e](https://github.com/Belphemur/AddictedProxy/commit/e303b2ea082d301dc36c3423073760daa928c059))
+
 ## [4.19.19](https://github.com/Belphemur/AddictedProxy/compare/v4.19.18...v4.19.19) (2024-04-04)
 
 
