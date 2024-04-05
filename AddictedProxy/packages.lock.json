@@ -148,15 +148,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.303.7",
-        "contentHash": "rS+ZHEYT8HAyjDJ51aylc4Ffr1F1tlMMghC+ycpe1CLoo+SjfkQ/ybHHRJ8ld800+niqgHr3womjYxPAJE48yg=="
+        "resolved": "3.7.303.9",
+        "contentHash": "qLR/coErSK0V+vZMHd9833UgNhQOmwNqEPcFiqYrd24a938lpKeO+GVERjNMyInysYwe+wCiOlU8l7BnHnC0Ow=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.307.8",
-        "contentHash": "saT8TvMPIsCu3o4RcVg+0/sWEVy6iRXlIL664o+shMmOmpHlUsmLkyHSG2Kqq+eJCCWqmAyxGOQ6gJbxJSF9Dg==",
+        "resolved": "3.7.307.10",
+        "contentHash": "peyaPxQG34gLPFv/nifz2JZKIheNpYuQqvDnCO6jhZZbC4P8znQiEmMiZ5JcvXe9a0JQ3cKACRaUIngQetzSxQ==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.303.7, 4.0.0)"
+          "AWSSDK.Core": "[3.7.303.9, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -826,10 +826,10 @@
       },
       "OpenTelemetry.Instrumentation.AspNetCore": {
         "type": "Transitive",
-        "resolved": "1.7.1",
-        "contentHash": "H6Br/PNxNJ9s0BS/iW8n7e8EivS3ovXTQnzrGBsYBHA4tsI/YuclNpTAntHBdXP+ziwu4dNRRahOBFtAk2hiZw==",
+        "resolved": "1.8.0",
+        "contentHash": "ywEkIpDZpA9p4kdmji/Tt6SdkXDrXFQjm+rGxGEWUYR/JmGptWEPjWHfXzKfL+3nqkS64CUF53knLpf2rPCWBA==",
         "dependencies": {
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.7.0"
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.8.0"
         }
       },
       "OpenTelemetry.Instrumentation.EntityFrameworkCore": {
@@ -843,11 +843,11 @@
       },
       "OpenTelemetry.Instrumentation.Http": {
         "type": "Transitive",
-        "resolved": "1.7.1",
-        "contentHash": "NYzNHv8hEx48jouoXVyvAdxZn8fstCm1R+ItwSp3rEC/jGW+3L/TjfzEqiUSoNnIoUfnkCTSotqSBdZT3MD6hw==",
+        "resolved": "1.8.0",
+        "contentHash": "jv2//suDd7tLW9uNuL4KTK68kGjN/HjEs6FahmiLVcXdnCzpYo2mPvikRBq1twB3ktfWQEyVWYT6G6FVwvZtIQ==",
         "dependencies": {
           "Microsoft.Extensions.Options": "8.0.0",
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.7.0"
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.8.0"
         }
       },
       "OpenTelemetry.Instrumentation.SqlClient": {
@@ -2013,9 +2013,9 @@
           "OpenTelemetry.Exporter.Console": "[1.8.0, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.8.0, )",
           "OpenTelemetry.Extensions.Hosting": "[1.8.0, )",
-          "OpenTelemetry.Instrumentation.AspNetCore": "[1.7.1, )",
+          "OpenTelemetry.Instrumentation.AspNetCore": "[1.8.0, )",
           "OpenTelemetry.Instrumentation.EntityFrameworkCore": "[1.0.0-beta.10, )",
-          "OpenTelemetry.Instrumentation.Http": "[1.7.1, )",
+          "OpenTelemetry.Instrumentation.Http": "[1.8.0, )",
           "OpenTelemetry.Instrumentation.SqlClient": "[1.0.0-rc9.14, )",
           "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.13, )",
           "OpenTelemetry.Shims.OpenTracing": "[1.0.0-rc9.14, )",
