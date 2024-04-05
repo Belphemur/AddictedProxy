@@ -1,3 +1,10 @@
+## [4.20.1](https://github.com/Belphemur/AddictedProxy/compare/v4.20.0...v4.20.1) (2024-04-05)
+
+
+### Bug Fixes
+
+* **front-end:** background of the page to be smaller ([0b79bb5](https://github.com/Belphemur/AddictedProxy/commit/0b79bb579fe6ba80df49150c95410f6f72940fc4))
+
 ## [4.20.0](https://github.com/Belphemur/AddictedProxy/compare/v4.19.19...v4.20.0) (2024-04-04)
 
 
