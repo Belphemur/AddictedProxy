@@ -15,17 +15,14 @@ import DefaultView from '@/layouts/default/View.vue';
 import Navigation from "@/layouts/default/Navigation.vue";
 import {ref} from "vue";
 
-useHead({
-  htmlAttrs: {
-    lang: "en-US",
-  }
-})
-
 const {isMobile} = useDevice();
 
 const drawer = ref<boolean>(!isMobile)
-
-const backgroundStyles = {backgroundImage: `url('/img/background.webp')`}
+const img = useImage()
+const backgroundStyles = computed(() => {
+  const imgUrl = img('/img/background.webp', {width: 200} )
+  return { backgroundImage: `url('${imgUrl}')` }
+})
 
 const defaultBackground = {
   background: "none",

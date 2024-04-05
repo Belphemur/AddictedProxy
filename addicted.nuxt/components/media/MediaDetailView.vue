@@ -42,8 +42,7 @@ useSeoMeta({
   twitterImage: new URL(twitterUrl ?? '', runtimeConfig.public.api.clientUrl).href,
   ogImageAlt: `Poster of ${mediaInfo.value!.media?.name}`,
   twitterImageAlt: `Poster of ${mediaInfo.value!.media?.name}`,
-  ogType: "website",
-  ogSiteName: "Gestdown",
+  ogType: "website"
 })
 
 await loadShowData();
