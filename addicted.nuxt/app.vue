@@ -2,6 +2,11 @@
   <NuxtLayout/>
 </template>
 <script lang="ts" setup>
+useHead({
+  htmlAttrs: {
+    lang: "en-US",
+  }
+})
 useSeoMeta({
   ogType: "website",
   ogImage: "/img/Gestdown-logos.jpeg",

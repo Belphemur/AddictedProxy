@@ -78,9 +78,6 @@ export default defineNuxtConfig({
     image: {
         domains: ['image.tmdb.org'],
         format: ['webp', 'jpeg'],
-        provider: 'gestdown',
-        ipx: {
-        },
         providers: {
             gestdown: {
                 name: 'gestdown', // optional value to overrider provider name

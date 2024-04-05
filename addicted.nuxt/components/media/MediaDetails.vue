@@ -52,6 +52,7 @@ const setLanguage = (lang: string) => {
             align-self="start"
         >
           <nuxt-picture class="media-detail-poster"
+                        provider="gestdown"
                         :src="props.details.details!.posterPath!"
                         sizes="xs:80vw sm:30vw lg:50vw"
           >

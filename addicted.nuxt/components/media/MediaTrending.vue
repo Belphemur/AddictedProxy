@@ -22,6 +22,7 @@ const props = defineProps<Props>();
         </span>
         <nuxt-picture
             :src="media.details!.backdropPath!"
+            provider="gestdown"
             fit="cover"
             style="max-width: 100%"
             sizes="xs:100vw sm:35vw md:40vw"
