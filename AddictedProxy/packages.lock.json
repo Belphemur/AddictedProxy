@@ -98,12 +98,12 @@
       },
       "Sentry.AspNetCore": {
         "type": "Direct",
-        "requested": "[4.2.1, )",
-        "resolved": "4.2.1",
-        "contentHash": "Ds2KV+GBL8BSVmnf06XMTMDFUcGS3trVGQHmyB7kY40am4tVdJeXGG4ptep9RONs5H8+giIDcNfKSC7n2oiqHw==",
+        "requested": "[4.3.0, )",
+        "resolved": "4.3.0",
+        "contentHash": "bpLoPqxLokL7bZTZnkIYrL5ddkY/IWmuHHbzFI55LrQUso2nbVoBKEL/mgz/3D6KGwWoFrEqBNNd4cPETfatqA==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Binder": "8.0.0",
-          "Sentry.Extensions.Logging": "4.2.1"
+          "Sentry.Extensions.Logging": "4.3.0"
         }
       },
       "SimpleMvcSitemap.Core": {
@@ -148,15 +148,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.303.11",
-        "contentHash": "PgmLzcHfLo26kILXMeXt8t/ZCcV1Y3PXJaAdIF1Hb4KrnIzOkeUmwjHW6ji/LhkWkOZ7A0Y1SURH1FLfi25AAA=="
+        "resolved": "3.7.303.13",
+        "contentHash": "az2WG3T9acYdviFbpeb9+OaMtFn3I5ZTiCMwPlCe4eDsv5XkiS7M/zeN9sN0vTFfp6xjeZJV5pbQwDOTfwgT5g=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.307.12",
-        "contentHash": "Yjgmc4LqIuzZZfiJ1vSpoYcl2WT5g+QFOPdDu4T6BFOc8NhRb6cys3PAYyzbRlMj47GiJfBAlcjJX7dfEb0DtA==",
+        "resolved": "3.7.307.14",
+        "contentHash": "H5S+Q3udc2OGKpOMCf+RwWh5sUkUr2wWaHax8IuryskQQYYYD5PkGQ8t7nbyfBfytqaAMq/CKcrJi1/GbsdB3A==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.303.11, 4.0.0)"
+          "AWSSDK.Core": "[3.7.303.13, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -1048,18 +1048,18 @@
       },
       "Sentry": {
         "type": "Transitive",
-        "resolved": "4.2.1",
-        "contentHash": "4MXZ0dwc5QDnTElAzDLXGGRa+VoywpmU2CU6gZ3o2NAYpzMA0VaiLVKNQ6bH+KW5Yv7JpOt+By7OeQOnvuQong=="
+        "resolved": "4.3.0",
+        "contentHash": "H91fl+qg58QmsRhLCoHOLP6aCqE0vLytf4VavRLRhCGjqExCxJkyA4TC4YhX+3SPV3s0cCMHPu2f3vtRcAaYVw=="
       },
       "Sentry.Extensions.Logging": {
         "type": "Transitive",
-        "resolved": "4.2.1",
-        "contentHash": "H16Vr/qvRWgzJJDLv0gWtp468dszE7s9ZMxXnUBZfBFv2ibXdc3IKWnXay+9vOVu71cubzpBz3CzbIUOqNRlTw==",
+        "resolved": "4.3.0",
+        "contentHash": "NbL9FnFHnQQDP4cjfVVddbIXBXI65JN0iDZ2hMlV4yc9YdA4VxXVP2y5WovP9CffrEbEeYL/4UCUT5ZxQNp+Ow==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Binder": "8.0.0",
           "Microsoft.Extensions.Http": "8.0.0",
           "Microsoft.Extensions.Logging.Configuration": "8.0.0",
-          "Sentry": "4.2.1"
+          "Sentry": "4.3.0"
         }
       },
       "SixLabors.ImageSharp": {
@@ -1980,7 +1980,7 @@
           "Polly": "[8.3.1, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )",
           "Polly.Extensions.Http": "[3.0.0, )",
-          "Sentry": "[4.2.1, )",
+          "Sentry": "[4.3.0, )",
           "System.Text.Json": "[8.0.3, )"
         }
       },
@@ -2020,7 +2020,7 @@
           "OpenTelemetry.Instrumentation.SqlClient": "[1.0.0-rc9.14, )",
           "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.14, )",
           "OpenTelemetry.Shims.OpenTracing": "[1.0.0-rc9.14, )",
-          "Sentry": "[4.2.1, )",
+          "Sentry": "[4.3.0, )",
           "prometheus-net.AspNetCore": "[8.2.1, )"
         }
       },
