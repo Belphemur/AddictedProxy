@@ -19,7 +19,7 @@
         <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.0.0-rc9.14" />
         <PackageReference Include="OpenTelemetry.Shims.OpenTracing" Version="1.0.0-rc9.14" />
         <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
-        <PackageReference Include="Sentry" Version="4.3.0" />
+        <PackageReference Include="Sentry" Version="4.4.0" />
         <PackageReference Include="IsExternalInit" Version="1.0.3">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
