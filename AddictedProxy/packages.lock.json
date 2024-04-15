@@ -1065,16 +1065,16 @@
       },
       "SixLabors.ImageSharp": {
         "type": "Transitive",
-        "resolved": "3.1.3",
-        "contentHash": "wybtaqZQ1ZRZ4ZeU+9h+PaSeV14nyiGKIy7qRbDfSHzHq4ybqyOcjoifeaYbiKLO1u+PVxLBuy7MF/DMmwwbfg=="
+        "resolved": "3.1.4",
+        "contentHash": "lFIdxgGDA5iYkUMRFOze7BGLcdpoLFbR+a20kc1W7NepvzU7ejtxtWOg9RvgG7kb9tBoJ3ONYOK6kLil/dgF1w=="
       },
       "SixLabors.ImageSharp.Web": {
         "type": "Transitive",
-        "resolved": "3.1.1",
-        "contentHash": "tjsxXOVUkiWGTeAJ4RhWuJipNWk8+AdRgjP1QzTT2OmFzuEbBDqWW859/MODuMB+Wl5P77UH6yiglfxRc2La+Q==",
+        "resolved": "3.1.2",
+        "contentHash": "4JSH9pzOu0g0PaehMQzpm43ffQmaWcGdmmPAOn+6ieG6vlvmHefGM3imBcMelLRDNwxZQyiOmO+leMukeISmiQ==",
         "dependencies": {
           "Microsoft.IO.RecyclableMemoryStream": "2.3.2",
-          "SixLabors.ImageSharp": "3.1.3"
+          "SixLabors.ImageSharp": "3.1.4"
         }
       },
       "StackExchange.Redis": {
@@ -1923,7 +1923,7 @@
           "AddictedProxy.Caching": "[1.0.0, )",
           "InversionOfControl": "[1.0.0, )",
           "Microsoft.AspNetCore.Http.Abstractions": "[2.2.0, )",
-          "SixLabors.ImageSharp.Web": "[3.1.1, )",
+          "SixLabors.ImageSharp.Web": "[3.1.2, )",
           "TvMovieDatabaseClient": "[1.0.0, )"
         }
       },
