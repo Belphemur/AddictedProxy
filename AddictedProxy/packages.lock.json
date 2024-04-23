@@ -148,15 +148,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.303.18",
-        "contentHash": "AE3V6DzDeuzmjXmdsUfGfCiL+E12PPu4JvCFQxOnpyv7OOzAw9g6QMjkeag4Vy8ZC4Oa5c1KZVzZ9uGaI0HOSA=="
+        "resolved": "3.7.303.19",
+        "contentHash": "0mxdOinP4cmsbb0LaAUy6b9VEynsbdW8M/zKSEpuaGZT+7jdLfuvlTLB/Ns/Qr6peXU7NtubrbJMF5XMUPdD7Q=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.307.19",
-        "contentHash": "rkAnZ5jRhg0fRSyXSdFxy380DwzecW6VKV7Z0YUMU0BhvMvEVrkN6NMGVToKn66OCKoVfD5v5dtz5BlN09i6Ww==",
+        "resolved": "3.7.307.20",
+        "contentHash": "nKJH9Vth8UvfCpTY+3Gw7UtQZ/Z9bc1mLm+SekivJScBwDQMI+NcqQDAYybxQvxGph5JyMHb6HQnpD0jtACY4g==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.303.18, 4.0.0)"
+          "AWSSDK.Core": "[3.7.303.19, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -1872,8 +1872,8 @@
       },
       "Z.EntityFramework.Extensions.EFCore": {
         "type": "Transitive",
-        "resolved": "8.102.2.2",
-        "contentHash": "x7WXzLDKGxBup1afoKlyEp0nDgp3YkXIDdHMpXCGM1OnDNJl3PHJj0824E2bA4INCS+qVTCmbOhP8nT2XEMyrA==",
+        "resolved": "8.102.2.3",
+        "contentHash": "KSLrblxaP0cYkO7hZ6VZKEumLCeP4iY46FndmDemKauue7pcMIw9UJouYPIOUG07sUCQU/fYvllLANQkpW4nNg==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Relational": "[8.0.0, 9.0.0)",
           "System.Configuration.ConfigurationManager": "8.0.0"
@@ -1915,7 +1915,7 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.2, )",
           "RT.Comb.AspNetCore": "[4.0.1, )",
           "System.Linq.Async": "[6.0.1, )",
-          "Z.EntityFramework.Extensions.EFCore": "[8.102.2.2, )"
+          "Z.EntityFramework.Extensions.EFCore": "[8.102.2.3, )"
         }
       },
       "addictedproxy.image": {
