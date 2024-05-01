@@ -1,5 +1,6 @@
 ﻿
 using AddictedProxy.Services.Job.Filter;
+using AsyncKeyedLock;
 using Hangfire;
 using Locking;
 using Performance.Model;
@@ -12,6 +13,7 @@ public class RefreshSingleShowJob
     private readonly ILogger<RefreshSingleShowJob> _logger;
     private readonly IShowRefresher _showRefresher;
     private readonly IPerformanceTracker _performanceTracker;
+    private readonly static AsyncKeyedLocker<long> _asyncKeyedLocker = new(LockOptions.Default);
 
     public RefreshSingleShowJob(ILogger<RefreshSingleShowJob> logger, IShowRefresher showRefresher, IPerformanceTracker performanceTracker)
     {
@@ -32,14 +34,14 @@ public class RefreshSingleShowJob
         
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "refresh-specific-show");
 
-        var lockKey = Lock<RefreshSingleShowJob>.GetNamedKey(showId.ToString());
-        if (Lock<RefreshSingleShowJob>.IsInUse(lockKey))
+        using var releaser = await _asyncKeyedLocker.LockAsync(showId, 0, token).ConfigureAwait(false);
+
+        if (!releaser.EnteredSemaphore)
         {
             _logger.LogInformation("Lock for {show} already taken", showId);
             transaction.Finish(Status.Unavailable);
             return;
         }
-        using var _ = await Lock<RefreshSingleShowJob>.LockAsync(lockKey, token).ConfigureAwait(false);
 
         _logger.LogInformation("Refreshing show: {Show}", showId);
         await _showRefresher.RefreshShowAsync(showId, token);

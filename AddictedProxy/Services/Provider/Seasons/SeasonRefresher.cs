@@ -9,6 +9,7 @@ using Locking;
 using Microsoft.Extensions.Options;
 using Performance.Model;
 using Performance.Service;
+using AsyncKeyedLock;
 
 namespace AddictedProxy.Services.Provider.Seasons;
 
@@ -22,6 +23,7 @@ public class SeasonRefresher : ISeasonRefresher
     private readonly IOptions<RefreshConfig> _refreshConfig;
     private readonly IPerformanceTracker _performanceTracker;
     private readonly ITransactionManager<EntityContext> _transactionManager;
+    private readonly static AsyncKeyedLocker<long> _asyncKeyedLocker = new(LockOptions.Default);
 
     public SeasonRefresher(ILogger<SeasonRefresher> logger,
                            ITvShowRepository tvShowRepository,
@@ -60,14 +62,14 @@ public class SeasonRefresher : ISeasonRefresher
     public async Task RefreshSeasonsAsync(TvShow show, CancellationToken token = default)
     {
         using var span = _performanceTracker.BeginNestedSpan("season", $"refresh-show-seasons for show {show.Name}");
-        var lockKey = Lock<SeasonRefresher>.GetNamedKey(show.Id.ToString());
-        if (Lock<SeasonRefresher>.IsInUse(lockKey))
+        using var releaser = await _asyncKeyedLocker.LockAsync(show.Id, 0, token).ConfigureAwait(false);
+
+        if (!releaser.EnteredSemaphore)
         {
             _logger.LogInformation("Already refreshing seasons of {show}", show.Name);
             span.Finish(Status.Unavailable);
             return;
         }
-        using var _ = await Lock<SeasonRefresher>.LockAsync(lockKey, token).ConfigureAwait(false);
 
         await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
 

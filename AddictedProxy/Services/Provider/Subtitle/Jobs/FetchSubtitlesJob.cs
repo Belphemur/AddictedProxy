@@ -7,6 +7,7 @@ using AddictedProxy.Services.Job.Filter;
 using AddictedProxy.Services.Job.Model;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
+using AsyncKeyedLock;
 using Hangfire;
 using Locking;
 using Performance.Model;
@@ -25,6 +26,7 @@ public class FetchSubtitlesJob
     private readonly IEpisodeRefresher _episodeRefresher;
     private readonly IPerformanceTracker _performanceTracker;
     private readonly ITvShowRepository _tvShowRepository;
+    private readonly static AsyncKeyedLocker<string> _asyncKeyedLocker = new(LockOptions.Default);
     private TvShow? _show;
 
 
@@ -68,14 +70,14 @@ public class FetchSubtitlesJob
 
         var show = await GetShow(data, token);
         using var scope = _logger.BeginScope(ScopeName(data, show));
-        var lockKey = Lock<FetchSubtitlesJob>.GetNamedKey(data.Key);
-        if (Lock<FetchSubtitlesJob>.IsInUse(lockKey))
+
+        using var releaser = await _asyncKeyedLocker.LockAsync(data.Key, 0, token).ConfigureAwait(false);
+
+        if (!releaser.EnteredSemaphore)
         {
             _logger.LogInformation("Lock for {key} already taken", data.Key);
             return;
         }
-
-        using var _ = await Lock<FetchSubtitlesJob>.LockAsync(lockKey, token).ConfigureAwait(false);
 
         using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), "fetch-subtitles-one-episode");
         try
