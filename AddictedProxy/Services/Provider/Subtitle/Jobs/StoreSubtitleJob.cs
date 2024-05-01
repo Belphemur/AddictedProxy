@@ -2,6 +2,7 @@
 
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Storage.Store.Compression;
+using AsyncKeyedLock;
 using Hangfire;
 using Locking;
 using Performance.Service;
@@ -16,6 +17,7 @@ public class StoreSubtitleJob
     private readonly ICompressedStorageProvider _storageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
     private readonly IPerformanceTracker _performanceTracker;
+    private readonly static AsyncKeyedLocker<Guid> _asyncKeyedLocker = new(LockOptions.Default);
 
     public StoreSubtitleJob(ILogger<StoreSubtitleJob> logger, ICompressedStorageProvider storageProvider, ISubtitleRepository subtitleRepository, IPerformanceTracker performanceTracker)
     {
@@ -29,14 +31,13 @@ public class StoreSubtitleJob
     [Queue("store-subtitle")]
     public async Task ExecuteAsync(Guid subtitleId, byte[] subtitleBlob, CancellationToken cancellationToken)
     {
-        var lockKey = Lock<StoreSubtitleJob>.GetNamedKey(subtitleId.ToString());
-        if (Lock<StoreSubtitleJob>.IsInUse(lockKey))
+        using var releaser = await _asyncKeyedLocker.LockAsync(subtitleId, 0, cancellationToken).ConfigureAwait(false);
+
+        if (!releaser.EnteredSemaphore)
         {
             _logger.LogInformation("Lock already taken for {subtitleId}", subtitleId);
             return;
         }
-
-        using var _ = await Lock<StoreSubtitleJob>.LockAsync(lockKey, cancellationToken).ConfigureAwait(false);
 
         using var span = _performanceTracker.BeginNestedSpan(nameof(StoreSubtitleJob), "store");
 
