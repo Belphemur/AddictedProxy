@@ -25,8 +25,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(@unocss/reset@0.59.0)(floating-vue@5.2.2(@nuxt/kit@3.11.2(rollup@4.14.0))(vue@3.4.21(typescript@5.4.5)))(nuxt@3.11.2(@parcel/watcher@2.4.1)(@types/node@20.12.8)(@unocss/reset@0.59.0)(encoding@0.1.13)(floating-vue@5.2.2(@nuxt/kit@3.11.2(rollup@4.14.0))(vue@3.4.21(typescript@5.4.5)))(ioredis@5.3.2)(rollup@4.14.0)(terser@5.30.3)(typescript@5.4.5)(unocss@0.59.0(postcss@8.4.38)(rollup@4.14.0)(vite@5.2.8(@types/node@20.12.8)(terser@5.30.3)))(vite@5.2.8(@types/node@20.12.8)(terser@5.30.3)))(rollup@4.14.0)(unocss@0.59.0(postcss@8.4.38)(rollup@4.14.0)(vite@5.2.8(@types/node@20.12.8)(terser@5.30.3)))(vite@5.2.8(@types/node@20.12.8)(terser@5.30.3))(vue@3.4.21(typescript@5.4.5))
       '@nuxt/image':
-        specifier: 1.6.0
-        version: 1.6.0(ioredis@5.3.2)(rollup@4.14.0)
+        specifier: 1.7.0
+        version: 1.7.0(ioredis@5.3.2)(rollup@4.14.0)
       '@nuxtjs/device':
         specifier: ^3.1.1
         version: 3.1.1(rollup@4.14.0)
@@ -623,8 +623,8 @@ packages:
       nuxt: ^3.9.0
       vite: '*'
 
-  '@nuxt/image@1.6.0':
-    resolution: {integrity: sha512-rgi7u6v/Dz/Ye87ym5Yg6nJtyDZgqog3G4k1AH7h5ug76JxiM727up5wpWb1AhHFb6vsW2ttteA6mPwwRyuENQ==}
+  '@nuxt/image@1.7.0':
+    resolution: {integrity: sha512-zSj32bLgbV9AvLkLX0pF52J5KBfSyj0eSIdpXCtTJATSZlqgcJigoCvmabC1nbcMIp0SZ29Bu9+acQpGTQKz+g==}
     engines: {node: ^14.16.0 || >=16.11.0}
 
   '@nuxt/kit@3.10.1':
@@ -4964,7 +4964,7 @@ snapshots:
       - utf-8-validate
       - vue
 
-  '@nuxt/image@1.6.0(ioredis@5.3.2)(rollup@4.14.0)':
+  '@nuxt/image@1.7.0(ioredis@5.3.2)(rollup@4.14.0)':
     dependencies:
       '@nuxt/kit': 3.11.2(rollup@4.14.0)
       consola: 3.2.3
@@ -6682,7 +6682,7 @@ snapshots:
   externality@1.0.2:
     dependencies:
       enhanced-resolve: 5.16.0
-      mlly: 1.6.1
+      mlly: 1.7.0
       pathe: 1.1.2
       ufo: 1.5.3
 
@@ -7205,7 +7205,7 @@ snapshots:
       h3: 1.11.1
       http-shutdown: 1.2.2
       jiti: 1.21.0
-      mlly: 1.6.1
+      mlly: 1.7.0
       node-forge: 1.3.1
       pathe: 1.1.2
       std-env: 3.7.0
@@ -8950,7 +8950,7 @@ snapshots:
     dependencies:
       knitwork: 1.1.0
       magic-string: 0.30.9
-      mlly: 1.6.1
+      mlly: 1.7.0
       pathe: 1.1.2
       pkg-types: 1.0.3
       unplugin: 1.10.1
