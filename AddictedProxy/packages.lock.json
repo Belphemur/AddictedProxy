@@ -148,15 +148,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.303.24",
-        "contentHash": "WkCT5XOIJIKwW87DQ3NSXeL5N/yncmCmENd46c3Odb68PrDT3jVKlkhIl26BiuueHOO5fNM2icoM8s4wo4mZ8Q=="
+        "resolved": "3.7.303.27",
+        "contentHash": "vYc5Ci195j7zBgZvAok+CSSzBJVNHa/DyAFtcVZFD41WfQm8fZg7FIyo+Cn0DYmilkM9DRovYdg5yFgcoI7rIA=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.307.25",
-        "contentHash": "2DtkPpuyoG4l1cgKLojhmr3vIH/Wfuz9fGOttuGqGPN2a5JohWWgu4qxMXE9NXhWbtPkdRea5ccHG+VueHk3uQ==",
+        "resolved": "3.7.307.29",
+        "contentHash": "qJGPI10fqFJao9cD4gxWriFh2xfCyw+FA1DF86xFCEExlVy0Tt/lfUybuexMRLYdOIDX5jse4IBs2ZGIcn2BoA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.303.24, 4.0.0)"
+          "AWSSDK.Core": "[3.7.303.27, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -751,8 +751,8 @@
       },
       "Npgsql": {
         "type": "Transitive",
-        "resolved": "8.0.2",
-        "contentHash": "MuJzLoWCaQhQAR3oh66YR0Ir6mxuezncGX3f8wxvAc21g0+9HICktJQlqMoODhxztZKXE5k9GxRxqUAN+vPb4g==",
+        "resolved": "8.0.3",
+        "contentHash": "6WEmzsQJCZAlUG1pThKg/RmeF6V+I0DmBBBE/8YzpRtEzhyZzKcK7ulMANDm5CkxrALBEC8H+5plxHWtIL7xnA==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         }
@@ -1893,7 +1893,7 @@
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[8.0.4, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "[8.0.0, )",
-          "Npgsql": "[8.0.2, )"
+          "Npgsql": "[8.0.3, )"
         }
       },
       "addictedproxy.culture": {
