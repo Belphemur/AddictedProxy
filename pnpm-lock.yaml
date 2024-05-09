@@ -31,7 +31,7 @@ importers:
         specifier: ^13.0.0
         version: 13.0.0(semantic-release@23.0.8)
       conventional-changelog-conventionalcommits:
-        specifier: <8.0.0
+        specifier: <9.0.0
         version: 7.0.2
 
 packages:
