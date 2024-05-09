@@ -1,3 +1,10 @@
+## [4.20.3](https://github.com/Belphemur/AddictedProxy/compare/v4.20.2...v4.20.3) (2024-05-09)
+
+
+### Performance improvements
+
+* **image:** attest image ([6b438c1](https://github.com/Belphemur/AddictedProxy/commit/6b438c1b65f9194814bbabcb8b13bd9566b970c4))
+
 ## [4.20.2](https://github.com/Belphemur/AddictedProxy/compare/v4.20.1...v4.20.2) (2024-05-09)
 
 
