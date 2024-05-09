@@ -1,3 +1,10 @@
+## [4.20.4](https://github.com/Belphemur/AddictedProxy/compare/v4.20.3...v4.20.4) (2024-05-09)
+
+
+### Bug Fixes
+
+* **attestation:** fix the subject name ([0b25c5f](https://github.com/Belphemur/AddictedProxy/commit/0b25c5fc51af19999e116b0caae3d681ce837429))
+
 ## [4.20.3](https://github.com/Belphemur/AddictedProxy/compare/v4.20.2...v4.20.3) (2024-05-09)
 
 
