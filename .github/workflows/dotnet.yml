@@ -99,7 +99,7 @@ jobs:
       version: ${{ steps.version.outputs.version }}
       repo-lowercase: ${{ steps.repo.outputs.lowercase }}
     steps:
-      - name: Latest Version
+      - name: Set repo lower case
         run: |
           echo "lowercase=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
         id: repo
