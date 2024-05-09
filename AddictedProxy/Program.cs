@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sentry;
 using Performance.Bootstrap;
+using Prometheus;
 using TvMovieDatabaseClient.Bootstrap;
 
 #endregion
@@ -93,6 +94,8 @@ builder.WebHost.UseSentry(sentryBuilder =>
 });
 
 builder.Configuration.AddEnvironmentVariables("ADDICT");
+
+Metrics.SuppressDefaultMetrics();
 
 var app = builder.Build();
 

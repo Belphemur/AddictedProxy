@@ -3,6 +3,7 @@ using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Upstream.Service;
+using AsyncKeyedLock;
 using Locking;
 using Microsoft.Extensions.Options;
 using Performance.Model;
@@ -20,6 +21,7 @@ public class EpisodeRefresher : IEpisodeRefresher
     private readonly ILogger<EpisodeRefresher> _logger;
     private readonly IPerformanceTracker _performanceTracker;
     private readonly IServiceProvider _serviceProvider;
+    private readonly static AsyncKeyedLocker<(long showId, long seasonId)> _asyncKeyedLocker = new(LockOptions.Default);
 
     public EpisodeRefresher(IAddic7edClient client,
                             IEpisodeRepository episodeRepository,
@@ -65,14 +67,14 @@ public class EpisodeRefresher : IEpisodeRefresher
     private async Task RefreshEpisodesAsync(TvShow show, Season season, CancellationToken token)
     {
         using var transaction = _performanceTracker.BeginNestedSpan("episode", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
-        var lockKey = Lock<EpisodeRefresher>.GetNamedKey($"{show.Id}-{season.Id}");
-        if (Lock<EpisodeRefresher>.IsInUse(lockKey))
+        using var releaser = await _asyncKeyedLocker.LockAsync((show.Id, season.Id), 0, token).ConfigureAwait(false);
+
+        if (!releaser.EnteredSemaphore)
         {
             _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
             transaction.Finish(Status.Unavailable);
             return;
         }
-        using var _ = await Lock<EpisodeRefresher>.LockAsync(lockKey, token).ConfigureAwait(false);
 
         if (!IsSeasonNeedRefresh(show, season))
         {
@@ -111,17 +113,15 @@ public class EpisodeRefresher : IEpisodeRefresher
     {
         async Task<Episode[]?> EpisodeFetch(Season season)
         {
-            var lockKey = Lock<EpisodeRefresher>.GetNamedKey($"{show.Id}-{season.Id}");
-
             using var transaction = _performanceTracker.BeginNestedSpan("episodes.fetch", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
+            using var releaser = await _asyncKeyedLocker.LockAsync((show.Id, season.Id), 0, token).ConfigureAwait(false);
 
-            if (Lock<EpisodeRefresher>.IsInUse(lockKey))
+            if (!releaser.EnteredSemaphore)
             {
                 _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
                 transaction.Finish(Status.Unavailable);
                 return null;
             }
-            using var _ = await Lock<EpisodeRefresher>.LockAsync(lockKey, token).ConfigureAwait(false);
 
             if (!IsSeasonNeedRefresh(show, season))
             {
