@@ -21,8 +21,6 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
-  IMAGE_NAME_FRONTEND: ${{ github.repository }}-frontend
 
 jobs:
   build:
@@ -99,7 +97,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
+      repo-lowercase: ${{ steps.repo.outputs.lowercase }}
     steps:
+      - name: Latest Version
+        run: |
+          echo "lowercase=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
+        id: repo
       - uses: actions/checkout@v4
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -145,12 +148,12 @@ jobs:
       matrix:
         include:
           - package: "addictedproxy"
-            image: ${{ github.repository }}
+            image: ${{ needs.main-release.outputs.repo-lowercase}}
             context: "./"
             sentry_project: "addictedproxy"
             frontend: "false"
           - package: "addictedproxy-frontend"
-            image: ${{ github.repository }}-frontend
+            image: ${{ needs.main-release.outputs.repo-lowercase}}-frontend
             context: "addicted.nuxt/"
             sentry_project: "addicted-frontend"
             frontend: "true"
@@ -232,6 +235,6 @@ jobs:
         uses: actions/attest-build-provenance@v1
         id: attest
         with:
-          subject-name:  "${{ matrix.image }}"
+          subject-name:  "${{ env.REGISTRY }}/${{ matrix.image }}"
           subject-digest: ${{ steps.build-and-push.outputs.digest }}
           push-to-registry: true
