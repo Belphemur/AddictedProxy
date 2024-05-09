@@ -1,3 +1,10 @@
+## [4.20.5](https://github.com/Belphemur/AddictedProxy/compare/v4.20.4...v4.20.5) (2024-05-09)
+
+
+### Bug Fixes
+
+* **attestation:** use lower case name for repo ([97ddab2](https://github.com/Belphemur/AddictedProxy/commit/97ddab27265400586681b7e0680c1990707c5cb5))
+
 ## [4.20.4](https://github.com/Belphemur/AddictedProxy/compare/v4.20.3...v4.20.4) (2024-05-09)
 
 
