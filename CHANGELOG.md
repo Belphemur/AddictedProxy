@@ -1,3 +1,23 @@
+## [4.20.2](https://github.com/Belphemur/AddictedProxy/compare/v4.20.1...v4.20.2) (2024-05-09)
+
+
+### Performance improvements
+
+* **metrics:** disable default .NET metrics ([141ea8f](https://github.com/Belphemur/AddictedProxy/commit/141ea8f49391f62f6292e4a28bbfae4f856d39a4))
+
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v23.0.8 ([66f08ea](https://github.com/Belphemur/AddictedProxy/commit/66f08ea13da3d43cc3c502ba84fedd8648e44799))
+* **deps:** update dependency vuetify to v3.5.15 ([c002c66](https://github.com/Belphemur/AddictedProxy/commit/c002c667b64c546b9c04082b294b0da3365c0a74))
+* **deps:** update dependency vuetify to v3.5.16 ([ec6399d](https://github.com/Belphemur/AddictedProxy/commit/ec6399d722efc322d80bc0d20aa4f7534c1d3066))
+* **deps:** update dependency vuetify to v3.5.17 ([a98b15c](https://github.com/Belphemur/AddictedProxy/commit/a98b15c8209cdede8fe0cb55068244d6e5da1857))
+* **deps:** update dependency vuetify to v3.6.0 ([0d1e6e0](https://github.com/Belphemur/AddictedProxy/commit/0d1e6e083fdd3ca3fc4319258b880fc961e7b90d))
+* **deps:** update dependency vuetify to v3.6.1 ([5828cfa](https://github.com/Belphemur/AddictedProxy/commit/5828cfa24a14c45f8cfaa9a26f7703b92ae47dbe))
+* **deps:** update dependency vuetify to v3.6.3 ([9207e26](https://github.com/Belphemur/AddictedProxy/commit/9207e261d2daf5854b07a4a58c4a9be683c88454))
+* **deps:** update dependency vuetify to v3.6.4 ([5cfeb9f](https://github.com/Belphemur/AddictedProxy/commit/5cfeb9f5a2d73fe3ea694d400d8fd0e93d28711a))
+* **release:** downgrade bad lib ([7270700](https://github.com/Belphemur/AddictedProxy/commit/727070057e54950e977b17b98fb235d032db47cc))
+
 ## [4.20.1](https://github.com/Belphemur/AddictedProxy/compare/v4.20.0...v4.20.1) (2024-04-05)
 
 
