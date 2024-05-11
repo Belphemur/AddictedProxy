@@ -148,15 +148,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.303.28",
-        "contentHash": "0meqKVmH488Rh3lUG1EWjS9Fz3frDusFzCPkK04xwH+sXyDmS7IFKLQryDNzJBQP41gse5jHnRehLvIlf4NWdA=="
+        "resolved": "3.7.303.29",
+        "contentHash": "YjSPjAxJBorMNmYfuDfCbnrqjwLubQUaSyZi5v5iLv7B1u5wZY24SYdccbYNS8r+errGhqYESvlI/6MoFlE3gA=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.307.30",
-        "contentHash": "sGqGChS0YOXEFUr1LO0BYK+VafDgBMfsNz9HvHuamdTBe0XXQC6bsa2x7cleXFapu8QrTBBBbwvNEMjRsaSyVg==",
+        "resolved": "3.7.307.31",
+        "contentHash": "wEA43LmQkr2RyKqt/620djZXVamqGwUcCyDGUY5OUy2MKdzb/E3Ua5B9wjH9rcgM27YPTXdiiS4T7sEZMItKFA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.303.28, 4.0.0)"
+          "AWSSDK.Core": "[3.7.303.29, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -759,13 +759,13 @@
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
         "type": "Transitive",
-        "resolved": "8.0.2",
-        "contentHash": "eoZPynwkZTWFTgnocvXORuCL2yFZtscrUdqVhjxiRULpC7BMg9zhLM5oDZAU5PoX1PgN77hmkKE4a3PQiHqh7Q==",
+        "resolved": "8.0.4",
+        "contentHash": "/hHd9MqTRVDgIpsToCcxMDxZqla0HAQACiITkq1+L9J2hmHKV6lBAPlauF+dlNSfHpus7rrljWx4nAanKD6qAw==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "8.0.2",
-          "Microsoft.EntityFrameworkCore.Abstractions": "8.0.2",
-          "Microsoft.EntityFrameworkCore.Relational": "8.0.2",
-          "Npgsql": "8.0.2"
+          "Microsoft.EntityFrameworkCore": "8.0.4",
+          "Microsoft.EntityFrameworkCore.Abstractions": "8.0.4",
+          "Microsoft.EntityFrameworkCore.Relational": "8.0.4",
+          "Npgsql": "8.0.3"
         }
       },
       "OpenTelemetry": {
@@ -1912,7 +1912,7 @@
           "Microsoft.EntityFrameworkCore": "[8.0.4, )",
           "Microsoft.EntityFrameworkCore.Relational": "[8.0.4, )",
           "Microsoft.Extensions.Hosting": "[8.0.0, )",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.2, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.4, )",
           "RT.Comb.AspNetCore": "[4.0.1, )",
           "System.Linq.Async": "[6.0.1, )",
           "Z.EntityFramework.Extensions.EFCore": "[8.102.2.4, )"
