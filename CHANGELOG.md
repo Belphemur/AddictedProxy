@@ -1,3 +1,13 @@
+## [4.20.6](https://github.com/Belphemur/AddictedProxy/compare/v4.20.5...v4.20.6) (2024-05-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v23.1.0 ([5574626](https://github.com/Belphemur/AddictedProxy/commit/557462633c43a554f1388f82a8b1aec814f4ed79))
+* **deps:** update dependency semantic-release to v23.1.1 ([454c76f](https://github.com/Belphemur/AddictedProxy/commit/454c76ffeb3d44443a5bf53ba4da9ee0679b8a22))
+* **deps:** update dependency vuetify to v3.6.5 ([c29e557](https://github.com/Belphemur/AddictedProxy/commit/c29e557ce368f6b53f6d6c3064154b8bbc28a491))
+* **frontend:** building the app on cloudflare ([080e758](https://github.com/Belphemur/AddictedProxy/commit/080e75849d27b574707588e52fc3c8740b67177c))
+
 ## [4.20.5](https://github.com/Belphemur/AddictedProxy/compare/v4.20.4...v4.20.5) (2024-05-09)
 
 
