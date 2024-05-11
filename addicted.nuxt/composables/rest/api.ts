@@ -17,6 +17,11 @@ function getApiConfig() {
     const apiConfig : ApiConfig = {
         // @ts-ignore
         baseUrl: getApiServerUrl(),
+        customFetch: input => {
+            if(input.credentials !== undefined)
+               delete input.credentials;
+            return fetch(input)
+        },
     };
     return apiConfig;
 }
