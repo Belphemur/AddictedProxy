@@ -29,6 +29,7 @@
     "@mdi/font": "^7.4.47",
     "@microsoft/signalr": "^8.0.0",
     "roboto-fontface": "^0.10.0",
+    "utf-8-validate": "^6.0.4",
     "vuetify": "^3.5.3"
   }
 }
