@@ -83,11 +83,11 @@
       },
       "Polly": {
         "type": "Direct",
-        "requested": "[8.3.1, )",
-        "resolved": "8.3.1",
-        "contentHash": "xN9AxOudus8u4a//Tfu6Wxd5Oj7S4pjh/651S6FfIiVrbxQ8TeM+ieZC8c0y7Qto70zKBM5g8rBTqbAJnbetOA==",
+        "requested": "[8.4.0, )",
+        "resolved": "8.4.0",
+        "contentHash": "z2EeUutuy49jBQyZ5s2FUuTCGx3GCzJ0cJ2HbjWwks94TsC6bKTtAHKBkMZOa/DyYRl5yIX7MshvMTWl1J6RNg==",
         "dependencies": {
-          "Polly.Core": "8.3.1"
+          "Polly.Core": "8.4.0"
         }
       },
       "Polly.Contrib.WaitAndRetry": {
@@ -148,15 +148,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.303.27",
-        "contentHash": "vYc5Ci195j7zBgZvAok+CSSzBJVNHa/DyAFtcVZFD41WfQm8fZg7FIyo+Cn0DYmilkM9DRovYdg5yFgcoI7rIA=="
+        "resolved": "3.7.303.29",
+        "contentHash": "YjSPjAxJBorMNmYfuDfCbnrqjwLubQUaSyZi5v5iLv7B1u5wZY24SYdccbYNS8r+errGhqYESvlI/6MoFlE3gA=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.307.29",
-        "contentHash": "qJGPI10fqFJao9cD4gxWriFh2xfCyw+FA1DF86xFCEExlVy0Tt/lfUybuexMRLYdOIDX5jse4IBs2ZGIcn2BoA==",
+        "resolved": "3.7.307.31",
+        "contentHash": "wEA43LmQkr2RyKqt/620djZXVamqGwUcCyDGUY5OUy2MKdzb/E3Ua5B9wjH9rcgM27YPTXdiiS4T7sEZMItKFA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.303.27, 4.0.0)"
+          "AWSSDK.Core": "[3.7.303.29, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -759,13 +759,13 @@
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
         "type": "Transitive",
-        "resolved": "8.0.2",
-        "contentHash": "eoZPynwkZTWFTgnocvXORuCL2yFZtscrUdqVhjxiRULpC7BMg9zhLM5oDZAU5PoX1PgN77hmkKE4a3PQiHqh7Q==",
+        "resolved": "8.0.4",
+        "contentHash": "/hHd9MqTRVDgIpsToCcxMDxZqla0HAQACiITkq1+L9J2hmHKV6lBAPlauF+dlNSfHpus7rrljWx4nAanKD6qAw==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "8.0.2",
-          "Microsoft.EntityFrameworkCore.Abstractions": "8.0.2",
-          "Microsoft.EntityFrameworkCore.Relational": "8.0.2",
-          "Npgsql": "8.0.2"
+          "Microsoft.EntityFrameworkCore": "8.0.4",
+          "Microsoft.EntityFrameworkCore.Abstractions": "8.0.4",
+          "Microsoft.EntityFrameworkCore.Relational": "8.0.4",
+          "Npgsql": "8.0.3"
         }
       },
       "OpenTelemetry": {
@@ -896,8 +896,8 @@
       },
       "Polly.Core": {
         "type": "Transitive",
-        "resolved": "8.3.1",
-        "contentHash": "b9mMAjqXuCXFCtf/RtRPwFUkAm/sz37s7G+taDvS5EqfkJsLiWfO2xO2cSISjIgIY+88oIZTGguP6UrRGRlqzg=="
+        "resolved": "8.4.0",
+        "contentHash": "3AZxuP//pxOeBo9tQs7/tz4Z5TTbu4BYfjpaXZD0JYKJo98ngN9TMUz1nybh4k0ykWkMBpGZALV/AmVIE3ew7A=="
       },
       "Polly.Extensions.Http": {
         "type": "Transitive",
@@ -1912,7 +1912,7 @@
           "Microsoft.EntityFrameworkCore": "[8.0.4, )",
           "Microsoft.EntityFrameworkCore.Relational": "[8.0.4, )",
           "Microsoft.Extensions.Hosting": "[8.0.0, )",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.2, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[8.0.4, )",
           "RT.Comb.AspNetCore": "[4.0.1, )",
           "System.Linq.Async": "[6.0.1, )",
           "Z.EntityFramework.Extensions.EFCore": "[8.102.2.4, )"
@@ -1951,7 +1951,7 @@
           "Compressor": "[1.0.0, )",
           "Hangfire.AspNetCore": "[1.8.12, )",
           "InversionOfControl": "[1.0.0, )",
-          "Polly": "[8.3.1, )",
+          "Polly": "[8.4.0, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )"
         }
       },
@@ -1979,7 +1979,7 @@
           "Microsoft.Extensions.Http": "[8.0.0, )",
           "Microsoft.Extensions.Http.Polly": "[8.0.4, )",
           "Performance": "[1.0.0, )",
-          "Polly": "[8.3.1, )",
+          "Polly": "[8.4.0, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )",
           "Polly.Extensions.Http": "[3.0.0, )",
           "Sentry": "[4.6.0, )",
