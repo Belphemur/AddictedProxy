@@ -1,3 +1,10 @@
+## [4.20.7](https://github.com/Belphemur/AddictedProxy/compare/v4.20.6...v4.20.7) (2024-05-12)
+
+
+### Bug Fixes
+
+* **cors:** be sure cloudflare is accepted ([5a76760](https://github.com/Belphemur/AddictedProxy/commit/5a76760872f8e88ac3c1ada752ec9605dd7146d0))
+
 ## [4.20.6](https://github.com/Belphemur/AddictedProxy/compare/v4.20.5...v4.20.6) (2024-05-11)
 
 
