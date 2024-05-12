@@ -125,6 +125,19 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
     currentlyDownloading.value.delete(sub.subtitleId!);
   };
 
+  const trim = function (str: string, ch: string) {
+    var start = 0,
+        end = str.length;
+
+    while(start < end && str[start] === ch)
+      ++start;
+
+    while(end > start && str[end - 1] === ch)
+      --end;
+
+    return (start > 0 || end < str.length) ? str.substring(start, end) : str;
+  }
+
   const response = await subtitlesApi.downloadSubtitle(sub.subtitleId!);
   const header = response.headers.get("Content-Disposition");
   const parts = header!.split(";");
@@ -132,7 +145,7 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
 
   const link = document.createElement("a");
   link.href = URL.createObjectURL(await response.blob());
-  link.download = filename;
+  link.download = trim(filename, '"')
   link.click();
   URL.revokeObjectURL(link.href);
 
