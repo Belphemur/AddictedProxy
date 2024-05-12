@@ -21,6 +21,8 @@ function getApiConfig() {
             console.log("fetching", input)
             if(input.credentials !== undefined)
                delete input.credentials;
+            if(input.mode !== undefined)
+                delete input.mode;
             return fetch(input)
         },
     };
