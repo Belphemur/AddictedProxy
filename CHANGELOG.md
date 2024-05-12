@@ -1,3 +1,10 @@
+## [4.20.9](https://github.com/Belphemur/AddictedProxy/compare/v4.20.8...v4.20.9) (2024-05-12)
+
+
+### Bug Fixes
+
+* **cloudflare:** remove mode ([eed321c](https://github.com/Belphemur/AddictedProxy/commit/eed321c0f68b7e5adf4748c9d11e275693ff3e74))
+
 ## [4.20.8](https://github.com/Belphemur/AddictedProxy/compare/v4.20.7...v4.20.8) (2024-05-12)
 
 
