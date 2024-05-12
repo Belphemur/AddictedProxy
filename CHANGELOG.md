@@ -1,3 +1,10 @@
+## [4.20.8](https://github.com/Belphemur/AddictedProxy/compare/v4.20.7...v4.20.8) (2024-05-12)
+
+
+### Bug Fixes
+
+* **download:** issue with bad filename for downloading subtitles ([8be2f89](https://github.com/Belphemur/AddictedProxy/commit/8be2f891c2b747f0af17c52be5a006b87a5655b6))
+
 ## [4.20.7](https://github.com/Belphemur/AddictedProxy/compare/v4.20.6...v4.20.7) (2024-05-12)
 
 
