@@ -1,3 +1,10 @@
+## [4.20.10](https://github.com/Belphemur/AddictedProxy/compare/v4.20.9...v4.20.10) (2024-05-13)
+
+
+### Performance improvements
+
+* **sentry:** Add sentry ([3082c1f](https://github.com/Belphemur/AddictedProxy/commit/3082c1f2205506f0c7ba248bd63bfbcb84460676))
+
 ## [4.20.9](https://github.com/Belphemur/AddictedProxy/compare/v4.20.8...v4.20.9) (2024-05-12)
 
 
