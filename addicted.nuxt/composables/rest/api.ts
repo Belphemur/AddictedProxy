@@ -21,38 +21,36 @@ function getApiConfig() {
         customFetch: (input, init) => {
             //Clean up fetch request for server request of worker
             //Server side
-            if (typeof window === "undefined") {
-                console.log("fetching", input)
-                if (input.credentials !== undefined)
-                    delete input.credentials;
-                if (input.mode !== undefined)
-                    delete input.mode;
-                //Client side
-            } else {
-                const activeSpan = Sentry.getActiveSpan();
-                const rootSpan = activeSpan ? Sentry.getRootSpan(activeSpan) : undefined;
+            console.log("fetching", input)
+            if (input.credentials !== undefined)
+                delete input.credentials;
+            if (input.mode !== undefined)
+                delete input.mode;
+            //Client side
+            const activeSpan = Sentry.getActiveSpan();
+            const rootSpan = activeSpan ? Sentry.getRootSpan(activeSpan) : undefined;
 
 // Create `sentry-trace` header
-                const sentryTraceHeader = rootSpan ? Sentry.spanToTraceHeader(rootSpan) : undefined;
+            const sentryTraceHeader = rootSpan ? Sentry.spanToTraceHeader(rootSpan) : undefined;
 
 // Create `baggage` header
-                const sentryBaggageHeader = rootSpan ? Sentry.spanToBaggageHeader(rootSpan) : "undefined";
+            const sentryBaggageHeader = rootSpan ? Sentry.spanToBaggageHeader(rootSpan) : "undefined";
 
-                let addedHeader = {}
-                if (sentryBaggageHeader !== undefined && sentryTraceHeader !== undefined) {
-                    addedHeader = {
-                        baggage: sentryBaggageHeader,
-                        'sentry-trace': sentryTraceHeader,
-                    }
+            let addedHeader = {}
+            if (sentryBaggageHeader !== undefined && sentryTraceHeader !== undefined) {
+                addedHeader = {
+                    baggage: sentryBaggageHeader,
+                    'sentry-trace': sentryTraceHeader,
                 }
-                init = {
-                    ...init,
-                    headers: {
-                        ...init?.headers,
-                        ...addedHeader
-                    },
-                };
             }
+            init = {
+                ...init,
+                headers: {
+                    ...init?.headers,
+                    ...addedHeader
+                },
+            };
+
             return fetch(input, init)
         },
     };
