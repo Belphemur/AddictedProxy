@@ -22,11 +22,13 @@ function getApiConfig() {
             //Clean up fetch request for server request of worker
             //Server side
             if (typeof window === "undefined") {
-                console.log("fetching", input)
-                if (input.credentials !== undefined)
-                    delete input.credentials;
-                if (input.mode !== undefined)
-                    delete input.mode;
+                console.log("fetching", input, init)
+                if (init?.credentials !== undefined)
+                    delete init.credentials;
+                if (init?.mode !== undefined)
+                    delete init.mode;
+                if(init?.referrerPolicy !== undefined)
+                    delete init.referrerPolicy
                 //Client side
             } else {
                 const activeSpan = Sentry.getActiveSpan();
