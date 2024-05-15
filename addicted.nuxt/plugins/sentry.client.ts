@@ -13,7 +13,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         dsn: config.public.sentry.config.dsn,
         environment: config.public.sentry.config.environment,
         integrations: [
-            Sentry.browserTracingIntegration({router}),
+            Sentry.browserTracingIntegration({router, enableInp: true, enableHTTPTimings:true}),
             Sentry.replayIntegration(),
         ],
         trackComponents: true,
