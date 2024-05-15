@@ -45,7 +45,8 @@ public class BootstrapController : IBootstrap, IBootstrapApp
                 .AllowAnyHeader()
                 .AllowCredentials()
                 .WithExposedHeaders("Content-Disposition")
-                .WithExposedHeaders("sentry-trace");
+                .WithExposedHeaders("sentry-trace")
+                .WithExposedHeaders("baggage");
             if (app.ApplicationServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
             {
                 policyBuilder.SetIsOriginAllowed(_ => true);
