@@ -1,3 +1,10 @@
+## [4.20.13](https://github.com/Belphemur/AddictedProxy/compare/v4.20.12...v4.20.13) (2024-05-15)
+
+
+### Performance improvements
+
+* **sentry:** add profiling ([063eeb3](https://github.com/Belphemur/AddictedProxy/commit/063eeb3c2ae836909f359360dfba812a26e049c5))
+
 ## [4.20.12](https://github.com/Belphemur/AddictedProxy/compare/v4.20.11...v4.20.12) (2024-05-15)
 
 
