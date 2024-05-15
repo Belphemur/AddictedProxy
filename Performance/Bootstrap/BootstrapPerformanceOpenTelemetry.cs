@@ -16,7 +16,7 @@ using Performance.Model;
 
 namespace Performance.Bootstrap;
 
-public class BootstrapPerformance : IBootstrap, IBootstrapApp
+public class BootstrapPerformanceOpenTelemetry : IBootstrapApp, IBootstrapConditional
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
@@ -30,18 +30,18 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
         var perf = configuration.GetSection("Performance").Get<PerformanceConfig>()!;
 
         services.AddOpenTelemetry()
-                .ConfigureResource(builder => builder.AddService(serviceName: applicationName, serviceVersion: serviceVersion, serviceInstanceId: Environment.MachineName))
-                .WithTracing(builder =>
-                {
-                    builder
-                        .AddSource(activitySource.Name)
-                        .AddHttpClientInstrumentation()
-                        .AddAspNetCoreInstrumentation()
-                        .AddEntityFrameworkCoreInstrumentation(options =>
-                        {
-                            options.SetDbStatementForText = true;
-                            options.SetDbStatementForStoredProcedure = true;
-                        })
+            .ConfigureResource(builder => builder.AddService(serviceName: applicationName, serviceVersion: serviceVersion, serviceInstanceId: Environment.MachineName))
+            .WithTracing(builder =>
+            {
+                builder
+                    .AddSource(activitySource.Name)
+                    .AddHttpClientInstrumentation()
+                    .AddAspNetCoreInstrumentation()
+                    .AddEntityFrameworkCoreInstrumentation(options =>
+                    {
+                        options.SetDbStatementForText = true;
+                        options.SetDbStatementForStoredProcedure = true;
+                    })
 #if !DEBUG
                         .AddOtlpExporter(options =>
                         {
@@ -49,9 +49,15 @@ public class BootstrapPerformance : IBootstrap, IBootstrapApp
                             options.Endpoint = new Uri(perf.Endpoint);
                         })
 #endif
-                        .SetSampler(_ => new TraceIdRatioBasedSampler(perf.SampleRate));
-                });
+                    .SetSampler(_ => new TraceIdRatioBasedSampler(perf.SampleRate));
+            });
         services.AddSingleton<IPerformanceTracker>(_ => new PerformanceTrackerOtlp(activitySource));
+    }
+
+    public bool ShouldLoadBootstrap(IConfiguration configuration)
+    {
+        var perf = configuration.GetSection("Performance").Get<PerformanceConfig>()!;
+        return perf.Type == PerformanceConfig.BackendType.OpenTelemetry;
     }
 
     public void ConfigureApp(IApplicationBuilder app)

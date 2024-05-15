@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sentry;
 using Performance.Bootstrap;
+using Performance.Model;
 using Prometheus;
 using TvMovieDatabaseClient.Bootstrap;
 
@@ -64,7 +65,7 @@ var currentAssemblies = new[]
     typeof(BootstrapDatabase).Assembly,
     typeof(BootstrapCompressor).Assembly,
     typeof(BootstrapAddictedServices).Assembly,
-    typeof(BootstrapPerformance).Assembly,
+    typeof(BootstrapPerformanceOpenTelemetry).Assembly,
     typeof(BootstrapStatsPopularityShow).Assembly,
     typeof(BootstrapTMDB).Assembly,
     typeof(BootstrapRedisCaching).Assembly,
@@ -96,6 +97,19 @@ builder.WebHost.UseSentry(sentryBuilder =>
 builder.Configuration.AddEnvironmentVariables("ADDICT");
 
 Metrics.SuppressDefaultMetrics();
+
+var perf = builder.Configuration.GetSection("Performance").Get<PerformanceConfig>()!;
+if (perf.Type == PerformanceConfig.BackendType.Sentry)
+{
+    builder.WebHost.UseSentry(sentryBuilder =>
+    {
+        sentryBuilder.Dsn = perf.Endpoint;
+        sentryBuilder.TracesSampleRate = perf.SampleRate;
+        sentryBuilder.Release = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "1.0.0";
+        sentryBuilder.Environment = builder.Environment.EnvironmentName;
+        sentryBuilder.Debug = builder.Environment.IsDevelopment();
+    });
+}
 
 var app = builder.Build();
 
