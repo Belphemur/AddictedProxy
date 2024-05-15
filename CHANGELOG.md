@@ -1,3 +1,10 @@
+## [4.20.15](https://github.com/Belphemur/AddictedProxy/compare/v4.20.14...v4.20.15) (2024-05-15)
+
+
+### Bug Fixes
+
+* **sentry:** only add span for request from client side ([4cd84fb](https://github.com/Belphemur/AddictedProxy/commit/4cd84fb0c3b32542b8727bee4ef707efb957cad0))
+
 ## [4.20.14](https://github.com/Belphemur/AddictedProxy/compare/v4.20.13...v4.20.14) (2024-05-15)
 
 
