@@ -75,8 +75,6 @@ const {
   getEpisodes
 } = useRefreshHub();
 
-await start();
-
 const progressHandler: ProgressHandler = (progress) => {
   if (refreshingProgress.value != null && progress.progress < refreshingProgress.value) {
     console.error("Got progress lower than current value");
@@ -121,6 +119,7 @@ async function loadMediaDetails() {
 
 
 const refreshShow = async () => {
+  await start();
   refreshingProgress.value = 0;
   await sendRefreshAsync(props.showId);
 };
