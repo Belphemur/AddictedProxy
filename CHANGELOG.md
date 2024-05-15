@@ -1,3 +1,10 @@
+## [4.20.12](https://github.com/Belphemur/AddictedProxy/compare/v4.20.11...v4.20.12) (2024-05-15)
+
+
+### Performance improvements
+
+* **sentry:** enable inp ([bab021d](https://github.com/Belphemur/AddictedProxy/commit/bab021d02e27d3313a8d9ca2e5c6b7d1f1911c4a))
+
 ## [4.20.11](https://github.com/Belphemur/AddictedProxy/compare/v4.20.10...v4.20.11) (2024-05-15)
 
 
