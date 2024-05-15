@@ -15,6 +15,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         integrations: [
             Sentry.browserTracingIntegration({router, enableInp: true, enableHTTPTimings:true}),
             Sentry.replayIntegration(),
+            Sentry.browserProfilingIntegration()
         ],
         trackComponents: true,
         hooks: ['activate', 'create', 'destroy', 'mount', 'update'],
