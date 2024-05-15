@@ -5,14 +5,8 @@ namespace Performance.Service.Sentry;
 
 public class PerformanceTrackerSentry : IPerformanceTracker, IDisposable
 {
-    private readonly IHub _sentryHub;
     private SpanSentry? _currentSpan;
     private IDisposable? _sentryScope;
-
-    public PerformanceTrackerSentry(IHub sentryHub)
-    {
-        _sentryHub = sentryHub;
-    }
 
     /// <summary>
     /// Start a transaction.
@@ -43,12 +37,12 @@ public class PerformanceTrackerSentry : IPerformanceTracker, IDisposable
             }
             case null:
             {
-                var span = _sentryHub.GetSpan();
+                var span = SentrySdk.GetSpan();
                 if (span == null)
                 {
-                    _sentryScope = _sentryHub.PushScope();
-                    var transaction = _sentryHub.StartTransaction(operation, description);
-                    _sentryHub.ConfigureScope(scope => { scope.Transaction = transaction; });
+                    _sentryScope = SentrySdk.PushScope();
+                    var transaction = SentrySdk.StartTransaction(operation, description);
+                    SentrySdk.ConfigureScope(scope => { scope.Transaction = transaction; });
                     span = transaction;
                     _currentSpan = new SpanSentry(span, null);
                 }
