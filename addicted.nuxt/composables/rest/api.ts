@@ -27,6 +27,8 @@ function getApiConfig() {
                     delete init.credentials;
                 if (init?.mode !== undefined)
                     delete init.mode;
+                if(init?.referrerPolicy !== undefined)
+                    delete init.referrerPolicy
                 //Client side
             } else {
                 const activeSpan = Sentry.getActiveSpan();
