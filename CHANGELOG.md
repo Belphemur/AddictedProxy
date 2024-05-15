@@ -1,3 +1,16 @@
+## [4.20.14](https://github.com/Belphemur/AddictedProxy/compare/v4.20.13...v4.20.14) (2024-05-15)
+
+
+### Performance improvements
+
+* **cors:** accept anything from cloudflare page for the project ([cb02561](https://github.com/Belphemur/AddictedProxy/commit/cb025618259e065a2365a93eefb6aafa0f417cc2))
+* **deps:** update deps ([b1f7009](https://github.com/Belphemur/AddictedProxy/commit/b1f7009b89f7aba7c86272938adadbca98273258))
+* **sentry:** accept baggage header ([5226d48](https://github.com/Belphemur/AddictedProxy/commit/5226d488b1bac679b58ecf7439f8dd7059a0eaba))
+* **sentry:** add sentry profile rate ([40fca78](https://github.com/Belphemur/AddictedProxy/commit/40fca78fabdab7d3ee3903b849d92cfb4dfb6589))
+* **sentry:** reenable sentry in backend ([f5aba9c](https://github.com/Belphemur/AddictedProxy/commit/f5aba9c577b62d891c9b2d6a534ae5d1d6f20922))
+* **sentry:** set distributed tracing ([65902b7](https://github.com/Belphemur/AddictedProxy/commit/65902b74ff0b2280a5bc21567e0dbd732a3a0fed))
+* **tracing:** reenable distributed tracing in sentry ([d7504cf](https://github.com/Belphemur/AddictedProxy/commit/d7504cfcc86d884939f1caa80004ce40d2c6c806))
+
 ## [4.20.13](https://github.com/Belphemur/AddictedProxy/compare/v4.20.12...v4.20.13) (2024-05-15)
 
 
