@@ -1,3 +1,17 @@
+## [4.20.11](https://github.com/Belphemur/AddictedProxy/compare/v4.20.10...v4.20.11) (2024-05-15)
+
+
+### Performance improvements
+
+* **cors:** enable cloudflare cors ([f37e470](https://github.com/Belphemur/AddictedProxy/commit/f37e470bcb1d2a6b1f7b082736280b835158b1aa))
+* **deps:** update dependencies ([1bb5c7f](https://github.com/Belphemur/AddictedProxy/commit/1bb5c7f3bfbf0b06d769eb76e791eb31d232e56d))
+* **websocket:** only start the socket when asking to refresh ([3ca863a](https://github.com/Belphemur/AddictedProxy/commit/3ca863a5eeecfee1c1482cf8b4a4d32fd0be1fcc))
+
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.6.6 ([7d552a9](https://github.com/Belphemur/AddictedProxy/commit/7d552a9b0ab74eb1384935b437ad103c3c0d083b))
+
 ## [4.20.10](https://github.com/Belphemur/AddictedProxy/compare/v4.20.9...v4.20.10) (2024-05-13)
 
 
