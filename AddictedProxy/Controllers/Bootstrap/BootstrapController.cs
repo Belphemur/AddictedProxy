@@ -52,7 +52,7 @@ public class BootstrapController : IBootstrap, IBootstrapApp
             }
             else
             {
-                policyBuilder.SetIsOriginAllowed(hostname => hostname.EndsWith(".gestdown.info") || hostname == "gestdown.info" || hostname == "addictedproxy.pages.dev");
+                policyBuilder.SetIsOriginAllowed(hostname => hostname.EndsWith(".gestdown.info") || hostname == "gestdown.info" || hostname == "addictedproxy.pages.dev" || hostname == "dev.addictedproxy.pages.dev");
             }
         });
 
