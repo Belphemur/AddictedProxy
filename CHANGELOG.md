@@ -1,3 +1,12 @@
+## [4.20.16](https://github.com/Belphemur/AddictedProxy/compare/v4.20.15...v4.20.16) (2024-05-15)
+
+
+### Bug Fixes
+
+* **fetch:** always remove the header that worker don't like ([44e2cbe](https://github.com/Belphemur/AddictedProxy/commit/44e2cbe921162d1ae4a994719ca729d2f4bec51e))
+* **fetch:** properly remove the credentials and mode from right object ([194210e](https://github.com/Belphemur/AddictedProxy/commit/194210ef728bee572767152d45ad447c046cdf5c))
+* **fetch:** Remove referer policy ([556c5f4](https://github.com/Belphemur/AddictedProxy/commit/556c5f472ae29d55ab53f29fd1d7eb1970c5ea25))
+
 ## [4.20.15](https://github.com/Belphemur/AddictedProxy/compare/v4.20.14...v4.20.15) (2024-05-15)
 
 
