@@ -9,7 +9,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         enabled: config.public.sentry.config.enabled,
         app: nuxtApp.vueApp,
         autoSessionTracking: true,
-        debug: config.public.sentry.config.environment !== 'production',
+        debug: false,
         dsn: config.public.sentry.config.dsn,
         environment: config.public.sentry.config.environment,
         integrations: [

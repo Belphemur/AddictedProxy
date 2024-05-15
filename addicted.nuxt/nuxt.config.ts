@@ -48,13 +48,13 @@ export default defineNuxtConfig({
             },
             faro: {
                 url: process.env.APP_FARO_URL,
-                env: process.env.SENTRY_ENVIRONMENT
+                env: process.env.SENTRY_ENVIRONMENT  ?? "local"
             },
             sentry: {
                 config: {
-                    environment: process.env.SENTRY_ENVIRONMENT,
+                    environment: process.env.SENTRY_ENVIRONMENT ?? "local",
                     dsn: process.env.SENTRY_DSN,
-                    enabled: true,
+                    enabled: process.env.SENTRY_ENABLE !== undefined? process.env.SENTRY_ENABLE == "true" : true,
                 },
                 serverConfig: {
                     // Set sampling rate for profiling - this is relative to tracesSampleRate
