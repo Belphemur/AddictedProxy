@@ -1,6 +1,5 @@
 ﻿using Compressor.Utils;
 using InversionOfControl.Model.Factory;
-using System;
 
 namespace Compressor.Factory;
 

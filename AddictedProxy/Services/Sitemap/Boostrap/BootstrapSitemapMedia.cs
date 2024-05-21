@@ -1,5 +1,4 @@
 ﻿using InversionOfControl.Model;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using SimpleMvcSitemap;
 using SimpleMvcSitemap.Routing;
 

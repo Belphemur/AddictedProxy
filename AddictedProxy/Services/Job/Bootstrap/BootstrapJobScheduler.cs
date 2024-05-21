@@ -1,7 +1,5 @@
 ﻿#region
 
-using AddictedProxy.Caching.Bootstrap.EnvVar;
-using AddictedProxy.Caching.Redis;
 using AddictedProxy.Services.Job.Service;
 using Hangfire;
 using Hangfire.Dashboard.BasicAuthorization;

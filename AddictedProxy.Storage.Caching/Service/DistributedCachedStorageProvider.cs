@@ -1,9 +1,6 @@
 using AddictedProxy.Storage.Caching.Model;
 using AddictedProxy.Storage.Extensions;
-using AddictedProxy.Storage.Store;
 using AddictedProxy.Storage.Store.Compression;
-using Compressor;
-using Compressor.Factory;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Performance.Service;

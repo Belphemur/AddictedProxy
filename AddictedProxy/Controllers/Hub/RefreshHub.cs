@@ -6,7 +6,6 @@ using AddictedProxy.Model.Dto;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Shows.Jobs;
 using Hangfire;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 namespace AddictedProxy.Controllers.Hub;

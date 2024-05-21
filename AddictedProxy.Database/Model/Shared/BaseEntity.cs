@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace AddictedProxy.Database.Model.Shared;
+﻿namespace AddictedProxy.Database.Model.Shared;
 
 public abstract class BaseEntity
 {

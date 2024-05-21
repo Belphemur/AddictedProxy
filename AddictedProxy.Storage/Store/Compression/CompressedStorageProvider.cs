@@ -1,7 +1,6 @@
 ﻿using AddictedProxy.Storage.Store.Compression.Job;
 using Compressor;
 using Compressor.Factory;
-using Compressor.Factory.Impl;
 using Hangfire;
 
 namespace AddictedProxy.Storage.Store.Compression;

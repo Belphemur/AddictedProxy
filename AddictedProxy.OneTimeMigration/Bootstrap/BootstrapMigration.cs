@@ -2,7 +2,6 @@
 using InversionOfControl.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace AddictedProxy.OneTimeMigration.Bootstrap;
 

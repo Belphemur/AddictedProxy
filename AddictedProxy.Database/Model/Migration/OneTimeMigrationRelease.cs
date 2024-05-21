@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Net;
 using AddictedProxy.Database.Model.Shared;
 using Microsoft.EntityFrameworkCore;
 

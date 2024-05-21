@@ -1,7 +1,5 @@
 using AddictedProxy.Database.Model;
 using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Services.Provider.ShowInfo;
-using Hangfire.Storage.Monitoring;
 using Performance.Service;
 using TvMovieDatabaseClient.Service;
 

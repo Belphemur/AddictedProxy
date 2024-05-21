@@ -1,13 +1,10 @@
-﻿using System.Text.RegularExpressions;
-using AddictedProxy.Database.Model;
+﻿using AddictedProxy.Database.Model;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Provider.ShowInfo;
 using AddictedProxy.Utils;
 using Hangfire;
 using Performance.Service;
-using TvMovieDatabaseClient.Model.Mapping;
-using TvMovieDatabaseClient.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
 
