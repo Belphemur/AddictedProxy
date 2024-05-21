@@ -1,3 +1,15 @@
+## [4.20.17](https://github.com/Belphemur/AddictedProxy/compare/v4.20.16...v4.20.17) (2024-05-21)
+
+
+### Bug Fixes
+
+* **cors:** proper regex matching ([94f6acc](https://github.com/Belphemur/AddictedProxy/commit/94f6acc28d74f6eecb428804ca9806b20c0df50c))
+* **deps:** update sentry-javascript monorepo to v8.2.1 ([829490e](https://github.com/Belphemur/AddictedProxy/commit/829490e8b0480d537465fb799f316a9a28906384))
+* **deps:** update sentry-javascript monorepo to v8.2.1 ([b778c2c](https://github.com/Belphemur/AddictedProxy/commit/b778c2cfa0d1fce64fb67be13e3360d68717933d))
+* **imports:** fix imports ([069fd09](https://github.com/Belphemur/AddictedProxy/commit/069fd09fec4cc681b65b5aade0cfc814038cdeb9))
+* **sentry:** fix performance tracker sentry ([766c441](https://github.com/Belphemur/AddictedProxy/commit/766c441b4cd9142ed98ff8434d725e633ec9b534))
+* **sentry:** fix performance tracker sentry ([acc51e4](https://github.com/Belphemur/AddictedProxy/commit/acc51e414fa267a5ec3688dbcaac2c7b87f23fcf))
+
 ## [4.20.16](https://github.com/Belphemur/AddictedProxy/compare/v4.20.15...v4.20.16) (2024-05-15)
 
 
