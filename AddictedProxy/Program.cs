@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Performance.Bootstrap;
+using Performance.Model;
 using Prometheus;
 using TvMovieDatabaseClient.Bootstrap;
 
@@ -78,23 +79,24 @@ builder.Services
        .AddBootstrap(builder.Configuration, currentAssemblies);
 
 builder.Host.UseSystemd();
-builder.WebHost.UseSentry(sentryBuilder =>
-{
-    sentryBuilder.TracePropagationTargets.Clear();
-    sentryBuilder.Dsn = Environment.GetEnvironmentVariable("SENTRY_DSN");
-#if DEBUG
-    sentryBuilder.Debug = true;
-#endif
-    sentryBuilder.TracesSampleRate = 0;
-    sentryBuilder.AddExceptionFilterForType<OperationCanceledException>();
-    sentryBuilder.AddExceptionFilterForType<TaskCanceledException>();
-    sentryBuilder.AddExceptionFilterForType<RetryJobException>();
-    sentryBuilder.AddExceptionFilterForType<DistributedLockTimeoutException>();
-});
-
-builder.Configuration.AddEnvironmentVariables("ADDICT");
-
 Metrics.SuppressDefaultMetrics();
+
+var perf = builder.Configuration.GetSection("Performance").Get<PerformanceConfig>()!;
+if (perf.Type == PerformanceConfig.BackendType.Sentry)
+{
+    builder.WebHost.UseSentry(sentryBuilder =>
+    {
+        sentryBuilder.Dsn = perf.Endpoint;
+        sentryBuilder.TracesSampleRate = perf.SampleRate;
+        sentryBuilder.Release = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "1.0.0";
+        sentryBuilder.Environment = builder.Environment.EnvironmentName;
+        sentryBuilder.Debug = builder.Environment.IsDevelopment();
+        sentryBuilder.AddExceptionFilterForType<OperationCanceledException>();
+        sentryBuilder.AddExceptionFilterForType<TaskCanceledException>();
+        sentryBuilder.AddExceptionFilterForType<RetryJobException>();
+        sentryBuilder.AddExceptionFilterForType<DistributedLockTimeoutException>();
+    });
+}
 
 var app = builder.Build();
 
