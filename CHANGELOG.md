@@ -1,3 +1,10 @@
+## [4.20.18](https://github.com/Belphemur/AddictedProxy/compare/v4.20.17...v4.20.18) (2024-05-21)
+
+
+### Bug Fixes
+
+* **sentry:** clean up bad merge code ([3c5fe2f](https://github.com/Belphemur/AddictedProxy/commit/3c5fe2fedee7c3c6fcdc8fe209f4483f7ac1ed25))
+
 ## [4.20.17](https://github.com/Belphemur/AddictedProxy/compare/v4.20.16...v4.20.17) (2024-05-21)
 
 
