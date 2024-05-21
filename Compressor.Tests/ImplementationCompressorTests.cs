@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Compressor.Bootstrap;
 using Compressor.Factory;
-using Compressor.Factory.Impl;
 using FluentAssertions;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.Extensions.Configuration;

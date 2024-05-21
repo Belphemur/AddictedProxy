@@ -8,9 +8,6 @@ using OpenTelemetry.Resources;
 using Prometheus;
 using Performance.Service;
 using Performance.Service.OpenTelemetry;
-using OpenTelemetry.Exporter;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Performance.Model;
 

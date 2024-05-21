@@ -1,5 +1,3 @@
-using Sentry;
-
 namespace Performance.Model.Sentry;
 
 internal class SpanSentry : ISpan

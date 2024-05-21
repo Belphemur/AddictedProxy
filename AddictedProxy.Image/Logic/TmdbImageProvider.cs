@@ -5,7 +5,6 @@ using Microsoft.Extensions.Caching.Memory;
 using SixLabors.ImageSharp.Web.Providers;
 using SixLabors.ImageSharp.Web.Resolvers;
 using TvMovieDatabaseClient.Service;
-using TvMovieDatabaseClient.Service.Model;
 
 namespace AddictedProxy.Image.Logic;
 

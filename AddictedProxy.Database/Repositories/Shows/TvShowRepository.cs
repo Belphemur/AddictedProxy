@@ -1,8 +1,6 @@
 ﻿#region
 
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model;
 using AddictedProxy.Database.Model.Shows;

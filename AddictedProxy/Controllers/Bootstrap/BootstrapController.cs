@@ -5,10 +5,6 @@ using System.Text.Json.Serialization.Metadata;
 using AddictedProxy.Controllers.Rest.Serializer;
 using AddictedProxy.Services.Middleware;
 using InversionOfControl.Model;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Prometheus;
 
 #endregion
@@ -45,15 +41,14 @@ public class BootstrapController : IBootstrap, IBootstrapApp
                 .AllowAnyHeader()
                 .AllowCredentials()
                 .WithExposedHeaders("Content-Disposition")
-                .WithExposedHeaders("sentry-trace")
-                .WithExposedHeaders("baggage");
+                .WithExposedHeaders("sentry-trace");
             if (app.ApplicationServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
             {
                 policyBuilder.SetIsOriginAllowed(_ => true);
             }
             else
             {
-                policyBuilder.SetIsOriginAllowed(hostname => hostname.EndsWith(".gestdown.info") || hostname == "gestdown.info" || hostname == "addictedproxy.pages.dev" || hostname.EndsWith(".addictedproxy.pages.dev"));
+                policyBuilder.SetIsOriginAllowed(hostname => hostname.EndsWith(".gestdown.info") || hostname == "gestdown.info" || hostname == "addictedproxy.pages.dev");
             }
         });
 

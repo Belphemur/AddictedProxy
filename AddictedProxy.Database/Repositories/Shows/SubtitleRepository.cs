@@ -5,7 +5,6 @@ using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Tools.Database.Transaction;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 #endregion
 

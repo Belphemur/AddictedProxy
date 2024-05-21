@@ -14,7 +14,6 @@ using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
 using Polly.Timeout;
 using Prometheus;
-using Sentry;
 
 #endregion
 

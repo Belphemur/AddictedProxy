@@ -1,6 +1,4 @@
-﻿using System.IO.Compression;
-using System.Reflection;
-using Compressor.Utils;
+﻿using Compressor.Utils;
 using Microsoft.Extensions.FileProviders;
 using ZstdNet;
 

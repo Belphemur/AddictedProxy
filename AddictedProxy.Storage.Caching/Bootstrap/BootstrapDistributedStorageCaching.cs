@@ -1,6 +1,5 @@
 using AddictedProxy.Storage.Caching.Service;
 using InversionOfControl.Model;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using AddictedProxy.Culture.Extensions;
 
 namespace AddictedProxy.Model.Dto;
 

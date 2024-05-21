@@ -1,5 +1,4 @@
 using FluentAssertions;
-using InversionOfControl.Model;
 using InversionOfControl.Model.Factory;
 using InversionOfControl.Service.Bootstrap;
 using InversionOfControl.Tests.Mock;

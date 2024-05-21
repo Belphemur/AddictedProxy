@@ -1,14 +1,12 @@
 #region
 
 using System.Net;
-using System.Net.Http.Headers;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Service.Exception;
 using AddictedProxy.Upstream.Service.Performance;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
-using Prometheus;
 
 #endregion
 

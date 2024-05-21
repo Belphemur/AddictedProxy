@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
 using OpenTelemetry.Trace;
-using Performance.Model;
-using Status = OpenTelemetry.Trace.Status;
 
 namespace Performance.Model.OpenTelemetry;
 

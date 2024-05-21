@@ -4,10 +4,7 @@ using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Provider.ShowInfo;
 using AddictedProxy.Utils;
 using Performance.Service;
-using TvMovieDatabaseClient.Model.Mapping;
-using TvMovieDatabaseClient.Model.Show;
 using TvMovieDatabaseClient.Model.Show.Search;
-using TvMovieDatabaseClient.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
 

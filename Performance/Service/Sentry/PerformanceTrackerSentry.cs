@@ -1,5 +1,4 @@
 using Performance.Model.Sentry;
-using Sentry;
 
 namespace Performance.Service.Sentry;
 
@@ -42,6 +41,7 @@ public class PerformanceTrackerSentry : IPerformanceTracker, IDisposable
                 {
                     _sentryScope = SentrySdk.PushScope();
                     var transaction = SentrySdk.StartTransaction(operation, description);
+                    
                     SentrySdk.ConfigureScope(scope => { scope.Transaction = transaction; });
                     span = transaction;
                     _currentSpan = new SpanSentry(span, null);

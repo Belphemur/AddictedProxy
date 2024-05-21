@@ -2,7 +2,6 @@
 
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Migration;
-using AddictedProxy.Database.Model.Shared;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
 
