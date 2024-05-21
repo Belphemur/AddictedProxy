@@ -1,11 +1,8 @@
 using InversionOfControl.Model;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Performance.Model;
 using Performance.Service;
-using Performance.Service.OpenTelemetry;
-using Performance.Service.Sentry;
 
 namespace Performance.Bootstrap;
 
@@ -13,7 +10,7 @@ public class BootstrapPerformanceSentry : IBootstrapConditional
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<IPerformanceTracker, PerformanceTrackerSentry>();
+        services.AddSingleton<IPerformanceTracker, PerformanceTrackerSentryUpdated>();
 
     }
 
