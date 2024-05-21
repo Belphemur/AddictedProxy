@@ -2,6 +2,7 @@
 
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
+using System.Text.RegularExpressions;
 using AddictedProxy.Controllers.Rest.Serializer;
 using AddictedProxy.Services.Middleware;
 using InversionOfControl.Model;
@@ -11,7 +12,7 @@ using Prometheus;
 
 namespace AddictedProxy.Controllers.Bootstrap;
 
-public class BootstrapController : IBootstrap, IBootstrapApp
+public partial class BootstrapController : IBootstrap, IBootstrapApp
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
@@ -40,8 +41,10 @@ public class BootstrapController : IBootstrap, IBootstrapApp
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials()
+                .SetIsOriginAllowedToAllowWildcardSubdomains()
                 .WithExposedHeaders("Content-Disposition")
-                .WithExposedHeaders("sentry-trace");
+                .WithExposedHeaders("sentry-trace")
+                .WithExposedHeaders("baggage");
             if (app.ApplicationServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment())
             {
                 policyBuilder.SetIsOriginAllowed(_ => true);
@@ -58,4 +61,8 @@ public class BootstrapController : IBootstrap, IBootstrapApp
         app.UseSentryTracing();
         app.UseAuthorization();
     }
+    
+
+    [GeneratedRegex(@"^(https:\/\/(gestdown\.info|addictedproxy\.pages\.dev|dev\.addictedproxy\.pages\.dev)|.*\.gestdown\.info)$")]
+    private static partial Regex CorsOriginRegex();
 }

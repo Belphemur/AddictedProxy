@@ -4,6 +4,9 @@ using InversionOfControl.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+#if !DEBUG
+using OpenTelemetry.Exporter;
+#endif
 using OpenTelemetry.Resources;
 using Prometheus;
 using Performance.Service;
