@@ -51,7 +51,7 @@ public partial class BootstrapController : IBootstrap, IBootstrapApp
             }
             else
             {
-                policyBuilder.SetIsOriginAllowed(hostname => hostname.EndsWith(".gestdown.info") || hostname == "gestdown.info" || hostname == "addictedproxy.pages.dev");
+                policyBuilder.SetIsOriginAllowed(hostname => CorsOriginRegex().IsMatch(hostname));
             }
         });
 
