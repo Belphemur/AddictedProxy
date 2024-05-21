@@ -19,6 +19,7 @@ using InversionOfControl.Service.Bootstrap;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Performance.Bootstrap;
 using Prometheus;
 using TvMovieDatabaseClient.Bootstrap;
 
@@ -62,7 +63,7 @@ var currentAssemblies = new[]
     typeof(BootstrapDatabase).Assembly,
     typeof(BootstrapCompressor).Assembly,
     typeof(BootstrapAddictedServices).Assembly,
-    typeof(BootstrapPerformance).Assembly,
+    typeof(BootstrapPerformanceSentry).Assembly,
     typeof(BootstrapStatsPopularityShow).Assembly,
     typeof(BootstrapTMDB).Assembly,
     typeof(BootstrapRedisCaching).Assembly,
