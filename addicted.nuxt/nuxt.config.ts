@@ -43,6 +43,9 @@ export default defineNuxtConfig({
                 clientUrl: process.env.APP_API_PATH,
                 serverUrl: process.env.APP_SERVER_PATH,
             },
+            cloudflare: {
+              analyticToken: process.env.APP_CLOUDFLARE_ANALYTIC_TOKEN
+            },
             matomo: {
                 url: process.env.APP_MATOMO
             },
