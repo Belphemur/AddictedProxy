@@ -1,3 +1,16 @@
+## [4.20.20](https://github.com/Belphemur/AddictedProxy/compare/v4.20.19...v4.20.20) (2024-05-22)
+
+
+### Performance improvements
+
+* **privacy:** update privacy policy ([28c33c3](https://github.com/Belphemur/AddictedProxy/commit/28c33c3f3f51aa00f6316c5a1c763b0b5fcad042))
+* **websocket:** let's the lib call start when needed ([32351c5](https://github.com/Belphemur/AddictedProxy/commit/32351c5f69699efdda6dea4c81ee49e88508d5e6))
+
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.6.7 ([e86c743](https://github.com/Belphemur/AddictedProxy/commit/e86c74397fd5e99e56a84975f1a910a53010df89))
+
 ## [4.20.19](https://github.com/Belphemur/AddictedProxy/compare/v4.20.18...v4.20.19) (2024-05-22)
 
 
