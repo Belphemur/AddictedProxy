@@ -2,13 +2,12 @@ import {HubConnection, HubConnectionBuilder, LogLevel} from "@microsoft/signalr"
 import type {EpisodeWithSubtitlesDto, ShowDto} from "~/composables/api/data-contracts";
 import {getApiServerUrl} from "~/composables/rest/api";
 
-
+let _connection: HubConnection;
 
 export function useRefreshHub() {
-    let started = false;
-    let connection: HubConnection;
+
     function getConnection() : HubConnection {
-        return connection ??= new HubConnectionBuilder()
+        return _connection ??= new HubConnectionBuilder()
             // @ts-ignore
             .withUrl(getApiServerUrl() + "/refresh")
             .configureLogging(LogLevel.Information)
@@ -17,23 +16,26 @@ export function useRefreshHub() {
             .build();
     }
 
-    async function start() {
-        if (started) return;
+    async function EnsureConnected() {
+        const conn = getConnection();
+        if (conn.state == "Connected") return;
         try {
-            await getConnection().start();
+            await conn.start();
             console.log("SignalR Connected.");
-            started = true;
         } catch (err) {
             console.log(err);
-            setTimeout(start, 5000);
+            setTimeout(EnsureConnected, 5000);
         }
     }
 
-    function sendRefreshAsync(showId: string) {
-        return getConnection().invoke("RefreshShow", showId);
+    async function sendRefreshAsync(showId: string) {
+        await EnsureConnected();
+        await getConnection().invoke("RefreshShow", showId);
     }
 
-    function getEpisodes(showId: string, language: string, season: number) {
+    async function getEpisodes(showId: string, language: string, season: number) {
+        await EnsureConnected();
+
         return new Promise<EpisodeWithSubtitlesDto[]>((resolve, reject) => {
             let episodes: Array<EpisodeWithSubtitlesDto> = [];
             const subscription = getConnection().stream<EpisodeWithSubtitlesDto>("GetEpisodes", showId, language, season).subscribe({
@@ -53,8 +55,9 @@ export function useRefreshHub() {
         });
     }
 
-    function unsubscribeShowAsync(showId: string) {
-        return getConnection().invoke("UnsubscribeRefreshShow", showId);
+    async function unsubscribeShowAsync(showId: string) {
+        await EnsureConnected();
+        await getConnection().invoke("UnsubscribeRefreshShow", showId);
     }
 
     function offProgress(handler: ProgressHandler) {
@@ -73,7 +76,7 @@ export function useRefreshHub() {
         getConnection().off("Done", handler);
     }
 
-    return {start, sendRefreshAsync, unsubscribeShowAsync, onProgress, offProgress, onDone, offDone, getEpisodes};
+    return {sendRefreshAsync, unsubscribeShowAsync, onProgress, offProgress, onDone, offDone, getEpisodes};
 }
 
 export interface Progress {
