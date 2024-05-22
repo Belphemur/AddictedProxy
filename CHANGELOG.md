@@ -1,3 +1,10 @@
+## [4.20.19](https://github.com/Belphemur/AddictedProxy/compare/v4.20.18...v4.20.19) (2024-05-22)
+
+
+### Performance improvements
+
+* **websocket:** let's the lib call start when needed ([ea4aae4](https://github.com/Belphemur/AddictedProxy/commit/ea4aae40275205084fb3b76b9bb1479265a86c9a))
+
 ## [4.20.18](https://github.com/Belphemur/AddictedProxy/compare/v4.20.17...v4.20.18) (2024-05-21)
 
 
