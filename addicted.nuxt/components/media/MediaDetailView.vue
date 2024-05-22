@@ -65,7 +65,6 @@ async function loadShowData() {
 }
 
 const {
-  start,
   sendRefreshAsync,
   unsubscribeShowAsync,
   onProgress,
@@ -119,7 +118,6 @@ async function loadMediaDetails() {
 
 
 const refreshShow = async () => {
-  await start();
   refreshingProgress.value = 0;
   await sendRefreshAsync(props.showId);
 };
