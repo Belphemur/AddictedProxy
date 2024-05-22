@@ -1,3 +1,10 @@
+## [4.20.21](https://github.com/Belphemur/AddictedProxy/compare/v4.20.20...v4.20.21) (2024-05-22)
+
+
+### Performance improvements
+
+* **cloudflare:** add beacon for cloudflare ([6286a5d](https://github.com/Belphemur/AddictedProxy/commit/6286a5de431a5b44688ca9fd7a6a4a6465deb570))
+
 ## [4.20.20](https://github.com/Belphemur/AddictedProxy/compare/v4.20.19...v4.20.20) (2024-05-22)
 
 
