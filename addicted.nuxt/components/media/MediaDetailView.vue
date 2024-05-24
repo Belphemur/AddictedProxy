@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import MediaDetails from "@/components/media/MediaDetails.vue";
-import {ref, onUnmounted} from "vue";
+import {onUnmounted, ref} from "vue";
 import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
 import type {DoneHandler, ProgressHandler} from "~/composables/hub/RefreshHub";
-import type {EpisodeWithSubtitlesDto, MediaDetailsDto} from "~/composables/api/data-contracts";
-import {useMedia, useShows} from "~/composables/rest/api";
 import {useRefreshHub} from "~/composables/hub/RefreshHub";
+import type {EpisodeWithSubtitlesDto, MediaDetailsDto} from "~/composables/api/data-contracts";
+import {useMedia, useShows, useSubtitles} from "~/composables/rest/api";
+import SubtitleTypeChooser from "~/components/media/Download/SubtitleTypeChooser.vue";
+import type {SubtitleType} from "~/composables/dto/SubtitleType";
+import JSZip from "jszip";
+import {trim} from "~/composables/utils/trim";
 
 
 export interface Props {
@@ -18,9 +22,12 @@ const showsApi = useShows();
 let loadingEpisodes = ref(false);
 let episodes = ref<EpisodeWithSubtitlesDto[] | null>([]);
 const refreshingProgress = ref<number | null>(null);
+const downloadingProgress = ref<number | null>(null);
+const downloadingInProgress = ref<boolean>(false);
 const language = useLanguage();
 const currentSeason = ref<number | undefined>(undefined);
 const mediaInfo = ref<MediaDetailsDto>();
+const subtitlesApi = useSubtitles();
 
 await loadMediaDetails();
 
@@ -147,6 +154,40 @@ const formattedProgress = computed(() => {
   }
   return `${keyword}: (${refreshingProgress.value}%)`;
 });
+
+const downloadSeasonSubtitles = async (type: SubtitleType) => {
+  downloadingInProgress.value = true;
+  const subtitles = episodes.value!.flatMap((e) => e.subtitles).filter((s) => type == "normal" ? !s?.hearingImpaired : s?.hearingImpaired);
+  let downloaded = 0;
+  const subtitleResponses = subtitles.map(async (s) => {
+    const response = await subtitlesApi.downloadSubtitle(s!.subtitleId);
+    const header = response.headers.get("Content-Disposition");
+    const parts = header!.split(";");
+    const filename = trim(parts[1].split("=")[1] ?? `${s?.subtitleId}.srt`, '"');
+    const data = await response.blob();
+    downloaded++;
+    downloadingProgress.value = downloaded / subtitles.length * 100;
+    return {filename, data};
+  });
+  const responses = await Promise.all(subtitleResponses);
+
+  const zip = new JSZip();
+  responses.forEach((r) => {
+    zip.file(r.filename, r.data);
+  });
+  downloadingProgress.value = 100;
+
+  const content = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(content);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${mediaInfo.value?.media?.name} - Season ${currentSeason.value} - ${type}.zip`;
+  link.click();
+
+  downloadingInProgress.value = false;
+  downloadingProgress.value = null;
+};
 </script>
 
 <template>
@@ -169,6 +210,19 @@ const formattedProgress = computed(() => {
         </v-col>
       </v-col>
     </v-row>
+    <v-row justify="center" v-if="downloadingProgress != null">
+      <v-col cols="10">
+        <v-col cols="11" align-self="center">
+          <v-progress-linear
+              v-model="downloadingProgress"
+              color="blue"
+              height="18"
+          >
+            Downloading subtitles
+          </v-progress-linear>
+        </v-col>
+      </v-col>
+    </v-row>
     <v-row justify="center">
       <v-col cols="12">
         <v-skeleton-loader type="card" :loading="loadingEpisodes">
@@ -180,12 +234,27 @@ const formattedProgress = computed(() => {
                   class="text-none mb-4"
                   color="indigo-lighten-3"
                   @click="refreshShow"
-                  :disabled="refreshingProgress != null"
+                  :disabled="refreshingProgress != null || downloadingInProgress"
               >Refresh
                 <v-tooltip
                     activator="parent"
                     location="end"
                 >Fetch from Addic7ed
+                </v-tooltip>
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                  prepend-icon="mdi-download"
+                  class="text-none mb-4"
+                  color="indigo-lighten-3"
+                  :disabled="refreshingProgress != null  || downloadingInProgress"
+              >
+                <SubtitleTypeChooser @selected="downloadSeasonSubtitles"/>
+                Download season
+                <v-tooltip
+                    activator="parent"
+                    location="end"
+                >Download all subtitles of the season as ZIP file
                 </v-tooltip>
               </v-btn>
             </v-card-actions>
