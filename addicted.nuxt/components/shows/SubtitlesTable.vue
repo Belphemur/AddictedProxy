@@ -73,6 +73,7 @@ import type {EpisodeWithSubtitlesDto, SubtitleDto} from "~/composables/api/data-
 import {useSubtitles} from "~/composables/rest/api";
 import type {SubtitleWithEpisode} from "~/composables/dto/SubtitleWithEpisode";
 import {forEach} from "lodash-es";
+import {trim} from "~/composables/utils/trim";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto> | null;
@@ -124,19 +125,6 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
     sub.downloadCount!++;
     currentlyDownloading.value.delete(sub.subtitleId!);
   };
-
-  const trim = function (str: string, ch: string) {
-    var start = 0,
-        end = str.length;
-
-    while(start < end && str[start] === ch)
-      ++start;
-
-    while(end > start && str[end - 1] === ch)
-      --end;
-
-    return (start > 0 || end < str.length) ? str.substring(start, end) : str;
-  }
 
   const response = await subtitlesApi.downloadSubtitle(sub.subtitleId!);
   const header = response.headers.get("Content-Disposition");

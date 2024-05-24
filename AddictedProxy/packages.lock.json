@@ -148,15 +148,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.304.3",
-        "contentHash": "/1fTpV8isf8e/NHDrZ68W841sK81j6ulAuHo5hgjtgrPb5ztcBT1uzsruSNRfI8tVv4uEToAtyB1uhfwpUbRsA=="
+        "resolved": "3.7.304.5",
+        "contentHash": "Tp6Bvbok1Ev55tCRlkTRzxj+QyfyXiFG3noptLtorZEF9Gn0jvdl2ixvkGGVyZFagd0kyJDdvyrfcmPvG49RwA=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.308.2",
-        "contentHash": "TvIN17FYPRLEeAyfKhYFM8gIWZpLO8/BX6Tbtl/NVRr/HCvzy+yc9QftaJsfZN0TLsw0qilvhh/hzRM0cMMaTg==",
+        "resolved": "3.7.308.4",
+        "contentHash": "i0ziM1Wtp9aZ7Rz96L3sjxo9H8ce77Exxop/8UbJdm0FPvZEHXalV1SygF9tFw+jtq/qSpNMNYT8kIsYTw5/UQ==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.304.3, 4.0.0)"
+          "AWSSDK.Core": "[3.7.304.5, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
