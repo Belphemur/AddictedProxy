@@ -1,3 +1,18 @@
+## [4.21.0](https://github.com/Belphemur/AddictedProxy/compare/v4.20.21...v4.21.0) (2024-05-24)
+
+
+### Bug Fixes
+
+* **deps:** update sentry-javascript monorepo to v8.3.0 ([943f0b6](https://github.com/Belphemur/AddictedProxy/commit/943f0b64d9d6972b4491cc8313a2a27f1226d271))
+* **deps:** update sentry-javascript monorepo to v8.4.0 ([20d46b7](https://github.com/Belphemur/AddictedProxy/commit/20d46b7c46c1c0d6efcf597ddeac071e38dd6c98))
+* **subtitle::download:** be sure the scene is present in the file name and not the version ([11d5b3e](https://github.com/Belphemur/AddictedProxy/commit/11d5b3eae0ec8f7e8155a64279a4f3e2aa0ecbdb))
+
+
+### Features
+
+* **bulk:** add bulk download for a full season ([6b6987f](https://github.com/Belphemur/AddictedProxy/commit/6b6987fb329d5ad3b21eaee9d28b95c6dc701cff)), closes [#142](https://github.com/Belphemur/AddictedProxy/issues/142)
+* **subtitle:** add version of subtitle in the path of the file ([a855b97](https://github.com/Belphemur/AddictedProxy/commit/a855b97385747197d9e6df68a323ba52f85d09f9))
+
 ## [4.20.21](https://github.com/Belphemur/AddictedProxy/compare/v4.20.20...v4.20.21) (2024-05-22)
 
 
