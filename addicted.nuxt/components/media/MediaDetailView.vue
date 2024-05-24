@@ -8,8 +8,8 @@ import type {EpisodeWithSubtitlesDto, MediaDetailsDto} from "~/composables/api/d
 import {useMedia, useShows, useSubtitles} from "~/composables/rest/api";
 import SubtitleTypeChooser from "~/components/media/Download/SubtitleTypeChooser.vue";
 import type {SubtitleType} from "~/composables/dto/SubtitleType";
-import JSZip from "jszip";
 import {trim} from "~/composables/utils/trim";
+import {downloadZip} from "client-zip";
 
 
 export interface Props {
@@ -164,21 +164,18 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
     const header = response.headers.get("Content-Disposition");
     const parts = header!.split(";");
     const filename = trim(parts[1].split("=")[1] ?? `${s?.subtitleId}.srt`, '"');
-    const data = await response.blob();
     downloaded++;
     downloadingProgress.value = downloaded / subtitles.length * 100;
-    return {filename, data};
+    return {name: filename, input: response};
   });
   const responses = await Promise.all(subtitleResponses);
 
-  const zip = new JSZip();
-  responses.forEach((r) => {
-    zip.file(r.filename, r.data);
-  });
+  const zip = await downloadZip(responses, {
+    buffersAreUTF8: true
+  }).blob();
   downloadingProgress.value = 100;
 
-  const content = await zip.generateAsync({ type: 'blob' });
-  const url = URL.createObjectURL(content);
+  const url = URL.createObjectURL(zip);
 
   const link = document.createElement('a');
   link.href = url;
@@ -193,7 +190,7 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
 <template>
   <div>
     <v-row v-if="mediaInfo?.details != null">
-      <v-col cols="12" offset="0" lg="8" offset-lg="2" >
+      <v-col cols="12" offset="0" lg="8" offset-lg="2">
         <media-details :details="mediaInfo" v-model="currentSeason"/>
       </v-col>
     </v-row>
