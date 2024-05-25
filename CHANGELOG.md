@@ -1,3 +1,16 @@
+## [4.22.1](https://github.com/Belphemur/AddictedProxy/compare/v4.22.0...v4.22.1) (2024-05-25)
+
+
+### Performance improvements
+
+* **sentry:** add sentry for the nitro server ([276b958](https://github.com/Belphemur/AddictedProxy/commit/276b958227319707a8f9476593cb551024752247))
+* **sentry:** remove sentry profiling server ([1816d68](https://github.com/Belphemur/AddictedProxy/commit/1816d68af0727b21633c38aaa69dfad80840aa57))
+
+
+### Bug Fixes
+
+* **sentry:** set tracing propagation correctly ([2628f80](https://github.com/Belphemur/AddictedProxy/commit/2628f80dc08d16e67f08c15323131ddddf7fc166))
+
 ## [4.22.0](https://github.com/Belphemur/AddictedProxy/compare/v4.21.0...v4.22.0) (2024-05-25)
 
 
