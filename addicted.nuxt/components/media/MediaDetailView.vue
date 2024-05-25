@@ -10,6 +10,7 @@ import SubtitleTypeChooser from "~/components/media/Download/SubtitleTypeChooser
 import type {SubtitleType} from "~/composables/dto/SubtitleType";
 import {trim} from "~/composables/utils/trim";
 import {downloadZip} from "client-zip";
+import {mevent} from "~/composables/data/event";
 
 
 export interface Props {
@@ -157,7 +158,8 @@ const formattedProgress = computed(() => {
 
 const downloadSeasonSubtitles = async (type: SubtitleType) => {
   downloadingInProgress.value = true;
-  const subtitles = episodes.value!.flatMap((e) => e.subtitles).filter((s) => type == "normal" ? !s?.hearingImpaired : s?.hearingImpaired);
+  mevent("bulk-download-subtitles", { show: mediaInfo.value?.media?.name, season: currentSeason.value, type: type });
+  const subtitles = episodes.value!.flatMap((e) => e.subtitles).filter((s) => type == "regular" ? !s?.hearingImpaired : s?.hearingImpaired);
   let downloaded = 0;
   const subtitleResponses = subtitles.map(async (s) => {
     const response = await subtitlesApi.downloadSubtitle(s!.subtitleId);

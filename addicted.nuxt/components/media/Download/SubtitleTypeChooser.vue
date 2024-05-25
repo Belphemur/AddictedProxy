@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import * as vue from "vue";
 import type {SubtitleType} from "~/composables/dto/SubtitleType";
+import {useSubtitleType} from "~/stores/subtitleType";
 
-const dialog = ref<SubtitleType>("normal");
-
+const subtitleType = useSubtitleType();
 // eslint-disable-next-line no-undef
 const emit = defineEmits<{
   (e: "selected", type: SubtitleType): void,
 }>();
 
 const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
-  if(dialog.value == null) return;
+  if (subtitleType.type == null) return;
   dialogRef.value = false;
-  emit("selected", dialog.value!);
+  emit("selected", subtitleType.type);
 }
 
 </script>
@@ -32,24 +32,25 @@ const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
 
         <v-card-text class="px-4" style="height: 300px;">
           <v-radio-group
-              v-model="dialog"
+              :model-value="subtitleType.type"
+              @update:model-value="(v) => subtitleType.type = v as SubtitleType"
               column
           >
             <v-radio
-                value="normal"
+                value="regular"
             >
               <template v-slot:label>
-                <v-icon>mdi-subtitles</v-icon>
-                Normal
+                <v-icon start >mdi-subtitles</v-icon>
+                Regular
               </template>
             </v-radio>
 
             <v-radio
-                value="hearing_impared"
+                value="hearing_impaired"
             >
               <template v-slot:label>
-                <v-icon>mdi-ear-hearing-off</v-icon>
-                Hearing Impaired
+                <v-icon start >mdi-ear-hearing-off</v-icon>
+                Additional audio descriptions
               </template>
             </v-radio>
           </v-radio-group>
