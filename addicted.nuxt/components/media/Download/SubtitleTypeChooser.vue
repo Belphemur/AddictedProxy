@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import * as vue from "vue";
 import type {SubtitleType} from "~/composables/dto/SubtitleType";
+import {useSubtitleType} from "~/stores/subtitleType";
 
-const dialog = ref<SubtitleType>("normal");
-
+const subtitleType = useSubtitleType();
 // eslint-disable-next-line no-undef
 const emit = defineEmits<{
   (e: "selected", type: SubtitleType): void,
 }>();
 
 const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
-  if(dialog.value == null) return;
+  if (subtitleType.type == null) return;
   dialogRef.value = false;
-  emit("selected", dialog.value!);
+  emit("selected", subtitleType.type);
 }
 
 </script>
@@ -32,7 +32,8 @@ const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
 
         <v-card-text class="px-4" style="height: 300px;">
           <v-radio-group
-              v-model="dialog"
+              :model-value="subtitleType.type"
+              @update:model-value="(v) => subtitleType.type = v as SubtitleType"
               column
           >
             <v-radio
