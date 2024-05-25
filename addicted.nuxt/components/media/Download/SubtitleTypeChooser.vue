@@ -40,8 +40,8 @@ const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
                 value="normal"
             >
               <template v-slot:label>
-                <v-icon>mdi-subtitles</v-icon>
-                Normal
+                <v-icon start >mdi-subtitles</v-icon>
+                Regular
               </template>
             </v-radio>
 
@@ -49,8 +49,8 @@ const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
                 value="hearing_impared"
             >
               <template v-slot:label>
-                <v-icon>mdi-ear-hearing-off</v-icon>
-                Hearing Impaired
+                <v-icon start >mdi-ear-hearing-off</v-icon>
+                Additional audio descriptions
               </template>
             </v-radio>
           </v-radio-group>
