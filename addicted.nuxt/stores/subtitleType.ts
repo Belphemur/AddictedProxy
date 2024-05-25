@@ -2,7 +2,7 @@ import type {SubtitleType} from "~/composables/dto/SubtitleType";
 
 export const useSubtitleType = defineStore('subtitleType', {
     state: () => ({
-        type: 'normal' as SubtitleType,
+        type: 'regular' as SubtitleType,
     }),
     persist: true
 })

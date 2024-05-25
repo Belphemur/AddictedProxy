@@ -159,7 +159,7 @@ const formattedProgress = computed(() => {
 const downloadSeasonSubtitles = async (type: SubtitleType) => {
   downloadingInProgress.value = true;
   mevent("bulk-download-subtitles", { show: mediaInfo.value?.media?.name, season: currentSeason.value, type: type });
-  const subtitles = episodes.value!.flatMap((e) => e.subtitles).filter((s) => type == "normal" ? !s?.hearingImpaired : s?.hearingImpaired);
+  const subtitles = episodes.value!.flatMap((e) => e.subtitles).filter((s) => type == "regular" ? !s?.hearingImpaired : s?.hearingImpaired);
   let downloaded = 0;
   const subtitleResponses = subtitles.map(async (s) => {
     const response = await subtitlesApi.downloadSubtitle(s!.subtitleId);

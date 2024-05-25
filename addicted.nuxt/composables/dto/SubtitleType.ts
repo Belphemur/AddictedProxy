@@ -1,1 +1,1 @@
-export type SubtitleType = "normal" | "hearing_impaired";
+export type SubtitleType = "regular" | "hearing_impaired";

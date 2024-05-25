@@ -37,7 +37,7 @@ const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
               column
           >
             <v-radio
-                value="normal"
+                value="regular"
             >
               <template v-slot:label>
                 <v-icon start >mdi-subtitles</v-icon>
@@ -46,7 +46,7 @@ const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
             </v-radio>
 
             <v-radio
-                value="hearing_impared"
+                value="hearing_impaired"
             >
               <template v-slot:label>
                 <v-icon start >mdi-ear-hearing-off</v-icon>
