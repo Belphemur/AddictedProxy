@@ -33,7 +33,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         replaysSessionSampleRate: config.public.sentry.clientConfig.replaysSessionSampleRate,
         replaysOnErrorSampleRate: config.public.sentry.clientConfig.replaysOnErrorSampleRate,
         profilesSampleRate: config.public.sentry.serverConfig.profilesSampleRate,
-        tracePropagationTargets: ['localhost', config.public.url],
+        tracePropagationTargets: ['localhost', config.public.api.clientUrl],
     })
 
     return {
