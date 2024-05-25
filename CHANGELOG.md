@@ -1,3 +1,10 @@
+## [4.22.0](https://github.com/Belphemur/AddictedProxy/compare/v4.21.0...v4.22.0) (2024-05-25)
+
+
+### Features
+
+* **bulk:** save the choice of the user for the type of subtitle ([c3d98c7](https://github.com/Belphemur/AddictedProxy/commit/c3d98c7d0e4314556fbbfcba2807034d1445ef5d))
+
 ## [4.21.0](https://github.com/Belphemur/AddictedProxy/compare/v4.20.21...v4.21.0) (2024-05-24)
 
 
