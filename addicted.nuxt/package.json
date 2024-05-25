@@ -16,6 +16,8 @@
     "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@pinia/nuxt": "^0.5.1",
+    "@sentry/node": "^8.4.0",
+    "@sentry/profiling-node": "^8.4.0",
     "@sentry/vite-plugin": "^2.16.1",
     "@sentry/vue": "^8.0.0",
     "@types/node": "^20.12.12",
@@ -29,7 +31,6 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "@microsoft/signalr": "^8.0.0",
-    "@sentry/profiling-node": "^8.0.0",
     "bufferutil": "^4.0.8",
     "client-zip": "^2.4.5",
     "roboto-fontface": "^0.10.0",

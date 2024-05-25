@@ -14,7 +14,10 @@ export default defineNuxtPlugin((nuxtApp) => {
         environment: config.public.sentry.config.environment,
         integrations: [
             Sentry.browserTracingIntegration({router, enableInp: true, enableHTTPTimings: true}),
-            Sentry.replayIntegration(),
+            Sentry.replayIntegration({
+                maskAllText: false,
+                blockAllMedia: false,
+            }),
             Sentry.browserProfilingIntegration(),
             Sentry.breadcrumbsIntegration()
         ],
@@ -29,7 +32,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         // plus for 100% of sessions with an error
         replaysSessionSampleRate: config.public.sentry.clientConfig.replaysSessionSampleRate,
         replaysOnErrorSampleRate: config.public.sentry.clientConfig.replaysOnErrorSampleRate,
-        profilesSampleRate: config.public.sentry.serverConfig.profilesSampleRate
+        profilesSampleRate: config.public.sentry.serverConfig.profilesSampleRate,
+        tracePropagationTargets: ['localhost', config.public.url],
     })
 
     return {
