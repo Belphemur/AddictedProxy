@@ -1,3 +1,10 @@
+## [4.22.2](https://github.com/Belphemur/AddictedProxy/compare/v4.22.1...v4.22.2) (2024-05-27)
+
+
+### Bug Fixes
+
+* sitemap access from front-end ([22daa40](https://github.com/Belphemur/AddictedProxy/commit/22daa40240b8eb984a4d356c8937cae50666b3f1))
+
 ## [4.22.1](https://github.com/Belphemur/AddictedProxy/compare/v4.22.0...v4.22.1) (2024-05-25)
 
 
