@@ -96,6 +96,16 @@ export default defineNuxtConfig({
     pinia: {
         autoImports: ['defineStore', 'acceptHMRUpdate'],
     },
+    proxy: {
+        options: [
+            {
+                target: process.env.APP_SERVER_PATH,
+                pathFilter: ['/sitemap/**'],
+                pathRewrite: {
+                }
+            }
+        ]
+    },
     modules: [
         '@nuxtjs/google-fonts',
         '@pinia/nuxt',
@@ -103,6 +113,7 @@ export default defineNuxtConfig({
         '@nuxtjs/device',
         'nuxt-lodash',
         '@nuxt/image',
+        'nuxt-proxy-request',
         // @ts-ignore
         // this adds the vuetify vite plugin
         // also produces type errors in the current beta release

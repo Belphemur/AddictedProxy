@@ -22,6 +22,7 @@
     "@types/webfontloader": "^1.6.38",
     "nuxt": "^3.11.2",
     "nuxt-lodash": "^2.5.3",
+    "nuxt-proxy-request": "^1.10.0",
     "swagger-typescript-api": "^13.0.3",
     "typescript": "^5.4.5",
     "vite-plugin-vuetify": "^2.0.3"
