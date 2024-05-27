@@ -1,3 +1,10 @@
+## [4.22.3](https://github.com/Belphemur/AddictedProxy/compare/v4.22.2...v4.22.3) (2024-05-27)
+
+
+### Bug Fixes
+
+* **sitemap:** add proper styling ([4780667](https://github.com/Belphemur/AddictedProxy/commit/4780667e3ff8c0e6cb8dc56db60854b8ab99d553))
+
 ## [4.22.2](https://github.com/Belphemur/AddictedProxy/compare/v4.22.1...v4.22.2) (2024-05-27)
 
 
