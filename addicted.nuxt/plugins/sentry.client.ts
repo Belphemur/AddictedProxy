@@ -2,16 +2,16 @@ import {defineNuxtPlugin, useRuntimeConfig} from '#app'
 import * as Sentry from '@sentry/vue'
 
 export default defineNuxtPlugin((nuxtApp) => {
-    const config = useRuntimeConfig()
+    const {public: {sentry, api}} = useRuntimeConfig()
     const router = useRouter();
 
     Sentry.init({
-        enabled: config.public.sentry.config.enabled,
+        enabled: sentry.config.enabled,
         app: nuxtApp.vueApp,
         autoSessionTracking: true,
         debug: false,
-        dsn: config.public.sentry.config.dsn,
-        environment: config.public.sentry.config.environment,
+        dsn: sentry.config.dsn,
+        environment: sentry.config.environment,
         integrations: [
             Sentry.browserTracingIntegration({router, enableInp: true, enableHTTPTimings: true}),
             Sentry.replayIntegration({
@@ -26,14 +26,14 @@ export default defineNuxtPlugin((nuxtApp) => {
         // Set tracesSampleRate to 1.0 to capture 100%
         // of transactions for performance monitoring.
         // We recommend adjusting this value in production
-        tracesSampleRate: config.public.sentry.serverConfig.profilesSampleRate,
+        tracesSampleRate: sentry.serverConfig.profilesSampleRate,
 
         // Capture Replay for 10% of all sessions,
         // plus for 100% of sessions with an error
-        replaysSessionSampleRate: config.public.sentry.clientConfig.replaysSessionSampleRate,
-        replaysOnErrorSampleRate: config.public.sentry.clientConfig.replaysOnErrorSampleRate,
-        profilesSampleRate: config.public.sentry.serverConfig.profilesSampleRate,
-        tracePropagationTargets: ['localhost', config.public.api.clientUrl],
+        replaysSessionSampleRate: sentry.clientConfig.replaysSessionSampleRate,
+        replaysOnErrorSampleRate: sentry.clientConfig.replaysOnErrorSampleRate,
+        profilesSampleRate: sentry.serverConfig.profilesSampleRate,
+        tracePropagationTargets: ['localhost', api.clientUrl],
     })
 
     return {
