@@ -3,7 +3,9 @@ using AddictedProxy.Controllers.Rest;
 using AddictedProxy.Culture.Extensions;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using SimpleMvcSitemap;
+using SimpleMvcSitemap.Routing;
 using SimpleMvcSitemap.StyleSheets;
 
 namespace AddictedProxy.Services.Sitemap;
@@ -11,14 +13,14 @@ namespace AddictedProxy.Services.Sitemap;
 public class MediaSitemapIndexConfiguration : SitemapIndexConfiguration<TvShow>
 {
     private readonly IUrlHelper _helper;
-    
 
-    public MediaSitemapIndexConfiguration(IQueryable<TvShow> dataSource, int? currentPage, IUrlHelper helper) : base(dataSource, currentPage)
+
+    public MediaSitemapIndexConfiguration(IQueryable<TvShow> dataSource, int? currentPage, IUrlHelper helper, IOptions<SitemapConfig> sitemapConfig) : base(dataSource, currentPage)
     {
         _helper = helper;
         Size = 500;
-        SitemapStyleSheets = new List<XmlStyleSheet> { new("https://raw.githubusercontent.com/pedroborges/xml-sitemap-stylesheet/master/sitemap.xsl") };
-        SitemapIndexStyleSheets = new List<XmlStyleSheet> { new("https://raw.githubusercontent.com/pedroborges/xml-sitemap-stylesheet/master/sitemap.xsl") };
+        SitemapStyleSheets = new List<XmlStyleSheet> { new($"{sitemapConfig.Value.BaseUrl}/xsl/sitemap.xsl") };
+        SitemapIndexStyleSheets = new List<XmlStyleSheet> { new($"{sitemapConfig.Value.BaseUrl}/xsl/sitemap.xsl") };
     }
 
     public override SitemapIndexNode CreateSitemapIndexNode(int page)
@@ -31,7 +33,7 @@ public class MediaSitemapIndexConfiguration : SitemapIndexConfiguration<TvShow>
         return new SitemapNode($"/shows/{show.UniqueId}/{HttpUtility.UrlEncode(show.Name.ToSlug())}")
         {
             LastModificationDate = show.LastUpdated,
-            ChangeFrequency = show.IsCompleted? ChangeFrequency.Monthly : ChangeFrequency.Daily
+            ChangeFrequency = show.IsCompleted ? ChangeFrequency.Monthly : ChangeFrequency.Daily
         };
     }
 }
