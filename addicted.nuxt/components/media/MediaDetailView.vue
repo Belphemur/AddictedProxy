@@ -11,6 +11,7 @@ import type {SubtitleType} from "~/composables/dto/SubtitleType";
 import {trim} from "~/composables/utils/trim";
 import {downloadZip} from "client-zip";
 import {mevent} from "~/composables/data/event";
+import {filterArray} from "simple-git/dist/src/lib/utils";
 
 
 export interface Props {
@@ -158,19 +159,33 @@ const formattedProgress = computed(() => {
 
 const downloadSeasonSubtitles = async (type: SubtitleType) => {
   downloadingInProgress.value = true;
-  mevent("bulk-download-subtitles", { show: mediaInfo.value?.media?.name, season: currentSeason.value, type: type });
+  mevent("bulk-download-subtitles", {show: mediaInfo.value?.media?.name, season: currentSeason.value, type: type});
   const subtitles = episodes.value!.flatMap((e) => e.subtitles).filter((s) => type == "regular" ? !s?.hearingImpaired : s?.hearingImpaired);
   let downloaded = 0;
   const subtitleResponses = subtitles.map(async (s) => {
-    const response = await subtitlesApi.downloadSubtitle(s!.subtitleId);
-    const header = response.headers.get("Content-Disposition");
-    const parts = header!.split(";");
-    const filename = trim(parts[1].split("=")[1] ?? `${s?.subtitleId}.srt`, '"');
-    downloaded++;
-    downloadingProgress.value = downloaded / subtitles.length * 100;
-    return {name: filename, input: response};
+    try {
+      const response = await subtitlesApi.downloadSubtitle(s!.subtitleId);
+      if (!response.ok) {
+        console.error(`Failed to download subtitle ${s?.subtitleId}`);
+        return null;
+      }
+
+      const header = response.headers.get("Content-Disposition");
+      const parts = header!.split(";");
+      const filename = trim(parts[1].split("=")[1] ?? `${s?.subtitleId}.srt`, '"');
+      downloaded++;
+      downloadingProgress.value = downloaded / subtitles.length * 100;
+      return {name: filename, input: response};
+    } catch (e) {
+      console.error(`Failed to download subtitle ${s?.subtitleId}`, e);
+      return null;
+    }
   });
-  const responses = await Promise.all(subtitleResponses);
+
+  const responses = (await Promise.all(subtitleResponses)).filter((r) => r != null) as {
+    name: string,
+    input: Response
+  }[];
 
   const zip = await downloadZip(responses, {
     buffersAreUTF8: true
