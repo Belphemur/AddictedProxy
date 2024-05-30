@@ -1,6 +1,6 @@
 <template>
   <v-app :style="defaultBackground">
-    <div class="bg-image" :style="backgroundStyles"></div>
+    <div class="bg-image" ></div>
     <default-bar v-on:drawer-clicked="drawer = !drawer"/>
 
     <navigation v-model="drawer" :mobile="isMobile"/>
@@ -18,11 +18,6 @@ import {ref} from "vue";
 const {isMobile} = useDevice();
 
 const drawer = ref<boolean>(!isMobile)
-const img = useImage()
-const backgroundStyles = computed(() => {
-  const imgUrl = img('/img/background.webp', {width: 200} )
-  return { backgroundImage: `url('${imgUrl}')` }
-})
 
 const defaultBackground = {
   background: "none",
@@ -47,5 +42,5 @@ const defaultBackground = {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-}
+  background-image: url('/img/background-small.webp')}
 </style>
