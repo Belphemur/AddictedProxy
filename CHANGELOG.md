@@ -1,3 +1,11 @@
+## [4.22.4](https://github.com/Belphemur/AddictedProxy/compare/v4.22.3...v4.22.4) (2024-05-30)
+
+
+### Bug Fixes
+
+* **bulk:** Avoid issue where one of the subtitle is now unavailable ([98fc710](https://github.com/Belphemur/AddictedProxy/commit/98fc710fb41139e91f4ee8f8ac0742cc405bd951))
+* **deps:** update dependency vuetify to v3.6.8 ([7c6817e](https://github.com/Belphemur/AddictedProxy/commit/7c6817e5539aa45309530493d70d0590ae529857))
+
 ## [4.22.3](https://github.com/Belphemur/AddictedProxy/compare/v4.22.2...v4.22.3) (2024-05-27)
 
 
