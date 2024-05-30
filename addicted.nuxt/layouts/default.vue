@@ -20,7 +20,7 @@ const {isMobile} = useDevice();
 const drawer = ref<boolean>(!isMobile)
 const img = useImage()
 const backgroundStyles = computed(() => {
-  const imgUrl = img('/img/background.webp', {width: 200} )
+  const imgUrl = img('/img/background.webp', {width: 100}, {provider:'ipx'} )
   return { backgroundImage: `url('${imgUrl}')` }
 })
 
