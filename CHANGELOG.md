@@ -1,3 +1,11 @@
+## [4.22.5](https://github.com/Belphemur/AddictedProxy/compare/v4.22.4...v4.22.5) (2024-05-30)
+
+
+### Bug Fixes
+
+* **background:** fix background image size ([8d2829e](https://github.com/Belphemur/AddictedProxy/commit/8d2829ec7900d82ffc362174b7c170f05dc50ad2))
+* **background:** use already resized background ([95975f8](https://github.com/Belphemur/AddictedProxy/commit/95975f8e6ba2dccaabf9b1648eae43f2db6f45e2))
+
 ## [4.22.4](https://github.com/Belphemur/AddictedProxy/compare/v4.22.3...v4.22.4) (2024-05-30)
 
 
