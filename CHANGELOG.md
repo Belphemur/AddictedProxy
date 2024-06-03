@@ -1,3 +1,9 @@
+## [4.22.6](https://github.com/Belphemur/AddictedProxy/compare/v4.22.5...v4.22.6) (2024-06-03)
+
+### Bug Fixes
+
+* **download:bulk:** Make the download count increase ([cd5a79e](https://github.com/Belphemur/AddictedProxy/commit/cd5a79ee1e94c5c1033d09c30ad602415d20ca62))
+
 ## [4.22.5](https://github.com/Belphemur/AddictedProxy/compare/v4.22.4...v4.22.5) (2024-05-30)
 
 
