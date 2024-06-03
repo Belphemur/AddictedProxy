@@ -20,8 +20,8 @@ export interface Props {
 const props = defineProps<Props>();
 const mediaApi = useMedia();
 const showsApi = useShows();
-const loadingEpisodes = ref(false);
-const episodes = ref<EpisodeWithSubtitlesDto[] | null>([]);
+let loadingEpisodes = ref(false);
+let episodes = ref<EpisodeWithSubtitlesDto[] | null>([]);
 const refreshingProgress = ref<number | null>(null);
 const downloadingProgress = ref<number | null>(null);
 const downloadingInProgress = ref<boolean>(false);
@@ -68,8 +68,8 @@ async function loadShowData() {
     watch: [currentSeason, language]
   });
 
-  loadingEpisodes.value = pending.value;
-  episodes.value = data.value;
+  loadingEpisodes = pending;
+  episodes = data;
 }
 
 const {
