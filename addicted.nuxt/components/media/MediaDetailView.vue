@@ -11,7 +11,6 @@ import type {SubtitleType} from "~/composables/dto/SubtitleType";
 import {trim} from "~/composables/utils/trim";
 import {downloadZip} from "client-zip";
 import {mevent} from "~/composables/data/event";
-import {filterArray} from "simple-git/dist/src/lib/utils";
 
 
 export interface Props {
@@ -69,8 +68,8 @@ async function loadShowData() {
     watch: [currentSeason, language]
   });
 
-  loadingEpisodes = pending;
-  episodes = data;
+  loadingEpisodes.value = pending.value;
+  episodes.value = data.value;
 }
 
 const {
