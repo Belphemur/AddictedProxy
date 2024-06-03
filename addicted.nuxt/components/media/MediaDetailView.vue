@@ -21,8 +21,8 @@ export interface Props {
 const props = defineProps<Props>();
 const mediaApi = useMedia();
 const showsApi = useShows();
-let loadingEpisodes = ref(false);
-let episodes = ref<EpisodeWithSubtitlesDto[] | null>([]);
+const loadingEpisodes = ref(false);
+const episodes = ref<EpisodeWithSubtitlesDto[] | null>([]);
 const refreshingProgress = ref<number | null>(null);
 const downloadingProgress = ref<number | null>(null);
 const downloadingInProgress = ref<boolean>(false);
@@ -169,6 +169,8 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
         console.error(`Failed to download subtitle ${s?.subtitleId}`);
         return null;
       }
+
+      s!.downloadCount++;
 
       const header = response.headers.get("Content-Disposition");
       const parts = header!.split(";");
