@@ -1,10 +1,20 @@
 ﻿using AddictedProxy.Image.Model;
+using AddictedProxy.Storage.Caching.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Distributed;
 using SixLabors.ImageSharp.Web.Providers;
 using SixLabors.ImageSharp.Web.Resolvers;
 using TvMovieDatabaseClient.Service;
+using TvMovieDatabaseClient.Service.Model;
+using AddictedProxy.Caching.Extensions;
+using AddictedProxy.Storage.Caching.Service;
+using Microsoft.Extensions.Caching.Distributed;
+using Performance.Service;
+using SixLabors.ImageSharp.Web.Resolvers;
+using TvMovieDatabaseClient.Service;
+using TvMovieDatabaseClient.Service.Model;
+using DistributedCacheExtensions = AddictedProxy.Caching.Extensions.DistributedCacheExtensions;
 
 namespace AddictedProxy.Image.Logic;
 
@@ -13,13 +23,21 @@ public class TmdbImageProvider : IImageProvider
     private const string TmdbImagePrefix = "/tmdb/image/";
     private readonly FormatUtilities _formatUtilities;
     private readonly ITMDBClient _tmdbClient;
-    private readonly IMemoryCache _memoryCache;
+    private readonly IDistributedCache _distributedCache;
+    private readonly ICachedStorageProvider _cachedStorageProvider;
+    private readonly IPerformanceTracker _performanceTracker;
 
-    public TmdbImageProvider(FormatUtilities formatUtilities, ITMDBClient tmdbClient, IMemoryCache memoryCache)
+    public TmdbImageProvider(FormatUtilities formatUtilities,
+        ITMDBClient tmdbClient,
+        IDistributedCache distributedCache, 
+        ICachedStorageProvider cachedStorageProvider,
+        IPerformanceTracker performanceTracker)
     {
         _formatUtilities = formatUtilities;
         _tmdbClient = tmdbClient;
-        _memoryCache = memoryCache;
+        _distributedCache = distributedCache;
+        _cachedStorageProvider = cachedStorageProvider;
+        _performanceTracker = performanceTracker;
     }
 
     public bool IsValidRequest(HttpContext context)
@@ -29,36 +47,41 @@ public class TmdbImageProvider : IImageProvider
 
     public async Task<IImageResolver?> GetAsync(HttpContext context)
     {
-        var imagePath = context.Request.Path.Value!.Substring(TmdbImagePrefix.Length);
+        var imagePath = context.Request.Path.Value![TmdbImagePrefix.Length..];
+        using var span = _performanceTracker.BeginNestedSpan("tmdb-image-provider", $"Get image from TMDB: {imagePath}");
         if (string.IsNullOrEmpty(imagePath))
         {
             return null;
         }
 
-        try
+        var metadata = await _distributedCache.GetSertAsync<TmdbImageMetadata?>($"tmdb-metadata-{imagePath}", async () =>
         {
-            var metadata = await _memoryCache.GetOrCreateAsync($"tmdb-{imagePath}", async entry =>
+            TmdbImage? image;
+            try
             {
-                var currentMetadata = await _tmdbClient.GetImageMetadataAsync(imagePath, context.RequestAborted);
-                if (currentMetadata == null)
-                {
-                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
+                image = await _tmdbClient.GetImageAsync(imagePath, default);
+                if (image == null)
                     return null;
-                }
+            }
+            catch (HttpRequestException)
+            {
+                return null;
+            }
 
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14);
-                entry.SlidingExpiration = TimeSpan.FromDays(1);
-                return currentMetadata;
+            await _cachedStorageProvider.GetSertAsync("tmdb", imagePath, _ => Task.FromResult(image.Value.ImageStream)!, default);
+    
+
+            return new DistributedCacheExtensions.CacheData<TmdbImageMetadata?>(image.Value.Metadata, new DistributedCacheEntryOptions
+            {
+                SlidingExpiration = TimeSpan.FromDays(1),
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(365)
             });
+        });
 
-            if (!metadata.HasValue) return null;
-
-            return new TmdbImageResolver(metadata.Value, _tmdbClient);
-        }
-        catch (HttpRequestException)
-        {
+        if (metadata == null)
             return null;
-        }
+
+        return new TmdbImageResolver(imagePath, new ImageMetadata(metadata.LastModified, TimeSpan.FromDays(365), metadata.ContentLength), _tmdbClient, _cachedStorageProvider);
     }
 
     public ProcessingBehavior ProcessingBehavior => ProcessingBehavior.All;
