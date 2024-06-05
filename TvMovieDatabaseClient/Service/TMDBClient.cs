@@ -210,7 +210,7 @@ internal class TMDBClient : ITMDBClient
         }
 
         return new(
-            await response.Content.ReadAsStreamAsync(),
+            await response.Content.ReadAsStreamAsync(cancellationToken),
             new TmdbImageMetadata(imagePath, response.Content.Headers.LastModified!.Value.UtcDateTime, response.Content.Headers.ContentLength!.Value,
                 response.Content.Headers.ContentType?.MediaType)
         );

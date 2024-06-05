@@ -28,11 +28,13 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         _performanceTracker = performanceTracker;
         _cacheHitCounter = Metrics.CreateCounter("cache_storage_hits", "Number of hits of the storage's cache", new CounterConfiguration
         {
-            ExemplarBehavior = ExemplarBehavior.NoExemplars()
+            ExemplarBehavior = ExemplarBehavior.NoExemplars(),
+            LabelNames = ["sharding_key"]
         });
         _cacheMissCounter = Metrics.CreateCounter("cache_storage_miss", "Number of misses of the storage's cache", new CounterConfiguration
         {
-            ExemplarBehavior = ExemplarBehavior.NoExemplars()
+            ExemplarBehavior = ExemplarBehavior.NoExemplars(),
+            LabelNames = ["sharding_key"]
         });
     }
 
@@ -56,12 +58,13 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
     public async Task<Stream?> GetSertAsync(string shardingKey, string filename, CancellationToken cancellationToken)
     {
         using var span = _performanceTracker.BeginNestedSpan("getsert-cache-storage", $"Get file {filename}");
+        span.SetTag("cache.sharding_key", shardingKey);
         var cacheKey = GetCacheKey(shardingKey, filename);
         var cachedData = await _distributedCache.GetAsync(cacheKey, cancellationToken);
         if (cachedData != null)
         {
             span.SetTag("cache.result", "hit");
-            _cacheHitCounter.Inc();
+            _cacheHitCounter.WithLabels(shardingKey).Inc();
             return new MemoryStream(cachedData);
         }
 
@@ -75,7 +78,7 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
 
         span.SetTag("cache.result", "miss");
 
-        _cacheMissCounter.Inc();
+        _cacheMissCounter.WithLabels(shardingKey).Inc();
 
         var memStream = await GetMemoryStreamAsync(stream, cancellationToken);
 
