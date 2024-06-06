@@ -8,12 +8,13 @@ export interface Props {
 }
 
 const props = defineProps<Props>();
+const numberOfShows = computed(() => useDevice().isMobile ? 4 : 12);
 </script>
 
 <template>
 
   <v-row dense>
-    <v-col cols="12" sm="6" lg="3" v-for="media in useTake(props.medias, 8)"
+    <v-col cols="12" sm="6" lg="3" v-for="media in useTake(props.medias, numberOfShows)"
            :key="media.media?.id">
       <v-card :to="{name: 'show-details', params: {showId: media.media!.id, showName: media.media!.slug}}">
         <span
