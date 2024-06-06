@@ -49,7 +49,7 @@ internal class SubtitleProvider : ISubtitleProvider
         //We have the subtitle stored
         if (subtitle.StoragePath != null)
         {
-            var stream = await _cachedStorageProvider.GetSertAsync(subtitle.EpisodeId.ToString(), subtitle.StoragePath, token);
+            var stream = await _cachedStorageProvider.GetSertAsync("subtitle", subtitle.StoragePath, token);
             if (stream != null)
             {
                 await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);

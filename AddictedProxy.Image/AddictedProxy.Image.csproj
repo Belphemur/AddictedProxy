@@ -7,6 +7,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AddictedProxy.Caching\AddictedProxy.Caching.csproj" />
+        <ProjectReference Include="..\AddictedProxy.Storage.Caching\AddictedProxy.Storage.Caching.csproj" />
         <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
         <ProjectReference Include="..\TvMovieDatabaseClient\TvMovieDatabaseClient.csproj" />
     </ItemGroup>

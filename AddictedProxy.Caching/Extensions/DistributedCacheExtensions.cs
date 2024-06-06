@@ -34,6 +34,31 @@ public static class DistributedCacheExtensions
     /// <param name="fallback"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
+    public static async Task<T?> GetSertAsync<T>(this IDistributedCache cache, string key, Func<Task<CacheData<T?>?>> fallback) where T : class?
+    {
+        var result = await cache.GetAsync<T>(key);
+        if (result is null)
+        {
+            var data = await fallback();
+            if (data?.Value == null)
+            {
+                return null;
+            }
+            result = data.Value.Value;
+            await cache.SetAsync(key, data.Value.Value, data.Value.Options);
+        }
+
+        return result;
+    }
+    
+    /// <summary>
+    /// Get or upsert data in the cache
+    /// </summary>
+    /// <param name="cache"></param>
+    /// <param name="key"></param>
+    /// <param name="fallback"></param>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     public static async Task<T> GetSertAsync<T>(this IDistributedCache cache, string key, Func<Task<CacheData<T>>> fallback) where T : class?
     {
         var result = await cache.GetAsync<T>(key);
