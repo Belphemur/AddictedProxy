@@ -1,3 +1,9 @@
+## [4.22.8](https://github.com/Belphemur/AddictedProxy/compare/v4.22.7...v4.22.8) (2024-06-06)
+
+### Performance improvements
+
+* **caching:** change path of images ([14d063e](https://github.com/Belphemur/AddictedProxy/commit/14d063e61adb221336956bc9329321900303009d))
+
 ## [4.22.7](https://github.com/Belphemur/AddictedProxy/compare/v4.22.6...v4.22.7) (2024-06-06)
 
 ### Performance improvements
