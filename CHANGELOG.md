@@ -1,3 +1,10 @@
+## [4.22.7](https://github.com/Belphemur/AddictedProxy/compare/v4.22.6...v4.22.7) (2024-06-06)
+
+### Performance improvements
+
+* add sharding key to metric and span ([913f5d3](https://github.com/Belphemur/AddictedProxy/commit/913f5d35da8d5b04793275fe4f5bc622da4cd988))
+* **caching:** improve the caching mechanics ([979a2e3](https://github.com/Belphemur/AddictedProxy/commit/979a2e32af9fe93c4eb9e9a15ed6b05dd8ecb70e))
+
 ## [4.22.6](https://github.com/Belphemur/AddictedProxy/compare/v4.22.5...v4.22.6) (2024-06-03)
 
 ### Bug Fixes
