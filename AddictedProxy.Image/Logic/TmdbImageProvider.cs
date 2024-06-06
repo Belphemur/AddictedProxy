@@ -68,7 +68,7 @@ public class TmdbImageProvider : IImageProvider
                 return null;
             }
 
-            await _cachedStorageProvider.GetSertAsync("tmdb", imagePath, _ => Task.FromResult(image.Value.ImageStream)!, default);
+            await _cachedStorageProvider.GetSertAsync("tmdb",  context.Request.Path, _ => Task.FromResult(image.Value.ImageStream)!, default);
     
 
             return new DistributedCacheExtensions.CacheData<TmdbImageMetadata?>(image.Value.Metadata, new DistributedCacheEntryOptions
@@ -81,7 +81,7 @@ public class TmdbImageProvider : IImageProvider
         if (metadata == null)
             return null;
 
-        return new TmdbImageResolver(imagePath, new ImageMetadata(metadata.LastModified, TimeSpan.FromDays(365), metadata.ContentLength), _tmdbClient, _cachedStorageProvider);
+        return new TmdbImageResolver( context.Request.Path, new ImageMetadata(metadata.LastModified, TimeSpan.FromDays(365), metadata.ContentLength), _tmdbClient, _cachedStorageProvider);
     }
 
     public ProcessingBehavior ProcessingBehavior => ProcessingBehavior.All;
