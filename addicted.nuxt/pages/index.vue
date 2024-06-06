@@ -64,7 +64,11 @@ const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
 const currentShow = ref<SelectedShow | undefined>(undefined);
 
 
-const {data, error} = await useAsyncData(async () => (await mediaApi.trendingDetail(25)).data);
+const {data, error} = await useAsyncData(async () => {
+  const isMobile = useDevice().isMobile;
+  return (await mediaApi.trendingDetail(isMobile ? 10 : 20)).data;
+});
+
 if (error.value != null) {
   console.error("can't get media trending", error.value);
   throw createError("Couldn't fetch trending medias");
