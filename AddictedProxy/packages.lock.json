@@ -825,10 +825,10 @@
       },
       "OpenTelemetry.Instrumentation.AspNetCore": {
         "type": "Transitive",
-        "resolved": "1.8.1",
-        "contentHash": "dRb1LEXSH95LGEubk96kYyBmGuny9/qycH9KqL8FXcOv446Xi53EW56TVE4wTMv4HPfn+rL3B9pPQ5RX7zD4Yw==",
+        "resolved": "1.9.0",
+        "contentHash": "x4HuWBw1rbWZUh5j8/GpXz3xa7JnrTuKne+ACmBqvcoO/rNGkG7HayRruwoQ7gf52xpMtRGr4gxlhLW8eU0EiQ==",
         "dependencies": {
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.8.0"
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.9.0, 2.0.0)"
         }
       },
       "OpenTelemetry.Instrumentation.EntityFrameworkCore": {
@@ -842,12 +842,12 @@
       },
       "OpenTelemetry.Instrumentation.Http": {
         "type": "Transitive",
-        "resolved": "1.8.1",
-        "contentHash": "l1KaO1U+v11X/kfZ8tcONc5l1qoP6nPk6yPrXBJNH0Wb6NEBTdEgI1dtJBbqOnjOrI2XS09le0ZGooh9ZVkZ3Q==",
+        "resolved": "1.9.0",
+        "contentHash": "+ZXppf8Qxz3OdC803T8fB6i8iSscc8PsxMnM/JizSOYmkz+8vGiScEiaBBBFNZtMh2KpA0q+qxwnSwQUkbvzog==",
         "dependencies": {
           "Microsoft.Extensions.Configuration": "8.0.0",
           "Microsoft.Extensions.Options": "8.0.0",
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.8.0"
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.9.0, 2.0.0)"
         }
       },
       "OpenTelemetry.Instrumentation.SqlClient": {
@@ -2015,9 +2015,9 @@
           "OpenTelemetry.Exporter.Console": "[1.9.0, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.9.0, )",
           "OpenTelemetry.Extensions.Hosting": "[1.9.0, )",
-          "OpenTelemetry.Instrumentation.AspNetCore": "[1.8.1, )",
+          "OpenTelemetry.Instrumentation.AspNetCore": "[1.9.0, )",
           "OpenTelemetry.Instrumentation.EntityFrameworkCore": "[1.0.0-beta.11, )",
-          "OpenTelemetry.Instrumentation.Http": "[1.8.1, )",
+          "OpenTelemetry.Instrumentation.Http": "[1.9.0, )",
           "OpenTelemetry.Instrumentation.SqlClient": "[1.0.0-rc9.14, )",
           "OpenTelemetry.Instrumentation.StackExchangeRedis": "[1.0.0-rc9.14, )",
           "OpenTelemetry.Shims.OpenTracing": "[1.0.0-rc9.14, )",
