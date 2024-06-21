@@ -1,3 +1,14 @@
+## [4.22.10](https://github.com/Belphemur/AddictedProxy/compare/v4.22.9...v4.22.10) (2024-06-21)
+
+### Performance improvements
+
+* **trending:** Optimize the trending loading to always return the right number of shows ([9e41ec6](https://github.com/Belphemur/AddictedProxy/commit/9e41ec623e6ff646d983c9ccfdcef86f20eeb9cf))
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.6.10 ([614464a](https://github.com/Belphemur/AddictedProxy/commit/614464ae51bb4a1d162f83eb19fd1bea4cef65b1))
+* **deps:** update dependency vuetify to v3.6.9 ([db3d19c](https://github.com/Belphemur/AddictedProxy/commit/db3d19c049ee5dd069578525c488a92287af842e))
+
 ## [4.22.9](https://github.com/Belphemur/AddictedProxy/compare/v4.22.8...v4.22.9) (2024-06-06)
 
 ### Performance improvements
