@@ -1,3 +1,9 @@
+## [4.22.11](https://github.com/Belphemur/AddictedProxy/compare/v4.22.10...v4.22.11) (2024-06-21)
+
+### Performance improvements
+
+* **trending:** Use all media present in props ([8b9a6a1](https://github.com/Belphemur/AddictedProxy/commit/8b9a6a10a977e4b2b3f37b7b39ad772616a3db99))
+
 ## [4.22.10](https://github.com/Belphemur/AddictedProxy/compare/v4.22.9...v4.22.10) (2024-06-21)
 
 ### Performance improvements
