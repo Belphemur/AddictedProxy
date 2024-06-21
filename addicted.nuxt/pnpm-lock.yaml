@@ -69,7 +69,7 @@ devDependencies:
     version: 1.10.0(h3@1.12.0)
   swagger-typescript-api:
     specifier: ^13.0.3
-    version: 13.0.7
+    version: 13.0.8
   typescript:
     specifier: ^5.4.5
     version: 5.5.2
@@ -3828,7 +3828,7 @@ packages:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
     dev: true
 
-  /cosmiconfig@9.0.0(typescript@5.4.5):
+  /cosmiconfig@9.0.0(typescript@5.5.2):
     resolution: {integrity: sha512-itvL5h8RETACmOTFc4UfIyB2RfEHi71Ax6E/PivVxq9NseKbOWpeyHEOIbmAw1rs8Ak0VursQNww7lf7YtUwzg==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -3841,7 +3841,7 @@ packages:
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
-      typescript: 5.4.5
+      typescript: 5.5.2
     dev: true
 
   /crc-32@1.2.2:
@@ -7650,13 +7650,13 @@ packages:
     resolution: {integrity: sha512-rCC0NWGKr/IJhtRuPq/t37qvZHI/mH4I4sxflVM+qgVe5Z2uOCivzWaVbuioJaB61kvm5UvB7b49E+oBY0M8jA==}
     dev: true
 
-  /swagger-typescript-api@13.0.7:
-    resolution: {integrity: sha512-s1ogXYrahTKsjzUaU3yjfzM4kzj01oiv6cljW2R9MjPfYEl4U4iXUZ2A5G2KXJ5kTDzm+qtNcTiZW6dpoTz+PA==}
+  /swagger-typescript-api@13.0.8:
+    resolution: {integrity: sha512-R9xRxULhPuIdE6ixC/w3I3s2fNcZMIH5m/iFf9kde5aG0UemSA97LKDnuOurSaa57I4Lxw1+qNHpeVniGHYr3g==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
       '@types/swagger-schema-official': 2.0.25
-      cosmiconfig: 9.0.0(typescript@5.4.5)
+      cosmiconfig: 9.0.0(typescript@5.5.2)
       didyoumean: 1.2.2
       eta: 2.2.0
       js-yaml: 4.1.0
@@ -7666,7 +7666,7 @@ packages:
       prettier: 3.3.2
       swagger-schema-official: 2.0.0-bab6bed
       swagger2openapi: 7.0.8
-      typescript: 5.4.5
+      typescript: 5.5.2
     transitivePeerDependencies:
       - encoding
     dev: true
@@ -7844,12 +7844,6 @@ packages:
   /type-fest@3.13.1:
     resolution: {integrity: sha512-tLq3bSNx+xSpwvAJnzrK0Ep5CLNWjvFTOp71URMaAEWBfRb9nnJiBoUe0tF8bI4ZFO3omgBR6NvnbzVUT3Ly4g==}
     engines: {node: '>=14.16'}
-    dev: true
-
-  /typescript@5.4.5:
-    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
-    engines: {node: '>=14.17'}
-    hasBin: true
     dev: true
 
   /typescript@5.5.2:
