@@ -39,76 +39,57 @@ public class MediaController : Controller
     /// <param name="max"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [Route("trending/{max:range(0,50)}")]
+    [Route("trending/{max:range(1,50)}")]
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(IAsyncEnumerable<MediaDetailsDto>), 200)]
     [ProducesResponseType(typeof(string), 429)]
-    public async Task<Ok<IEnumerable<MediaDetailsDto>>> GetTrendingTvShowsAsync([FromRoute] int max, CancellationToken cancellationToken)
+    public async Task<Ok<IAsyncEnumerable<MediaDetailsDto>>> GetTrendingTvShowsAsync([FromRoute] int max, CancellationToken cancellationToken)
     {
         Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
         {
             Public = true,
             MaxAge = TimeSpan.FromDays(1)
         };
-
-        var tmdbShows = await GetTrendingShowsCachedAsync(max, cancellationToken);
-        var shows = (await _tvShowRepository.GetShowsByTmdbIdAsync(tmdbShows.Select(show => show.Id).ToArray()).ToArrayAsync(cancellationToken))
-                    .DistinctBy(show => show.TmdbId)
-                    .ToDictionary(show => show.TmdbId!.Value);
+        
         var genres = await GetGenresCachedAsync(cancellationToken);
 
-        var result = tmdbShows
-                     .Select(showDetails =>
-                     {
-                         if (!shows.TryGetValue(showDetails.Id, out var show))
-                         {
-                             return (MediaDetailsDto?)null;
-                         }
+        var trendingTvShows = _tmdbClient.GetTrendingTvAsync(TimeWindowEnum.week, cancellationToken)
+            .SelectAwait(async searchResult => (ShowDetails: searchResult, MatchedShows: await _tvShowRepository.GetShowsByTmdbIdAsync(searchResult.Id).ToArrayAsync(cancellationToken: cancellationToken)))
+            .Where(results => results.MatchedShows.Length > 0)
+            .Select(results => (results.ShowDetails, MatchedShow: results.MatchedShows.MaxBy(show => show.Seasons.Count)!))
+            .Take(max)
+            .Select(result =>
+            {
+                var show = result.MatchedShow;
+                var showDetails = result.ShowDetails;
+                var showDto = new ShowDto(show);
+                var genreNames = showDetails.GenreIds.Select(i =>
+                    {
+                        genres.TryGetValue(i, out var genreName);
+                        return genreName;
+                    })
+                    .Where(s => s != null)
+                    .Cast<string>()
+                    .ToArray();
 
-                         var showDto = new ShowDto(show);
-                         var genreNames = showDetails.GenreIds.Select(i =>
-                                                     {
-                                                         genres.TryGetValue(i, out var genreName);
-                                                         return genreName;
-                                                     })
-                                                     .Where(s => s != null)
-                                                     .Cast<string>()
-                                                     .ToArray();
+                int? year = DateTime.TryParse(showDetails.FirstAirDate, out var releaseDate) ? releaseDate.Year : null;
+                var details = new MediaDetailsDto.DetailsDto(showDetails.PosterPath,
+                    showDetails.Overview,
+                    showDetails.OriginalName,
+                    (MediaDetailsDto.MediaType)show.Type,
+                    showDetails.BackdropPath,
+                    showDetails.VoteAverage,
+                    genreNames,
+                    "",
+                    year,
+                    showDetails.Name);
+                details = UpdatePathAndVoteDetailsDto(details);
 
-                         int? year = DateTime.TryParse(showDetails.FirstAirDate, out var releaseDate) ? releaseDate.Year : null;
-                         var details = new MediaDetailsDto.DetailsDto(showDetails.PosterPath,
-                             showDetails.Overview,
-                             showDetails.OriginalName,
-                             (MediaDetailsDto.MediaType)show.Type,
-                             showDetails.BackdropPath,
-                             showDetails.VoteAverage,
-                             genreNames,
-                             "",
-                             year,
-                             showDetails.Name);
-                         details = UpdatePathAndVoteDetailsDto(details);
+                return new MediaDetailsDto(showDto, details);
+            });
 
-                         return new MediaDetailsDto(showDto, details);
-                     })
-                     .Where(dto => dto != null)
-                     .Cast<MediaDetailsDto>();
-
-        return TypedResults.Ok(result);
-    }
-
-    private Task<ShowSearchResult[]> GetTrendingShowsCachedAsync(int max, CancellationToken cancellationToken)
-    {
-        return _distributedCache.GetSertAsync($"trending-{max}", async () =>
-        {
-            _logger.LogInformation("Cache miss for trending ({max}) shows ", max);
-            return new DistributedCacheExtensions.CacheData<ShowSearchResult[]>(
-                await _tmdbClient.GetTrendingTvAsync(TimeWindowEnum.week, cancellationToken).Take(max).ToArrayAsync(cancellationToken),
-                new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTimeOffset.UtcNow.AddDays(1)
-                });
-        });
+        return TypedResults.Ok(trendingTvShows);
     }
 
     private Task<Dictionary<int, string>> GetGenresCachedAsync(CancellationToken cancellationToken)
