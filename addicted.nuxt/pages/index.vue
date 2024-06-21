@@ -66,7 +66,7 @@ const currentShow = ref<SelectedShow | undefined>(undefined);
 
 const {data, error} = await useAsyncData(async () => {
   const isMobile = useDevice().isMobile;
-  return (await mediaApi.trendingDetail(isMobile ? 10 : 20)).data;
+  return (await mediaApi.trendingDetail(isMobile ? 4 : 12)).data;
 });
 
 if (error.value != null) {

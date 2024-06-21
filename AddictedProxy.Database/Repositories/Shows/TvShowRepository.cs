@@ -92,7 +92,7 @@ public class TvShowRepository : ITvShowRepository
     /// </summary>
     /// <param name="tmdbIds"></param>
     /// <returns></returns>
-    public IAsyncEnumerable<TvShow> GetShowsByTmdbIdAsync(int[] tmdbIds)
+    public IAsyncEnumerable<TvShow> GetShowsByTmdbIdAsync(params int[] tmdbIds)
     {
         return _entityContext.TvShows
                              .Where(show => show.TmdbId.HasValue)

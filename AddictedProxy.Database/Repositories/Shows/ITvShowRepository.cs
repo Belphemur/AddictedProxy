@@ -90,7 +90,7 @@ public interface ITvShowRepository
     /// </summary>
     /// <param name="tmdbIds"></param>
     /// <returns></returns>
-    IAsyncEnumerable<TvShow> GetShowsByTmdbIdAsync(int[] tmdbIds);
+    IAsyncEnumerable<TvShow> GetShowsByTmdbIdAsync(params int[] tmdbIds);
 
     /// <summary>
     /// Get shows missing tvdb id but have tmdbid

@@ -163,7 +163,7 @@ internal class TMDBClient : ITMDBClient
     private async IAsyncEnumerable<T> PaginateAsync<T>(string url, Dictionary<string, string> query, [EnumeratorCancellation] CancellationToken token)
     {
         var page = 1;
-        const int maxPage = 3;
+        const int maxPage = 4;
         HttpResponseMessage response;
         Pagination<T>? results;
 
