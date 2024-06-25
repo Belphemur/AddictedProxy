@@ -42,7 +42,7 @@ devDependencies:
     version: 3.2.0
   '@pinia-plugin-persistedstate/nuxt':
     specifier: ^1.2.0
-    version: 1.2.0(@pinia/nuxt@0.5.1)(pinia@2.1.7)
+    version: 1.2.1(@pinia/nuxt@0.5.1)(pinia@2.1.7)
   '@pinia/nuxt':
     specifier: ^0.5.1
     version: 0.5.1(typescript@5.5.2)(vue@3.4.30)
@@ -1717,16 +1717,17 @@ packages:
       '@parcel/watcher-win32-x64': 2.4.1
     dev: true
 
-  /@pinia-plugin-persistedstate/nuxt@1.2.0(@pinia/nuxt@0.5.1)(pinia@2.1.7):
-    resolution: {integrity: sha512-2rtgx5viGSMQMCoFYZMHguA2FhFKCUvw0PwETfqQegsWeBHlqk1/D0G/9xqep8Hq+c1BuFx+jNLJzoLXtYfivg==}
+  /@pinia-plugin-persistedstate/nuxt@1.2.1(@pinia/nuxt@0.5.1)(pinia@2.1.7):
+    resolution: {integrity: sha512-q8s+4aQW/AjBMyeqLL48/qzBR5lcgnvvf1525ovNuKf6Wl9CsoLjPKh/5X8vNoKGwSow4gP7lVmdYPQRypgjgg==}
     peerDependencies:
       '@pinia/nuxt': ^0.5.0
     dependencies:
-      '@nuxt/kit': 3.11.2
+      '@nuxt/kit': 3.12.2(magicast@0.3.4)
       '@pinia/nuxt': 0.5.1(typescript@5.5.2)(vue@3.4.30)
       defu: 6.1.4
       pinia-plugin-persistedstate: 3.2.1(pinia@2.1.7)
     transitivePeerDependencies:
+      - magicast
       - pinia
       - rollup
       - supports-color
