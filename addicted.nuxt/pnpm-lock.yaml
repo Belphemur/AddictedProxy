@@ -29,8 +29,8 @@ dependencies:
 
 devDependencies:
   '@nuxt/devtools':
-    specifier: 1.3.6
-    version: 1.3.6(bufferutil@4.0.8)(utf-8-validate@6.0.4)(vite@5.3.1)
+    specifier: 1.3.7
+    version: 1.3.7(bufferutil@4.0.8)(utf-8-validate@6.0.4)(vite@5.3.1)
   '@nuxt/image':
     specifier: 1.7.0
     version: 1.7.0
@@ -87,8 +87,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.25
     dev: true
 
-  /@antfu/utils@0.7.8:
-    resolution: {integrity: sha512-rWQkqXRESdjXtc+7NRfK9lASQjpXJu1ayp7qi1d23zZorY+wBHVLHHoVcMsEnkqEBWTFqbztO7/QdJFzyEcLTg==}
+  /@antfu/utils@0.7.10:
+    resolution: {integrity: sha512-+562v9k4aI80m1+VuMHehNJWLOFjBnXn3tdOitzD0il5b7smkSBal4+a3oKiQTbrwMmN/TBUMDvbdoWDehgOww==}
     dev: true
 
   /@babel/code-frame@7.24.7:
@@ -1033,84 +1033,17 @@ packages:
       semver: 7.6.2
     dev: true
 
-  /@npmcli/git@5.0.7:
-    resolution: {integrity: sha512-WaOVvto604d5IpdCRV2KjQu8PzkfE96d50CQGKgywXh2GxXmDeUO5EWcBC4V57uFyrNqx83+MewuJh3WTR3xPA==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      '@npmcli/promise-spawn': 7.0.2
-      lru-cache: 10.2.2
-      npm-pick-manifest: 9.0.1
-      proc-log: 4.2.0
-      promise-inflight: 1.0.1
-      promise-retry: 2.0.1
-      semver: 7.6.2
-      which: 4.0.0
-    transitivePeerDependencies:
-      - bluebird
-    dev: true
-
-  /@npmcli/installed-package-contents@2.1.0:
-    resolution: {integrity: sha512-c8UuGLeZpm69BryRykLuKRyKFZYJsZSCT4aVY5ds4omyZqJ172ApzgfKJ5eV/r3HgLdUYgFVe54KSFVjKoe27w==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    hasBin: true
-    dependencies:
-      npm-bundled: 3.0.1
-      npm-normalize-package-bin: 3.0.1
-    dev: true
-
-  /@npmcli/node-gyp@3.0.0:
-    resolution: {integrity: sha512-gp8pRXC2oOxu0DUE1/M3bYtb1b3/DbJ5aM113+XJBgfXdussRAsX0YOrOhdd8WvnAR6auDBvJomGAkLKA5ydxA==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    dev: true
-
-  /@npmcli/package-json@5.1.0:
-    resolution: {integrity: sha512-1aL4TuVrLS9sf8quCLerU3H9J4vtCtgu8VauYozrmEyU57i/EdKleCnsQ7vpnABIH6c9mnTxcH5sFkO3BlV8wQ==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      '@npmcli/git': 5.0.7
-      glob: 10.4.2
-      hosted-git-info: 7.0.2
-      json-parse-even-better-errors: 3.0.2
-      normalize-package-data: 6.0.1
-      proc-log: 4.2.0
-      semver: 7.6.2
-    transitivePeerDependencies:
-      - bluebird
-    dev: true
-
-  /@npmcli/promise-spawn@7.0.2:
-    resolution: {integrity: sha512-xhfYPXoV5Dy4UkY0D+v2KkwvnDfiA/8Mt3sWCGI/hM03NsYIH8ZaG6QzS9x7pje5vHZBZJ2v6VRFVTWACnqcmQ==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      which: 4.0.0
-    dev: true
-
   /@npmcli/redact@2.0.0:
     resolution: {integrity: sha512-SEjCPAVHWYUIQR+Yn03kJmrJjZDtJLYpj300m3HV9OTRZNpC5YpbMsM3eTkECyT4aWj8lDr9WeY6TWefpubtYQ==}
     engines: {node: ^16.14.0 || >=18.0.0}
-    dev: true
-
-  /@npmcli/run-script@8.1.0:
-    resolution: {integrity: sha512-y7efHHwghQfk28G2z3tlZ67pLG0XdfYbcVG26r7YIXALRsrVQcTq4/tdenSmdOrEsNahIYA/eh8aEVROWGFUDg==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      '@npmcli/node-gyp': 3.0.0
-      '@npmcli/package-json': 5.1.0
-      '@npmcli/promise-spawn': 7.0.2
-      node-gyp: 10.1.0
-      proc-log: 4.2.0
-      which: 4.0.0
-    transitivePeerDependencies:
-      - bluebird
-      - supports-color
     dev: true
 
   /@nuxt/devalue@2.0.2:
     resolution: {integrity: sha512-GBzP8zOc7CGWyFQS6dv1lQz8VVpz5C2yRszbXufwG/9zhStTIH50EtD87NmWbTMwXDvZLNg8GIpb1UFdH93JCA==}
     dev: true
 
-  /@nuxt/devtools-kit@1.3.6(magicast@0.3.4)(vite@5.3.1):
-    resolution: {integrity: sha512-FM0s9CrTxwvaMcakWZc7oGqzSj4GPalcY3PmyZhollMyR2dqBB1n0ZfnTdLm8KUSgc7jdFR6DuG7PfQwAm06tQ==}
+  /@nuxt/devtools-kit@1.3.7(magicast@0.3.4)(vite@5.3.1):
+    resolution: {integrity: sha512-TpvlZuooarsaMk9av2shtT6YZzFyFwlo60Qk5BLm5MEJFoGvIIsKjAxmwb3HWMTnoYJ79dTB5FBPEdpR2Qpueg==}
     peerDependencies:
       vite: '*'
     dependencies:
@@ -1124,8 +1057,8 @@ packages:
       - supports-color
     dev: true
 
-  /@nuxt/devtools-wizard@1.3.6:
-    resolution: {integrity: sha512-M6kEkYCC0EsvvNKXXeVSSBDrUMHNkCyq+E8o+8LEPDQvhZ5pOsB6hpxt0DR+2sOE18zAcHSWeSurnwbW7ac4hA==}
+  /@nuxt/devtools-wizard@1.3.7:
+    resolution: {integrity: sha512-W0ncRMeWWrkbBhu3yhk/5PP6hXNgmeKA70Y4lpMe7aNe/Q8Zm5qwILD09DY026AMQoF9m0tswCI6uBvtur/Avg==}
     hasBin: true
     dependencies:
       consola: 3.2.3
@@ -1140,15 +1073,15 @@ packages:
       semver: 7.6.2
     dev: true
 
-  /@nuxt/devtools@1.3.6(bufferutil@4.0.8)(utf-8-validate@6.0.4)(vite@5.3.1):
-    resolution: {integrity: sha512-M3sRQDKG/iK+iQmvIl9vfEgc/Nv1D6S7GFvhmq1s7ZCSkrmZPGWLxRkIAJOwZk+WnvjYUHkN6XCcoi9a1EWmrA==}
+  /@nuxt/devtools@1.3.7(bufferutil@4.0.8)(utf-8-validate@6.0.4)(vite@5.3.1):
+    resolution: {integrity: sha512-NcC2JMnBRy+C39F7fdN0bOj6HcRQSzS+L8+ZWsqP4RxFby3/R8S7bG6Ji5MeBbHBOo+4nkSfcOd3X+mxJTQ1vA==}
     hasBin: true
     peerDependencies:
       vite: '*'
     dependencies:
-      '@antfu/utils': 0.7.8
-      '@nuxt/devtools-kit': 1.3.6(magicast@0.3.4)(vite@5.3.1)
-      '@nuxt/devtools-wizard': 1.3.6
+      '@antfu/utils': 0.7.10
+      '@nuxt/devtools-kit': 1.3.7(magicast@0.3.4)(vite@5.3.1)
+      '@nuxt/devtools-wizard': 1.3.7
       '@nuxt/kit': 3.12.2(magicast@0.3.4)
       '@vue/devtools-core': 7.3.3(vite@5.3.1)
       '@vue/devtools-kit': 7.3.3
@@ -1167,9 +1100,9 @@ packages:
       launch-editor: 2.8.0
       local-pkg: 0.5.0
       magicast: 0.3.4
+      npm-registry-fetch: 17.1.0
       nypm: 0.3.8
       ohash: 1.1.3
-      pacote: 18.0.6
       pathe: 1.1.2
       perfect-debounce: 1.0.0
       pkg-types: 1.1.1
@@ -1185,7 +1118,6 @@ packages:
       which: 3.0.1
       ws: 8.17.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)
     transitivePeerDependencies:
-      - bluebird
       - bufferutil
       - rollup
       - supports-color
@@ -2201,56 +2133,6 @@ packages:
       vue: 3.4.30(typescript@5.5.2)
     dev: true
 
-  /@sigstore/bundle@2.3.1:
-    resolution: {integrity: sha512-eqV17lO3EIFqCWK3969Rz+J8MYrRZKw9IBHpSo6DEcEX2c+uzDFOgHE9f2MnyDpfs48LFO4hXmk9KhQ74JzU1g==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      '@sigstore/protobuf-specs': 0.3.2
-    dev: true
-
-  /@sigstore/core@1.1.0:
-    resolution: {integrity: sha512-JzBqdVIyqm2FRQCulY6nbQzMpJJpSiJ8XXWMhtOX9eKgaXXpfNOF53lzQEjIydlStnd/eFtuC1dW4VYdD93oRg==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dev: true
-
-  /@sigstore/protobuf-specs@0.3.2:
-    resolution: {integrity: sha512-c6B0ehIWxMI8wiS/bj6rHMPqeFvngFV7cDU/MY+B16P9Z3Mp9k8L93eYZ7BYzSickzuqAQqAq0V956b3Ju6mLw==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dev: true
-
-  /@sigstore/sign@2.3.1:
-    resolution: {integrity: sha512-YZ71wKIOweC8ViUeZXboz0iPLqMkskxuoeN/D1CEpAyZvEepbX9oRMIoO6a/DxUqO1VEaqmcmmqzSiqtOsvSmw==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      '@sigstore/bundle': 2.3.1
-      '@sigstore/core': 1.1.0
-      '@sigstore/protobuf-specs': 0.3.2
-      make-fetch-happen: 13.0.1
-      proc-log: 4.2.0
-      promise-retry: 2.0.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /@sigstore/tuf@2.3.3:
-    resolution: {integrity: sha512-agQhHNkIddXFslkudjV88vTXiAMEyUtso3at6ZHUNJ1agZb7Ze6VW/PddHipdWBu1t+8OWLW5X5yZOPiOnaWJQ==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      '@sigstore/protobuf-specs': 0.3.2
-      tuf-js: 2.2.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /@sigstore/verify@1.2.0:
-    resolution: {integrity: sha512-hQF60nc9yab+Csi4AyoAmilGNfpXT+EXdBgFkP9OgPwIBPwyqVf7JAWPtmqrrrneTmAT6ojv7OlH1f6Ix5BG4Q==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      '@sigstore/bundle': 2.3.1
-      '@sigstore/core': 1.1.0
-      '@sigstore/protobuf-specs': 0.3.2
-    dev: true
-
   /@sindresorhus/is@4.6.0:
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
     engines: {node: '>=10'}
@@ -2265,19 +2147,6 @@ packages:
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
     requiresBuild: true
-    dev: true
-
-  /@tufjs/canonical-json@2.0.0:
-    resolution: {integrity: sha512-yVtV8zsdo8qFHe+/3kw81dSLyF7D576A5cCFCi4X7B39tWT7SekaEFUnvnWJHz+9qO7qJTah1JbrDjWKqFtdWA==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dev: true
-
-  /@tufjs/models@2.0.1:
-    resolution: {integrity: sha512-92F7/SFyufn4DXsha9+QfKnN03JGqtMFMXgSHbZOo8JG59WkTni7UzAouNQDf7AuP9OAMxVOPQcqG3sB7w+kkg==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      '@tufjs/canonical-json': 2.0.0
-      minimatch: 9.0.4
     dev: true
 
   /@types/estree@1.0.5:
@@ -2462,7 +2331,7 @@ packages:
       '@babel/helper-module-imports': 7.22.15
       '@babel/helper-plugin-utils': 7.24.7
       '@babel/parser': 7.24.7
-      '@vue/compiler-sfc': 3.4.29
+      '@vue/compiler-sfc': 3.4.30
     dev: true
 
   /@vue/compiler-core@3.4.29:
@@ -2655,11 +2524,6 @@ packages:
 
   /abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
-    dev: true
-
-  /abbrev@2.0.0:
-    resolution: {integrity: sha512-6/mh1E2u2YgEsCHdY0Yx5oW+61gZU+1vXaoiHHrpKeuRNNgFvS+/jrwHiQhB5apAf5oB7UB7E19ol2R2LKH8hQ==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
   /abort-controller@3.0.0:
@@ -3934,10 +3798,6 @@ packages:
     dev: true
     optional: true
 
-  /exponential-backoff@3.1.1:
-    resolution: {integrity: sha512-dX7e/LHVJ6W3DE1MHWi9S1EYzDESENfLrYohG2G++ovZrYOkm4Knwa0mc1cn84xJOR4KEU0WSchhLbd0UklbHw==}
-    dev: true
-
   /externality@1.0.2:
     resolution: {integrity: sha512-LyExtJWKxtgVzmgtEHyQtLFpw1KFhQphF9nTG8TpAIVkiI/xQ3FJh75tRFLYl4hkn7BNIIdLJInuDAavX35pMw==}
     dependencies:
@@ -4409,13 +4269,6 @@ packages:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
     dev: true
 
-  /ignore-walk@6.0.5:
-    resolution: {integrity: sha512-VuuG0wCnjhnylG1ABXT3dAuIpTNDs/G8jlpmwXY03fXoXy/8ZK8/T+hMzt8L4WnrLCJgdybqgPagnF/f97cg3A==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    dependencies:
-      minimatch: 9.0.4
-    dev: true
-
   /ignore@5.3.1:
     resolution: {integrity: sha512-5Fytz/IraMjqpwfd34ke28PTVMjZjJG2MPn5t7OE4eUCUNf8BAa7b5WUS9/Qvr6mwOQS7Mk6vdsMno5he+T8Xw==}
     engines: {node: '>= 4'}
@@ -4687,11 +4540,6 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
 
-  /isexe@3.1.1:
-    resolution: {integrity: sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ==}
-    engines: {node: '>=16'}
-    dev: true
-
   /jackspeak@3.4.0:
     resolution: {integrity: sha512-JVYhQnN59LVPFCEcVa2C3CrEKYacvjRfqIQl+h8oi91aLYQVWRYbxjPcv1bUiUy/kLmQaANrYfNMCO3kuEDHfw==}
     engines: {node: '>=14'}
@@ -4733,11 +4581,6 @@ packages:
 
   /json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
-    dev: true
-
-  /json-parse-even-better-errors@3.0.2:
-    resolution: {integrity: sha512-fi0NG4bPjCHunUJffmLd0gxssIgkNmArMvis4iNah6Owg1MCJjWhEcDLmsK6iGkJq3tHwbDkTlce70/tmXN4cQ==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
   /json5@2.2.3:
@@ -5062,13 +4905,6 @@ packages:
       minipass: 3.3.6
     dev: true
 
-  /minipass-json-stream@1.0.1:
-    resolution: {integrity: sha512-ODqY18UZt/I8k+b7rl2AENgbWE8IDYam+undIJONvigAz8KR5GWblsFTEfQs0WODsjbSXWlm+JHEv8Gr6Tfdbg==}
-    dependencies:
-      jsonparse: 1.3.1
-      minipass: 3.3.6
-    dev: true
-
   /minipass-pipeline@1.2.4:
     resolution: {integrity: sha512-xuIq7cIOt09RPRJ19gdi4b+RiNvDFYe5JH+ggNvBqGqpQXcru3PcRmOZuHBKWK1Txf9+cQ+HMVN4d6z46LZP7A==}
     engines: {node: '>=8'}
@@ -5349,25 +5185,6 @@ packages:
     resolution: {integrity: sha512-OSs33Z9yWr148JZcbZd5WiAXhh/n9z8TxQcdMhIOlpN9AhWpLfvVFO73+m77bBABQMaY9XSvIa+qk0jlI7Gcaw==}
     hasBin: true
 
-  /node-gyp@10.1.0:
-    resolution: {integrity: sha512-B4J5M1cABxPc5PwfjhbV5hoy2DP9p8lFXASnEN6hugXOa61416tnTZ29x9sSwAd0o99XNIcpvDDy1swAExsVKA==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    hasBin: true
-    dependencies:
-      env-paths: 2.2.1
-      exponential-backoff: 3.1.1
-      glob: 10.4.2
-      graceful-fs: 4.2.11
-      make-fetch-happen: 13.0.1
-      nopt: 7.2.1
-      proc-log: 3.0.0
-      semver: 7.6.2
-      tar: 6.2.1
-      which: 4.0.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /node-readfiles@0.2.0:
     resolution: {integrity: sha512-SU00ZarexNlE4Rjdm83vglt5Y9yiQ+XI1XpflWlb7q7UTN1JUItm69xMeiQCTxtTfnzt+83T8Cx+vI2ED++VDA==}
     dependencies:
@@ -5386,24 +5203,6 @@ packages:
       abbrev: 1.1.1
     dev: true
 
-  /nopt@7.2.1:
-    resolution: {integrity: sha512-taM24ViiimT/XntxbPyJQzCG+p4EKOpgD3mxFwW38mGjVUrfERQOeY4EDHjdnptttfHuHQXFx+lTP08Q+mLa/w==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    hasBin: true
-    dependencies:
-      abbrev: 2.0.0
-    dev: true
-
-  /normalize-package-data@6.0.1:
-    resolution: {integrity: sha512-6rvCfeRW+OEZagAB4lMLSNuTNYZWLVtKccK79VSTf//yTY5VOCgcpH80O+bZK8Neps7pUnd5G+QlMg1yV/2iZQ==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      hosted-git-info: 7.0.2
-      is-core-module: 2.13.1
-      semver: 7.6.2
-      validate-npm-package-license: 3.0.4
-    dev: true
-
   /normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
@@ -5412,25 +5211,6 @@ packages:
   /normalize-range@0.1.2:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
-    dev: true
-
-  /npm-bundled@3.0.1:
-    resolution: {integrity: sha512-+AvaheE/ww1JEwRHOrn4WHNzOxGtVp+adrg2AeZS/7KuxGUYFuBta98wYpfHBbJp6Tg6j1NKSEVHNcfZzJHQwQ==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    dependencies:
-      npm-normalize-package-bin: 3.0.1
-    dev: true
-
-  /npm-install-checks@6.3.0:
-    resolution: {integrity: sha512-W29RiK/xtpCGqn6f3ixfRYGk+zRyr+Ew9F2E20BfXxT5/euLdA/Nm7fO7OeTGuAmTs30cpgInyJ0cYe708YTZw==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    dependencies:
-      semver: 7.6.2
-    dev: true
-
-  /npm-normalize-package-bin@3.0.1:
-    resolution: {integrity: sha512-dMxCf+zZ+3zeQZXKxmyuCKlIDPGuv8EF940xbkC4kQVDTtqoh6rJFO+JTKSA6/Rwi0getWmtuy4Itup0AMcaDQ==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
   /npm-package-arg@11.0.2:
@@ -5443,32 +5223,15 @@ packages:
       validate-npm-package-name: 5.0.1
     dev: true
 
-  /npm-packlist@8.0.2:
-    resolution: {integrity: sha512-shYrPFIS/JLP4oQmAwDyk5HcyysKW8/JLTEA32S0Z5TzvpaeeX2yMFfoK1fjEBnCBvVyIB/Jj/GBFdm0wsgzbA==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    dependencies:
-      ignore-walk: 6.0.5
-    dev: true
-
-  /npm-pick-manifest@9.0.1:
-    resolution: {integrity: sha512-Udm1f0l2nXb3wxDpKjfohwgdFUSV50UVwzEIpDXVsbDMXVIEF81a/i0UhuQbhrPMMmdiq3+YMFLFIRVLs3hxQw==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      npm-install-checks: 6.3.0
-      npm-normalize-package-bin: 3.0.1
-      npm-package-arg: 11.0.2
-      semver: 7.6.2
-    dev: true
-
-  /npm-registry-fetch@17.0.1:
-    resolution: {integrity: sha512-fLu9MTdZTlJAHUek/VLklE6EpIiP3VZpTiuN7OOMCt2Sd67NCpSEetMaxHHEZiZxllp8ZLsUpvbEszqTFEc+wA==}
+  /npm-registry-fetch@17.1.0:
+    resolution: {integrity: sha512-5+bKQRH0J1xG1uZ1zMNvxW0VEyoNWgJpY9UDuluPFLKDfJ9u2JmmjmTJV1srBGQOROfdBMiVvnH2Zvpbm+xkVA==}
     engines: {node: ^16.14.0 || >=18.0.0}
     dependencies:
       '@npmcli/redact': 2.0.0
+      jsonparse: 1.3.1
       make-fetch-happen: 13.0.1
       minipass: 7.1.2
       minipass-fetch: 3.0.5
-      minipass-json-stream: 1.0.1
       minizlib: 2.1.2
       npm-package-arg: 11.0.2
       proc-log: 4.2.0
@@ -5553,7 +5316,7 @@ packages:
         optional: true
     dependencies:
       '@nuxt/devalue': 2.0.2
-      '@nuxt/devtools': 1.3.6(bufferutil@4.0.8)(utf-8-validate@6.0.4)(vite@5.3.1)
+      '@nuxt/devtools': 1.3.7(bufferutil@4.0.8)(utf-8-validate@6.0.4)(vite@5.3.1)
       '@nuxt/kit': 3.12.2(magicast@0.3.4)
       '@nuxt/schema': 3.12.2
       '@nuxt/telemetry': 2.5.4
@@ -5625,7 +5388,6 @@ packages:
       - '@upstash/redis'
       - '@vercel/kv'
       - better-sqlite3
-      - bluebird
       - bufferutil
       - drizzle-orm
       - encoding
@@ -5799,33 +5561,6 @@ packages:
 
   /package-json-from-dist@1.0.0:
     resolution: {integrity: sha512-dATvCeZN/8wQsGywez1mzHtTlP22H8OEfPrVMLNr4/eGa+ijtLn/6M5f0dY8UKNrC2O9UCU6SSoG3qRKnt7STw==}
-    dev: true
-
-  /pacote@18.0.6:
-    resolution: {integrity: sha512-+eK3G27SMwsB8kLIuj4h1FUhHtwiEUo21Tw8wNjmvdlpOEr613edv+8FUsTj/4F/VN5ywGE19X18N7CC2EJk6A==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    hasBin: true
-    dependencies:
-      '@npmcli/git': 5.0.7
-      '@npmcli/installed-package-contents': 2.1.0
-      '@npmcli/package-json': 5.1.0
-      '@npmcli/promise-spawn': 7.0.2
-      '@npmcli/run-script': 8.1.0
-      cacache: 18.0.3
-      fs-minipass: 3.0.3
-      minipass: 7.1.2
-      npm-package-arg: 11.0.2
-      npm-packlist: 8.0.2
-      npm-pick-manifest: 9.0.1
-      npm-registry-fetch: 17.0.1
-      proc-log: 4.2.0
-      promise-retry: 2.0.1
-      sigstore: 2.3.0
-      ssri: 10.0.6
-      tar: 6.2.1
-    transitivePeerDependencies:
-      - bluebird
-      - supports-color
     dev: true
 
   /parent-module@1.0.1:
@@ -6291,11 +6026,6 @@ packages:
     engines: {node: ^14.13.1 || >=16.0.0}
     dev: true
 
-  /proc-log@3.0.0:
-    resolution: {integrity: sha512-++Vn7NS4Xf9NacaU9Xq3URUuqZETPsf8L4j5/ckhaRYsfPeRyzGw+iDjFhV/Jr3uNmTvvddEJFWh5R1gRgUH8A==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    dev: true
-
   /proc-log@4.2.0:
     resolution: {integrity: sha512-g8+OnU/L2v+wyiVK+D5fA34J7EH8jZ8DDlvwhRCMxmMj7UCBvxiO1mGeN+36JXIKF4zevU4kRBd8lVgG9vLelA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -6313,15 +6043,6 @@ packages:
   /progress@2.0.3:
     resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
     engines: {node: '>=0.4.0'}
-    dev: true
-
-  /promise-inflight@1.0.1:
-    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
-    peerDependencies:
-      bluebird: '*'
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
     dev: true
 
   /promise-retry@2.0.1:
@@ -6746,20 +6467,6 @@ packages:
     engines: {node: '>=14'}
     dev: true
 
-  /sigstore@2.3.0:
-    resolution: {integrity: sha512-q+o8L2ebiWD1AxD17eglf1pFrl9jtW7FHa0ygqY6EKvibK8JHyq9Z26v9MZXeDiw+RbfOJ9j2v70M10Hd6E06A==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      '@sigstore/bundle': 2.3.1
-      '@sigstore/core': 1.1.0
-      '@sigstore/protobuf-specs': 0.3.2
-      '@sigstore/sign': 2.3.1
-      '@sigstore/tuf': 2.3.3
-      '@sigstore/verify': 1.2.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /simple-concat@1.0.1:
     resolution: {integrity: sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q==}
     requiresBuild: true
@@ -6871,28 +6578,6 @@ packages:
   /source-map@0.7.4:
     resolution: {integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==}
     engines: {node: '>= 8'}
-    dev: true
-
-  /spdx-correct@3.2.0:
-    resolution: {integrity: sha512-kN9dJbvnySHULIluDHy32WHRUu3Og7B9sbY7tsFLctQkIqnMh3hErYgdMjTYuqmcXX+lK5T1lnUt3G7zNswmZA==}
-    dependencies:
-      spdx-expression-parse: 3.0.1
-      spdx-license-ids: 3.0.17
-    dev: true
-
-  /spdx-exceptions@2.5.0:
-    resolution: {integrity: sha512-PiU42r+xO4UbUS1buo3LPJkjlO7430Xn5SVAhdpzzsPHsjbYVflnnFdATgabnLude+Cqu25p6N+g2lw/PFsa4w==}
-    dev: true
-
-  /spdx-expression-parse@3.0.1:
-    resolution: {integrity: sha512-cbqHunsQWnJNE6KhVSMsMeH5H/L9EpymbzqTQ3uLwNCLZ1Q481oWaofqH7nO6V07xlXwY6PhQdQ2IedWx/ZK4Q==}
-    dependencies:
-      spdx-exceptions: 2.5.0
-      spdx-license-ids: 3.0.17
-    dev: true
-
-  /spdx-license-ids@3.0.17:
-    resolution: {integrity: sha512-sh8PWc/ftMqAAdFiBu6Fy6JUOYjqDJBJvIhpfDMyHrr0Rbp5liZqd4TjtQ/RgfLjKFZb+LMx5hpml5qOWy0qvg==}
     dev: true
 
   /speakingurl@14.0.1:
@@ -7224,17 +6909,6 @@ packages:
   /tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
-  /tuf-js@2.2.1:
-    resolution: {integrity: sha512-GwIJau9XaA8nLVbUXsN3IlFi7WmQ48gBUrl3FTkkL/XLu/POhBzfmX9hd33FNMX1qAsfl6ozO1iMmW9NC8YniA==}
-    engines: {node: ^16.14.0 || >=18.0.0}
-    dependencies:
-      '@tufjs/models': 2.0.1
-      debug: 4.3.5
-      make-fetch-happen: 13.0.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
     requiresBuild: true
@@ -7545,13 +7219,6 @@ packages:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: true
 
-  /validate-npm-package-license@3.0.4:
-    resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
-    dependencies:
-      spdx-correct: 3.2.0
-      spdx-expression-parse: 3.0.1
-    dev: true
-
   /validate-npm-package-name@5.0.1:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
@@ -7646,7 +7313,7 @@ packages:
       '@nuxt/kit':
         optional: true
     dependencies:
-      '@antfu/utils': 0.7.8
+      '@antfu/utils': 0.7.10
       '@nuxt/kit': 3.12.2(magicast@0.3.4)
       '@rollup/pluginutils': 5.1.0(rollup@4.18.0)
       debug: 4.3.5
@@ -7673,7 +7340,7 @@ packages:
       '@babel/plugin-syntax-import-meta': 7.10.4(@babel/core@7.24.7)
       '@babel/plugin-transform-typescript': 7.24.7(@babel/core@7.24.7)
       '@vue/babel-plugin-jsx': 1.2.2(@babel/core@7.24.7)
-      '@vue/compiler-dom': 3.4.29
+      '@vue/compiler-dom': 3.4.30
       kolorist: 1.8.0
       magic-string: 0.30.10
       vite: 5.3.1(@types/node@20.14.9)
@@ -7897,14 +7564,6 @@ packages:
     hasBin: true
     dependencies:
       isexe: 2.0.0
-    dev: true
-
-  /which@4.0.0:
-    resolution: {integrity: sha512-GlaYyEb07DPxYCKhKzplCWBJtvxZcZMrL+4UkrTSJHHPyZU4mYYTv3qaOe77H7EODLSSopAUFAc6W8U4yqvscg==}
-    engines: {node: ^16.13.0 || >=18.0.0}
-    hasBin: true
-    dependencies:
-      isexe: 3.1.1
     dev: true
 
   /wide-align@1.1.5:
