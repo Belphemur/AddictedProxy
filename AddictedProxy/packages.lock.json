@@ -51,14 +51,14 @@
       },
       "Hangfire.PostgreSql": {
         "type": "Direct",
-        "requested": "[1.20.8, )",
-        "resolved": "1.20.8",
-        "contentHash": "poj5GftgntsGZIGcvIa/NCfzUh0XS+O37y6W9sxjRdE4KgDYKNjl4dboC3DEpWcfDyDwwT41Aa9exqiZQJwQXw==",
+        "requested": "[1.20.9, )",
+        "resolved": "1.20.9",
+        "contentHash": "lq6zWz4hn9+5i6rOkkvI2HZ9g39ZclVwb6Qgj5ROD29BAGquYqtBD/6pY2WDeCB1ZHRfLT9ps2Vmvy1V94A/DA==",
         "dependencies": {
           "Dapper": "2.0.123",
           "Hangfire.Core": "1.8.0",
           "Microsoft.CSharp": "4.7.0",
-          "Npgsql": "6.0.0"
+          "Npgsql": "6.0.11"
         }
       },
       "Microsoft.Extensions.Hosting.Systemd": {
