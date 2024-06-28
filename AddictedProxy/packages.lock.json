@@ -83,11 +83,11 @@
       },
       "Polly": {
         "type": "Direct",
-        "requested": "[8.4.0, )",
-        "resolved": "8.4.0",
-        "contentHash": "z2EeUutuy49jBQyZ5s2FUuTCGx3GCzJ0cJ2HbjWwks94TsC6bKTtAHKBkMZOa/DyYRl5yIX7MshvMTWl1J6RNg==",
+        "requested": "[8.4.1, )",
+        "resolved": "8.4.1",
+        "contentHash": "kBxql53peR0bjxeEuuY114GD2rmC0tkUwE1xuKUlnd74ULEsGu3OwcLH56KkwxBPUbOysPa7stT9SJ6pKGTzlg==",
         "dependencies": {
-          "Polly.Core": "8.4.0"
+          "Polly.Core": "8.4.1"
         }
       },
       "Polly.Contrib.WaitAndRetry": {
@@ -148,15 +148,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.304.20",
-        "contentHash": "6q29LzuKypEscPqXrCNL8VN1xraBiFGGvltn27/qLpC0jbdeKGDf5tYX0S/TSuKo66ZCFAlM/7OI72TIBvHUjA=="
+        "resolved": "3.7.304.21",
+        "contentHash": "MD1UcVQPbJmE/s3JJ2/TFc3tuhHqxn5XOMOCKS3WloXFmJM/oKW/e7FEWSmce65WghVKGkscIdCR5Ckh552o7A=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.309.9",
-        "contentHash": "iKEFQtYQPPzSTrn2DLyfMB90qaAHSVzKVDf8VX4BodkeEFnoScfpuDAuVLkWWTSgf0V68mPKSCEe4W3YUIpaFA==",
+        "resolved": "3.7.309.10",
+        "contentHash": "2eNqXLckwopqLNS+fkZjUmIHMBHZggaOKSQZz/Equgbxke4lVGl04PXWv3od54a2OcdrXbaR/Wyz1i/HFXJPpA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.304.20, 4.0.0)"
+          "AWSSDK.Core": "[3.7.304.21, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -894,8 +894,8 @@
       },
       "Polly.Core": {
         "type": "Transitive",
-        "resolved": "8.4.0",
-        "contentHash": "3AZxuP//pxOeBo9tQs7/tz4Z5TTbu4BYfjpaXZD0JYKJo98ngN9TMUz1nybh4k0ykWkMBpGZALV/AmVIE3ew7A=="
+        "resolved": "8.4.1",
+        "contentHash": "bg4kE7mFwXc6FJ8NLknTgVgLAMlbToWC7vpdqAITv8lPzKpp9v7aWJPc04GRoZQaJhVY/tdr8K2/VW2aTmaA1Q=="
       },
       "Polly.Extensions.Http": {
         "type": "Transitive",
@@ -1950,7 +1950,7 @@
           "Compressor": "[1.0.0, )",
           "Hangfire.AspNetCore": "[1.8.14, )",
           "InversionOfControl": "[1.0.0, )",
-          "Polly": "[8.4.0, )",
+          "Polly": "[8.4.1, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )"
         }
       },
@@ -1978,7 +1978,7 @@
           "Microsoft.Extensions.Http": "[8.0.0, )",
           "Microsoft.Extensions.Http.Polly": "[8.0.6, )",
           "Performance": "[1.0.0, )",
-          "Polly": "[8.4.0, )",
+          "Polly": "[8.4.1, )",
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )",
           "Polly.Extensions.Http": "[3.0.0, )",
           "Sentry": "[4.8.0, )",
