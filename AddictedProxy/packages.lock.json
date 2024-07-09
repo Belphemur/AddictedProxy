@@ -148,15 +148,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.304.23",
-        "contentHash": "Rfc04rBzFXXc+KgflS0yGU19PjW6FPP2vMLezUX1Wk8/fCCV4uqTNz0XO/UEvalQdjj1XtFnXH6h+ymWdV8ODQ=="
+        "resolved": "3.7.304.26",
+        "contentHash": "rm5RS5mLiKvzH2EgwGGvXTWhcClBdmj000KuNyrihwbfof6FaTIIXlutFgXUFChqDzb/6c0k0nrkWGd+Ht3oww=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.309.12",
-        "contentHash": "IWyFylefV//F5ENfoQPnxeB0gv9eM2kKk3n15BOeL+/413b51j4TeFz6jLejOo0LIXdssDMkw4eeqN0TiVByvg==",
+        "resolved": "3.7.310.3",
+        "contentHash": "wKbJKKEgJJF66JpPJ5d6OtsuYBF6K9/Ijxt2Aqm5CDexnveMKD1kBTtxKYV3BkdLlKtmEGBq+5M5MCLWIQA/Ww==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.304.23, 4.0.0)"
+          "AWSSDK.Core": "[3.7.304.26, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -1774,8 +1774,8 @@
       },
       "System.Text.Json": {
         "type": "Transitive",
-        "resolved": "8.0.3",
-        "contentHash": "hpagS9joOwv6efWfrMmV9MjQXpiXZH72PgN067Ysfr6AWMSD1/1hEcvh/U5mUpPLezEWsOJSuVrmqDIVD958iA==",
+        "resolved": "8.0.4",
+        "contentHash": "bAkhgDJ88XTsqczoxEMliSrpijKZHhbJQldhAmObj/RbrN3sU5dcokuXmWJWsdQAhiMJ9bTayWsL1C9fbbCRhw==",
         "dependencies": {
           "System.Text.Encodings.Web": "8.0.0"
         }
@@ -1982,7 +1982,7 @@
           "Polly.Contrib.WaitAndRetry": "[1.1.1, )",
           "Polly.Extensions.Http": "[3.0.0, )",
           "Sentry": "[4.8.1, )",
-          "System.Text.Json": "[8.0.3, )"
+          "System.Text.Json": "[8.0.4, )"
         }
       },
       "compressor": {
@@ -2032,7 +2032,7 @@
           "Microsoft.AspNetCore.WebUtilities": "[8.0.6, )",
           "Microsoft.Extensions.Http": "[8.0.0, )",
           "System.Net.Http.Json": "[8.0.0, )",
-          "System.Text.Json": "[8.0.3, )"
+          "System.Text.Json": "[8.0.4, )"
         }
       }
     }
