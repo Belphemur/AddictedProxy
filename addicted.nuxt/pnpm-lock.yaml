@@ -69,7 +69,7 @@ devDependencies:
     version: 1.10.0(h3@1.12.0)
   swagger-typescript-api:
     specifier: ^13.0.3
-    version: 13.0.12
+    version: 13.0.13
   typescript:
     specifier: ^5.4.5
     version: 5.5.3
@@ -6353,8 +6353,8 @@ packages:
     dev: true
     optional: true
 
-  /prettier@3.3.2:
-    resolution: {integrity: sha512-rAVeHYMcv8ATV5d508CFdn+8/pHPpXeIid1DdrPwXnaAdH7cqjVbpJaT5eq4yRAFU/lsbwYwSF/n5iNrdJHPQA==}
+  /prettier@3.3.3:
+    resolution: {integrity: sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true
@@ -7085,8 +7085,8 @@ packages:
     resolution: {integrity: sha512-rCC0NWGKr/IJhtRuPq/t37qvZHI/mH4I4sxflVM+qgVe5Z2uOCivzWaVbuioJaB61kvm5UvB7b49E+oBY0M8jA==}
     dev: true
 
-  /swagger-typescript-api@13.0.12:
-    resolution: {integrity: sha512-C+B5QV0BCCdlKGZSq/e8k/lC3AzHqBDMA5Zu9wdJyBE4NgEumXQmwDBcHHKkonGCyoF6mYjhJuBWAPJ6eNUB/w==}
+  /swagger-typescript-api@13.0.13:
+    resolution: {integrity: sha512-6TF2q6I70RGBElTT37IhoOLcQjCbNfRnefx9HbbU+kNl5Mvw5xk3gcOFlhTtkk/YDu9MXfT/yxfdJgZO7R5BSQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
@@ -7098,7 +7098,7 @@ packages:
       lodash: 4.17.21
       nanoid: 3.3.7
       node-emoji: 2.1.3
-      prettier: 3.3.2
+      prettier: 3.3.3
       swagger-schema-official: 2.0.0-bab6bed
       swagger2openapi: 7.0.8
       typescript: 5.5.3
