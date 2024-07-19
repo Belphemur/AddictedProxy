@@ -5,7 +5,6 @@ using AddictedProxy.Database.Model.Shows;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SimpleMvcSitemap;
-using SimpleMvcSitemap.Routing;
 using SimpleMvcSitemap.StyleSheets;
 
 namespace AddictedProxy.Services.Sitemap;

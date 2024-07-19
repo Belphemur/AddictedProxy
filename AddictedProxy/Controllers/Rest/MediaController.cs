@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Net.Http.Headers;
-using TvMovieDatabaseClient.Model.Show.Search;
 using TvMovieDatabaseClient.Service;
 using TvMovieDatabaseClient.Service.Model;
 using DistributedCacheExtensions = AddictedProxy.Caching.Extensions.DistributedCacheExtensions;
