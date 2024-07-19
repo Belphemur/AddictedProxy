@@ -1,3 +1,16 @@
+## [4.22.12](https://github.com/Belphemur/AddictedProxy/compare/v4.22.11...v4.22.12) (2024-07-19)
+
+### Performance improvements
+
+* update user agent ([29b2274](https://github.com/Belphemur/AddictedProxy/commit/29b227428ebe2ccfc30b4bf35941b14f3ad2f4f7))
+
+### Bug Fixes
+
+* **deps:** update dependency @microsoft/signalr to v8.0.7 ([b365538](https://github.com/Belphemur/AddictedProxy/commit/b365538759f94cf03d38fb4589e1b1341ec02764))
+* **deps:** update dependency vuetify to v3.6.11 ([d75968a](https://github.com/Belphemur/AddictedProxy/commit/d75968a5d79961a9e9b168d60203b507835d4f0f))
+* **deps:** update dependency vuetify to v3.6.12 ([4a73828](https://github.com/Belphemur/AddictedProxy/commit/4a7382823e6c9fd37b97d8bc362091270c36b4c8))
+* **deps:** update dependency vuetify to v3.6.13 ([010f375](https://github.com/Belphemur/AddictedProxy/commit/010f37521e822f1678ec95f3f43322d25ba0ab13))
+
 ## [4.22.11](https://github.com/Belphemur/AddictedProxy/compare/v4.22.10...v4.22.11) (2024-06-21)
 
 ### Performance improvements
