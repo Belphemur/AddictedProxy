@@ -1,10 +1,6 @@
-﻿using AddictedProxy.Caching.Extensions;
-using AddictedProxy.Storage.Caching.Service;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using AddictedProxy.Storage.Caching.Service;
 using SixLabors.ImageSharp.Web.Resolvers;
 using TvMovieDatabaseClient.Service;
-using TvMovieDatabaseClient.Service.Model;
-using DistributedCacheExtensions = AddictedProxy.Caching.Extensions.DistributedCacheExtensions;
 
 namespace AddictedProxy.Image.Model;
 
