@@ -148,15 +148,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.304.30",
-        "contentHash": "TJdogpjIbdBrrlyBEmDCO28+qqR85RXs62ElK2NiMyzOEmnBNR2zRL8kEqqUk2V8TPyKKeBXRW0BkUX4yh8MjQ=="
+        "resolved": "3.7.304.31",
+        "contentHash": "Gx5NqKJ4jt+V7LaKXWFhYbL5u99uTSmJg0w5k/iZgQEssxpZB438eTk7JdxrIFlIvw6Lv1v5LTNRNfI5/ZEaaA=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.310.7",
-        "contentHash": "ygDGJgItYrC68BJ7sZarP+JbC8trKJJxYA98QBHDxkityb1PqVosILyL7jOiIc1NhU+B0bvIKXr9UNC5Ioicxg==",
+        "resolved": "3.7.310.8",
+        "contentHash": "10Rt0X6jclb1jVZMoIcCHeWzrRmEaq8ZDs6ZiXe+7sh1ZXayOKqMvLdoALaesuD0ZjFoHRid/FFZ4M/v1g7Q1A==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.304.30, 4.0.0)"
+          "AWSSDK.Core": "[3.7.304.31, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
@@ -657,8 +657,8 @@
       },
       "Microsoft.IO.RecyclableMemoryStream": {
         "type": "Transitive",
-        "resolved": "2.3.2",
-        "contentHash": "Oh1qXXFdJFcHozvb4H6XYLf2W0meZFuG0A+TfapFPj9z5fd4vxiARGEhAaLj/6XWQaMYIv4SH/9Q6H78Hw0E2Q=="
+        "resolved": "3.0.1",
+        "contentHash": "s/s20YTVY9r9TPfTrN5g8zPF1YhwxyqO6PxUkrYTGI2B+OGPe9AdajWZrLhFqXIvqIW23fnUE4+ztrUWNU1+9g=="
       },
       "Microsoft.Net.Http.Headers": {
         "type": "Transitive",
@@ -1064,16 +1064,16 @@
       },
       "SixLabors.ImageSharp": {
         "type": "Transitive",
-        "resolved": "3.1.4",
-        "contentHash": "lFIdxgGDA5iYkUMRFOze7BGLcdpoLFbR+a20kc1W7NepvzU7ejtxtWOg9RvgG7kb9tBoJ3ONYOK6kLil/dgF1w=="
+        "resolved": "3.1.5",
+        "contentHash": "lNtlq7dSI/QEbYey+A0xn48z5w4XHSffF8222cC4F4YwTXfEImuiBavQcWjr49LThT/pRmtWJRcqA/PlL+eJ6g=="
       },
       "SixLabors.ImageSharp.Web": {
         "type": "Transitive",
-        "resolved": "3.1.2",
-        "contentHash": "4JSH9pzOu0g0PaehMQzpm43ffQmaWcGdmmPAOn+6ieG6vlvmHefGM3imBcMelLRDNwxZQyiOmO+leMukeISmiQ==",
+        "resolved": "3.1.3",
+        "contentHash": "lk6y7QYcJKR0VZV8m//zJ3NZNdvXuyDSY/CpaL/Ps11v9iWt7KZUzAsNmOZpvGFDpsjFdPA0FNhHftRfUy696Q==",
         "dependencies": {
-          "Microsoft.IO.RecyclableMemoryStream": "2.3.2",
-          "SixLabors.ImageSharp": "3.1.4"
+          "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
+          "SixLabors.ImageSharp": "3.1.5"
         }
       },
       "StackExchange.Redis": {
@@ -1923,7 +1923,7 @@
           "AddictedProxy.Storage.Caching": "[1.0.0, )",
           "InversionOfControl": "[1.0.0, )",
           "Microsoft.AspNetCore.Http.Abstractions": "[2.2.0, )",
-          "SixLabors.ImageSharp.Web": "[3.1.2, )",
+          "SixLabors.ImageSharp.Web": "[3.1.3, )",
           "TvMovieDatabaseClient": "[1.0.0, )"
         }
       },
