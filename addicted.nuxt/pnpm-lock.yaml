@@ -69,7 +69,7 @@ devDependencies:
     version: 1.10.0(h3@1.12.0)
   swagger-typescript-api:
     specifier: ^13.0.3
-    version: 13.0.13
+    version: 13.0.14
   typescript:
     specifier: ^5.4.5
     version: 5.5.4
@@ -6799,8 +6799,8 @@ packages:
     resolution: {integrity: sha512-rCC0NWGKr/IJhtRuPq/t37qvZHI/mH4I4sxflVM+qgVe5Z2uOCivzWaVbuioJaB61kvm5UvB7b49E+oBY0M8jA==}
     dev: true
 
-  /swagger-typescript-api@13.0.13:
-    resolution: {integrity: sha512-6TF2q6I70RGBElTT37IhoOLcQjCbNfRnefx9HbbU+kNl5Mvw5xk3gcOFlhTtkk/YDu9MXfT/yxfdJgZO7R5BSQ==}
+  /swagger-typescript-api@13.0.14:
+    resolution: {integrity: sha512-4jiwEkYA8qemu0o0TU0gYir9GkhEXUmhp6JPGfj720mS6W+xB5WbbkVcgCdcfoYXpjUz02o677CEFa0OyhM3hQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
@@ -7125,7 +7125,7 @@ packages:
       scule: 1.3.0
       unplugin: 1.11.0
       vue-router: 4.4.0(vue@3.4.32)
-      yaml: 2.4.5
+      yaml: 2.5.0
     transitivePeerDependencies:
       - rollup
       - vue
@@ -7766,8 +7766,8 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /yaml@2.4.5:
-    resolution: {integrity: sha512-aBx2bnqDzVOyNKfsysjA2ms5ZlnjSAW2eG3/L5G/CSujfjLJTJsEw1bGw8kCf04KodQWk1pxlGnZ56CRxiawmg==}
+  /yaml@2.5.0:
+    resolution: {integrity: sha512-2wWLbGbYDiSqqIKoPjar3MPgB94ErzCtrNE1FdqGuaO0pi2JGjmE8aW8TDZwzU7vuxcGRdL/4gPQwQ7hD5AMSw==}
     engines: {node: '>= 14'}
     hasBin: true
     dev: true
