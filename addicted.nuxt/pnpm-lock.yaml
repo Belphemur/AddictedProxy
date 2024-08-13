@@ -69,7 +69,7 @@ devDependencies:
     version: 1.10.0(h3@1.12.0)
   swagger-typescript-api:
     specifier: ^13.0.3
-    version: 13.0.19
+    version: 13.0.20
   typescript:
     specifier: ^5.4.5
     version: 5.5.4
@@ -6712,8 +6712,8 @@ packages:
     resolution: {integrity: sha512-rCC0NWGKr/IJhtRuPq/t37qvZHI/mH4I4sxflVM+qgVe5Z2uOCivzWaVbuioJaB61kvm5UvB7b49E+oBY0M8jA==}
     dev: true
 
-  /swagger-typescript-api@13.0.19:
-    resolution: {integrity: sha512-2fCb04w1fjZNK/LUgbm/x2Z+oXXPx/x69d/rh+LnOso6cOUOr+gcPLkc4IvPchs/GytnMEiZp+L5v+OWQ4YLUg==}
+  /swagger-typescript-api@13.0.20:
+    resolution: {integrity: sha512-/VRu7iwLzutEmG1dnP/UUs2bVBG+WgG6kZbIIHlZUnoPaupGRxzvlyjORPrcxgRFRM6KPQW9zCZtryXdXaX/6A==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
