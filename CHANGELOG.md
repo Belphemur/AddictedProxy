@@ -1,3 +1,9 @@
+## [4.22.13](https://github.com/Belphemur/AddictedProxy/compare/v4.22.12...v4.22.13) (2024-08-14)
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.6.14 ([4bfaf30](https://github.com/Belphemur/AddictedProxy/commit/4bfaf30eed333c9e011f27e1f6f12b125ed542ee))
+
 ## [4.22.12](https://github.com/Belphemur/AddictedProxy/compare/v4.22.11...v4.22.12) (2024-07-19)
 
 ### Performance improvements
