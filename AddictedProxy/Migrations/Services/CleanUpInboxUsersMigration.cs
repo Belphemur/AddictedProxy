@@ -4,6 +4,7 @@ using AddictedProxy.Upstream.Service;
 
 namespace AddictedProxy.Migrations.Services;
 
+[MigrationDate(2024, 08, 14)]
 public class CleanUpInboxUsersMigration : IMigration
 {
     private readonly IAddic7edClient _addic7EdClient;
@@ -26,6 +27,7 @@ public class CleanUpInboxUsersMigration : IMigration
             {
                 _logger.LogWarning("Couldn't clean up inbox for {CredentialId}", cred.Id);
             }
+
             cred.DownloadExceededDate = null;
             cred.Usage = 0;
             cred.DownloadUsage = 0;
