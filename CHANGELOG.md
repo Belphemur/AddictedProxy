@@ -1,3 +1,19 @@
+## [4.23.0](https://github.com/Belphemur/AddictedProxy/compare/v4.22.13...v4.23.0) (2024-08-14)
+
+### Performance improvements
+
+* add logging ([955c44c](https://github.com/Belphemur/AddictedProxy/commit/955c44cb868c5a7f225cc0da0c5cd5965648cbf3))
+* improve the httputils class ([bd7ae78](https://github.com/Belphemur/AddictedProxy/commit/bd7ae7807d13d9cd360669df12222c2dfbf808c3))
+
+### Bug Fixes
+
+* missing migration date ([1cfb923](https://github.com/Belphemur/AddictedProxy/commit/1cfb92365475b3618b16b1dc47190862d09eaf1e))
+
+### Features
+
+* add cleanup inbox for addicted creds ([6c0c91b](https://github.com/Belphemur/AddictedProxy/commit/6c0c91b17021fe68390d5c4770e512d74ebf2589))
+* clean up inbox of all user and reset creds ([d515363](https://github.com/Belphemur/AddictedProxy/commit/d5153635314a6a30013289ee38c80d4526bd8487))
+
 ## [4.22.13](https://github.com/Belphemur/AddictedProxy/compare/v4.22.12...v4.22.13) (2024-08-14)
 
 ### Bug Fixes
