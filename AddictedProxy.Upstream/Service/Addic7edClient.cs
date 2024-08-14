@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Net;
 using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
@@ -63,6 +64,20 @@ internal class Addic7edClient : IAddic7edClient
     }
 
     /// <summary>
+    /// Clean up the inbox for the given account
+    /// </summary>
+    /// <param name="creds"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task<bool> CleanupInbox(AddictedUserCredentials creds, CancellationToken token)
+    {
+        var httpRequestMessage = _httpUtils.PrepareRequest(creds, "mailactions.php", HttpMethod.Post);
+        httpRequestMessage.Content = new FormUrlEncodedContent(new Dictionary<string, string> { { "inboxdelall", "Delete all" }, { "totalmsgs", "1" }, { "delall", "all" } });
+        using var response = await _httpClient.SendAsync(httpRequestMessage, token);
+        return response.StatusCode == HttpStatusCode.Found;
+    }
+
+    /// <summary>
     ///     Get nb of season the show has
     /// </summary>
     /// <param name="credentials"></param>
@@ -75,8 +90,8 @@ internal class Addic7edClient : IAddic7edClient
         {
             using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_getSeasons.php?showID={show.ExternalId}", HttpMethod.Get), token);
             return await _parser.GetSeasonsAsync(await response.Content.ReadAsStreamAsync(token), token)
-                                .Select(i => new Season { Number = i, TvShowId = show.Id })
-                                .ToArrayAsync(token);
+                .Select(i => new Season { Number = i, TvShowId = show.Id })
+                .ToArrayAsync(token);
         }
         catch (NothingToParseException)
         {
@@ -98,11 +113,11 @@ internal class Addic7edClient : IAddic7edClient
         using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_loadShow.php?show={show.ExternalId}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get),
             token);
         return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(token), token)
-                            .Select(episode =>
-                            {
-                                episode.TvShowId = show.Id;
-                                return episode;
-                            })
-                            .ToArrayAsync(token);
+            .Select(episode =>
+            {
+                episode.TvShowId = show.Id;
+                return episode;
+            })
+            .ToArrayAsync(token);
     }
 }
