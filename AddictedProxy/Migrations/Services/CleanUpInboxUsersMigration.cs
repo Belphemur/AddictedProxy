@@ -3,7 +3,7 @@ using AddictedProxy.OneTimeMigration.Model;
 using AddictedProxy.Upstream.Service;
 
 namespace AddictedProxy.Migrations.Services;
-
+[MigrationDate(2024, 08, 14)]
 public class CleanUpInboxUsersMigration : IMigration
 {
     private readonly IAddic7edClient _addic7EdClient;
