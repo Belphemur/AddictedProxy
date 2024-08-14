@@ -11,6 +11,7 @@ public class BootstrapMigration : IBootstrap
         services.AddScoped<IMigration, PopulateTvDbIdsMigration>();
         services.AddScoped<IMigration, SetCreatedDateAndUpdatedDateEpisodesMigration>();
         services.AddScoped<IMigration, SetCreatedDateAndUpdatedDateSubtitlesMigration>();
+        services.AddScoped<IMigration, CleanUpInboxUsersMigration>();
 
     }
 }
