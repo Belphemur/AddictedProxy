@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Net;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Shows;
@@ -71,10 +72,9 @@ internal class Addic7edClient : IAddic7edClient
     /// <returns></returns>
     public async Task<bool> CleanupInbox(AddictedUserCredentials creds, CancellationToken token)
     {
-        var httpRequestMessage = _httpUtils.PrepareRequest(creds, "mailactions.php", HttpMethod.Post);
-        httpRequestMessage.Content = new FormUrlEncodedContent(new Dictionary<string, string> { { "inboxdelall", "Delete all" }, { "totalmsgs", "1" }, { "delall", "all" } });
-        using var response = await _httpClient.SendAsync(httpRequestMessage, token);
-        return response.StatusCode == HttpStatusCode.Found;
+        var httpRequestMessage = _httpUtils.PrepareRequest(creds, "mailactions.php", HttpMethod.Post, new FormUrlEncodedContent(new Dictionary<string, string>(){ {"inboxdelall", "Delete all"}, {"totalmsgs", "1"}, {"delall", "all"} }));
+        var response = await _httpClient.SendAsync(httpRequestMessage, token);
+        return response.StatusCode is HttpStatusCode.Found;
     }
 
     /// <summary>

@@ -71,7 +71,7 @@ public class HttpUtils
         return userAgents[percentage % userAgents.Length];
     }
 
-    public HttpRequestMessage PrepareRequest(AddictedUserCredentials? credentials, string url, HttpMethod method)
+    public HttpRequestMessage PrepareRequest(AddictedUserCredentials? credentials, string url, HttpMethod method, HttpContent? content = null)
     {
         var userAgent = GetUserAgent();
         var request = new HttpRequestMessage(method, url)
@@ -80,7 +80,8 @@ public class HttpUtils
             {
                 { "Referer", "https://www.addic7ed.com/" },
                 { "User-Agent", userAgent },
-            }
+            },
+            Content = content
         };
         if (credentials != null)
         {
