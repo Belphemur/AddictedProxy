@@ -73,7 +73,7 @@ internal class Addic7edClient : IAddic7edClient
     public async Task<bool> CleanupInbox(AddictedUserCredentials creds, CancellationToken token)
     {
         var httpRequestMessage = _httpUtils.PrepareRequest(creds, "mailactions.php", HttpMethod.Post,
-            new FormUrlEncodedContent(new Dictionary<string, string> { { "inboxdelall", "Delete all" }, { "totalmsgs", "1" }, { "delall", "all" } }));
+            new FormUrlEncodedContent(new Dictionary<string, string> { { "inboxdelall", "value" }, { "delall", "all" } }));
         using var response = await _httpClient.SendAsync(httpRequestMessage, token);
         return response.StatusCode is HttpStatusCode.Found;
     }
