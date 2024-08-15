@@ -1,3 +1,9 @@
+## [4.23.1](https://github.com/Belphemur/AddictedProxy/compare/v4.23.0...v4.23.1) (2024-08-15)
+
+### Bug Fixes
+
+* don't follow redirect for client either ([5a0a114](https://github.com/Belphemur/AddictedProxy/commit/5a0a114acd22213a260ba2ed579523a55f4db840))
+
 ## [4.23.0](https://github.com/Belphemur/AddictedProxy/compare/v4.22.13...v4.23.0) (2024-08-14)
 
 ### Performance improvements
