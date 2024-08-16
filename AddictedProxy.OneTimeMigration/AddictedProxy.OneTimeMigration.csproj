@@ -13,7 +13,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Hangfire.Core" Version="1.8.14" />
+      <PackageReference Include="Hangfire.Core" />
+      <PackageReference Include="Newtonsoft.Json" />
+      <PackageReference Include="System.Text.Json" />
     </ItemGroup>
 
 </Project>

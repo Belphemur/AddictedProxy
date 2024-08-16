@@ -13,17 +13,19 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AWSSDK.S3" Version="3.7.*" />
-        <PackageReference Include="IsExternalInit" Version="1.0.3">
+        <PackageReference Include="AWSSDK.S3" />
+        <PackageReference Include="IsExternalInit">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Polly" Version="8.4.1" />
-        <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
+        <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="Polly" />
+        <PackageReference Include="Polly.Contrib.WaitAndRetry" />
        </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.14" />
+        <PackageReference Include="Hangfire.AspNetCore" />
+        <PackageReference Include="System.Text.Encodings.Web" />
     </ItemGroup>
 
 

@@ -26,7 +26,7 @@ public class ZstdSrtFileCompressor : ICompressorService, IDisposable
     {
         var outputStream = new MemoryStream();
         {
-            await outputStream.WriteAsync(Definition.MagicNumberByte[..4], cancellationToken);
+            await outputStream.WriteAsync(Definition.MagicNumberByte.AsMemory()[..4], cancellationToken);
             await using var compressionStream = new CompressionStream(outputStream, _compressionOptions);
             await inputStream.CopyToAsync(compressionStream, cancellationToken);
             await compressionStream.FlushAsync(cancellationToken);

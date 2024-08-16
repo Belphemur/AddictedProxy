@@ -4,6 +4,7 @@ using AddictedProxy.OneTimeMigration.Model;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Performance.Service;
+using System.Collections.Frozen;
 
 namespace AddictedProxy.OneTimeMigration.Services;
 
@@ -24,12 +25,13 @@ internal class MigrationsRunner : IMigrationsRunner
     {
         using var span = _performanceTracker.BeginNestedSpan("running-migration", "Running one time migrations");
         var migrations = _migrations.ToDictionary(migration => migration.MigrationType);
-        var success = await _entityContext.OneTimeMigrationRelease
-                                          .Where(release => migrations.Keys.Contains(release.MigrationType))
+        var success = (await _entityContext.OneTimeMigrationRelease
+                                          .Where(release => migrations.ContainsKey(release.MigrationType))
                                           .Where(release => release.State == OneTimeMigrationRelease.MigrationState.Success)
-                                          .ToDictionaryAsync(release => release.MigrationType, cancellationToken: token);
+                                          .Select(release => release.MigrationType)
+                                          .ToArrayAsync(token)).ToFrozenSet();
 
-        foreach (var migrationType in migrations.Keys.Except(success.Keys))
+        foreach (var migrationType in migrations.Keys.Where(k => !success.Contains(k)))
         {
             BackgroundJob.Enqueue<RunnerJob>(job => job.RunMigrationAsync(migrationType, default));
         }

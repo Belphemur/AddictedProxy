@@ -7,6 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" />
+      <PackageReference Include="System.Text.Encodings.Web" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\AddictedProxy.Caching\AddictedProxy.Caching.csproj" />
       <ProjectReference Include="..\AddictedProxy.Storage\AddictedProxy.Storage.csproj" />
       <ProjectReference Include="..\Compressor\Compressor.csproj" />
