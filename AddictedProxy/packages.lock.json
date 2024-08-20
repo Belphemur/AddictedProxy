@@ -148,21 +148,21 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.400.7",
-        "contentHash": "tq3I/PaDMyq+E6wxFiu72kf/rsElHKRuYlmET33ISZ9x5nDje7yg3efEri0TP5PmmLoqBchfcfa0J6Eet4O1MA=="
+        "resolved": "3.7.400.8",
+        "contentHash": "3NZbfh63gr2dRVqd2rS1FfSKI9E/zH7qqHOZYD8fzC6+E68Hs6bmbFAhthXjVbP6Xiaf+GXOHiPZILqoJ543ag=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.401.1",
-        "contentHash": "nj/w4u19pp5L98HlSfL4yJ81oOOg6Yw1TynF3xoB7LcE4BIBv0eZ0rYNEQvFZOJNTtNykjbwkpRnStUG6PMY3w==",
+        "resolved": "3.7.401.2",
+        "contentHash": "dgLB1EyQDWA+MZss93rVJmaNSNgXy3WeyZi41q+0fCfklCT9O5g6oLe33Ef98wp7nytAi1eIloRCDt0gWAZYcg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.400.7, 4.0.0)"
+          "AWSSDK.Core": "[3.7.400.8, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
         "type": "Transitive",
-        "resolved": "4.0.4",
-        "contentHash": "xUlDkBlDgASce7yzLxrKHyHNthdAy1RA6W71Pt+FX4NCg2V10Iq7Hmm9L1hBR1UOgUPA6qJ8gStZNwo7b3LStw==",
+        "resolved": "4.0.6",
+        "contentHash": "WD2H/dQQRIQXXkAEZLcUQ1owEWiM5ZRfmW5ys7yq5wgm52mbliZ6cwgLtNLjL1U2CuElEwKvpz420Jo/+e2mFA==",
         "dependencies": {
           "Dapper": "2.0.123",
           "Microsoft.Extensions.Caching.Abstractions": "7.0.0",
@@ -1885,7 +1885,7 @@
       "addictedproxy.caching": {
         "type": "Project",
         "dependencies": {
-          "Community.Microsoft.Extensions.Caching.PostgreSql": "[4.0.4, )",
+          "Community.Microsoft.Extensions.Caching.PostgreSql": "[4.0.6, )",
           "InversionOfControl": "[1.0.0, )",
           "Microsoft.Extensions.Caching.Memory": "[8.0.0, )",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[8.0.8, )",
