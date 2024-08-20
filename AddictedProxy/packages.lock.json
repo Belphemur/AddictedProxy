@@ -161,8 +161,8 @@
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
         "type": "Transitive",
-        "resolved": "4.0.4",
-        "contentHash": "xUlDkBlDgASce7yzLxrKHyHNthdAy1RA6W71Pt+FX4NCg2V10Iq7Hmm9L1hBR1UOgUPA6qJ8gStZNwo7b3LStw==",
+        "resolved": "4.0.6",
+        "contentHash": "WD2H/dQQRIQXXkAEZLcUQ1owEWiM5ZRfmW5ys7yq5wgm52mbliZ6cwgLtNLjL1U2CuElEwKvpz420Jo/+e2mFA==",
         "dependencies": {
           "Dapper": "2.0.123",
           "Microsoft.Extensions.Caching.Abstractions": "7.0.0",
@@ -1885,7 +1885,7 @@
       "addictedproxy.caching": {
         "type": "Project",
         "dependencies": {
-          "Community.Microsoft.Extensions.Caching.PostgreSql": "[4.0.4, )",
+          "Community.Microsoft.Extensions.Caching.PostgreSql": "[4.0.6, )",
           "InversionOfControl": "[1.0.0, )",
           "Microsoft.Extensions.Caching.Memory": "[8.0.0, )",
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[8.0.8, )",
