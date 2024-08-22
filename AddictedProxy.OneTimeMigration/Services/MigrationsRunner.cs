@@ -25,13 +25,12 @@ internal class MigrationsRunner : IMigrationsRunner
     {
         using var span = _performanceTracker.BeginNestedSpan("running-migration", "Running one time migrations");
         var migrations = _migrations.ToDictionary(migration => migration.MigrationType);
-        var success = (await _entityContext.OneTimeMigrationRelease
-                                          .Where(release => migrations.ContainsKey(release.MigrationType))
-                                          .Where(release => release.State == OneTimeMigrationRelease.MigrationState.Success)
-                                          .Select(release => release.MigrationType)
-                                          .ToArrayAsync(token)).ToFrozenSet();
+        var success = await _entityContext.OneTimeMigrationRelease
+            .Where(release => migrations.Keys.Contains(release.MigrationType))
+            .Where(release => release.State == OneTimeMigrationRelease.MigrationState.Success)
+            .ToDictionaryAsync(release => release.MigrationType, cancellationToken: token);
 
-        foreach (var migrationType in migrations.Keys.Where(k => !success.Contains(k)))
+        foreach (var migrationType in migrations.Keys.Except(success.Keys))
         {
             BackgroundJob.Enqueue<RunnerJob>(job => job.RunMigrationAsync(migrationType, default));
         }
