@@ -1,3 +1,14 @@
+## [4.23.2](https://github.com/Belphemur/AddictedProxy/compare/v4.23.1...v4.23.2) (2024-08-22)
+
+### Performance improvements
+
+* update result dependency ([3195c75](https://github.com/Belphemur/AddictedProxy/commit/3195c75ca441f2e45f52a70773a9f24398c1e5df))
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v24.1.0 ([8956e7e](https://github.com/Belphemur/AddictedProxy/commit/8956e7ecebe8d495fd972b11e640984535f7c8a6))
+* **deps:** update dependency vuetify to v3.7.0 ([6d3b8cd](https://github.com/Belphemur/AddictedProxy/commit/6d3b8cddd69de5a338c4821e098df4cef783d75a))
+
 ## [4.23.1](https://github.com/Belphemur/AddictedProxy/compare/v4.23.0...v4.23.1) (2024-08-15)
 
 ### Bug Fixes
