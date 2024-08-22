@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AWSSDK.S3" Version="3.7.*"/>
+        <PackageReference Include="AWSSDK.S3" />
         <PackageReference Include="IsExternalInit">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -26,6 +26,10 @@
     <ItemGroup>
         <PackageReference Include="Hangfire.AspNetCore" />
         <PackageReference Include="System.Text.Encodings.Web" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageVersion Update="AWSSDK.S3" Version="3.7.402.1" />
     </ItemGroup>
 
 
