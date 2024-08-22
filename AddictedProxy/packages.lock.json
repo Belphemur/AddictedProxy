@@ -13,11 +13,11 @@
       },
       "Ardalis.Result.AspNetCore": {
         "type": "Direct",
-        "requested": "[8.0.0, )",
-        "resolved": "8.0.0",
-        "contentHash": "RBhTRqZFtX2cleCDJ9cQILnPnMKr44wcGhu/ukijP0sWWsxvhy9QNvHfXlUEL6MekXqcvKfFkQe0xORlUPbQwA==",
+        "requested": "[9.1.0, )",
+        "resolved": "9.1.0",
+        "contentHash": "3yb5XIY86M3Z54XnoDuSgmtBChcfSBQLbEGI0zSz+qpwIMZDU7SJ/ntSOgP7sCGT2SZf+nS8Y4fDcTO9hjmyXg==",
         "dependencies": {
-          "Ardalis.Result": "8.0.0"
+          "Ardalis.Result": "9.1.0"
         }
       },
       "Hangfire.AspNetCore": {
@@ -184,11 +184,8 @@
       },
       "Ardalis.Result": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "+al8+J0KTgAvpbp1b4w0KSA/hGXpteu8idXNwbZi/1qbxKgSMtQtdKc2Td02/HcRDeGt07cUIMmxG8w3R7VLVw==",
-        "dependencies": {
-          "System.Text.Json": "7.0.3"
-        }
+        "resolved": "9.1.0",
+        "contentHash": "+gr5+vCUmFkmAyQgHQ2Ja0MdTVJW97L/M/6fgStDDhTB9DfS85ZZDo5WtI00bQUdy9/ccX5YRDKlWvw8En3WeA=="
       },
       "AWSSDK.Core": {
         "type": "Transitive",

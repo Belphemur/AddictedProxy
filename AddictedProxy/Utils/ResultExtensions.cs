@@ -12,7 +12,7 @@ public static class ResultExtensions
         return result.Status switch
         {
             ResultStatus.Ok => await func((TSource)result),
-            ResultStatus.Error => Result<TDestination>.Error(result.Errors.ToArray<string>()),
+            ResultStatus.Error => Result<TDestination>.CriticalError(result.Errors.ToArray<string>()),
             ResultStatus.Forbidden => Result<TDestination>.Forbidden(),
             ResultStatus.Unauthorized => Result<TDestination>.Unauthorized(),
             ResultStatus.Invalid => Result<TDestination>.Invalid(result.ValidationErrors.ToArray()),
@@ -33,7 +33,7 @@ public static class ResultExtensions
         return result.Status switch
         {
             ResultStatus.Ok => await func((TSource)result),
-            ResultStatus.Error => Result<TDestination>.Error(result.Errors.ToArray<string>()),
+            ResultStatus.Error => Result<TDestination>.CriticalError(result.Errors.ToArray<string>()),
             ResultStatus.Forbidden => Result<TDestination>.Forbidden(),
             ResultStatus.Unauthorized => Result<TDestination>.Unauthorized(),
             ResultStatus.Invalid => Result<TDestination>.Invalid(result.ValidationErrors.ToArray()),
@@ -54,7 +54,7 @@ public static class ResultExtensions
         return result.Status switch
         {
             ResultStatus.Ok => func((TSource)result),
-            ResultStatus.Error => Result<TDestination>.Error(result.Errors.ToArray<string>()),
+            ResultStatus.Error => Result<TDestination>.CriticalError(result.Errors.ToArray<string>()),
             ResultStatus.Forbidden => Result<TDestination>.Forbidden(),
             ResultStatus.Unauthorized => Result<TDestination>.Unauthorized(),
             ResultStatus.Invalid => Result<TDestination>.Invalid(result.ValidationErrors.ToArray()),

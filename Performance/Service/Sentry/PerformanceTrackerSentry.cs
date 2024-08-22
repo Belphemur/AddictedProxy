@@ -1,4 +1,5 @@
 using Performance.Model.Sentry;
+using Sentry;
 
 namespace Performance.Service.Sentry;
 
