@@ -1,3 +1,9 @@
+## [4.23.3](https://github.com/Belphemur/AddictedProxy/compare/v4.23.2...v4.23.3) (2024-08-22)
+
+### Bug Fixes
+
+* can't use non entity framework supported methods ([b0e66f7](https://github.com/Belphemur/AddictedProxy/commit/b0e66f7343d3501edcb11a05642c2e33b2074187))
+
 ## [4.23.2](https://github.com/Belphemur/AddictedProxy/compare/v4.23.1...v4.23.2) (2024-08-22)
 
 ### Performance improvements
