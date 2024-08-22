@@ -1,4 +1,5 @@
 ﻿using Performance.Model.Sentry;
+using Sentry;
 using ISpan = Performance.Model.ISpan;
 
 namespace Performance.Service;

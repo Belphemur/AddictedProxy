@@ -1,36 +1,39 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy", "AddictedProxy\AddictedProxy.csproj", "{B48C73F2-1D8A-4B87-9C71-F7C720F146EC}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35208.52
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddictedProxy", "AddictedProxy\AddictedProxy.csproj", "{B48C73F2-1D8A-4B87-9C71-F7C720F146EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InversionOfControl", "InversionOfControl\InversionOfControl.csproj", "{3B47CC79-3BEA-4B91-93E8-2B743C75E854}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InversionOfControl", "InversionOfControl\InversionOfControl.csproj", "{3B47CC79-3BEA-4B91-93E8-2B743C75E854}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Database", "AddictedProxy.Database\AddictedProxy.Database.csproj", "{DC59F563-4498-433D-ACB5-0D1DF4F979AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddictedProxy.Database", "AddictedProxy.Database\AddictedProxy.Database.csproj", "{DC59F563-4498-433D-ACB5-0D1DF4F979AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Storage", "AddictedProxy.Storage\AddictedProxy.Storage.csproj", "{914C5A97-FB11-4429-A3C9-9C5EBD727DB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddictedProxy.Storage", "AddictedProxy.Storage\AddictedProxy.Storage.csproj", "{914C5A97-FB11-4429-A3C9-9C5EBD727DB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Upstream", "AddictedProxy.Upstream\AddictedProxy.Upstream.csproj", "{11DA456D-B11B-4FAD-A9C1-9A57B8F91343}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddictedProxy.Upstream", "AddictedProxy.Upstream\AddictedProxy.Upstream.csproj", "{11DA456D-B11B-4FAD-A9C1-9A57B8F91343}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compressor.Tests", "Compressor.Tests\Compressor.Tests.csproj", "{A6A931F1-3F50-4B5F-AEA2-089BC2842F33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Compressor.Tests", "Compressor.Tests\Compressor.Tests.csproj", "{A6A931F1-3F50-4B5F-AEA2-089BC2842F33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Locking", "Locking\Locking.csproj", "{2D0701F5-62B2-4EE5-AF0F-11A91C5D563B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Locking", "Locking\Locking.csproj", "{2D0701F5-62B2-4EE5-AF0F-11A91C5D563B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Performance", "Performance\Performance.csproj", "{1D70C1CC-F916-42FD-8DE0-65DD9E84C31F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Performance", "Performance\Performance.csproj", "{1D70C1CC-F916-42FD-8DE0-65DD9E84C31F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Stats", "AddictedProxy.Stats\AddictedProxy.Stats.csproj", "{59171862-853A-4D3A-970B-F838BDC24543}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddictedProxy.Stats", "AddictedProxy.Stats\AddictedProxy.Stats.csproj", "{59171862-853A-4D3A-970B-F838BDC24543}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TvMovieDatabaseClient", "TvMovieDatabaseClient\TvMovieDatabaseClient.csproj", "{E1A07EEC-256D-4337-ACD2-E11E09C35F19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TvMovieDatabaseClient", "TvMovieDatabaseClient\TvMovieDatabaseClient.csproj", "{E1A07EEC-256D-4337-ACD2-E11E09C35F19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Caching", "AddictedProxy.Caching\AddictedProxy.Caching.csproj", "{6401E13B-E1B0-42BF-A2F4-9FD046CD4EFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddictedProxy.Caching", "AddictedProxy.Caching\AddictedProxy.Caching.csproj", "{6401E13B-E1B0-42BF-A2F4-9FD046CD4EFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Culture", "AddictedProxy.Culture\AddictedProxy.Culture.csproj", "{B4B2C366-9138-46F5-B7AE-C83157E36AC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddictedProxy.Culture", "AddictedProxy.Culture\AddictedProxy.Culture.csproj", "{B4B2C366-9138-46F5-B7AE-C83157E36AC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Upstream.Tests", "AddictedProxy.Upstream.Tests\AddictedProxy.Upstream.Tests.csproj", "{ECC62363-630E-4F4C-8626-318C7739BEE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddictedProxy.Upstream.Tests", "AddictedProxy.Upstream.Tests\AddictedProxy.Upstream.Tests.csproj", "{ECC62363-630E-4F4C-8626-318C7739BEE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Storage.Caching", "AddictedProxy.Storage.Caching\AddictedProxy.Storage.Caching.csproj", "{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddictedProxy.Storage.Caching", "AddictedProxy.Storage.Caching\AddictedProxy.Storage.Caching.csproj", "{9CDCD9EC-896B-44E7-99A3-0A9CEDD8855E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.OneTimeMigration", "AddictedProxy.OneTimeMigration\AddictedProxy.OneTimeMigration.csproj", "{BE2C6CE9-D444-4FE5-B172-7850593DB6E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddictedProxy.OneTimeMigration", "AddictedProxy.OneTimeMigration\AddictedProxy.OneTimeMigration.csproj", "{BE2C6CE9-D444-4FE5-B172-7850593DB6E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Tools.Database", "AddictedProxy.Tools.Database\AddictedProxy.Tools.Database.csproj", "{E0683701-54FB-491F-90CE-C50C17C44DC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddictedProxy.Tools.Database", "AddictedProxy.Tools.Database\AddictedProxy.Tools.Database.csproj", "{E0683701-54FB-491F-90CE-C50C17C44DC2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{08B71115-8744-4AB2-8005-0C1EB37BDA2A}"
 EndProject
@@ -38,13 +41,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{147E3CFA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Third-Party", "Third-Party", "{3B3536BE-B7E9-4A82-9BE3-CF8672FE6910}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Image", "AddictedProxy.Image\AddictedProxy.Image.csproj", "{197721BB-E7EC-4351-8BDD-815633C95400}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AddictedProxy.Image", "AddictedProxy.Image\AddictedProxy.Image.csproj", "{197721BB-E7EC-4351-8BDD-815633C95400}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InversionOfControl.Tests", "InversionOfControl.Tests\InversionOfControl.Tests.csproj", "{358A62D3-FF20-49CB-9BEA-79F2FEB4C2F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InversionOfControl.Tests", "InversionOfControl.Tests\InversionOfControl.Tests.csproj", "{358A62D3-FF20-49CB-9BEA-79F2FEB4C2F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compressor", "Compressor\Compressor.csproj", "{E2EBC5EE-89A6-4CEE-B950-45F75F50CDC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Compressor", "Compressor\Compressor.csproj", "{E2EBC5EE-89A6-4CEE-B950-45F75F50CDC0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B7154DD3-B7E0-46E9-9E4A-F3F1E904080F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{21EE12D6-1A57-4B61-AC0E-17090F49D292}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -129,17 +138,23 @@ Global
 		{E2EBC5EE-89A6-4CEE-B950-45F75F50CDC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2EBC5EE-89A6-4CEE-B950-45F75F50CDC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E0683701-54FB-491F-90CE-C50C17C44DC2} = {08B71115-8744-4AB2-8005-0C1EB37BDA2A}
-		{DC59F563-4498-433D-ACB5-0D1DF4F979AC} = {08B71115-8744-4AB2-8005-0C1EB37BDA2A}
-		{BE2C6CE9-D444-4FE5-B172-7850593DB6E2} = {08B71115-8744-4AB2-8005-0C1EB37BDA2A}
 		{3B47CC79-3BEA-4B91-93E8-2B743C75E854} = {147E3CFA-3EB8-4FCF-B90A-901CC4E45DED}
+		{DC59F563-4498-433D-ACB5-0D1DF4F979AC} = {08B71115-8744-4AB2-8005-0C1EB37BDA2A}
+		{A6A931F1-3F50-4B5F-AEA2-089BC2842F33} = {B7154DD3-B7E0-46E9-9E4A-F3F1E904080F}
 		{2D0701F5-62B2-4EE5-AF0F-11A91C5D563B} = {147E3CFA-3EB8-4FCF-B90A-901CC4E45DED}
 		{1D70C1CC-F916-42FD-8DE0-65DD9E84C31F} = {147E3CFA-3EB8-4FCF-B90A-901CC4E45DED}
 		{E1A07EEC-256D-4337-ACD2-E11E09C35F19} = {3B3536BE-B7E9-4A82-9BE3-CF8672FE6910}
+		{BE2C6CE9-D444-4FE5-B172-7850593DB6E2} = {08B71115-8744-4AB2-8005-0C1EB37BDA2A}
+		{E0683701-54FB-491F-90CE-C50C17C44DC2} = {08B71115-8744-4AB2-8005-0C1EB37BDA2A}
+		{358A62D3-FF20-49CB-9BEA-79F2FEB4C2F6} = {B7154DD3-B7E0-46E9-9E4A-F3F1E904080F}
 		{E2EBC5EE-89A6-4CEE-B950-45F75F50CDC0} = {147E3CFA-3EB8-4FCF-B90A-901CC4E45DED}
 		{B7154DD3-B7E0-46E9-9E4A-F3F1E904080F} = {147E3CFA-3EB8-4FCF-B90A-901CC4E45DED}
-		{358A62D3-FF20-49CB-9BEA-79F2FEB4C2F6} = {B7154DD3-B7E0-46E9-9E4A-F3F1E904080F}
-		{A6A931F1-3F50-4B5F-AEA2-089BC2842F33} = {B7154DD3-B7E0-46E9-9E4A-F3F1E904080F}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14212924-6C9C-4207-9D29-1A7FC32C3FD8}
 	EndGlobalSection
 EndGlobal

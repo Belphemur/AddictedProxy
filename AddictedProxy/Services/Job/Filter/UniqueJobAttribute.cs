@@ -34,10 +34,9 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
         // Fingerprint does not exist, it is invalid (no `Timestamp` key),
         // or it is not actual (timeout expired).
         using var transaction = connection.CreateWriteTransaction();
-        transaction.SetRangeInHash(fingerprintKey, new Dictionary<string, string>
-        {
-            { "Timestamp", DateTimeOffset.UtcNow.ToString("o") }
-        });
+        transaction.SetRangeInHash(fingerprintKey, [
+            new("Timestamp", DateTimeOffset.UtcNow.ToString("o"))
+        ]);
         creatingContext.SetJobParameter(FingerprintJobParameterKey, fingerprintKey);
         transaction.Commit();
 
