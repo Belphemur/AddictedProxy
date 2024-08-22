@@ -14,7 +14,7 @@ namespace InversionOfControl.Service.Bootstrap;
 
 internal class BootstrapRegister : IDisposable
 {
-    private Dictionary<Assembly, Type[]>? _assemblyTypeCache = new();
+    private Dictionary<Assembly, Type[]>? _assemblyTypeCache = [];
     private readonly Type _bootstrapType = typeof(IBootstrap);
     private readonly Type _bootstrapConditionalType = typeof(IBootstrapConditional);
     private readonly Type _bootstrapEnv = typeof(IBootstrapEnvironmentVariable<,>);
@@ -59,7 +59,7 @@ internal class BootstrapRegister : IDisposable
             {
                 var parser = factory.GetRequiredService(parserType);
                 var keyValues = currentKeys.ToDictionary(s => s, Environment.GetEnvironmentVariable);
-                return parserType.GetMethod(nameof(VoidParser.Parse))!.Invoke(parser, new object[] { currentKeys, keyValues });
+                return parserType.GetMethod(nameof(VoidParser.Parse))!.Invoke(parser, [currentKeys, keyValues]);
             }, lifeTime));
         }
 
@@ -154,7 +154,7 @@ internal class BootstrapRegister : IDisposable
 
             foreach (var type in types)
             {
-                object? bootstrap = null;
+                object? bootstrap;
                 if (_bootstrapApp.IsAssignableFrom(type))
                 {
                     bootstrap = Activator.CreateInstance(type);

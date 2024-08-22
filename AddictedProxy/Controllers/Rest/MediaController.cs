@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Net.Http.Headers;
+using System.Collections.Frozen;
 using TvMovieDatabaseClient.Service;
 using TvMovieDatabaseClient.Service.Model;
 using DistributedCacheExtensions = AddictedProxy.Caching.Extensions.DistributedCacheExtensions;
@@ -91,12 +92,12 @@ public class MediaController : Controller
         return TypedResults.Ok(trendingTvShows);
     }
 
-    private Task<Dictionary<int, string>> GetGenresCachedAsync(CancellationToken cancellationToken)
+    private Task<FrozenDictionary<int, string>> GetGenresCachedAsync(CancellationToken cancellationToken)
     {
         return _distributedCache.GetSertAsync($"tmdb-genre", async () =>
         {
-            return new DistributedCacheExtensions.CacheData<Dictionary<int, string>>(
-                (await _tmdbClient.GetTvGenresAsync(cancellationToken)).ToDictionary(genre => genre.Id, genre => genre.Name),
+            return new DistributedCacheExtensions.CacheData<FrozenDictionary<int, string>>(
+                (await _tmdbClient.GetTvGenresAsync(cancellationToken)).ToFrozenDictionary(genre => genre.Id, genre => genre.Name),
                 new DistributedCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTimeOffset.UtcNow.AddDays(1)

@@ -6,6 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="System.Text.Json" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\AddictedProxy.Database\AddictedProxy.Database.csproj" />
       <ProjectReference Include="..\Locking\Locking.csproj" />
     </ItemGroup>
