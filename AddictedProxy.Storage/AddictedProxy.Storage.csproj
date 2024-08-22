@@ -21,16 +21,8 @@
         <PackageReference Include="Newtonsoft.Json" />
         <PackageReference Include="Polly" />
         <PackageReference Include="Polly.Contrib.WaitAndRetry" />
-       </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Hangfire.AspNetCore" />
         <PackageReference Include="System.Text.Encodings.Web" />
     </ItemGroup>
-
-    <ItemGroup>
-      <PackageVersion Update="AWSSDK.S3" Version="3.7.402.1" />
-    </ItemGroup>
-
 
 </Project>
