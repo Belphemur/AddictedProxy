@@ -36,7 +36,7 @@ devDependencies:
     version: 1.7.1(rollup@3.29.4)
   '@nuxtjs/device':
     specifier: ^3.1.1
-    version: 3.2.1(@types/node@20.16.2)(bufferutil@4.0.8)(h3@1.12.0)(nitropack@2.9.7)(nuxi@3.13.1)(rollup@3.29.4)(utf-8-validate@6.0.4)(vite@5.4.2)(vue-router@4.4.3)(vue@3.4.38)
+    version: 3.2.2(@types/node@20.16.2)(bufferutil@4.0.8)(h3@1.12.0)(nitropack@2.9.7)(nuxi@3.13.1)(rollup@3.29.4)(utf-8-validate@6.0.4)(vite@5.4.2)(vue-router@4.4.3)(vue@3.4.38)
   '@nuxtjs/google-fonts':
     specifier: ^3.2.0
     version: 3.2.0(rollup@3.29.4)
@@ -285,6 +285,7 @@ packages:
   /@babel/highlight@7.24.7:
     resolution: {integrity: sha512-EStJpq4OuY8xYfhGVXngigBJRWxftKX9ksiGDnmlY3o7B/V7KIAc9X4oiK87uPJSc/vs5L869bem5fhZa8caZw==}
     engines: {node: '>=6.9.0'}
+    requiresBuild: true
     dependencies:
       '@babel/helper-validator-identifier': 7.24.7
       chalk: 2.4.2
@@ -1565,7 +1566,7 @@ packages:
       eslint: 9.9.1
       eslint-config-flat-gitignore: 0.1.8
       eslint-flat-config-utils: 0.3.1
-      eslint-plugin-import-x: 4.1.0(eslint@9.9.1)(typescript@5.5.4)
+      eslint-plugin-import-x: 4.1.1(eslint@9.9.1)(typescript@5.5.4)
       eslint-plugin-jsdoc: 50.2.2(eslint@9.9.1)
       eslint-plugin-regexp: 2.6.0(eslint@9.9.1)
       eslint-plugin-unicorn: 55.0.0(eslint@9.9.1)
@@ -2027,8 +2028,8 @@ packages:
       - vue-tsc
     dev: true
 
-  /@nuxtjs/device@3.2.1(@types/node@20.16.2)(bufferutil@4.0.8)(h3@1.12.0)(nitropack@2.9.7)(nuxi@3.13.1)(rollup@3.29.4)(utf-8-validate@6.0.4)(vite@5.4.2)(vue-router@4.4.3)(vue@3.4.38):
-    resolution: {integrity: sha512-Oy5uY39GrQv9Pvj+wZq+JfXxTw/JD2IJuvFXsLiVvJQmkWGP81TWsVALf6dnF3/PRZeXP/imyPb1g7HKD+xbBg==}
+  /@nuxtjs/device@3.2.2(@types/node@20.16.2)(bufferutil@4.0.8)(h3@1.12.0)(nitropack@2.9.7)(nuxi@3.13.1)(rollup@3.29.4)(utf-8-validate@6.0.4)(vite@5.4.2)(vue-router@4.4.3)(vue@3.4.38):
+    resolution: {integrity: sha512-yjbL312MYScUvruSVCvCPbtQd/Y+afv04RNMO1qjNiDnl+Abi3hwr+z9sKCRU2wVBqM33t/EbMMyN4l0JLqhjw==}
     dependencies:
       '@nuxt/devtools': 1.4.1(bufferutil@4.0.8)(rollup@3.29.4)(utf-8-validate@6.0.4)(vite@5.4.2)
       '@nuxt/eslint-config': 0.5.3(eslint@9.9.1)(typescript@5.5.4)
@@ -3483,6 +3484,7 @@ packages:
   /ansi-styles@3.2.1:
     resolution: {integrity: sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA==}
     engines: {node: '>=4'}
+    requiresBuild: true
     dependencies:
       color-convert: 1.9.3
     dev: true
@@ -3844,6 +3846,7 @@ packages:
   /chalk@2.4.2:
     resolution: {integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==}
     engines: {node: '>=4'}
+    requiresBuild: true
     dependencies:
       ansi-styles: 3.2.1
       escape-string-regexp: 1.0.5
@@ -3969,6 +3972,7 @@ packages:
 
   /color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
+    requiresBuild: true
     dependencies:
       color-name: 1.1.3
     dev: true
@@ -3982,6 +3986,7 @@ packages:
 
   /color-name@1.1.3:
     resolution: {integrity: sha512-72fSenhMw2HZMTVHeCA9KCmpEIbzWiQsjN+BHcBbS9vr1mtt+vJjPdksIBNUmKAW8TFUDPJK5SUU3QhE9NEXDw==}
+    requiresBuild: true
     dev: true
 
   /color-name@1.1.4:
@@ -4787,8 +4792,8 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-import-x@4.1.0(eslint@9.9.1)(typescript@5.5.4):
-    resolution: {integrity: sha512-1BYJU0C5NBJLY4qukmwDbFrf2w8fLGEU9zZV3viWa7gNnbn4o4meQy5O4LVXn56eFh9Y4fQxu3udhIqQuVITvw==}
+  /eslint-plugin-import-x@4.1.1(eslint@9.9.1)(typescript@5.5.4):
+    resolution: {integrity: sha512-dBEM8fACIFNt4H7GoOaRmnH6evJW6JSTJTYYgmRd3vI4geBTjgDM/JyUDKUwIw0HDSyI+u7Vs3vFRXUo/BOAtA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
@@ -5561,6 +5566,7 @@ packages:
   /has-flag@3.0.0:
     resolution: {integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==}
     engines: {node: '>=4'}
+    requiresBuild: true
     dev: true
 
   /has-flag@4.0.0:
@@ -5931,6 +5937,7 @@ packages:
 
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
+    requiresBuild: true
     dev: true
 
   /js-tokens@9.0.0:
@@ -8354,6 +8361,7 @@ packages:
   /supports-color@5.5.0:
     resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
     engines: {node: '>=4'}
+    requiresBuild: true
     dependencies:
       has-flag: 3.0.0
     dev: true
