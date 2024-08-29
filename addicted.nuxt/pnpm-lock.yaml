@@ -32,8 +32,8 @@ devDependencies:
     specifier: 1.4.1
     version: 1.4.1(bufferutil@4.0.8)(rollup@3.29.4)(utf-8-validate@6.0.4)(vite@5.4.2)
   '@nuxt/image':
-    specifier: 1.7.1
-    version: 1.7.1(rollup@3.29.4)
+    specifier: 1.8.0
+    version: 1.8.0(rollup@3.29.4)
   '@nuxtjs/device':
     specifier: ^3.1.1
     version: 3.2.2(@types/node@20.16.2)(bufferutil@4.0.8)(h3@1.12.0)(nitropack@2.9.7)(nuxi@3.13.1)(rollup@3.29.4)(utf-8-validate@6.0.4)(vite@5.4.2)(vue-router@4.4.3)(vue@3.4.38)
@@ -1594,8 +1594,8 @@ packages:
       - typescript
     dev: true
 
-  /@nuxt/image@1.7.1(rollup@3.29.4):
-    resolution: {integrity: sha512-vD3p9CmFO718sbBZCaizOvk3Uw/M9eE5cotWD9rlGoMOf3bUYnXuxP4mEwa/qgupoZ+X5MnasZoWbrj8y9nfKg==}
+  /@nuxt/image@1.8.0(rollup@3.29.4):
+    resolution: {integrity: sha512-GBbORch+ZfWJ0KB8PaXABsPjaiEXB4B4plcpAUVNCdzKZi2qQ4beRnEXfAbtAWPUPefj3rgCG7b9AqAe51Qlzw==}
     engines: {node: ^14.16.0 || >=16.11.0}
     dependencies:
       '@nuxt/kit': 3.13.0(magicast@0.3.4)(rollup@3.29.4)
