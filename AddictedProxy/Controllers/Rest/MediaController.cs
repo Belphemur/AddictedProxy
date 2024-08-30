@@ -92,12 +92,12 @@ public class MediaController : Controller
         return TypedResults.Ok(trendingTvShows);
     }
 
-    private Task<FrozenDictionary<int, string>> GetGenresCachedAsync(CancellationToken cancellationToken)
+    private Task<Dictionary<int, string>> GetGenresCachedAsync(CancellationToken cancellationToken)
     {
         return _distributedCache.GetSertAsync($"tmdb-genre", async () =>
         {
-            return new DistributedCacheExtensions.CacheData<FrozenDictionary<int, string>>(
-                (await _tmdbClient.GetTvGenresAsync(cancellationToken)).ToFrozenDictionary(genre => genre.Id, genre => genre.Name),
+            return new DistributedCacheExtensions.CacheData<Dictionary<int, string>>(
+                (await _tmdbClient.GetTvGenresAsync(cancellationToken)).ToDictionary(genre => genre.Id, genre => genre.Name),
                 new DistributedCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTimeOffset.UtcNow.AddDays(1)
