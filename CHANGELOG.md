@@ -1,3 +1,10 @@
+## [4.23.4](https://github.com/Belphemur/AddictedProxy/compare/v4.23.3...v4.23.4) (2024-08-30)
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.7.1 ([8139350](https://github.com/Belphemur/AddictedProxy/commit/8139350c7c0ffd045edc70468dcf048652444ce3))
+* **media:** remove frozen dictionary, not supported by caching. ([faed41d](https://github.com/Belphemur/AddictedProxy/commit/faed41ded5217f8a25bdbbba687f4566bbceff62))
+
 ## [4.23.3](https://github.com/Belphemur/AddictedProxy/compare/v4.23.2...v4.23.3) (2024-08-22)
 
 ### Bug Fixes
