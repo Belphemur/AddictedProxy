@@ -189,8 +189,8 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.400.13",
-        "contentHash": "hEW5F8dMLyVRJ+LrTJVwpaOSVIsfG0Yvo2IMTDB9gxbDRzHv/iu/fzUhwNLlLuV+vel6Z3yq3AGaTFbA0Khj5w=="
+        "resolved": "3.7.400.14",
+        "contentHash": "ZnlENxTAX9V6yMg0Ah2f8L/9QngRjf9z+4I2gJIzYVmf7w2Vp48t9ZmWMolEbg8Durmf2uVY8gHphqUd0BlHqQ=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -1699,7 +1699,7 @@
       "addictedproxy.storage": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "[3.7.402.4, )",
+          "AWSSDK.S3": "[3.7.402.5, )",
           "Compressor": "[1.0.0, )",
           "Hangfire.AspNetCore": "[1.8.14, )",
           "InversionOfControl": "[1.0.0, )",
@@ -1805,11 +1805,11 @@
       },
       "AWSSDK.S3": {
         "type": "CentralTransitive",
-        "requested": "[3.7.402.4, )",
-        "resolved": "3.7.402.4",
-        "contentHash": "wrTfbwI5At7imjk1T81Ooto1K9XfCYaazmop6hETa0mkI14eyJH0yiCeYYyDSfDgUDSmg1cNY8668OKABQFB7w==",
+        "requested": "[3.7.402.5, )",
+        "resolved": "3.7.402.5",
+        "contentHash": "neNGf/dbCOcNsMCC9RwaUjorM4V6+1hL5hF15wdZyvUMUB4keEmfgUzQcqX+UnSWizQIfuqOB9isezUleRKCnA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.400.13, 4.0.0)"
+          "AWSSDK.Core": "[3.7.400.14, 4.0.0)"
         }
       },
       "Community.Microsoft.Extensions.Caching.PostgreSql": {
