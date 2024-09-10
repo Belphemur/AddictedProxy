@@ -1638,7 +1638,7 @@
           "Microsoft.Extensions.Caching.StackExchangeRedis": "[8.0.8, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "[8.0.0, )",
-          "Npgsql": "[8.0.3, )",
+          "Npgsql": "[8.0.4, )",
           "System.Text.Encodings.Web": "[8.0.0, )"
         }
       },
@@ -2026,9 +2026,9 @@
       },
       "Npgsql": {
         "type": "CentralTransitive",
-        "requested": "[8.0.3, )",
-        "resolved": "8.0.3",
-        "contentHash": "6WEmzsQJCZAlUG1pThKg/RmeF6V+I0DmBBBE/8YzpRtEzhyZzKcK7ulMANDm5CkxrALBEC8H+5plxHWtIL7xnA==",
+        "requested": "[8.0.4, )",
+        "resolved": "8.0.4",
+        "contentHash": "vaYEUlF/pB9m8bs21wQv3Da0kMHT4A9USe47VfY/L2BO97xz5KfIxhEu22QS9d68ZrLxvtL3wQDfDLPr2OjbjA==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
         }
