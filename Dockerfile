@@ -2,7 +2,7 @@ ARG MAIN_PROJECT=AddictedProxy
 ARG DATA_DIRECTORY="/data"
 ARG RELEASE_VERSION
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-bookworm-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-bookworm-slim AS base
 RUN apt update && apt install -y curl dumb-init && apt-get clean
 # Install zstd
 RUN echo "deb http://httpredir.debian.org/debian trixie main" > /etc/apt/sources.list.d/trixie.list && \
@@ -19,7 +19,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0-bookworm-slim AS restore
+FROM mcr.microsoft.com/dotnet/sdk:9.0-bookworm-slim AS restore
 ARG MAIN_PROJECT
 WORKDIR /src
 COPY . .
