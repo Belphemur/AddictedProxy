@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="AngleSharp" Version="1.1.2" />
-    <PackageVersion Include="Ardalis.Result.AspNetCore" Version="9.1.0" />
+    <PackageVersion Include="Ardalis.Result.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="AsyncKeyedLock" Version="7.0.1" />
     <PackageVersion Include="AWSSDK.S3" Version="3.7.402.9" />
     <PackageVersion Include="Community.Microsoft.Extensions.Caching.PostgreSql" Version="4.0.6" />

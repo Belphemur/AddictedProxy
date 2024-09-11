@@ -13,11 +13,11 @@
       },
       "Ardalis.Result.AspNetCore": {
         "type": "Direct",
-        "requested": "[9.1.0, )",
-        "resolved": "9.1.0",
-        "contentHash": "3yb5XIY86M3Z54XnoDuSgmtBChcfSBQLbEGI0zSz+qpwIMZDU7SJ/ntSOgP7sCGT2SZf+nS8Y4fDcTO9hjmyXg==",
+        "requested": "[10.0.0, )",
+        "resolved": "10.0.0",
+        "contentHash": "/zBTL8muFD4LOaPelpSGmFSyCjOZ++9eNmZhgVOnVzhvqcFRsWXlhCFu8fDCDxaUJ82y+kbXOpIbY8Z4HVpulw==",
         "dependencies": {
-          "Ardalis.Result": "9.1.0"
+          "Ardalis.Result": "10.0.0"
         }
       },
       "Hangfire.AspNetCore": {
@@ -184,8 +184,8 @@
       },
       "Ardalis.Result": {
         "type": "Transitive",
-        "resolved": "9.1.0",
-        "contentHash": "+gr5+vCUmFkmAyQgHQ2Ja0MdTVJW97L/M/6fgStDDhTB9DfS85ZZDo5WtI00bQUdy9/ccX5YRDKlWvw8En3WeA=="
+        "resolved": "10.0.0",
+        "contentHash": "JCUSQl+9dbL7kUltUpFmUeBTnC89fEDEtjIhLZTKymeV9DeWjfxdFhN+vmrKARqzOluH/eyxbUoA6mKqctEzFQ=="
       },
       "AWSSDK.Core": {
         "type": "Transitive",
