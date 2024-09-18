@@ -1699,7 +1699,7 @@
       "addictedproxy.storage": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "[3.7.402.12, )",
+          "AWSSDK.S3": "[3.7.403, )",
           "Compressor": "[1.0.0, )",
           "Hangfire.AspNetCore": "[1.8.14, )",
           "InversionOfControl": "[1.0.0, )",
@@ -1805,9 +1805,9 @@
       },
       "AWSSDK.S3": {
         "type": "CentralTransitive",
-        "requested": "[3.7.402.12, )",
-        "resolved": "3.7.402.12",
-        "contentHash": "Z7NJx0EI9UBZZ+ZjVWiwGThKpNNnsy0iFeCJyOE+uiGUVw0NF2th3NiPB34pc77Amw8bmrTk1WcdX0y3J4gt+A==",
+        "requested": "[3.7.403, )",
+        "resolved": "3.7.403",
+        "contentHash": "vpwrEf7QfqmqiG0ifQ3Q2uz+mNUd2j93GPVIsQLFuSD1oNGp22X/EmawiZtaTOs7XDzMLe7Nav5juwZYLz30sQ==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.400.21, 4.0.0)"
         }
