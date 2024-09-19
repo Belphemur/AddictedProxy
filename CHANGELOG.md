@@ -1,3 +1,16 @@
+## [4.23.5](https://github.com/Belphemur/AddictedProxy/compare/v4.23.4...v4.23.5) (2024-09-19)
+
+### Performance improvements
+
+* move to .NET 9.0 ([97cec8b](https://github.com/Belphemur/AddictedProxy/commit/97cec8b154043522b68be74f8b6102288a158950))
+* update deps ([fbaa058](https://github.com/Belphemur/AddictedProxy/commit/fbaa05880c81389a101c8ecdb20e7882f173d398))
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v24.1.1 ([4fe5502](https://github.com/Belphemur/AddictedProxy/commit/4fe55021b1e3681b8a61002a21e524711d2ea6f5))
+* **deps:** update dependency vuetify to v3.7.2 ([ae1a3e7](https://github.com/Belphemur/AddictedProxy/commit/ae1a3e7be72f9d9d213fa9cb60d3e7ba8a08ac2b))
+* warning about wrong HTML ([442734c](https://github.com/Belphemur/AddictedProxy/commit/442734c4f594c010bcb61ff525d87022170b9bd4))
+
 ## [4.23.4](https://github.com/Belphemur/AddictedProxy/compare/v4.23.3...v4.23.4) (2024-08-30)
 
 ### Bug Fixes
