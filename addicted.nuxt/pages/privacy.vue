@@ -53,6 +53,8 @@
           <h2>9. Data Subject Rights</h2>
           <p>
             Under GDPR, you have the right to:
+          </p>
+          <div id="list">
             <ul>
               <li>Request access to your personal data.</li>
               <li>Request rectification or erasure of your personal data.</li>
@@ -63,6 +65,8 @@
               </li>
               <li>Lodge a complaint with a supervisory authority.</li>
             </ul>
+          </div>
+          <p>
             You can exercise these rights by contacting us at support@gestdown.info.
           </p>
           <h2>10. Data Retention</h2>
@@ -106,6 +110,10 @@ useSeoMeta({
 </script>
 
 <style scoped>
+#list {
+  padding-left: 25px;
+}
+
 h2 {
   margin-top: 1.5em;
   margin-bottom: 0.5em;
