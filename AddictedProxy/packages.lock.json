@@ -127,6 +127,15 @@
           "Swashbuckle.AspNetCore.SwaggerUI": "6.8.0"
         }
       },
+      "System.Drawing.Common": {
+        "type": "Direct",
+        "requested": "[9.0.0-rc.1.24451.1, )",
+        "resolved": "9.0.0-rc.1.24451.1",
+        "contentHash": "5TJtJLhJk7viKkkflNYN+V+Tl/qxoKrkmCTog2j0dzqamIY/ximaAWQfPznYOUR5852XxxvhZsQLd2LzjJFWUw==",
+        "dependencies": {
+          "Microsoft.Win32.SystemEvents": "9.0.0-rc.1.24431.7"
+        }
+      },
       "System.Linq.Async": {
         "type": "Direct",
         "requested": "[6.0.1, )",
@@ -1650,6 +1659,7 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[9.0.0-rc.1, )",
           "RT.Comb.AspNetCore": "[4.0.1, )",
           "System.Linq.Async": "[6.0.1, )",
+          "System.Text.Json": "[9.0.0-rc.1.24431.7, )",
           "Z.EntityFramework.Extensions.EFCore": "[8.103.4, )"
         }
       },
@@ -2157,15 +2167,6 @@
         "dependencies": {
           "Microsoft.IO.RecyclableMemoryStream": "3.0.1",
           "SixLabors.ImageSharp": "3.1.5"
-        }
-      },
-      "System.Drawing.Common": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.0-rc.1.24451.1, )",
-        "resolved": "9.0.0-rc.1.24451.1",
-        "contentHash": "5TJtJLhJk7viKkkflNYN+V+Tl/qxoKrkmCTog2j0dzqamIY/ximaAWQfPznYOUR5852XxxvhZsQLd2LzjJFWUw==",
-        "dependencies": {
-          "Microsoft.Win32.SystemEvents": "9.0.0-rc.1.24431.7"
         }
       },
       "System.Net.Http.Json": {
