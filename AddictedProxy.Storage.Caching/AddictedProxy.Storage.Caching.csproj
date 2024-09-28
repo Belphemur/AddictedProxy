@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Newtonsoft.Json" />
-      <PackageReference Include="System.Text.Encodings.Web" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="System.Text.Encodings.Web" Version="9.0.0-rc.1.24431.7" />
     </ItemGroup>
 
     <ItemGroup>

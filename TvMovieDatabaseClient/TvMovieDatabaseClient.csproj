@@ -11,14 +11,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="IsExternalInit">
+        <PackageReference Include="IsExternalInit" Version="1.0.3">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Http" />
-        <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
-        <PackageReference Include="System.Net.Http.Json" />
-        <PackageReference Include="System.Text.Json" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.0-rc.1.24431.7" />
+        <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="9.0.0-rc.1.24452.1" />
+        <PackageReference Include="System.Net.Http.Json" Version="9.0.0-rc.1.24431.7" />
+        <PackageReference Include="System.Text.Json" Version="9.0.0-rc.1.24431.7" />
     </ItemGroup>
 
 </Project>
