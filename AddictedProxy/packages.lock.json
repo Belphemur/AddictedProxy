@@ -2026,6 +2026,7 @@
           "Microsoft.Extensions.Hosting": "[9.0.0-rc.1.24431.7, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[9.0.0-rc.1, )",
           "RT.Comb.AspNetCore": "[4.0.1, )",
+          "System.Drawing.Common": "[9.0.0-rc.1.24451.1, )",
           "System.Linq.Async": "[6.0.1, )",
           "System.Text.Json": "[9.0.0-rc.1.24431.7, )",
           "Z.EntityFramework.Extensions.EFCore": "[9.0.0-rc.1.24451.1-01, )"
