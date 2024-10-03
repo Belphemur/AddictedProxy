@@ -53,7 +53,6 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET }}
           cache: true
-          cache-dependency-path: ${{env.PROJECT_NAME}}/packages.lock.json
       - name: Restore
         if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
         run: dotnet restore --locked-mode
