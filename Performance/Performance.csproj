@@ -9,23 +9,23 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Condition=" '$(Configuration)' == 'Debug' " Include="OpenTelemetry.Exporter.Console" Version="1.9.0" />
-        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
-        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.12" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.9.0-beta.1" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.9.0-beta.1" />
-        <PackageReference Include="OpenTelemetry.Shims.OpenTracing" Version="1.9.0-beta.2" />
-        <PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
-        <PackageReference Include="Sentry" Version="4.11.0" />
-        <PackageReference Include="IsExternalInit" Version="1.0.3">
+        <PackageReference Condition=" '$(Configuration)' == 'Debug' " Include="OpenTelemetry.Exporter.Console" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" />
+        <PackageReference Include="OpenTelemetry.Shims.OpenTracing" />
+        <PackageReference Include="prometheus-net.AspNetCore" />
+        <PackageReference Include="Sentry" />
+        <PackageReference Include="IsExternalInit">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="System.Drawing.Common" Version="9.0.0-rc.1.24451.1" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="9.0.0-rc.1.24431.7" />
+        <PackageReference Include="System.Drawing.Common" />
+        <PackageReference Include="System.Text.Encodings.Web" />
     </ItemGroup>
 
     <ItemGroup>

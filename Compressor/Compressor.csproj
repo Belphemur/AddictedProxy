@@ -12,9 +12,9 @@
 
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="9.0.0-rc.1.24452.1" />
-      <PackageReference Include="System.Text.Encodings.Web" Version="9.0.0-rc.1.24431.7" />
-      <PackageReference Include="ZstdNet" Version="1.4.5" />
+      <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" />
+      <PackageReference Include="System.Text.Encodings.Web" />
+      <PackageReference Include="ZstdNet" />
     </ItemGroup>
 
 
