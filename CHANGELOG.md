@@ -1,3 +1,14 @@
+## [4.23.6](https://github.com/Belphemur/AddictedProxy/compare/v4.23.5...v4.23.6) (2024-10-15)
+
+### Performance improvements
+
+* update all deps ([d9dcacd](https://github.com/Belphemur/AddictedProxy/commit/d9dcacd3f4f6f14341b0dd22f86cd524399d01d8))
+
+### Bug Fixes
+
+* clean up testing code ([80d00c1](https://github.com/Belphemur/AddictedProxy/commit/80d00c166a63e11a1bd540292bbbba7b92a8077e))
+* **deps:** update dependency semantic-release to v24.1.2 ([ce73fe7](https://github.com/Belphemur/AddictedProxy/commit/ce73fe7921f35d65cd329b58cacf62c025e5b500))
+
 ## [4.23.5](https://github.com/Belphemur/AddictedProxy/compare/v4.23.4...v4.23.5) (2024-09-19)
 
 ### Performance improvements
