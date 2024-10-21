@@ -30,7 +30,7 @@ const currentSeason = ref<number | undefined>(undefined);
 const mediaInfo = ref<MediaDetailsDto>();
 const subtitlesApi = useSubtitles();
 
-await loadMediaDetails();
+await loadData();
 
 const runtimeConfig = useRuntimeConfig();
 let imageUrl = mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath;
@@ -53,7 +53,10 @@ useSeoMeta({
   ogType: "website"
 })
 
-await loadShowData();
+async function loadData() {
+  const promises = [loadMediaDetails(), loadShowData()];
+  return Promise.all(promises);
+}
 
 async function loadShowData() {
   const {
