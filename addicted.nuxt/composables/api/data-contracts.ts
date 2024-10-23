@@ -156,11 +156,12 @@ export interface MediaDetailsDto {
   details?: DetailsDto;
 }
 
+/** Represent a media with its details and episodes with subtitles */
 export interface MediaDetailsWithEpisodeAndSubtitlesDto {
-  details?: MediaDetailsDto;
-  episodeWithSubtitles?: EpisodeWithSubtitlesDto[] | null;
+  details: MediaDetailsDto;
+  episodeWithSubtitles: EpisodeWithSubtitlesDto[];
   /** @format int32 */
-  lastSeasonNumber?: number | null;
+  lastSeasonNumber: number;
 }
 
 /** Represent the type of media */
