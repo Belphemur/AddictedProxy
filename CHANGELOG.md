@@ -1,3 +1,9 @@
+## [4.25.5](https://github.com/Belphemur/AddictedProxy/compare/v4.25.4...v4.25.5) (2024-10-23)
+
+### Bug Fixes
+
+* **ci:** fix missing ws lib in built server ([6bfafc7](https://github.com/Belphemur/AddictedProxy/commit/6bfafc71e56532b516b7ba9ee5672ad13c4fe9a0))
+
 ## [4.25.4](https://github.com/Belphemur/AddictedProxy/compare/v4.25.3...v4.25.4) (2024-10-23)
 
 ### Bug Fixes
