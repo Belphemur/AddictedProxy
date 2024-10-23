@@ -58,7 +58,7 @@ await loadShowData();
 async function loadShowData() {
   const {
     data,
-    pending
+    status
   } = await useAsyncData(async () => {
     if (currentSeason.value == undefined) {
       return [];
@@ -68,7 +68,7 @@ async function loadShowData() {
     watch: [currentSeason, language]
   });
 
-  loadingEpisodes = pending;
+  loadingEpisodes.value = status.value !== "pending";
   episodes = data;
 }
 
