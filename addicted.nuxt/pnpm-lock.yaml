@@ -23,6 +23,9 @@ importers:
       client-zip:
         specifier: ^2.4.5
         version: 2.4.5
+      h3-proxy:
+        specifier: ^1.13.0
+        version: 1.13.0(h3@1.13.0)
       roboto-fontface:
         specifier: ^0.10.0
         version: 0.10.0
@@ -69,9 +72,6 @@ importers:
       nuxt-lodash:
         specifier: ^2.5.3
         version: 2.5.3(magicast@0.3.5)(rollup@4.24.0)(webpack-sources@3.2.3)
-      nuxt-proxy-request:
-        specifier: ^1.10.0
-        version: 1.10.0(h3@1.13.0)(magicast@0.3.5)(rollup@4.24.0)(webpack-sources@3.2.3)
       swagger-typescript-api:
         specifier: ^13.0.22
         version: 13.0.22
@@ -2634,9 +2634,6 @@ packages:
 
   nuxt-lodash@2.5.3:
     resolution: {integrity: sha512-LCJ40tGQTHkfk8rQoGqtb0mFgRVt8U+pc3S352DsI39yF3olqgxlsm28wdJMIcWHuxLgf5X+DwxmZhrAHXNS5g==}
-
-  nuxt-proxy-request@1.10.0:
-    resolution: {integrity: sha512-baOf7AnGzGAZt2LMSZU/DlSSG4K1MlV1E+Gs9PPyP5C5a647SrVYarehhIzkhgCmp3paVtipgnWMKqyeepCERw==}
 
   nuxt@3.13.2:
     resolution: {integrity: sha512-Bjc2qRsipfBhjXsBEJCN+EUAukhdgFv/KoIR5HFB2hZOYRSqXBod3oWQs78k3ja1nlIhAEdBG533898KJxUtJw==}
@@ -6667,19 +6664,6 @@ snapshots:
       '@types/lodash-es': 4.17.12
       lodash-es: 4.17.21
     transitivePeerDependencies:
-      - magicast
-      - rollup
-      - supports-color
-      - webpack-sources
-
-  nuxt-proxy-request@1.10.0(h3@1.13.0)(magicast@0.3.5)(rollup@4.24.0)(webpack-sources@3.2.3):
-    dependencies:
-      '@nuxt/kit': 3.13.2(magicast@0.3.5)(rollup@4.24.0)(webpack-sources@3.2.3)
-      defu: 6.1.4
-      h3-proxy: 1.13.0(h3@1.13.0)
-      ohash: 1.1.4
-    transitivePeerDependencies:
-      - h3
       - magicast
       - rollup
       - supports-color

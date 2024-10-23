@@ -124,7 +124,6 @@ export default defineNuxtConfig({
         '@nuxtjs/device',
         'nuxt-lodash',
         '@nuxt/image',
-        'nuxt-proxy-request',
         // @ts-ignore
         // this adds the vuetify vite plugin
         // also produces type errors in the current beta release
