@@ -18,6 +18,7 @@
     <PackageVersion Include="IsExternalInit" Version="1.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="9.0.0-rc.2.24474.3" />
     <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="9.0.0-rc.2.24474.3" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.0-rc.2.24474.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0-rc.2.24474.1">

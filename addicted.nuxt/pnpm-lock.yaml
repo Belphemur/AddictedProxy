@@ -14,6 +14,9 @@ importers:
       '@microsoft/signalr':
         specifier: ^8.0.7
         version: 8.0.7(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      '@microsoft/signalr-protocol-msgpack':
+        specifier: ^8.0.7
+        version: 8.0.7(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       bufferutil:
         specifier: ^4.0.8
         version: 4.0.8
@@ -712,8 +715,15 @@ packages:
   '@mdi/font@7.4.47':
     resolution: {integrity: sha512-43MtGpd585SNzHZPcYowu/84Vz2a2g31TvPMTm9uTiCSWzaheQySUcSyUH/46fPnuPQWof2yd0pGBtzee/IQWw==}
 
+  '@microsoft/signalr-protocol-msgpack@8.0.7':
+    resolution: {integrity: sha512-yrGt0E9l8X9HSF9P8gmnkVi+IDGNP6seU5/YAiFzIisH4VpvayVcf7Z1Lbu7nNwM/GzFgtFIa7jBivLQCCcyEQ==}
+
   '@microsoft/signalr@8.0.7':
     resolution: {integrity: sha512-PHcdMv8v5hJlBkRHAuKG5trGViQEkPYee36LnJQx4xHOQ5LL4X0nEWIxOp5cCtZ7tu+30quz5V3k0b1YNuc6lw==}
+
+  '@msgpack/msgpack@2.8.0':
+    resolution: {integrity: sha512-h9u4u/jiIRKbq25PM+zymTyW6bhTzELvOoUd+AvYriWOAKpLGnIamaET3pnHYoI5iYphAHBI4ayx0MehR+VVPQ==}
+    engines: {node: '>= 10'}
 
   '@netlify/functions@2.8.2':
     resolution: {integrity: sha512-DeoAQh8LuNPvBE4qsKlezjKj0PyXDryOFJfJKo3Z1qZLKzQ21sT314KQKPVjfvw6knqijj+IO+0kHXy/TJiqNA==}
@@ -4340,6 +4350,15 @@ snapshots:
 
   '@mdi/font@7.4.47': {}
 
+  '@microsoft/signalr-protocol-msgpack@8.0.7(bufferutil@4.0.8)(utf-8-validate@6.0.4)':
+    dependencies:
+      '@microsoft/signalr': 8.0.7(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      '@msgpack/msgpack': 2.8.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - utf-8-validate
+
   '@microsoft/signalr@8.0.7(bufferutil@4.0.8)(utf-8-validate@6.0.4)':
     dependencies:
       abort-controller: 3.0.0
@@ -4351,6 +4370,8 @@ snapshots:
       - bufferutil
       - encoding
       - utf-8-validate
+
+  '@msgpack/msgpack@2.8.0': {}
 
   '@netlify/functions@2.8.2':
     dependencies:
