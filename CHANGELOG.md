@@ -1,3 +1,11 @@
+## [4.25.2](https://github.com/Belphemur/AddictedProxy/compare/v4.25.1...v4.25.2) (2024-10-23)
+
+### Bug Fixes
+
+* **ci:** fix building frontend image ([3fb7dda](https://github.com/Belphemur/AddictedProxy/commit/3fb7ddab29b9d2ff74788b0d1cbf9d8a2944786b))
+* **ci:** remove step relating to old build process ([9464e2d](https://github.com/Belphemur/AddictedProxy/commit/9464e2d77b1843b61cee8112e19ee7f256a95436))
+* **frontend:** missing transpile ([f42754d](https://github.com/Belphemur/AddictedProxy/commit/f42754d9e6756d1932c4e4b004a74d250daad32e))
+
 ## [4.25.1](https://github.com/Belphemur/AddictedProxy/compare/v4.25.0...v4.25.1) (2024-10-23)
 
 ### Bug Fixes
