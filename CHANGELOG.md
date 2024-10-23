@@ -1,3 +1,9 @@
+## [4.25.4](https://github.com/Belphemur/AddictedProxy/compare/v4.25.3...v4.25.4) (2024-10-23)
+
+### Bug Fixes
+
+* **websocket:** fix missing websocket lib ([5586a6f](https://github.com/Belphemur/AddictedProxy/commit/5586a6f3d7ee29a3d075cae9e5d906c79f8a6067))
+
 ## [4.25.3](https://github.com/Belphemur/AddictedProxy/compare/v4.25.2...v4.25.3) (2024-10-23)
 
 ### Bug Fixes
