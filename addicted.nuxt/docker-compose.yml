@@ -1,0 +1,29 @@
+services:
+  addicted-frontend:
+    image: ghcr.io/belphemur/addictedproxy-frontend:latest
+
+    #    build:
+#        context: .
+#        dockerfile: Dockerfile
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.front.rule=HostRegexp(`(|\www\.)gestdown.info`)
+      - traefik.http.routers.front.priority=10
+      - traefik.http.routers.front.entrypoints=web
+      - traefik.http.routers.front.middlewares=redirect-to-www
+      - traefik.http.services.front.loadbalancer.server.port=3000
+      - traefik.http.middlewares.redirect-to-www.redirectregex.regex=^http://gestdown.info/(.*)
+      - traefik.http.middlewares.redirect-to-www.redirectregex.replacement=http://www.gestdown.info/$${1}
+      - traefik.http.middlewares.redirect-to-www.redirectregex.permanent=true
+      - "com.centurylinklabs.watchtower.enable=true"
+    ports:
+      - 3000:3000
+    environment:
+      - NUXT_PUBLIC_API_CLIENT_URL=https://api.gestdown.info
+      - NUXT_PUBLIC_API_SERVER_URL=http://addicted:80
+      - NUXT_PUBLIC_MATOMO_URL=https://unami.newmail.app/js/container_81CCRTCJ.js?1
+      - NUXT_PUBLIC_SENTRY_CONFIG_ENVIRONMENT=production
+      - NUXT_PUBLIC_SENTRY_CONFIG_DSN=https://fb48b86dcf2e4d359a1e7dd83b9bc244@o631137.ingest.sentry.io/4503938276589568
+      - NUXT_PUBLIC_SENTRY_CLIENT_CONFIG_REPLAYS_SESSION_SAMPLE_RATE=0.3
+      - NUXT_PUBLIC_URL=https://www.gestdown.info
+      - NUXT_PUBLIC_CLOUDFLARE_ANALYTIC_TOKEN=187b766838c44b3b891c99463eb66e3a
