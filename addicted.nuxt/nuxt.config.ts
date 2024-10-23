@@ -8,7 +8,7 @@ export default defineNuxtConfig({
         sharedPrerenderData: true
     },
     build: {
-        transpile: ['picomatch']
+        transpile: ['picomatch', 'ws']
     },
 
     devtools: {enabled: true},

@@ -35,6 +35,9 @@ importers:
       vuetify:
         specifier: ^3.7.2
         version: 3.7.3(typescript@5.6.3)(vite-plugin-vuetify@2.0.4)(vue@3.5.12(typescript@5.6.3))
+      ws:
+        specifier: ^8.18.0
+        version: 8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
     devDependencies:
       '@nuxt/devtools':
         specifier: 1.6.0
