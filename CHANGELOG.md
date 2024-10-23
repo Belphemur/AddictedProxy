@@ -1,3 +1,110 @@
+## [4.24.0](https://github.com/Belphemur/AddictedProxy/compare/v4.23.6...v4.24.0) (2024-10-23)
+
+### Performance improvements
+
+* **messagepack:** use message pack for SignalR ([61b926b](https://github.com/Belphemur/AddictedProxy/commit/61b926b5006aa12d68a4db9b416c4c6d884348b5))
+* **nuxt:** update to new contract ([6e98b34](https://github.com/Belphemur/AddictedProxy/commit/6e98b34ea2642ebcdc20662624c8b4a0f8470f9a))
+
+### Bug Fixes
+
+* data contract for media episode ([3d470a0](https://github.com/Belphemur/AddictedProxy/commit/3d470a030daa0025aeb3ded03ac5625c0e3087b2))
+* **deps:** update dependency semantic-release to v24.1.3 ([e4bfa31](https://github.com/Belphemur/AddictedProxy/commit/e4bfa319d70250e9e6de45af02f3b092a7d9cf31))
+* **deps:** update dependency vuetify to v3.7.3 ([80c4290](https://github.com/Belphemur/AddictedProxy/commit/80c4290b504c51407fe828cd40bdf840a9629596))
+
+### Features
+
+* **media:** add new route to get media details and subtitles instead of hub ([be074b4](https://github.com/Belphemur/AddictedProxy/commit/be074b40cff664276f9b0f2827ff029bda38cd59))
+* **media:** add signalR endpoint to get show data for view ([e9608ec](https://github.com/Belphemur/AddictedProxy/commit/e9608ece04fd49d3c7b1b2ace78500bdad70b9f0))
+
+## [4.23.6](https://github.com/Belphemur/AddictedProxy/compare/v4.23.5...v4.23.6) (2024-10-15)
+
+### Performance improvements
+
+* update all deps ([d9dcacd](https://github.com/Belphemur/AddictedProxy/commit/d9dcacd3f4f6f14341b0dd22f86cd524399d01d8))
+
+### Bug Fixes
+
+* clean up testing code ([80d00c1](https://github.com/Belphemur/AddictedProxy/commit/80d00c166a63e11a1bd540292bbbba7b92a8077e))
+* **deps:** update dependency semantic-release to v24.1.2 ([ce73fe7](https://github.com/Belphemur/AddictedProxy/commit/ce73fe7921f35d65cd329b58cacf62c025e5b500))
+
+## [4.23.5](https://github.com/Belphemur/AddictedProxy/compare/v4.23.4...v4.23.5) (2024-09-19)
+
+### Performance improvements
+
+* move to .NET 9.0 ([97cec8b](https://github.com/Belphemur/AddictedProxy/commit/97cec8b154043522b68be74f8b6102288a158950))
+* update deps ([fbaa058](https://github.com/Belphemur/AddictedProxy/commit/fbaa05880c81389a101c8ecdb20e7882f173d398))
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v24.1.1 ([4fe5502](https://github.com/Belphemur/AddictedProxy/commit/4fe55021b1e3681b8a61002a21e524711d2ea6f5))
+* **deps:** update dependency vuetify to v3.7.2 ([ae1a3e7](https://github.com/Belphemur/AddictedProxy/commit/ae1a3e7be72f9d9d213fa9cb60d3e7ba8a08ac2b))
+* warning about wrong HTML ([442734c](https://github.com/Belphemur/AddictedProxy/commit/442734c4f594c010bcb61ff525d87022170b9bd4))
+
+## [4.23.4](https://github.com/Belphemur/AddictedProxy/compare/v4.23.3...v4.23.4) (2024-08-30)
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.7.1 ([8139350](https://github.com/Belphemur/AddictedProxy/commit/8139350c7c0ffd045edc70468dcf048652444ce3))
+* **media:** remove frozen dictionary, not supported by caching. ([faed41d](https://github.com/Belphemur/AddictedProxy/commit/faed41ded5217f8a25bdbbba687f4566bbceff62))
+
+## [4.23.3](https://github.com/Belphemur/AddictedProxy/compare/v4.23.2...v4.23.3) (2024-08-22)
+
+### Bug Fixes
+
+* can't use non entity framework supported methods ([b0e66f7](https://github.com/Belphemur/AddictedProxy/commit/b0e66f7343d3501edcb11a05642c2e33b2074187))
+
+## [4.23.2](https://github.com/Belphemur/AddictedProxy/compare/v4.23.1...v4.23.2) (2024-08-22)
+
+### Performance improvements
+
+* update result dependency ([3195c75](https://github.com/Belphemur/AddictedProxy/commit/3195c75ca441f2e45f52a70773a9f24398c1e5df))
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v24.1.0 ([8956e7e](https://github.com/Belphemur/AddictedProxy/commit/8956e7ecebe8d495fd972b11e640984535f7c8a6))
+* **deps:** update dependency vuetify to v3.7.0 ([6d3b8cd](https://github.com/Belphemur/AddictedProxy/commit/6d3b8cddd69de5a338c4821e098df4cef783d75a))
+
+## [4.23.1](https://github.com/Belphemur/AddictedProxy/compare/v4.23.0...v4.23.1) (2024-08-15)
+
+### Bug Fixes
+
+* don't follow redirect for client either ([5a0a114](https://github.com/Belphemur/AddictedProxy/commit/5a0a114acd22213a260ba2ed579523a55f4db840))
+
+## [4.23.0](https://github.com/Belphemur/AddictedProxy/compare/v4.22.13...v4.23.0) (2024-08-14)
+
+### Performance improvements
+
+* add logging ([955c44c](https://github.com/Belphemur/AddictedProxy/commit/955c44cb868c5a7f225cc0da0c5cd5965648cbf3))
+* improve the httputils class ([bd7ae78](https://github.com/Belphemur/AddictedProxy/commit/bd7ae7807d13d9cd360669df12222c2dfbf808c3))
+
+### Bug Fixes
+
+* missing migration date ([1cfb923](https://github.com/Belphemur/AddictedProxy/commit/1cfb92365475b3618b16b1dc47190862d09eaf1e))
+
+### Features
+
+* add cleanup inbox for addicted creds ([6c0c91b](https://github.com/Belphemur/AddictedProxy/commit/6c0c91b17021fe68390d5c4770e512d74ebf2589))
+* clean up inbox of all user and reset creds ([d515363](https://github.com/Belphemur/AddictedProxy/commit/d5153635314a6a30013289ee38c80d4526bd8487))
+
+## [4.22.13](https://github.com/Belphemur/AddictedProxy/compare/v4.22.12...v4.22.13) (2024-08-14)
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.6.14 ([4bfaf30](https://github.com/Belphemur/AddictedProxy/commit/4bfaf30eed333c9e011f27e1f6f12b125ed542ee))
+
+## [4.22.12](https://github.com/Belphemur/AddictedProxy/compare/v4.22.11...v4.22.12) (2024-07-19)
+
+### Performance improvements
+
+* update user agent ([29b2274](https://github.com/Belphemur/AddictedProxy/commit/29b227428ebe2ccfc30b4bf35941b14f3ad2f4f7))
+
+### Bug Fixes
+
+* **deps:** update dependency @microsoft/signalr to v8.0.7 ([b365538](https://github.com/Belphemur/AddictedProxy/commit/b365538759f94cf03d38fb4589e1b1341ec02764))
+* **deps:** update dependency vuetify to v3.6.11 ([d75968a](https://github.com/Belphemur/AddictedProxy/commit/d75968a5d79961a9e9b168d60203b507835d4f0f))
+* **deps:** update dependency vuetify to v3.6.12 ([4a73828](https://github.com/Belphemur/AddictedProxy/commit/4a7382823e6c9fd37b97d8bc362091270c36b4c8))
+* **deps:** update dependency vuetify to v3.6.13 ([010f375](https://github.com/Belphemur/AddictedProxy/commit/010f37521e822f1678ec95f3f43322d25ba0ab13))
+
 ## [4.22.11](https://github.com/Belphemur/AddictedProxy/compare/v4.22.10...v4.22.11) (2024-06-21)
 
 ### Performance improvements
