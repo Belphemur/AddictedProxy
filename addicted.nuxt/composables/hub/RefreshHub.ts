@@ -1,6 +1,7 @@
 import {HubConnection, HubConnectionBuilder, LogLevel} from "@microsoft/signalr";
 import type {EpisodeWithSubtitlesDto, ShowDto} from "~/composables/api/data-contracts";
 import {getApiServerUrl} from "~/composables/rest/api";
+import {MessagePackHubProtocol} from "@microsoft/signalr-protocol-msgpack";
 
 let _connection: HubConnection;
 
@@ -11,6 +12,7 @@ export function useRefreshHub() {
             // @ts-ignore
             .withUrl(getApiServerUrl() + "/refresh")
             .configureLogging(LogLevel.Information)
+            .withHubProtocol(new MessagePackHubProtocol())
             .withAutomaticReconnect()
             .withStatefulReconnect()
             .build();

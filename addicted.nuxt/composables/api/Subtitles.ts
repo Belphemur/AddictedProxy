@@ -22,7 +22,7 @@ export class Subtitles<SecurityDataType = unknown> extends HttpClient<SecurityDa
    * @request GET:/subtitles/download/{subtitleId}
    */
   downloadSubtitle = (subtitleId: string, params: RequestParams = {}) =>
-    this.request<void, void | ErrorResponse>({
+    this.request<void, ErrorResponse>({
       path: `/subtitles/download/${subtitleId}`,
       method: "GET",
       ...params,

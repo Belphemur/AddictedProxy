@@ -16,8 +16,10 @@
     <PackageVersion Include="Hangfire.MaximumConcurrentExecutions" Version="1.1.0" />
     <PackageVersion Include="Hangfire.PostgreSql" Version="1.20.10" />
     <PackageVersion Include="IsExternalInit" Version="1.0.3" />
+    <PackageVersion Include="MessagePack" Version="3.0.233-rc.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="9.0.0-rc.2.24474.3" />
     <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="9.0.0-rc.2.24474.3" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.0-rc.2.24474.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0-rc.2.24474.1">
@@ -48,7 +50,7 @@
     <PackageVersion Include="NUnit.Analyzers" Version="4.3.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.10.0-beta.1" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.10.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.12" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
@@ -71,7 +73,7 @@
     <PackageVersion Include="System.Text.Encodings.Web" Version="9.0.0-rc.2.24473.5" />
     <PackageVersion Include="System.Text.Json" Version="9.0.0-rc.2.24473.5" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageVersion Include="Z.EntityFramework.Extensions.EFCore" Version="9.0.0-rc.1.24451.1-02" />
+    <PackageVersion Include="Z.EntityFramework.Extensions.EFCore" Version="9.0.0-rc.2.24474.1-01" />
     <PackageVersion Include="ZstdNet" Version="1.4.5" />
   </ItemGroup>
 </Project>

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Net.Http.Headers;
 using System.Collections.Frozen;
+using AddictedProxy.Culture.Service;
+using AddictedProxy.Services.Details;
 using TvMovieDatabaseClient.Service;
 using TvMovieDatabaseClient.Service.Model;
 using DistributedCacheExtensions = AddictedProxy.Caching.Extensions.DistributedCacheExtensions;
@@ -21,16 +23,24 @@ public class MediaController : Controller
     private readonly IShowRefresher _showRefresher;
     private readonly ITMDBClient _tmdbClient;
     private readonly ITvShowRepository _tvShowRepository;
-    private readonly ILogger<MediaController> _logger;
     private readonly IDistributedCache _distributedCache;
+    private readonly IMediaDetailsService _mediaDetailsService;
+    private readonly IEpisodeRepository _episodeRepository;
+    private readonly ICultureParser _cultureParser;
+    private readonly LinkGenerator _generator;
 
-    public MediaController(IShowRefresher showRefresher, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository, ILogger<MediaController> logger, IDistributedCache distributedCache)
+    public MediaController(IShowRefresher showRefresher, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository, IDistributedCache distributedCache,
+        IMediaDetailsService mediaDetailsService,
+        IEpisodeRepository episodeRepository, ICultureParser cultureParser, LinkGenerator generator)
     {
         _showRefresher = showRefresher;
         _tmdbClient = tmdbClient;
         _tvShowRepository = tvShowRepository;
-        _logger = logger;
         _distributedCache = distributedCache;
+        _mediaDetailsService = mediaDetailsService;
+        _episodeRepository = episodeRepository;
+        _cultureParser = cultureParser;
+        _generator = generator;
     }
 
     /// <summary>
@@ -51,7 +61,7 @@ public class MediaController : Controller
             Public = true,
             MaxAge = TimeSpan.FromDays(1)
         };
-        
+
         var genres = await GetGenresCachedAsync(cancellationToken);
 
         var trendingTvShows = _tmdbClient.GetTrendingTvAsync(TimeWindowEnum.week, cancellationToken)
@@ -84,7 +94,7 @@ public class MediaController : Controller
                     "",
                     year,
                     showDetails.Name);
-                details = UpdatePathAndVoteDetailsDto(details);
+                details = _mediaDetailsService.UpdatePathAndVoteDetailsDto(details);
 
                 return new MediaDetailsDto(showDto, details);
             });
@@ -137,98 +147,67 @@ public class MediaController : Controller
             };
             return TypedResults.NotFound();
         }
-        var detailsDto = await GetDetailsDtoCachedAsync(show, cancellationToken);
+
+        var detailsDto = await _mediaDetailsService.GetDetailsDtoCachedAsync(show, cancellationToken);
 
         return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
     }
-
-    private Task<MediaDetailsDto.DetailsDto?> GetDetailsDtoCachedAsync(TvShow show, CancellationToken cancellationToken)
+    
+    /// <summary>
+    /// Get the show details with the last season and episodes
+    /// </summary>
+    /// <param name="showId"></param>
+    /// <param name="language"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    [Route("{showId:guid}/episodes/{**language}")]
+    [HttpGet]
+    [ProducesResponseType(typeof(MediaDetailsWithEpisodeAndSubtitlesDto), 200)]
+    [ProducesResponseType(typeof(string), 429)]
+    [ProducesResponseType(404)]
+    [Produces("application/json")]
+    public async Task<Results<Ok<MediaDetailsWithEpisodeAndSubtitlesDto>, NotFound, BadRequest<string>>> GetShowDetails(Guid showId, string language)
     {
-        if (!show.TmdbId.HasValue)
+        Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
         {
-            return Task.FromResult<MediaDetailsDto.DetailsDto?>(null);
-        }
-
-        return _distributedCache.GetSertAsync($"details-v1-{show.Id}", async () =>
-        {
-            MediaDetailsDto.DetailsDto? detailsDto = null;
-
-            switch (show.Type)
-            {
-                case ShowType.Show:
-                {
-                    var showDetails = await _tmdbClient.GetShowDetailsByIdAsync(show.TmdbId.Value, cancellationToken);
-                    if (showDetails == null)
-                    {
-                        _logger.LogWarning("Couldn't find show details for TMDB {id}", show.TmdbId);
-                        break;
-                    }
-
-                    ;
-                    int? year = DateTime.TryParse(showDetails.FirstAirDate, out var releaseDate) ? releaseDate.Year : null;
-
-                    detailsDto = new MediaDetailsDto.DetailsDto(showDetails.PosterPath,
-                        showDetails.Overview,
-                        showDetails.OriginalName,
-                        (MediaDetailsDto.MediaType)show.Type,
-                        showDetails.BackdropPath,
-                        showDetails.VoteAverage,
-                        showDetails.Genres.Select(genre => genre.Name).ToArray(),
-                        showDetails.Tagline,
-                        year,
-                        showDetails.Name);
-                }
-                    break;
-                case ShowType.Movie:
-                {
-                    var movieDetails = await _tmdbClient.GetMovieDetailsByIdAsync(show.TmdbId.Value, cancellationToken);
-                    if (movieDetails == null)
-                    {
-                        _logger.LogWarning("Couldn't find movie details for TMDB {id}", show.TmdbId);
-                        break;
-                    }
-
-                    int? year = DateTime.TryParse(movieDetails.ReleaseDate, out var releaseDate) ? releaseDate.Year : null;
-
-                    detailsDto = new MediaDetailsDto.DetailsDto(movieDetails.PosterPath,
-                        movieDetails.Overview,
-                        movieDetails.OriginalTitle,
-                        (MediaDetailsDto.MediaType)show.Type,
-                        movieDetails.BackdropPath,
-                        movieDetails.VoteAverage,
-                        movieDetails.Genres.Select(genre => genre.Name).ToArray(),
-                        movieDetails.Tagline,
-                        year,
-                        movieDetails.Title);
-                }
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            detailsDto = UpdatePathAndVoteDetailsDto(detailsDto);
-            return new DistributedCacheExtensions.CacheData<MediaDetailsDto.DetailsDto?>(detailsDto,
-                new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTimeOffset.UtcNow.AddDays(14)
-                });
-        });
-    }
-
-    private static MediaDetailsDto.DetailsDto? UpdatePathAndVoteDetailsDto(MediaDetailsDto.DetailsDto? detailsDto)
-    {
-        if (detailsDto == null)
-        {
-            return null;
-        }
-
-        detailsDto = detailsDto with
-        {
-            PosterPath = $"/tmdb/image{detailsDto.PosterPath}",
-            BackdropPath = $"/tmdb/image{detailsDto.BackdropPath}",
-            VoteAverage = Math.Round(detailsDto.VoteAverage, 1)
+            Public = true,
+            MaxAge = TimeSpan.FromDays(0.5)
         };
-        return detailsDto;
+
+        var searchLanguage = await _cultureParser.FromStringAsync(language, default);
+        if (searchLanguage == null)
+        {
+            return TypedResults.BadRequest("Invalid language");
+        }
+
+        var show = await _showRefresher.GetShowByGuidAsync(showId, default);
+        if (show == null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var detailsTask = _mediaDetailsService.GetDetailsDtoCachedAsync(show, default);
+
+        var lastSeason = show.Seasons.OrderBy(season => season.Number).LastOrDefault();
+        if (lastSeason == null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var episodes = _episodeRepository.GetSeasonEpisodesByLangUntrackedAsync(show.Id, searchLanguage, lastSeason.Number)
+            .Select(episode =>
+            {
+                var subs = episode
+                    .Subtitles
+                    .Select(
+                        subtitle =>
+                            new SubtitleDto(subtitle,
+                                _generator.GetUriByRouteValues(HttpContext, nameof(Routes.DownloadSubtitle), new { subtitleId = subtitle.UniqueId }) ??
+                                throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                                searchLanguage)
+                    );
+                return new EpisodeWithSubtitlesDto(episode, subs);
+            });
+        return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), episodes, lastSeason.Number));
     }
 }
