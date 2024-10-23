@@ -8,14 +8,14 @@ using DistributedCacheExtensions = AddictedProxy.Caching.Extensions.DistributedC
 
 namespace AddictedProxy.Services.Details;
 
-public class ShowDetailsService : IShowDetailsService
+public class MediaDetailsService : IMediaDetailsService
 {
     private readonly IDistributedCache _distributedCache;
-    private readonly ILogger<ShowDetailsService> _logger;
+    private readonly ILogger<MediaDetailsService> _logger;
     private readonly ITMDBClient _tmdbClient;
 
 
-    public ShowDetailsService(IDistributedCache distributedCache, ILogger<ShowDetailsService> logger, ITMDBClient tmdbClient)
+    public MediaDetailsService(IDistributedCache distributedCache, ILogger<MediaDetailsService> logger, ITMDBClient tmdbClient)
     {
         _distributedCache = distributedCache;
         _logger = logger;

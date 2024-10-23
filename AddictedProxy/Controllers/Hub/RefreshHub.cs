@@ -3,6 +3,7 @@ using AddictedProxy.Controllers.Rest;
 using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Model.Dto;
+using AddictedProxy.Services.Details;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Shows.Jobs;
 using Hangfire;
@@ -17,15 +18,17 @@ public class RefreshHub : Hub<IRefreshClient>
     private readonly ICultureParser _cultureParser;
     private readonly IHttpContextAccessor _accessor;
     private readonly LinkGenerator _generator;
+    private readonly IMediaDetailsService _mediaDetailsService;
 
     public RefreshHub(IShowRefresher showRefresher, IEpisodeRepository episodeRepository, ICultureParser cultureParser,
-                      IHttpContextAccessor accessor, LinkGenerator generator)
+        IHttpContextAccessor accessor, LinkGenerator generator, IMediaDetailsService mediaDetailsService)
     {
         _showRefresher = showRefresher;
         _episodeRepository = episodeRepository;
         _cultureParser = cultureParser;
         _accessor = accessor;
         _generator = generator;
+        _mediaDetailsService = mediaDetailsService;
     }
 
     /// <summary>
@@ -42,6 +45,58 @@ public class RefreshHub : Hub<IRefreshClient>
         }
 
         BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, default));
+    }
+
+    /// <summary>
+    /// Get the show details with the last episode and subtitles
+    /// </summary>
+    /// <param name="showId"></param>
+    /// <param name="language"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public async Task<MediaDetailsWithEpisodeAndSubtitlesDto?> GetShowDetailsWithEpisode(Guid showId, string language, CancellationToken cancellationToken)
+    {
+        var searchLanguage = await _cultureParser.FromStringAsync(language, cancellationToken);
+        if (searchLanguage == null)
+        {
+            return null;
+        }
+
+        var show = await _showRefresher.GetShowByGuidAsync(showId, default);
+        if (show == null)
+        {
+            return null;
+        }
+
+        var details = await _mediaDetailsService.GetDetailsDtoCachedAsync(show, cancellationToken);
+        if (details == null)
+        {
+            return null;
+        }
+
+
+        var lastSeason = show.Seasons.OrderBy(season => season.Number).LastOrDefault();
+        if (lastSeason == null)
+        {
+            return new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), details), [],  null);
+        }
+        
+        var episodes = _episodeRepository.GetSeasonEpisodesByLangUntrackedAsync(show.Id, searchLanguage, lastSeason.Number)
+            .Select(episode =>
+            {
+                var subs = episode
+                    .Subtitles
+                    .Select(
+                        subtitle =>
+                            new SubtitleDto(subtitle,
+                                _generator.GetUriByRouteValues(_accessor.HttpContext!, nameof(Routes.DownloadSubtitle), new { subtitleId = subtitle.UniqueId }) ??
+                                throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                                searchLanguage)
+                    );
+                return new EpisodeWithSubtitlesDto(episode, subs);
+            });
+        return new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), details), await episodes.ToArrayAsync(cancellationToken), lastSeason.Number);
     }
 
     /// <summary>
@@ -70,19 +125,19 @@ public class RefreshHub : Hub<IRefreshClient>
         }
 
         var episodes = _episodeRepository.GetSeasonEpisodesByLangUntrackedAsync(show.Id, searchLanguage, season)
-                                         .Select(episode =>
-                                         {
-                                             var subs = episode
-                                                        .Subtitles
-                                                        .Select(
-                                                            subtitle =>
-                                                                new SubtitleDto(subtitle,
-                                                                    _generator.GetUriByRouteValues(_accessor.HttpContext!, nameof(Routes.DownloadSubtitle), new { subtitleId = subtitle.UniqueId }) ??
-                                                                    throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
-                                                                    searchLanguage)
-                                                        );
-                                             return new EpisodeWithSubtitlesDto(episode, subs);
-                                         });
+            .Select(episode =>
+            {
+                var subs = episode
+                    .Subtitles
+                    .Select(
+                        subtitle =>
+                            new SubtitleDto(subtitle,
+                                _generator.GetUriByRouteValues(_accessor.HttpContext!, nameof(Routes.DownloadSubtitle), new { subtitleId = subtitle.UniqueId }) ??
+                                throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                                searchLanguage)
+                    );
+                return new EpisodeWithSubtitlesDto(episode, subs);
+            });
         await foreach (var episode in episodes.WithCancellation(cancellationToken))
         {
             yield return episode;

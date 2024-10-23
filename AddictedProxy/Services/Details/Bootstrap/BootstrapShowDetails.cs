@@ -6,6 +6,6 @@ public class BootstrapShowDetails : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<IShowDetailsService, ShowDetailsService>();
+        services.AddScoped<IMediaDetailsService, MediaDetailsService>();
     }
 }

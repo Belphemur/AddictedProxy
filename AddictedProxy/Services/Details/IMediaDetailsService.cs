@@ -6,7 +6,7 @@ namespace AddictedProxy.Services.Details;
 /// <summary>
 /// Interface for the Show Details Service.
 /// </summary>
-public interface IShowDetailsService
+public interface IMediaDetailsService
 {
     /// <summary>
     /// Retrieves the cached details of a TV show.

@@ -23,15 +23,15 @@ public class MediaController : Controller
     private readonly ITMDBClient _tmdbClient;
     private readonly ITvShowRepository _tvShowRepository;
     private readonly IDistributedCache _distributedCache;
-    private readonly IShowDetailsService _showDetailsService;
+    private readonly IMediaDetailsService _mediaDetailsService;
 
-    public MediaController(IShowRefresher showRefresher, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository, IDistributedCache distributedCache, IShowDetailsService showDetailsService)
+    public MediaController(IShowRefresher showRefresher, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository, IDistributedCache distributedCache, IMediaDetailsService mediaDetailsService)
     {
         _showRefresher = showRefresher;
         _tmdbClient = tmdbClient;
         _tvShowRepository = tvShowRepository;
         _distributedCache = distributedCache;
-        _showDetailsService = showDetailsService;
+        _mediaDetailsService = mediaDetailsService;
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public class MediaController : Controller
                     "",
                     year,
                     showDetails.Name);
-                details = _showDetailsService.UpdatePathAndVoteDetailsDto(details);
+                details = _mediaDetailsService.UpdatePathAndVoteDetailsDto(details);
 
                 return new MediaDetailsDto(showDto, details);
             });
@@ -138,7 +138,7 @@ public class MediaController : Controller
             };
             return TypedResults.NotFound();
         }
-        var detailsDto = await _showDetailsService.GetDetailsDtoCachedAsync(show, cancellationToken);
+        var detailsDto = await _mediaDetailsService.GetDetailsDtoCachedAsync(show, cancellationToken);
 
         return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
     }
