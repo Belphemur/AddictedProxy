@@ -16,6 +16,7 @@ FROM deps AS release
 COPY . .
 COPY --from=deps ./node_modules ./node_modules
 RUN NUXT_PRESET=node-server pnpm build
+RUN cd .output/server && npm add ws
 
 
 FROM node:lts-slim

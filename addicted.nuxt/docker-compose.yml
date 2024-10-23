@@ -19,7 +19,7 @@ services:
       - 3000:3000
     environment:
       - NUXT_PUBLIC_API_CLIENT_URL=https://api.gestdown.info
-      - NUXT_PUBLIC_API_SERVER_URL=http://addicted:80
+      - NUXT_PUBLIC_API_SERVER_URL=https://api.gestdown.info
       - NUXT_PUBLIC_MATOMO_URL=https://unami.newmail.app/js/container_81CCRTCJ.js?1
       - NUXT_PUBLIC_SENTRY_CONFIG_ENVIRONMENT=production
       - NUXT_PUBLIC_SENTRY_CONFIG_DSN=https://fb48b86dcf2e4d359a1e7dd83b9bc244@o631137.ingest.sentry.io/4503938276589568
