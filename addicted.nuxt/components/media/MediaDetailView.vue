@@ -30,7 +30,7 @@ const currentSeason = ref<number | undefined>(undefined);
 const mediaInfo = ref<MediaDetailsDto>();
 const subtitlesApi = useSubtitles();
 
-await loadMediaDetails();
+await loadViewData();
 
 const runtimeConfig = useRuntimeConfig();
 let imageUrl = mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath;
@@ -53,24 +53,20 @@ useSeoMeta({
   ogType: "website"
 })
 
-await loadShowData();
-
-async function loadShowData() {
+watch([currentSeason, language], async _ => {
+  loadingEpisodes.value = true;
   const {
     data,
-    status
   } = await useAsyncData(async () => {
     if (currentSeason.value == undefined) {
       return [];
     }
     return (await showsApi.showsDetail(props.showId, currentSeason.value!, language.lang)).data.episodes!;
-  }, {
-    watch: [currentSeason, language]
   });
 
-  loadingEpisodes.value = status.value !== "pending";
-  episodes = data;
-}
+  episodes.value = data.value;
+  loadingEpisodes.value = false;
+})
 
 const {
   sendRefreshAsync,
@@ -115,13 +111,14 @@ onUnmounted(() => {
   offDone(doneHandler);
 });
 
-async function loadMediaDetails() {
-  const {data, error} = await useAsyncData(async () => (await mediaApi.mediaDetails(props.showId)).data!);
+async function loadViewData() {
+  const {data, error} = await useAsyncData(async () => (await mediaApi.episodesDetail(props.showId, language.lang)).data!);
   if (error.value != null) {
     throw createError({statusCode: 404, statusMessage: `Show ${props.showId} not found`});
   }
-  mediaInfo.value = data.value!;
-  currentSeason.value = useLast(mediaInfo.value?.media?.seasons);
+  mediaInfo.value = data.value!.details;
+  currentSeason.value = data.value?.lastSeasonNumber
+  episodes.value = data.value?.episodeWithSubtitles;
 }
 
 
