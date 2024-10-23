@@ -1,3 +1,9 @@
+## [4.25.3](https://github.com/Belphemur/AddictedProxy/compare/v4.25.2...v4.25.3) (2024-10-23)
+
+### Bug Fixes
+
+* **sitemap:** fix issue with sitemap not proxied properly ([0a4b6fa](https://github.com/Belphemur/AddictedProxy/commit/0a4b6faad06fe5e5fc2dffd7a5aa36a8f2673676))
+
 ## [4.25.2](https://github.com/Belphemur/AddictedProxy/compare/v4.25.1...v4.25.2) (2024-10-23)
 
 ### Bug Fixes
