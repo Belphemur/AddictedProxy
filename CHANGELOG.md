@@ -1,3 +1,9 @@
+## [4.25.0](https://github.com/Belphemur/AddictedProxy/compare/v4.24.0...v4.25.0) (2024-10-23)
+
+### Features
+
+* **media:page:** use optimized endpoint ([f0adc82](https://github.com/Belphemur/AddictedProxy/commit/f0adc82b9623f1f6e79e02dbf28f90fb4578380e))
+
 ## [4.24.0](https://github.com/Belphemur/AddictedProxy/compare/v4.23.6...v4.24.0) (2024-10-23)
 
 ### Performance improvements
