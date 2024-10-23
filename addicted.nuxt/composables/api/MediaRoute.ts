@@ -9,7 +9,7 @@
  * ---------------------------------------------------------------
  */
 
-import { MediaDetailsDto } from "./data-contracts";
+import { MediaDetailsDto, MediaDetailsWithEpisodeAndSubtitlesDto } from "./data-contracts";
 
 export namespace Media {
   /**
@@ -23,8 +23,8 @@ export namespace Media {
     export type RequestParams = {
       /**
        * @format int32
-       * @min 0
-       * @max 15
+       * @min 1
+       * @max 50
        */
       max: number;
     };
@@ -50,5 +50,24 @@ export namespace Media {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = MediaDetailsDto;
+  }
+
+  /**
+   * No description
+   * @tags Media
+   * @name EpisodesDetail
+   * @summary Get the show details with the last season and episodes
+   * @request GET:/media/{showId}/episodes/{language}
+   */
+  export namespace EpisodesDetail {
+    export type RequestParams = {
+      /** @format uuid */
+      showId: string;
+      language: string;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = MediaDetailsWithEpisodeAndSubtitlesDto;
   }
 }

@@ -9,7 +9,7 @@
  * ---------------------------------------------------------------
  */
 
-import { MediaDetailsDto } from "./data-contracts";
+import { MediaDetailsDto, MediaDetailsWithEpisodeAndSubtitlesDto } from "./data-contracts";
 import { HttpClient, RequestParams } from "./http-client";
 
 export class Media<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
@@ -39,6 +39,21 @@ export class Media<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
   mediaDetails = (showId: string, params: RequestParams = {}) =>
     this.request<MediaDetailsDto, void | string>({
       path: `/media/${showId}/details`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Media
+   * @name EpisodesDetail
+   * @summary Get the show details with the last season and episodes
+   * @request GET:/media/{showId}/episodes/{language}
+   */
+  episodesDetail = (showId: string, language: string, params: RequestParams = {}) =>
+    this.request<MediaDetailsWithEpisodeAndSubtitlesDto, void | string>({
+      path: `/media/${showId}/episodes/${language}`,
       method: "GET",
       format: "json",
       ...params,

@@ -156,6 +156,13 @@ export interface MediaDetailsDto {
   details?: DetailsDto;
 }
 
+export interface MediaDetailsWithEpisodeAndSubtitlesDto {
+  details?: MediaDetailsDto;
+  episodeWithSubtitles?: EpisodeWithSubtitlesDto[] | null;
+  /** @format int32 */
+  lastSeasonNumber?: number | null;
+}
+
 /** Represent the type of media */
 export type MediaType = "Show" | "Movie";
 
