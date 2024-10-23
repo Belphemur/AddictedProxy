@@ -1,3 +1,21 @@
+## [4.24.0](https://github.com/Belphemur/AddictedProxy/compare/v4.23.6...v4.24.0) (2024-10-23)
+
+### Performance improvements
+
+* **messagepack:** use message pack for SignalR ([61b926b](https://github.com/Belphemur/AddictedProxy/commit/61b926b5006aa12d68a4db9b416c4c6d884348b5))
+* **nuxt:** update to new contract ([6e98b34](https://github.com/Belphemur/AddictedProxy/commit/6e98b34ea2642ebcdc20662624c8b4a0f8470f9a))
+
+### Bug Fixes
+
+* data contract for media episode ([3d470a0](https://github.com/Belphemur/AddictedProxy/commit/3d470a030daa0025aeb3ded03ac5625c0e3087b2))
+* **deps:** update dependency semantic-release to v24.1.3 ([e4bfa31](https://github.com/Belphemur/AddictedProxy/commit/e4bfa319d70250e9e6de45af02f3b092a7d9cf31))
+* **deps:** update dependency vuetify to v3.7.3 ([80c4290](https://github.com/Belphemur/AddictedProxy/commit/80c4290b504c51407fe828cd40bdf840a9629596))
+
+### Features
+
+* **media:** add new route to get media details and subtitles instead of hub ([be074b4](https://github.com/Belphemur/AddictedProxy/commit/be074b40cff664276f9b0f2827ff029bda38cd59))
+* **media:** add signalR endpoint to get show data for view ([e9608ec](https://github.com/Belphemur/AddictedProxy/commit/e9608ece04fd49d3c7b1b2ace78500bdad70b9f0))
+
 ## [4.23.6](https://github.com/Belphemur/AddictedProxy/compare/v4.23.5...v4.23.6) (2024-10-15)
 
 ### Performance improvements
