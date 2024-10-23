@@ -15,7 +15,7 @@ RUN pnpm install --frozen-lockfile
 FROM deps AS release
 COPY . .
 COPY --from=deps ./node_modules ./node_modules
-RUN NUXT_PRESET=node-server pnpm builder
+RUN NUXT_PRESET=node-server pnpm build
 
 
 FROM node:lts-slim
