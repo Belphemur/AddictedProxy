@@ -1,3 +1,9 @@
+## [4.25.1](https://github.com/Belphemur/AddictedProxy/compare/v4.25.0...v4.25.1) (2024-10-23)
+
+### Bug Fixes
+
+* **frontend:** use lts image for node ([bd91891](https://github.com/Belphemur/AddictedProxy/commit/bd918917e8ef27f2d354d30e2137de3af24b7200))
+
 ## [4.25.0](https://github.com/Belphemur/AddictedProxy/compare/v4.24.0...v4.25.0) (2024-10-23)
 
 ### Features
