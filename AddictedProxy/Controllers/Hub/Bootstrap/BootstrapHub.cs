@@ -9,12 +9,7 @@ public class BootstrapHub : IBootstrap, IBootstrapApp
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddSignalR().AddJsonProtocol()
-            .AddMessagePackProtocol(options =>
-            {
-                options.SerializerOptions = MessagePackSerializerOptions.Standard
-                    .WithResolver(ContractlessStandardResolver.Instance)
-                    .WithSecurity(MessagePackSecurity.UntrustedData);
-            });
+            .AddMessagePackProtocol();
     }
 
     public void ConfigureApp(IApplicationBuilder app)

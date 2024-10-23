@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Net.Http.Headers;
 using System.Collections.Frozen;
+using AddictedProxy.Culture.Service;
 using AddictedProxy.Services.Details;
 using TvMovieDatabaseClient.Service;
 using TvMovieDatabaseClient.Service.Model;
@@ -24,14 +25,22 @@ public class MediaController : Controller
     private readonly ITvShowRepository _tvShowRepository;
     private readonly IDistributedCache _distributedCache;
     private readonly IMediaDetailsService _mediaDetailsService;
+    private readonly IEpisodeRepository _episodeRepository;
+    private readonly ICultureParser _cultureParser;
+    private readonly LinkGenerator _generator;
 
-    public MediaController(IShowRefresher showRefresher, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository, IDistributedCache distributedCache, IMediaDetailsService mediaDetailsService)
+    public MediaController(IShowRefresher showRefresher, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository, IDistributedCache distributedCache,
+        IMediaDetailsService mediaDetailsService,
+        IEpisodeRepository episodeRepository, ICultureParser cultureParser, LinkGenerator generator)
     {
         _showRefresher = showRefresher;
         _tmdbClient = tmdbClient;
         _tvShowRepository = tvShowRepository;
         _distributedCache = distributedCache;
         _mediaDetailsService = mediaDetailsService;
+        _episodeRepository = episodeRepository;
+        _cultureParser = cultureParser;
+        _generator = generator;
     }
 
     /// <summary>
@@ -52,7 +61,7 @@ public class MediaController : Controller
             Public = true,
             MaxAge = TimeSpan.FromDays(1)
         };
-        
+
         var genres = await GetGenresCachedAsync(cancellationToken);
 
         var trendingTvShows = _tmdbClient.GetTrendingTvAsync(TimeWindowEnum.week, cancellationToken)
@@ -138,8 +147,67 @@ public class MediaController : Controller
             };
             return TypedResults.NotFound();
         }
+
         var detailsDto = await _mediaDetailsService.GetDetailsDtoCachedAsync(show, cancellationToken);
 
         return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
+    }
+    
+    /// <summary>
+    /// Get the show details with the last season and episodes
+    /// </summary>
+    /// <param name="showId"></param>
+    /// <param name="language"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    [Route("{showId:guid}/episodes/{**language}")]
+    [HttpGet]
+    [ProducesResponseType(typeof(MediaDetailsWithEpisodeAndSubtitlesDto), 200)]
+    [ProducesResponseType(typeof(string), 429)]
+    [ProducesResponseType(404)]
+    [Produces("application/json")]
+    public async Task<Results<Ok<MediaDetailsWithEpisodeAndSubtitlesDto>, NotFound, BadRequest<string>>> GetShowDetails(Guid showId, string language)
+    {
+        Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+        {
+            Public = true,
+            MaxAge = TimeSpan.FromDays(0.5)
+        };
+
+        var searchLanguage = await _cultureParser.FromStringAsync(language, default);
+        if (searchLanguage == null)
+        {
+            return TypedResults.BadRequest("Invalid language");
+        }
+
+        var show = await _showRefresher.GetShowByGuidAsync(showId, default);
+        if (show == null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var detailsTask = _mediaDetailsService.GetDetailsDtoCachedAsync(show, default);
+
+        var lastSeason = show.Seasons.OrderBy(season => season.Number).LastOrDefault();
+        if (lastSeason == null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var episodes = _episodeRepository.GetSeasonEpisodesByLangUntrackedAsync(show.Id, searchLanguage, lastSeason.Number)
+            .Select(episode =>
+            {
+                var subs = episode
+                    .Subtitles
+                    .Select(
+                        subtitle =>
+                            new SubtitleDto(subtitle,
+                                _generator.GetUriByRouteValues(HttpContext, nameof(Routes.DownloadSubtitle), new { subtitleId = subtitle.UniqueId }) ??
+                                throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                                searchLanguage)
+                    );
+                return new EpisodeWithSubtitlesDto(episode, subs);
+            });
+        return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), episodes, lastSeason.Number));
     }
 }
