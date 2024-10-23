@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:slim
+FROM node:lts-slim
 ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
