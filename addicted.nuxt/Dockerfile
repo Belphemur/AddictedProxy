@@ -11,9 +11,8 @@ FROM base AS builder
 RUN apk add --no-cache --update python3 make g++
 WORKDIR /app
 RUN npm install -g pnpm
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
 COPY . /app
+RUN pnpm install --frozen-lockfile
 RUN NUXT_PRESET=node-server pnpm build
 RUN cd .output/server && pnpm add ws
 
