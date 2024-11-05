@@ -194,6 +194,7 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
 
   const link = document.createElement('a');
   link.href = url;
+  link.rel = "noopener nofollow noreferrer";
   link.download = `${mediaInfo.value?.media?.name} - Season ${currentSeason.value} - ${type}.zip`;
   link.click();
 
