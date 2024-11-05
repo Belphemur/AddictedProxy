@@ -1,3 +1,9 @@
+## [4.25.8](https://github.com/Belphemur/AddictedProxy/compare/v4.25.7...v4.25.8) (2024-11-05)
+
+### Performance improvements
+
+* **ci:** improve building image ([bc04e6f](https://github.com/Belphemur/AddictedProxy/commit/bc04e6fc2d2d65b23010bf70cf7ef28a8feb999a))
+
 ## [4.25.7](https://github.com/Belphemur/AddictedProxy/compare/v4.25.6...v4.25.7) (2024-11-05)
 
 ### Performance improvements
