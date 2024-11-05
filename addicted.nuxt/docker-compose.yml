@@ -1,6 +1,6 @@
 services:
   addicted-frontend:
-    image: ghcr.io/belphemur/addictedproxy-frontend:latest
+    image: ghcr.io/belphemur/addictedproxy-frontend:test-5
     build:
         context: .
         dockerfile: Dockerfile

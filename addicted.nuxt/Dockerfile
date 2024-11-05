@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:lts AS builder
+FROM node:lts-alpine AS base
 ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
@@ -7,19 +7,18 @@ ARG RELEASE_VERSION
 ENV SENTRY_ENVIRONMENT=production
 
 
-FROM builder AS deps
+FROM base AS builder
+RUN apk add --no-cache --update python3 make g++
+WORKDIR /app
 RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
-
-FROM deps AS release
-COPY . .
-COPY --from=deps ./node_modules ./node_modules
+COPY . /app
 RUN NUXT_PRESET=node-server pnpm build
-RUN cd .output/server && npm add ws
+RUN cd .output/server && pnpm add ws
 
 
-FROM node:lts-slim
+FROM base
 ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
@@ -28,22 +27,18 @@ ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 ENV SENTRY_ORG=${SENTRY_ORG}
 ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 ENV RELEASE_VERSION=${RELEASE_VERSION}
-ENV NODE_ENV=production
 
-RUN  apt update && \
-     apt install -y dumb-init && \
-     rm -rf /var/cache/apt/archives /var/lib/apt/lists/* && \
-     adduser --disabled-password --gecos '' nuxtuser
+RUN apk add --no-cache dumb-init && \
+    adduser -D nuxtuser
+
 # set non root user
 USER nuxtuser
 
-COPY --from=release .output /app/
+COPY --from=builder /app/.output /app/.output
 WORKDIR /app
 
-ENV HOST=0.0.0.0 PORT=3000 NODE_ENV=production
 ENV NUXT_HOST=0.0.0.0
 ENV NUXT_PORT=3000
-ENV IPX_CACHE=true
 
 EXPOSE 3000
-CMD ["dumb-init","node","/app/server/index.mjs"]
+CMD ["dumb-init", "node",".output/server/index.mjs"]

@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-import vuetify from "vite-plugin-vuetify";
 import {sentryVitePlugin} from "@sentry/vite-plugin";
 
 export default defineNuxtConfig({
@@ -26,7 +25,7 @@ export default defineNuxtConfig({
         vue: {
             script: {
                 defineModel: true,
-            }
+            },
         },
         plugins: [
             sentryVitePlugin({
@@ -107,14 +106,20 @@ export default defineNuxtConfig({
         autoImports: ['defineStore', 'acceptHMRUpdate'],
     },
 
-    proxy: {
-        options: [
-            {
-                target: process.env.APP_SERVER_PATH,
-                pathFilter: ['/sitemap/**'],
-                pathRewrite: {}
-            }
-        ]
+    vuetify: {
+        vuetifyOptions: {
+            theme: {
+                defaultTheme: 'dark',
+                themes: {
+                    light: {
+                        colors: {
+                            primary: '#1867C0',
+                            secondary: '#5CBBF6',
+                        },
+                    },
+                },
+            },
+        }
     },
 
     modules: [
@@ -124,17 +129,8 @@ export default defineNuxtConfig({
         '@nuxtjs/device',
         'nuxt-lodash',
         '@nuxt/image',
-        // @ts-ignore
-        // this adds the vuetify vite plugin
-        // also produces type errors in the current beta release
-        async (options, nuxt) => {
-            nuxt.hooks.hook('vite:extendConfig', (config: any) => config.plugins.push(
-                vuetify({
-                    autoImport: true
-                }),
-            ))
-        }
+        "vuetify-nuxt-module"
     ],
 
-    compatibilityDate: '2024-10-22'
+    compatibilityDate: '2024-11-05'
 })
