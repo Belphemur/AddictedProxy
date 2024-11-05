@@ -132,6 +132,7 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
   const filename = parts[1].split("=")[1] ?? "sub.srt";
 
   const link = document.createElement("a");
+  link.rel = "noopener nofollow noreferrer";
   link.href = URL.createObjectURL(await response.blob());
   link.download = trim(filename, '"')
   link.click();
