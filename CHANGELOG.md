@@ -1,3 +1,15 @@
+## [4.25.6](https://github.com/Belphemur/AddictedProxy/compare/v4.25.5...v4.25.6) (2024-11-05)
+
+### Performance improvements
+
+* **download:** avoid robot to scrape download links ([c460edf](https://github.com/Belphemur/AddictedProxy/commit/c460edf25a446facb29b8db8fa91b73370edc6e0))
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v24.2.0 ([2d01067](https://github.com/Belphemur/AddictedProxy/commit/2d010673c657c3629ea0f204baee2007cac75dde))
+* **deps:** update dependency utf-8-validate to v6.0.5 ([7a820ee](https://github.com/Belphemur/AddictedProxy/commit/7a820eef6a844cda3c3bc0a02b594a67bd28abb4))
+* **result:** remove unneeded extension ([2a3811e](https://github.com/Belphemur/AddictedProxy/commit/2a3811e2417ffbd54fc826110cfa261fc31d5600))
+
 ## [4.25.5](https://github.com/Belphemur/AddictedProxy/compare/v4.25.4...v4.25.5) (2024-10-23)
 
 ### Bug Fixes
