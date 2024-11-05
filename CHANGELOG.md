@@ -1,3 +1,13 @@
+## [4.25.7](https://github.com/Belphemur/AddictedProxy/compare/v4.25.6...v4.25.7) (2024-11-05)
+
+### Performance improvements
+
+* **vuetify:** better integration with nuxt ([95a3d93](https://github.com/Belphemur/AddictedProxy/commit/95a3d930882c7a3e5613d2dd63a3349d5dca2387))
+
+### Bug Fixes
+
+* **ci:** building docker image front-end ([c251483](https://github.com/Belphemur/AddictedProxy/commit/c2514835eaf38ceec8f3f1c6f6f9279101c1e2d5))
+
 ## [4.25.6](https://github.com/Belphemur/AddictedProxy/compare/v4.25.5...v4.25.6) (2024-11-05)
 
 ### Performance improvements
