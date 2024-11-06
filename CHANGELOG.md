@@ -1,3 +1,13 @@
+## [4.26.0](https://github.com/Belphemur/AddictedProxy/compare/v4.25.8...v4.26.0) (2024-11-06)
+
+### Bug Fixes
+
+* **mobile:** fix mobile horizontal scrolling ([d8e9601](https://github.com/Belphemur/AddictedProxy/commit/d8e9601b3690a3a138bfa4ac0d708dcac31fb153))
+
+### Features
+
+* **navigation:** only use drawer for mobile ([b291866](https://github.com/Belphemur/AddictedProxy/commit/b2918663e217f696df84d61457787e21c277bbf1))
+
 ## [4.25.8](https://github.com/Belphemur/AddictedProxy/compare/v4.25.7...v4.25.8) (2024-11-05)
 
 ### Performance improvements
