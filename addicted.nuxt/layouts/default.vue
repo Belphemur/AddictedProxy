@@ -1,9 +1,9 @@
 <template>
   <v-app :style="defaultBackground">
     <div class="bg-image" ></div>
-    <default-bar v-on:drawer-clicked="drawer = !drawer"/>
+    <default-bar v-on:drawer-clicked="drawer = !drawer" :is-mobile="isMobile"/>
 
-    <navigation v-model="drawer" :mobile="isMobile"/>
+    <ButtomNavigation v-model="drawer" v-if="isMobile"/>
 
     <default-view/>
   </v-app>
@@ -12,12 +12,12 @@
 <script lang="ts" setup>
 import DefaultBar from '@/layouts/default/AppBar.vue';
 import DefaultView from '@/layouts/default/View.vue';
-import Navigation from "@/layouts/default/Navigation.vue";
 import {ref} from "vue";
+import ButtomNavigation from "~/layouts/default/ButtomNavigation.vue";
 
 const {isMobile} = useDevice();
 
-const drawer = ref<boolean>(!isMobile)
+const drawer = ref<boolean>(isMobile)
 
 const defaultBackground = {
   background: "none",
