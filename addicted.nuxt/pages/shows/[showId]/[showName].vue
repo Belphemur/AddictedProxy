@@ -10,8 +10,7 @@ definePageMeta({
 </script>
 
 <template>
-  <v-row justify="center">
-    <v-col cols="10" lg="8" >
+    <v-col cols="12" lg="8" offset-lg="2" >
       <suspense>
         <template #default>
           <media-detail-view :show-id="showId"></media-detail-view>
@@ -21,7 +20,6 @@ definePageMeta({
         </template>
       </suspense>
     </v-col>
-  </v-row>
 </template>
 
 <style scoped>
