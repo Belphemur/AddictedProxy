@@ -1,3 +1,10 @@
+## [4.27.1](https://github.com/Belphemur/AddictedProxy/compare/v4.27.0...v4.27.1) (2024-11-07)
+
+### Performance improvements
+
+* **media::details:** use backdrop image on mobile and fallback to poster when too big ([55bc4ec](https://github.com/Belphemur/AddictedProxy/commit/55bc4ec40a930780a08def48972bcc3ed0c380e8))
+* **picture:** be sure picture can be configured with different source for specific needs with extra media query ([48fa58e](https://github.com/Belphemur/AddictedProxy/commit/48fa58e98bfc26e46383dd97ebb9a1e80d9e73e4))
+
 ## [4.27.0](https://github.com/Belphemur/AddictedProxy/compare/v4.26.0...v4.27.0) (2024-11-07)
 
 ### Performance improvements
