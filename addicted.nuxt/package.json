@@ -15,7 +15,6 @@
     "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
     "@sentry/vite-plugin": "^2.22.6",
-    "@sentry/vue": "^8.37.0",
     "@types/node": "^22.9.0",
     "@types/webfontloader": "^1.6.38",
     "nuxt": "^3.14.159",
@@ -23,18 +22,18 @@
     "swagger-typescript-api": "^13.0.22",
     "typescript": "^5.6.3",
     "vite-plugin-vuetify": "^2.0.4",
-    "vuetify-nuxt-module": "^0.18.3"
+    "vuetify-nuxt-module": "^0.18.3",
+    "h3-proxy": "^1.13.0",
+    "roboto-fontface": "^0.10.0"
   },
   "dependencies": {
+    "@sentry/vue": "^8.37.0",
     "@mdi/font": "^7.4.47",
     "@microsoft/signalr": "^8.0.7",
     "@microsoft/signalr-protocol-msgpack": "^8.0.7",
     "bufferutil": "^4.0.8",
     "client-zip": "^2.4.5",
-    "h3-proxy": "^1.13.0",
-    "roboto-fontface": "^0.10.0",
     "utf-8-validate": "^6.0.5",
-    "vuetify": "^3.7.3",
-    "ws": "^8.18.0"
+    "vuetify": "^3.7.3"
   }
 }
