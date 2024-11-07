@@ -105,7 +105,7 @@ const toImageType = (format: SupportedFormat) => {
   <picture>
     <template v-for="source in props.sources">
       <template v-for="format  in props.formats">
-        <source :srcset="toSrcSet(source, format)" :media="toMediaQuery(source.size)" :type="toImageType(format)">
+        <source :srcset="toSrcSet(source, format)" :media="toMediaQuery(source.size)" :type="toImageType(format)" :width="source.width" :height="source.height">
       </template>
     </template>
     <img :src="toSrcSet(props.sources.at(-1), props.formats[0])" :alt="alt">
