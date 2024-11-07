@@ -21,9 +21,11 @@ export interface Props {
 }
 
 export interface PictureSource {
-  size: BreakpointKey;
+  size: BreakpointKey | number;
   width?: number | string;
   height?: number | string;
+  media?: string;
+  src?: string;
 }
 
 export type SupportedFormat = 'webp' | 'jpeg' | 'png'
@@ -32,12 +34,17 @@ const props = defineProps<Props>();
 const baseUrl = useRuntimeConfig().public.api.clientUrl;
 
 // Function to get the max-width media query
-const toMediaQuery = (size: BreakpointKey): string => {
-  const maxWidth = breakpoints[size];
+const toMediaQuery = (source: PictureSource): string => {
+  const size = source.size;
+  const extraMedia = source.media ? ` and ${source.media}` : '';
 
+  if(typeof  size === 'number') {
+    return `(max-width: ${size}px)${extraMedia}`;
+  }
+  const maxWidth = breakpoints[size];
   // Special case for 'xs' as it doesn't have a max-width
   if (size === 'xs') {
-    return `(max-width: ${breakpoints.sm - 1}px)`;
+    return `(max-width: ${breakpoints.sm - 1}px)${extraMedia}`;
   }
 
   // For other sizes, use the next breakpoint's value minus 1
@@ -46,11 +53,11 @@ const toMediaQuery = (size: BreakpointKey): string => {
   const nextSize = sizes[currentIndex + 1];
 
   if (nextSize) {
-    return `(max-width: ${breakpoints[nextSize] - 1}px)`;
+    return `(max-width: ${breakpoints[nextSize] - 1}px)${extraMedia}`;
   }
 
   // If it's the largest size, there's no upper limit
-  return `(min-width: ${maxWidth}px)`;
+  return `(min-width: ${maxWidth}px)${extraMedia}`;
 }
 
 const vXToPx = (vX: string): number => {
@@ -64,7 +71,7 @@ const vXToPx = (vX: string): number => {
 }
 
 const toSrcSet = (source: PictureSource, format: SupportedFormat | null) => {
-  let srcSet = props.src;
+  let srcSet = source.src ?? props.src;
   const queryParams: Record<string, any> = {};
 
   if (format) {
@@ -105,7 +112,7 @@ const toImageType = (format: SupportedFormat) => {
   <picture>
     <template v-for="source in props.sources">
       <template v-for="format  in props.formats">
-        <source :srcset="toSrcSet(source, format)" :media="toMediaQuery(source.size)" :type="toImageType(format)" :width="source.width" :height="source.height">
+        <source :srcset="toSrcSet(source, format)" :media="toMediaQuery(source)" :type="toImageType(format)" :width="source.width" :height="source.height">
       </template>
     </template>
     <img :src="toSrcSet(props.sources.at(-1), props.formats[0])" :alt="alt">
