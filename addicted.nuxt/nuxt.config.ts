@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 import {sentryVitePlugin} from "@sentry/vite-plugin";
+const manualChunk = ["@sentry/vue", "@sentry/tracing", "@sentry/browser", "@microsoft/signalr", "lodash-es", "@microsoft/signalr-protocol-msgpack"];
 
 export default defineNuxtConfig({
     experimental: {
@@ -26,6 +27,16 @@ export default defineNuxtConfig({
             script: {
                 defineModel: true,
             },
+        },
+        build:{
+            rollupOptions: {
+                output: {
+                    manualChunks(id) {
+                        const separateModule = manualChunk.find(module => id.includes(module));
+                        if (separateModule) return separateModule;
+                    }
+                }
+            }
         },
         plugins: [
             sentryVitePlugin({
