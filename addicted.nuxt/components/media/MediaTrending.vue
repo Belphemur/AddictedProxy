@@ -13,9 +13,11 @@ const props = defineProps<Props>();
 
 <template>
 
-  <v-row dense>
+  <v-row justify="center">
     <v-col cols="12" sm="6" lg="3" v-for="media in props.medias"
-           :key="media.media?.id">
+           :key="media.media?.id"
+           class="ma-0 pa-0"
+           align-self="center">
       <v-card :to="{name: 'show-details', params: {showId: media.media!.id, showName: media.media!.slug}}">
         <span
             class="text-white text text-h6"
@@ -23,12 +25,13 @@ const props = defineProps<Props>();
         </span>
         <optimized-picture :src="media.details!.backdropPath!"
                            :sources="[
-                              { size: 'xs', width: 310, height:174  },
-                               { size: 'lg', width: 340, height:191 },
+                              { size: 'xs', width: 340,  height:191  },
+                               { size: 'xl', width: 380, height:214 },
                            ]"
                            :alt="`Backdrop poster for ${media.details!.englishName}`"
                            :formats="[ 'webp', 'jpeg']"
                            preload
+                           class="media-trending-backdrop"
         />
         <v-progress-circular class="vote" color="white" bg-color="red" :size="60" :width="5"
                              :model-value="media.details?.voteAverage *10">
@@ -59,5 +62,9 @@ const props = defineProps<Props>();
   top: 65%;
   text-shadow: 2px 0 black, -2px 0 black, 0 2px black, 0 -2px black, 1px 1px black, -1px -1px black, -1px 1px black, 1px -1px black;
 
+}
+
+.media-trending-backdrop img {
+  max-width: 100%;
 }
 </style>
