@@ -52,7 +52,9 @@ const setLanguage = (lang: string) => {
             class="text-left"
             align-self="start"
         >
-          <optimized-picture :src="props.details.details!.posterPath!" class="backdrop-image"
+          <optimized-picture :src="props.details.details!.posterPath!"
+                             preload
+                             class="backdrop-image"
                              :sources="[
                                  {
                                size: 'xs',

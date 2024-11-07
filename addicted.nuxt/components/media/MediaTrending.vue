@@ -28,6 +28,7 @@ const props = defineProps<Props>();
                            ]"
                            :alt="`Backdrop poster for ${media.details!.englishName}`"
                            :formats="[ 'webp', 'jpeg']"
+                           preload
         />
         <v-progress-circular class="vote" color="white" bg-color="red" :size="60" :width="5"
                              :model-value="media.details?.voteAverage *10">
