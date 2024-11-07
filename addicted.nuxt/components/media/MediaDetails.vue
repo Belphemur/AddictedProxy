@@ -28,7 +28,7 @@ const setLanguage = (lang: string) => {
 
 <template>
   <v-card>
-    <v-card-title>
+    <v-card-title v-once>
       <v-col>
         <h1 class="text-h5">
           <v-icon :icon=" props.details.details?.mediaType === 'Movie' ? 'mdi-movie' : 'mdi-television'"></v-icon>
@@ -41,10 +41,10 @@ const setLanguage = (lang: string) => {
         </h1>
       </v-col>
     </v-card-title>
-    <v-card-subtitle>
+    <v-card-subtitle v-once>
       <i>{{ props.details.details.tagLine }}</i>
     </v-card-subtitle>
-    <v-card-text class="py-0">
+    <v-card-text class="py-0" v-once>
       <v-row align="center">
         <v-col
             cols="12"
@@ -52,8 +52,20 @@ const setLanguage = (lang: string) => {
             class="text-left"
             align-self="start"
         >
-          <optimized-picture :src="props.details.details!.posterPath!"
-                             :sources="[{
+          <optimized-picture :src="props.details.details!.posterPath!" class="backdrop-image"
+                             :sources="[
+                                 {
+                               size: 'xs',
+                               height: 180,
+                               media: '(orientation: portrait)',
+                               src: props.details.details!.backdropPath!
+                             }, {
+                               size: 'sm',
+                               width: 200,
+                               media: '(orientation: portrait)',
+                               src: props.details.details!.posterPath!
+                             },
+                            {
                                size: 'xs',
                                width: 350
                              }, {
@@ -64,7 +76,7 @@ const setLanguage = (lang: string) => {
                                width: 230
                              }]"
                              :alt="`Poster for ${props.details.details?.englishName}`"
-                             :formats="['webp', 'jpeg']" />
+                             :formats="['webp', 'jpeg']"/>
 
         </v-col>
 
@@ -115,5 +127,8 @@ const setLanguage = (lang: string) => {
 </template>
 
 <style>
-
+.backdrop-image img {
+  margin: auto;
+  display: block;
+}
 </style>
