@@ -1,3 +1,20 @@
+## [4.27.0](https://github.com/Belphemur/AddictedProxy/compare/v4.26.0...v4.27.0) (2024-11-07)
+
+### Performance improvements
+
+* **image:** remove nuxt-image ([35defc6](https://github.com/Belphemur/AddictedProxy/commit/35defc60a3944c55002b9564519129693dbe4350))
+* **media::detail:** use new optimized image ([146cbba](https://github.com/Belphemur/AddictedProxy/commit/146cbba8d1702a36309dfd906b2e49f1d8f4885b))
+* **trending:** move to optimized images ([78a9a0f](https://github.com/Belphemur/AddictedProxy/commit/78a9a0f9eb77ad0063dd03e43c4f6472d6f02b85))
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.7.4 ([7a7305f](https://github.com/Belphemur/AddictedProxy/commit/7a7305f7c2e7dd033f5322ce4cee81076bfc7fc2))
+* **image:** use srcset and also specify width and height when known ([e7a5dec](https://github.com/Belphemur/AddictedProxy/commit/e7a5dec1e6333d78269b07f6f85238cdc022db3f))
+
+### Features
+
+* **image:** create own component for optimized picture instead of nuxt-image ([c50cb26](https://github.com/Belphemur/AddictedProxy/commit/c50cb26156e1d74a49252f99ddc4e93a0b4b80d8))
+
 ## [4.26.0](https://github.com/Belphemur/AddictedProxy/compare/v4.25.8...v4.26.0) (2024-11-06)
 
 ### Bug Fixes
