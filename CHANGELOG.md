@@ -1,3 +1,9 @@
+## [4.29.2](https://github.com/Belphemur/AddictedProxy/compare/v4.29.1...v4.29.2) (2024-11-07)
+
+### Performance improvements
+
+* **sentry:** move sentry and other libs to own chunks ([abfb071](https://github.com/Belphemur/AddictedProxy/commit/abfb07113ce16449e368a1d6b1bcc80f8669dd32))
+
 ## [4.29.1](https://github.com/Belphemur/AddictedProxy/compare/v4.29.0...v4.29.1) (2024-11-07)
 
 ### Bug Fixes
