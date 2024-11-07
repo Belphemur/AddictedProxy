@@ -14,7 +14,7 @@ RUN npm install -g pnpm
 COPY . /app
 RUN pnpm install --frozen-lockfile
 RUN NUXT_PRESET=node-server pnpm build
-RUN cd .output/server && pnpm add ws
+RUN cd .output/server && rm -rf node_modules && pnpm install && pnpm add ws
 
 
 FROM base
