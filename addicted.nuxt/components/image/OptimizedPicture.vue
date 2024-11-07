@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {encodeQueryItem, joinURL} from "ufo";
+import {Link} from "@unhead/vue";
 
 // Define the breakpoints
 const breakpoints = {
@@ -18,6 +19,7 @@ export interface Props {
   sources: PictureSource[];
   alt: string;
   formats: SupportedFormat[];
+  preload?: boolean;
 }
 
 export interface PictureSource {
@@ -40,7 +42,7 @@ const toMediaQuery = (source: PictureSource): string => {
   const size = source.size;
   const extraMedia = source.media ? ` and ${source.media}` : '';
 
-  if(typeof  size === 'number') {
+  if (typeof size === 'number') {
     return `(max-width: ${size}px)${extraMedia}`;
   }
   const maxWidth = breakpoints[size];
@@ -108,16 +110,31 @@ const toImageType = (format: SupportedFormat) => {
   }
 }
 
+if (props.preload) {
+  const links = props.sources.map(source => {
+    return {
+      rel: 'preload',
+      as: 'image',
+      href: toSrcSet(source, props.formats[0]),
+      media: toMediaQuery(source),
+    }
+  }) as Link<E['link']>[];
+  useHead({
+    link: links
+  });
+}
 </script>
 
 <template>
   <picture>
     <template v-for="source in props.sources">
       <template v-for="format  in props.formats">
-        <source :srcset="toSrcSet(source, format)" :media="toMediaQuery(source)" :type="toImageType(format)" :width="source.width" :height="source.height">
+        <source :srcset="toSrcSet(source, format)" :media="toMediaQuery(source)" :type="toImageType(format)"
+                :width="source.width" :height="source.height">
       </template>
     </template>
-    <img :src="toSrcSet(fallbackSource, props.formats[0])" :alt="alt" :width="fallbackSource.width" :height="fallbackSource.height">
+    <img :src="toSrcSet(fallbackSource, props.formats[0])" :alt="alt" :width="fallbackSource.width"
+         :height="fallbackSource.height">
   </picture>
 </template>
 
