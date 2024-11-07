@@ -1,3 +1,9 @@
+## [4.29.3](https://github.com/Belphemur/AddictedProxy/compare/v4.29.2...v4.29.3) (2024-11-07)
+
+### Performance improvements
+
+* **trending:** improve display for all images ([e856382](https://github.com/Belphemur/AddictedProxy/commit/e856382492c5269cbe82d560f2f69e0d3f222d8b))
+
 ## [4.29.2](https://github.com/Belphemur/AddictedProxy/compare/v4.29.1...v4.29.2) (2024-11-07)
 
 ### Performance improvements
