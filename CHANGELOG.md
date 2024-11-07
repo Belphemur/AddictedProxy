@@ -1,3 +1,9 @@
+## [4.29.0](https://github.com/Belphemur/AddictedProxy/compare/v4.28.1...v4.29.0) (2024-11-07)
+
+### Features
+
+* **mobile:** improve mobile experience when downloading subtitle ([934f3f8](https://github.com/Belphemur/AddictedProxy/commit/934f3f8e693c1a6dba516682dd77486048dcb5a9))
+
 ## [4.28.1](https://github.com/Belphemur/AddictedProxy/compare/v4.28.0...v4.28.1) (2024-11-07)
 
 ### Performance improvements
