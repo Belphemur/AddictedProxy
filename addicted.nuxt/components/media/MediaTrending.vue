@@ -2,6 +2,7 @@
 
 
 import type {MediaDetailsDto} from "~/composables/api/data-contracts";
+import OptimizedPicture from "~/components/image/OptimizedPicture.vue";
 
 export interface Props {
   medias: Array<MediaDetailsDto>;
@@ -20,15 +21,14 @@ const props = defineProps<Props>();
             class="text-white text text-h6"
         >{{ media?.details.englishName }} ({{ media!.details?.releaseYear }})
         </span>
-        <nuxt-picture
-            :src="media.details!.backdropPath!"
-            provider="gestdown"
-            fit="cover"
-            style="max-width: 100%"
-            sizes="xs:100vw sm:35vw md:40vw"
-            class="media-trending-backdrop"
-        >
-        </nuxt-picture>
+        <optimized-picture :src="media.details!.backdropPath!"
+                           :sources="[
+                              { size: 'xs', width: 310 },
+                               { size: 'lg', width: 340 },
+                           ]"
+                           :alt="`Backdrop poster for ${media.details!.englishName}`"
+                           :formats="[ 'webp', 'jpeg']"
+        />
         <v-progress-circular class="vote" color="white" bg-color="red" :size="60" :width="5"
                              :model-value="media.details?.voteAverage *10">
           {{ media.details?.voteAverage }}/10

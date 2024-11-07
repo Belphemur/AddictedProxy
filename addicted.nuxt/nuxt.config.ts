@@ -81,17 +81,6 @@ export default defineNuxtConfig({
         },
     },
 
-    image: {
-        domains: ['image.tmdb.org'],
-        format: ['webp', 'jpeg'],
-        providers: {
-            gestdown: {
-                name: 'gestdown', // optional value to overrider provider name
-                provider: '~/server/image/tmdb/gestdown.ts', // Path to custom provider
-            }
-        }
-    },
-
     googleFonts: {
         families: {
             Roboto: [100, 300, 400, 500, 700, 900],
@@ -128,7 +117,6 @@ export default defineNuxtConfig({
         '@pinia-plugin-persistedstate/nuxt',
         '@nuxtjs/device',
         'nuxt-lodash',
-        '@nuxt/image',
         "vuetify-nuxt-module"
     ],
 
