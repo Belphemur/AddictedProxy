@@ -100,7 +100,7 @@
                       </v-col>
                     </v-row>
                   </v-card-text>
-                  <v-card-actions>
+                  <v-card-actions  class="justify-center">
                     <v-btn
                         color="primary"
                         prepend-icon="mdi-download"
