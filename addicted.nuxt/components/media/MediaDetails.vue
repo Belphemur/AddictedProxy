@@ -52,28 +52,35 @@ const setLanguage = (lang: string) => {
             class="text-left"
             align-self="start"
         >
-          <optimized-picture :src="props.details.details!.posterPath!" class="backdrop-image"
+          <optimized-picture :src="props.details.details!.posterPath!"
+                             preload
+                             class="backdrop-image"
                              :sources="[
                                  {
                                size: 'xs',
                                height: 180,
+                               width: 320,
                                media: '(orientation: portrait)',
                                src: props.details.details!.backdropPath!
                              }, {
                                size: 'sm',
                                width: 200,
+                               height: 300,
                                media: '(orientation: portrait)',
                                src: props.details.details!.posterPath!
                              },
                             {
                                size: 'xs',
-                               width: 350
+                               width: 350,
+                               height: 525
                              }, {
                                size: 'sm',
-                               width: 250
+                               width: 250,
+                               height: 375
                              }, {
                                size: 'lg',
-                               width: 230
+                               width: 230,
+                               height: 345
                              }]"
                              :alt="`Poster for ${props.details.details?.englishName}`"
                              :formats="['webp', 'jpeg']"/>
