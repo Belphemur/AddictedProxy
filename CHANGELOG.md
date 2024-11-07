@@ -1,3 +1,14 @@
+## [4.28.0](https://github.com/Belphemur/AddictedProxy/compare/v4.27.1...v4.28.0) (2024-11-07)
+
+### Performance improvements
+
+* **media:** set the right width and height ([c89ec06](https://github.com/Belphemur/AddictedProxy/commit/c89ec06864a849ec5c2b302ad7d70952630f374e))
+* **media:** use preload ([9d0143b](https://github.com/Belphemur/AddictedProxy/commit/9d0143be7439c5af7299cb65d0fb98c122c5e384))
+
+### Features
+
+* **picture:** add preload feature ([94c02a2](https://github.com/Belphemur/AddictedProxy/commit/94c02a2bf751fb53460d98d236ea3356ffdd690b))
+
 ## [4.27.1](https://github.com/Belphemur/AddictedProxy/compare/v4.27.0...v4.27.1) (2024-11-07)
 
 ### Performance improvements
