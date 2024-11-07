@@ -1,3 +1,9 @@
+## [4.29.1](https://github.com/Belphemur/AddictedProxy/compare/v4.29.0...v4.29.1) (2024-11-07)
+
+### Bug Fixes
+
+* **mobile:** make download button centered ([dc60aec](https://github.com/Belphemur/AddictedProxy/commit/dc60aec98c7dc836936e48967ba746c4c74576fb))
+
 ## [4.29.0](https://github.com/Belphemur/AddictedProxy/compare/v4.28.1...v4.29.0) (2024-11-07)
 
 ### Features
