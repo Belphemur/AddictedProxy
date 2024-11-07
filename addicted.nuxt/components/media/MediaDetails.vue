@@ -2,6 +2,7 @@
 
 import type {MediaDetailsDto} from "~/composables/api/data-contracts";
 import {langs} from "~/composables/language/lang";
+import OptimizedPicture from "~/components/image/OptimizedPicture.vue";
 
 export interface Props {
   details: MediaDetailsDto;
@@ -51,12 +52,20 @@ const setLanguage = (lang: string) => {
             class="text-left"
             align-self="start"
         >
-          <nuxt-picture class="media-detail-poster"
-                        provider="gestdown"
-                        :src="props.details.details!.posterPath!"
-                        sizes="xs:80vw sm:30vw lg:50vw"
-          >
-          </nuxt-picture>
+          <optimized-picture :src="props.details.details!.posterPath!"
+                             :sources="[{
+                               size: 'xs',
+                               width: 350
+                             }, {
+                               size: 'sm',
+                               width: 250
+                             }, {
+                               size: 'lg',
+                               width: 230
+                             }]"
+                             :alt="`Poster for ${props.details.details?.englishName}`"
+                             :formats="['webp', 'jpeg']" />
+
         </v-col>
 
         <v-col sm="8" cols="12" class="text-left">
@@ -106,7 +115,5 @@ const setLanguage = (lang: string) => {
 </template>
 
 <style>
-.media-detail-poster img {
-  max-width: 100%;
-}
+
 </style>
