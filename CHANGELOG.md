@@ -1,3 +1,9 @@
+## [4.28.1](https://github.com/Belphemur/AddictedProxy/compare/v4.28.0...v4.28.1) (2024-11-07)
+
+### Performance improvements
+
+* **image:** reduce size of image ([a2a60e2](https://github.com/Belphemur/AddictedProxy/commit/a2a60e2efc086b087e6053cf04a75abadb689d33))
+
 ## [4.28.0](https://github.com/Belphemur/AddictedProxy/compare/v4.27.1...v4.28.0) (2024-11-07)
 
 ### Performance improvements
