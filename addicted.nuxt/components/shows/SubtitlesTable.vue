@@ -16,7 +16,8 @@
       <v-data-table
           :items="subtitles"
           :headers="headers" items-per-page="25"
-          :group-by="groupBy">
+          :group-by="groupBy"
+          v-if="!device.isMobile">
         <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
           <tr>
             <td :colspan="columns.length" @click="toggleGroup(item)">
@@ -25,7 +26,8 @@
                   density="comfortable"
                   variant="text"
                   :prepend-icon="isGroupOpen(item) ? '$expand' : '$next'"
-              > {{ item.value }}</v-btn>
+              > {{ item.value }}
+              </v-btn>
 
             </td>
           </tr>
@@ -61,6 +63,59 @@
         </template>
 
       </v-data-table>
+      <v-expansion-panels v-else bg-color="#2f3237">
+        <v-expansion-panel v-for="episode in props.episodes">
+          <v-expansion-panel-title>
+            <h3> Ep {{ episode.number }}. {{ episode.title }}</h3>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <v-row v-for="subtitle in episode.subtitles" :key="subtitle.subtitleId" class="mb-4">
+              <v-col>
+                <v-card elevation="2"
+                        outlined
+                        shaped
+                        tile
+                        :loading="currentlyDownloading.has(subtitle.subtitleId)"
+                >
+                  <v-card-title>
+                    <h3>{{ subtitle.title }}</h3>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-icon icon="mdi-subtitles-outline"/>
+                        {{ subtitle.version }}
+                      </v-col>
+                      <v-col v-if="subtitle.completed" cols="12">
+                        <v-icon icon="mdi-check"/>
+                        Completed
+                      </v-col>
+                      <v-col v-if="subtitle.hearingImpaired" cols="12">
+                        <v-icon icon="mdi-ear-hearing-off"/>
+                        Hearing Impaired
+                      </v-col>
+                      <v-col v-if="subtitle.hd" cols="12">
+                        <v-icon icon="mdi-check"/>
+                        HD
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn
+                        color="primary"
+                        prepend-icon="mdi-download"
+                        @click="downloadSubtitle(subtitle)"
+                        :disabled="currentlyDownloading.has(subtitle.subtitleId)"
+                    >
+                      Download subtitle
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </v-container>
   </v-container>
 </template>
@@ -83,17 +138,19 @@ const subtitlesApi = useSubtitles();
 
 const props = defineProps<Props>();
 
+const device = useDevice();
+
 const groupBy = [
   {
     key: 'title'
   }
 ]
 const headers = [
-  {title: "Version", key:"subtitle.version"},
+  {title: "Version", key: "subtitle.version"},
   {title: "Completed", key: "subtitle.completed"},
-  {title: "Hearing Impaired", key:"subtitle.hearingImpaired"},
-  {title: "HD", key:"subtitle.hd"},
-  {title: "Downloads", key:"subtitle.downloadCount"},
+  {title: "Hearing Impaired", key: "subtitle.hearingImpaired"},
+  {title: "HD", key: "subtitle.hd"},
+  {title: "Downloads", key: "subtitle.downloadCount"},
 ];
 
 const noSubtitles = computed<boolean>(() => {
