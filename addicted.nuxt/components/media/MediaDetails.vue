@@ -78,12 +78,12 @@ const setLanguage = (lang: string) => {
                                width: 250,
                                height: 375
                              }, {
-                               size: 'lg',
-                               width: 230,
-                               height: 345
+                               size: 'xl',
+                               width: 260,
+                               height: 390
                              },
                               {
-                               size: 'xl',
+                               size: 'xxl',
                                width: 300,
                                height:450
                              }]"
@@ -142,6 +142,5 @@ const setLanguage = (lang: string) => {
 .backdrop-image img {
   margin: auto;
   display: block;
-  max-width: 100%;
 }
 </style>
