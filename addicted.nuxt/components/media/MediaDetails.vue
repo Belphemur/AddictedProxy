@@ -81,6 +81,11 @@ const setLanguage = (lang: string) => {
                                size: 'lg',
                                width: 230,
                                height: 345
+                             },
+                              {
+                               size: 'xl',
+                               width: 300,
+                               height:450
                              }]"
                              :alt="`Poster for ${props.details.details?.englishName}`"
                              :formats="['webp', 'jpeg']"/>
