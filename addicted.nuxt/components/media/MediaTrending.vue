@@ -25,9 +25,8 @@ const props = defineProps<Props>();
         </span>
         <optimized-picture :src="media.details!.backdropPath!"
                            :sources="[
-                                { size: 'xs', width: 400, height: 225 },
-                               { size: 'lg', width: 400, height: 225 },
-                               { size: 'xl', width: 500, height:281 },
+                                { size: 'xl', width: 400, height: 225 },
+                                { size: 'xxl', width: 500, height: 281 },
                            ]"
                            :alt="`Backdrop poster for ${media.details!.englishName}`"
                            :formats="[ 'webp', 'jpeg']"
