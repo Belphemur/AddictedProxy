@@ -9,6 +9,7 @@ const breakpoints = {
   md: 900,
   lg: 1200,
   xl: 1536,
+  xxl: 1920,
 } as const;
 
 // Define a type for the breakpoint keys
@@ -35,7 +36,7 @@ export type SupportedFormat = 'webp' | 'jpeg' | 'png'
 const props = defineProps<Props>();
 const baseUrl = useRuntimeConfig().public.api.clientUrl;
 
-const fallbackSource = computed(() => props.sources.at(-1));
+const fallbackSource = computed(() => props.sources.at(0));
 
 // Function to get the max-width media query
 const toMediaQuery = (source: PictureSource): string => {
