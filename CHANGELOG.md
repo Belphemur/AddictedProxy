@@ -1,3 +1,9 @@
+## [4.29.7](https://github.com/Belphemur/AddictedProxy/compare/v4.29.6...v4.29.7) (2024-11-08)
+
+### Bug Fixes
+
+* **media:** fix media detail page poster ([b492dbc](https://github.com/Belphemur/AddictedProxy/commit/b492dbc2084772eb251e8c2b181bccf32487c232))
+
 ## [4.29.6](https://github.com/Belphemur/AddictedProxy/compare/v4.29.5...v4.29.6) (2024-11-08)
 
 ### Bug Fixes
