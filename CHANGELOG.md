@@ -1,3 +1,9 @@
+## [4.29.4](https://github.com/Belphemur/AddictedProxy/compare/v4.29.3...v4.29.4) (2024-11-08)
+
+### Performance improvements
+
+* **media:** improve image size for all size ([a63012b](https://github.com/Belphemur/AddictedProxy/commit/a63012b8dce3bb8efcb9ff2e4b67d4d966ae4e75))
+
 ## [4.29.3](https://github.com/Belphemur/AddictedProxy/compare/v4.29.2...v4.29.3) (2024-11-07)
 
 ### Performance improvements
