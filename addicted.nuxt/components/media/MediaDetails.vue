@@ -142,5 +142,6 @@ const setLanguage = (lang: string) => {
 .backdrop-image img {
   margin: auto;
   display: block;
+  max-width: 100%;
 }
 </style>
