@@ -3,11 +3,21 @@ import {Shows} from "~/composables/api/Shows";
 import {Media} from "~/composables/api/Media";
 import type {ApiConfig} from "~/composables/api/http-client";
 import * as Sentry from '@sentry/vue'
-
+import fetchRetry from 'fetch-retry';
 
 let subtitles: Subtitles<any>;
 let shows: Shows<any>;
 let media: Media<any>;
+
+// Create a new fetch function with retry capabilities
+const fetchWithRetry = fetchRetry(fetch, {
+    retries: 5,
+    retryDelay: function (attempt, error, response) {
+        console.log("retrying", attempt, error, response);
+        return Math.pow(2, attempt) * 100 + (Math.random() * 100);
+    },
+    retryOn: [429, 503, 504, 500]
+});
 
 export function getApiServerUrl(): string {
     const config = useRuntimeConfig();
@@ -27,7 +37,7 @@ function getApiConfig() {
                     delete init.credentials;
                 if (init?.mode !== undefined)
                     delete init.mode;
-                if(init?.referrerPolicy !== undefined)
+                if (init?.referrerPolicy !== undefined)
                     delete init.referrerPolicy
                 //Client side
             } else {
@@ -55,7 +65,7 @@ function getApiConfig() {
                     },
                 };
             }
-            return fetch(input, init)
+            return fetchWithRetry(input, init)
         },
     };
     return apiConfig;
