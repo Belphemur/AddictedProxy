@@ -1,3 +1,9 @@
+## [4.29.5](https://github.com/Belphemur/AddictedProxy/compare/v4.29.4...v4.29.5) (2024-11-08)
+
+### Performance improvements
+
+* **fetch:** add retry capabilities ([3a0d913](https://github.com/Belphemur/AddictedProxy/commit/3a0d913013bfa8431e98001a6444dc9773855cb2))
+
 ## [4.29.4](https://github.com/Belphemur/AddictedProxy/compare/v4.29.3...v4.29.4) (2024-11-08)
 
 ### Performance improvements
