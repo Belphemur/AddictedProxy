@@ -16,7 +16,7 @@ const props = defineProps<Props>();
   <v-row justify="center">
     <v-col cols="12" sm="6" lg="3" v-for="media in props.medias"
            :key="media.media?.id"
-           class="ma-0 pa-0"
+           class="ma-0 pa-1"
            align-self="center">
       <v-card :to="{name: 'show-details', params: {showId: media.media!.id, showName: media.media!.slug}}">
         <span
@@ -25,8 +25,9 @@ const props = defineProps<Props>();
         </span>
         <optimized-picture :src="media.details!.backdropPath!"
                            :sources="[
-                              { size: 'xs', width: 340,  height:191  },
-                               { size: 'xl', width: 380, height:214 },
+                                { size: 'xs', width: 400, height: 225 },
+                               { size: 'lg', width: 400, height: 225 },
+                               { size: 'xl', width: 500, height:281 },
                            ]"
                            :alt="`Backdrop poster for ${media.details!.englishName}`"
                            :formats="[ 'webp', 'jpeg']"
