@@ -71,9 +71,9 @@ public class FetchSubtitlesJob
         var show = await GetShow(data, token);
         using var scope = _logger.BeginScope(ScopeName(data, show));
 
-        using var releaser = await _asyncKeyedLocker.LockAsync(data.Key, 0, token).ConfigureAwait(false);
+        using var releaser = await _asyncKeyedLocker.LockOrNullAsync(data.Key, 0, token).ConfigureAwait(false);
 
-        if (!releaser.EnteredSemaphore)
+        if (releaser is null)
         {
             _logger.LogInformation("Lock for {key} already taken", data.Key);
             return;
