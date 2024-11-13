@@ -25,7 +25,7 @@ importers:
         version: 4.0.8
       client-zip:
         specifier: ^2.4.5
-        version: 2.4.5
+        version: 2.4.6
       fetch-retry:
         specifier: ^6.0.0
         version: 6.0.0
@@ -1521,8 +1521,8 @@ packages:
   clear@0.1.0:
     resolution: {integrity: sha512-qMjRnoL+JDPJHeLePZJuao6+8orzHMGP04A8CdwCNsKhRbOnKRjefxONR7bwILT3MHecxKBjHkKL/tkZ8r4Uzw==}
 
-  client-zip@2.4.5:
-    resolution: {integrity: sha512-4y4d5ZeTH/szIAMQeC8ju67pxtvj+3u20wMGwOFrZk+pegy3aSEA2JkwgC8XVDTXP/Iqn1gyqNQXmkyBp4KLEQ==}
+  client-zip@2.4.6:
+    resolution: {integrity: sha512-e7t1u14h/yT0A12qBwFsaus8UZZ8+MCaNAEn/z53mrukLq/LFcKX7TkbntAppGu8he2p8pz9vc5NEGE/h4ohlw==}
 
   clipboardy@4.0.0:
     resolution: {integrity: sha512-5mOlNS0mhX0707P2I0aZ2V/cmHUEO/fL7VFLqszkhUsxt7RwnmrInf/eEQKlf5GzvYeHIjT+Ov1HRfNmymlG0w==}
@@ -5403,7 +5403,7 @@ snapshots:
 
   clear@0.1.0: {}
 
-  client-zip@2.4.5: {}
+  client-zip@2.4.6: {}
 
   clipboardy@4.0.0:
     dependencies:
