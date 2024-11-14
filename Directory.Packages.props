@@ -5,7 +5,7 @@
   <ItemGroup>
     <PackageVersion Include="AngleSharp" Version="1.2.0-beta.439" />
     <PackageVersion Include="Ardalis.Result.AspNetCore" Version="10.1.0" />
-    <PackageVersion Include="AsyncKeyedLock" Version="7.1.1" />
+    <PackageVersion Include="AsyncKeyedLock" Version="7.1.3" />
     <PackageVersion Include="AWSSDK.S3" Version="4.0.0-preview.4" />
     <PackageVersion Include="Community.Microsoft.Extensions.Caching.PostgreSql" Version="4.0.6" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
