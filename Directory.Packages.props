@@ -16,7 +16,7 @@
     <PackageVersion Include="Hangfire.MaximumConcurrentExecutions" Version="1.1.0" />
     <PackageVersion Include="Hangfire.PostgreSql" Version="1.20.10" />
     <PackageVersion Include="IsExternalInit" Version="1.0.3" />
-    <PackageVersion Include="MessagePack" Version="3.0.233-rc.1" />
+    <PackageVersion Include="MessagePack" Version="3.0.238-rc.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="9.0.0" />
@@ -56,7 +56,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.9.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.9.0-beta.1" />
-    <PackageVersion Include="OpenTelemetry.Shims.OpenTracing" Version="1.9.0-beta.2" />
+    <PackageVersion Include="OpenTelemetry.Shims.OpenTracing" Version="1.10.0-beta.1" />
     <PackageVersion Include="Polly" Version="8.5.0" />
     <PackageVersion Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
     <PackageVersion Include="prometheus-net.AspNetCore" Version="8.2.1" />
