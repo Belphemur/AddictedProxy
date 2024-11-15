@@ -2,6 +2,7 @@
 import * as vue from "vue";
 import type {SubtitleType} from "~/composables/dto/SubtitleType";
 import {useSubtitleType} from "~/stores/subtitleType";
+import {mdiEarHearingOff, mdiFile, mdiSubtitles} from "@mdi/js";
 
 const subtitleType = useSubtitleType();
 // eslint-disable-next-line no-undef
@@ -25,7 +26,7 @@ const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
   >
     <template v-slot:default="{ isActive }">
       <v-card
-          prepend-icon="mdi-file"
+          :prepend-icon="mdiFile"
           title="Select Subtitle Type"
       >
         <v-divider class="mt-3"></v-divider>
@@ -40,7 +41,7 @@ const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
                 value="regular"
             >
               <template v-slot:label>
-                <v-icon start >mdi-subtitles</v-icon>
+                <v-icon start >{{ mdiSubtitles }}</v-icon>
                 Regular
               </template>
             </v-radio>
@@ -49,7 +50,7 @@ const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
                 value="hearing_impaired"
             >
               <template v-slot:label>
-                <v-icon start >mdi-ear-hearing-off</v-icon>
+                <v-icon start >{{mdiEarHearingOff}}</v-icon>
                 Additional audio descriptions
               </template>
             </v-radio>

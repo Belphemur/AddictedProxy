@@ -3,6 +3,7 @@
 import type {MediaDetailsDto} from "~/composables/api/data-contracts";
 import {langs} from "~/composables/language/lang";
 import OptimizedPicture from "~/components/image/OptimizedPicture.vue";
+import {mdiMovie, mdiTelevision} from "@mdi/js";
 
 export interface Props {
   details: MediaDetailsDto;
@@ -31,7 +32,7 @@ const setLanguage = (lang: string) => {
     <v-card-title v-once>
       <v-col>
         <h1 class="text-h5">
-          <v-icon :icon=" props.details.details?.mediaType === 'Movie' ? 'mdi-movie' : 'mdi-television'"></v-icon>
+          <v-icon>{{props.details.details?.mediaType === 'Movie' ?  mdiMovie : mdiTelevision}}</v-icon>
           {{ props.details.details!.englishName }} <span
             class="text-light-blue-accent-1 font-bold"
             v-if="props.details.details?.releaseYear != null">({{ props.details.details.releaseYear }})</span>

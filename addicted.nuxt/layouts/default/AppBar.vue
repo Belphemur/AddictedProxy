@@ -10,7 +10,7 @@
           :active="route.path == router.currentRoute.value.fullPath"
           :text="route.name"
           v-on:click="router.push(route)">
-        <v-icon :icon="route.meta.icon"/>
+        <v-icon >{{route.meta.icon}}</v-icon>
         <v-tooltip
             activator="parent"
             location="bottom"

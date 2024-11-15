@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 import {sentryVitePlugin} from "@sentry/vite-plugin";
+
 const manualChunk = ["@sentry/vue", "@sentry/tracing", "@sentry/browser", "@microsoft/signalr", "lodash-es", "@microsoft/signalr-protocol-msgpack"];
 
 export default defineNuxtConfig({
@@ -15,7 +16,7 @@ export default defineNuxtConfig({
     sourcemap: {server: true, client: true},
 
     // @ts-ignore
-    css: ['vuetify/styles', '@mdi/font/css/materialdesignicons.css'],
+    css: ['vuetify/styles'],
 
     vite: {
         // @ts-ignore
@@ -28,7 +29,7 @@ export default defineNuxtConfig({
                 defineModel: true,
             },
         },
-        build:{
+        build: {
             rollupOptions: {
                 output: {
                     manualChunks(id) {
@@ -105,9 +106,11 @@ export default defineNuxtConfig({
     pinia: {
         autoImports: ['defineStore', 'acceptHMRUpdate'],
     },
-
     vuetify: {
         vuetifyOptions: {
+            icons: {
+                defaultSet: 'mdi-svg'
+            },
             theme: {
                 defaultTheme: 'dark',
                 themes: {

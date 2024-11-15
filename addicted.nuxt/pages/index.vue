@@ -42,11 +42,12 @@ import SearchComponent from "@/components/shows/SearchComponent.vue";
 import type {EpisodeWithSubtitlesDto, MediaDetailsDto, ShowDto} from "~/composables/api/data-contracts";
 import {useMedia} from "~/composables/rest/api";
 import type {SelectedShow} from "~/composables/dto/SelectedShow";
+import {mdiSearchWeb} from "@mdi/js";
 
 definePageMeta({
   name: "Home",
   order: 10,
-  icon: "mdi-search-web",
+  icon: mdiSearchWeb,
 })
 useSeoMeta({
   title: "Gestdown: Addic7ed Proxy",

@@ -27,7 +27,7 @@
     "vuetify-nuxt-module": "^0.18.3"
   },
   "dependencies": {
-    "@mdi/font": "^7.4.47",
+    "@mdi/js": "^7.4.47",
     "@microsoft/signalr": "^8.0.7",
     "@microsoft/signalr-protocol-msgpack": "^8.0.7",
     "@sentry/vue": "^8.37.0",

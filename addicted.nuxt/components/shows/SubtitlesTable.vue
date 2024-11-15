@@ -3,7 +3,7 @@
     <v-sheet v-if="noSubtitles" rounded="xl" color="error" class="text-center">
       <v-row>
         <v-col>
-          <v-icon icon="mdi-alert-circle" size="50"></v-icon>
+          <v-icon size="50">{{mdiAlertCircle}}</v-icon>
         </v-col>
       </v-row>
       <v-row>
@@ -33,22 +33,22 @@
           </tr>
         </template>
         <template v-slot:item.subtitle.completed="{item}">
-          <v-icon icon="mdi-check" height="24px" v-if="item.subtitle.completed"/>
+          <v-icon height="24px" v-if="item.subtitle.completed">{{mdiCheck}}</v-icon>
           <span v-else></span>
         </template>
         <template v-slot:item.subtitle.hearingImpaired="{item}">
-          <v-icon icon="mdi-ear-hearing-off" v-if=" item.subtitle.hearingImpaired"/>
+          <v-icon v-if=" item.subtitle.hearingImpaired">{{mdiEarHearingOff}}</v-icon>
           <span v-else></span>
         </template>
         <template v-slot:item.subtitle.hd="{item}">
-          <v-icon icon="mdi-check" height="24px" v-if="item.subtitle.hd"/>
+          <v-icon height="24px" v-if="item.subtitle.hd">{{mdiCheck}}</v-icon>
           <span v-else></span>
         </template>
 
         <template v-slot:item.subtitle.downloadCount="{item}">
           <v-btn
               color="primary"
-              prepend-icon="mdi-download"
+              :prepend-icon="mdiDownload"
               @click="downloadSubtitle(item.subtitle)"
               :disabled="currentlyDownloading.has(item.subtitle.subtitleId)"
           >
@@ -83,19 +83,19 @@
                   <v-card-text>
                     <v-row>
                       <v-col cols="12">
-                        <v-icon icon="mdi-subtitles-outline"/>
+                        <v-icon>{{mdiSubtitlesOutline}}</v-icon>
                         {{ subtitle.version }}
                       </v-col>
                       <v-col v-if="subtitle.completed" cols="12">
-                        <v-icon icon="mdi-check"/>
+                        <v-icon>{{mdiCheck}}</v-icon>
                         Completed
                       </v-col>
                       <v-col v-if="subtitle.hearingImpaired" cols="12">
-                        <v-icon icon="mdi-ear-hearing-off"/>
+                        <v-icon>{{mdiEarHearingOff}}</v-icon>
                         Hearing Impaired
                       </v-col>
                       <v-col v-if="subtitle.hd" cols="12">
-                        <v-icon icon="mdi-check"/>
+                        <v-icon>{{mdiCheck}}</v-icon>
                         HD
                       </v-col>
                     </v-row>
@@ -103,7 +103,7 @@
                   <v-card-actions  class="justify-center">
                     <v-btn
                         color="primary"
-                        prepend-icon="mdi-download"
+                        :prepend-icon="mdiDownload"
                         @click="downloadSubtitle(subtitle)"
                         :disabled="currentlyDownloading.has(subtitle.subtitleId)"
                     >
@@ -129,6 +129,7 @@ import {useSubtitles} from "~/composables/rest/api";
 import type {SubtitleWithEpisode} from "~/composables/dto/SubtitleWithEpisode";
 import {forEach} from "lodash-es";
 import {trim} from "~/composables/utils/trim";
+import {mdiAlertCircle, mdiCheck, mdiDownload, mdiEarHearingOff, mdiSubtitlesOutline} from "@mdi/js";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto> | null;
