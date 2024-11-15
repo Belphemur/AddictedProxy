@@ -11,6 +11,8 @@ using Microsoft.Net.Http.Headers;
 using System.Collections.Frozen;
 using AddictedProxy.Culture.Service;
 using AddictedProxy.Services.Details;
+using AddictedProxy.Services.Provider.Shows.Jobs;
+using Hangfire;
 using TvMovieDatabaseClient.Service;
 using TvMovieDatabaseClient.Service.Model;
 using DistributedCacheExtensions = AddictedProxy.Caching.Extensions.DistributedCacheExtensions;
@@ -191,7 +193,8 @@ public class MediaController : Controller
         var lastSeason = show.Seasons.OrderBy(season => season.Number).LastOrDefault();
         if (lastSeason == null)
         {
-            return TypedResults.NotFound();
+            BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, default));
+            return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), AsyncEnumerable.Empty<EpisodeWithSubtitlesDto>(), null));
         }
 
         var episodes = _episodeRepository.GetSeasonEpisodesByLangUntrackedAsync(show.Id, searchLanguage, lastSeason.Number)

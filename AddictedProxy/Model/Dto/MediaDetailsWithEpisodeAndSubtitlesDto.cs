@@ -8,7 +8,7 @@ namespace AddictedProxy.Model.Dto;
 /// <param name="Details"></param>
 /// <param name="EpisodeWithSubtitles"></param>
 /// <param name="LastSeasonNumber"></param>
-public record struct MediaDetailsWithEpisodeAndSubtitlesDto(MediaDetailsDto Details, IAsyncEnumerable<EpisodeWithSubtitlesDto> EpisodeWithSubtitles,  int LastSeasonNumber)
+public record struct MediaDetailsWithEpisodeAndSubtitlesDto(MediaDetailsDto Details, IAsyncEnumerable<EpisodeWithSubtitlesDto> EpisodeWithSubtitles,  int? LastSeasonNumber)
 {
     [Required]
     public MediaDetailsDto Details { get; init; } = Details;
@@ -16,6 +16,6 @@ public record struct MediaDetailsWithEpisodeAndSubtitlesDto(MediaDetailsDto Deta
     [Required]
     public IAsyncEnumerable<EpisodeWithSubtitlesDto> EpisodeWithSubtitles { get; init; } = EpisodeWithSubtitles;
 
-    [Required]
-    public int LastSeasonNumber { get; init; } = LastSeasonNumber;
+    
+    public int? LastSeasonNumber { get; init; } = LastSeasonNumber;
 }
