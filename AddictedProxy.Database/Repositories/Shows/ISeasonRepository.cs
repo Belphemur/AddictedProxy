@@ -19,4 +19,11 @@ public interface ISeasonRepository
     ///     Update the season
     /// </summary>
     Task SaveChangesAsync(CancellationToken token);
+
+    /// <summary>
+    /// Get all seasons for the show
+    /// </summary>
+    /// <param name="showId"></param>
+    /// <returns></returns>
+    IAsyncEnumerable<Season> GetSeasonsForShowAsync(long showId);
 }

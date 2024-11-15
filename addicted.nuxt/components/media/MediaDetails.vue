@@ -11,7 +11,7 @@ export interface Props {
 
 const language = useLanguage();
 const props = defineProps<Props>();
-const seasons = props.details.media!.seasons!;
+const seasons = computed<Number[]>(() => props.details.media!.seasons!)
 
 const season = defineModel<number>();
 
@@ -32,7 +32,7 @@ const setLanguage = (lang: string) => {
     <v-card-title v-once>
       <v-col>
         <h1 class="text-h5">
-          <v-icon>{{props.details.details?.mediaType === 'Movie' ?  mdiMovie : mdiTelevision}}</v-icon>
+          <v-icon>{{ props.details.details?.mediaType === 'Movie' ? mdiMovie : mdiTelevision }}</v-icon>
           {{ props.details.details!.englishName }} <span
             class="text-light-blue-accent-1 font-bold"
             v-if="props.details.details?.releaseYear != null">({{ props.details.details.releaseYear }})</span>
@@ -57,7 +57,7 @@ const setLanguage = (lang: string) => {
                              preload
                              class="backdrop-image"
                              :sources="[
-                                 {
+                             {
                                size: 'xs',
                                height: 180,
                                width: 320,
@@ -73,11 +73,13 @@ const setLanguage = (lang: string) => {
                             {
                                size: 'xs',
                                width: 350,
-                               height: 525
+                               height: 525,
+                               media: '(orientation: landscape)',
                              }, {
                                size: 'sm',
                                width: 250,
-                               height: 375
+                               height: 375,
+                               media: '(orientation: landscape)',
                              }, {
                                size: 'xl',
                                width: 260,

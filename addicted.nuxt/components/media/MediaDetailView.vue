@@ -54,8 +54,11 @@ useSeoMeta({
   ogType: "website"
 })
 
-watch([currentSeason, language], async _ => {
+watch([currentSeason, language], async ([newSeason], [oldSeason]) => {
   loadingEpisodes.value = true;
+  if(oldSeason == undefined && newSeason != undefined) {
+    return;
+  }
   const {
     data,
   } = await useAsyncData(async () => {

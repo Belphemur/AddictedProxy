@@ -29,6 +29,16 @@ public class SeasonRepository : ISeasonRepository
     {
         return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).SingleOrDefaultAsync(season => season.Number == seasonNumber, token);
     }
+    
+    /// <summary>
+    /// Get all seasons for the show
+    /// </summary>
+    /// <param name="showId"></param>
+    /// <returns></returns>
+    public IAsyncEnumerable<Season> GetSeasonsForShowAsync(long showId)
+    {
+        return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).AsNoTracking().ToAsyncEnumerable();
+    }
 
     /// <summary>
     ///     Update the season
