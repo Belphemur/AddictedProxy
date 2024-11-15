@@ -1,3 +1,9 @@
+## [4.29.10](https://github.com/Belphemur/AddictedProxy/compare/v4.29.9...v4.29.10) (2024-11-15)
+
+### Performance improvements
+
+* **icons:** stop using font for icons ([290e456](https://github.com/Belphemur/AddictedProxy/commit/290e456d44b6fe5a2d8e33a41f0062a79f753328))
+
 ## [4.29.9](https://github.com/Belphemur/AddictedProxy/compare/v4.29.8...v4.29.9) (2024-11-15)
 
 ### Performance improvements
