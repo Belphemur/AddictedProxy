@@ -1,6 +1,6 @@
 <template>
   <v-app :style="defaultBackground">
-    <div class="bg-image" ></div>
+    <div class="bg-image"></div>
     <default-bar v-on:drawer-clicked="drawer = !drawer" :is-mobile="isMobile"/>
 
     <ButtomNavigation v-model="drawer" v-if="isMobile"/>
@@ -22,6 +22,16 @@ const drawer = ref<boolean>(isMobile)
 const defaultBackground = {
   background: "none",
 }
+useHead({
+      link: [
+        {
+          rel: 'preload',
+          as: 'image',
+          href: '/img/background-small.webp'
+        }
+      ]
+    }
+)
 </script>
 <style scoped>
 .bg-image {
@@ -42,5 +52,6 @@ const defaultBackground = {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url('/img/background-small.webp')}
+  background-image: url('/img/background-small.webp')
+}
 </style>
