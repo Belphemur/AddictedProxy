@@ -14,9 +14,6 @@ importers:
       '@microsoft/signalr':
         specifier: ^8.0.7
         version: 8.0.7(bufferutil@4.0.8)(utf-8-validate@6.0.5)
-      '@microsoft/signalr-protocol-msgpack':
-        specifier: ^8.0.7
-        version: 8.0.7(bufferutil@4.0.8)(utf-8-validate@6.0.5)
       '@sentry/vue':
         specifier: ^8.37.0
         version: 8.38.0(pinia@2.2.6(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))(vue@3.5.12(typescript@5.6.3))
@@ -705,15 +702,8 @@ packages:
   '@mdi/js@7.4.47':
     resolution: {integrity: sha512-KPnNOtm5i2pMabqZxpUz7iQf+mfrYZyKCZ8QNz85czgEt7cuHcGorWfdzUMWYA0SD+a6Hn4FmJ+YhzzzjkTZrQ==}
 
-  '@microsoft/signalr-protocol-msgpack@8.0.7':
-    resolution: {integrity: sha512-yrGt0E9l8X9HSF9P8gmnkVi+IDGNP6seU5/YAiFzIisH4VpvayVcf7Z1Lbu7nNwM/GzFgtFIa7jBivLQCCcyEQ==}
-
   '@microsoft/signalr@8.0.7':
     resolution: {integrity: sha512-PHcdMv8v5hJlBkRHAuKG5trGViQEkPYee36LnJQx4xHOQ5LL4X0nEWIxOp5cCtZ7tu+30quz5V3k0b1YNuc6lw==}
-
-  '@msgpack/msgpack@2.8.0':
-    resolution: {integrity: sha512-h9u4u/jiIRKbq25PM+zymTyW6bhTzELvOoUd+AvYriWOAKpLGnIamaET3pnHYoI5iYphAHBI4ayx0MehR+VVPQ==}
-    engines: {node: '>= 10'}
 
   '@netlify/functions@2.8.2':
     resolution: {integrity: sha512-DeoAQh8LuNPvBE4qsKlezjKj0PyXDryOFJfJKo3Z1qZLKzQ21sT314KQKPVjfvw6knqijj+IO+0kHXy/TJiqNA==}
@@ -4266,15 +4256,6 @@ snapshots:
 
   '@mdi/js@7.4.47': {}
 
-  '@microsoft/signalr-protocol-msgpack@8.0.7(bufferutil@4.0.8)(utf-8-validate@6.0.5)':
-    dependencies:
-      '@microsoft/signalr': 8.0.7(bufferutil@4.0.8)(utf-8-validate@6.0.5)
-      '@msgpack/msgpack': 2.8.0
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - utf-8-validate
-
   '@microsoft/signalr@8.0.7(bufferutil@4.0.8)(utf-8-validate@6.0.5)':
     dependencies:
       abort-controller: 3.0.0
@@ -4286,8 +4267,6 @@ snapshots:
       - bufferutil
       - encoding
       - utf-8-validate
-
-  '@msgpack/msgpack@2.8.0': {}
 
   '@netlify/functions@2.8.2':
     dependencies:

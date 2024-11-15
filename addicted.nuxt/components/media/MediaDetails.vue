@@ -11,7 +11,7 @@ export interface Props {
 
 const language = useLanguage();
 const props = defineProps<Props>();
-const seasons = props.details.media!.seasons!;
+const seasons = computed<Number[]>(() => props.details.media!.seasons!)
 
 const season = defineModel<number>();
 
