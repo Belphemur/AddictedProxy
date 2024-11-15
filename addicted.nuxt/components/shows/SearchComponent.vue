@@ -12,7 +12,7 @@
                         :item-value="item => item"
                         @update:search="onSearch"
                         @update:modelValue="updateSelectedShow"
-                        prepend-inner-icon="mdi-television"
+                        :prepend-inner-icon="mdiTelevision"
                         @click:clear="clearSearch"
         ></v-autocomplete>
       </v-col>
@@ -25,6 +25,7 @@ import {ref,} from "vue";
 import {mevent} from "~/composables/data/event";
 import {useShows} from "~/composables/rest/api";
 import type {ShowDto} from "~/composables/api/data-contracts";
+import {mdiTelevision} from "@mdi/js";
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits<{

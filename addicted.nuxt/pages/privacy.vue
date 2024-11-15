@@ -96,10 +96,12 @@
 </template>
 
 <script lang="ts" setup>
+import {mdiShieldAccount} from "@mdi/js";
+
 definePageMeta({
   name: "Privacy Policy",
   order: 50,
-  icon: "mdi-shield-account",
+  icon: mdiShieldAccount,
 })
 useSeoMeta({
   title: "Gestdown: Addic7ed Proxy",

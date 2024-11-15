@@ -5,7 +5,7 @@
         <v-sheet rounded>
           <v-row>
             <v-col>
-              <v-icon size="100" color="primary" class="mb-4">mdi-code-braces</v-icon>
+              <v-icon size="100" color="primary" class="mb-4">{{mdiCodeBraces}}</v-icon>
             </v-col>
           </v-row>
           <v-row>
@@ -21,9 +21,11 @@
 
 <script type="ts" setup>
 
+import {mdiCodeBraces} from "@mdi/js";
+
 definePageMeta({
   order: 20,
-  icon: "mdi-code-braces",
+  icon: mdiCodeBraces,
   name: "Api"
 })
 useSeoMeta({

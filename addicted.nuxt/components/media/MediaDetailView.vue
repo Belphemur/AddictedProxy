@@ -11,6 +11,7 @@ import type {SubtitleType} from "~/composables/dto/SubtitleType";
 import {trim} from "~/composables/utils/trim";
 import {downloadZip} from "client-zip";
 import {mevent} from "~/composables/data/event";
+import {mdiDownload, mdiRefresh} from "@mdi/js";
 
 
 export interface Props {
@@ -246,7 +247,7 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
             <v-card-title>Season {{ currentSeason }}</v-card-title>
             <v-card-actions>
               <v-btn
-                  prepend-icon="mdi-refresh"
+                  :prepend-icon="mdiRefresh"
                   class="text-none mb-4"
                   color="indigo-lighten-3"
                   @click="refreshShow"
@@ -260,7 +261,7 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn
-                  prepend-icon="mdi-download"
+                  :prepend-icon="mdiDownload"
                   class="text-none mb-4"
                   color="indigo-lighten-3"
                   :disabled="refreshingProgress != null  || downloadingInProgress"

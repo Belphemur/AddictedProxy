@@ -22,7 +22,7 @@ const drawer = defineModel<boolean>()
            v-bind:key="route.path"
            :value="route"
            v-on:click="router.push(route)">
-      <v-icon :icon="route.meta.icon"></v-icon>
+      <v-icon>{{route.meta.icon}}</v-icon>
 
       {{ route.name }}
     </v-btn>
