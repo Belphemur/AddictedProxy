@@ -1,3 +1,16 @@
+## [4.29.11](https://github.com/Belphemur/AddictedProxy/compare/v4.29.10...v4.29.11) (2024-11-15)
+
+### Performance improvements
+
+* **background:** be sure background is preloaded ([4a078bc](https://github.com/Belphemur/AddictedProxy/commit/4a078bcb730f1247da5946ba871f3715549fcf23))
+* **media:poster:** Avoid preload both version of poster on mobile ([75388a1](https://github.com/Belphemur/AddictedProxy/commit/75388a1174823787535048057e9040f399b6ac92))
+* **refresh:** avoid refreshing episode list when we got it at the end of refresh ([2aa1870](https://github.com/Belphemur/AddictedProxy/commit/2aa187067bd0cbfbe69b5d3b122d82e5c4689917))
+
+### Bug Fixes
+
+* **refresh:** fix issue with refreshing where nothing would happen ([3dfbb6d](https://github.com/Belphemur/AddictedProxy/commit/3dfbb6d9b04e85874bc85a918f4205eb24c98818))
+* **refresh:** fix not refreshing episodes for all season found ([7d4e0f4](https://github.com/Belphemur/AddictedProxy/commit/7d4e0f4d6199e8bf1349e8a47faf99ee3abdf690))
+
 ## [4.29.10](https://github.com/Belphemur/AddictedProxy/compare/v4.29.9...v4.29.10) (2024-11-15)
 
 ### Performance improvements
