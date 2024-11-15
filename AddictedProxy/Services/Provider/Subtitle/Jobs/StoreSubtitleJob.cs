@@ -31,9 +31,9 @@ public class StoreSubtitleJob
     [Queue("store-subtitle")]
     public async Task ExecuteAsync(Guid subtitleId, byte[] subtitleBlob, CancellationToken cancellationToken)
     {
-        using var releaser = await _asyncKeyedLocker.LockAsync(subtitleId, 0, cancellationToken).ConfigureAwait(false);
+        using var releaser = await _asyncKeyedLocker.LockOrNullAsync(subtitleId, 0, cancellationToken).ConfigureAwait(false);
 
-        if (!releaser.EnteredSemaphore)
+        if (releaser is null)
         {
             _logger.LogInformation("Lock already taken for {subtitleId}", subtitleId);
             return;

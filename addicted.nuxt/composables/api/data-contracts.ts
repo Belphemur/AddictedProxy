@@ -161,7 +161,7 @@ export interface MediaDetailsWithEpisodeAndSubtitlesDto {
   details: MediaDetailsDto;
   episodeWithSubtitles: EpisodeWithSubtitlesDto[];
   /** @format int32 */
-  lastSeasonNumber: number;
+  lastSeasonNumber?: number | null;
 }
 
 /** Represent the type of media */

@@ -34,9 +34,9 @@ public class RefreshSingleShowJob
         
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "refresh-specific-show");
 
-        using var releaser = await _asyncKeyedLocker.LockAsync(showId, 0, token).ConfigureAwait(false);
+        using var releaser = await _asyncKeyedLocker.LockOrNullAsync(showId, 0, token).ConfigureAwait(false);
 
-        if (!releaser.EnteredSemaphore)
+        if (releaser is null)
         {
             _logger.LogInformation("Lock for {show} already taken", showId);
             transaction.Finish(Status.Unavailable);

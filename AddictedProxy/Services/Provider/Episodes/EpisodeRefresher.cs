@@ -67,9 +67,9 @@ public class EpisodeRefresher : IEpisodeRefresher
     private async Task RefreshEpisodesAsync(TvShow show, Season season, CancellationToken token)
     {
         using var transaction = _performanceTracker.BeginNestedSpan("episode", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
-        using var releaser = await _asyncKeyedLocker.LockAsync((show.Id, season.Id), 0, token).ConfigureAwait(false);
+        using var releaser = await _asyncKeyedLocker.LockOrNullAsync((show.Id, season.Id), 0, token).ConfigureAwait(false);
 
-        if (!releaser.EnteredSemaphore)
+        if (releaser is null)
         {
             _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
             transaction.Finish(Status.Unavailable);
@@ -114,9 +114,9 @@ public class EpisodeRefresher : IEpisodeRefresher
         async Task<Episode[]?> EpisodeFetch(Season season)
         {
             using var transaction = _performanceTracker.BeginNestedSpan("episodes.fetch", $"refresh-episodes-subtitles for {show.Name} S{season.Number}");
-            using var releaser = await _asyncKeyedLocker.LockAsync((show.Id, season.Id), 0, token).ConfigureAwait(false);
+            using var releaser = await _asyncKeyedLocker.LockOrNullAsync((show.Id, season.Id), 0, token).ConfigureAwait(false);
 
-            if (!releaser.EnteredSemaphore)
+            if (releaser is null)
             {
                 _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
                 transaction.Finish(Status.Unavailable);
