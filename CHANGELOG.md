@@ -1,3 +1,16 @@
+## [4.29.9](https://github.com/Belphemur/AddictedProxy/compare/v4.29.8...v4.29.9) (2024-11-15)
+
+### Performance improvements
+
+* **chore:** update deps ([0825975](https://github.com/Belphemur/AddictedProxy/commit/0825975390f851a1587b5e094f512c824d4fae8a))
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.38.0 ([406650b](https://github.com/Belphemur/AddictedProxy/commit/406650bce989e8a99580b7f5565fdf4d2b40b558))
+* **deps:** update dependency client-zip to v2.4.6 ([399c430](https://github.com/Belphemur/AddictedProxy/commit/399c430d37bff9561fe318f9b3aa62b813aff9ea))
+* **show:media:** show that the show is refreshing ([aa984b2](https://github.com/Belphemur/AddictedProxy/commit/aa984b29bebec318f72e518e7ebd27416e1c0c6d))
+* **show:** fix show not found on the website when not refreshed yet ([f818e2b](https://github.com/Belphemur/AddictedProxy/commit/f818e2b1854cfc1d63265f6c38367dee515cb6ab))
+
 ## [4.29.8](https://github.com/Belphemur/AddictedProxy/compare/v4.29.7...v4.29.8) (2024-11-08)
 
 ### Bug Fixes
