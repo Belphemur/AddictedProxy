@@ -117,6 +117,9 @@ async function loadViewData() {
     throw createError({statusCode: 404, statusMessage: `Show ${props.showId} not found`});
   }
   mediaInfo.value = data.value!.details;
+  if(data.value?.lastSeasonNumber == null) {
+    return;
+  }
   currentSeason.value = data.value?.lastSeasonNumber
   episodes.value = data.value?.episodeWithSubtitles;
 }
