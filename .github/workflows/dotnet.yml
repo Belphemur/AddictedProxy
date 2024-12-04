@@ -207,7 +207,7 @@ jobs:
             SENTRY_PROJECT=${{ matrix.sentry_project }}
             RELEASE_VERSION=${{ needs.main-release.outputs.version}}
       - name: Attest  ${{ matrix.image }}
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v2
         id: attest
         with:
           subject-name:  "${{ env.REGISTRY }}/${{ matrix.image }}"
