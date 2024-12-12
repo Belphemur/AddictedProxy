@@ -1,3 +1,12 @@
+using System.Text.Json.Serialization;
+
 namespace ProxyScrape.Model;
 
-public record ProxyStatistics(bool Success, long RemainingData, long UsedData);
+public class ProxyStatistics
+{
+    [JsonPropertyName("remaining_data")]
+    public long RemainingData { get; init; }
+
+    [JsonPropertyName("used_data")]
+    public long UsedData { get; init; }
+}

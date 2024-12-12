@@ -10,12 +10,12 @@ public class BootstrapProxyScrape : IBootstrap
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<ProxyScrapeConfig>("ProxyScrape", configuration);
+        services.Configure<ProxyScrapeConfig>(configuration.GetSection("ProxyScrape"));
         services.AddHttpClient<IProxyScrapeClient, ProxyScrapeClient>(client =>
                 client.BaseAddress = new Uri("https://dashboard.proxyscrape.com/v2/v4/"))
             .SetHandlerLifetime(TimeSpan.FromHours(2))
             .AddStandardHedgingHandler();
-
+        services.AddSingleton<MetricGatherHostedService>();
         services.AddHostedService<MetricGatherHostedService>();
     }
 }

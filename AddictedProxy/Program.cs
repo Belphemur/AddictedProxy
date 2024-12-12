@@ -22,6 +22,7 @@ using Microsoft.OpenApi.Models;
 using Performance.Bootstrap;
 using Performance.Model;
 using Prometheus;
+using ProxyScrape.Bootstrap;
 using TvMovieDatabaseClient.Bootstrap;
 
 #endregion
@@ -72,7 +73,8 @@ var currentAssemblies = new[]
     typeof(BootstrapStorageCaching).Assembly,
     typeof(BootstrapMigration).Assembly,
     typeof(BootstrapImage).Assembly,
-    typeof(BootstrapStoreCompression).Assembly
+    typeof(BootstrapStoreCompression).Assembly,
+    typeof(BootstrapProxyScrape).Assembly
 };
 
 builder.Services
