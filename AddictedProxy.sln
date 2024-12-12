@@ -55,6 +55,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxyScrape", "ProxyScrape\ProxyScrape.csproj", "{8736B4C6-6CDA-4990-A5AF-468C44000AB7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -137,6 +139,10 @@ Global
 		{E2EBC5EE-89A6-4CEE-B950-45F75F50CDC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2EBC5EE-89A6-4CEE-B950-45F75F50CDC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2EBC5EE-89A6-4CEE-B950-45F75F50CDC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8736B4C6-6CDA-4990-A5AF-468C44000AB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8736B4C6-6CDA-4990-A5AF-468C44000AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8736B4C6-6CDA-4990-A5AF-468C44000AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8736B4C6-6CDA-4990-A5AF-468C44000AB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -153,6 +159,7 @@ Global
 		{358A62D3-FF20-49CB-9BEA-79F2FEB4C2F6} = {B7154DD3-B7E0-46E9-9E4A-F3F1E904080F}
 		{E2EBC5EE-89A6-4CEE-B950-45F75F50CDC0} = {147E3CFA-3EB8-4FCF-B90A-901CC4E45DED}
 		{B7154DD3-B7E0-46E9-9E4A-F3F1E904080F} = {147E3CFA-3EB8-4FCF-B90A-901CC4E45DED}
+		{8736B4C6-6CDA-4990-A5AF-468C44000AB7} = {3B3536BE-B7E9-4A82-9BE3-CF8672FE6910}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14212924-6C9C-4207-9D29-1A7FC32C3FD8}
