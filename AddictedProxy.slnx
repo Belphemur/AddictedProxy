@@ -1,0 +1,34 @@
+﻿<Solution>
+  <Folder Name="/Database/">
+    <Project Path="AddictedProxy.Database\AddictedProxy.Database.csproj" />
+    <Project Path="AddictedProxy.OneTimeMigration\AddictedProxy.OneTimeMigration.csproj" />
+    <Project Path="AddictedProxy.Tools.Database\AddictedProxy.Tools.Database.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/Third-Party/">
+    <Project Path="ProxyScrape\ProxyScrape.csproj" Type="Classic C#" />
+    <Project Path="TvMovieDatabaseClient\TvMovieDatabaseClient.csproj" />
+  </Folder>
+  <Folder Name="/Tools/">
+    <Project Path="Compressor\Compressor.csproj" />
+    <Project Path="InversionOfControl\InversionOfControl.csproj" />
+    <Project Path="Locking\Locking.csproj" />
+    <Project Path="Performance\Performance.csproj" />
+  </Folder>
+  <Folder Name="/Tools/Tests/">
+    <Project Path="Compressor.Tests\Compressor.Tests.csproj" />
+    <Project Path="InversionOfControl.Tests\InversionOfControl.Tests.csproj" />
+  </Folder>
+  <Project Path="AddictedProxy.Caching\AddictedProxy.Caching.csproj" />
+  <Project Path="AddictedProxy.Culture\AddictedProxy.Culture.csproj" />
+  <Project Path="AddictedProxy.Image\AddictedProxy.Image.csproj" />
+  <Project Path="AddictedProxy.Stats\AddictedProxy.Stats.csproj" />
+  <Project Path="AddictedProxy.Storage.Caching\AddictedProxy.Storage.Caching.csproj" />
+  <Project Path="AddictedProxy.Storage\AddictedProxy.Storage.csproj" />
+  <Project Path="AddictedProxy.Upstream.Tests\AddictedProxy.Upstream.Tests.csproj" />
+  <Project Path="AddictedProxy.Upstream\AddictedProxy.Upstream.csproj" />
+  <Project Path="AddictedProxy\AddictedProxy.csproj" />
+</Solution>
