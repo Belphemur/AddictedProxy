@@ -42,6 +42,7 @@
         <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
         <ProjectReference Include="..\Locking\Locking.csproj" />
         <ProjectReference Include="..\Performance\Performance.csproj" />
+        <ProjectReference Include="..\ProxyScrape\ProxyScrape.csproj" />
         <ProjectReference Include="..\TvMovieDatabaseClient\TvMovieDatabaseClient.csproj" />
     </ItemGroup>
 
