@@ -1,3 +1,25 @@
+## [4.30.0](https://github.com/Belphemur/AddictedProxy/compare/v4.29.11...v4.30.0) (2024-12-12)
+
+### Performance improvements
+
+* **proxyscrape:** define base address and handler lifetime ([624ce9d](https://github.com/Belphemur/AddictedProxy/commit/624ce9df13b63c7ddd5541d917b67895579e5e22))
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.39.0 ([26ebc2d](https://github.com/Belphemur/AddictedProxy/commit/26ebc2db21a1ddf982c43daa4a2641d875cf2203))
+* **deps:** update dependency @sentry/vue to v8.40.0 ([a51f891](https://github.com/Belphemur/AddictedProxy/commit/a51f89145f83e5b361c8f295bc5bb0c51fbb486b))
+* **deps:** update dependency @sentry/vue to v8.41.0 ([98a144b](https://github.com/Belphemur/AddictedProxy/commit/98a144bd5705fcf32229ad02729c7ec24a77cac4))
+* **deps:** update dependency @sentry/vue to v8.42.0 ([a11d905](https://github.com/Belphemur/AddictedProxy/commit/a11d905f58a6658283987f36ad6910a461ac843f))
+* **deps:** update dependency @sentry/vue to v8.43.0 ([06946eb](https://github.com/Belphemur/AddictedProxy/commit/06946eb1788e384d021ceb05c64ed2fe9e3da240))
+* **deps:** update dependency @sentry/vue to v8.44.0 ([ec01793](https://github.com/Belphemur/AddictedProxy/commit/ec01793be59b0eb64804f7ad4f6776c1013692ff))
+* **deps:** update dependency vuetify to v3.7.5 ([e1ca991](https://github.com/Belphemur/AddictedProxy/commit/e1ca9917f7e04b7df7bfebfababea71d26ba7b5b))
+
+### Features
+
+* **proxyscrape:** add proxy scrape client ([b343706](https://github.com/Belphemur/AddictedProxy/commit/b3437066be2d89fbc6812fa349e47c3033acc56b))
+* **proxyscrape:** give metrics in prometheus ([f481056](https://github.com/Belphemur/AddictedProxy/commit/f4810564dfd10ab7af35276bc6e5a594f71e5fa9))
+* **proxyscrape:** use hosted service to gather metrics ([69efcd8](https://github.com/Belphemur/AddictedProxy/commit/69efcd83dd42a52f06fd071de0b242b27fafafed))
+
 ## [4.29.11](https://github.com/Belphemur/AddictedProxy/compare/v4.29.10...v4.29.11) (2024-11-15)
 
 ### Performance improvements
