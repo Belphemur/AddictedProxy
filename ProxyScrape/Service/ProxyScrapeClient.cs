@@ -22,7 +22,7 @@ public class ProxyScrapeClient : IProxyScrapeClient
     /// <exception cref="HttpRequestException">If the request wasn't successfull</exception>
     public async Task<ProxyStatistics?> GetProxyStatisticsAsync(CancellationToken token)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"https://dashboard.proxyscrape.com/v2/v4/account/{_config.Value.AccountId}/residential/subuser/{_config.Value.SubUserId}/statistic");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"account/{_config.Value.AccountId}/residential/subuser/{_config.Value.SubUserId}/statistic");
         request.Headers.Add("Cookie", $"PHPSESSID={_config.Value.PhpSessionId}");
         request.Headers.Add("Referer", $"https://dashboard.proxyscrape.com/v2/services/residential/overview/{_config.Value.AccountId}");
         var response = await _client.SendAsync(request, token);

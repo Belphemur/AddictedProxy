@@ -11,6 +11,8 @@ public class BootstrapProxyScrape : IBootstrap
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<ProxyScrapeConfig>("ProxyScrape", configuration);
-        services.AddHttpClient<IProxyScrapeClient, ProxyScrapeClient>();
+        services.AddHttpClient<IProxyScrapeClient, ProxyScrapeClient>(client =>
+                client.BaseAddress = new Uri("https://dashboard.proxyscrape.com/v2/v4/"))
+            .SetHandlerLifetime(TimeSpan.FromHours(2));
     }
 }
