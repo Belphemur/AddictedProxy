@@ -77,7 +77,7 @@ public class ProxyScrapeClient : IProxyScrapeClient
     {
         _loginExtraData ??= await GetLoginDataAsync(token);
 
-        var request = new HttpRequestMessage(HttpMethod.Get, $"account/{_config.Value.AccountId}/residential/subuser/{_config.Value.SubUserId}/statistic");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"/v2/v4/account/{_config.Value.AccountId}/residential/subuser/{_config.Value.SubUserId}/statistic");
         request.Headers.Add("Cookie", $"PHPSESSID={_loginExtraData!.Value.PhpSessionId}");
         request.Headers.Add("User-Agent", _loginExtraData.Value.CaptchaSolution.UserAgent);
         request.Headers.Add("Referer", $"https://dashboard.proxyscrape.com/v2/services/residential/overview/{_config.Value.AccountId}");
