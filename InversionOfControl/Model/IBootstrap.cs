@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +10,10 @@ namespace InversionOfControl.Model;
 
 public interface IBootstrap
 {
+    /// <summary>
+    /// To be used if this bootstrap depends on another assembly bootstrap(s)
+    /// </summary>
+    public Assembly[] Dependencies => [];
     /// <summary>
     ///     Configure the different services
     /// </summary>
