@@ -4,11 +4,11 @@ public class ProxyScrapeConfig
 {
     public class Creds
     {
-        public string Username { get; init; }
-        public string Password { get; init; }
+        public string Username { get; init; } = null!;
+        public string Password { get; init; } = null!;
     }
 
-    public string AccountId { get; init; }
-    public string SubUserId { get; init; }
-    public Creds User { get; init; }
+    public string AccountId { get; init; } = null!;
+    public string SubUserId { get; init; } = null!;
+    public Creds User { get; init; } = null!;
 }
