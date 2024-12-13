@@ -76,7 +76,10 @@ public class ProxyScrapeClient : IProxyScrapeClient
     /// <exception cref="HttpRequestException">If the request wasn't successfull</exception>
     public async Task<ProxyStatistics?> GetProxyStatisticsAsync(CancellationToken token)
     {
-        _loginExtraData ??= await GetLoginDataAsync(token);
+        if (_loginExtraData == null)
+        {
+            _loginExtraData = await GetLoginDataAsync(token);
+        }
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/v2/v4/account/{_config.Value.AccountId}/residential/subuser/{_config.Value.SubUserId}/statistic");
         request.Headers.Add("Cookie", $"PHPSESSID={_loginExtraData!.Value.PhpSessionId}");
