@@ -12,7 +12,6 @@ public class BootstrapAntiCaptcha : IBootstrap
     {
         services.Configure<AntiCaptchaConfig>(configuration.GetSection("AntiCaptcha"));
         services.AddHttpClient<IAntiCaptchaClient, AntiCaptchaClient>(client => client.BaseAddress = new Uri("https://api.anti-captcha.com/"))
-            .SetHandlerLifetime(TimeSpan.FromHours(2))
-            .AddStandardHedgingHandler();
+            .SetHandlerLifetime(TimeSpan.FromHours(2));
     }
 }
