@@ -32,17 +32,17 @@ public class ProxyScrapeClient : IProxyScrapeClient
         return response?.Solution;
     }
 
-    private static string ExtractCookieValue(string setCookieHeader)
+    private static string? ExtractCookieValue(string setCookieHeader)
     {
         if (string.IsNullOrEmpty(setCookieHeader))
-            return string.Empty;
+            return null;
 
         // Get the value part before any attributes (before first semicolon)
         var mainValue = setCookieHeader.Split(';').FirstOrDefault() ?? string.Empty;
 
         // Get the value after the equals sign
         var parts = mainValue.Split('=', 2);
-        return parts.Length > 1 ? parts[1].Trim() : string.Empty;
+        return parts.Length > 1 ? parts[1].Trim() : null;
     }
 
     private async Task<LoginExtraData?> GetLoginDataAsync(CancellationToken token)
@@ -62,8 +62,9 @@ public class ProxyScrapeClient : IProxyScrapeClient
         };
         request.Headers.UserAgent.ParseAdd(cfToken.Value.UserAgent);
         var response = await _client.SendAsync(request, token);
-        response.EnsureSuccessStatusCode();
         var phpSessionId = ExtractCookieValue(response.Headers.GetValues("Set-Cookie").First(cookie => cookie.StartsWith("PHPSESSID=")));
+        if (phpSessionId == null)
+            return null;
         return new LoginExtraData(phpSessionId, cfToken.Value);
     }
 
@@ -87,6 +88,7 @@ public class ProxyScrapeClient : IProxyScrapeClient
             _loginExtraData = null;
             return await GetProxyStatisticsAsync(token).ConfigureAwait(false);
         }
+
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<ProxyStatistics>(cancellationToken: token);
     }
