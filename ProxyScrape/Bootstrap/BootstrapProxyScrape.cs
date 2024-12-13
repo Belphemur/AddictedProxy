@@ -23,7 +23,7 @@ public class BootstrapProxyScrape : IBootstrap
             {
                 AllowAutoRedirect = false,
                 AutomaticDecompression = DecompressionMethods.All
-            });
+            }).AddStandardResilienceHandler();
         services.AddSingleton<MetricGatherHostedService>();
         services.AddHostedService<MetricGatherHostedService>();
     }
