@@ -1,3 +1,4 @@
+using System.Net;
 using System.Reflection;
 using AntiCaptcha.Bootstrap;
 using InversionOfControl.Model;
@@ -18,7 +19,11 @@ public class BootstrapProxyScrape : IBootstrap
         services.AddHttpClient<IProxyScrapeClient, ProxyScrapeClient>(client =>
                 client.BaseAddress = new Uri("https://dashboard.proxyscrape.com/"))
             .SetHandlerLifetime(TimeSpan.FromHours(2))
-            .AddStandardHedgingHandler();
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                AllowAutoRedirect = false,
+                AutomaticDecompression = DecompressionMethods.All
+            });
         services.AddSingleton<MetricGatherHostedService>();
         services.AddHostedService<MetricGatherHostedService>();
     }
