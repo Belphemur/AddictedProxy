@@ -60,7 +60,7 @@ public class ProxyScrapeClient : IProxyScrapeClient
             { new StringContent(_config.Value.User.Password), "password" },
             { new StringContent(cfToken.Value.Token), "cf-turnstile-response" },
         };
-        request.Headers.Add("User-Agent", cfToken.Value.UserAgent);
+        request.Headers.UserAgent.ParseAdd(cfToken.Value.UserAgent);
         var response = await _client.SendAsync(request, token);
         response.EnsureSuccessStatusCode();
         var phpSessionId = ExtractCookieValue(response.Headers.GetValues("Set-Cookie").First(cookie => cookie.StartsWith("PHPSESSID=")));
@@ -79,7 +79,7 @@ public class ProxyScrapeClient : IProxyScrapeClient
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/v2/v4/account/{_config.Value.AccountId}/residential/subuser/{_config.Value.SubUserId}/statistic");
         request.Headers.Add("Cookie", $"PHPSESSID={_loginExtraData!.Value.PhpSessionId}");
-        request.Headers.Add("User-Agent", _loginExtraData.Value.CaptchaSolution.UserAgent);
+        request.Headers.UserAgent.ParseAdd(_loginExtraData.Value.CaptchaSolution.UserAgent);
         request.Headers.Add("Referer", $"https://dashboard.proxyscrape.com/v2/services/residential/overview/{_config.Value.AccountId}");
         var response = await _client.SendAsync(request, token);
         if (response.StatusCode == HttpStatusCode.Redirect)
