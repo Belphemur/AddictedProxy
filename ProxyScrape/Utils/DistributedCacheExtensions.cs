@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
+using ProxyScrape.Json;
 
 namespace ProxyScrape.Utils;
 
@@ -24,7 +25,7 @@ internal static class DistributedCacheExtensions
         }
 
         using var memoryStream = new MemoryStream(bytes);
-        return await JsonSerializer.DeserializeAsync<T>(memoryStream, cancellationToken: cancellationToken);
+        return await JsonSerializer.DeserializeAsync<T>(memoryStream, JsonContext.JsonSerializerOptions, cancellationToken);
     }
 
     /// <summary>
@@ -85,7 +86,7 @@ internal static class DistributedCacheExtensions
     /// <typeparam name="T"></typeparam>
     public static async Task SetAsync<T>(this IDistributedCache cache, string key, T value, DistributedCacheEntryOptions options, CancellationToken cancellationToken = default)
     {
-        var bytes = JsonSerializer.SerializeToUtf8Bytes(value);
+        var bytes = JsonSerializer.SerializeToUtf8Bytes(value, JsonContext.JsonSerializerOptions);
         await cache.SetAsync(key, bytes, options, cancellationToken);
     }
 }

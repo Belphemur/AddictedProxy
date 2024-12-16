@@ -1,10 +1,13 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using AntiCaptcha.Model.Error;
 using AntiCaptcha.Model.Task.Turnstile;
 using AntiCaptcha.Service;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
+using ProxyScrape.Json;
 using ProxyScrape.Model;
 using ProxyScrape.Utils;
 
@@ -17,6 +20,8 @@ public class ProxyScrapeClient : IProxyScrapeClient
     private readonly HttpClient _client;
     private readonly IAntiCaptchaClient _antiCaptchaClient;
     private readonly IDistributedCache _cache;
+
+
 
     public ProxyScrapeClient(IOptions<ProxyScrapeConfig> config, HttpClient client, IAntiCaptchaClient antiCaptchaClient, IDistributedCache cache)
     {
@@ -106,6 +111,6 @@ public class ProxyScrapeClient : IProxyScrapeClient
         }
 
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<ProxyStatistics>(cancellationToken: token);
+        return await response.Content.ReadFromJsonAsync<ProxyStatistics>(JsonContext.JsonSerializerOptions, token);
     }
 }
