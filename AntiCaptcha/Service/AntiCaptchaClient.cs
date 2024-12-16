@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using AntiCaptcha.Json;
+using AntiCaptcha.Model.Balance;
 using AntiCaptcha.Model.Config;
 using AntiCaptcha.Model.Error;
 using AntiCaptcha.Model.Task;
@@ -30,6 +31,26 @@ public class AntiCaptchaClient : IAntiCaptchaClient
     }
 
     /// <summary>
+    /// Get the current balance of the AntiCaptcha account
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<BalanceResponse?> GetBalanceAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var request = new BalanceRequest { ClientKey = _config.Value.ClientKey };
+            using var response = await _client.PostAsJsonAsync("getBalance", request, JsonSerializerOptions, cancellationToken);
+            return await response.Content.ReadFromJsonAsync<BalanceResponse>(JsonSerializerOptions, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to get balance");
+            throw;
+        }
+    }
+
+    /// <summary>
     /// Solve a Turnstile task using AntiCaptcha Proxyless API
     /// </summary>
     /// <param name="task"></param>
@@ -46,7 +67,7 @@ public class AntiCaptchaClient : IAntiCaptchaClient
                 Task = task
             };
 
-            var response = await _client.PostAsJsonAsync("createTask", request, JsonSerializerOptions, cancellationToken);
+            using var response = await _client.PostAsJsonAsync("createTask", request, JsonSerializerOptions, cancellationToken);
             var taskResponse = await response
                 .EnsureSuccessStatusCode()
                 .Content.ReadFromJsonAsync<TaskResponse>(JsonSerializerOptions, cancellationToken);
@@ -63,7 +84,7 @@ public class AntiCaptchaClient : IAntiCaptchaClient
             while (!cts.IsCancellationRequested)
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(750), cts.Token);
-                var solutionResponse = await _client.PostAsJsonAsync("getTaskResult", new TaskResultRequest { ClientKey = _config.Value.ClientKey, TaskId = taskResponse.TaskId }, JsonSerializerOptions, cts.Token);
+                using var solutionResponse = await _client.PostAsJsonAsync("getTaskResult", new TaskResultRequest { ClientKey = _config.Value.ClientKey, TaskId = taskResponse.TaskId }, JsonSerializerOptions, cts.Token);
                 var solution = await solutionResponse
                     .EnsureSuccessStatusCode()
                     .Content.ReadFromJsonAsync<SolutionResponse<TurnstileSolution>>(JsonSerializerOptions, cts.Token);
