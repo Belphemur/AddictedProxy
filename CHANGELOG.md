@@ -1,3 +1,11 @@
+## [4.32.1](https://github.com/Belphemur/AddictedProxy/compare/v4.32.0...v4.32.1) (2024-12-16)
+
+### Performance improvements
+
+* **disposing:** add disposing pattern for timer ([a504a4b](https://github.com/Belphemur/AddictedProxy/commit/a504a4bb90120a91742e14ea40f270e9e8ef5a95))
+* **proxy-scrape:** add a little bit of jitter to avoid being exactly every x seconds ([ef762a4](https://github.com/Belphemur/AddictedProxy/commit/ef762a4d54dee0f946a0d6e018005515d27d75e3))
+* **scraping:** add scraping interval for both AntiCaptcha and ProxyScrape ([1b0fd08](https://github.com/Belphemur/AddictedProxy/commit/1b0fd081e0acfac32bed9503b2228e9e72eade18))
+
 ## [4.32.0](https://github.com/Belphemur/AddictedProxy/compare/v4.31.0...v4.32.0) (2024-12-16)
 
 ### Performance improvements
