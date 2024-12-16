@@ -47,7 +47,7 @@ public class MetricGatherHostedService : BackgroundService
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
             cts.CancelAfter(TimeSpan.FromMinutes(5));
             await using var scope = _services.CreateAsyncScope();
-            var metrics = await scope.ServiceProvider.GetRequiredService<IProxyScrapeClient>().GetProxyStatisticsAsync(stoppingToken);
+            var metrics = await scope.ServiceProvider.GetRequiredService<IProxyScrapeClient>().GetProxyStatisticsAsync(cts.Token);
             var config = _services.GetRequiredService<IOptions<ProxyScrapeConfig>>();
             if (metrics is null)
             {
