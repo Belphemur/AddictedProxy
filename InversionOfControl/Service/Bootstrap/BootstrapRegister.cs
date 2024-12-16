@@ -118,6 +118,10 @@ internal class BootstrapRegister : IDisposable
                 {
                     bootstrap ??= Activator.CreateInstance(type);
                     ((IBootstrap)bootstrap).ConfigureServices(services, configuration);
+                    foreach (var dependency in ((IBootstrap)bootstrap).Dependencies)
+                    {
+                        RegisterBootstrapServices(services, configuration, dependency);
+                    }
                 }
 
                 if (_bootstrapEnv.IsAssignableToGenericType(type))

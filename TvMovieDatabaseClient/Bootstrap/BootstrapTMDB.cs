@@ -13,7 +13,8 @@ public class BootstrapTMDB : IBootstrap, IBootstrapEnvironmentVariable<TmdbConfi
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient<ITMDBClient, TMDBClient>(client => client.BaseAddress = new Uri("https://api.themoviedb.org/3/"))
-                .SetHandlerLifetime(TimeSpan.FromHours(1));
+            .SetHandlerLifetime(TimeSpan.FromHours(1))
+            .AddStandardResilienceHandler();
     }
 
     public EnvVarRegistration<TmdbConfig, TmdbConfigParser> EnvVarRegistration { get; } = new("TMDB_APIKEY");

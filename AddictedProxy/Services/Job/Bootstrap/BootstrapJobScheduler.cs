@@ -15,14 +15,14 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddHangfire(conf => conf
-                                     .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                                     .UseSimpleAssemblyNameTypeSerializer()
-                                     .UseRecommendedSerializerSettings()
-                                     .UsePostgreSqlStorage(configuration.GetConnectionString("Job"), new PostgreSqlStorageOptions
-                                     {
-                                         UseNativeDatabaseTransactions = true,
-                                         DistributedLockTimeout = TimeSpan.FromSeconds(30)
-                                     }));
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UsePostgreSqlStorage(options =>
+            {
+                var config = configuration.GetConnectionString("Job");
+                options.UseNpgsqlConnection(config);
+            }));
 
         services.AddHangfireServer(options =>
         {

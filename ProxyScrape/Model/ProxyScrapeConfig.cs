@@ -2,7 +2,13 @@ namespace ProxyScrape.Model;
 
 public class ProxyScrapeConfig
 {
-    public string AccountId { get; init; }
-    public string SubUserId { get; init; }
-    public string PhpSessionId { get; init; }
+    public class Creds
+    {
+        public string Username { get; init; } = null!;
+        public string Password { get; init; } = null!;
+    }
+
+    public string AccountId { get; init; } = null!;
+    public string SubUserId { get; init; } = null!;
+    public Creds User { get; init; } = null!;
 }
