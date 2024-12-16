@@ -1,3 +1,20 @@
+## [4.32.0](https://github.com/Belphemur/AddictedProxy/compare/v4.31.0...v4.32.0) (2024-12-16)
+
+### Performance improvements
+
+* **anti-captcha:** add metrics to show balance left ([ae8793d](https://github.com/Belphemur/AddictedProxy/commit/ae8793db7ba25697389f5bac2c67cc5de22fba84))
+* **anti-captcha:** use proper json context ([3e0323f](https://github.com/Belphemur/AddictedProxy/commit/3e0323ffe76649fb03c0b5d06b23385b82dd4b01))
+* **proxy-scrape:** only try to get stats if in prod mode ([45aa012](https://github.com/Belphemur/AddictedProxy/commit/45aa0123a5572784c2af6b924436b21952a899f0))
+* **proxy-scrape:** use json context ([00c402b](https://github.com/Belphemur/AddictedProxy/commit/00c402b28869fcfd3673464fd161b92e3cc222b9))
+
+### Bug Fixes
+
+* **proxy-scrape:** fix metrics not using the right max token ([1777027](https://github.com/Belphemur/AddictedProxy/commit/1777027bf1b8bcbf7e276c699d67ac438730214e))
+
+### Features
+
+* **anti-captcha:** add balance feature ([03f659e](https://github.com/Belphemur/AddictedProxy/commit/03f659e02c9cdd95755b95cf02f4d40c317404ba))
+
 ## [4.31.0](https://github.com/Belphemur/AddictedProxy/compare/v4.30.0...v4.31.0) (2024-12-16)
 
 ### Performance improvements
