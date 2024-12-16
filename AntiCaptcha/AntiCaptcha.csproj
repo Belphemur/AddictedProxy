@@ -14,4 +14,7 @@
         <PackageReference Include="Microsoft.Extensions.Http.Resilience"/>
         <PackageReference Include="prometheus-net"/>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Model\Balance\" />
+    </ItemGroup>
 </Project>
