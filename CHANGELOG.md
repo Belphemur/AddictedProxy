@@ -1,3 +1,29 @@
+## [4.31.0](https://github.com/Belphemur/AddictedProxy/compare/v4.30.0...v4.31.0) (2024-12-16)
+
+### Performance improvements
+
+* **proxy-scrape:** no need to save more data than user agent ([7177878](https://github.com/Belphemur/AddictedProxy/commit/7177878bd7ec452c6367ebf5dfa651facd55d479))
+* **tmdb:** add resilience ([4f6b845](https://github.com/Belphemur/AddictedProxy/commit/4f6b84565d0e9ea95a23387db85591a74243b5f1))
+
+### Bug Fixes
+
+* **anti-captcha:** remove standard hedging for now ([8206769](https://github.com/Belphemur/AddictedProxy/commit/8206769f711b15c5d2ebeaf42ae432799d7dd36a))
+* **deps:** update dependency @sentry/vue to v8.45.0 ([79007fa](https://github.com/Belphemur/AddictedProxy/commit/79007fad86a57556fe5e2e54638f1b0a513b4de2))
+* **deps:** update dependency @sentry/vue to v8.45.1 ([6cf2983](https://github.com/Belphemur/AddictedProxy/commit/6cf29838a1994954c8664905b316ed6f47224d82))
+* **job:** avoid deprecation issue for job db ([dc0ee47](https://github.com/Belphemur/AddictedProxy/commit/dc0ee47bf88e27d5535bd039d747b27e104d3c89))
+* **proxy-scrape:** 302 is expected ([cab48bd](https://github.com/Belphemur/AddictedProxy/commit/cab48bd8e36f23f0b24df420908c21e0c2917a5a))
+* **proxy-scrape:** don't follow redirects ([6f2ab34](https://github.com/Belphemur/AddictedProxy/commit/6f2ab349e8bd676ddec84a119f69a3b4eb5c429b))
+* **proxy-scrape:** fix wrong url used for login ([a06f143](https://github.com/Belphemur/AddictedProxy/commit/a06f14304901edddb404638fc53c5171e30718ad))
+* **proxy-scrape:** fix wrong user agent sent ([b781ef4](https://github.com/Belphemur/AddictedProxy/commit/b781ef45a99882e00513b5736f9faae45cafdcbf))
+* **proxy-scrape:** keep asking to get cf token ([492952b](https://github.com/Belphemur/AddictedProxy/commit/492952b50cc42bdad052bcfa4f3d901febd39d2f))
+* **proxy-scrape:** use distributed cache to avoid losing the phpsessioid ([d585a18](https://github.com/Belphemur/AddictedProxy/commit/d585a18d91580beb1b5b89fa1b9246d408985c93))
+
+### Features
+
+* **anti-captcha:** provide anti-captcha solving ([431be30](https://github.com/Belphemur/AddictedProxy/commit/431be305aa7d61191b92c405770c1a969082756b))
+* **inversion-control:** add concept of simple dependency ([2c095d4](https://github.com/Belphemur/AddictedProxy/commit/2c095d43644bd8d8b9d32c1a9408309200deb5bc))
+* **proxy-scrape:** by pass login ([312a54e](https://github.com/Belphemur/AddictedProxy/commit/312a54e389f8aa1835651444c83217ef8ef225d2))
+
 ## [4.30.0](https://github.com/Belphemur/AddictedProxy/compare/v4.29.11...v4.30.0) (2024-12-12)
 
 ### Performance improvements
