@@ -9,7 +9,7 @@ public record struct BalanceResponse
     public int ErrorId { get; init; }
 
     [JsonPropertyName("balance")]
-    public decimal Balance { get; init; }
+    public double Balance { get; init; }
 
     [JsonPropertyName("captchaCredits")]
     public long CaptchaCredits { get; init; }

@@ -9,7 +9,7 @@ using ProxyScrape.Service;
 
 namespace ProxyScrape.Bootstrap;
 
-public class BootstrapProxyScrape : IBootstrap, IBootstrapConditional
+public class BootstrapProxyScrape : IBootstrap
 {
     public Assembly[] Dependencies => [typeof(BootstrapAntiCaptcha).Assembly];
 
@@ -24,16 +24,10 @@ public class BootstrapProxyScrape : IBootstrap, IBootstrapConditional
                 AllowAutoRedirect = false,
                 AutomaticDecompression = DecompressionMethods.All
             }).AddStandardResilienceHandler();
-        services.AddSingleton<MetricGatherHostedService>();
-        services.AddHostedService<MetricGatherHostedService>();
-    }
 
-    public bool ShouldLoadBootstrap(IConfiguration configuration)
-    {
-#if DEBUG
-        return false;
-#else
-        return true;
+        // Only load the MetricGatherHostedService in release mode to avoid using anti-captcha quota
+#if !DEBUG
+        services.AddHostedService<MetricGatherHostedService>();
 #endif
     }
 }

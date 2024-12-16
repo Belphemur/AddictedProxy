@@ -18,5 +18,6 @@ public class BootstrapAntiCaptcha : IBootstrap
             {
                 Timeout = TimeSpan.FromMinutes(1)
             });
+        services.AddHostedService<MetricGatherHostedService>();
     }
 }
