@@ -1,6 +1,8 @@
+using AntiCaptcha.Model.Config;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Prometheus;
 
 namespace AntiCaptcha.Service;
@@ -18,7 +20,8 @@ public class MetricGatherHostedService : BackgroundService
     {
         _services = services;
         _logger = logger;
-        _timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
+        var scrapeInterval = _services.GetRequiredService<IOptions<AntiCaptchaConfig>>().Value.ScrapeInterval;
+        _timer = new PeriodicTimer(scrapeInterval);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -44,14 +47,30 @@ public class MetricGatherHostedService : BackgroundService
             var metrics = await scope.ServiceProvider.GetRequiredService<IAntiCaptchaClient>().GetBalanceAsync(stoppingToken);
             if (metrics is null)
             {
-                _logger.LogWarning( "Failed to collect metrics, received null");
+                _logger.LogWarning("Failed to collect metrics, received null");
                 return;
             }
+
             _remaining.Set(metrics.Value.Balance);
         }
         catch (Exception e)
         {
             _logger.LogCritical(e, "Failed to collect metrics");
         }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _timer.Dispose();
+        }
+    }
+
+    public sealed override void Dispose()
+    {
+        Dispose(true);
+        base.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

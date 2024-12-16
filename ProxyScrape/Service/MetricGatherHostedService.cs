@@ -22,16 +22,21 @@ public class MetricGatherHostedService : BackgroundService
     {
         _services = services;
         _logger = logger;
-        _timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
+        var scrapeInterval = _services.GetRequiredService<IOptions<ProxyScrapeConfig>>().Value.ScrapeInterval;
+        _timer = new PeriodicTimer(scrapeInterval);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        var random = new Random();
         try
         {
             while (await _timer.WaitForNextTickAsync(stoppingToken))
             {
                 await CollectMetricsAsync(stoppingToken);
+                // Add jitter delay between 500 ms to 2 seconds
+                var jitterDelay = random.Next(500, 2000);
+                await Task.Delay(jitterDelay, stoppingToken);
             }
         }
         catch (OperationCanceledException)
@@ -51,9 +56,10 @@ public class MetricGatherHostedService : BackgroundService
             var config = _services.GetRequiredService<IOptions<ProxyScrapeConfig>>();
             if (metrics is null)
             {
-                _logger.LogWarning( "Failed to collect metrics, received null");
+                _logger.LogWarning("Failed to collect metrics, received null");
                 return;
             }
+
             _used.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.UsedData);
             _remaining.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.RemainingData);
             _scrapeTime.Labels(config.Value.AccountId, config.Value.SubUserId).SetToCurrentTimeUtc();
@@ -62,5 +68,20 @@ public class MetricGatherHostedService : BackgroundService
         {
             _logger.LogCritical(e, "Failed to collect metrics");
         }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _timer.Dispose();
+        }
+    }
+
+    public sealed override void Dispose()
+    {
+        Dispose(true);
+        base.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

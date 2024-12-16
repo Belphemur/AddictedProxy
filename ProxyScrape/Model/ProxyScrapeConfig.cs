@@ -11,4 +11,6 @@ public class ProxyScrapeConfig
     public string AccountId { get; init; } = null!;
     public string SubUserId { get; init; } = null!;
     public Creds User { get; init; } = null!;
+    
+    public TimeSpan ScrapeInterval { get; init; } = TimeSpan.FromSeconds(30);
 }
