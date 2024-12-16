@@ -3,23 +3,27 @@ using System.Net.Http.Json;
 using AntiCaptcha.Model.Error;
 using AntiCaptcha.Model.Task.Turnstile;
 using AntiCaptcha.Service;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using ProxyScrape.Model;
+using ProxyScrape.Utils;
 
 namespace ProxyScrape.Service;
 
 public class ProxyScrapeClient : IProxyScrapeClient
 {
+    private const string LoginExtraDataCachingKey = "proxy-scrape-login-data";
     private readonly IOptions<ProxyScrapeConfig> _config;
     private readonly HttpClient _client;
     private readonly IAntiCaptchaClient _antiCaptchaClient;
-    private LoginExtraData? _loginExtraData = null;
+    private readonly IDistributedCache _cache;
 
-    public ProxyScrapeClient(IOptions<ProxyScrapeConfig> config, HttpClient client, IAntiCaptchaClient antiCaptchaClient)
+    public ProxyScrapeClient(IOptions<ProxyScrapeConfig> config, HttpClient client, IAntiCaptchaClient antiCaptchaClient, IDistributedCache cache)
     {
         _config = config;
         _client = client;
         _antiCaptchaClient = antiCaptchaClient;
+        _cache = cache;
     }
 
     private async Task<TurnstileSolution?> GetCfTokenAsync(CancellationToken token)
@@ -47,6 +51,12 @@ public class ProxyScrapeClient : IProxyScrapeClient
 
     private async Task<LoginExtraData?> GetLoginDataAsync(CancellationToken token)
     {
+        var loginExtraData = await _cache.GetAsync<LoginExtraData>(LoginExtraDataCachingKey, token);
+        if (loginExtraData != default)
+        {
+            return loginExtraData;
+        }
+
         var cfToken = await GetCfTokenAsync(token);
         if (cfToken is null)
         {
@@ -65,7 +75,13 @@ public class ProxyScrapeClient : IProxyScrapeClient
         var phpSessionId = ExtractCookieValue(response.Headers.GetValues("Set-Cookie").First(cookie => cookie.StartsWith("PHPSESSID=")));
         if (phpSessionId == null)
             return null;
-        return new LoginExtraData(phpSessionId, cfToken.Value);
+        loginExtraData = new LoginExtraData(phpSessionId, cfToken.Value);
+
+        await _cache.SetAsync(LoginExtraDataCachingKey, loginExtraData, new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+        }, token);
+        return loginExtraData;
     }
 
     /// <summary>
@@ -76,19 +92,16 @@ public class ProxyScrapeClient : IProxyScrapeClient
     /// <exception cref="HttpRequestException">If the request wasn't successfull</exception>
     public async Task<ProxyStatistics?> GetProxyStatisticsAsync(CancellationToken token)
     {
-        if (_loginExtraData == null)
-        {
-            _loginExtraData = await GetLoginDataAsync(token);
-        }
+        var loginExtraData = await GetLoginDataAsync(token);
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/v2/v4/account/{_config.Value.AccountId}/residential/subuser/{_config.Value.SubUserId}/statistic");
-        request.Headers.Add("Cookie", $"PHPSESSID={_loginExtraData!.Value.PhpSessionId}");
-        request.Headers.UserAgent.ParseAdd(_loginExtraData.Value.CaptchaSolution.UserAgent);
+        request.Headers.Add("Cookie", $"PHPSESSID={loginExtraData!.Value.PhpSessionId}");
+        request.Headers.UserAgent.ParseAdd(loginExtraData.Value.CaptchaSolution.UserAgent);
         request.Headers.Add("Referer", $"https://dashboard.proxyscrape.com/v2/services/residential/overview/{_config.Value.AccountId}");
         var response = await _client.SendAsync(request, token);
         if (response.StatusCode == HttpStatusCode.Redirect)
         {
-            _loginExtraData = null;
+            await _cache.RemoveAsync(LoginExtraDataCachingKey, token);
             return await GetProxyStatisticsAsync(token).ConfigureAwait(false);
         }
 
