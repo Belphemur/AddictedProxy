@@ -28,11 +28,15 @@ public class MetricGatherHostedService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        var random = new Random();
         try
         {
             while (await _timer.WaitForNextTickAsync(stoppingToken))
             {
                 await CollectMetricsAsync(stoppingToken);
+                // Add jitter delay between 500 ms to 2 seconds
+                var jitterDelay = random.Next(500, 2000);
+                await Task.Delay(jitterDelay, stoppingToken);
             }
         }
         catch (OperationCanceledException)
