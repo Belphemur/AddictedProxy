@@ -1,3 +1,228 @@
+## [4.31.0](https://github.com/Belphemur/AddictedProxy/compare/v4.30.0...v4.31.0) (2024-12-16)
+
+### Performance improvements
+
+* **proxy-scrape:** no need to save more data than user agent ([7177878](https://github.com/Belphemur/AddictedProxy/commit/7177878bd7ec452c6367ebf5dfa651facd55d479))
+* **tmdb:** add resilience ([4f6b845](https://github.com/Belphemur/AddictedProxy/commit/4f6b84565d0e9ea95a23387db85591a74243b5f1))
+
+### Bug Fixes
+
+* **anti-captcha:** remove standard hedging for now ([8206769](https://github.com/Belphemur/AddictedProxy/commit/8206769f711b15c5d2ebeaf42ae432799d7dd36a))
+* **deps:** update dependency @sentry/vue to v8.45.0 ([79007fa](https://github.com/Belphemur/AddictedProxy/commit/79007fad86a57556fe5e2e54638f1b0a513b4de2))
+* **deps:** update dependency @sentry/vue to v8.45.1 ([6cf2983](https://github.com/Belphemur/AddictedProxy/commit/6cf29838a1994954c8664905b316ed6f47224d82))
+* **job:** avoid deprecation issue for job db ([dc0ee47](https://github.com/Belphemur/AddictedProxy/commit/dc0ee47bf88e27d5535bd039d747b27e104d3c89))
+* **proxy-scrape:** 302 is expected ([cab48bd](https://github.com/Belphemur/AddictedProxy/commit/cab48bd8e36f23f0b24df420908c21e0c2917a5a))
+* **proxy-scrape:** don't follow redirects ([6f2ab34](https://github.com/Belphemur/AddictedProxy/commit/6f2ab349e8bd676ddec84a119f69a3b4eb5c429b))
+* **proxy-scrape:** fix wrong url used for login ([a06f143](https://github.com/Belphemur/AddictedProxy/commit/a06f14304901edddb404638fc53c5171e30718ad))
+* **proxy-scrape:** fix wrong user agent sent ([b781ef4](https://github.com/Belphemur/AddictedProxy/commit/b781ef45a99882e00513b5736f9faae45cafdcbf))
+* **proxy-scrape:** keep asking to get cf token ([492952b](https://github.com/Belphemur/AddictedProxy/commit/492952b50cc42bdad052bcfa4f3d901febd39d2f))
+* **proxy-scrape:** use distributed cache to avoid losing the phpsessioid ([d585a18](https://github.com/Belphemur/AddictedProxy/commit/d585a18d91580beb1b5b89fa1b9246d408985c93))
+
+### Features
+
+* **anti-captcha:** provide anti-captcha solving ([431be30](https://github.com/Belphemur/AddictedProxy/commit/431be305aa7d61191b92c405770c1a969082756b))
+* **inversion-control:** add concept of simple dependency ([2c095d4](https://github.com/Belphemur/AddictedProxy/commit/2c095d43644bd8d8b9d32c1a9408309200deb5bc))
+* **proxy-scrape:** by pass login ([312a54e](https://github.com/Belphemur/AddictedProxy/commit/312a54e389f8aa1835651444c83217ef8ef225d2))
+
+## [4.30.0](https://github.com/Belphemur/AddictedProxy/compare/v4.29.11...v4.30.0) (2024-12-12)
+
+### Performance improvements
+
+* **proxyscrape:** define base address and handler lifetime ([624ce9d](https://github.com/Belphemur/AddictedProxy/commit/624ce9df13b63c7ddd5541d917b67895579e5e22))
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.39.0 ([26ebc2d](https://github.com/Belphemur/AddictedProxy/commit/26ebc2db21a1ddf982c43daa4a2641d875cf2203))
+* **deps:** update dependency @sentry/vue to v8.40.0 ([a51f891](https://github.com/Belphemur/AddictedProxy/commit/a51f89145f83e5b361c8f295bc5bb0c51fbb486b))
+* **deps:** update dependency @sentry/vue to v8.41.0 ([98a144b](https://github.com/Belphemur/AddictedProxy/commit/98a144bd5705fcf32229ad02729c7ec24a77cac4))
+* **deps:** update dependency @sentry/vue to v8.42.0 ([a11d905](https://github.com/Belphemur/AddictedProxy/commit/a11d905f58a6658283987f36ad6910a461ac843f))
+* **deps:** update dependency @sentry/vue to v8.43.0 ([06946eb](https://github.com/Belphemur/AddictedProxy/commit/06946eb1788e384d021ceb05c64ed2fe9e3da240))
+* **deps:** update dependency @sentry/vue to v8.44.0 ([ec01793](https://github.com/Belphemur/AddictedProxy/commit/ec01793be59b0eb64804f7ad4f6776c1013692ff))
+* **deps:** update dependency vuetify to v3.7.5 ([e1ca991](https://github.com/Belphemur/AddictedProxy/commit/e1ca9917f7e04b7df7bfebfababea71d26ba7b5b))
+
+### Features
+
+* **proxyscrape:** add proxy scrape client ([b343706](https://github.com/Belphemur/AddictedProxy/commit/b3437066be2d89fbc6812fa349e47c3033acc56b))
+* **proxyscrape:** give metrics in prometheus ([f481056](https://github.com/Belphemur/AddictedProxy/commit/f4810564dfd10ab7af35276bc6e5a594f71e5fa9))
+* **proxyscrape:** use hosted service to gather metrics ([69efcd8](https://github.com/Belphemur/AddictedProxy/commit/69efcd83dd42a52f06fd071de0b242b27fafafed))
+
+## [4.29.11](https://github.com/Belphemur/AddictedProxy/compare/v4.29.10...v4.29.11) (2024-11-15)
+
+### Performance improvements
+
+* **background:** be sure background is preloaded ([4a078bc](https://github.com/Belphemur/AddictedProxy/commit/4a078bcb730f1247da5946ba871f3715549fcf23))
+* **media:poster:** Avoid preload both version of poster on mobile ([75388a1](https://github.com/Belphemur/AddictedProxy/commit/75388a1174823787535048057e9040f399b6ac92))
+* **refresh:** avoid refreshing episode list when we got it at the end of refresh ([2aa1870](https://github.com/Belphemur/AddictedProxy/commit/2aa187067bd0cbfbe69b5d3b122d82e5c4689917))
+
+### Bug Fixes
+
+* **refresh:** fix issue with refreshing where nothing would happen ([3dfbb6d](https://github.com/Belphemur/AddictedProxy/commit/3dfbb6d9b04e85874bc85a918f4205eb24c98818))
+* **refresh:** fix not refreshing episodes for all season found ([7d4e0f4](https://github.com/Belphemur/AddictedProxy/commit/7d4e0f4d6199e8bf1349e8a47faf99ee3abdf690))
+
+## [4.29.10](https://github.com/Belphemur/AddictedProxy/compare/v4.29.9...v4.29.10) (2024-11-15)
+
+### Performance improvements
+
+* **icons:** stop using font for icons ([290e456](https://github.com/Belphemur/AddictedProxy/commit/290e456d44b6fe5a2d8e33a41f0062a79f753328))
+
+## [4.29.9](https://github.com/Belphemur/AddictedProxy/compare/v4.29.8...v4.29.9) (2024-11-15)
+
+### Performance improvements
+
+* **chore:** update deps ([0825975](https://github.com/Belphemur/AddictedProxy/commit/0825975390f851a1587b5e094f512c824d4fae8a))
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.38.0 ([406650b](https://github.com/Belphemur/AddictedProxy/commit/406650bce989e8a99580b7f5565fdf4d2b40b558))
+* **deps:** update dependency client-zip to v2.4.6 ([399c430](https://github.com/Belphemur/AddictedProxy/commit/399c430d37bff9561fe318f9b3aa62b813aff9ea))
+* **show:media:** show that the show is refreshing ([aa984b2](https://github.com/Belphemur/AddictedProxy/commit/aa984b29bebec318f72e518e7ebd27416e1c0c6d))
+* **show:** fix show not found on the website when not refreshed yet ([f818e2b](https://github.com/Belphemur/AddictedProxy/commit/f818e2b1854cfc1d63265f6c38367dee515cb6ab))
+
+## [4.29.8](https://github.com/Belphemur/AddictedProxy/compare/v4.29.7...v4.29.8) (2024-11-08)
+
+### Bug Fixes
+
+* **media:** fix media detail page poster for normal and big resolutions ([4358aa2](https://github.com/Belphemur/AddictedProxy/commit/4358aa2338ee7e8918776a539fbc4ba33ded4443))
+
+## [4.29.7](https://github.com/Belphemur/AddictedProxy/compare/v4.29.6...v4.29.7) (2024-11-08)
+
+### Bug Fixes
+
+* **media:** fix media detail page poster ([b492dbc](https://github.com/Belphemur/AddictedProxy/commit/b492dbc2084772eb251e8c2b181bccf32487c232))
+
+## [4.29.6](https://github.com/Belphemur/AddictedProxy/compare/v4.29.5...v4.29.6) (2024-11-08)
+
+### Bug Fixes
+
+* **media:** fix media detail page poster ([2d8260c](https://github.com/Belphemur/AddictedProxy/commit/2d8260c6d3f386a77da61d83120ab6084220e4e2))
+
+## [4.29.5](https://github.com/Belphemur/AddictedProxy/compare/v4.29.4...v4.29.5) (2024-11-08)
+
+### Performance improvements
+
+* **fetch:** add retry capabilities ([3a0d913](https://github.com/Belphemur/AddictedProxy/commit/3a0d913013bfa8431e98001a6444dc9773855cb2))
+
+## [4.29.4](https://github.com/Belphemur/AddictedProxy/compare/v4.29.3...v4.29.4) (2024-11-08)
+
+### Performance improvements
+
+* **media:** improve image size for all size ([a63012b](https://github.com/Belphemur/AddictedProxy/commit/a63012b8dce3bb8efcb9ff2e4b67d4d966ae4e75))
+
+## [4.29.3](https://github.com/Belphemur/AddictedProxy/compare/v4.29.2...v4.29.3) (2024-11-07)
+
+### Performance improvements
+
+* **trending:** improve display for all images ([e856382](https://github.com/Belphemur/AddictedProxy/commit/e856382492c5269cbe82d560f2f69e0d3f222d8b))
+
+## [4.29.2](https://github.com/Belphemur/AddictedProxy/compare/v4.29.1...v4.29.2) (2024-11-07)
+
+### Performance improvements
+
+* **sentry:** move sentry and other libs to own chunks ([abfb071](https://github.com/Belphemur/AddictedProxy/commit/abfb07113ce16449e368a1d6b1bcc80f8669dd32))
+
+## [4.29.1](https://github.com/Belphemur/AddictedProxy/compare/v4.29.0...v4.29.1) (2024-11-07)
+
+### Bug Fixes
+
+* **mobile:** make download button centered ([dc60aec](https://github.com/Belphemur/AddictedProxy/commit/dc60aec98c7dc836936e48967ba746c4c74576fb))
+
+## [4.29.0](https://github.com/Belphemur/AddictedProxy/compare/v4.28.1...v4.29.0) (2024-11-07)
+
+### Features
+
+* **mobile:** improve mobile experience when downloading subtitle ([934f3f8](https://github.com/Belphemur/AddictedProxy/commit/934f3f8e693c1a6dba516682dd77486048dcb5a9))
+
+## [4.28.1](https://github.com/Belphemur/AddictedProxy/compare/v4.28.0...v4.28.1) (2024-11-07)
+
+### Performance improvements
+
+* **image:** reduce size of image ([a2a60e2](https://github.com/Belphemur/AddictedProxy/commit/a2a60e2efc086b087e6053cf04a75abadb689d33))
+
+## [4.28.0](https://github.com/Belphemur/AddictedProxy/compare/v4.27.1...v4.28.0) (2024-11-07)
+
+### Performance improvements
+
+* **media:** set the right width and height ([c89ec06](https://github.com/Belphemur/AddictedProxy/commit/c89ec06864a849ec5c2b302ad7d70952630f374e))
+* **media:** use preload ([9d0143b](https://github.com/Belphemur/AddictedProxy/commit/9d0143be7439c5af7299cb65d0fb98c122c5e384))
+
+### Features
+
+* **picture:** add preload feature ([94c02a2](https://github.com/Belphemur/AddictedProxy/commit/94c02a2bf751fb53460d98d236ea3356ffdd690b))
+
+## [4.27.1](https://github.com/Belphemur/AddictedProxy/compare/v4.27.0...v4.27.1) (2024-11-07)
+
+### Performance improvements
+
+* **media::details:** use backdrop image on mobile and fallback to poster when too big ([55bc4ec](https://github.com/Belphemur/AddictedProxy/commit/55bc4ec40a930780a08def48972bcc3ed0c380e8))
+* **picture:** be sure picture can be configured with different source for specific needs with extra media query ([48fa58e](https://github.com/Belphemur/AddictedProxy/commit/48fa58e98bfc26e46383dd97ebb9a1e80d9e73e4))
+
+## [4.27.0](https://github.com/Belphemur/AddictedProxy/compare/v4.26.0...v4.27.0) (2024-11-07)
+
+### Performance improvements
+
+* **image:** remove nuxt-image ([35defc6](https://github.com/Belphemur/AddictedProxy/commit/35defc60a3944c55002b9564519129693dbe4350))
+* **media::detail:** use new optimized image ([146cbba](https://github.com/Belphemur/AddictedProxy/commit/146cbba8d1702a36309dfd906b2e49f1d8f4885b))
+* **trending:** move to optimized images ([78a9a0f](https://github.com/Belphemur/AddictedProxy/commit/78a9a0f9eb77ad0063dd03e43c4f6472d6f02b85))
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.7.4 ([7a7305f](https://github.com/Belphemur/AddictedProxy/commit/7a7305f7c2e7dd033f5322ce4cee81076bfc7fc2))
+* **image:** use srcset and also specify width and height when known ([e7a5dec](https://github.com/Belphemur/AddictedProxy/commit/e7a5dec1e6333d78269b07f6f85238cdc022db3f))
+
+### Features
+
+* **image:** create own component for optimized picture instead of nuxt-image ([c50cb26](https://github.com/Belphemur/AddictedProxy/commit/c50cb26156e1d74a49252f99ddc4e93a0b4b80d8))
+
+## [4.26.0](https://github.com/Belphemur/AddictedProxy/compare/v4.25.8...v4.26.0) (2024-11-06)
+
+### Bug Fixes
+
+* **mobile:** fix mobile horizontal scrolling ([d8e9601](https://github.com/Belphemur/AddictedProxy/commit/d8e9601b3690a3a138bfa4ac0d708dcac31fb153))
+
+### Features
+
+* **navigation:** only use drawer for mobile ([b291866](https://github.com/Belphemur/AddictedProxy/commit/b2918663e217f696df84d61457787e21c277bbf1))
+
+## [4.25.8](https://github.com/Belphemur/AddictedProxy/compare/v4.25.7...v4.25.8) (2024-11-05)
+
+### Performance improvements
+
+* **ci:** improve building image ([bc04e6f](https://github.com/Belphemur/AddictedProxy/commit/bc04e6fc2d2d65b23010bf70cf7ef28a8feb999a))
+
+## [4.25.7](https://github.com/Belphemur/AddictedProxy/compare/v4.25.6...v4.25.7) (2024-11-05)
+
+### Performance improvements
+
+* **vuetify:** better integration with nuxt ([95a3d93](https://github.com/Belphemur/AddictedProxy/commit/95a3d930882c7a3e5613d2dd63a3349d5dca2387))
+
+### Bug Fixes
+
+* **ci:** building docker image front-end ([c251483](https://github.com/Belphemur/AddictedProxy/commit/c2514835eaf38ceec8f3f1c6f6f9279101c1e2d5))
+
+## [4.25.6](https://github.com/Belphemur/AddictedProxy/compare/v4.25.5...v4.25.6) (2024-11-05)
+
+### Performance improvements
+
+* **download:** avoid robot to scrape download links ([c460edf](https://github.com/Belphemur/AddictedProxy/commit/c460edf25a446facb29b8db8fa91b73370edc6e0))
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v24.2.0 ([2d01067](https://github.com/Belphemur/AddictedProxy/commit/2d010673c657c3629ea0f204baee2007cac75dde))
+* **deps:** update dependency utf-8-validate to v6.0.5 ([7a820ee](https://github.com/Belphemur/AddictedProxy/commit/7a820eef6a844cda3c3bc0a02b594a67bd28abb4))
+* **result:** remove unneeded extension ([2a3811e](https://github.com/Belphemur/AddictedProxy/commit/2a3811e2417ffbd54fc826110cfa261fc31d5600))
+
+## [4.25.5](https://github.com/Belphemur/AddictedProxy/compare/v4.25.4...v4.25.5) (2024-10-23)
+
+### Bug Fixes
+
+* **ci:** fix missing ws lib in built server ([6bfafc7](https://github.com/Belphemur/AddictedProxy/commit/6bfafc71e56532b516b7ba9ee5672ad13c4fe9a0))
+
+## [4.25.4](https://github.com/Belphemur/AddictedProxy/compare/v4.25.3...v4.25.4) (2024-10-23)
+
+### Bug Fixes
+
+* **websocket:** fix missing websocket lib ([5586a6f](https://github.com/Belphemur/AddictedProxy/commit/5586a6f3d7ee29a3d075cae9e5d906c79f8a6067))
+
 ## [4.25.3](https://github.com/Belphemur/AddictedProxy/compare/v4.25.2...v4.25.3) (2024-10-23)
 
 ### Bug Fixes
