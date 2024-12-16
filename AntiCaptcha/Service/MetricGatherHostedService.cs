@@ -1,6 +1,8 @@
+using AntiCaptcha.Model.Config;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Prometheus;
 
 namespace AntiCaptcha.Service;
@@ -18,7 +20,8 @@ public class MetricGatherHostedService : BackgroundService
     {
         _services = services;
         _logger = logger;
-        _timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
+        var scrapeInterval = _services.GetRequiredService<IOptions<AntiCaptchaConfig>>().Value.ScrapeInterval;
+        _timer = new PeriodicTimer(scrapeInterval);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

@@ -22,7 +22,8 @@ public class MetricGatherHostedService : BackgroundService
     {
         _services = services;
         _logger = logger;
-        _timer = new PeriodicTimer(TimeSpan.FromSeconds(15));
+        var scrapeInterval = _services.GetRequiredService<IOptions<ProxyScrapeConfig>>().Value.ScrapeInterval;
+        _timer = new PeriodicTimer(scrapeInterval);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
