@@ -75,7 +75,7 @@ public class ProxyScrapeClient : IProxyScrapeClient
         var phpSessionId = ExtractCookieValue(response.Headers.GetValues("Set-Cookie").First(cookie => cookie.StartsWith("PHPSESSID=")));
         if (phpSessionId == null)
             return null;
-        loginExtraData = new LoginExtraData(phpSessionId, cfToken.Value);
+        loginExtraData = new LoginExtraData(phpSessionId, cfToken.Value.UserAgent);
 
         await _cache.SetAsync(LoginExtraDataCachingKey, loginExtraData, new DistributedCacheEntryOptions
         {
@@ -96,7 +96,7 @@ public class ProxyScrapeClient : IProxyScrapeClient
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/v2/v4/account/{_config.Value.AccountId}/residential/subuser/{_config.Value.SubUserId}/statistic");
         request.Headers.Add("Cookie", $"PHPSESSID={loginExtraData!.Value.PhpSessionId}");
-        request.Headers.UserAgent.ParseAdd(loginExtraData.Value.CaptchaSolution.UserAgent);
+        request.Headers.UserAgent.ParseAdd(loginExtraData.Value.UserAgent);
         request.Headers.Add("Referer", $"https://dashboard.proxyscrape.com/v2/services/residential/overview/{_config.Value.AccountId}");
         var response = await _client.SendAsync(request, token);
         if (response.StatusCode == HttpStatusCode.Redirect)
