@@ -51,9 +51,10 @@ public class MetricGatherHostedService : BackgroundService
             var config = _services.GetRequiredService<IOptions<ProxyScrapeConfig>>();
             if (metrics is null)
             {
-                _logger.LogWarning( "Failed to collect metrics, received null");
+                _logger.LogWarning("Failed to collect metrics, received null");
                 return;
             }
+
             _used.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.UsedData);
             _remaining.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.RemainingData);
             _scrapeTime.Labels(config.Value.AccountId, config.Value.SubUserId).SetToCurrentTimeUtc();
@@ -62,5 +63,20 @@ public class MetricGatherHostedService : BackgroundService
         {
             _logger.LogCritical(e, "Failed to collect metrics");
         }
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _timer.Dispose();
+        }
+    }
+
+    public sealed override void Dispose()
+    {
+        Dispose(true);
+        base.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
