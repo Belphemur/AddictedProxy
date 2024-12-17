@@ -1,3 +1,11 @@
+## [4.32.2](https://github.com/Belphemur/AddictedProxy/compare/v4.32.1...v4.32.2) (2024-12-17)
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.46.0 ([f048486](https://github.com/Belphemur/AddictedProxy/commit/f0484867ff9d4a3f2f776f473ca37577e8052bb8))
+* **job:** remove fingerprint when server process job ([6ea4087](https://github.com/Belphemur/AddictedProxy/commit/6ea408778c5eda8bcfb65e16102199caeea1e96a))
+* **pinia:** fix issue with pinia version ([47d8ebd](https://github.com/Belphemur/AddictedProxy/commit/47d8ebdf181418834d51b7a00574b983a89d79dd))
+
 ## [4.32.1](https://github.com/Belphemur/AddictedProxy/compare/v4.32.0...v4.32.1) (2024-12-16)
 
 ### Performance improvements
