@@ -22,7 +22,7 @@ public class RefreshSingleShowJob
         _performanceTracker = performanceTracker;
     }
 
-    [UniqueJob(Order = 10)]
+    [UniqueJob(Order = 10, TtlFingerprintSeconds = 2 * TimeSpan.SecondsPerHour)]
     [AutomaticRetry(Attempts = 20)]
     [MaximumConcurrentExecutions(4)]
     [Queue("refresh-one-show")]

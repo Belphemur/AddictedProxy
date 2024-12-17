@@ -14,29 +14,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 
-public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyStateFilter, IClientExceptionFilter, IServerFilter
+public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyStateFilter, IClientExceptionFilter
 {
     private const string FingerprintJobParameterKey = "fingerprint";
+    private const string TimestampKey = "Timestamp";
     private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(30);
+    public double TtlFingerprintSeconds { get; set; } = TimeSpan.FromDays(1).TotalSeconds;
 
-    private static bool AddFingerprintIfNotExists(IStorageConnection connection, Job? job, CreatingContext creatingContext)
+    private TimeSpan TtlFingerprint => TimeSpan.FromSeconds(TtlFingerprintSeconds);
+
+    private bool AddFingerprintIfNotExists(IStorageConnection connection, Job? job, CreatingContext creatingContext)
     {
         var fingerprintKey = GetFingerprintKey(job);
         var fingerprintLockKey = GetFingerprintLockKey(fingerprintKey);
         using var distributedLock = connection.AcquireDistributedLock(fingerprintLockKey, LockTimeout);
         var fingerprint = connection.GetAllEntriesFromHash(fingerprintKey);
 
-        if (fingerprint != null)
+        if (fingerprint != null
+            && fingerprint.TryGetValue(TimestampKey, out var timestamp)
+            && DateTimeOffset.TryParse(timestamp, out var lastTimestamp)
+            && DateTimeOffset.UtcNow - lastTimestamp < TtlFingerprint)
         {
-            // Actual fingerprint found, returning.
+            // Fingerprint exists and is actual.
             return false;
         }
 
         // Fingerprint does not exist, it is invalid (no `Timestamp` key),
-        // or it is not actual (timeout expired).
+        // or it is not actual (ttl expired).
         using var transaction = connection.CreateWriteTransaction();
         transaction.SetRangeInHash(fingerprintKey, [
-            new("Timestamp", DateTimeOffset.UtcNow.ToString("o"))
+            new(TimestampKey, DateTimeOffset.UtcNow.ToString("o"))
         ]);
         creatingContext.SetJobParameter(FingerprintJobParameterKey, fingerprintKey);
         transaction.Commit();
@@ -131,14 +138,5 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
         {
             filterContext.ExceptionHandled = true;
         }
-    }
-
-    public void OnPerforming(PerformingContext context)
-    {
-    }
-
-    public void OnPerformed(PerformedContext context)
-    {
-        RemoveFingerprint(context.Connection, context.BackgroundJob);
     }
 }

@@ -17,7 +17,7 @@ public class ResetDownloadCredJob
     }
 
     [AutomaticRetry(Attempts = 10, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
-    [UniqueJob]
+    [UniqueJob(TtlFingerprintSeconds = TimeSpan.SecondsPerHour)]
     [Queue("download-creds-checker")]
     [MaximumConcurrentExecutions(3)]
     public async Task CheckAndResetCredAsync(long credentialId, CancellationToken token)
