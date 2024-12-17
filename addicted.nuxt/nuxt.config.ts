@@ -126,12 +126,12 @@ export default defineNuxtConfig({
     },
 
     modules: [
-        '@nuxtjs/google-fonts',
-        '@pinia/nuxt',
-        '@pinia-plugin-persistedstate/nuxt',
-        '@nuxtjs/device',
-        'nuxt-lodash',
-        "vuetify-nuxt-module"
+      '@nuxtjs/google-fonts',
+      '@pinia/nuxt',
+      '@nuxtjs/device',
+      'nuxt-lodash',
+      "vuetify-nuxt-module",
+      'pinia-plugin-persistedstate'
     ],
 
     compatibilityDate: '2024-11-05'

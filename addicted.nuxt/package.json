@@ -13,27 +13,27 @@
     "@nuxt/devtools": "1.6.4",
     "@nuxtjs/device": "^3.2.4",
     "@nuxtjs/google-fonts": "^3.2.0",
-    "@pinia-plugin-persistedstate/nuxt": "^1.2.1",
-    "@sentry/vite-plugin": "^2.22.6",
-    "@types/node": "^22.9.0",
+    "@sentry/vite-plugin": "^2.22.7",
+    "@types/node": "^22.10.2",
     "@types/webfontloader": "^1.6.38",
     "h3-proxy": "^1.13.0",
-    "nuxt": "^3.14.159",
+    "nuxt": "^3.14.1592",
     "nuxt-lodash": "^2.5.3",
+    "pinia-plugin-persistedstate": "4.2.0",
     "roboto-fontface": "^0.10.0",
-    "swagger-typescript-api": "^13.0.22",
-    "typescript": "^5.6.3",
+    "swagger-typescript-api": "^13.0.23",
+    "typescript": "^5.7.2",
     "vite-plugin-vuetify": "^2.0.4",
     "vuetify-nuxt-module": "^0.18.3"
   },
   "dependencies": {
     "@mdi/js": "^7.4.47",
     "@microsoft/signalr": "^8.0.7",
-    "@sentry/vue": "^8.37.0",
+    "@sentry/vue": "^8.46.0",
     "bufferutil": "^4.0.8",
-    "client-zip": "^2.4.5",
+    "client-zip": "^2.4.6",
     "fetch-retry": "^6.0.0",
     "utf-8-validate": "^6.0.5",
-    "vuetify": "^3.7.3"
+    "vuetify": "^3.7.5"
   }
 }
