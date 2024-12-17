@@ -1,3 +1,9 @@
+## [4.32.4](https://github.com/Belphemur/AddictedProxy/compare/v4.32.3...v4.32.4) (2024-12-17)
+
+### Bug Fixes
+
+* **job:unique:** Be sure that unique job have a change to reuse the fingerprint if too old and wasn't cleanup properly ([120761e](https://github.com/Belphemur/AddictedProxy/commit/120761ea7e9bf936bf738131e14dc49596d23719))
+
 ## [4.32.3](https://github.com/Belphemur/AddictedProxy/compare/v4.32.2...v4.32.3) (2024-12-17)
 
 ### Bug Fixes
