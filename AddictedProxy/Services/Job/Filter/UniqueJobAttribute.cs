@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using AddictedProxy.Services.Job.Model;
 using Hangfire;
+using Hangfire.Server;
 
 namespace AddictedProxy.Services.Job.Filter;
 
@@ -13,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 
-public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyStateFilter, IClientExceptionFilter
+public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyStateFilter, IClientExceptionFilter, IServerFilter
 {
     private const string FingerprintJobParameterKey = "fingerprint";
     private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(30);
@@ -77,7 +78,7 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
             return string.Empty;
         }
 
-        var uniqueKey = job.Args?.Where(arg => arg is IUniqueKey).Cast<IUniqueKey>().Select(key => key.Key).ToArray() ?? Array.Empty<string>();
+        var uniqueKey = job.Args?.Where(arg => arg is IUniqueKey).Cast<IUniqueKey>().Select(key => key.Key).ToArray() ?? [];
 
         if (uniqueKey.Length > 0)
         {
@@ -130,5 +131,14 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
         {
             filterContext.ExceptionHandled = true;
         }
+    }
+
+    public void OnPerforming(PerformingContext context)
+    {
+    }
+
+    public void OnPerformed(PerformedContext context)
+    {
+        RemoveFingerprint(context.Connection, context.BackgroundJob);
     }
 }
