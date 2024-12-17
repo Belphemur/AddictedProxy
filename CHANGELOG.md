@@ -1,3 +1,9 @@
+## [4.32.3](https://github.com/Belphemur/AddictedProxy/compare/v4.32.2...v4.32.3) (2024-12-17)
+
+### Bug Fixes
+
+* **pinia:** use right version of pinia ([94f787d](https://github.com/Belphemur/AddictedProxy/commit/94f787dd684e9ccb44f0c5e3f3fdeb74fcd14f18))
+
 ## [4.32.2](https://github.com/Belphemur/AddictedProxy/compare/v4.32.1...v4.32.2) (2024-12-17)
 
 ### Bug Fixes
