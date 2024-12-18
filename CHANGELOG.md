@@ -1,3 +1,10 @@
+## [4.32.5](https://github.com/Belphemur/AddictedProxy/compare/v4.32.4...v4.32.5) (2024-12-18)
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.7.6 ([e655958](https://github.com/Belphemur/AddictedProxy/commit/e655958763f5e9b99734b63ecc0acdd261d1018f))
+* **job:unique:** clean up fingerprint if job is deleted ([aa5ce64](https://github.com/Belphemur/AddictedProxy/commit/aa5ce64a5ab9f9093be59c2fd9fbd3d95dac24ec))
+
 ## [4.32.4](https://github.com/Belphemur/AddictedProxy/compare/v4.32.3...v4.32.4) (2024-12-17)
 
 ### Bug Fixes
