@@ -121,7 +121,8 @@ public class UniqueJobAttribute : JobFilterAttribute, IClientFilter, IApplyState
     public void OnStateApplied(ApplyStateContext context, IWriteOnlyTransaction transaction)
     {
         if (context.NewState.Name.Equals(SucceededState.StateName)
-            || context.NewState.Name.Equals(FailedState.StateName))
+            || context.NewState.Name.Equals(FailedState.StateName)
+            || context.NewState.Name.Equals(DeletedState.StateName))
         {
             RemoveFingerprint(context.Connection, context.BackgroundJob);
         }
