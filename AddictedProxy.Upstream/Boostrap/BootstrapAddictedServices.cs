@@ -84,7 +84,7 @@ public class BootstrapAddictedServices : IBootstrap,
             //Issue with downloading the subtitle from Addic7ed
             .OrInner<IOException>()
             .Or<TimeoutRejectedException>()
-            .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
+            .OrResult(msg => msg.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden)
             .WaitAndRetryAsync(delay);
     }
 }
