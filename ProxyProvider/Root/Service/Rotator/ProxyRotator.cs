@@ -1,6 +1,7 @@
 using System.Net;
 using AsyncKeyedLock;
 using Microsoft.Extensions.Logging;
+using ProxyProvider.GeoList.Model;
 using ProxyProvider.GeoList.Service;
 
 namespace ProxyProvider.Root.Service.Rotator;
@@ -27,7 +28,11 @@ public class ProxyRotator(IGeoListProxyFetcher geoListProxyFetcher, ILogger<Prox
         }
 
         var proxies = await geoListProxyFetcher.FetchProxiesAsync(cancellationToken);
-        _proxies = proxies?.Select(proxy => new WebProxy($"{proxy.Protocols[0]}://{proxy.Ip}:{proxy.Port}")).ToArray() ?? [];
+        _proxies = proxies?
+            .OrderBy(proxy => proxy.Speed)
+            .Where(proxy => proxy.Speed < 1000)
+            .Select(proxy => new WebProxy($"{proxy.Protocols[0]}://{proxy.Ip}:{proxy.Port}"))
+            .ToArray() ?? [];
         _currentProxyIndex = 0;
         logger.LogInformation("Got {Count} proxies", _proxies.Length);
     }

@@ -7,15 +7,16 @@ using ProxyProvider.Root.Service.Rotator;
 
 namespace ProxyProvider.Tests;
 
+[Ignore("Manual test")]
 [TestFixture]
-public class Test
+public class ProxyRotatorTests
 {
     private ServiceCollection _services;
 
     [SetUp]
     public void Setup()
     {
-        _services = new ServiceCollection();
+        _services = [];
         var configuration = new ConfigurationBuilder().Build();
         new BootstrapGeoList().ConfigureServices(_services, configuration);
         new BootstrapProxyProvider().ConfigureServices(_services, configuration);

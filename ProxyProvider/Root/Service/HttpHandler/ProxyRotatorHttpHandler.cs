@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Sockets;
 using ProxyProvider.Root.Service.Rotator;
 
 namespace ProxyProvider.Root.Service.HttpHandler;
@@ -11,7 +13,7 @@ public class ProxyRotatorHttpHandler : HttpClientHandler
         _proxyRotator = proxyRotator;
         UseProxy = true;
     }
-    
+
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         Proxy = await _proxyRotator.GetNextProxyAsync(cancellationToken);
