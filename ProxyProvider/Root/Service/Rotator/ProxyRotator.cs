@@ -19,10 +19,13 @@ public class ProxyRotator(IGeoListProxyFetcher geoListProxyFetcher, ILogger<Prox
     public async Task UpdateProxiesAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("Updating proxies");
-        if (await _lock.LockOrNullAsync(nameof(ProxyRotator), TimeSpan.FromSeconds(5), cancellationToken) is null)
+        using var lockInfo = await _lock.LockOrNullAsync(nameof(ProxyRotator), TimeSpan.FromSeconds(5), cancellationToken);
+        if (lockInfo == null)
         {
+            logger.LogWarning("Failed to acquire lock to fetch proxies");
             return;
         }
+
         var proxies = await geoListProxyFetcher.FetchProxiesAsync(cancellationToken);
         _proxies = proxies?.Select(proxy => new WebProxy($"{proxy.Protocols[0]}://{proxy.Ip}:{proxy.Port}")).ToArray() ?? [];
         _currentProxyIndex = 0;
@@ -31,13 +34,16 @@ public class ProxyRotator(IGeoListProxyFetcher geoListProxyFetcher, ILogger<Prox
 
     public async Task<WebProxy?> GetNextProxyAsync(CancellationToken cancellationToken)
     {
-        if (await _lock.LockOrNullAsync(nameof(ProxyRotator), TimeSpan.FromSeconds(5), cancellationToken) is null)
+        using var lockInfo = await _lock.LockOrNullAsync(nameof(ProxyRotator), TimeSpan.FromSeconds(5), cancellationToken);
+        if (lockInfo == null)
         {
+            logger.LogWarning("Failed to acquire lock to get next proxy");
             return null;
         }
 
+        var proxy = _proxies[_currentProxyIndex];
         _currentProxyIndex = (_currentProxyIndex + 1) % _proxies.Length;
-        return _proxies[_currentProxyIndex];
+        return proxy;
     }
 
 
