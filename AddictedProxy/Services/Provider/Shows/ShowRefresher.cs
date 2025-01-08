@@ -22,6 +22,7 @@ public class ShowRefresher : IShowRefresher
     private readonly ILogger<ShowRefresher> _logger;
     private readonly IRefreshHubManager _refreshHubManager;
     private readonly IPerformanceTracker _performanceTracker;
+    private readonly ISeasonRepository _seasonRepository;
     private readonly ITvShowRepository _tvShowRepository;
 
     public ShowRefresher(ITvShowRepository tvShowRepository,
@@ -31,7 +32,8 @@ public class ShowRefresher : IShowRefresher
                          IEpisodeRefresher episodeRefresher,
                          ILogger<ShowRefresher> logger,
                          IRefreshHubManager refreshHubManager,
-                         IPerformanceTracker performanceTracker
+                         IPerformanceTracker performanceTracker,
+                         ISeasonRepository seasonRepository
     )
     {
         _tvShowRepository = tvShowRepository;
@@ -42,6 +44,7 @@ public class ShowRefresher : IShowRefresher
         _logger = logger;
         _refreshHubManager = refreshHubManager;
         _performanceTracker = performanceTracker;
+        _seasonRepository = seasonRepository;
     }
 
     public async Task RefreshShowsAsync(CancellationToken token)
@@ -80,7 +83,7 @@ public class ShowRefresher : IShowRefresher
         await _seasonRefresher.RefreshSeasonsAsync(show, token: token);
         await _refreshHubManager.SendProgressAsync(show, progressMin, token);
 
-        var seasonToSync = show.Seasons.OrderByDescending(season => season.Number).ToArray();
+        var seasonToSync = await _seasonRepository.GetSeasonsForShowAsync(show.Id).OrderByDescending(season => season.Number).ToArrayAsync(cancellationToken: token);
 
         _logger.LogInformation("Refreshing episode for {number} seasons of {show}", seasonToSync.Length, show.Name);
 
@@ -91,7 +94,8 @@ public class ShowRefresher : IShowRefresher
         }
 
         await _episodeRefresher.RefreshEpisodesAsync(show, seasonToSync, SendProgress, token);
-        await _refreshHubManager.SendRefreshDone(show, token);
+        var showReloaded = (await _tvShowRepository.GetByIdAsync(showId, token))!;
+        await _refreshHubManager.SendRefreshDone(showReloaded, token);
     }
 
     public IAsyncEnumerable<TvShow> FindShowsAsync(string search, CancellationToken token)
