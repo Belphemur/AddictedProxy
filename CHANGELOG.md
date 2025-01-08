@@ -1,3 +1,76 @@
+## [4.33.0](https://github.com/Belphemur/AddictedProxy/compare/v4.32.5...v4.33.0) (2025-01-08)
+
+### Performance improvements
+
+* **job:fetch:** cleanup some of the tech debt ([5dcd2de](https://github.com/Belphemur/AddictedProxy/commit/5dcd2de96611e1879a8e83148e4a2d7afa689388))
+* **job:** reduce max concurrent job ([5b3451b](https://github.com/Belphemur/AddictedProxy/commit/5b3451b9ff8bec3e200899f41a7f087b38e8ba6a))
+* **job:** update compatibility level ([b2926da](https://github.com/Belphemur/AddictedProxy/commit/b2926da419ac32371f547ff11cc5bca6590e4f14))
+* **sentry:** remove duplicate handler ([b346efe](https://github.com/Belphemur/AddictedProxy/commit/b346efef90b0e10c9f797ddc06bd5d5b9df14e74))
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.47.0 ([721d9c4](https://github.com/Belphemur/AddictedProxy/commit/721d9c4bd83d76251d32f38ef13f6b22465667e8))
+* **deps:** update dependency @sentry/vue to v8.48.0 ([90d3784](https://github.com/Belphemur/AddictedProxy/commit/90d37848e99d185cafc006886d2f2e063d311d7b))
+* **deps:** update dependency bufferutil to v4.0.9 ([16ca3e3](https://github.com/Belphemur/AddictedProxy/commit/16ca3e32b81c762ea01c1645928c0772d9ca4330))
+* **deps:** update semantic-release monorepo ([998a149](https://github.com/Belphemur/AddictedProxy/commit/998a149f24e4b83e9c1b67886f8e7f27a67321c5))
+* **proxy-rotator:** fix getting locked ([e1c43e7](https://github.com/Belphemur/AddictedProxy/commit/e1c43e7a69b5fe9990828180ae32c75ee6a15e03))
+
+### Features
+
+* **proxy:** add a proxy rotator ([cab0ef9](https://github.com/Belphemur/AddictedProxy/commit/cab0ef94fb2a2b43ff16ec946f671d74aaeca0e3))
+
+## [4.32.5](https://github.com/Belphemur/AddictedProxy/compare/v4.32.4...v4.32.5) (2024-12-18)
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.7.6 ([e655958](https://github.com/Belphemur/AddictedProxy/commit/e655958763f5e9b99734b63ecc0acdd261d1018f))
+* **job:unique:** clean up fingerprint if job is deleted ([aa5ce64](https://github.com/Belphemur/AddictedProxy/commit/aa5ce64a5ab9f9093be59c2fd9fbd3d95dac24ec))
+
+## [4.32.4](https://github.com/Belphemur/AddictedProxy/compare/v4.32.3...v4.32.4) (2024-12-17)
+
+### Bug Fixes
+
+* **job:unique:** Be sure that unique job have a change to reuse the fingerprint if too old and wasn't cleanup properly ([120761e](https://github.com/Belphemur/AddictedProxy/commit/120761ea7e9bf936bf738131e14dc49596d23719))
+
+## [4.32.3](https://github.com/Belphemur/AddictedProxy/compare/v4.32.2...v4.32.3) (2024-12-17)
+
+### Bug Fixes
+
+* **pinia:** use right version of pinia ([94f787d](https://github.com/Belphemur/AddictedProxy/commit/94f787dd684e9ccb44f0c5e3f3fdeb74fcd14f18))
+
+## [4.32.2](https://github.com/Belphemur/AddictedProxy/compare/v4.32.1...v4.32.2) (2024-12-17)
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.46.0 ([f048486](https://github.com/Belphemur/AddictedProxy/commit/f0484867ff9d4a3f2f776f473ca37577e8052bb8))
+* **job:** remove fingerprint when server process job ([6ea4087](https://github.com/Belphemur/AddictedProxy/commit/6ea408778c5eda8bcfb65e16102199caeea1e96a))
+* **pinia:** fix issue with pinia version ([47d8ebd](https://github.com/Belphemur/AddictedProxy/commit/47d8ebdf181418834d51b7a00574b983a89d79dd))
+
+## [4.32.1](https://github.com/Belphemur/AddictedProxy/compare/v4.32.0...v4.32.1) (2024-12-16)
+
+### Performance improvements
+
+* **disposing:** add disposing pattern for timer ([a504a4b](https://github.com/Belphemur/AddictedProxy/commit/a504a4bb90120a91742e14ea40f270e9e8ef5a95))
+* **proxy-scrape:** add a little bit of jitter to avoid being exactly every x seconds ([ef762a4](https://github.com/Belphemur/AddictedProxy/commit/ef762a4d54dee0f946a0d6e018005515d27d75e3))
+* **scraping:** add scraping interval for both AntiCaptcha and ProxyScrape ([1b0fd08](https://github.com/Belphemur/AddictedProxy/commit/1b0fd081e0acfac32bed9503b2228e9e72eade18))
+
+## [4.32.0](https://github.com/Belphemur/AddictedProxy/compare/v4.31.0...v4.32.0) (2024-12-16)
+
+### Performance improvements
+
+* **anti-captcha:** add metrics to show balance left ([ae8793d](https://github.com/Belphemur/AddictedProxy/commit/ae8793db7ba25697389f5bac2c67cc5de22fba84))
+* **anti-captcha:** use proper json context ([3e0323f](https://github.com/Belphemur/AddictedProxy/commit/3e0323ffe76649fb03c0b5d06b23385b82dd4b01))
+* **proxy-scrape:** only try to get stats if in prod mode ([45aa012](https://github.com/Belphemur/AddictedProxy/commit/45aa0123a5572784c2af6b924436b21952a899f0))
+* **proxy-scrape:** use json context ([00c402b](https://github.com/Belphemur/AddictedProxy/commit/00c402b28869fcfd3673464fd161b92e3cc222b9))
+
+### Bug Fixes
+
+* **proxy-scrape:** fix metrics not using the right max token ([1777027](https://github.com/Belphemur/AddictedProxy/commit/1777027bf1b8bcbf7e276c699d67ac438730214e))
+
+### Features
+
+* **anti-captcha:** add balance feature ([03f659e](https://github.com/Belphemur/AddictedProxy/commit/03f659e02c9cdd95755b95cf02f4d40c317404ba))
+
 ## [4.31.0](https://github.com/Belphemur/AddictedProxy/compare/v4.30.0...v4.31.0) (2024-12-16)
 
 ### Performance improvements
