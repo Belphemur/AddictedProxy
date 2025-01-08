@@ -76,6 +76,7 @@ public class TvShowRepository : ITvShowRepository
     {
         return _entityContext.TvShows
                              .Include(show => show.Seasons)
+                             .AsNoTracking()
                              .SingleOrDefaultAsync(show => show.UniqueId == id, cancellationToken: cancellationToken);
     }
 
@@ -84,6 +85,7 @@ public class TvShowRepository : ITvShowRepository
         return _entityContext.TvShows
                              .Include(show => show.Seasons)
                              .Where(show => show.TvdbId == id)
+                             .AsNoTracking()
                              .ToAsyncEnumerable();
     }
 
@@ -99,6 +101,7 @@ public class TvShowRepository : ITvShowRepository
                              .Where(show => show.TmdbId.HasValue)
                              .Where(show => tmdbIds.Contains(show.TmdbId!.Value))
                              .Include(show => show.Seasons)
+                             .AsNoTracking()
                              .ToAsyncEnumerable();
     }
 
