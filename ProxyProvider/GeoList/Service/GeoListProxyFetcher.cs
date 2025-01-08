@@ -19,7 +19,7 @@ public class GeoListProxyFetcher : IGeoListProxyFetcher
     /// <returns></returns>
     public async Task<ProxyInfo[]?> FetchProxiesAsync(CancellationToken cancellationToken)
     {
-        var response = await _client.GetAsync("https://proxylist.geonode.com/api/proxy-list?filterUpTime=90&limit=500&page=1&sort_by=lastChecked&sort_type=desc",
+        var response = await _client.GetAsync("https://proxylist.geonode.com/api/proxy-list?filterUpTime=90&speed=fast&limit=500&page=1&sort_by=responseTime&sort_type=asc",
             cancellationToken);
         response.EnsureSuccessStatusCode();
         var data = await response.Content.ReadFromJsonAsync<Response>(cancellationToken: cancellationToken);
