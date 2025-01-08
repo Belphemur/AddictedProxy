@@ -1,3 +1,15 @@
+## [4.33.1](https://github.com/Belphemur/AddictedProxy/compare/v4.33.0...v4.33.1) (2025-01-08)
+
+### Performance improvements
+
+* **fetch:** be sure to log a critical issue in the job ([1697e78](https://github.com/Belphemur/AddictedProxy/commit/1697e78df0ea19309cda7cf4d1c11ee50f057138))
+* **tvshow:** use no tracking when only reading data ([57ad23f](https://github.com/Belphemur/AddictedProxy/commit/57ad23f0d05f20c9b16bc70587568c92fada7055))
+
+### Bug Fixes
+
+* **fetch:** fix fetch job crashing ([33298e1](https://github.com/Belphemur/AddictedProxy/commit/33298e1190f1ded33a24ce18cc9325c6eaa24ead))
+* **fetch:** fix getting subtitles for shows ([458968d](https://github.com/Belphemur/AddictedProxy/commit/458968df58642359c4ec207651a939146a2107f4))
+
 ## [4.33.0](https://github.com/Belphemur/AddictedProxy/compare/v4.32.5...v4.33.0) (2025-01-08)
 
 ### Performance improvements
