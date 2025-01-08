@@ -1,3 +1,24 @@
+## [4.33.0](https://github.com/Belphemur/AddictedProxy/compare/v4.32.5...v4.33.0) (2025-01-08)
+
+### Performance improvements
+
+* **job:fetch:** cleanup some of the tech debt ([5dcd2de](https://github.com/Belphemur/AddictedProxy/commit/5dcd2de96611e1879a8e83148e4a2d7afa689388))
+* **job:** reduce max concurrent job ([5b3451b](https://github.com/Belphemur/AddictedProxy/commit/5b3451b9ff8bec3e200899f41a7f087b38e8ba6a))
+* **job:** update compatibility level ([b2926da](https://github.com/Belphemur/AddictedProxy/commit/b2926da419ac32371f547ff11cc5bca6590e4f14))
+* **sentry:** remove duplicate handler ([b346efe](https://github.com/Belphemur/AddictedProxy/commit/b346efef90b0e10c9f797ddc06bd5d5b9df14e74))
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.47.0 ([721d9c4](https://github.com/Belphemur/AddictedProxy/commit/721d9c4bd83d76251d32f38ef13f6b22465667e8))
+* **deps:** update dependency @sentry/vue to v8.48.0 ([90d3784](https://github.com/Belphemur/AddictedProxy/commit/90d37848e99d185cafc006886d2f2e063d311d7b))
+* **deps:** update dependency bufferutil to v4.0.9 ([16ca3e3](https://github.com/Belphemur/AddictedProxy/commit/16ca3e32b81c762ea01c1645928c0772d9ca4330))
+* **deps:** update semantic-release monorepo ([998a149](https://github.com/Belphemur/AddictedProxy/commit/998a149f24e4b83e9c1b67886f8e7f27a67321c5))
+* **proxy-rotator:** fix getting locked ([e1c43e7](https://github.com/Belphemur/AddictedProxy/commit/e1c43e7a69b5fe9990828180ae32c75ee6a15e03))
+
+### Features
+
+* **proxy:** add a proxy rotator ([cab0ef9](https://github.com/Belphemur/AddictedProxy/commit/cab0ef94fb2a2b43ff16ec946f671d74aaeca0e3))
+
 ## [4.32.5](https://github.com/Belphemur/AddictedProxy/compare/v4.32.4...v4.32.5) (2024-12-18)
 
 ### Bug Fixes
