@@ -36,6 +36,7 @@ public class BootstrapAddictedServices : IBootstrap,
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(GetTimeoutPolicy())
+                .AddExtendedHttpClientLogging()
                 .UseHttpClientMetrics();
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>(client =>
@@ -47,6 +48,7 @@ public class BootstrapAddictedServices : IBootstrap,
                 .SetHandlerLifetime(TimeSpan.FromMinutes(1))
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(GetTimeoutPolicy())
+                .AddExtendedHttpClientLogging()
                 .UseHttpClientMetrics();
 
         services.AddSingleton<HttpUtils>();
