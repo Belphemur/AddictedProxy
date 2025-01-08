@@ -15,7 +15,7 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddHangfire(conf => conf
-            .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
             .UsePostgreSqlStorage(options =>
@@ -26,8 +26,8 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
 
         services.AddHangfireServer(options =>
         {
-            options.Queues = new[] { "store-subtitle", "download-creds-checker", "default", "refresh-one-show", "fetch-subtitles" };
-            options.WorkerCount = Environment.ProcessorCount * 6;
+            options.Queues = ["store-subtitle", "download-creds-checker", "default", "refresh-one-show", "fetch-subtitles"];
+            options.WorkerCount = Environment.ProcessorCount * 4;
         });
         services.AddHostedService<SchedulerHostedService>();
     }
@@ -36,8 +36,8 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
     {
         app.UseHangfireDashboard(options: new DashboardOptions
         {
-            Authorization = new[]
-            {
+            Authorization =
+            [
                 new BasicAuthAuthorizationFilter(
                     new BasicAuthAuthorizationFilterOptions
                     {
@@ -47,17 +47,17 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
                         // Case sensitive login checking
                         LoginCaseSensitive = true,
                         // Users
-                        Users = new[]
-                        {
+                        Users =
+                        [
                             new BasicAuthAuthorizationUser
                             {
                                 Login = "admin",
                                 // Password as plain text, SHA1 will be used
-                                Password = new byte[] { 0x96, 0x25, 0x68, 0x2a, 0x0a, 0xe0, 0x32, 0x52, 0x0a, 0x76, 0x0e, 0x64, 0xe5, 0x6a, 0x5d, 0xac, 0xba, 0xe7, 0x4b, 0xaa }
+                                Password = [0x96, 0x25, 0x68, 0x2a, 0x0a, 0xe0, 0x32, 0x52, 0x0a, 0x76, 0x0e, 0x64, 0xe5, 0x6a, 0x5d, 0xac, 0xba, 0xe7, 0x4b, 0xaa]
                             }
-                        }
+                        ]
                     })
-            }
+            ]
         });
     }
 }

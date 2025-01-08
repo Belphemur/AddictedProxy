@@ -32,7 +32,7 @@ public class BootstrapAddictedServices : IBootstrap,
                     client.Timeout = TimeSpan.FromMinutes(30);
                     client.BaseAddress = new Uri("https://www.addic7ed.com");
                 })
-                .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>(), false)))
+                .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>(), false))
                 .SetHandlerLifetime(TimeSpan.FromHours(1))
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(GetTimeoutPolicy())
@@ -43,7 +43,7 @@ public class BootstrapAddictedServices : IBootstrap,
                     client.Timeout = TimeSpan.FromMinutes(2);
                     client.BaseAddress = new Uri("https://www.addic7ed.com");
                 })
-                .ConfigurePrimaryHttpMessageHandler(provider => new SentryHttpMessageHandler(BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>(), false)))
+                .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>(), false))
                 .SetHandlerLifetime(TimeSpan.FromMinutes(1))
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(GetTimeoutPolicy())
@@ -84,7 +84,7 @@ public class BootstrapAddictedServices : IBootstrap,
             //Issue with downloading the subtitle from Addic7ed
             .OrInner<IOException>()
             .Or<TimeoutRejectedException>()
-            .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound || msg.StatusCode == HttpStatusCode.Forbidden)
+            .OrResult(msg => msg.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden)
             .WaitAndRetryAsync(delay);
     }
 }

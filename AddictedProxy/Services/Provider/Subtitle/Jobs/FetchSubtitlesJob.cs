@@ -59,14 +59,14 @@ public class FetchSubtitlesJob
 
 
     [UniqueJob(Order = 10)]
-    [MaximumConcurrentExecutions(10, 25)]
+    [MaximumConcurrentExecutions(8, 45)]
     [AutomaticRetry(Attempts = 20, OnAttemptsExceeded = AttemptsExceededAction.Delete, DelaysInSeconds = new[] { 60, 10 * 60, 15 * 60, 45 * 60, 60 * 60, 10 * 60, 20 * 60, 40 * 60, 45 * 60, 60*60 })]
     [Queue("fetch-subtitles")]
     public async Task ExecuteAsync(JobData data, CancellationToken cancellationToken)
     {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
-        using var ctsLinked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
-        var token = ctsLinked.Token;
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        cts.CancelAfter(TimeSpan.FromMinutes(10));
+        var token = cts.Token;
 
         var show = await GetShow(data, token);
         using var scope = _logger.BeginScope(ScopeName(data, show));
