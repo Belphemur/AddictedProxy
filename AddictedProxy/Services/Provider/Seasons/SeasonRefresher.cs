@@ -86,6 +86,8 @@ public class SeasonRefresher : ISeasonRefresher
             await _seasonRepository.InsertNewSeasonsAsync(show.Id, seasons, token);
             show.LastSeasonRefreshed = DateTime.UtcNow;
             await _tvShowRepository.UpdateShowAsync(show, token);
+            // Reload the season to get the new ones
+            show.Seasons = await _seasonRepository.GetSeasonsForShowAsync(show.Id).ToListAsync(token);
             _logger.LogInformation("Fetched {number} seasons of {show}", seasons.Length, show.Name);
         }, token);
     }

@@ -68,7 +68,6 @@ public class TvShowRepository : ITvShowRepository
     {
         return _entityContext.TvShows
                              .Include(show => show.Seasons)
-                             .AsNoTracking()
                              .SingleOrDefaultAsync(show => show.Id == id, cancellationToken: cancellationToken);
     }
 
