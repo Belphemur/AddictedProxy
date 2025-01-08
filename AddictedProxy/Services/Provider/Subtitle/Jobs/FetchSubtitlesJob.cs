@@ -26,7 +26,7 @@ public class FetchSubtitlesJob
     private readonly IEpisodeRefresher _episodeRefresher;
     private readonly IPerformanceTracker _performanceTracker;
     private readonly ITvShowRepository _tvShowRepository;
-    private readonly static AsyncKeyedLocker<string> _asyncKeyedLocker = new(LockOptions.Default);
+    private static readonly AsyncKeyedLocker<string> AsyncKeyedLocker = new(LockOptions.Default);
     private TvShow? _show;
 
 
@@ -71,7 +71,7 @@ public class FetchSubtitlesJob
         var show = await GetShow(data, token);
         using var scope = _logger.BeginScope(ScopeName(data, show));
 
-        using var releaser = await _asyncKeyedLocker.LockOrNullAsync(data.Key, 0, token).ConfigureAwait(false);
+        using var releaser = await AsyncKeyedLocker.LockOrNullAsync(data.Key, 0, token).ConfigureAwait(false);
 
         if (releaser is null)
         {
@@ -114,6 +114,7 @@ public class FetchSubtitlesJob
         catch (Exception e)
         {
             transaction.Finish(e, Status.InternalError);
+            _logger.LogCritical(e, "Failed to fetch subtitles for {search}", data.RequestData);
             throw;
         }
     }
