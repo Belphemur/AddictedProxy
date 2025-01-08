@@ -86,8 +86,7 @@ public class EpisodeRefresher : IEpisodeRefresher
         await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
         var episodes = (await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, show, season.Number, token)).ToArray();
         await _episodeRepository.UpsertEpisodes(episodes, token);
-        season.LastRefreshed = DateTime.UtcNow;
-        await _seasonRepository.SaveChangesAsync(token);
+        await _seasonRepository.UpdateLastRefreshedFromIdAsync(season.Id, DateTime.UtcNow, token);
         _logger.LogInformation("Refreshed {episodes} episodes of {show} S{season}", episodes.Length, show.Name, season.Number);
     }
 

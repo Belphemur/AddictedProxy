@@ -26,4 +26,13 @@ public interface ISeasonRepository
     /// <param name="showId"></param>
     /// <returns></returns>
     IAsyncEnumerable<Season> GetSeasonsForShowAsync(long showId);
+
+    /// <summary>
+    /// Update the lastRefreshed field of the season
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="lastRefreshed"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task UpdateLastRefreshedFromIdAsync(long id, DateTime lastRefreshed, CancellationToken token);
 }

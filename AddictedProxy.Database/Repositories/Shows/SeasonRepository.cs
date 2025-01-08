@@ -37,7 +37,19 @@ public class SeasonRepository : ISeasonRepository
     /// <returns></returns>
     public IAsyncEnumerable<Season> GetSeasonsForShowAsync(long showId)
     {
-        return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).AsNoTracking().ToAsyncEnumerable();
+        return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).ToAsyncEnumerable();
+    }
+    
+    /// <summary>
+    /// Update the lastRefreshed field of the season
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="lastRefreshed"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task UpdateLastRefreshedFromIdAsync(long id, DateTime lastRefreshed, CancellationToken token)
+    {
+        return _entityContext.Seasons.Where(season => season.Id == id).UpdateFromQueryAsync(season => new Season { LastRefreshed = lastRefreshed }, token);
     }
 
     /// <summary>
