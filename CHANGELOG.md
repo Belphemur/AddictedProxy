@@ -1,3 +1,9 @@
+## [4.33.3](https://github.com/Belphemur/AddictedProxy/compare/v4.33.2...v4.33.3) (2025-01-09)
+
+### Performance improvements
+
+* **query-params:** keep query params in logs ([913dccb](https://github.com/Belphemur/AddictedProxy/commit/913dccb1cb341b3c5a3e36c32868b97dbfd3d234))
+
 ## [4.33.2](https://github.com/Belphemur/AddictedProxy/compare/v4.33.1...v4.33.2) (2025-01-09)
 
 ### Performance improvements
