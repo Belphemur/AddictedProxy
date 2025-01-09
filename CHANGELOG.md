@@ -1,3 +1,9 @@
+## [4.33.4](https://github.com/Belphemur/AddictedProxy/compare/v4.33.3...v4.33.4) (2025-01-09)
+
+### Performance improvements
+
+* **httphandler:** keep them as long as it make sense ([f525af6](https://github.com/Belphemur/AddictedProxy/commit/f525af640fbc7618a7e11aab62fa44ccfaae6d6d))
+
 ## [4.33.3](https://github.com/Belphemur/AddictedProxy/compare/v4.33.2...v4.33.3) (2025-01-09)
 
 ### Performance improvements
