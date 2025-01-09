@@ -63,5 +63,14 @@
         <_ContentIncludedByDefault Remove="publish\appsettings.Development.json" />
         <_ContentIncludedByDefault Remove="publish\appsettings.json" />
     </ItemGroup>
+
+    <!--
+    I want to see query params in my logs, so I disable the redaction.
+    https://learn.microsoft.com/en-us/dotnet/core/compatibility/networking/9.0/query-redaction-events
+    -->
+    <ItemGroup>
+        <RuntimeHostConfigurationOption Include="System.Net.Http.DisableUriRedaction" Value="true" />
+    </ItemGroup>
+
 </Project>
 
