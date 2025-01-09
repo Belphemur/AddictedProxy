@@ -57,7 +57,7 @@ public class BootstrapAddictedServices : IBootstrap,
 
     private static HttpMessageHandler BuildProxyHttpMessageHandler(HttpProxy proxy, bool followRedirect = true)
     {
-        return new HttpClientHandler
+        return new SocketsHttpHandler
         {
             AllowAutoRedirect = followRedirect,
             Proxy = new WebProxy

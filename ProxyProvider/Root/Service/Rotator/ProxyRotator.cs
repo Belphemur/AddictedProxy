@@ -73,7 +73,7 @@ public class ProxyRotator : IDisposable, IProxyRotator
 
     private async Task<bool> IsProxyWorkingAsync(WebProxy proxy, CancellationToken cancellationToken)
     {
-        using var handler = new HttpClientHandler
+        using var handler = new SocketsHttpHandler
         {
             Proxy = proxy,
             UseProxy = true

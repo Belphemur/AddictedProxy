@@ -16,7 +16,7 @@ public class BootstrapTMDB : IBootstrap, IBootstrapEnvironmentVariable<TmdbConfi
     {
         services.AddHttpClient<ITMDBClient, TMDBClient>(client => client.BaseAddress = new Uri("https://api.themoviedb.org/3/"))
             .SetHandlerLifetime(TimeSpan.FromMinutes(10))
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {
                 AutomaticDecompression = DecompressionMethods.All
             })
