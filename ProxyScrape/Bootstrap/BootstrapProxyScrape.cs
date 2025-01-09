@@ -18,7 +18,7 @@ public class BootstrapProxyScrape : IBootstrap
         services.Configure<ProxyScrapeConfig>(configuration.GetSection("ProxyScrape"));
         services.AddHttpClient<IProxyScrapeClient, ProxyScrapeClient>(client =>
                 client.BaseAddress = new Uri("https://dashboard.proxyscrape.com/"))
-            .SetHandlerLifetime(TimeSpan.FromHours(2))
+            .SetHandlerLifetime(TimeSpan.FromMinutes(10))
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
                 AllowAutoRedirect = false,
