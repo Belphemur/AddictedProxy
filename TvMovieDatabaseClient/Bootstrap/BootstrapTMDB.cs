@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +15,11 @@ public class BootstrapTMDB : IBootstrap, IBootstrapEnvironmentVariable<TmdbConfi
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient<ITMDBClient, TMDBClient>(client => client.BaseAddress = new Uri("https://api.themoviedb.org/3/"))
-            .SetHandlerLifetime(TimeSpan.FromHours(1))
+            .SetHandlerLifetime(TimeSpan.FromMinutes(10))
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.All
+            })
             .AddStandardResilienceHandler();
     }
 

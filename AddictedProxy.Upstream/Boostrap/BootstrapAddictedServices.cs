@@ -29,11 +29,11 @@ public class BootstrapAddictedServices : IBootstrap,
 
         services.AddHttpClient<IAddic7edClient, Addic7edClient>(client =>
                 {
-                    client.Timeout = TimeSpan.FromMinutes(30);
+                    client.Timeout = TimeSpan.FromMinutes(5);
                     client.BaseAddress = new Uri("https://www.addic7ed.com");
                 })
                 .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>(), false))
-                .SetHandlerLifetime(TimeSpan.FromHours(1))
+                .SetHandlerLifetime(TimeSpan.FromMinutes(3))
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(GetTimeoutPolicy())
                 .UseHttpClientMetrics();
@@ -44,7 +44,7 @@ public class BootstrapAddictedServices : IBootstrap,
                     client.BaseAddress = new Uri("https://www.addic7ed.com");
                 })
                 .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>(), false))
-                .SetHandlerLifetime(TimeSpan.FromMinutes(1))
+                .SetHandlerLifetime(TimeSpan.FromMinutes(3))
                 .AddPolicyHandler(GetRetryPolicy())
                 .AddPolicyHandler(GetTimeoutPolicy())
                 .UseHttpClientMetrics();
