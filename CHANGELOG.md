@@ -1,3 +1,13 @@
+## [4.33.2](https://github.com/Belphemur/AddictedProxy/compare/v4.33.1...v4.33.2) (2025-01-09)
+
+### Performance improvements
+
+* **proxy:** .NET supports socks since 6.0 ([1de03cd](https://github.com/Belphemur/AddictedProxy/commit/1de03cdb508995f7d787df481241dc3c3e94eee8))
+
+### Bug Fixes
+
+* store subtitle job not taken because too many fetch-subtitles waiting ([9ecc6cc](https://github.com/Belphemur/AddictedProxy/commit/9ecc6cc4af2fd983a043d167779e767cf373aad0))
+
 ## [4.33.1](https://github.com/Belphemur/AddictedProxy/compare/v4.33.0...v4.33.1) (2025-01-08)
 
 ### Performance improvements
