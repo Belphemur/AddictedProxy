@@ -19,7 +19,7 @@ public class BootstrapProxyScrape : IBootstrap
         services.AddHttpClient<IProxyScrapeClient, ProxyScrapeClient>(client =>
                 client.BaseAddress = new Uri("https://dashboard.proxyscrape.com/"))
             .SetHandlerLifetime(TimeSpan.FromMinutes(10))
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
             {
                 AllowAutoRedirect = false,
                 AutomaticDecompression = DecompressionMethods.All
