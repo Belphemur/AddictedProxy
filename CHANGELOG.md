@@ -1,3 +1,9 @@
+## [4.33.5](https://github.com/Belphemur/AddictedProxy/compare/v4.33.4...v4.33.5) (2025-01-09)
+
+### Performance improvements
+
+* **httphandler:** always use the modern version of the handler ([1580516](https://github.com/Belphemur/AddictedProxy/commit/1580516b9d1437cb3f213e258a95e29e38db689d))
+
 ## [4.33.4](https://github.com/Belphemur/AddictedProxy/compare/v4.33.3...v4.33.4) (2025-01-09)
 
 ### Performance improvements
