@@ -10,32 +10,33 @@
     "gen-api": "swagger-typescript-api -p http://localhost/api/v1/swagger.json -o .\\composables\\api\\ -n api.ts --route-types --union-enums --modular"
   },
   "devDependencies": {
-    "@nuxt/devtools": "1.7.0",
+    "@nuxt/devtools": "2.0.0-beta.3",
     "@nuxtjs/device": "^3.2.4",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia/nuxt": "0.9.0",
-    "@sentry/vite-plugin": "^2.22.7",
-    "@types/node": "^22.10.2",
+    "@sentry/vite-plugin": "^3.0.0",
+    "@types/node": "^22.10.10",
     "@types/webfontloader": "^1.6.38",
     "h3-proxy": "^1.13.0",
-    "nuxt": "^3.14.1592",
+    "nuxt": "^3.15.2",
     "nuxt-lodash": "^2.5.3",
-    "pinia": "^2.3.0",
+    "pinia": "^2.3.1",
     "pinia-plugin-persistedstate": "4.2.0",
     "roboto-fontface": "^0.10.0",
     "swagger-typescript-api": "^13.0.23",
-    "typescript": "^5.7.2",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11",
     "vite-plugin-vuetify": "^2.0.4",
     "vuetify-nuxt-module": "^0.18.3"
   },
   "dependencies": {
     "@mdi/js": "^7.4.47",
     "@microsoft/signalr": "^8.0.7",
-    "@sentry/vue": "^8.46.0",
-    "bufferutil": "^4.0.8",
+    "@sentry/vue": "^8.51.0",
+    "bufferutil": "^4.0.9",
     "client-zip": "^2.4.6",
     "fetch-retry": "^6.0.0",
     "utf-8-validate": "^6.0.5",
-    "vuetify": "^3.7.5"
+    "vuetify": "^3.7.7"
   }
 }

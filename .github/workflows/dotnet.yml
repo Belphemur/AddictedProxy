@@ -69,9 +69,7 @@ jobs:
           path: TestResults-${{ matrix.dotnet-version }}
       - name: Install pnpm
         if: steps.filter.outputs.node == 'true'
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
+        run: corepack enable
       - name: Use Node.js
         if: steps.filter.outputs.node == 'true'
         uses: actions/setup-node@v4
@@ -103,9 +101,7 @@ jobs:
         id: repo
       - uses: actions/checkout@v4
       - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
+        run: corepack enable
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -130,7 +126,7 @@ jobs:
         with:
           ref: v${{ needs.main-release.outputs.version}}
       - name: Sentry Release
-        uses: getsentry/action-release@v1.7.0
+        uses: getsentry/action-release@v1.9.0
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{env.SENTRY_ORG}}
