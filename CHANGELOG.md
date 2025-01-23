@@ -1,3 +1,13 @@
+## [4.33.6](https://github.com/Belphemur/AddictedProxy/compare/v4.33.5...v4.33.6) (2025-01-23)
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.49.0 ([4a657bb](https://github.com/Belphemur/AddictedProxy/commit/4a657bb5cea8771d849f90afee8c3cd15368f862))
+* **deps:** update dependency @sentry/vue to v8.50.0 ([944de9c](https://github.com/Belphemur/AddictedProxy/commit/944de9c36a1239dfcbb40cff60c37b65bacfb85b))
+* **deps:** update dependency @sentry/vue to v8.51.0 ([856b160](https://github.com/Belphemur/AddictedProxy/commit/856b16090cf449e3b18574cd66bd3bcd1af20a61))
+* **deps:** update dependency vuetify to v3.7.7 ([dffbf23](https://github.com/Belphemur/AddictedProxy/commit/dffbf2341667cef970db34141c016440bb7fcdfa))
+* issue with vite ([19e2748](https://github.com/Belphemur/AddictedProxy/commit/19e274869c0ac358a7087098a443029513b16f8d))
+
 ## [4.33.5](https://github.com/Belphemur/AddictedProxy/compare/v4.33.4...v4.33.5) (2025-01-09)
 
 ### Performance improvements
