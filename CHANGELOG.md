@@ -1,3 +1,9 @@
+## [4.34.1](https://github.com/Belphemur/AddictedProxy/compare/v4.34.0...v4.34.1) (2025-01-29)
+
+### Bug Fixes
+
+* **tmdb:completed:** Set completed state depending on what TMDB says. ([5772211](https://github.com/Belphemur/AddictedProxy/commit/5772211a97b9029d48d4812f80e1535d7eb9730d))
+
 ## [4.34.0](https://github.com/Belphemur/AddictedProxy/compare/v4.33.6...v4.34.0) (2025-01-29)
 
 ### Bug Fixes
