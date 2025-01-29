@@ -18,7 +18,7 @@ public class SpanOtlp : ISpan
         _activity.Dispose();
     }
 
-    public Performance.Model.Status? Status
+    public Status? Status
     {
         get
         {
@@ -45,7 +45,7 @@ public class SpanOtlp : ISpan
         _activity.Stop();
     }
 
-    public void Finish(Performance.Model.Status status)
+    public void Finish(Status status)
     {
         if (_activity.IsStopped)
         {
@@ -66,15 +66,15 @@ public class SpanOtlp : ISpan
         Finish();
     }
 
-    public void Finish(Exception exception, Performance.Model.Status status)
+    public void Finish(Exception exception, Status status)
     {
-        _activity.RecordException(exception);
+        _activity.AddException(exception);
         Finish(status);
     }
 
     public void Finish(Exception exception)
     {
-        _activity.RecordException(exception);
+        _activity.AddException(exception);
         Finish(Performance.Model.Status.InternalError);
     }
 

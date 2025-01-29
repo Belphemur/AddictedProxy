@@ -1,5 +1,4 @@
-﻿
-using AddictedProxy.Services.Job.Filter;
+﻿using AddictedProxy.Services.Job.Filter;
 using AsyncKeyedLock;
 using Hangfire;
 using Locking;
@@ -8,12 +7,12 @@ using Performance.Service;
 
 namespace AddictedProxy.Services.Provider.Shows.Jobs;
 
-public class RefreshSingleShowJob 
+public class RefreshSingleShowJob
 {
     private readonly ILogger<RefreshSingleShowJob> _logger;
     private readonly IShowRefresher _showRefresher;
     private readonly IPerformanceTracker _performanceTracker;
-    private readonly static AsyncKeyedLocker<long> _asyncKeyedLocker = new(LockOptions.Default);
+    private static readonly AsyncKeyedLocker<long> AsyncKeyedLocker = new(LockOptions.Default);
 
     public RefreshSingleShowJob(ILogger<RefreshSingleShowJob> logger, IShowRefresher showRefresher, IPerformanceTracker performanceTracker)
     {
@@ -23,18 +22,19 @@ public class RefreshSingleShowJob
     }
 
     [UniqueJob(Order = 10, TtlFingerprintSeconds = 2 * TimeSpan.SecondsPerHour)]
-    [AutomaticRetry(Attempts = 20)]
-    [MaximumConcurrentExecutions(4)]
+    [AutomaticRetry(Attempts = 20, OnAttemptsExceeded = AttemptsExceededAction.Delete, DelaysInSeconds = [60, 10 * 60, 15 * 60, 45 * 60, 60 * 60, 10 * 60, 20 * 60, 40 * 60, 45 * 60, 60*60])]
+    [MaximumConcurrentExecutions(6, 10)]
     [Queue("refresh-one-show")]
     public async Task ExecuteAsync(long showId, CancellationToken cancellationToken)
     {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
-        using var ctsLinked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, cts.Token);
+        using var ctsLinked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        ctsLinked.CancelAfter(TimeSpan.FromMinutes(10));
         var token = ctsLinked.Token;
-        
-        using var transaction = _performanceTracker.BeginNestedSpan("refresh", "refresh-specific-show");
 
-        using var releaser = await _asyncKeyedLocker.LockOrNullAsync(showId, 0, token).ConfigureAwait(false);
+        using var transaction = _performanceTracker.BeginNestedSpan("refresh", "refresh-specific-show");
+        transaction.SetTag("ShowId", showId);
+
+        using var releaser = await AsyncKeyedLocker.LockOrNullAsync(showId, 0, token).ConfigureAwait(false);
 
         if (releaser is null)
         {
