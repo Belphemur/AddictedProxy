@@ -58,10 +58,11 @@ public interface ITvShowRepository
     public IAsyncEnumerable<TvShow> GetShowWithoutTmdbIdAsync();
 
     /// <summary>
-    /// Get shows that have a TmdbId but aren't completed
+    /// Get show that have a tmdbId and are in the given completed state
     /// </summary>
+    /// <param name="isCompleted"></param>
     /// <returns></returns>
-    public IAsyncEnumerable<TvShow> GetNonCompletedShows();
+    public IAsyncEnumerable<TvShow> GetCompletedShows(bool isCompleted);
 
     /// <summary>
     /// Bulk save async the changes
