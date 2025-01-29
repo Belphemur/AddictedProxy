@@ -1,3 +1,9 @@
+## [4.34.2](https://github.com/Belphemur/AddictedProxy/compare/v4.34.1...v4.34.2) (2025-01-29)
+
+### Performance improvements
+
+* **show:single-refresh:** fix performance of single show refresh ([f6b223b](https://github.com/Belphemur/AddictedProxy/commit/f6b223ba33f7845d7cd042e2889bb646fb08a21f))
+
 ## [4.34.1](https://github.com/Belphemur/AddictedProxy/compare/v4.34.0...v4.34.1) (2025-01-29)
 
 ### Bug Fixes
