@@ -24,12 +24,13 @@ public class CheckCompletedTmdbJob
         _performanceTracker = performanceTracker;
     }
 
-    public async Task ExecuteAsync(CancellationToken cancellationToken)
+    public async Task ExecuteAsync(bool isCompleted, CancellationToken cancellationToken)
     {
         using var transaction = _performanceTracker.BeginNestedSpan("refresh", "check-show-completed");
+        transaction.SetTag("completed", isCompleted);
         var count = 0;
         var showsToUpdate = new List<long>();
-        foreach (var show in await _tvShowRepository.GetNonCompletedShows().ToArrayAsync(cancellationToken))
+        foreach (var show in await _tvShowRepository.GetCompletedShows(isCompleted).ToArrayAsync(cancellationToken))
         {
             var details = await _tmdbClient.GetShowDetailsByIdAsync(show.TmdbId!.Value, cancellationToken);
             if (details == null)

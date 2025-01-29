@@ -148,8 +148,12 @@ public class TvShowRepository : ITvShowRepository
         return _entityContext.TvShows.Where(show => show.Episodes.First().Subtitles.Count > 0).AsNoTracking();
     }
 
-    public IAsyncEnumerable<TvShow> GetNonCompletedShows()
+    public IAsyncEnumerable<TvShow> GetCompletedShows(bool isCompleted = false)
     {
-        return _entityContext.TvShows.Where(show => show.TmdbId.HasValue).Where(show => !show.IsCompleted).Where(show => show.Type == ShowType.Show).ToAsyncEnumerable();
+        return _entityContext.TvShows
+            .Where(show => show.TmdbId.HasValue)
+            .Where(show => show.IsCompleted == isCompleted)
+            .Where(show => show.Type == ShowType.Show)
+            .ToAsyncEnumerable();
     }
 }
