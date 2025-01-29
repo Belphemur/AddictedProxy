@@ -38,12 +38,14 @@ public class CheckCompletedTmdbJob
                 continue;
             }
 
-            if (details.Status != "Ended" && details.Status != "Canceled")
+            var isTmdbShowCompleted = details.Status.ToLowerInvariant() is "ended" or "canceled";
+            // Don't update if the state of the show matches what TMDB says
+            if (show.IsCompleted == isTmdbShowCompleted)
             {
                 continue;
             }
 
-            show.IsCompleted = true;
+            show.IsCompleted = isTmdbShowCompleted;
             show.LastSeasonRefreshed = null;
 
             showsToUpdate.Add(show.Id);
