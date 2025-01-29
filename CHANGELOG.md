@@ -1,3 +1,15 @@
+## [4.34.0](https://github.com/Belphemur/AddictedProxy/compare/v4.33.6...v4.34.0) (2025-01-29)
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.52.0 ([987a8bd](https://github.com/Belphemur/AddictedProxy/commit/987a8bdfa7ba6f8339bf27f798d384dc6d2fff84))
+* **deps:** update dependency vuetify to v3.7.8 ([730aebc](https://github.com/Belphemur/AddictedProxy/commit/730aebc3cd20688d6b28fa38d8287eaee7c1dac9))
+* **job:** remove the old job checking for completed ([614a523](https://github.com/Belphemur/AddictedProxy/commit/614a523f03bdd5fc212c5befbc496224be8d02af))
+
+### Features
+
+* **show:** Refresh the state of completed shows too ([16b76be](https://github.com/Belphemur/AddictedProxy/commit/16b76bef47a94ab7618f20a1c02a6153e43acf80))
+
 ## [4.33.6](https://github.com/Belphemur/AddictedProxy/compare/v4.33.5...v4.33.6) (2025-01-23)
 
 ### Bug Fixes
