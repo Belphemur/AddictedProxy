@@ -1,3 +1,88 @@
+## [4.34.3](https://github.com/Belphemur/AddictedProxy/compare/v4.34.2...v4.34.3) (2025-01-30)
+
+### Performance improvements
+
+* **download:** simplify getting download count ([ee215fb](https://github.com/Belphemur/AddictedProxy/commit/ee215fb9f38fe3177daa0e21a5f826179217308c))
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.52.1 ([bddbe8a](https://github.com/Belphemur/AddictedProxy/commit/bddbe8a3826049b65306f1f911981bacc05370dd))
+* **deps:** update dependency vuetify to v3.7.9 ([c7ea59c](https://github.com/Belphemur/AddictedProxy/commit/c7ea59c15ce0e25b2c18071f82d66895d1a6b39a))
+
+## [4.34.2](https://github.com/Belphemur/AddictedProxy/compare/v4.34.1...v4.34.2) (2025-01-29)
+
+### Performance improvements
+
+* **show:single-refresh:** fix performance of single show refresh ([f6b223b](https://github.com/Belphemur/AddictedProxy/commit/f6b223ba33f7845d7cd042e2889bb646fb08a21f))
+
+## [4.34.1](https://github.com/Belphemur/AddictedProxy/compare/v4.34.0...v4.34.1) (2025-01-29)
+
+### Bug Fixes
+
+* **tmdb:completed:** Set completed state depending on what TMDB says. ([5772211](https://github.com/Belphemur/AddictedProxy/commit/5772211a97b9029d48d4812f80e1535d7eb9730d))
+
+## [4.34.0](https://github.com/Belphemur/AddictedProxy/compare/v4.33.6...v4.34.0) (2025-01-29)
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.52.0 ([987a8bd](https://github.com/Belphemur/AddictedProxy/commit/987a8bdfa7ba6f8339bf27f798d384dc6d2fff84))
+* **deps:** update dependency vuetify to v3.7.8 ([730aebc](https://github.com/Belphemur/AddictedProxy/commit/730aebc3cd20688d6b28fa38d8287eaee7c1dac9))
+* **job:** remove the old job checking for completed ([614a523](https://github.com/Belphemur/AddictedProxy/commit/614a523f03bdd5fc212c5befbc496224be8d02af))
+
+### Features
+
+* **show:** Refresh the state of completed shows too ([16b76be](https://github.com/Belphemur/AddictedProxy/commit/16b76bef47a94ab7618f20a1c02a6153e43acf80))
+
+## [4.33.6](https://github.com/Belphemur/AddictedProxy/compare/v4.33.5...v4.33.6) (2025-01-23)
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.49.0 ([4a657bb](https://github.com/Belphemur/AddictedProxy/commit/4a657bb5cea8771d849f90afee8c3cd15368f862))
+* **deps:** update dependency @sentry/vue to v8.50.0 ([944de9c](https://github.com/Belphemur/AddictedProxy/commit/944de9c36a1239dfcbb40cff60c37b65bacfb85b))
+* **deps:** update dependency @sentry/vue to v8.51.0 ([856b160](https://github.com/Belphemur/AddictedProxy/commit/856b16090cf449e3b18574cd66bd3bcd1af20a61))
+* **deps:** update dependency vuetify to v3.7.7 ([dffbf23](https://github.com/Belphemur/AddictedProxy/commit/dffbf2341667cef970db34141c016440bb7fcdfa))
+* issue with vite ([19e2748](https://github.com/Belphemur/AddictedProxy/commit/19e274869c0ac358a7087098a443029513b16f8d))
+
+## [4.33.5](https://github.com/Belphemur/AddictedProxy/compare/v4.33.4...v4.33.5) (2025-01-09)
+
+### Performance improvements
+
+* **httphandler:** always use the modern version of the handler ([1580516](https://github.com/Belphemur/AddictedProxy/commit/1580516b9d1437cb3f213e258a95e29e38db689d))
+
+## [4.33.4](https://github.com/Belphemur/AddictedProxy/compare/v4.33.3...v4.33.4) (2025-01-09)
+
+### Performance improvements
+
+* **httphandler:** keep them as long as it make sense ([f525af6](https://github.com/Belphemur/AddictedProxy/commit/f525af640fbc7618a7e11aab62fa44ccfaae6d6d))
+
+## [4.33.3](https://github.com/Belphemur/AddictedProxy/compare/v4.33.2...v4.33.3) (2025-01-09)
+
+### Performance improvements
+
+* **query-params:** keep query params in logs ([913dccb](https://github.com/Belphemur/AddictedProxy/commit/913dccb1cb341b3c5a3e36c32868b97dbfd3d234))
+
+## [4.33.2](https://github.com/Belphemur/AddictedProxy/compare/v4.33.1...v4.33.2) (2025-01-09)
+
+### Performance improvements
+
+* **proxy:** .NET supports socks since 6.0 ([1de03cd](https://github.com/Belphemur/AddictedProxy/commit/1de03cdb508995f7d787df481241dc3c3e94eee8))
+
+### Bug Fixes
+
+* store subtitle job not taken because too many fetch-subtitles waiting ([9ecc6cc](https://github.com/Belphemur/AddictedProxy/commit/9ecc6cc4af2fd983a043d167779e767cf373aad0))
+
+## [4.33.1](https://github.com/Belphemur/AddictedProxy/compare/v4.33.0...v4.33.1) (2025-01-08)
+
+### Performance improvements
+
+* **fetch:** be sure to log a critical issue in the job ([1697e78](https://github.com/Belphemur/AddictedProxy/commit/1697e78df0ea19309cda7cf4d1c11ee50f057138))
+* **tvshow:** use no tracking when only reading data ([57ad23f](https://github.com/Belphemur/AddictedProxy/commit/57ad23f0d05f20c9b16bc70587568c92fada7055))
+
+### Bug Fixes
+
+* **fetch:** fix fetch job crashing ([33298e1](https://github.com/Belphemur/AddictedProxy/commit/33298e1190f1ded33a24ce18cc9325c6eaa24ead))
+* **fetch:** fix getting subtitles for shows ([458968d](https://github.com/Belphemur/AddictedProxy/commit/458968df58642359c4ec207651a939146a2107f4))
+
 ## [4.33.0](https://github.com/Belphemur/AddictedProxy/compare/v4.32.5...v4.33.0) (2025-01-08)
 
 ### Performance improvements
