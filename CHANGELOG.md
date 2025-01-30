@@ -1,3 +1,9 @@
+## [4.34.6](https://github.com/Belphemur/AddictedProxy/compare/v4.34.5...v4.34.6) (2025-01-30)
+
+### Bug Fixes
+
+* **sentry:** fix loading Dsn for sentry ([3434fc8](https://github.com/Belphemur/AddictedProxy/commit/3434fc86dc231fed11bc832d6c1df39521f658cf))
+
 ## [4.34.5](https://github.com/Belphemur/AddictedProxy/compare/v4.34.4...v4.34.5) (2025-01-30)
 
 ### Bug Fixes
