@@ -19,6 +19,7 @@
         <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" />
         <PackageReference Include="OpenTelemetry.Shims.OpenTracing" />
         <PackageReference Include="prometheus-net.AspNetCore" />
+        <PackageReference Include="Sentry.AspNetCore" />
         <PackageReference Include="Sentry" />
         <PackageReference Include="IsExternalInit">
             <PrivateAssets>all</PrivateAssets>

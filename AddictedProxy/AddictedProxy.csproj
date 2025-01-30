@@ -17,7 +17,6 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" />
         <PackageReference Include="Newtonsoft.Json" />
         <PackageReference Include="Polly.Contrib.WaitAndRetry" />
-        <PackageReference Include="Sentry.AspNetCore" />
         <PackageReference Include="SimpleMvcSitemap.Core" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
         <PackageReference Include="AngleSharp" />
