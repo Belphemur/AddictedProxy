@@ -1,3 +1,14 @@
+## [4.34.3](https://github.com/Belphemur/AddictedProxy/compare/v4.34.2...v4.34.3) (2025-01-30)
+
+### Performance improvements
+
+* **download:** simplify getting download count ([ee215fb](https://github.com/Belphemur/AddictedProxy/commit/ee215fb9f38fe3177daa0e21a5f826179217308c))
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.52.1 ([bddbe8a](https://github.com/Belphemur/AddictedProxy/commit/bddbe8a3826049b65306f1f911981bacc05370dd))
+* **deps:** update dependency vuetify to v3.7.9 ([c7ea59c](https://github.com/Belphemur/AddictedProxy/commit/c7ea59c15ce0e25b2c18071f82d66895d1a6b39a))
+
 ## [4.34.2](https://github.com/Belphemur/AddictedProxy/compare/v4.34.1...v4.34.2) (2025-01-29)
 
 ### Performance improvements
