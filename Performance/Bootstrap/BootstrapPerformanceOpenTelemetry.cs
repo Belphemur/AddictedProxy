@@ -13,6 +13,8 @@ using Performance.Service;
 using Performance.Service.OpenTelemetry;
 using OpenTelemetry.Trace;
 using Performance.Model;
+using Performance.Service.OpenTelemetry.Processor;
+using Performance.Service.OpenTelemetry.Sampler;
 
 namespace Performance.Bootstrap;
 
@@ -49,7 +51,8 @@ public class BootstrapPerformanceOpenTelemetry : IBootstrapApp, IBootstrapCondit
                             options.Endpoint = new Uri(perf.Endpoint);
                         })
 #endif
-                    .SetSampler(_ => new TraceIdRatioBasedSampler(perf.SampleRate));
+                    .SetSampler(new AlwaysRecordSampler(new ParentBasedSampler(new TraceIdRatioBasedSampler(perf.SampleRate))))
+                    .AddProcessor<TailRecordErrorProcessor>();
             });
         services.AddSingleton<IPerformanceTracker>(_ => new PerformanceTrackerOtlp(activitySource));
     }
