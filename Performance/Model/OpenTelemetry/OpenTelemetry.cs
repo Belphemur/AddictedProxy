@@ -74,8 +74,7 @@ public class SpanOtlp : ISpan
 
     public void Finish(Exception exception)
     {
-        _activity.AddException(exception);
-        Finish(Performance.Model.Status.InternalError);
+        Finish(exception, Performance.Model.Status.InternalError);
     }
 
     public void SetTag(string tag, object value)
