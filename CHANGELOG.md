@@ -1,3 +1,9 @@
+## [4.34.5](https://github.com/Belphemur/AddictedProxy/compare/v4.34.4...v4.34.5) (2025-01-30)
+
+### Bug Fixes
+
+* **sentry:** be sure sentry get properly loaded for exception etc ... ([9aaf629](https://github.com/Belphemur/AddictedProxy/commit/9aaf629f9b399980c4ca7e7e9258d7c085864c71))
+
 ## [4.34.4](https://github.com/Belphemur/AddictedProxy/compare/v4.34.3...v4.34.4) (2025-01-30)
 
 ### Performance improvements
