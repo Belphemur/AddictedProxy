@@ -1,3 +1,9 @@
+## [4.34.4](https://github.com/Belphemur/AddictedProxy/compare/v4.34.3...v4.34.4) (2025-01-30)
+
+### Performance improvements
+
+* **opentelemetry:** improve the tracing with open telemetry ([c36051a](https://github.com/Belphemur/AddictedProxy/commit/c36051a8e530e15bc09d215ecc8bcc0e39db63a4))
+
 ## [4.34.3](https://github.com/Belphemur/AddictedProxy/compare/v4.34.2...v4.34.3) (2025-01-30)
 
 ### Performance improvements
