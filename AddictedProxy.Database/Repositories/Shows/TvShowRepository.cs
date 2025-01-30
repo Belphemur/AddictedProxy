@@ -145,7 +145,9 @@ public class TvShowRepository : ITvShowRepository
     /// <returns></returns>
     public IQueryable<TvShow> GetAllHavingSubtitlesAsync()
     {
-        return _entityContext.TvShows.Where(show => show.Episodes.First().Subtitles.Count > 0).AsNoTracking();
+        return _entityContext.TvShows.Where(show => show.Episodes.First().Subtitles.Count > 0)
+            .OrderBy(show => show.Id)
+            .AsNoTracking();
     }
 
     public IAsyncEnumerable<TvShow> GetCompletedShows(bool isCompleted = false)
