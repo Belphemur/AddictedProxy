@@ -87,7 +87,7 @@ var perf = builder.Configuration.GetSection("Performance").Get<PerformanceConfig
 
 builder.WebHost.UseSentry(sentryBuilder =>
 {
-    sentryBuilder.Dsn = perf.Endpoint;
+    sentryBuilder.Dsn = builder.Configuration.GetSection("Sentry:Dsn").Get<string>();
     sentryBuilder.TracesSampleRate = perf.Type == PerformanceConfig.BackendType.Sentry ? perf.SampleRate : 0;
     sentryBuilder.Release = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "1.0.0";
     sentryBuilder.Environment = builder.Environment.EnvironmentName;
