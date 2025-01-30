@@ -58,7 +58,6 @@ public partial class BootstrapController : IBootstrap, IBootstrapApp
         app.UseHttpLogging();
         app.UseRouting();
         app.UseHttpMetrics();
-        app.UseSentryTracing();
         app.UseAuthorization();
     }
     
