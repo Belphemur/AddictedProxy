@@ -4,6 +4,7 @@ using InversionOfControl.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry.Exporter;
 #if !DEBUG
 using OpenTelemetry.Exporter;
 #endif
@@ -39,6 +40,7 @@ public class BootstrapPerformanceOpenTelemetry : IBootstrapApp, IBootstrapCondit
                     .AddSource(activitySource.Name)
                     .AddHttpClientInstrumentation()
                     .AddAspNetCoreInstrumentation()
+                    .AddAWSInstrumentation()
                     .AddEntityFrameworkCoreInstrumentation(options =>
                     {
                         options.SetDbStatementForText = true;
@@ -50,6 +52,8 @@ public class BootstrapPerformanceOpenTelemetry : IBootstrapApp, IBootstrapCondit
                             options.Protocol = OtlpExportProtocol.Grpc;
                             options.Endpoint = new Uri(perf.Endpoint);
                         })
+#else
+                    .AddConsoleExporter(options => options.Targets = ConsoleExporterOutputTargets.Debug)
 #endif
                     .SetSampler(new AlwaysRecordSampler(new ParentBasedSampler(new TraceIdRatioBasedSampler(perf.SampleRate))))
                     .AddProcessor<TailRecordErrorProcessor>();
