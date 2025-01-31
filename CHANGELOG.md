@@ -1,3 +1,13 @@
+## [4.34.7](https://github.com/Belphemur/AddictedProxy/compare/v4.34.6...v4.34.7) (2025-01-31)
+
+### Performance improvements
+
+* **trace:** add Aws Instrumentation ([1d601ed](https://github.com/Belphemur/AddictedProxy/commit/1d601ed2df55ce2b9188ad91883cae2e73627104))
+
+### Bug Fixes
+
+* **sitemap:** be sure we order by show id ([1730969](https://github.com/Belphemur/AddictedProxy/commit/17309690708469ed35ddc8b581f8ec55b9dbd3c9))
+
 ## [4.34.6](https://github.com/Belphemur/AddictedProxy/compare/v4.34.5...v4.34.6) (2025-01-30)
 
 ### Bug Fixes
