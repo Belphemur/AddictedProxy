@@ -18,8 +18,8 @@ public class MediaSitemapIndexConfiguration : SitemapIndexConfiguration<TvShow>
     {
         _helper = helper;
         Size = 500;
-        SitemapStyleSheets = new List<XmlStyleSheet> { new($"{sitemapConfig.Value.BaseUrl}/xsl/sitemap.xsl") };
-        SitemapIndexStyleSheets = new List<XmlStyleSheet> { new($"{sitemapConfig.Value.BaseUrl}/xsl/sitemap.xsl") };
+        SitemapStyleSheets = [new XmlStyleSheet($"{sitemapConfig.Value.BaseUrl}/xsl/sitemap.xsl")];
+        SitemapIndexStyleSheets = [new XmlStyleSheet($"{sitemapConfig.Value.BaseUrl}/xsl/sitemap.xsl")];
     }
 
     public override SitemapIndexNode CreateSitemapIndexNode(int page)
