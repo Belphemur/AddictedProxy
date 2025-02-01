@@ -1,3 +1,9 @@
+## [4.35.1](https://github.com/Belphemur/AddictedProxy/compare/v4.35.0...v4.35.1) (2025-02-01)
+
+### Performance improvements
+
+* **logs:** send logs to OpenTelemetry ([290cbbd](https://github.com/Belphemur/AddictedProxy/commit/290cbbd49d6bda91fc033c7296b90501050ba242))
+
 ## [4.35.0](https://github.com/Belphemur/AddictedProxy/compare/v4.34.7...v4.35.0) (2025-02-01)
 
 ### Bug Fixes
