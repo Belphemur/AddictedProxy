@@ -26,6 +26,7 @@
         <ProjectReference Include="..\AddictedProxy.Culture\AddictedProxy.Culture.csproj" />
         <ProjectReference Include="..\AddictedProxy.Tools.Database\AddictedProxy.Tools.Database.csproj" />
         <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
+        <ProjectReference Include="..\Performance\Performance.csproj" />
     </ItemGroup>
 
 </Project>
