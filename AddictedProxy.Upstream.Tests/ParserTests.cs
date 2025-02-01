@@ -408,8 +408,8 @@ pageTracker._trackPageview();
         var downloadUsage = await _parser.GetDownloadUsageAsync(stream, default);
         downloadUsage.Should().NotBeNull();
 
-        downloadUsage!.Value.Used.Should().Be(12);
-        downloadUsage.Value.TotalAvailable.Should().Be(40);
-        downloadUsage.Value.Remaining.Should().Be(28);
+        downloadUsage.Used.Should().Be(12);
+        downloadUsage.TotalAvailable.Should().Be(40);
+        downloadUsage.Remaining.Should().Be(28);
     }
 }
