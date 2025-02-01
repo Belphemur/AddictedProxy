@@ -3,7 +3,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Version>4.34.7</Version>
+        <Version>4.35.0</Version>
     </PropertyGroup>
 
     <ItemGroup>

@@ -1,3 +1,15 @@
+## [4.35.0](https://github.com/Belphemur/AddictedProxy/compare/v4.34.7...v4.35.0) (2025-02-01)
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.53.0 ([b7e66cf](https://github.com/Belphemur/AddictedProxy/commit/b7e66cf200ee632363d47fefe391abbb855b4ba6))
+* **redeem:creds:** Be sure we log properly failure to redeem ([165be9b](https://github.com/Belphemur/AddictedProxy/commit/165be9b9874562024aeeed2a49ea42af08387e6a))
+* **show:refresh:** don't delete any show ([336e052](https://github.com/Belphemur/AddictedProxy/commit/336e052640b5dc88901054aab1b71c6c19af9b3b))
+
+### Features
+
+* **show:refresh:** only delete show that doesn't have episode ([58dec5e](https://github.com/Belphemur/AddictedProxy/commit/58dec5e28809cbbf109a7c22bc88a6883cf75440))
+
 ## [4.34.7](https://github.com/Belphemur/AddictedProxy/compare/v4.34.6...v4.34.7) (2025-01-31)
 
 ### Performance improvements
