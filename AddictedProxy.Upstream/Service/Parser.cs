@@ -40,22 +40,20 @@ public partial class Parser
     /// <param name="html"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public async Task<DownloadUsage?> GetDownloadUsageAsync(Stream html, CancellationToken token)
+    public async Task<DownloadUsage> GetDownloadUsageAsync(Stream html, CancellationToken token)
     {
         var document = await _parser.ParseDocumentAsync(html, token);
         var downloads = document.QuerySelector<IHtmlAnchorElement>(".tabel a[href=\"mydownloads.php\"]");
         var text = downloads?.Text();
         if (text == null)
         {
-            _logger.LogError("Couldn't find HTML DOM for the download usage");
-            return null;
+            throw new NothingToParseException("Couldn't find HTML DOM for the download usage");
         }
 
         var match = DownloadUsageRegex().Match(text);
         if (!match.Success)
         {
-            _logger.LogError("Couldn't parse the download usage: {Input}", text);
-            return null;
+            throw new NothingToParseException($"Couldn't parse the download usage:{text}");
         }
 
         return new DownloadUsage(int.Parse(match.Groups["usage"].Value), int.Parse(match.Groups["total"].Value));

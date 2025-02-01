@@ -2,7 +2,7 @@
 
 public class NothingToParseException : System.Exception
 {
-    public NothingToParseException(string? message, System.Exception? innerException) : base(message, innerException)
+    public NothingToParseException(string? message, System.Exception? innerException = null) : base(message, innerException)
     {
     }
 }

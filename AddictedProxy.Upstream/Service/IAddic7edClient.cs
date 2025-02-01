@@ -43,7 +43,7 @@ public interface IAddic7edClient
     /// <param name="credentials"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<DownloadUsage?> GetDownloadUsageAsync(AddictedUserCredentials credentials, CancellationToken token);
+    Task<DownloadUsage> GetDownloadUsageAsync(AddictedUserCredentials credentials, CancellationToken token);
 
     /// <summary>
     /// Clean up the inbox for the given account

@@ -4,8 +4,10 @@ using System.Linq.Expressions;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model;
 using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Tools.Database.Transaction;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Performance.Service;
 using Z.BulkOperations;
 
 #endregion
@@ -17,11 +19,18 @@ public class TvShowRepository : ITvShowRepository
     private static readonly Action<BulkOperation<TvShow>> AvoidUpdateDiscoveredField = Rule.AvoidUpdateDiscoveredField<TvShow>();
     private readonly EntityContext _entityContext;
     private readonly ILogger<TvShowRepository> _logger;
+    private readonly ITransactionManager<EntityContext> _transactionManager;
+    private readonly IPerformanceTracker _performanceTracker;
 
-    public TvShowRepository(EntityContext entityContext, ILogger<TvShowRepository> logger)
+    public TvShowRepository(EntityContext entityContext, 
+        ILogger<TvShowRepository> logger,
+        ITransactionManager<EntityContext> transactionManager,
+        IPerformanceTracker performanceTracker)
     {
         _entityContext = entityContext;
         _logger = logger;
+        _transactionManager = transactionManager;
+        _performanceTracker = performanceTracker;
     }
 
 
@@ -36,19 +45,25 @@ public class TvShowRepository : ITvShowRepository
                              .ToAsyncEnumerable();
     }
 
-    public Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token)
+    public async Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token)
     {
+        using var span = _performanceTracker.BeginNestedSpan("UpsertRefreshedShowsAsync");
         Expression<Func<TvShow, object>> ignoreOnUpdate = show => new { show.Id, show.Discovered, show.CreatedAt, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted, show.Type, show.TvdbId };
 
-        return _entityContext.TvShows.BulkSynchronizeAsync(tvShows, options =>
+        var showsArray = tvShows as TvShow[] ?? tvShows.ToArray();
+        span.SetTag("shows.total", showsArray.Length);
+        _logger.LogInformation("Upserting {Count} shows", showsArray.Length);
+        await _transactionManager.WrapInTransactionAsync(async () =>
         {
-            options.IgnoreOnMergeUpdateExpression = ignoreOnUpdate;
-            options.IgnoreOnSynchronizeUpdateExpression = ignoreOnUpdate;
-            options.ColumnPrimaryKeyExpression = show => show.ExternalId;
+            await _entityContext.TvShows.BulkMergeAsync(showsArray, options =>
+            {
+                options.IgnoreOnMergeUpdateExpression = ignoreOnUpdate;
+                options.IgnoreOnSynchronizeUpdateExpression = ignoreOnUpdate;
+                options.ColumnPrimaryKeyExpression = show => show.ExternalId;
+            }, token);
         }, token);
+    
     }
-
-
     public Task BulkSaveChangesAsync(CancellationToken token)
     {
         return _entityContext.BulkSaveChangesAsync(token);
