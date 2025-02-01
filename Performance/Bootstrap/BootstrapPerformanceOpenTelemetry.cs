@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
 #if !DEBUG
 using OpenTelemetry.Exporter;
 #endif
@@ -32,7 +33,7 @@ public class BootstrapPerformanceOpenTelemetry : IBootstrapApp, IBootstrapCondit
 
         var perf = configuration.GetSection("Performance").Get<PerformanceConfig>()!;
 
-        services.AddOpenTelemetry()
+        var telemetryBuilder = services.AddOpenTelemetry()
             .ConfigureResource(builder => builder.AddService(serviceName: applicationName, serviceVersion: serviceVersion, serviceInstanceId: Environment.MachineName))
             .WithTracing(builder =>
             {
@@ -58,6 +59,19 @@ public class BootstrapPerformanceOpenTelemetry : IBootstrapApp, IBootstrapCondit
                     .SetSampler(new AlwaysRecordSampler(new ParentBasedSampler(new TraceIdRatioBasedSampler(perf.SampleRate))))
                     .AddProcessor<TailRecordErrorProcessor>();
             });
+        if (perf.SendLogs)
+        {
+            telemetryBuilder.WithLogging(builder =>
+            {
+                builder
+                    .AddOtlpExporter(options =>
+                    {
+                        options.Protocol = OtlpExportProtocol.Grpc;
+                        options.Endpoint = new Uri(perf.Endpoint);
+                    });
+            });
+        }
+
         services.AddSingleton<IPerformanceTracker>(_ => new PerformanceTrackerOtlp(activitySource));
     }
 
