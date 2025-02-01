@@ -113,18 +113,12 @@ public class CredentialsService : ICredentialsService
         }
 
         var downloadCount = await _client.GetDownloadUsageAsync(cred, token);
-        //Something went wrong, let's reschedule the job
-        if (downloadCount == null)
-        {
-            throw new RetryJobException();
-        }
 
         try
         {
-            var downloadUsage = downloadCount.Value;
-            cred.DownloadUsage = downloadUsage.Used;
+            cred.DownloadUsage = downloadCount.Used;
 
-            if (downloadUsage.FullyUsed)
+            if (downloadCount.FullyUsed)
             {
                 _logger.LogInformation("Credentials Id({id}) is fully used for today", credentialId);
                 return;

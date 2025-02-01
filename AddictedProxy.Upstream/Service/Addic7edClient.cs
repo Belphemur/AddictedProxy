@@ -34,7 +34,7 @@ internal class Addic7edClient : IAddic7edClient
     /// <param name="credentials"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public async Task<DownloadUsage?> GetDownloadUsageAsync(AddictedUserCredentials credentials, CancellationToken token)
+    public async Task<DownloadUsage> GetDownloadUsageAsync(AddictedUserCredentials credentials, CancellationToken token)
     {
         using var _ = _logger.BeginScope("Getting download usage for {CredId}", credentials.Id);
         using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, "panel.php", HttpMethod.Get), token);
