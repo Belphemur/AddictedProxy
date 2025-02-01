@@ -61,15 +61,6 @@ public class TvShowRepository : ITvShowRepository
                 options.IgnoreOnSynchronizeUpdateExpression = ignoreOnUpdate;
                 options.ColumnPrimaryKeyExpression = show => show.ExternalId;
             }, token);
-            var showsWithoutEpisodes = await _entityContext.TvShows
-                .Where(show => !show.Episodes.Any())
-                .ToArrayAsync(token);
-            if (showsWithoutEpisodes.Length != 0)
-            {
-                span.SetTag("shows.deleted", showsWithoutEpisodes.Length);
-                _logger.LogInformation("Deleting {Count} shows without episodes", showsWithoutEpisodes.Length);
-                await _entityContext.TvShows.BulkDeleteAsync(showsWithoutEpisodes, token);
-            }
         }, token);
     
     }
