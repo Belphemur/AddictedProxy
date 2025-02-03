@@ -1,3 +1,9 @@
+## [4.35.3](https://github.com/Belphemur/AddictedProxy/compare/v4.35.2...v4.35.3) (2025-02-03)
+
+### Bug Fixes
+
+* **ci:** building the front-end image ([40d6177](https://github.com/Belphemur/AddictedProxy/commit/40d617722c410e38f67864f606352b2ceba0a8e5))
+
 ## [4.35.2](https://github.com/Belphemur/AddictedProxy/compare/v4.35.1...v4.35.2) (2025-02-03)
 
 ### Performance improvements
