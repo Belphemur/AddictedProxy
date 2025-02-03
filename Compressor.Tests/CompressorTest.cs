@@ -25,11 +25,11 @@ public class CompressorTest
     {
         public IEnumerator GetEnumerator()
         {
-            var serviceCollection = new ServiceCollection();
+            IServiceCollection serviceCollection = new ServiceCollection();
             var hostedAppBuilder = Substitute.For<IHostApplicationBuilder>();
             hostedAppBuilder.Logging.Returns(Substitute.For<ILoggingBuilder>());
             hostedAppBuilder.Services.Returns(serviceCollection);
-            hostedAppBuilder.Configuration.Returns(Substitute.For<IConfiguration>());
+            hostedAppBuilder.Configuration.Returns(Substitute.For<IConfigurationManager>());
             hostedAppBuilder.AddBootstrap(typeof(BootstrapCompressor).Assembly);
             
             var serviceProvider = serviceCollection.BuildServiceProvider();
