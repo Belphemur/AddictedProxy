@@ -129,75 +129,73 @@ public partial class Parser
 
         if (table == null)
         {
-            throw new NothingToParseException("Can't find episode table", null);
+            throw new NothingToParseException("Can't find episode table");
         }
 
         foreach (var row in table.Rows.Skip(1))
         {
-            if (row.Cells.Length > 2)
+            if (row.Cells.Length <= 2) continue;
+            var subtitleRow = new SubtitleRow();
+
+            for (var i = 0; i < row.Cells.Length; i++)
             {
-                var subtitleRow = new SubtitleRow();
-
-                for (var i = 0; i < row.Cells.Length; i++)
+                switch (i)
                 {
-                    switch (i)
-                    {
-                        case 0:
-                            subtitleRow.Season = int.Parse(row.Cells[i].TextContent);
+                    case 0:
+                        subtitleRow.Season = int.Parse(row.Cells[i].TextContent);
+                        break;
+                    case 1:
+                        subtitleRow.Number = int.Parse(row.Cells[i].TextContent);
+                        break;
+                    case 2:
+                        subtitleRow.Title = row.Cells[i].TextContent;
+                        break;
+                    case 3:
+                        subtitleRow.Language = row.Cells[i].TextContent.Trim();
+                        break;
+                    case 4:
+                        subtitleRow.Scene = row.Cells[i].TextContent;
+                        break;
+                    case 5:
+                        var state = row.Cells[i].TextContent;
+                        var match = CompletionRegex().Match(state);
+                        //Consider the subtitle completed if there isn't a percentage
+                        if (!match.Success)
+                        {
+                            subtitleRow.Completed = true;
+                            subtitleRow.CompletionPercentage = 100;
                             break;
-                        case 1:
-                            subtitleRow.Number = int.Parse(row.Cells[i].TextContent);
-                            break;
-                        case 2:
-                            subtitleRow.Title = row.Cells[i].TextContent;
-                            break;
-                        case 3:
-                            subtitleRow.Language = row.Cells[i].TextContent.Trim();
-                            break;
-                        case 4:
-                            subtitleRow.Scene = row.Cells[i].TextContent;
-                            break;
-                        case 5:
-                            var state = row.Cells[i].TextContent;
-                            var match = CompletionRegex().Match(state);
-                            //Consider the subtitle completed if there isn't a percentage
-                            if (!match.Success)
-                            {
-                                subtitleRow.Completed = true;
-                                subtitleRow.CompletionPercentage = 100;
-                                break;
-                            }
+                        }
 
-                            subtitleRow.CompletionPercentage = double.Parse(match.Groups["completion"].Value);
+                        subtitleRow.CompletionPercentage = double.Parse(match.Groups["completion"].Value);
 
-                            break;
-                        case 6:
-                            subtitleRow.HearingImpaired = row.Cells[i].TextContent.Length > 0;
-                            break;
-                        case 7:
-                            subtitleRow.Corrected = row.Cells[i].TextContent.Length > 0;
-                            break;
-                        case 8:
-                            subtitleRow.HD = row.Cells[i].TextContent.Length > 0;
-                            break;
-                        case 9:
-                            var downloadUri = row.Cells[i].FirstElementChild.Attributes["href"].Value;
-                            var splitOnSlash = downloadUri
-                                               .Replace("/updated/", "")
-                                               .Replace("/original/", "")
-                                               .Split('/');
-                            subtitleRow.EpisodeId = int.Parse(splitOnSlash[1]);
-                            subtitleRow.Version = int.Parse(splitOnSlash[^1]);
-                            subtitleRow.DownloadUri = new Uri(downloadUri, UriKind.Relative);
-                            break;
-                    }
+                        break;
+                    case 6:
+                        subtitleRow.HearingImpaired = row.Cells[i].TextContent.Length > 0;
+                        break;
+                    case 7:
+                        subtitleRow.Corrected = row.Cells[i].TextContent.Length > 0;
+                        break;
+                    case 8:
+                        subtitleRow.HD = row.Cells[i].TextContent.Length > 0;
+                        break;
+                    case 9:
+                        var downloadUri = row.Cells[i].FirstElementChild.Attributes["href"].Value;
+                        var splitOnSlash = downloadUri
+                            .Replace("/updated/", "")
+                            .Replace("/original/", "")
+                            .Split('/');
+                        subtitleRow.EpisodeId = int.Parse(splitOnSlash[1]);
+                        subtitleRow.Version = int.Parse(splitOnSlash[^1]);
+                        subtitleRow.DownloadUri = new Uri(downloadUri, UriKind.Relative);
+                        break;
                 }
-
-                subtitlesRows.Add(subtitleRow);
             }
+
+            subtitlesRows.Add(subtitleRow);
         }
 
-        if (!subtitlesRows.Any())
+        if (subtitlesRows.Count == 0)
         {
             _logger.LogWarning("Couldn't find subtitles");
             yield break;
