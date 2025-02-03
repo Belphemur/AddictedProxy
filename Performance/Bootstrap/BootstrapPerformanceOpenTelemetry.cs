@@ -4,6 +4,7 @@ using InversionOfControl.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 #if !DEBUG
@@ -22,7 +23,7 @@ namespace Performance.Bootstrap;
 
 public class BootstrapPerformanceOpenTelemetry : IBootstrapApp, IBootstrapConditional
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         var entryAssembly = Assembly.GetEntryAssembly();
 

@@ -9,6 +9,7 @@ using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
@@ -22,7 +23,7 @@ namespace AddictedProxy.Upstream.Boostrap;
 public class BootstrapAddictedServices : IBootstrap,
     IBootstrapEnvironmentVariable<HttpProxy, HttpProxyParser>
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddSingleton<IHtmlParser, HtmlParser>();
         services.AddSingleton<Parser>();

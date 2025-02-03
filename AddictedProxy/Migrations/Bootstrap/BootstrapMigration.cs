@@ -6,7 +6,7 @@ namespace AddictedProxy.Migrations.Bootstrap;
 
 public class BootstrapMigration : IBootstrap
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddScoped<IMigration, PopulateTvDbIdsMigration>();
         services.AddScoped<IMigration, SetCreatedDateAndUpdatedDateEpisodesMigration>();

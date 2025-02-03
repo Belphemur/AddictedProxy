@@ -4,6 +4,7 @@ using AntiCaptcha.Bootstrap;
 using InversionOfControl.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ProxyScrape.Model;
 using ProxyScrape.Service;
 
@@ -13,7 +14,7 @@ public class BootstrapProxyScrape : IBootstrap
 {
     public Assembly[] Dependencies => [typeof(BootstrapAntiCaptcha).Assembly];
 
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.Configure<ProxyScrapeConfig>(configuration.GetSection("ProxyScrape"));
         services.AddHttpClient<IProxyScrapeClient, ProxyScrapeClient>(client =>

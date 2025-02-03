@@ -5,7 +5,7 @@ namespace AddictedProxy.Services.Search.Bootstrap;
 
 public class BootstrapSearch : IBootstrap
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddScoped<ISearchSubtitlesService, SearchSubtitlesService>();
     }

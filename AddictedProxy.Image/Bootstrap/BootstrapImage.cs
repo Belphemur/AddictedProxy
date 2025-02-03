@@ -3,6 +3,7 @@ using InversionOfControl.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp.Web.DependencyInjection;
 using SixLabors.ImageSharp.Web.Providers;
 
@@ -11,7 +12,7 @@ namespace AddictedProxy.Image.Bootstrap;
 
 public class BootstrapImage : IBootstrap, IBootstrapApp
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddImageSharp()
                 .RemoveProvider<PhysicalFileSystemProvider>()

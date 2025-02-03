@@ -5,6 +5,7 @@ using InversionOfControl.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 #endregion
 
@@ -17,14 +18,13 @@ public static class BootstrapRegistrarExtensions
     /// <summary>
     ///     Add the different <see cref="IBootstrap" /> registration to the IoC container
     /// </summary>
-    /// <param name="services"></param>
-    /// <param name="configuration"></param>
+    /// <param name="builder"></param>
     /// <param name="assemblies">Where to look for <see cref="IBootstrap" /></param>
     /// <returns></returns>
-    public static IServiceCollection AddBootstrap(this IServiceCollection services, IConfiguration configuration, params Assembly[] assemblies)
+    public static IHostApplicationBuilder AddBootstrap(this IHostApplicationBuilder builder, params Assembly[] assemblies)
     {
-        _register!.RegisterBootstrapServices(services, configuration, assemblies);
-        return services;
+        _register!.RegisterBootstrapServices(builder.Services,builder.Configuration, builder.Logging, assemblies);
+        return builder;
     }
 
     /// <summary>

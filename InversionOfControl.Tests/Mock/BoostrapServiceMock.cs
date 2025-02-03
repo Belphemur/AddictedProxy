@@ -1,13 +1,14 @@
 ﻿using InversionOfControl.Model;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace InversionOfControl.Tests.Mock;
 
 public class BoostrapServiceMock : IBootstrap
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddSingleton<IBaseService>(_ =>
         {
@@ -24,7 +25,7 @@ public class BootstrapServiceMockConditional : IBootstrapConditional
     {
         
     }
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddSingleton<IShouldntExists>();
     }

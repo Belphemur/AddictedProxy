@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using ProxyProvider.GeoList.Bootstrap;
 using ProxyProvider.GeoList.Service;
 using ProxyProvider.Root.Bootstrap;
@@ -18,8 +20,8 @@ public class ProxyRotatorTests
     {
         _services = [];
         var configuration = new ConfigurationBuilder().Build();
-        new BootstrapGeoList().ConfigureServices(_services, configuration);
-        new BootstrapProxyProvider().ConfigureServices(_services, configuration);
+        new BootstrapGeoList().ConfigureServices(_services, configuration, Substitute.For<ILoggingBuilder>());
+        new BootstrapProxyProvider().ConfigureServices(_services, configuration, Substitute.For<ILoggingBuilder>());
     }
     
     [Test]

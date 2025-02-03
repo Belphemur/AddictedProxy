@@ -6,7 +6,7 @@ namespace AddictedProxy.Services.Sitemap.Boostrap;
 
 public class BootstrapSitemapMedia : IBootstrap
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.Configure<SitemapConfig>(configuration.GetSection("Sitemap"));
         services.AddSingleton<ISitemapProvider>(provider => new SitemapProvider(provider.GetRequiredService<IBaseUrlProvider>()));

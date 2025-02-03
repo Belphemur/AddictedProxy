@@ -11,6 +11,8 @@ using FluentAssertions;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -25,7 +27,12 @@ public class ImplementationCompressorTests
         public IEnumerator GetEnumerator()
         {
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddBootstrap(Substitute.For<IConfiguration>(), typeof(BootstrapCompressor).Assembly);
+            var hostedAppBuilder = Substitute.For<IHostApplicationBuilder>();
+            hostedAppBuilder.Logging.Returns(Substitute.For<ILoggingBuilder>());
+            hostedAppBuilder.Services.Returns(serviceCollection);
+            hostedAppBuilder.Configuration.Returns(Substitute.For<IConfiguration>());
+            hostedAppBuilder.AddBootstrap(typeof(BootstrapCompressor).Assembly);
+            
             var serviceProvider = serviceCollection.BuildServiceProvider();
             var factory = serviceProvider.GetRequiredService<CompressorFactory>();
             foreach (var service in factory.Services)

@@ -4,7 +4,7 @@ namespace AddictedProxy.Controllers.Bootstrap;
 
 public class BoostrapHealthChecks : IBootstrap, IBootstrapApp
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddHealthChecks();
     }

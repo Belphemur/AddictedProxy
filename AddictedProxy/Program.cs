@@ -77,8 +77,7 @@ var currentAssemblies = new[]
     typeof(BootstrapProxyScrape).Assembly
 };
 
-builder.Services
-    .AddBootstrap(builder.Configuration, currentAssemblies);
+builder.AddBootstrap(currentAssemblies);
 
 Metrics.SuppressDefaultMetrics();
 
