@@ -1,3 +1,14 @@
+## [4.35.2](https://github.com/Belphemur/AddictedProxy/compare/v4.35.1...v4.35.2) (2025-02-03)
+
+### Performance improvements
+
+* **logs:** add debug log ([230ff1a](https://github.com/Belphemur/AddictedProxy/commit/230ff1af1acc34f4b3632ec39ce917e11f16651b))
+* **opentelemetry:** enable scope ([831efff](https://github.com/Belphemur/AddictedProxy/commit/831efff01d9624ef4068cef4084e5bf31c5928a9))
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v8.54.0 ([6f39f35](https://github.com/Belphemur/AddictedProxy/commit/6f39f350843420f5b7ced471410e06ae52c5542b))
+
 ## [4.35.1](https://github.com/Belphemur/AddictedProxy/compare/v4.35.0...v4.35.1) (2025-02-01)
 
 ### Performance improvements
