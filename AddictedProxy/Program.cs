@@ -80,11 +80,9 @@ var currentAssemblies = new[]
 builder.Services
     .AddBootstrap(builder.Configuration, currentAssemblies);
 
-builder.Host.UseSystemd();
 Metrics.SuppressDefaultMetrics();
 
 var perf = builder.Configuration.GetSection("Performance").Get<PerformanceConfig>()!;
-
 builder.WebHost.UseSentry(sentryBuilder =>
 {
     sentryBuilder.Dsn = builder.Configuration.GetSection("Sentry:Dsn").Get<string>();
