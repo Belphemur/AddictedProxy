@@ -69,6 +69,9 @@ public class BootstrapPerformanceOpenTelemetry : IBootstrapApp, IBootstrapCondit
                         options.Protocol = OtlpExportProtocol.Grpc;
                         options.Endpoint = new Uri(perf.Endpoint);
                     });
+#if DEBUG
+                builder.AddConsoleExporter(options => options.Targets = ConsoleExporterOutputTargets.Debug);
+#endif
             });
         }
 
