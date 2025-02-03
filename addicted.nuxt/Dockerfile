@@ -10,7 +10,7 @@ ENV SENTRY_ENVIRONMENT=production
 FROM base AS builder
 RUN apk add --no-cache --update python3 make g++
 WORKDIR /app
-RUN corepack enable pnpm
+RUN npm i -g corepack@latest && corepack enable pnpm
 COPY . /app
 RUN pnpm install --frozen-lockfile
 RUN NUXT_PRESET=node-server pnpm build
