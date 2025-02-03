@@ -69,7 +69,9 @@ jobs:
           path: TestResults-${{ matrix.dotnet-version }}
       - name: Install pnpm
         if: steps.filter.outputs.node == 'true'
-        run: corepack enable
+        run: |
+          npm i -g corepack@latest
+          corepack enable
       - name: Use Node.js
         if: steps.filter.outputs.node == 'true'
         uses: actions/setup-node@v4
@@ -101,7 +103,9 @@ jobs:
         id: repo
       - uses: actions/checkout@v4
       - name: Install pnpm
-        run: corepack enable
+        run: |
+          npm i -g corepack@latest
+          corepack enable
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
