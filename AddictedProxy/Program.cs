@@ -95,12 +95,6 @@ builder.WebHost.UseSentry(sentryBuilder =>
     sentryBuilder.AddExceptionFilterForType<DistributedLockTimeoutException>();
 });
 
-if (perf is { SendLogs: true, Type: PerformanceConfig.BackendType.OpenTelemetry })
-{
-    builder.Logging.AddOpenTelemetry(options => options.IncludeScopes = true);
-}
-
-
 var app = builder.Build();
 
 var forwardedHeadersOptions = new ForwardedHeadersOptions
