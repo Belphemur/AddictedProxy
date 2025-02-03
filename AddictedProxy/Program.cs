@@ -80,11 +80,9 @@ var currentAssemblies = new[]
 builder.Services
     .AddBootstrap(builder.Configuration, currentAssemblies);
 
-builder.Host.UseSystemd();
 Metrics.SuppressDefaultMetrics();
 
 var perf = builder.Configuration.GetSection("Performance").Get<PerformanceConfig>()!;
-
 builder.WebHost.UseSentry(sentryBuilder =>
 {
     sentryBuilder.Dsn = builder.Configuration.GetSection("Sentry:Dsn").Get<string>();
@@ -97,6 +95,11 @@ builder.WebHost.UseSentry(sentryBuilder =>
     sentryBuilder.AddExceptionFilterForType<RetryJobException>();
     sentryBuilder.AddExceptionFilterForType<DistributedLockTimeoutException>();
 });
+
+if (perf is { SendLogs: true, Type: PerformanceConfig.BackendType.OpenTelemetry })
+{
+    builder.Logging.AddOpenTelemetry(options => options.IncludeScopes = true);
+}
 
 
 var app = builder.Build();
