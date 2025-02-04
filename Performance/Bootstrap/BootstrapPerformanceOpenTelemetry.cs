@@ -74,9 +74,9 @@ public class BootstrapPerformanceOpenTelemetry : IBootstrapApp, IBootstrapCondit
                 builder.AddConsoleExporter(options => options.Targets = ConsoleExporterOutputTargets.Debug);
 #endif
             });
+            logging.AddOpenTelemetry(options => options.IncludeScopes = true);
         }
         
-        logging.AddOpenTelemetry(options => options.IncludeScopes = true);
 
         services.AddSingleton<IPerformanceTracker>(_ => new PerformanceTrackerOtlp(activitySource));
     }
