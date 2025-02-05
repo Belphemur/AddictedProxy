@@ -5,7 +5,8 @@ public class PerformanceConfig
     public enum BackendType
     {
         OpenTelemetry,
-        Sentry
+        Sentry,
+        None
     }
     public double SampleRate { get; init; }
     public string Endpoint { get; init; }

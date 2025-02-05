@@ -1,5 +1,6 @@
 ﻿using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model;
+using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.OneTimeMigration.Model;
 using Microsoft.EntityFrameworkCore;
 using TvMovieDatabaseClient.Service;

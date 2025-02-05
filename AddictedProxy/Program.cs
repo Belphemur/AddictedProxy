@@ -77,8 +77,7 @@ var currentAssemblies = new[]
     typeof(BootstrapProxyScrape).Assembly
 };
 
-builder.Services
-    .AddBootstrap(builder.Configuration, currentAssemblies);
+builder.AddBootstrap(currentAssemblies);
 
 Metrics.SuppressDefaultMetrics();
 
@@ -95,12 +94,6 @@ builder.WebHost.UseSentry(sentryBuilder =>
     sentryBuilder.AddExceptionFilterForType<RetryJobException>();
     sentryBuilder.AddExceptionFilterForType<DistributedLockTimeoutException>();
 });
-
-if (perf is { SendLogs: true, Type: PerformanceConfig.BackendType.OpenTelemetry })
-{
-    builder.Logging.AddOpenTelemetry(options => options.IncludeScopes = true);
-}
-
 
 var app = builder.Build();
 

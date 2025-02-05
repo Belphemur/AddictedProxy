@@ -6,7 +6,7 @@ namespace AddictedProxy.Controllers.Bootstrap;
 
 public class BootstrapResponseCompression : IBootstrap, IBootstrapApp
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddResponseCompression(options =>
         {

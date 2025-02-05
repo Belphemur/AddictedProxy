@@ -4,6 +4,8 @@ using AntiCaptcha.Service;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 
 namespace AntiCaptcha.Tests;
 
@@ -23,7 +25,7 @@ public class Tests
                 {"AntiCaptcha:ClientKey", Environment.GetEnvironmentVariable("ANTI_CAPTCHA_CLIENT_KEY")!}
             }!
         }).Build();
-        new BootstrapAntiCaptcha().ConfigureServices(_services, config);
+        new BootstrapAntiCaptcha().ConfigureServices(_services, config, Substitute.For<ILoggingBuilder>());
     }
 
     [Test]

@@ -10,6 +10,7 @@ using InversionOfControl.Service.EnvironmentVariable.Registration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 #endregion
 
@@ -18,7 +19,7 @@ namespace AddictedProxy.Database.Bootstrap;
 public class BootstrapDatabase : IBootstrap,
                                  IBootstrapEnvironmentVariable<EFCoreLicense, EFCoreLicenseParser>
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddHostedService<SetupEfCoreHostedService>();
         services.AddDbContext<EntityContext>(builder =>

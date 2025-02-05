@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using AddictedProxy.Database.Model.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -60,4 +61,10 @@ public class TvShow : BaseEntity, IDiscoverableObject
     /// Is it a movie or a tv show
     /// </summary>
     public ShowType Type { get; set; } = ShowType.Show;
+
+    /// <summary>
+    /// Where was the show first discovered
+    /// </summary>
+    [DefaultValue(DataSource.Addic7ed)]
+    public DataSource Source { get; set; } = DataSource.Addic7ed;
 }

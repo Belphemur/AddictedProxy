@@ -48,7 +48,7 @@ public class TvShowRepository : ITvShowRepository
     public async Task UpsertRefreshedShowsAsync(IEnumerable<TvShow> tvShows, CancellationToken token)
     {
         using var span = _performanceTracker.BeginNestedSpan("UpsertRefreshedShowsAsync");
-        Expression<Func<TvShow, object>> ignoreOnUpdate = show => new { show.Id, show.Discovered, show.CreatedAt, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted, show.Type, show.TvdbId };
+        Expression<Func<TvShow, object>> ignoreOnUpdate = show => new { show.Id, show.Discovered, show.CreatedAt, show.LastSeasonRefreshed, show.UniqueId, show.Priority, show.TmdbId, show.IsCompleted, show.Type, show.TvdbId, show.Source };
 
         var showsArray = tvShows as TvShow[] ?? tvShows.ToArray();
         span.SetTag("shows.total", showsArray.Length);

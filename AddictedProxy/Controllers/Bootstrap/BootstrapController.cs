@@ -14,7 +14,7 @@ namespace AddictedProxy.Controllers.Bootstrap;
 
 public partial class BootstrapController : IBootstrap, IBootstrapApp
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddControllers()
                 .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>())

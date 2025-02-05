@@ -12,7 +12,7 @@ namespace AddictedProxy.Services.Job.Bootstrap;
 
 public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddHangfire(conf => conf
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)

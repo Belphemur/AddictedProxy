@@ -6,7 +6,7 @@ namespace AddictedProxy.Controllers.Hub.Bootstrap;
 
 public class BootstrapHub : IBootstrap, IBootstrapApp
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddSignalR().AddJsonProtocol()
             .AddMessagePackProtocol();

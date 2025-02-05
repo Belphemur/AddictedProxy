@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace InversionOfControl.Service.Bootstrap;
 
@@ -31,7 +32,7 @@ internal class BootstrapRegister : IDisposable
     /// <param name="assemblies"></param>
     /// <exception cref="EnvironmentVariableException"></exception>
     /// <exception cref="ArgumentNullException"></exception>
-    public void RegisterBootstrapServices(IServiceCollection services, IConfiguration configuration, params Assembly[] assemblies)
+    public void RegisterBootstrapServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging, params Assembly[] assemblies)
     {
         var keys = new Dictionary<string, Type>();
         var factories = new HashSet<Type>();
@@ -117,10 +118,10 @@ internal class BootstrapRegister : IDisposable
                 if (_bootstrapType.IsAssignableFrom(type))
                 {
                     bootstrap ??= Activator.CreateInstance(type);
-                    ((IBootstrap)bootstrap).ConfigureServices(services, configuration);
+                    ((IBootstrap)bootstrap).ConfigureServices(services, configuration, logging);
                     foreach (var dependency in ((IBootstrap)bootstrap).Dependencies)
                     {
-                        RegisterBootstrapServices(services, configuration, dependency);
+                        RegisterBootstrapServices(services, configuration, logging, dependency);
                     }
                 }
 

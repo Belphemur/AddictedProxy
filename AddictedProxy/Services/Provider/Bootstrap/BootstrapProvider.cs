@@ -15,7 +15,7 @@ namespace AddictedProxy.Services.Provider.Bootstrap;
 
 public class BootstrapProvider : IBootstrap
 {
-    public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddScoped<IShowRefresher, ShowRefresher>();
         services.AddScoped<ISubtitleProvider, SubtitleProvider>();
