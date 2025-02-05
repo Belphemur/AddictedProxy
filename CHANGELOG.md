@@ -1,3 +1,21 @@
+## [4.36.0](https://github.com/Belphemur/AddictedProxy/compare/v4.35.3...v4.36.0) (2025-02-05)
+
+### Performance improvements
+
+* **performance:** return the same empty span instead of creating new one ([5e09a9b](https://github.com/Belphemur/AddictedProxy/commit/5e09a9b91c3a7c44261791de977be1cbb1233d2a))
+
+### Bug Fixes
+
+* **deps:** update dependency vuetify to v3.7.11 ([a95256e](https://github.com/Belphemur/AddictedProxy/commit/a95256e2dcc000f21887355d1d0b2b2a074b2767))
+* **logs:** only setup logs for open telemetry if sending logs is enabled ([c4a2d1c](https://github.com/Belphemur/AddictedProxy/commit/c4a2d1c18985b3bc1ffd7bd14a0c44fe9e02863b))
+* **performance:** register a fake performance tracker for None ([282b9fa](https://github.com/Belphemur/AddictedProxy/commit/282b9fa9070d9dd99d07fa3491a135dbb2bce50e))
+* **tmdb:** be sure to clean up data of show if deleted from TMDB ([0b4becd](https://github.com/Belphemur/AddictedProxy/commit/0b4becda381d61cedfb5936ed85931275a5b7cfe))
+
+### Features
+
+* **inversion of control:** Add support for the logging builder ([757c489](https://github.com/Belphemur/AddictedProxy/commit/757c489b6240401c774717fb7c63bf1cc4998251))
+* **source:** add show and subtitle source ([8ad64da](https://github.com/Belphemur/AddictedProxy/commit/8ad64da8b6b9c4ab03fa2f601d617575950249d9))
+
 ## [4.35.3](https://github.com/Belphemur/AddictedProxy/compare/v4.35.2...v4.35.3) (2025-02-03)
 
 ### Bug Fixes
