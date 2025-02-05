@@ -1,5 +1,6 @@
 #region
 
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using AddictedProxy.Database.Model.Shared;
@@ -52,4 +53,10 @@ public class Subtitle : BaseEntity, IDiscoverableObject
     ///Number of time this sub was downloaded
     /// </summary>
     public long DownloadCount { get; set; }
+    
+    /// <summary>
+    /// Source of the subtitle
+    /// </summary>
+    [DefaultValue(DataSource.Addic7ed)]
+    public DataSource Source { get; set; } = DataSource.Addic7ed;
 }

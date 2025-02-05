@@ -1,4 +1,5 @@
 using AddictedProxy.Database.Model;
+using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using Performance.Service;
 using TvMovieDatabaseClient.Service;
