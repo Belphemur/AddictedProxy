@@ -1,4 +1,5 @@
 ﻿using AddictedProxy.Database.Repositories.Shows;
+using Amazon.Runtime.Internal.Util;
 using Hangfire;
 using Performance.Service;
 using TvMovieDatabaseClient.Service;
@@ -33,8 +34,16 @@ public class CheckCompletedTmdbJob
         foreach (var show in await _tvShowRepository.GetCompletedShows(isCompleted).ToArrayAsync(cancellationToken))
         {
             var details = await _tmdbClient.GetShowDetailsByIdAsync(show.TmdbId!.Value, cancellationToken);
+            
+            // Handle case where show is not found
+            // Good chance the show was deleted in TMDB and we should reset the state
             if (details == null)
             {
+                show.IsCompleted = false;
+                show.TmdbId = null;
+                show.TvdbId = null;
+                show.LastSeasonRefreshed = null;
+                count++;
                 continue;
             }
 

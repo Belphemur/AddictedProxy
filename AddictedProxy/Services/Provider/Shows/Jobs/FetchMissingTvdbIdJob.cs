@@ -31,7 +31,7 @@ public class FetchMissingTvdbIdJob
                 : await _tmdbClient.GetMovieExternalIdsAsync(show.TmdbId!.Value, cancellationToken);
             if (details == null)
             {
-                _logger.LogInformation("No TVDBID for show: {showId}", show.TmdbId);
+                _logger.LogWarning("No TVDBID for show: {ShowId}", show.TmdbId);
                 continue;
             }
 
@@ -39,12 +39,12 @@ public class FetchMissingTvdbIdJob
             count++;
             if (++count % 50 == 0)
             {
-                _logger.LogInformation("Found TVDBID for {count} shows", count);
+                _logger.LogInformation("Found TVDBID for {Count} shows", count);
                 await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
             }
         }
 
-        _logger.LogInformation("Found TVDBID for {count} shows", count);
+        _logger.LogInformation("Found TVDBID for {Count} shows", count);
         await _tvShowRepository.BulkSaveChangesAsync(cancellationToken);
     }
 }
