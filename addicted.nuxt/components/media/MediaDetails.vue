@@ -1,9 +1,9 @@
 <script setup lang="ts">
 
-import type {MediaDetailsDto} from "~/composables/api/data-contracts";
-import {langs} from "~/composables/language/lang";
+import type { MediaDetailsDto } from "~/composables/api/data-contracts";
+import { langs } from "~/composables/language/lang";
 import OptimizedPicture from "~/components/image/OptimizedPicture.vue";
-import {mdiMovie, mdiTelevision} from "@mdi/js";
+import { mdiMovie, mdiTelevision } from "@mdi/js";
 
 export interface Props {
   details: MediaDetailsDto;
@@ -33,12 +33,11 @@ const setLanguage = (lang: string) => {
       <v-col>
         <h1 class="text-h5">
           <v-icon>{{ props.details.details?.mediaType === 'Movie' ? mdiMovie : mdiTelevision }}</v-icon>
-          {{ props.details.details!.englishName }} <span
-            class="text-light-blue-accent-1 font-bold"
+          {{ props.details.details!.englishName }} <span class="text-light-blue-accent-1 font-bold"
             v-if="props.details.details?.releaseYear != null">({{ props.details.details.releaseYear }})</span>
           <span v-if="props.details.details?.englishName != props.details.details?.originalName">
-          [<i>{{ props.details.details.originalName }}</i>]
-      </span>
+            [<i>{{ props.details.details.originalName }}</i>]
+          </span>
         </h1>
       </v-col>
     </v-card-title>
@@ -47,51 +46,41 @@ const setLanguage = (lang: string) => {
     </v-card-subtitle>
     <v-card-text class="py-0" v-once>
       <v-row align="center">
-        <v-col
-            cols="12"
-            sm="4"
-            class="text-left"
-            align-self="start"
-        >
-          <optimized-picture :src="props.details.details!.posterPath!"
-                             preload
-                             class="backdrop-image"
-                             :sources="[
-                             {
-                               size: 'xs',
-                               height: 180,
-                               width: 320,
-                               media: '(orientation: portrait)',
-                               src: props.details.details!.backdropPath!
-                             }, {
-                               size: 'sm',
-                               width: 200,
-                               height: 300,
-                               media: '(orientation: portrait)',
-                               src: props.details.details!.posterPath!
-                             },
-                            {
-                               size: 'xs',
-                               width: 350,
-                               height: 525,
-                               media: '(orientation: landscape)',
-                             }, {
-                               size: 'sm',
-                               width: 250,
-                               height: 375,
-                               media: '(orientation: landscape)',
-                             }, {
-                               size: 'xl',
-                               width: 260,
-                               height: 390
-                             },
-                              {
-                               size: 'xxl',
-                               width: 300,
-                               height:450
-                             }]"
-                             :alt="`Poster for ${props.details.details?.englishName}`"
-                             :formats="['webp', 'jpeg']"/>
+        <v-col cols="12" sm="4" class="text-left" align-self="start">
+          <optimized-picture :src="props.details.details!.posterPath!" preload class="backdrop-image" :sources="[
+            {
+              size: 'xs',
+              height: 180,
+              width: 320,
+              media: '(orientation: portrait)',
+              src: props.details.details!.backdropPath!
+            }, {
+              size: 'sm',
+              width: 200,
+              height: 300,
+              media: '(orientation: portrait)',
+              src: props.details.details!.posterPath!
+            },
+            {
+              size: 'xs',
+              width: 350,
+              height: 525,
+              media: '(orientation: landscape)',
+            }, {
+              size: 'sm',
+              width: 250,
+              height: 375,
+              media: '(orientation: landscape)',
+            }, {
+              size: 'xl',
+              width: 260,
+              height: 390
+            },
+            {
+              size: 'xxl',
+              width: 300,
+              height: 450
+            }]" :alt="`Poster for ${props.details.details?.englishName}`" :formats="['webp', 'jpeg']" />
 
         </v-col>
 
@@ -100,13 +89,13 @@ const setLanguage = (lang: string) => {
             <v-col>
               <h6 class="text-h6">User Score</h6>
               <v-progress-circular color="yellow" :size="80" :width="15"
-                                   :model-value="props.details.details?.voteAverage *10">
-                {{ props.details.details?.voteAverage }}
+                :model-value="props.details.details!.voteAverage * 10">
+                {{ props.details.details!.voteAverage }}
               </v-progress-circular>
             </v-col>
             <v-col>
               <h6 class="text-h6">Genres</h6>
-              {{ props.details.details?.genre.join(", ") }}
+              {{ props.details.details!.genre.join(", ") }}
             </v-col>
           </v-row>
           <v-row>
@@ -122,20 +111,11 @@ const setLanguage = (lang: string) => {
     </v-card-text>
     <v-card-actions>
       <v-col xl="4" cols="6">
-        <v-autocomplete :model-value="language.lang"
-                        @update:model-value="setLanguage"
-                        :items="langs"
-                        label="Language"
-                        item-title="name"
-                        item-value="code"
-                        clearable=""
-        ></v-autocomplete>
+        <v-autocomplete :model-value="language.lang" @update:model-value="setLanguage" :items="langs" label="Language"
+          item-title="name" item-value="code" clearable=""></v-autocomplete>
       </v-col>
       <v-col xl="4" cols="6" offset-xl="4">
-        <v-select v-model="season"
-                  :items="seasons"
-                  label="Season selection"
-        ></v-select>
+        <v-select v-model="season" :items="seasons" label="Season selection"></v-select>
       </v-col>
     </v-card-actions>
   </v-card>

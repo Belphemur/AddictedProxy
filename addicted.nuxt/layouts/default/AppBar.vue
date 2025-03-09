@@ -29,7 +29,6 @@
 <script lang="ts" setup>
 import logo from "@/components/icon/logo.vue";
 import {useRouter} from "vue-router";
-import SearchComponent from "~/components/shows/SearchComponent.vue";
 // eslint-disable-next-line no-undef
 const emit = defineEmits<{
   (e: "drawerClicked"): void;
