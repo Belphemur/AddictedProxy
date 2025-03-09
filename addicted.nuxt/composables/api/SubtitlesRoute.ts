@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -9,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { SearchRequest, SubtitleSearchResponse } from "./data-contracts";
+import type { SearchRequest, SubtitleSearchResponse } from "./data-contracts";
 
 export namespace Subtitles {
   /**

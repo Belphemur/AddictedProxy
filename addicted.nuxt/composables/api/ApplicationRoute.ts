@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -9,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { ApplicationInfoDto } from "./data-contracts";
+import type { ApplicationInfoDto } from "./data-contracts";
 
 export namespace Application {
   /**

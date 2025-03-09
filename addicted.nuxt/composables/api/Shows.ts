@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -9,8 +10,9 @@
  * ---------------------------------------------------------------
  */
 
-import { ShowSearchResponse, TvShowSubtitleResponse } from "./data-contracts";
-import { HttpClient, RequestParams } from "./http-client";
+import type { ShowSearchResponse, TvShowSubtitleResponse } from "./data-contracts";
+import type { RequestParams } from "./http-client";
+import { HttpClient } from "./http-client";
 
 export class Shows<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
   /**
