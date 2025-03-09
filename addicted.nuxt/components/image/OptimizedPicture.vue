@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {encodeQueryItem, joinURL} from "ufo";
-import {Link} from "@unhead/vue";
+import type {ResolvableLink} from "@unhead/vue";
 
 // Define the breakpoints
 const breakpoints = {
@@ -112,14 +112,12 @@ const toImageType = (format: SupportedFormat) => {
 }
 
 if (props.preload) {
-  const links = props.sources.map(source => {
-    return {
-      rel: 'preload',
-      as: 'image',
-      href: toSrcSet(source, props.formats[0]),
-      media: toMediaQuery(source),
-    }
-  }) as Link<E['link']>[];
+  const links = props.sources.map(source => ({
+    rel: 'preload',
+    as: 'image',
+    href: toSrcSet(source, props.formats[0]),
+    media: toMediaQuery(source),
+  })) as ResolvableLink[];
   useHead({
     link: links
   });
