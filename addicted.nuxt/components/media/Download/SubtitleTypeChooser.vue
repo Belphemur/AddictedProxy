@@ -17,12 +17,6 @@ const emit = defineEmits<{
   (e: "selected", type: SubtitleType): void,
 }>();
 
-// Derive onlyOneType from availableTypes
-const onlyOneType = computed(() => {
-  if (!props.availableTypes) return false;
-  return props.availableTypes === SubtitleTypeFlag.Regular || props.availableTypes === SubtitleTypeFlag.HearingImpaired;
-});
-
 // Check if specific subtitle type is available
 const isTypeAvailable = (type: SubtitleTypeFlag) => {
   if (!props.availableTypes) return true;
@@ -40,30 +34,6 @@ vue.watchEffect(() => {
   }
 });
 
-// Check if there's only one available type
-const checkOnlyOneType = () => {
-  if (onlyOneType.value) {
-    if (props.availableTypes === SubtitleTypeFlag.Regular) {
-      return "regular";
-    } else if (props.availableTypes === SubtitleTypeFlag.HearingImpaired) {
-      return "hearing_impaired";
-    }
-  }
-  return null;
-};
-
-// Automatically select the only available type if there's only one
-const onDialogOpen = (dialogRef: vue.Ref<boolean>) => {
-  const type = checkOnlyOneType();
-  if (type) {
-    subtitleType.type = type;
-    emit("selected", type);
-    // Don't open dialog
-    return false;
-  }
-  return true;
-};
-
 const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
   if (subtitleType.type == null) return;
   dialogRef.value = false;
@@ -72,9 +42,9 @@ const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
 </script>
 
 <template>
-  <v-dialog width="auto" scrollable activator="parent" @click:outside="(e) => onDialogOpen(e)">
+  <v-dialog width="auto" scrollable activator="parent">
     <template v-slot:default="{ isActive }">
-      <v-card v-if="onDialogOpen(isActive)" :prepend-icon="mdiFile" title="Select Subtitle Type">
+      <v-card :prepend-icon="mdiFile" title="Select Subtitle Type">
         <v-divider class="mt-3"></v-divider>
 
         <v-card-text class="px-4" style="height: 300px;">

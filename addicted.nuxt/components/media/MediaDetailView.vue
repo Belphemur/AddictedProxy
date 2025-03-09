@@ -13,7 +13,7 @@ import { trim } from "~/composables/utils/trim";
 import { downloadZip } from "client-zip";
 import { mevent } from "~/composables/data/event";
 import { mdiDownload, mdiRefresh } from "@mdi/js";
-
+import { useSubtitleType } from "~/stores/subtitleType";
 
 export interface Props {
   showId: string;
@@ -180,9 +180,6 @@ const availableSubtitleTypes = computed(() => {
         break;
       }
     }
-    if (hasRegular && hasHearingImpaired) {
-      break;
-    }
   }
 
   let result = SubtitleTypeFlag.None;
@@ -191,6 +188,33 @@ const availableSubtitleTypes = computed(() => {
 
   return result;
 });
+
+// Check if there's only one subtitle type available
+const onlyOneTypeAvailable = computed(() => {
+  return availableSubtitleTypes.value === SubtitleTypeFlag.Regular ||
+    availableSubtitleTypes.value === SubtitleTypeFlag.HearingImpaired;
+});
+
+// Get the only available subtitle type if there's only one
+const getOnlyAvailableType = (): SubtitleType | null => {
+  if (availableSubtitleTypes.value === SubtitleTypeFlag.Regular) {
+    return "regular";
+  } else if (availableSubtitleTypes.value === SubtitleTypeFlag.HearingImpaired) {
+    return "hearing_impaired";
+  }
+  return null;
+};
+
+// Handle download button click
+const handleDownloadClick = () => {
+  if (onlyOneTypeAvailable.value) {
+    const type = getOnlyAvailableType();
+    if (type) {
+      downloadSeasonSubtitles(type);
+    }
+  }
+  // If multiple types available, SubtitleTypeChooser dialog will open automatically
+};
 
 const downloadSeasonSubtitles = async (type: SubtitleType) => {
   downloadingInProgress.value = true;
@@ -279,7 +303,14 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
                 </v-tooltip>
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn :prepend-icon="mdiDownload" class="text-none mb-4" color="indigo-lighten-3"
+              <v-btn v-if="onlyOneTypeAvailable" :prepend-icon="mdiDownload" class="text-none mb-4"
+                color="indigo-lighten-3" @click="handleDownloadClick"
+                :disabled="refreshingProgress != null || downloadingInProgress">
+                Download season
+                <v-tooltip activator="parent" location="end">Download all subtitles of the season as ZIP file
+                </v-tooltip>
+              </v-btn>
+              <v-btn v-else :prepend-icon="mdiDownload" class="text-none mb-4" color="indigo-lighten-3"
                 :disabled="refreshingProgress != null || downloadingInProgress">
                 <SubtitleTypeChooser @selected="downloadSeasonSubtitles" :available-types="availableSubtitleTypes" />
                 Download season
