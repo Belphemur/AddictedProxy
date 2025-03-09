@@ -38,5 +38,14 @@
     "fetch-retry": "^6.0.0",
     "utf-8-validate": "^6.0.5",
     "vuetify": "^3.7.7"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@sentry/cli",
+      "bufferutil",
+      "esbuild",
+      "utf-8-validate"
+    ]
   }
 }
