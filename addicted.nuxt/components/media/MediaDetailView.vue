@@ -175,11 +175,6 @@ const availableSubtitleTypes = computed(() => {
   };
 });
 
-const onlyOneTypeAvailable = computed(() => {
-  const types = availableSubtitleTypes.value;
-  return (types.regular && !types.hearing_impaired) || (!types.regular && types.hearing_impaired);
-});
-
 const downloadSeasonSubtitles = async (type: SubtitleType) => {
   downloadingInProgress.value = true;
   mevent("bulk-download-subtitles", { show: mediaInfo.value?.media?.name, season: currentSeason.value, type: type });
@@ -269,8 +264,7 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
               <v-spacer></v-spacer>
               <v-btn :prepend-icon="mdiDownload" class="text-none mb-4" color="indigo-lighten-3"
                 :disabled="refreshingProgress != null || downloadingInProgress">
-                <SubtitleTypeChooser @selected="downloadSeasonSubtitles" :available-types="availableSubtitleTypes"
-                  :only-one-type="onlyOneTypeAvailable" />
+                <SubtitleTypeChooser @selected="downloadSeasonSubtitles" :available-types="availableSubtitleTypes" />
                 Download season
                 <v-tooltip activator="parent" location="end">Download all subtitles of the season as ZIP file
                 </v-tooltip>

@@ -9,7 +9,6 @@ interface Props {
     regular: boolean;
     hearing_impaired: boolean;
   };
-  onlyOneType?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -19,6 +18,13 @@ const subtitleType = useSubtitleType();
 const emit = defineEmits<{
   (e: "selected", type: SubtitleType): void,
 }>();
+
+// Derive onlyOneType from availableTypes
+const onlyOneType = computed(() => {
+  if (!props.availableTypes) return false;
+  const { regular, hearing_impaired } = props.availableTypes;
+  return (regular && !hearing_impaired) || (!regular && hearing_impaired);
+});
 
 // Set default subtitle type based on availability
 vue.watchEffect(() => {
@@ -33,7 +39,7 @@ vue.watchEffect(() => {
 
 // Automatically select the only available type if there's only one
 const onDialogOpen = (dialogRef: vue.Ref<boolean>) => {
-  if (props.onlyOneType) {
+  if (onlyOneType.value) {
     // If there's only one type available, select it and emit directly
     if (props.availableTypes?.regular && !props.availableTypes?.hearing_impaired) {
       subtitleType.type = "regular";
