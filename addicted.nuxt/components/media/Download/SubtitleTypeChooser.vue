@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import * as vue from "vue";
 import type { SubtitleType } from "~/composables/dto/SubtitleType";
+import { SubtitleTypeFlag } from "~/composables/dto/SubtitleType";
 import { useSubtitleType } from "~/stores/subtitleType";
 import { mdiEarHearingOff, mdiFile, mdiSubtitles } from "@mdi/js";
 
 interface Props {
-  availableTypes?: {
-    regular: boolean;
-    hearing_impaired: boolean;
-  };
+  availableTypes?: SubtitleTypeFlag;
 }
 
 const props = defineProps<Props>();
@@ -22,16 +20,21 @@ const emit = defineEmits<{
 // Derive onlyOneType from availableTypes
 const onlyOneType = computed(() => {
   if (!props.availableTypes) return false;
-  const { regular, hearing_impaired } = props.availableTypes;
-  return (regular && !hearing_impaired) || (!regular && hearing_impaired);
+  return props.availableTypes === SubtitleTypeFlag.Regular || props.availableTypes === SubtitleTypeFlag.HearingImpaired;
 });
+
+// Check if specific subtitle type is available
+const isTypeAvailable = (type: SubtitleTypeFlag) => {
+  if (!props.availableTypes) return true;
+  return (props.availableTypes & type) === type;
+};
 
 // Set default subtitle type based on availability
 vue.watchEffect(() => {
   if (props.availableTypes) {
-    if (props.availableTypes.regular && !subtitleType.type) {
+    if (isTypeAvailable(SubtitleTypeFlag.Regular) && !subtitleType.type) {
       subtitleType.type = "regular";
-    } else if (props.availableTypes.hearing_impaired && !subtitleType.type) {
+    } else if (isTypeAvailable(SubtitleTypeFlag.HearingImpaired) && !subtitleType.type) {
       subtitleType.type = "hearing_impaired";
     }
   }
@@ -41,13 +44,13 @@ vue.watchEffect(() => {
 const onDialogOpen = (dialogRef: vue.Ref<boolean>) => {
   if (onlyOneType.value) {
     // If there's only one type available, select it and emit directly
-    if (props.availableTypes?.regular && !props.availableTypes?.hearing_impaired) {
+    if (props.availableTypes === SubtitleTypeFlag.Regular) {
       subtitleType.type = "regular";
       emit("selected", "regular");
       // Don't open dialog
       return false;
     }
-    else if (!props.availableTypes?.regular && props.availableTypes?.hearing_impaired) {
+    else if (props.availableTypes === SubtitleTypeFlag.HearingImpaired) {
       subtitleType.type = "hearing_impaired";
       emit("selected", "hearing_impaired");
       // Don't open dialog
@@ -73,14 +76,14 @@ const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
         <v-card-text class="px-4" style="height: 300px;">
           <v-radio-group :model-value="subtitleType.type"
             @update:model-value="(v) => subtitleType.type = v as SubtitleType" column>
-            <v-radio v-if="!availableTypes || availableTypes.regular" value="regular">
+            <v-radio v-if="isTypeAvailable(SubtitleTypeFlag.Regular)" value="regular">
               <template v-slot:label>
                 <v-icon start>{{ mdiSubtitles }}</v-icon>
                 Regular
               </template>
             </v-radio>
 
-            <v-radio v-if="!availableTypes || availableTypes.hearing_impaired" value="hearing_impaired">
+            <v-radio v-if="isTypeAvailable(SubtitleTypeFlag.HearingImpaired)" value="hearing_impaired">
               <template v-slot:label>
                 <v-icon start>{{ mdiEarHearingOff }}</v-icon>
                 Additional audio descriptions

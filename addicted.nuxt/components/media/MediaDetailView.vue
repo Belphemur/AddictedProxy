@@ -8,6 +8,7 @@ import type { EpisodeWithSubtitlesDto, MediaDetailsDto } from "~/composables/api
 import { useMedia, useShows, useSubtitles } from "~/composables/rest/api";
 import SubtitleTypeChooser from "~/components/media/Download/SubtitleTypeChooser.vue";
 import type { SubtitleType } from "~/composables/dto/SubtitleType";
+import { SubtitleTypeFlag } from "~/composables/dto/SubtitleType";
 import { trim } from "~/composables/utils/trim";
 import { downloadZip } from "client-zip";
 import { mevent } from "~/composables/data/event";
@@ -162,17 +163,33 @@ const formattedProgress = computed(() => {
 
 const availableSubtitleTypes = computed(() => {
   if (!episodes.value || episodes.value.length === 0) {
-    return { regular: false, hearing_impaired: false };
+    return SubtitleTypeFlag.None;
   }
 
-  const allSubtitles = episodes.value.flatMap((e) => e.subtitles);
-  const hasRegular = allSubtitles.some(s => !s?.hearingImpaired);
-  const hasHearingImpaired = allSubtitles.some(s => s?.hearingImpaired);
+  let hasRegular = false;
+  let hasHearingImpaired = false;
 
-  return {
-    regular: hasRegular,
-    hearing_impaired: hasHearingImpaired
-  };
+  for (const episode of episodes.value) {
+    for (const subtitle of episode.subtitles!) {
+      if (!subtitle?.hearingImpaired) {
+        hasRegular = true;
+      } else {
+        hasHearingImpaired = true;
+      }
+      if (hasRegular && hasHearingImpaired) {
+        break;
+      }
+    }
+    if (hasRegular && hasHearingImpaired) {
+      break;
+    }
+  }
+
+  let result = SubtitleTypeFlag.None;
+  if (hasRegular) result |= SubtitleTypeFlag.Regular;
+  if (hasHearingImpaired) result |= SubtitleTypeFlag.HearingImpaired;
+
+  return result;
 });
 
 const downloadSeasonSubtitles = async (type: SubtitleType) => {
