@@ -40,22 +40,26 @@ vue.watchEffect(() => {
   }
 });
 
+// Check if there's only one available type
+const checkOnlyOneType = () => {
+  if (onlyOneType.value) {
+    if (props.availableTypes === SubtitleTypeFlag.Regular) {
+      return "regular";
+    } else if (props.availableTypes === SubtitleTypeFlag.HearingImpaired) {
+      return "hearing_impaired";
+    }
+  }
+  return null;
+};
+
 // Automatically select the only available type if there's only one
 const onDialogOpen = (dialogRef: vue.Ref<boolean>) => {
-  if (onlyOneType.value) {
-    // If there's only one type available, select it and emit directly
-    if (props.availableTypes === SubtitleTypeFlag.Regular) {
-      subtitleType.type = "regular";
-      emit("selected", "regular");
-      // Don't open dialog
-      return false;
-    }
-    else if (props.availableTypes === SubtitleTypeFlag.HearingImpaired) {
-      subtitleType.type = "hearing_impaired";
-      emit("selected", "hearing_impaired");
-      // Don't open dialog
-      return false;
-    }
+  const type = checkOnlyOneType();
+  if (type) {
+    subtitleType.type = type;
+    emit("selected", type);
+    // Don't open dialog
+    return false;
   }
   return true;
 };
