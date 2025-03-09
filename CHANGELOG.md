@@ -1,3 +1,25 @@
+## [4.37.0](https://github.com/Belphemur/AddictedProxy/compare/v4.36.0...v4.37.0) (2025-03-09)
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v9 ([b8386f4](https://github.com/Belphemur/AddictedProxy/commit/b8386f470d134eb2b8b7b57d6956eb545efcfb85))
+* **deps:** update dependency @sentry/vue to v9.0.1 ([c676542](https://github.com/Belphemur/AddictedProxy/commit/c676542b4718db2435f8ff47e1011422d2aea413))
+* **deps:** update dependency @sentry/vue to v9.1.0 ([f550419](https://github.com/Belphemur/AddictedProxy/commit/f550419a3e48c62c3099f9649f5870c56af3bfb1))
+* **deps:** update dependency @sentry/vue to v9.2.0 ([c0d8e6c](https://github.com/Belphemur/AddictedProxy/commit/c0d8e6cbb8c54da2be0ddd48f0bcc42c4440d3a3))
+* **deps:** update dependency @sentry/vue to v9.3.0 ([26a027f](https://github.com/Belphemur/AddictedProxy/commit/26a027f29e03b1c1187b086a94bdf66cc3ae0918))
+* **deps:** update dependency @sentry/vue to v9.4.0 ([efea256](https://github.com/Belphemur/AddictedProxy/commit/efea2561acc874c3ecaa8aa598b699d19b80ed15))
+* **deps:** update dependency @sentry/vue to v9.5.0 ([89ddc63](https://github.com/Belphemur/AddictedProxy/commit/89ddc63641dc4c645cded75b59ef9f0397d4524a))
+* **deps:** update dependency semantic-release to v24.2.2 ([8eb9bd5](https://github.com/Belphemur/AddictedProxy/commit/8eb9bd5539618b382dbeb8205ad4abf77a37020e))
+* **deps:** update dependency semantic-release to v24.2.3 ([686974e](https://github.com/Belphemur/AddictedProxy/commit/686974e9a695d70febdbc247c7623d6854a852da))
+* **deps:** update dependency vuetify to v3.7.12 ([8ad1170](https://github.com/Belphemur/AddictedProxy/commit/8ad11703a688dc648e0476c46f0c8b354053c1b4))
+* **deps:** update dependency vuetify to v3.7.13 ([6087072](https://github.com/Belphemur/AddictedProxy/commit/6087072fb651cc278f91fb7a9fff12ab44023bed))
+* **deps:** update dependency vuetify to v3.7.14 ([8081fe8](https://github.com/Belphemur/AddictedProxy/commit/8081fe8e36ca7ebd606594e7bef18837768c2edd))
+* **deps:** update dependency vuetify to v3.7.15 ([758ae23](https://github.com/Belphemur/AddictedProxy/commit/758ae233a76b3c3de972e4692f83e1bc8915463b))
+
+### Features
+
+* introduce SubtitleTypeFlag enum for improved subtitle type handling ([0e59600](https://github.com/Belphemur/AddictedProxy/commit/0e59600c85f216a2c9945fe87f761386f6397e5c))
+
 ## [4.36.0](https://github.com/Belphemur/AddictedProxy/compare/v4.35.3...v4.36.0) (2025-02-05)
 
 ### Performance improvements
