@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import MediaDetails from "@/components/media/MediaDetails.vue";
-import {onUnmounted, ref} from "vue";
+import { onUnmounted, ref, computed } from "vue";
 import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
-import type {DoneHandler, ProgressHandler} from "~/composables/hub/RefreshHub";
-import {useRefreshHub} from "~/composables/hub/RefreshHub";
-import type {EpisodeWithSubtitlesDto, MediaDetailsDto} from "~/composables/api/data-contracts";
-import {useMedia, useShows, useSubtitles} from "~/composables/rest/api";
+import type { DoneHandler, ProgressHandler } from "~/composables/hub/RefreshHub";
+import { useRefreshHub } from "~/composables/hub/RefreshHub";
+import type { EpisodeWithSubtitlesDto, MediaDetailsDto } from "~/composables/api/data-contracts";
+import { useMedia, useShows, useSubtitles } from "~/composables/rest/api";
 import SubtitleTypeChooser from "~/components/media/Download/SubtitleTypeChooser.vue";
-import type {SubtitleType} from "~/composables/dto/SubtitleType";
-import {trim} from "~/composables/utils/trim";
-import {downloadZip} from "client-zip";
-import {mevent} from "~/composables/data/event";
-import {mdiDownload, mdiRefresh} from "@mdi/js";
+import type { SubtitleType } from "~/composables/dto/SubtitleType";
+import { trim } from "~/composables/utils/trim";
+import { downloadZip } from "client-zip";
+import { mevent } from "~/composables/data/event";
+import { mdiDownload, mdiRefresh } from "@mdi/js";
 
 
 export interface Props {
@@ -56,7 +56,7 @@ useSeoMeta({
 
 watch([currentSeason, language], async ([newSeason], [oldSeason]) => {
   loadingEpisodes.value = true;
-  if(oldSeason == undefined && newSeason != undefined) {
+  if (oldSeason == undefined && newSeason != undefined) {
     return;
   }
   const {
@@ -97,7 +97,7 @@ const doneHandler: DoneHandler = async (show) => {
   refreshingProgress.value = null;
   await unsubscribeShowAsync(show.id!);
 
-  mediaInfo.value = {details: mediaInfo.value?.details, media: show}
+  mediaInfo.value = { details: mediaInfo.value?.details, media: show }
   if (currentSeason.value == undefined) {
     currentSeason.value = useLast(mediaInfo.value?.media?.seasons);
   }
@@ -116,12 +116,12 @@ onUnmounted(() => {
 });
 
 async function loadViewData() {
-  const {data, error} = await useAsyncData(async () => (await mediaApi.episodesDetail(props.showId, language.lang)).data!);
+  const { data, error } = await useAsyncData(async () => (await mediaApi.episodesDetail(props.showId, language.lang)).data!);
   if (error.value != null) {
-    throw createError({statusCode: 404, statusMessage: `Show ${props.showId} not found`});
+    throw createError({ statusCode: 404, statusMessage: `Show ${props.showId} not found` });
   }
   mediaInfo.value = data.value!.details;
-  if(data.value?.lastSeasonNumber == null) {
+  if (data.value?.lastSeasonNumber == null) {
     return;
   }
   currentSeason.value = data.value?.lastSeasonNumber
@@ -160,9 +160,29 @@ const formattedProgress = computed(() => {
   return `${keyword}: (${refreshingProgress.value}%)`;
 });
 
+const availableSubtitleTypes = computed(() => {
+  if (!episodes.value || episodes.value.length === 0) {
+    return { regular: false, hearing_impaired: false };
+  }
+
+  const allSubtitles = episodes.value.flatMap((e) => e.subtitles);
+  const hasRegular = allSubtitles.some(s => !s?.hearingImpaired);
+  const hasHearingImpaired = allSubtitles.some(s => s?.hearingImpaired);
+
+  return {
+    regular: hasRegular,
+    hearing_impaired: hasHearingImpaired
+  };
+});
+
+const onlyOneTypeAvailable = computed(() => {
+  const types = availableSubtitleTypes.value;
+  return (types.regular && !types.hearing_impaired) || (!types.regular && types.hearing_impaired);
+});
+
 const downloadSeasonSubtitles = async (type: SubtitleType) => {
   downloadingInProgress.value = true;
-  mevent("bulk-download-subtitles", {show: mediaInfo.value?.media?.name, season: currentSeason.value, type: type});
+  mevent("bulk-download-subtitles", { show: mediaInfo.value?.media?.name, season: currentSeason.value, type: type });
   const subtitles = episodes.value!.flatMap((e) => e.subtitles).filter((s) => type == "regular" ? !s?.hearingImpaired : s?.hearingImpaired);
   let downloaded = 0;
   const subtitleResponses = subtitles.map(async (s) => {
@@ -180,7 +200,7 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
       const filename = trim(parts[1].split("=")[1] ?? `${s?.subtitleId}.srt`, '"');
       downloaded++;
       downloadingProgress.value = downloaded / subtitles.length * 100;
-      return {name: filename, input: response};
+      return { name: filename, input: response };
     } catch (e) {
       console.error(`Failed to download subtitle ${s?.subtitleId}`, e);
       return null;
@@ -214,17 +234,13 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
   <div>
     <v-row v-if="mediaInfo?.details != null">
       <v-col cols="12" offset="0" lg="8" offset-lg="2">
-        <media-details :details="mediaInfo" v-model="currentSeason"/>
+        <media-details :details="mediaInfo" v-model="currentSeason" />
       </v-col>
     </v-row>
     <v-row justify="center" v-if="refreshingProgress != null">
       <v-col cols="10">
         <v-col cols="11" align-self="center">
-          <v-progress-linear
-              v-model="refreshingProgress"
-              color="blue"
-              height="18"
-          >
+          <v-progress-linear v-model="refreshingProgress" color="blue" height="18">
             {{ formattedProgress }}
           </v-progress-linear>
         </v-col>
@@ -233,11 +249,7 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
     <v-row justify="center" v-if="downloadingProgress != null">
       <v-col cols="10">
         <v-col cols="11" align-self="center">
-          <v-progress-linear
-              v-model="downloadingProgress"
-              color="blue"
-              height="18"
-          >
+          <v-progress-linear v-model="downloadingProgress" color="blue" height="18">
             Downloading subtitles
           </v-progress-linear>
         </v-col>
@@ -249,32 +261,18 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
           <v-card width="100%">
             <v-card-title>Season {{ currentSeason }}</v-card-title>
             <v-card-actions>
-              <v-btn
-                  :prepend-icon="mdiRefresh"
-                  class="text-none mb-4"
-                  color="indigo-lighten-3"
-                  @click="refreshShow"
-                  :disabled="refreshingProgress != null || downloadingInProgress"
-              >Refresh
-                <v-tooltip
-                    activator="parent"
-                    location="end"
-                >Fetch from Addic7ed
+              <v-btn :prepend-icon="mdiRefresh" class="text-none mb-4" color="indigo-lighten-3" @click="refreshShow"
+                :disabled="refreshingProgress != null || downloadingInProgress">Refresh
+                <v-tooltip activator="parent" location="end">Fetch from Addic7ed
                 </v-tooltip>
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn
-                  :prepend-icon="mdiDownload"
-                  class="text-none mb-4"
-                  color="indigo-lighten-3"
-                  :disabled="refreshingProgress != null  || downloadingInProgress"
-              >
-                <SubtitleTypeChooser @selected="downloadSeasonSubtitles"/>
+              <v-btn :prepend-icon="mdiDownload" class="text-none mb-4" color="indigo-lighten-3"
+                :disabled="refreshingProgress != null || downloadingInProgress">
+                <SubtitleTypeChooser @selected="downloadSeasonSubtitles" :available-types="availableSubtitleTypes"
+                  :only-one-type="onlyOneTypeAvailable" />
                 Download season
-                <v-tooltip
-                    activator="parent"
-                    location="end"
-                >Download all subtitles of the season as ZIP file
+                <v-tooltip activator="parent" location="end">Download all subtitles of the season as ZIP file
                 </v-tooltip>
               </v-btn>
             </v-card-actions>
@@ -288,6 +286,4 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
