@@ -22,7 +22,7 @@ importers:
         version: 4.0.9
       client-zip:
         specifier: ^2.4.6
-        version: 2.4.6
+        version: 2.5.0
       fetch-retry:
         specifier: ^6.0.0
         version: 6.0.0
@@ -1585,8 +1585,8 @@ packages:
   citty@0.1.6:
     resolution: {integrity: sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ==}
 
-  client-zip@2.4.6:
-    resolution: {integrity: sha512-e7t1u14h/yT0A12qBwFsaus8UZZ8+MCaNAEn/z53mrukLq/LFcKX7TkbntAppGu8he2p8pz9vc5NEGE/h4ohlw==}
+  client-zip@2.5.0:
+    resolution: {integrity: sha512-ydG4nDZesbFurnNq0VVCp/yyomIBh+X/1fZPI/P24zbnG4dtC4tQAfI5uQsomigsUMeiRO2wiTPizLWQh+IAyQ==}
 
   clipboardy@4.0.0:
     resolution: {integrity: sha512-5mOlNS0mhX0707P2I0aZ2V/cmHUEO/fL7VFLqszkhUsxt7RwnmrInf/eEQKlf5GzvYeHIjT+Ov1HRfNmymlG0w==}
@@ -5355,7 +5355,7 @@ snapshots:
     dependencies:
       consola: 3.4.0
 
-  client-zip@2.4.6: {}
+  client-zip@2.5.0: {}
 
   clipboardy@4.0.0:
     dependencies:
