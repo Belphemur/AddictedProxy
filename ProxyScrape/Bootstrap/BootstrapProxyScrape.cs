@@ -26,9 +26,9 @@ public class BootstrapProxyScrape : IBootstrap
                 AutomaticDecompression = DecompressionMethods.All
             }).AddStandardResilienceHandler();
 
-        // Only load the MetricGatherHostedService in release mode to avoid using anti-captcha quota
-#if !DEBUG
-        services.AddHostedService<MetricGatherHostedService>();
-#endif
+        if (configuration.GetValue("ProxyScrape:EnableScrape", false))
+        {
+            services.AddHostedService<MetricGatherHostedService>();
+        }
     }
 }
