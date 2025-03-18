@@ -1,3 +1,17 @@
+## [4.38.0](https://github.com/Belphemur/AddictedProxy/compare/v4.37.0...v4.38.0) (2025-03-18)
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v9.6.0 ([572628e](https://github.com/Belphemur/AddictedProxy/commit/572628e9ae80307cd14856e461e27d0de655db6d))
+* **deps:** update dependency client-zip to v2.5.0 ([400af84](https://github.com/Belphemur/AddictedProxy/commit/400af8455aeca459354de4939ef4d359dd1f63a8))
+* **deps:** update dependency vuetify to v3.7.16 ([cb1b3f2](https://github.com/Belphemur/AddictedProxy/commit/cb1b3f21607b72e376dc32052cb4feb6cfd0ddca))
+* **deps:** update dependency vuetify to v3.7.17 ([2d07f15](https://github.com/Belphemur/AddictedProxy/commit/2d07f15911039ddb8dce9cbeb0ed5229b47558fd))
+* **deps:** update dependency vuetify to v3.7.18 ([cc96147](https://github.com/Belphemur/AddictedProxy/commit/cc96147e2b7d02ba6ac2e03bc06f58e130345852))
+
+### Features
+
+* **proxyscrape:** add ProxyScrape configuration options for interval and enable flag ([edb5827](https://github.com/Belphemur/AddictedProxy/commit/edb5827cf80c6e7b1eeb023a8ae79e969d6a0ea7))
+
 ## [4.37.0](https://github.com/Belphemur/AddictedProxy/compare/v4.36.0...v4.37.0) (2025-03-09)
 
 ### Bug Fixes
