@@ -1,3 +1,9 @@
+## [4.38.1](https://github.com/Belphemur/AddictedProxy/compare/v4.38.0...v4.38.1) (2025-03-19)
+
+### Bug Fixes
+
+* **s3:** fix uploading data to S3 ([01ae13b](https://github.com/Belphemur/AddictedProxy/commit/01ae13bf5102e45944b9df8404ef5e70999495a3))
+
 ## [4.38.0](https://github.com/Belphemur/AddictedProxy/compare/v4.37.0...v4.38.0) (2025-03-18)
 
 ### Bug Fixes
