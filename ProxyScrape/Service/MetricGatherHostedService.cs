@@ -31,13 +31,13 @@ public class MetricGatherHostedService : BackgroundService
         var random = new Random();
         try
         {
-            while (await _timer.WaitForNextTickAsync(stoppingToken))
+            do
             {
                 await CollectMetricsAsync(stoppingToken);
                 // Add jitter delay between 500 ms to 2 seconds
                 var jitterDelay = random.Next(500, 2000);
                 await Task.Delay(jitterDelay, stoppingToken);
-            }
+            } while (await _timer.WaitForNextTickAsync(stoppingToken));
         }
         catch (OperationCanceledException)
         {

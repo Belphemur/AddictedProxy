@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
@@ -15,12 +16,11 @@ namespace ProxyScrape.Service;
 
 public class ProxyScrapeClient : IProxyScrapeClient
 {
-    private const string LoginExtraDataCachingKey = "proxy-scrape-login-data";
+    private const string AuthResponseCachingKey = "proxy-scrape-login-data/v2";
     private readonly IOptions<ProxyScrapeConfig> _config;
     private readonly HttpClient _client;
     private readonly IAntiCaptchaClient _antiCaptchaClient;
     private readonly IDistributedCache _cache;
-
 
 
     public ProxyScrapeClient(IOptions<ProxyScrapeConfig> config, HttpClient client, IAntiCaptchaClient antiCaptchaClient, IDistributedCache cache)
@@ -36,7 +36,7 @@ public class ProxyScrapeClient : IProxyScrapeClient
         var response = await _antiCaptchaClient.SolveTurnstileProxylessAsync(new TurnstileProxylessTask
         {
             WebsiteKey = "0x4AAAAAAAFWUVCKyusT9T8r",
-            WebsiteUrl = "https://dashboard.proxyscrape.com/"
+            WebsiteUrl = "https://dashboard.proxyscrape.com/v2/login",
         }, token);
         return response?.Solution;
     }
@@ -54,12 +54,12 @@ public class ProxyScrapeClient : IProxyScrapeClient
         return parts.Length > 1 ? parts[1].Trim() : null;
     }
 
-    private async Task<LoginExtraData?> GetLoginDataAsync(CancellationToken token)
+    private async Task<AuthResponse?> GetLoginDataAsync(CancellationToken token)
     {
-        var loginExtraData = await _cache.GetAsync<LoginExtraData>(LoginExtraDataCachingKey, token);
-        if (loginExtraData != default)
+        var authResponse = await _cache.GetAsync<AuthResponse>(AuthResponseCachingKey, token);
+        if (authResponse != null)
         {
-            return loginExtraData;
+            return authResponse;
         }
 
         var cfToken = await GetCfTokenAsync(token);
@@ -68,25 +68,40 @@ public class ProxyScrapeClient : IProxyScrapeClient
             return null;
         }
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "account-functions/dologin.php");
-        request.Content = new MultipartFormDataContent
-        {
-            { new StringContent(_config.Value.User.Username), "email" },
-            { new StringContent(_config.Value.User.Password), "password" },
-            { new StringContent(cfToken.Value.Token), "cf-turnstile-response" },
-        };
-        request.Headers.UserAgent.ParseAdd(cfToken.Value.UserAgent);
-        var response = await _client.SendAsync(request, token);
-        var phpSessionId = ExtractCookieValue(response.Headers.GetValues("Set-Cookie").First(cookie => cookie.StartsWith("PHPSESSID=")));
-        if (phpSessionId == null)
-            return null;
-        loginExtraData = new LoginExtraData(phpSessionId, cfToken.Value.UserAgent);
+        var request = new HttpRequestMessage(HttpMethod.Post, "v2/v4/account/auth/login");
+        var guid = Guid.NewGuid().ToString("N");
+        var boundary = $"geckoformboundary{guid}";
+        request.Content = new StringContent($"""
+                                             ------{boundary}
+                                             Content-Disposition: form-data; name="email"
 
-        await _cache.SetAsync(LoginExtraDataCachingKey, loginExtraData, new DistributedCacheEntryOptions
+                                             {_config.Value.User.Username}
+                                             ------{boundary}
+                                             Content-Disposition: form-data; name="password"
+
+                                             {_config.Value.User.Password}
+                                             ------{boundary}
+                                             Content-Disposition: form-data; name="сf_trustile_token"
+
+                                             {cfToken.Value.Token}
+                                             ------{boundary}--
+
+                                             """,
+            MediaTypeHeaderValue.Parse($"multipart/form-data; boundary=----{boundary}"));
+        request.Headers.UserAgent.ParseAdd(cfToken.Value.UserAgent);
+        request.Headers.Referrer = new Uri("https://dashboard.proxyscrape.com/v2/login");
+        request.Headers.Add("Origin", "https://dashboard.proxyscrape.com");
+        var response = await _client.SendAsync(request, token);
+        response.EnsureSuccessStatusCode();
+
+        authResponse = await response.Content.ReadFromJsonAsync<AuthResponse>(JsonContext.JsonSerializerOptions, token);
+        authResponse!.UserAgent = cfToken.Value.UserAgent;
+
+        await _cache.SetAsync(AuthResponseCachingKey, authResponse, new DistributedCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(authResponse.ExpiresIn)
         }, token);
-        return loginExtraData;
+        return authResponse;
     }
 
     /// <summary>
@@ -98,15 +113,19 @@ public class ProxyScrapeClient : IProxyScrapeClient
     public async Task<ProxyStatistics?> GetProxyStatisticsAsync(CancellationToken token)
     {
         var loginExtraData = await GetLoginDataAsync(token);
+        if (loginExtraData is null)
+        {
+            return null;
+        }
 
         var request = new HttpRequestMessage(HttpMethod.Get, $"/v2/v4/account/{_config.Value.AccountId}/residential/subuser/{_config.Value.SubUserId}/statistic");
-        request.Headers.Add("Cookie", $"PHPSESSID={loginExtraData!.Value.PhpSessionId}");
-        request.Headers.UserAgent.ParseAdd(loginExtraData.Value.UserAgent);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginExtraData.AccessToken);
+        request.Headers.UserAgent.ParseAdd(loginExtraData.UserAgent);
         request.Headers.Add("Referer", $"https://dashboard.proxyscrape.com/v2/services/residential/overview/{_config.Value.AccountId}");
         var response = await _client.SendAsync(request, token);
         if (response.StatusCode == HttpStatusCode.Redirect)
         {
-            await _cache.RemoveAsync(LoginExtraDataCachingKey, token);
+            await _cache.RemoveAsync(AuthResponseCachingKey, token);
             return await GetProxyStatisticsAsync(token).ConfigureAwait(false);
         }
 
