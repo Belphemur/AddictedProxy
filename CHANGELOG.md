@@ -1,3 +1,9 @@
+## [4.38.2](https://github.com/Belphemur/AddictedProxy/compare/v4.38.1...v4.38.2) (2025-03-19)
+
+### Bug Fixes
+
+* **proxyscrape:** fix scraping statistics from proxy scrape ([0261831](https://github.com/Belphemur/AddictedProxy/commit/02618318d3207a7281566761a33f0d0d9c0ed0ad))
+
 ## [4.38.1](https://github.com/Belphemur/AddictedProxy/compare/v4.38.0...v4.38.1) (2025-03-19)
 
 ### Bug Fixes
