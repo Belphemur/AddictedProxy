@@ -37,7 +37,8 @@ public class S3StorageProvider : IStorageProvider
             //For Cloudflare R2
             //see: https://github.com/cloudflare/cloudflare-docs/issues/4683
             //see: https://community.cloudflare.com/t/putobjectasync-not-working-for-r2-with-aws-s3-net-sdk/427335
-            DisablePayloadSigning = true
+            DisablePayloadSigning = true,
+            DisableDefaultChecksumValidation = true
         }, cancellationToken);
 
         return result?.HttpStatusCode == HttpStatusCode.OK;
@@ -72,7 +73,7 @@ public class S3StorageProvider : IStorageProvider
 
             return result.ResponseStream;
         }
-        catch (AmazonS3Exception e) when (e.Message == "The specified key does not exist.")
+        catch (AmazonS3Exception e) when (e.Message.StartsWith("The specified key does not exist."))
         {
             return null;
         }
