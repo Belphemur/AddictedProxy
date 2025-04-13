@@ -1,3 +1,20 @@
+## [4.38.3](https://github.com/Belphemur/AddictedProxy/compare/v4.38.2...v4.38.3) (2025-04-13)
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v9.10.0 ([3200593](https://github.com/Belphemur/AddictedProxy/commit/32005930293c79310aeaf1cdb0b89576ca551b41))
+* **deps:** update dependency @sentry/vue to v9.10.1 ([3ea0c5b](https://github.com/Belphemur/AddictedProxy/commit/3ea0c5bff1e78a1cfc947b7bab04b6597b06116c))
+* **deps:** update dependency @sentry/vue to v9.11.0 ([0ec61dc](https://github.com/Belphemur/AddictedProxy/commit/0ec61dcaf5cd96165ff3d4c1086aa80dc095aa0b))
+* **deps:** update dependency @sentry/vue to v9.12.0 ([484eba8](https://github.com/Belphemur/AddictedProxy/commit/484eba8208a4905ffc702d941ae11c07cc7ac608))
+* **deps:** update dependency @sentry/vue to v9.6.1 ([5e0106e](https://github.com/Belphemur/AddictedProxy/commit/5e0106e9d33fa1689528b3b067e8b97c63375d73))
+* **deps:** update dependency @sentry/vue to v9.7.0 ([4ace15d](https://github.com/Belphemur/AddictedProxy/commit/4ace15d7f62fa90f0308ae511d96d19e9b95c663))
+* **deps:** update dependency @sentry/vue to v9.8.0 ([775f1f3](https://github.com/Belphemur/AddictedProxy/commit/775f1f35319eb20a6ebf82812eee736250ae5cf5))
+* **deps:** update dependency @sentry/vue to v9.9.0 ([e7041b9](https://github.com/Belphemur/AddictedProxy/commit/e7041b943056cf1d5180afe2eb90a98ebaad938f))
+* **deps:** update dependency vuetify to v3.7.19 ([32034a9](https://github.com/Belphemur/AddictedProxy/commit/32034a90bcbe98a783e6ff00d0d4619ee04d1418))
+* **deps:** update dependency vuetify to v3.8.0 ([9c760e5](https://github.com/Belphemur/AddictedProxy/commit/9c760e5d972bd3ce216184f0e54548c5a3229249))
+* **deps:** update dependency vuetify to v3.8.1 ([2671444](https://github.com/Belphemur/AddictedProxy/commit/26714443a28bcf6f26f64b182bdad299680e7fc2))
+* use sentry nuxt sdk ([cfeb51c](https://github.com/Belphemur/AddictedProxy/commit/cfeb51c156f1995daa79375ce48a1013c95a9543))
+
 ## [4.38.2](https://github.com/Belphemur/AddictedProxy/compare/v4.38.1...v4.38.2) (2025-03-19)
 
 ### Bug Fixes
