@@ -32,11 +32,10 @@
   "dependencies": {
     "@mdi/js": "^7.4.47",
     "@microsoft/signalr": "^8.0.7",
-    "@sentry/nuxt": "9",
+    "@sentry/vue": "^9.5.0",
     "bufferutil": "^4.0.9",
     "client-zip": "^2.4.6",
     "fetch-retry": "^6.0.0",
-    "import-in-the-middle": "^1.13.1",
     "utf-8-validate": "^6.0.5",
     "vuetify": "^3.7.15"
   },

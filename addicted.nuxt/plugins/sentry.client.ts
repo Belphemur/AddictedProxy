@@ -1,5 +1,5 @@
 import {defineNuxtPlugin, useRuntimeConfig} from '#app'
-import * as Sentry from '@sentry/nuxt'
+import * as Sentry from '@sentry/vue'
 
 export default defineNuxtPlugin((nuxtApp) => {
     const {public: {sentry, api}} = useRuntimeConfig()
@@ -7,6 +7,8 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     Sentry.init({
         enabled: sentry.config.enabled,
+        app: nuxtApp.vueApp,
+        autoSessionTracking: true,
         debug: false,
         dsn: sentry.config.dsn,
         environment: sentry.config.environment,
@@ -19,6 +21,8 @@ export default defineNuxtPlugin((nuxtApp) => {
             Sentry.browserProfilingIntegration(),
             Sentry.breadcrumbsIntegration()
         ],
+        trackComponents: true,
+        hooks: ['activate', 'create', 'destroy', 'mount', 'update'],
         // Set tracesSampleRate to 1.0 to capture 100%
         // of transactions for performance monitoring.
         // We recommend adjusting this value in production
