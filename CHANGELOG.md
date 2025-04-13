@@ -1,3 +1,9 @@
+## [4.38.4](https://github.com/Belphemur/AddictedProxy/compare/v4.38.3...v4.38.4) (2025-04-13)
+
+### Bug Fixes
+
+* building frontend ([3b410d9](https://github.com/Belphemur/AddictedProxy/commit/3b410d91c8da7c2a809b89937ed9d6c9081db296))
+
 ## [4.38.3](https://github.com/Belphemur/AddictedProxy/compare/v4.38.2...v4.38.3) (2025-04-13)
 
 ### Bug Fixes
