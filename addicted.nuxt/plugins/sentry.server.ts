@@ -3,22 +3,12 @@ import * as Sentry from '@sentry/nuxt'
 
 export default defineNuxtPlugin((nuxtApp) => {
     const {public: {sentry, api}} = useRuntimeConfig()
-    const router = useRouter();
 
     Sentry.init({
         enabled: sentry.config.enabled,
         debug: false,
         dsn: sentry.config.dsn,
         environment: sentry.config.environment,
-        integrations: [
-            Sentry.browserTracingIntegration({router, enableInp: true, enableHTTPTimings: true}),
-            Sentry.replayIntegration({
-                maskAllText: false,
-                blockAllMedia: false,
-            }),
-            Sentry.browserProfilingIntegration(),
-            Sentry.breadcrumbsIntegration()
-        ],
         // Set tracesSampleRate to 1.0 to capture 100%
         // of transactions for performance monitoring.
         // We recommend adjusting this value in production
