@@ -1,3 +1,10 @@
+## [4.38.5](https://github.com/Belphemur/AddictedProxy/compare/v4.38.4...v4.38.5) (2025-04-13)
+
+### Bug Fixes
+
+* **frontend:** remove broken dep ([c6d0db6](https://github.com/Belphemur/AddictedProxy/commit/c6d0db6ad4a214b85aafe13a6ba2fe9a9f5c67c5))
+* **ui:** remove sentry nuxt sdk ([d90daf7](https://github.com/Belphemur/AddictedProxy/commit/d90daf7508402eb607cfca38ea310ee7362adb79))
+
 ## [4.38.4](https://github.com/Belphemur/AddictedProxy/compare/v4.38.3...v4.38.4) (2025-04-13)
 
 ### Bug Fixes
