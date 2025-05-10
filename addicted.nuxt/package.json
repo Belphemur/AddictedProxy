@@ -10,7 +10,7 @@
     "gen-api": "swagger-typescript-api generate -p http://localhost/api/v1/swagger.json -o .\\composables\\api\\ -n api.ts --route-types --union-enums --modular  --no-no-client"
   },
   "devDependencies": {
-    "@nuxt/devtools": "2.3.2",
+    "@nuxt/devtools": "2.4.0",
     "@nuxtjs/device": "^3.2.4",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia/nuxt": "0.11.0",
@@ -18,10 +18,10 @@
     "@types/node": "^22.13.10",
     "@types/webfontloader": "^1.6.38",
     "h3-proxy": "^1.13.0",
-    "nuxt": "^3.16.0",
+    "nuxt": "^3.17.2",
     "nuxt-lodash": "^2.5.3",
     "pinia": "^3.0.1",
-    "pinia-plugin-persistedstate": "4.2.0",
+    "pinia-plugin-persistedstate": "4.3.0",
     "roboto-fontface": "^0.10.0",
     "swagger-typescript-api": "github:Belphemur/swagger-typescript-api#main",
     "typescript": "^5.8.2",
@@ -48,5 +48,5 @@
       "utf-8-validate"
     ]
   },
-  "packageManager": "pnpm@10.8.0+sha512.0e82714d1b5b43c74610193cb20734897c1d00de89d0e18420aebc5977fa13d780a9cb05734624e81ebd81cc876cd464794850641c48b9544326b5622ca29971"
+  "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39"
 }
