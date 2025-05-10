@@ -21,7 +21,7 @@
     "nuxt": "^3.16.0",
     "nuxt-lodash": "^2.5.3",
     "pinia": "^3.0.1",
-    "pinia-plugin-persistedstate": "4.2.0",
+    "pinia-plugin-persistedstate": "4.3.0",
     "roboto-fontface": "^0.10.0",
     "swagger-typescript-api": "github:Belphemur/swagger-typescript-api#main",
     "typescript": "^5.8.2",
