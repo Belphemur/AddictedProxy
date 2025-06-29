@@ -25,7 +25,7 @@
     "roboto-fontface": "^0.10.0",
     "swagger-typescript-api": "github:Belphemur/swagger-typescript-api#main",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5",
+    "vite": "^7.0.0",
     "vite-plugin-vuetify": "^2.1.1",
     "vuetify-nuxt-module": "^0.18.6"
   },
