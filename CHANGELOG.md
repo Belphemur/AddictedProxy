@@ -1,3 +1,41 @@
+## [4.38.7](https://github.com/Belphemur/AddictedProxy/compare/v4.38.6...v4.38.7) (2025-05-24)
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v9.18.0 ([3eb8e3c](https://github.com/Belphemur/AddictedProxy/commit/3eb8e3c0ac4681a92ead9ca2a57a670aa8d31094))
+* **deps:** update dependency @sentry/vue to v9.20.0 ([b130100](https://github.com/Belphemur/AddictedProxy/commit/b130100882d263e211e99ad58d0e67944686bf70))
+* **deps:** update dependency @sentry/vue to v9.21.0 ([bfff626](https://github.com/Belphemur/AddictedProxy/commit/bfff626dbe7e3e1d85cc8c56b9d188caa95d8b65))
+* **deps:** update dependency semantic-release to v24.2.4 ([b9236a4](https://github.com/Belphemur/AddictedProxy/commit/b9236a4d71da54421043c38bb234947aca7b1d3c))
+* **deps:** update dependency semantic-release to v24.2.5 ([15904aa](https://github.com/Belphemur/AddictedProxy/commit/15904aaea872045c50227f6d3ba68481fc1a695e))
+* **deps:** update dependency vuetify to v3.8.5 ([452e870](https://github.com/Belphemur/AddictedProxy/commit/452e87017889e18ddb881a7e18c2294356b1f281))
+* **deps:** update dependency vuetify to v3.8.6 ([83294f8](https://github.com/Belphemur/AddictedProxy/commit/83294f8bd064b59f867ae66c9b74785eb552df3d))
+
+## [4.38.6](https://github.com/Belphemur/AddictedProxy/compare/v4.38.5...v4.38.6) (2025-05-10)
+
+### Bug Fixes
+
+* **deps:** update dependency @sentry/vue to v9.13.0 ([b43052a](https://github.com/Belphemur/AddictedProxy/commit/b43052af789584674ec2b384dfae94ee0baf4758))
+* **deps:** update dependency @sentry/vue to v9.14.0 ([62c59fe](https://github.com/Belphemur/AddictedProxy/commit/62c59fe134bec331044a93f0b13794d101a849f4))
+* **deps:** update dependency @sentry/vue to v9.15.0 ([7745cda](https://github.com/Belphemur/AddictedProxy/commit/7745cdadacd1c6fd6b2804c70fc0670b4514cbee))
+* **deps:** update dependency @sentry/vue to v9.16.1 ([ebe22a7](https://github.com/Belphemur/AddictedProxy/commit/ebe22a7f1d4452ed15f8d9cb38e2df3184e1a297))
+* **deps:** update dependency @sentry/vue to v9.17.0 ([81c91ce](https://github.com/Belphemur/AddictedProxy/commit/81c91ce5bcd4ca0593ead2575b4af57779a74f5d))
+* **deps:** update dependency vuetify to v3.8.2 ([f365a9e](https://github.com/Belphemur/AddictedProxy/commit/f365a9ed851ca0d4c7826319b2641cd8372f2311))
+* **deps:** update dependency vuetify to v3.8.3 ([90c4e10](https://github.com/Belphemur/AddictedProxy/commit/90c4e10a765910030f0130ef7ba4ffce222d0bfc))
+* **deps:** update dependency vuetify to v3.8.4 ([77b64f9](https://github.com/Belphemur/AddictedProxy/commit/77b64f942f4135f6457924ac8373317fa73e25ee))
+
+## [4.38.5](https://github.com/Belphemur/AddictedProxy/compare/v4.38.4...v4.38.5) (2025-04-13)
+
+### Bug Fixes
+
+* **frontend:** remove broken dep ([c6d0db6](https://github.com/Belphemur/AddictedProxy/commit/c6d0db6ad4a214b85aafe13a6ba2fe9a9f5c67c5))
+* **ui:** remove sentry nuxt sdk ([d90daf7](https://github.com/Belphemur/AddictedProxy/commit/d90daf7508402eb607cfca38ea310ee7362adb79))
+
+## [4.38.4](https://github.com/Belphemur/AddictedProxy/compare/v4.38.3...v4.38.4) (2025-04-13)
+
+### Bug Fixes
+
+* building frontend ([3b410d9](https://github.com/Belphemur/AddictedProxy/commit/3b410d91c8da7c2a809b89937ed9d6c9081db296))
+
 ## [4.38.3](https://github.com/Belphemur/AddictedProxy/compare/v4.38.2...v4.38.3) (2025-04-13)
 
 ### Bug Fixes
