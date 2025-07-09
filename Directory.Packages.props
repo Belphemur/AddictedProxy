@@ -7,7 +7,7 @@
     <PackageVersion Include="Ardalis.Result.AspNetCore" Version="10.1.0" />
     <PackageVersion Include="AsyncKeyedLock" Version="7.1.6" />
     <PackageVersion Include="AWSSDK.S3" Version="4.0.4.1" />
-    <PackageVersion Include="Community.Microsoft.Extensions.Caching.PostgreSql" Version="5.0.0" />
+    <PackageVersion Include="Community.Microsoft.Extensions.Caching.PostgreSql" Version="5.0.1" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="FluentAssertions" Version="8.4.0" />
     <PackageVersion Include="Hangfire.AspNetCore" Version="1.8.20" />
