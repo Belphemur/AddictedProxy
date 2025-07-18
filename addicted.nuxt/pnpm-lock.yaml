@@ -43,8 +43,8 @@ importers:
         specifier: ^3.2.0
         version: 3.2.0(magicast@0.3.5)
       '@pinia/nuxt':
-        specifier: 0.11.1
-        version: 0.11.1(magicast@0.3.5)(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3)))
+        specifier: 0.11.2
+        version: 0.11.2(magicast@0.3.5)(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3)))
       '@sentry/vite-plugin':
         specifier: ^3.5.0
         version: 3.6.0
@@ -68,7 +68,7 @@ importers:
         version: 3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))
       pinia-plugin-persistedstate:
         specifier: 4.4.1
-        version: 4.4.1(@nuxt/kit@3.17.7(magicast@0.3.5))(@pinia/nuxt@0.11.1(magicast@0.3.5)(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))))(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3)))
+        version: 4.4.1(@nuxt/kit@3.17.7(magicast@0.3.5))(@pinia/nuxt@0.11.2(magicast@0.3.5)(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))))(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3)))
       roboto-fontface:
         specifier: ^0.10.0
         version: 0.10.0
@@ -1046,8 +1046,8 @@ packages:
     resolution: {integrity: sha512-dfUnCxiN9H4ap84DvD2ubjw+3vUNpstxa0TneY/Paat8a3R4uQZDLSvWjmznAY/DoahqTHl9V46HF/Zs3F29pg==}
     engines: {node: '>= 10.0.0'}
 
-  '@pinia/nuxt@0.11.1':
-    resolution: {integrity: sha512-tCD8ioWhhIHKwm8Y9VvyhBAV/kK4W5uGBIYbI5iM4N1t7duOqK6ECBUavrMxMolELayqqMLb9+evegrh3S7s2A==}
+  '@pinia/nuxt@0.11.2':
+    resolution: {integrity: sha512-CgvSWpbktxxWBV7ModhAcsExsQZqpPq6vMYEe9DexmmY6959ev8ukL4iFhr/qov2Nb9cQAWd7niFDnaWkN+FHg==}
     peerDependencies:
       pinia: ^3.0.3
 
@@ -3351,9 +3351,6 @@ packages:
   pkg-types@2.1.0:
     resolution: {integrity: sha512-wmJwA+8ihJixSoHKxZJRBQG1oY8Yr9pGLzRmSsNms0iNWyHHAlZCa7mmKiFR10YPZuz/2k169JiS/inOjBCZ2A==}
 
-  pkg-types@2.1.1:
-    resolution: {integrity: sha512-eY0QFb6eSwc9+0d/5D2lFFUq+A3n3QNGSy/X2Nvp+6MfzGw2u6EbA7S80actgjY1lkvvI0pqB+a4hioMh443Ew==}
-
   pkg-types@2.2.0:
     resolution: {integrity: sha512-2SM/GZGAEkPp3KWORxQZns4M+WSeXbC2HEvmOIJe3Cmiv6ieAJvdVhDldtHqM5J1Y7MrR1XhkBT/rMlhh9FdqQ==}
 
@@ -5219,7 +5216,7 @@ snapshots:
 
   '@nuxt/devtools-kit@2.6.2(magicast@0.3.5)(vite@7.0.5(@types/node@22.16.4)(jiti@2.4.2)(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.0))':
     dependencies:
-      '@nuxt/kit': 3.17.6(magicast@0.3.5)
+      '@nuxt/kit': 3.17.7(magicast@0.3.5)
       execa: 8.0.1
       vite: 7.0.5(@types/node@22.16.4)(jiti@2.4.2)(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
@@ -5306,12 +5303,12 @@ snapshots:
 
   '@nuxt/kit@3.17.5(magicast@0.3.5)':
     dependencies:
-      c12: 3.0.4(magicast@0.3.5)
+      c12: 3.1.0(magicast@0.3.5)
       consola: 3.4.2
       defu: 6.1.4
       destr: 2.0.5
       errx: 0.1.0
-      exsolve: 1.0.5
+      exsolve: 1.0.7
       ignore: 7.0.5
       jiti: 2.4.2
       klona: 2.0.6
@@ -5319,14 +5316,14 @@ snapshots:
       mlly: 1.7.4
       ohash: 2.0.11
       pathe: 2.0.3
-      pkg-types: 2.1.1
+      pkg-types: 2.2.0
       scule: 1.3.0
       semver: 7.7.2
       std-env: 3.9.0
       tinyglobby: 0.2.14
       ufo: 1.6.1
       unctx: 2.4.1
-      unimport: 5.0.1
+      unimport: 5.1.0
       untyped: 2.0.0
     transitivePeerDependencies:
       - magicast
@@ -5596,9 +5593,9 @@ snapshots:
       '@parcel/watcher-win32-ia32': 2.5.1
       '@parcel/watcher-win32-x64': 2.5.1
 
-  '@pinia/nuxt@0.11.1(magicast@0.3.5)(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3)))':
+  '@pinia/nuxt@0.11.2(magicast@0.3.5)(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3)))':
     dependencies:
-      '@nuxt/kit': 3.17.5(magicast@0.3.5)
+      '@nuxt/kit': 3.17.7(magicast@0.3.5)
       pinia: 3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))
     transitivePeerDependencies:
       - magicast
@@ -8083,14 +8080,14 @@ snapshots:
 
   picomatch@4.0.3: {}
 
-  pinia-plugin-persistedstate@4.4.1(@nuxt/kit@3.17.7(magicast@0.3.5))(@pinia/nuxt@0.11.1(magicast@0.3.5)(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))))(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))):
+  pinia-plugin-persistedstate@4.4.1(@nuxt/kit@3.17.7(magicast@0.3.5))(@pinia/nuxt@0.11.2(magicast@0.3.5)(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))))(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))):
     dependencies:
       deep-pick-omit: 1.2.1
       defu: 6.1.4
       destr: 2.0.5
     optionalDependencies:
       '@nuxt/kit': 3.17.7(magicast@0.3.5)
-      '@pinia/nuxt': 0.11.1(magicast@0.3.5)(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3)))
+      '@pinia/nuxt': 0.11.2(magicast@0.3.5)(pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3)))
       pinia: 3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))
 
   pinia@3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3)):
@@ -8107,12 +8104,6 @@ snapshots:
       pathe: 2.0.3
 
   pkg-types@2.1.0:
-    dependencies:
-      confbox: 0.2.2
-      exsolve: 1.0.5
-      pathe: 2.0.3
-
-  pkg-types@2.1.1:
     dependencies:
       confbox: 0.2.2
       exsolve: 1.0.7
