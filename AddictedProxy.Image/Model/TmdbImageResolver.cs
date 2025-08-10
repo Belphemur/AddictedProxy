@@ -1,4 +1,5 @@
 ﻿using AddictedProxy.Storage.Caching.Service;
+using SixLabors.ImageSharp.Web;
 using SixLabors.ImageSharp.Web.Resolvers;
 using TvMovieDatabaseClient.Service;
 

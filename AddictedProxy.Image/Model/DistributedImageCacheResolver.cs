@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
+using SixLabors.ImageSharp.Web;
 using SixLabors.ImageSharp.Web.Resolvers;
 
 namespace AddictedProxy.Image.Model;

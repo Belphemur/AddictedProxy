@@ -9,6 +9,7 @@ using TvMovieDatabaseClient.Service;
 using TvMovieDatabaseClient.Service.Model;
 using AddictedProxy.Caching.Extensions;
 using Performance.Service;
+using SixLabors.ImageSharp.Web;
 using DistributedCacheExtensions = AddictedProxy.Caching.Extensions.DistributedCacheExtensions;
 
 namespace AddictedProxy.Image.Logic;
