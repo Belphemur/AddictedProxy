@@ -1,3 +1,5 @@
+import { defineStore, acceptHMRUpdate } from 'pinia'
+
 export const useLanguage = defineStore('language', {
     state: () => ({
         lang: 'en',

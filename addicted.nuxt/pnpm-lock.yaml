@@ -32,6 +32,9 @@ importers:
       utf-8-validate:
         specifier: ^6.0.5
         version: 6.0.5
+      vite-tsconfig-paths:
+        specifier: ^5.1.4
+        version: 5.1.4(typescript@5.9.2)(vite@7.1.1(@types/node@22.17.1)(jiti@2.5.1)(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.0))
       vuetify:
         specifier: ^3.8.6
         version: 3.9.4(typescript@5.9.2)(vite-plugin-vuetify@2.1.2)(vue@3.5.18(typescript@5.9.2))
@@ -2580,6 +2583,9 @@ packages:
     resolution: {integrity: sha512-0Ia46fDOaT7k4og1PDW4YbodWWr3scS2vAr2lTbsplOt2WkKp0vQbkI9wKis/T5LV/dqPjO3bpS/z6GTJB82LA==}
     engines: {node: '>=18'}
 
+  globrex@0.1.2:
+    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
+
   gonzales-pe@4.3.0:
     resolution: {integrity: sha512-otgSPpUmdWJ43VXyiNgEYE4luzHCL2pz4wQ0OnDluC6Eg4Ko3Vexy/SrSynglw/eR+OhkzmqFCZa/OFa/RgAOQ==}
     engines: {node: '>=0.6.0'}
@@ -4088,6 +4094,16 @@ packages:
     peerDependencies:
       typescript: '>=4.8.4'
 
+  tsconfck@3.1.6:
+    resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+    peerDependencies:
+      typescript: ^5.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
@@ -4359,6 +4375,14 @@ packages:
       vite: '>=5'
       vue: ^3.0.0
       vuetify: ^3.0.0
+
+  vite-tsconfig-paths@5.1.4:
+    resolution: {integrity: sha512-cYj0LRuLV2c2sMqhqhGpaO3LretdtMn/BVX4cPLanIZuwwrkVl+lK84E/miEXkCHWXuq65rhNN4rXsBcOB3S4w==}
+    peerDependencies:
+      vite: '*'
+    peerDependenciesMeta:
+      vite:
+        optional: true
 
   vite@7.1.1:
     resolution: {integrity: sha512-yJ+Mp7OyV+4S+afWo+QyoL9jFWD11QFH0i5i7JypnfTcA1rmgxCbiA8WwAICDEtZ1Z1hzrVhN8R8rGTqkTY8ZQ==}
@@ -7107,6 +7131,8 @@ snapshots:
       slash: 5.1.0
       unicorn-magic: 0.3.0
 
+  globrex@0.1.2: {}
+
   gonzales-pe@4.3.0:
     dependencies:
       minimist: 1.2.8
@@ -8860,6 +8886,10 @@ snapshots:
     dependencies:
       typescript: 5.9.2
 
+  tsconfck@3.1.6(typescript@5.9.2):
+    optionalDependencies:
+      typescript: 5.9.2
+
   tslib@2.8.1: {}
 
   tsx@4.19.4:
@@ -9140,6 +9170,17 @@ snapshots:
       vuetify: 3.9.4(typescript@5.9.2)(vite-plugin-vuetify@2.1.2)(vue@3.5.18(typescript@5.9.2))
     transitivePeerDependencies:
       - supports-color
+
+  vite-tsconfig-paths@5.1.4(typescript@5.9.2)(vite@7.1.1(@types/node@22.17.1)(jiti@2.5.1)(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.0)):
+    dependencies:
+      debug: 4.4.1
+      globrex: 0.1.2
+      tsconfck: 3.1.6(typescript@5.9.2)
+    optionalDependencies:
+      vite: 7.1.1(@types/node@22.17.1)(jiti@2.5.1)(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.0)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
 
   vite@7.1.1(@types/node@22.17.1)(jiti@2.5.1)(terser@5.43.1)(tsx@4.19.4)(yaml@2.8.0):
     dependencies:

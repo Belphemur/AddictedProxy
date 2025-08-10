@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 import {sentryVitePlugin} from "@sentry/vite-plugin";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 const manualChunk = ["@sentry/vue", "@sentry/tracing", "@sentry/browser", "@microsoft/signalr", "lodash-es", "@microsoft/signalr-protocol-msgpack"];
 
@@ -51,6 +52,7 @@ export default defineNuxtConfig({
                 },
                 debug: true,
             }),
+            tsconfigPaths()
         ]
     },
 
@@ -104,7 +106,7 @@ export default defineNuxtConfig({
     },
 
     pinia: {
-        autoImports: ['defineStore', 'acceptHMRUpdate'],
+        storesDirs: ['./stores/**'],
     },
     vuetify: {
         vuetifyOptions: {
