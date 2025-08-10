@@ -29,6 +29,8 @@
 <script lang="ts" setup>
 import logo from "@/components/icon/logo.vue";
 import {useRouter} from "vue-router";
+import { orderBy, filter } from "lodash-es";
+
 // eslint-disable-next-line no-undef
 const emit = defineEmits<{
   (e: "drawerClicked"): void;
@@ -41,8 +43,12 @@ export interface Props {
 const {isMobile} = defineProps<Props>();
 
 const router = useRouter();
-const routes = useOrderBy(useFilter(router.getRoutes(), (route) => {
-  return route.meta.order != undefined;
-}), ["meta.order"], ["asc"]);
+const routes = orderBy(
+  filter(router.getRoutes(), (route) => {
+    return route.meta.order != undefined;
+  }),
+  ["meta.order"],
+  ["asc"]
+);
 
 </script>

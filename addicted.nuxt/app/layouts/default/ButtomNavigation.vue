@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import {useRouter} from "vue-router";
+import { orderBy, filter } from "lodash-es";
 
 const router = useRouter();
-const routes = useOrderBy(useFilter(router.getRoutes(), (route) => {
-  return route.meta.order != undefined;
-}), ["meta.order"], ["asc"]);
+const routes = orderBy(
+  filter(router.getRoutes(), (route) => {
+    return route.meta.order != undefined;
+  }),
+  ["meta.order"],
+  ["asc"]
+);
 
 const drawer = defineModel<boolean>()
 

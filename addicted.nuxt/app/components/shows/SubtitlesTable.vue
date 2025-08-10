@@ -127,7 +127,7 @@ import {mevent} from "~/composables/data/event";
 import type {EpisodeWithSubtitlesDto, SubtitleDto} from "~/composables/api/data-contracts";
 import {useSubtitles} from "~/composables/rest/api";
 import type {SubtitleWithEpisode} from "~/composables/dto/SubtitleWithEpisode";
-import {forEach} from "lodash-es";
+import {forEach, orderBy} from "lodash-es";
 import {trim} from "~/composables/utils/trim";
 import {mdiAlertCircle, mdiCheck, mdiDownload, mdiEarHearingOff, mdiSubtitlesOutline} from "@mdi/js";
 
@@ -164,7 +164,7 @@ const subtitles = computed<SubtitleWithEpisode[]>(() => {
 
   const subtitles: SubtitleWithEpisode[] = [];
   forEach(props.episodes, (episode: EpisodeWithSubtitlesDto) => {
-    forEach(useOrderBy(episode.subtitles, (subtitle) => subtitle.hearingImpaired), (subtitle: SubtitleDto) => {
+    forEach(orderBy(episode.subtitles, (subtitle) => subtitle.hearingImpaired), (subtitle: SubtitleDto) => {
       subtitles.push({
         subtitle: subtitle,
         episode: episode,

@@ -129,7 +129,6 @@ export default defineNuxtConfig({
       '@nuxtjs/google-fonts',
       '@pinia/nuxt',
       '@nuxtjs/device',
-      'nuxt-lodash',
       "vuetify-nuxt-module",
       'pinia-plugin-persistedstate'
     ],
