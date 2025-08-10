@@ -14,6 +14,7 @@ import { downloadZip } from "client-zip";
 import { mevent } from "~/composables/data/event";
 import { mdiDownload, mdiRefresh } from "@mdi/js";
 import { useSubtitleType } from "~/stores/subtitleType";
+import { last } from "lodash-es";
 
 export interface Props {
   showId: string;
@@ -100,7 +101,7 @@ const doneHandler: DoneHandler = async (show) => {
 
   mediaInfo.value = { details: mediaInfo.value?.details, media: show }
   if (currentSeason.value == undefined) {
-    currentSeason.value = useLast(mediaInfo.value?.media?.seasons);
+    currentSeason.value = last(mediaInfo.value?.media?.seasons);
   }
 
   loadingEpisodes.value = true;
