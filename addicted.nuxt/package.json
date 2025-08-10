@@ -18,7 +18,7 @@
     "@types/node": "^22.15.21",
     "@types/webfontloader": "^1.6.38",
     "h3-proxy": "^1.13.0",
-    "nuxt": "^3.17.4",
+    "nuxt": "^4.0.0",
     "nuxt-lodash": "^2.5.3",
     "pinia": "^3.0.2",
     "pinia-plugin-persistedstate": "4.4.1",
