@@ -1,3 +1,38 @@
+## [4.38.9](https://github.com/Belphemur/AddictedProxy/compare/v4.38.8...v4.38.9) (2025-08-10)
+
+### Bug Fixes
+
+* **deps:** update dependency @microsoft/signalr to v8.0.17 ([5068a6e](https://github.com/Belphemur/AddictedProxy/commit/5068a6e8bb95c3438bc2cdfd971666472483eb49))
+* **deps:** update dependency @microsoft/signalr to v9 ([e4e2373](https://github.com/Belphemur/AddictedProxy/commit/e4e2373fc3fefadb50c8040072e6f9c5a9d8e8dc))
+* **deps:** update dependency @sentry/vue to v9.34.0 ([2cc6eff](https://github.com/Belphemur/AddictedProxy/commit/2cc6eff58119d315c2f1912ee7252db402d31962))
+* **deps:** update dependency @sentry/vue to v9.35.0 ([54e187b](https://github.com/Belphemur/AddictedProxy/commit/54e187b081b544c7c22e856caee52b7438202e23))
+* **deps:** update dependency @sentry/vue to v9.36.0 ([4ee5efe](https://github.com/Belphemur/AddictedProxy/commit/4ee5efe23d2d64fff83002b1a2360efe989575d5))
+* **deps:** update dependency @sentry/vue to v9.37.0 ([935533d](https://github.com/Belphemur/AddictedProxy/commit/935533d14915d81b5b5c7a98f1c4fb38c4a7236a))
+* **deps:** update dependency @sentry/vue to v9.38.0 ([1e70175](https://github.com/Belphemur/AddictedProxy/commit/1e7017519686a9802a506b8e5f25eb5a93ef5aad))
+* **deps:** update dependency @sentry/vue to v9.39.0 ([a4f797d](https://github.com/Belphemur/AddictedProxy/commit/a4f797db88aced4666b7322e2f7a9802a388cd90))
+* **deps:** update dependency @sentry/vue to v9.40.0 ([18d8f67](https://github.com/Belphemur/AddictedProxy/commit/18d8f67b824ca30d2ef5dcc4e904b937babea569))
+* **deps:** update dependency @sentry/vue to v9.41.0 ([5b28266](https://github.com/Belphemur/AddictedProxy/commit/5b282664b0ee38a1ed75d50beee84dd9f43e5455))
+* **deps:** update dependency @sentry/vue to v9.42.0 ([10d28ad](https://github.com/Belphemur/AddictedProxy/commit/10d28ad55d9710975a3b98a4d1dfc4545c809744))
+* **deps:** update dependency @sentry/vue to v9.42.1 ([31b7ed3](https://github.com/Belphemur/AddictedProxy/commit/31b7ed31328ad003bdf599f166a902d6e78c4668))
+* **deps:** update dependency @sentry/vue to v9.43.0 ([7947824](https://github.com/Belphemur/AddictedProxy/commit/7947824b4743e1723e8ac91286cbe804068b5d0e))
+* **deps:** update dependency @sentry/vue to v9.44.0 ([e649217](https://github.com/Belphemur/AddictedProxy/commit/e6492176f7245b578cb564605586b46aed8cc439))
+* **deps:** update dependency @sentry/vue to v9.44.1 ([93dd3e3](https://github.com/Belphemur/AddictedProxy/commit/93dd3e3260dbb0d0c70307b973b1860ad6f6ead5))
+* **deps:** update dependency @sentry/vue to v9.44.2 ([7251895](https://github.com/Belphemur/AddictedProxy/commit/725189538f0b14b2ab44f5b499455d48e50772fa))
+* **deps:** update dependency @sentry/vue to v9.45.0 ([2e1ca99](https://github.com/Belphemur/AddictedProxy/commit/2e1ca99d15487d6d37ec6f176525e36db835f2a7))
+* **deps:** update dependency semantic-release to v24.2.7 ([b7c5539](https://github.com/Belphemur/AddictedProxy/commit/b7c55395f09e322d735e33be03105d4bd42f3821))
+* **deps:** update dependency vuetify to v3.8.12 ([c14d695](https://github.com/Belphemur/AddictedProxy/commit/c14d695e6fff6d16be07e7913614243cc2cadc20))
+* **deps:** update dependency vuetify to v3.9.0 ([ce62219](https://github.com/Belphemur/AddictedProxy/commit/ce622190a6d1f64274da81d7d32f25559925c06f))
+* **deps:** update dependency vuetify to v3.9.1 ([5ba5525](https://github.com/Belphemur/AddictedProxy/commit/5ba55251db9990321e596a4b325b4b6572d48656))
+* **deps:** update dependency vuetify to v3.9.2 ([9e49bcd](https://github.com/Belphemur/AddictedProxy/commit/9e49bcd93de029570a3d686714adbb3f9552ee6c))
+* **deps:** update dependency vuetify to v3.9.3 ([52b4fe3](https://github.com/Belphemur/AddictedProxy/commit/52b4fe36e8a8f0415d6ef7bb83a9191e1adb32d2))
+* **deps:** update dependency vuetify to v3.9.4 ([71a1e33](https://github.com/Belphemur/AddictedProxy/commit/71a1e3376c4b9047ee881ab8ced03bf7d93bf26c))
+* **fetch:** fix asyncdata warning ([d078bd6](https://github.com/Belphemur/AddictedProxy/commit/d078bd6b695459988aa957193ab4fc0f030aa4fa))
+* **image:** fix namespace change for images ([f2d4e51](https://github.com/Belphemur/AddictedProxy/commit/f2d4e515019af26013ef6d2972c89d4a51629935))
+* lodash usage ([522dfc3](https://github.com/Belphemur/AddictedProxy/commit/522dfc34e159157eefcf1f862d3b1b3c4807b6a4))
+* lodash usage ([a6c7e0d](https://github.com/Belphemur/AddictedProxy/commit/a6c7e0d697b1b480b759fb6eb0e62ab37ff801bb))
+* **sentry:** remove sentry ([c01a1bb](https://github.com/Belphemur/AddictedProxy/commit/c01a1bbc16b9cfe1d5bcf1e4ac16645aa2d21ad0))
+* **store:** fix issue with store not loaded properly ([544b2fc](https://github.com/Belphemur/AddictedProxy/commit/544b2fcf61a07adb2fcec356636961c7374d5115))
+
 ## [4.38.8](https://github.com/Belphemur/AddictedProxy/compare/v4.38.7...v4.38.8) (2025-07-01)
 
 ### Bug Fixes
