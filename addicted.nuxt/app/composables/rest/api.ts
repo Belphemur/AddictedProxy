@@ -2,7 +2,6 @@ import {Subtitles} from "~/composables/api/Subtitles";
 import {Shows} from "~/composables/api/Shows";
 import {Media} from "~/composables/api/Media";
 import type {ApiConfig} from "~/composables/api/http-client";
-import * as Sentry from '@sentry/vue'
 import fetchRetry from 'fetch-retry';
 
 let subtitles: Subtitles<any>;
@@ -40,30 +39,6 @@ function getApiConfig() {
                 if (init?.referrerPolicy !== undefined)
                     delete init.referrerPolicy
                 //Client side
-            } else {
-                const activeSpan = Sentry.getActiveSpan();
-                const rootSpan = activeSpan ? Sentry.getRootSpan(activeSpan) : undefined;
-
-// Create `sentry-trace` header
-                const sentryTraceHeader = rootSpan ? Sentry.spanToTraceHeader(rootSpan) : undefined;
-
-// Create `baggage` header
-                const sentryBaggageHeader = rootSpan ? Sentry.spanToBaggageHeader(rootSpan) : "undefined";
-
-                let addedHeader = {}
-                if (sentryBaggageHeader !== undefined && sentryTraceHeader !== undefined) {
-                    addedHeader = {
-                        baggage: sentryBaggageHeader,
-                        'sentry-trace': sentryTraceHeader,
-                    }
-                }
-                init = {
-                    ...init,
-                    headers: {
-                        ...init?.headers,
-                        ...addedHeader
-                    },
-                };
             }
             return fetchWithRetry(input, init)
         },

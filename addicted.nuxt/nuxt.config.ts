@@ -50,7 +50,7 @@ export default defineNuxtConfig({
                     name: process.env.RELEASE_VERSION,
                 },
                 debug: true,
-            }),
+            })
         ]
     },
 
@@ -104,7 +104,7 @@ export default defineNuxtConfig({
     },
 
     pinia: {
-        autoImports: ['defineStore', 'acceptHMRUpdate'],
+        storesDirs: ['./stores/**'],
     },
     vuetify: {
         vuetifyOptions: {
@@ -129,7 +129,6 @@ export default defineNuxtConfig({
       '@nuxtjs/google-fonts',
       '@pinia/nuxt',
       '@nuxtjs/device',
-      'nuxt-lodash',
       "vuetify-nuxt-module",
       'pinia-plugin-persistedstate'
     ],

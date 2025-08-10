@@ -1,6 +1,7 @@
 ﻿using AddictedProxy.Caching.Extensions;
 using AddictedProxy.Image.Model;
 using Microsoft.Extensions.Caching.Distributed;
+using SixLabors.ImageSharp.Web;
 using SixLabors.ImageSharp.Web.Caching;
 using SixLabors.ImageSharp.Web.Resolvers;
 

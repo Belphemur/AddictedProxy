@@ -1,4 +1,5 @@
 import type {SubtitleType} from "~/composables/dto/SubtitleType";
+import { defineStore, acceptHMRUpdate } from 'pinia'
 
 export const useSubtitleType = defineStore('subtitleType', {
     state: () => ({
