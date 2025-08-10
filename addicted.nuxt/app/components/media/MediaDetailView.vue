@@ -55,24 +55,6 @@ useSeoMeta({
   ogType: "website"
 })
 
-watch([currentSeason, language], async ([newSeason], [oldSeason]) => {
-  loadingEpisodes.value = true;
-  if (oldSeason == undefined && newSeason != undefined) {
-    return;
-  }
-  const {
-    data,
-  } = await useAsyncData(async () => {
-    if (currentSeason.value == undefined) {
-      return [];
-    }
-    return (await showsApi.showsDetail(props.showId, currentSeason.value!, language.lang)).data.episodes!;
-  });
-
-  episodes.value = data.value;
-  loadingEpisodes.value = false;
-})
-
 const {
   sendRefreshAsync,
   unsubscribeShowAsync,
@@ -117,6 +99,8 @@ onUnmounted(() => {
 });
 
 async function loadViewData() {
+  loadingEpisodes.value = true;
+
   const { data, error } = await useAsyncData(async () => (await mediaApi.episodesDetail(props.showId, language.lang)).data!);
   if (error.value != null) {
     throw createError({ statusCode: 404, statusMessage: `Show ${props.showId} not found` });
@@ -127,7 +111,25 @@ async function loadViewData() {
   }
   currentSeason.value = data.value?.lastSeasonNumber
   episodes.value = data.value?.episodeWithSubtitles;
+  loadingEpisodes.value = false;
 }
+
+watch([currentSeason, language], async ([newSeason], [oldSeason]) => {
+  if(loadingEpisodes.value) {
+    console.warn("Loading episodes already in progress, skipping season change");
+    return;
+  }
+  if (oldSeason == undefined && newSeason != undefined) {
+    return;
+  }
+  loadingEpisodes.value = true;
+
+  if (currentSeason.value != undefined) {
+    episodes.value = (await showsApi.showsDetail(props.showId, currentSeason.value!, language.lang)).data.episodes!;
+  }
+
+  loadingEpisodes.value = false;
+})
 
 
 const refreshShow = async () => {
