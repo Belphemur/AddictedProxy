@@ -13,7 +13,6 @@ import { trim } from "~/composables/utils/trim";
 import { downloadZip } from "client-zip";
 import { mevent } from "~/composables/data/event";
 import { mdiDownload, mdiRefresh } from "@mdi/js";
-import { useSubtitleType } from "~/stores/subtitleType";
 import { last } from "lodash-es";
 
 export interface Props {
