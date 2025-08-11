@@ -47,7 +47,7 @@ importers:
         version: 0.11.2(magicast@0.3.5)(pinia@3.0.3(typescript@5.9.2)(vue@3.5.18(typescript@5.9.2)))
       '@sentry/vite-plugin':
         specifier: ^4.0.2
-        version: 4.0.2
+        version: 4.1.0
       '@types/node':
         specifier: ^24.2.1
         version: 24.2.1
@@ -1399,12 +1399,12 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@sentry/babel-plugin-component-annotate@4.0.2':
-    resolution: {integrity: sha512-Nr/VamvpQs6w642EI5t+qaCUGnVEro0qqk+S8XO1gc8qSdpc8kkZJFnUk7ozAr+ljYWGfVgWXrxI9lLiriLsRA==}
+  '@sentry/babel-plugin-component-annotate@4.1.0':
+    resolution: {integrity: sha512-UkcnqC7Bp9ODyoBN7BKcRotd1jz/I2vyruE/qjNfRC7UnP+jIRItUWYaXxQPON1fTw+N+egKdByk0M1y2OPv/Q==}
     engines: {node: '>= 14'}
 
-  '@sentry/bundler-plugin-core@4.0.2':
-    resolution: {integrity: sha512-LeARs8qHhEw19tk+KZd9DDV+Rh/UeapIH0+C09fTmff9p8Y82Cj89pEQ2a1rdUiF/oYIjQX45vnZscB7ra42yw==}
+  '@sentry/bundler-plugin-core@4.1.0':
+    resolution: {integrity: sha512-/5XBtCF6M+9frEXrrvfSWOdOC2q6I1L7oY7qbUVegNkp3kYVGihNZZnJIXGzo9rmwnA0IV7jI3o0pF/HDRqPeA==}
     engines: {node: '>= 14'}
 
   '@sentry/cli-darwin@2.51.1':
@@ -1459,8 +1459,8 @@ packages:
     engines: {node: '>= 10'}
     hasBin: true
 
-  '@sentry/vite-plugin@4.0.2':
-    resolution: {integrity: sha512-rStdvDGj0VcJBsl2NANE3OQF5m13VCJ+2Ovs5pb2LAqOW72/1GLmef9Mo3b9BwzCjWOQIcgtllwOfSV5Pse03w==}
+  '@sentry/vite-plugin@4.1.0':
+    resolution: {integrity: sha512-uLZxOAW79sOQH77yWiQct8f3i+LUi36wn2fK62cejZfrGaHu5P+9R4f0Es1L70I3MrsPXOvJ0A6r5PkVS9562g==}
     engines: {node: '>= 14'}
 
   '@sindresorhus/is@7.0.2':
@@ -5760,12 +5760,12 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.46.2':
     optional: true
 
-  '@sentry/babel-plugin-component-annotate@4.0.2': {}
+  '@sentry/babel-plugin-component-annotate@4.1.0': {}
 
-  '@sentry/bundler-plugin-core@4.0.2':
+  '@sentry/bundler-plugin-core@4.1.0':
     dependencies:
       '@babel/core': 7.28.0
-      '@sentry/babel-plugin-component-annotate': 4.0.2
+      '@sentry/babel-plugin-component-annotate': 4.1.0
       '@sentry/cli': 2.51.1
       dotenv: 16.6.1
       find-up: 5.0.0
@@ -5820,9 +5820,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sentry/vite-plugin@4.0.2':
+  '@sentry/vite-plugin@4.1.0':
     dependencies:
-      '@sentry/bundler-plugin-core': 4.0.2
+      '@sentry/bundler-plugin-core': 4.1.0
       unplugin: 1.0.1
     transitivePeerDependencies:
       - encoding
