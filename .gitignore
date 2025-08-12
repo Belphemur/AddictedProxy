@@ -5,3 +5,29 @@ riderModule.iml
 /_ReSharper.Caches/
 /node_modules/
 /.vs/AddictedProxy
+
+# JetBrains IDEs (IntelliJ, Rider, WebStorm, etc.)
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.idea_modules/
+atlassian-ide-plugin.xml
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# Rider specific
+.idea/.idea.*/
+**/bin/Debug/
+**/bin/Release/
+**/obj/
+
+# WebStorm specific
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/dictionaries
+.idea/shelf/
