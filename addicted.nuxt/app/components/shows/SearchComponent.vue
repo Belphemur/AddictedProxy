@@ -2,30 +2,19 @@
   <v-container>
     <v-row>
       <v-col>
-        <v-autocomplete label="Name of the show"
-                        clearable
-                        :error-messages="error"
-                        :items="results"
-                        :loading="isLoading"
-                        item-title="name"
-                        hide-no-data
-                        :item-value="item => item"
-                        @update:search="onSearch"
-                        @update:modelValue="updateSelectedShow"
-                        :prepend-inner-icon="mdiTelevision"
-                        @click:clear="clearSearch"
-        ></v-autocomplete>
+        <show-autocomplete :results="results" :is-loading="isLoading" :error="error" @search="onSearch"
+          @selected="updateSelectedShow" @cleared="clearSearch" />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import {ref,} from "vue";
-import {mevent} from "~/composables/data/event";
-import {useShows} from "~/composables/rest/api";
-import type {ShowDto} from "~/composables/api/data-contracts";
-import {mdiTelevision} from "@mdi/js";
+import { ref, } from "vue";
+import { mevent } from "~/composables/data/event";
+import { useShows } from "~/composables/rest/api";
+import type { ShowDto } from "~/composables/api/data-contracts";
+import ShowAutocomplete from "~/components/shows/ShowAutocomplete.vue";
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits<{
@@ -44,7 +33,7 @@ const selectedShowSeason = ref<Array<number>>([]);
 const results = ref<ShowDto[]>([]);
 const isLoading = ref(false);
 
-let timerId: number = 0;
+let timerId: ReturnType<typeof setTimeout> | null = null;
 
 const error = ref<string | undefined>(undefined);
 
@@ -52,13 +41,14 @@ const clearSearch = () => {
   selectedShow.value = null;
   selectedSeason.value = null;
   selectedShowSeason.value = [];
+  results.value = [];
   emit("cleared");
 };
 const onSearch = async (val: string) => {
   if (process.server) {
     return;
   }
-  clearTimeout(timerId)
+  if (timerId) clearTimeout(timerId)
   timerId = setTimeout(async () => {
     isLoading.value = true;
     results.value = await querySearch(val);
@@ -73,7 +63,7 @@ const querySearch = async (query: string) => {
   if (query.length < 3) {
     return [];
   }
-  mevent("show-search", {query: query});
+  mevent("show-search", { query: query });
   try {
     const searchResponse = await showsApi.searchDetail(query);
     const shows = searchResponse.data.shows;
@@ -94,9 +84,8 @@ const updateSelectedShow = async (event: ShowDto) => {
     event.seasons = event.seasons.sort();
   }
 
-  mevent("show-selected", {show: event});
+  mevent("show-selected", { show: event });
   emit("selected", event);
 };
 
 </script>
-
