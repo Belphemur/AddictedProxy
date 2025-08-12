@@ -1,3 +1,13 @@
+## [4.39.0](https://github.com/Belphemur/AddictedProxy/compare/v4.38.9...v4.39.0) (2025-08-12)
+
+### Bug Fixes
+
+* update .gitignore to include JetBrains IDEs and WebStorm specific files ([e375b9d](https://github.com/Belphemur/AddictedProxy/commit/e375b9d083066d325fbf4a22ce00568844409e68))
+
+### Features
+
+* implement ShowAutocomplete component for enhanced show search functionality ([eb41d63](https://github.com/Belphemur/AddictedProxy/commit/eb41d635426d93ef3bb010fcb4a9a602075e1cfc))
+
 ## [4.38.9](https://github.com/Belphemur/AddictedProxy/compare/v4.38.8...v4.38.9) (2025-08-10)
 
 ### Bug Fixes
