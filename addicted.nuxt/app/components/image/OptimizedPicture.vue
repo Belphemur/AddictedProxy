@@ -36,6 +36,12 @@ export type SupportedFormat = 'webp' | 'jpeg' | 'png'
 const props = defineProps<Props>();
 const baseUrl = useRuntimeConfig().public.api.clientUrl;
 
+// Add emits for load and error events
+const emit = defineEmits<{
+  load: []
+  error: []
+}>();
+
 const fallbackSource = computed(() => props.sources.at(0));
 
 // Function to get the max-width media query
@@ -132,8 +138,8 @@ if (props.preload) {
                 :width="source.width" :height="source.height">
       </template>
     </template>
-    <img :src="toSrcSet(fallbackSource, props.formats[0])" :alt="alt" :width="fallbackSource.width"
-         :height="fallbackSource.height">
+    <img v-if="fallbackSource" :src="toSrcSet(fallbackSource, props.formats[0] ?? null)" :alt="alt" :width="fallbackSource.width"
+         :height="fallbackSource.height" @load="emit('load')" @error="emit('error')">
   </picture>
 </template>
 
