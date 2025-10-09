@@ -9,8 +9,10 @@
           icon="true"
           :active="route.path == router.currentRoute.value.fullPath"
           :text="route.name"
-          v-on:click="router.push(route)">
-        <v-icon >{{route.meta.icon}}</v-icon>
+      >
+        <NuxtLink :to="route.path">
+          <v-icon>{{ route.meta.icon }}</v-icon>
+        </NuxtLink>
         <v-tooltip
             activator="parent"
             location="bottom"
@@ -29,7 +31,7 @@
 <script lang="ts" setup>
 import logo from "@/components/icon/logo.vue";
 import {useRouter} from "vue-router";
-import { orderBy, filter } from "lodash-es";
+import {orderBy, filter} from "lodash-es";
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits<{
@@ -44,11 +46,11 @@ const {isMobile} = defineProps<Props>();
 
 const router = useRouter();
 const routes = orderBy(
-  filter(router.getRoutes(), (route) => {
-    return route.meta.order != undefined;
-  }),
-  ["meta.order"],
-  ["asc"]
+    filter(router.getRoutes(), (route) => {
+      return route.meta.order != undefined;
+    }),
+    ["meta.order"],
+    ["asc"]
 );
 
 </script>
