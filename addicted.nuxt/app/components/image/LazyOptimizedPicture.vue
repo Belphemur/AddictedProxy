@@ -26,9 +26,19 @@ const shouldLoad = ref(false);
 onMounted(() => {
   if (!imageRef.value) return;
 
-  // If preload is true, load immediately
+  // If preload is true, load immediately but still in a non-blocking way
   if (props.preload) {
-    shouldLoad.value = true;
+    // Use requestIdleCallback to avoid blocking main thread
+    if (typeof requestIdleCallback !== 'undefined') {
+      requestIdleCallback(() => {
+        shouldLoad.value = true;
+      });
+    } else {
+      // Fallback for browsers without requestIdleCallback
+      setTimeout(() => {
+        shouldLoad.value = true;
+      }, 0);
+    }
     return;
   }
 

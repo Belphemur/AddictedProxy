@@ -18,26 +18,28 @@ const props = defineProps<Props>();
            :key="media.media?.id"
            class="ma-0 pa-1"
            align-self="center">
-      <v-card :to="{name: 'show-details', params: {showId: media.media!.id, showName: media.media!.slug}}">
+      <NuxtLink :to="{name: 'show-details', params: {showId: media.media!.id, showName: media.media!.slug}}">
+        <v-card>
         <span
             class="text-white text text-h6"
         >{{ media?.details.englishName }} ({{ media!.details?.releaseYear }})
         </span>
-        <lazy-optimized-picture :src="media.details!.backdropPath!"
-                           :sources="[
+          <lazy-optimized-picture :src="media.details!.backdropPath!"
+                                  :sources="[
                                 { size: 'xl', width: 400, height: 225 },
                                 { size: 'xxl', width: 500, height: 281 },
                            ]"
-                           :alt="`Backdrop poster for ${media.details!.englishName}`"
-                           :formats="[ 'webp', 'jpeg']"
-                           :placeholder-text="media.details!.englishName"
-                           class="media-trending-backdrop"
-        />
-        <v-progress-circular class="vote" color="white" bg-color="red" :size="60" :width="5"
-                             :model-value="media.details?.voteAverage *10">
-          {{ media.details?.voteAverage }}/10
-        </v-progress-circular>
-      </v-card>
+                                  :alt="`Backdrop poster for ${media.details!.englishName}`"
+                                  :formats="[ 'webp', 'jpeg']"
+                                  :placeholder-text="media.details!.englishName"
+                                  class="media-trending-backdrop"
+          />
+          <v-progress-circular class="vote" color="white" bg-color="red" :size="60" :width="5"
+                               :model-value="media.details?.voteAverage *10">
+            {{ media.details?.voteAverage }}/10
+          </v-progress-circular>
+        </v-card>
+      </NuxtLink>
     </v-col>
   </v-row>
 </template>
