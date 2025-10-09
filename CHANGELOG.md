@@ -1,3 +1,21 @@
+## [4.39.1](https://github.com/Belphemur/AddictedProxy/compare/v4.39.0...v4.39.1) (2025-10-09)
+
+### Performance improvements
+
+* **database:** use UUIDv7 from the postgres 18 database. ([28b8e81](https://github.com/Belphemur/AddictedProxy/commit/28b8e81be17ca30667c61bb711cc1007d5233e02))
+
+### Bug Fixes
+
+* **deps:** update dependency semantic-release to v24.2.8 ([b394cc0](https://github.com/Belphemur/AddictedProxy/commit/b394cc0cb195e691c72837868e1c64faac8c228a))
+* **deps:** update dependency semantic-release to v24.2.9 ([92c33b8](https://github.com/Belphemur/AddictedProxy/commit/92c33b81abff86efc101cd299c735a13fd24be70))
+* **deps:** update dependency vuetify to v3.10.0 ([1f4463c](https://github.com/Belphemur/AddictedProxy/commit/1f4463c308aa86f7c3ae5fd7adfe37c30ecb0de6))
+* **deps:** update dependency vuetify to v3.10.1 ([00c8b0f](https://github.com/Belphemur/AddictedProxy/commit/00c8b0f16d8df08c75efabed3d4fe4146210d279))
+* **deps:** update dependency vuetify to v3.10.2 ([869a954](https://github.com/Belphemur/AddictedProxy/commit/869a95485cc31d3eaf1fbc9321eda3e820ba59d1))
+* **deps:** update dependency vuetify to v3.10.3 ([577afa5](https://github.com/Belphemur/AddictedProxy/commit/577afa5e57006dc667f9e5b65f64a570266dcc02))
+* **deps:** update dependency vuetify to v3.9.5 ([725ec04](https://github.com/Belphemur/AddictedProxy/commit/725ec0434ff54f41e513db190e5e2325e5408d0f))
+* **deps:** update dependency vuetify to v3.9.6 ([344e091](https://github.com/Belphemur/AddictedProxy/commit/344e09120a2aaa7a86b1f2c0ccd6489194c9ccf3))
+* **deps:** update dependency vuetify to v3.9.7 ([7f71563](https://github.com/Belphemur/AddictedProxy/commit/7f715636c0b33337b74e47dfffa0c18f5b9f1ac5))
+
 ## [4.39.0](https://github.com/Belphemur/AddictedProxy/compare/v4.38.9...v4.39.0) (2025-08-12)
 
 ### Bug Fixes
