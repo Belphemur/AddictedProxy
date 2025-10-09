@@ -22,7 +22,7 @@
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "4.5.0",
     "roboto-fontface": "^0.10.0",
-    "swagger-typescript-api": "github:Belphemur/swagger-typescript-api#main",
+    "swagger-typescript-api": "^13.2.15",
     "typescript": "^5.9.2",
     "vite": "^7.1.1",
     "vite-plugin-vuetify": "^2.1.2",
