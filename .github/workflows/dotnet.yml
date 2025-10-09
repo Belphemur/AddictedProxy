@@ -6,6 +6,8 @@ on:
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ dev, main ]
+  workflow_dispatch:
+
 env:
   # Stop wasting time caching packages
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
