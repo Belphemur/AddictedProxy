@@ -32,4 +32,17 @@ public class EntityContext : DbContext
         optionsBuilder.UseNpgsql();
         base.OnConfiguring(optionsBuilder);
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<TvShow>()
+            .Property(t => t.UniqueId)
+            .HasDefaultValueSql("uuidv7()");
+
+        modelBuilder.Entity<Subtitle>()
+            .Property(s => s.UniqueId)
+            .HasDefaultValueSql("uuidv7()");
+    }
 }
