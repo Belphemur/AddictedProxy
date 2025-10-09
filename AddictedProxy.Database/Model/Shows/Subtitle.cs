@@ -42,7 +42,7 @@ public class Subtitle : BaseEntity, IDiscoverableObject
 
     public DateTime? StoredAt { get; set; }
 
-    public Guid UniqueId { get; set; } = Rule.GenerateUuidv7Postgres();
+    public Guid UniqueId { get; set; }
 
     /// <summary>
     ///     When was the subtitle discovered

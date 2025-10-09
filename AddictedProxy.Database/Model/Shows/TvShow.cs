@@ -17,7 +17,7 @@ public class TvShow : BaseEntity, IDiscoverableObject
     [Key]
     public long Id { get; set; }
 
-    public Guid UniqueId { get; set; } = Rule.GenerateUuidv7Postgres();
+    public Guid UniqueId { get; set; }
 
     public long ExternalId { get; set; }
     public string Name { get; set; }

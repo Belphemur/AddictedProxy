@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -48,7 +48,7 @@ jobs:
             nuxt:
               - 'addicted.nuxt/**'
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4.3.1
+        uses: actions/setup-dotnet@v5.0.0
         if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
         with:
           dotnet-version: ${{ env.DOTNET }}
@@ -74,7 +74,7 @@ jobs:
           corepack enable
       - name: Use Node.js
         if: steps.filter.outputs.node == 'true'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: lts/*
           cache: 'pnpm'
@@ -101,13 +101,13 @@ jobs:
         run: |
           echo "lowercase=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
         id: repo
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install pnpm
         run: |
           npm i -g corepack@latest
           corepack enable
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: lts/*
           cache: 'pnpm'
@@ -126,11 +126,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: v${{ needs.main-release.outputs.version}}
       - name: Sentry Release
-        uses: getsentry/action-release@v3.2.0
+        uses: getsentry/action-release@v3.3.0
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{env.SENTRY_ORG}}
@@ -162,7 +162,7 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4      
+        uses: actions/checkout@v5      
       
       # Workaround: https://github.com/docker/build-push-action/issues/461
       - name: Setup Docker buildx
@@ -207,7 +207,7 @@ jobs:
             SENTRY_PROJECT=${{ matrix.sentry_project }}
             RELEASE_VERSION=${{ needs.main-release.outputs.version}}
       - name: Attest  ${{ matrix.image }}
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v3
         id: attest
         with:
           subject-name:  "${{ env.REGISTRY }}/${{ matrix.image }}"
