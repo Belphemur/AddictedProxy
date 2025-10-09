@@ -34,6 +34,7 @@ Gestdown provides a user-friendly interface to browse and download subtitles fro
 - **Multi-language Support**: Download subtitles in your preferred language
 - **Subtitle Type Selection**: Choose between different subtitle formats
 - **Optimized Images**: Responsive image components with optimization
+- **Lazy Loading Images**: Images load on-demand with elegant placeholders showing show names, improving initial page load performance and SEO
 
 ### Technical Features
 - **Server-Side Rendering (SSR)**: Enhanced SEO and performance
@@ -41,6 +42,7 @@ Gestdown provides a user-friendly interface to browse and download subtitles fro
 - **API Integration**: Type-safe API client generated from Swagger
 - **SEO Optimized**: Sitemap generation and meta tags
 - **Docker Support**: Containerized deployment ready
+- **Intersection Observer**: Native lazy loading using browser APIs for optimal performance
 
 ## Setup
 

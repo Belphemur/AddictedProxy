@@ -2,7 +2,7 @@
 
 import type { MediaDetailsDto } from "~/composables/api/data-contracts";
 import { langs } from "~/composables/language/lang";
-import OptimizedPicture from "~/components/image/OptimizedPicture.vue";
+import LazyOptimizedPicture from "~/components/image/LazyOptimizedPicture.vue";
 import { mdiMovie, mdiTelevision } from "@mdi/js";
 
 export interface Props {
@@ -47,7 +47,12 @@ const setLanguage = (lang: string) => {
     <v-card-text class="py-0" v-once>
       <v-row align="center">
         <v-col cols="12" sm="4" class="text-left" align-self="start">
-          <optimized-picture :src="props.details.details!.posterPath!" preload class="backdrop-image" :sources="[
+          <lazy-optimized-picture
+            :src="props.details.details!.posterPath!"
+            preload
+            class="backdrop-image"
+            :placeholder-text="props.details.details!.englishName"
+            :sources="[
             {
               size: 'xs',
               height: 180,
@@ -80,7 +85,10 @@ const setLanguage = (lang: string) => {
               size: 'xxl',
               width: 300,
               height: 450
-            }]" :alt="`Poster for ${props.details.details?.englishName}`" :formats="['webp', 'jpeg']" />
+            }]"
+            :alt="`Poster for ${props.details.details?.englishName}`"
+            :formats="['webp', 'jpeg']"
+          />
 
         </v-col>
 

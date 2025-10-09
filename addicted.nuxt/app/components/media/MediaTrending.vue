@@ -2,7 +2,7 @@
 
 
 import type {MediaDetailsDto} from "~/composables/api/data-contracts";
-import OptimizedPicture from "~/components/image/OptimizedPicture.vue";
+import LazyOptimizedPicture from "~/components/image/LazyOptimizedPicture.vue";
 
 export interface Props {
   medias: Array<MediaDetailsDto>;
@@ -23,14 +23,14 @@ const props = defineProps<Props>();
             class="text-white text text-h6"
         >{{ media?.details.englishName }} ({{ media!.details?.releaseYear }})
         </span>
-        <optimized-picture :src="media.details!.backdropPath!"
+        <lazy-optimized-picture :src="media.details!.backdropPath!"
                            :sources="[
                                 { size: 'xl', width: 400, height: 225 },
                                 { size: 'xxl', width: 500, height: 281 },
                            ]"
                            :alt="`Backdrop poster for ${media.details!.englishName}`"
                            :formats="[ 'webp', 'jpeg']"
-                           preload
+                           :placeholder-text="media.details!.englishName"
                            class="media-trending-backdrop"
         />
         <v-progress-circular class="vote" color="white" bg-color="red" :size="60" :width="5"
@@ -54,6 +54,7 @@ const props = defineProps<Props>();
   left: 0.5em;
   top: 0.5em;
   text-shadow: 2px 0 black, -2px 0 black, 0 2px black, 0 -2px black, 1px 1px black, -1px -1px black, -1px 1px black, 1px -1px black;
+  z-index: 10;
 }
 
 .vote {
@@ -61,7 +62,7 @@ const props = defineProps<Props>();
   left: 0.5em;
   top: 65%;
   text-shadow: 2px 0 black, -2px 0 black, 0 2px black, 0 -2px black, 1px 1px black, -1px -1px black, -1px 1px black, 1px -1px black;
-
+  z-index: 10;
 }
 
 .media-trending-backdrop img {
