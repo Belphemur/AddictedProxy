@@ -1,3 +1,9 @@
+## [4.40.0](https://github.com/Belphemur/AddictedProxy/compare/v4.39.2...v4.40.0) (2025-10-09)
+
+### Features
+
+* **image:** add lazy loading of posters to reduce time it take to render the page ([e2b9c9b](https://github.com/Belphemur/AddictedProxy/commit/e2b9c9b8b85d7ef02d8e78ed729572a21779f138))
+
 ## [4.39.2](https://github.com/Belphemur/AddictedProxy/compare/v4.39.1...v4.39.2) (2025-10-09)
 
 ### Bug Fixes
