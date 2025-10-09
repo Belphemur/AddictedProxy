@@ -1,3 +1,9 @@
+## [4.39.2](https://github.com/Belphemur/AddictedProxy/compare/v4.39.1...v4.39.2) (2025-10-09)
+
+### Bug Fixes
+
+* **ci:** building front-end image ([8796372](https://github.com/Belphemur/AddictedProxy/commit/879637260349de67c24566f9e09ce78605a62d0d))
+
 ## [4.39.1](https://github.com/Belphemur/AddictedProxy/compare/v4.39.0...v4.39.1) (2025-10-09)
 
 ### Performance improvements
