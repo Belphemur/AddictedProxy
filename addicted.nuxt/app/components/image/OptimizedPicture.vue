@@ -138,8 +138,16 @@ if (props.preload) {
                 :width="source.width" :height="source.height">
       </template>
     </template>
-    <img v-if="fallbackSource" :src="toSrcSet(fallbackSource, props.formats[0] ?? null)" :alt="alt" :width="fallbackSource.width"
-         :height="fallbackSource.height" @load="emit('load')" @error="emit('error')">
+    <img v-if="fallbackSource"
+         :src="toSrcSet(fallbackSource, props.formats[0] ?? null)"
+         :alt="alt"
+         :width="fallbackSource.width"
+         :height="fallbackSource.height"
+         :loading="preload ? 'eager' : 'lazy'"
+         decoding="async"
+         :fetchpriority="preload ? 'high' : 'low'"
+         @load="emit('load')"
+         @error="emit('error')">
   </picture>
 </template>
 
