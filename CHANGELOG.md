@@ -1,3 +1,10 @@
+## [4.40.1](https://github.com/Belphemur/AddictedProxy/compare/v4.40.0...v4.40.1) (2025-10-09)
+
+### Performance improvements
+
+* **images:** improve lazy loading of image to not block content paint ([5e0184d](https://github.com/Belphemur/AddictedProxy/commit/5e0184db987d6d16dead4b7d3859bfe0ddc1dea3))
+* **links:** use NuxtLink to have prefetching abilities ([44ee315](https://github.com/Belphemur/AddictedProxy/commit/44ee3158b0dd00176f02dc034ba3f866ca0ec3e0))
+
 ## [4.40.0](https://github.com/Belphemur/AddictedProxy/compare/v4.39.2...v4.40.0) (2025-10-09)
 
 ### Features
