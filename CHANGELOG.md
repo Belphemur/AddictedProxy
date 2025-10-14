@@ -1,3 +1,9 @@
+## [4.40.3](https://github.com/Belphemur/AddictedProxy/compare/v4.40.2...v4.40.3) (2025-10-14)
+
+### Bug Fixes
+
+* **metrics:** fix getting remaning bytes from other endpoint ([80ecda2](https://github.com/Belphemur/AddictedProxy/commit/80ecda2ba57bbfa03a4fcdebceb72e8b7cb33ec4))
+
 ## [4.40.2](https://github.com/Belphemur/AddictedProxy/compare/v4.40.1...v4.40.2) (2025-10-14)
 
 ### Bug Fixes
