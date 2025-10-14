@@ -17,6 +17,7 @@ public class MetricGatherHostedService : BackgroundService
     private readonly Gauge _used = Metrics.CreateGauge("proxy_scrape_quota_used_bytes", "Used quota in bytes", "account_id", "sub_user_id");
     private readonly Gauge _remaining = Metrics.CreateGauge("proxy_scrape_quota_remaining_bytes", "Remaining quota in bytes", "account_id", "sub_user_id");
     private readonly Gauge _scrapeTime = Metrics.CreateGauge("proxy_scrape_last_scraping_timestamp", "Last time we scraped successfully data for this account/subuser", "account_id", "sub_user_id");
+    private readonly Gauge _maxBytes = Metrics.CreateGauge("proxy_scrape_quota_max_bytes", "Maximum quota in bytes", "account_id", "sub_user_id");
 
     public MetricGatherHostedService(IServiceProvider services, ILogger<MetricGatherHostedService> logger)
     {
@@ -61,8 +62,9 @@ public class MetricGatherHostedService : BackgroundService
             }
 
             _used.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.Data.Plans[0].BytesUsed);
-            _remaining.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.Data.Plans[0].MaxBytes);
+            _remaining.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.Data.Plans[0].MaxBytes - metrics.Data.Plans[0].BytesUsed);
             _scrapeTime.Labels(config.Value.AccountId, config.Value.SubUserId).SetToCurrentTimeUtc();
+            _maxBytes.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.Data.Plans[0].MaxBytes);
         }
         catch (Exception e)
         {
