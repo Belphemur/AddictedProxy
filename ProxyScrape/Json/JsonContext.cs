@@ -7,6 +7,7 @@ namespace ProxyScrape.Json;
 
 [JsonSerializable(typeof(AuthResponse))]
 [JsonSerializable(typeof(ProxyStatistics))]
+[JsonSerializable(typeof(ProxyOverview))]
 internal partial class JsonContext : JsonSerializerContext
 {
     internal static readonly JsonSerializerOptions JsonSerializerOptions = new(JsonSerializerDefaults.Web)

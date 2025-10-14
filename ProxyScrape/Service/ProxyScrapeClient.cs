@@ -132,4 +132,33 @@ public class ProxyScrapeClient : IProxyScrapeClient
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadFromJsonAsync<ProxyStatistics>(JsonContext.JsonSerializerOptions, token);
     }
+
+    /// <summary>
+    /// Get proxy overview
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    /// <exception cref="HttpRequestException">If the request wasn't successfull</exception>
+    public async Task<ProxyOverview?> GetProxyOverviewAsync(CancellationToken token)
+    {
+        var loginExtraData = await GetLoginDataAsync(token);
+        if (loginExtraData is null)
+        {
+            return null;
+        }
+
+        var request = new HttpRequestMessage(HttpMethod.Get, $"/v2/v4/account/{_config.Value.AccountId}/services/residential/overview");
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginExtraData.AccessToken);
+        request.Headers.UserAgent.ParseAdd(loginExtraData.UserAgent);
+        request.Headers.Add("Referer", $"https://dashboard.proxyscrape.com/v2/services/residential/overview/{_config.Value.AccountId}");
+        var response = await _client.SendAsync(request, token);
+        if (response.StatusCode == HttpStatusCode.Redirect)
+        {
+            await _cache.RemoveAsync(AuthResponseCachingKey, token);
+            return await GetProxyOverviewAsync(token).ConfigureAwait(false);
+        }
+
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<ProxyOverview>(JsonContext.JsonSerializerOptions, token);
+    }
 }
