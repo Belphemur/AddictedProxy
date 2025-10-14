@@ -52,7 +52,7 @@ public class MetricGatherHostedService : BackgroundService
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(stoppingToken);
             cts.CancelAfter(TimeSpan.FromMinutes(5));
             await using var scope = _services.CreateAsyncScope();
-            var metrics = await scope.ServiceProvider.GetRequiredService<IProxyScrapeClient>().GetProxyStatisticsAsync(cts.Token);
+            var metrics = await scope.ServiceProvider.GetRequiredService<IProxyScrapeClient>().GetProxyOverviewAsync(cts.Token);
             var config = _services.GetRequiredService<IOptions<ProxyScrapeConfig>>();
             if (metrics is null)
             {
@@ -60,8 +60,8 @@ public class MetricGatherHostedService : BackgroundService
                 return;
             }
 
-            _used.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.UsedData);
-            _remaining.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.RemainingData);
+            _used.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.Data.Plans[0].BytesUsed);
+            _remaining.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.Data.Plans[0].MaxBytes);
             _scrapeTime.Labels(config.Value.AccountId, config.Value.SubUserId).SetToCurrentTimeUtc();
         }
         catch (Exception e)
