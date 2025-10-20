@@ -47,7 +47,7 @@ importers:
         version: 0.11.2(magicast@0.3.5)(pinia@3.0.3(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3)))
       '@sentry/vite-plugin':
         specifier: ^4.0.2
-        version: 4.4.0
+        version: 4.5.0
       '@types/node':
         specifier: ^24.2.1
         version: 24.8.1
@@ -1521,12 +1521,12 @@ packages:
   '@sec-ant/readable-stream@0.4.1':
     resolution: {integrity: sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==}
 
-  '@sentry/babel-plugin-component-annotate@4.4.0':
-    resolution: {integrity: sha512-Pzjpn9MZg6yR61ThJgOoD28dLNCj457O0/t8d276K+Bzf8iOZKbrNO4sltp1vUB1yqhV+ulvIZO8xu8ABohtsg==}
+  '@sentry/babel-plugin-component-annotate@4.5.0':
+    resolution: {integrity: sha512-9sn9tJFtNnhSitPXW8hTuteefGMBbnPFyDER8dz+2sgdvcdq7T99lEwprMf8gUv5JCiDKIvtLe20Sf/4KPAahA==}
     engines: {node: '>= 14'}
 
-  '@sentry/bundler-plugin-core@4.4.0':
-    resolution: {integrity: sha512-WTGhgwxzyolzOg0sudULK0rRgLndtsEiBt4QwltKW/WYArMtFyf286aZx19uQ+rD+bSx3Il81SD23nqDOTtnzg==}
+  '@sentry/bundler-plugin-core@4.5.0':
+    resolution: {integrity: sha512-LTgYe7qGgAP0BpsyCTpjk756l6wZUv3MtCE+G0qzlpsQ2AljYe2bN4qjDy0bQrsPo0QzNQm+S6d0zogcJj/tqw==}
     engines: {node: '>= 14'}
 
   '@sentry/cli-darwin@2.56.1':
@@ -1581,8 +1581,8 @@ packages:
     engines: {node: '>= 10'}
     hasBin: true
 
-  '@sentry/vite-plugin@4.4.0':
-    resolution: {integrity: sha512-sOq1xJj5URIa/c4fSJomjOjp7l0ljk4WWRjol6ERwJ5wntOKDrw5Y7T1ZbyiDGD8/ndzQnn4Od03Z+jSvpqwog==}
+  '@sentry/vite-plugin@4.5.0':
+    resolution: {integrity: sha512-8AcTuAmu2NFCkSgVroCeu/ExZeMDVGdgrXq9MzgE5LT2bcomKsHiAifhitq64QwFEfL6CFt3TYEsw0rm0AoRhQ==}
     engines: {node: '>= 14'}
 
   '@sindresorhus/is@7.1.0':
@@ -5611,12 +5611,12 @@ snapshots:
 
   '@sec-ant/readable-stream@0.4.1': {}
 
-  '@sentry/babel-plugin-component-annotate@4.4.0': {}
+  '@sentry/babel-plugin-component-annotate@4.5.0': {}
 
-  '@sentry/bundler-plugin-core@4.4.0':
+  '@sentry/bundler-plugin-core@4.5.0':
     dependencies:
       '@babel/core': 7.28.4
-      '@sentry/babel-plugin-component-annotate': 4.4.0
+      '@sentry/babel-plugin-component-annotate': 4.5.0
       '@sentry/cli': 2.56.1
       dotenv: 16.6.1
       find-up: 5.0.0
@@ -5671,9 +5671,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@sentry/vite-plugin@4.4.0':
+  '@sentry/vite-plugin@4.5.0':
     dependencies:
-      '@sentry/bundler-plugin-core': 4.4.0
+      '@sentry/bundler-plugin-core': 4.5.0
       unplugin: 1.0.1
     transitivePeerDependencies:
       - encoding
