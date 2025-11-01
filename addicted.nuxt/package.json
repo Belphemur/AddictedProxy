@@ -20,7 +20,7 @@
     "h3-proxy": "^1.13.0",
     "nuxt": "^4.0.3",
     "pinia": "^3.0.3",
-    "pinia-plugin-persistedstate": "4.5.0",
+    "pinia-plugin-persistedstate": "4.7.1",
     "roboto-fontface": "^0.10.0",
     "swagger-typescript-api": "^13.2.15",
     "typescript": "^5.9.2",
