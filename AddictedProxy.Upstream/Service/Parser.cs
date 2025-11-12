@@ -214,23 +214,27 @@ public partial class Parser
                 Discovered = DateTime.UtcNow
             };
 
-            var subtitles = episodeGroup.ToAsyncEnumerable()
-                                        .SelectAwait(async subtitleRow => new Subtitle
-                                        {
-                                            Scene = subtitleRow.Scene.Trim(),
-                                            Corrected = subtitleRow.Corrected,
-                                            DownloadUri = subtitleRow.DownloadUri,
-                                            HD = subtitleRow.HD,
-                                            HearingImpaired = subtitleRow.HearingImpaired,
-                                            Language = subtitleRow.Language,
-                                            Completed = subtitleRow.Completed,
-                                            CompletionPct = subtitleRow.CompletionPercentage,
-                                            Discovered = DateTime.UtcNow,
-                                            Episode = episode,
-                                            Version = subtitleRow.Version,
-                                            LanguageIsoCode = (await _cultureParser.FromStringAsync(subtitleRow.Language, token))?.Name
-                                        });
-            episode.Subtitles = await subtitles.ToListAsync(token);
+            var subtitles = new List<Subtitle>();
+            foreach (var subtitleRow in episodeGroup)
+            {
+                var languageIsoCode = (await _cultureParser.FromStringAsync(subtitleRow.Language, token))?.Name;
+                subtitles.Add(new Subtitle
+                {
+                    Scene = subtitleRow.Scene.Trim(),
+                    Corrected = subtitleRow.Corrected,
+                    DownloadUri = subtitleRow.DownloadUri,
+                    HD = subtitleRow.HD,
+                    HearingImpaired = subtitleRow.HearingImpaired,
+                    Language = subtitleRow.Language,
+                    Completed = subtitleRow.Completed,
+                    CompletionPct = subtitleRow.CompletionPercentage,
+                    Discovered = DateTime.UtcNow,
+                    Episode = episode,
+                    Version = subtitleRow.Version,
+                    LanguageIsoCode = languageIsoCode
+                });
+            }
+            episode.Subtitles = subtitles;
             yield return episode;
         }
     }
