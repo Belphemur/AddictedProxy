@@ -29,9 +29,9 @@ public partial class DetailsProvider : IDetailsProvider
     {
         var showInfo = await _tmdbClient.SearchTvAsync(CleanName(show), cancellationToken)
                                         .Where(filter)
-                                        .SelectAwaitWithCancellation(async (result, token) => await _tmdbClient.GetShowDetailsByIdAsync(result.Id, token))
+                                        .Select(async (result, token) => await _tmdbClient.GetShowDetailsByIdAsync(result.Id, token))
                                         .Where(details => details != null)
-                                        .SelectAwaitWithCancellation(async (details, token) =>
+                                        .Select(async (details, token) =>
                                         {
                                             var externalIds = await _tmdbClient.GetShowExternalIdsAsync(details!.Id, token);
                                             return (Details: details, ExternalIds: externalIds);

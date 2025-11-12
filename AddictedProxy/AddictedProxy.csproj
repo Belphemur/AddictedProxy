@@ -23,6 +23,7 @@
         <PackageReference Include="Microsoft.Extensions.Http.Polly" />
         <PackageReference Include="Polly" />
         <PackageReference Include="System.Drawing.Common" />
+        <PackageReference Include="System.Linq.Async" />
         <PackageReference Include="System.Net.Http" />
         <PackageReference Include="System.Text.RegularExpressions" />
     </ItemGroup>

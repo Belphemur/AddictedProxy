@@ -18,7 +18,7 @@ using Hangfire.Storage;
 using InversionOfControl.Service.Bootstrap;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Performance.Bootstrap;
 using Performance.Model;
 using Prometheus;
