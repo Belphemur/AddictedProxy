@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@mdi/js": "^7.4.47",
-    "@microsoft/signalr": "^9.0.6",
+    "@microsoft/signalr": "^10.0.0",
     "bufferutil": "^4.0.9",
     "client-zip": "^2.5.0",
     "fetch-retry": "^6.0.0",
