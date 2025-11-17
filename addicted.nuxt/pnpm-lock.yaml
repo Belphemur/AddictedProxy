@@ -12,8 +12,8 @@ importers:
         specifier: ^7.4.47
         version: 7.4.47
       '@microsoft/signalr':
-        specifier: ^9.0.6
-        version: 9.0.6(bufferutil@4.0.9)(utf-8-validate@6.0.5)
+        specifier: ^10.0.0
+        version: 10.0.0(bufferutil@4.0.9)(utf-8-validate@6.0.5)
       bufferutil:
         specifier: ^4.0.9
         version: 4.0.9
@@ -593,8 +593,8 @@ packages:
   '@mdi/js@7.4.47':
     resolution: {integrity: sha512-KPnNOtm5i2pMabqZxpUz7iQf+mfrYZyKCZ8QNz85czgEt7cuHcGorWfdzUMWYA0SD+a6Hn4FmJ+YhzzzjkTZrQ==}
 
-  '@microsoft/signalr@9.0.6':
-    resolution: {integrity: sha512-DrhgzFWI9JE4RPTsHYRxh4yr+OhnwKz8bnJe7eIi7mLLjqhJpEb62CiUy/YbFvLqLzcGzlzz1QWgVAW0zyipMQ==}
+  '@microsoft/signalr@10.0.0':
+    resolution: {integrity: sha512-0BRqz/uCx3JdrOqiqgFhih/+hfTERaUfCZXFB52uMaZJrKaPRzHzMuqVsJC/V3pt7NozcNXGspjKiQEK+X7P2w==}
 
   '@napi-rs/wasm-runtime@1.0.7':
     resolution: {integrity: sha512-SeDnOO0Tk7Okiq6DbXmmBODgOAb9dp9gjlphokTUxmt8U3liIP1ZsozBahH69j/RJv+Rfs6IwUKHTgQYJ/HBAw==}
@@ -4433,7 +4433,7 @@ snapshots:
 
   '@mdi/js@7.4.47': {}
 
-  '@microsoft/signalr@9.0.6(bufferutil@4.0.9)(utf-8-validate@6.0.5)':
+  '@microsoft/signalr@10.0.0(bufferutil@4.0.9)(utf-8-validate@6.0.5)':
     dependencies:
       abort-controller: 3.0.0
       eventsource: 2.0.2
