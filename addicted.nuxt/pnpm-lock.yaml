@@ -37,8 +37,8 @@ importers:
         specifier: 3.1.1
         version: 3.1.1(bufferutil@4.0.9)(utf-8-validate@6.0.5)(vite@7.2.7(@types/node@24.10.2)(jiti@2.6.1)(terser@5.44.1)(tsx@4.20.6)(yaml@2.8.2))(vue@3.5.25(typescript@5.9.3))
       '@nuxtjs/device':
-        specifier: ^3.2.4
-        version: 3.2.4
+        specifier: ^4.0.0
+        version: 4.0.0
       '@nuxtjs/google-fonts':
         specifier: ^3.2.0
         version: 3.2.0(magicast@0.5.1)
@@ -881,8 +881,8 @@ packages:
       rolldown:
         optional: true
 
-  '@nuxtjs/device@3.2.4':
-    resolution: {integrity: sha512-jIvN6QeodBNrUrL/1FCHk4bebsiLsGHlJd8c/m2ksLrGY4IZ0npA8IYhDTdYV92epGxoe8+3iZOzCjav+6TshQ==}
+  '@nuxtjs/device@4.0.0':
+    resolution: {integrity: sha512-Tkbvde/GInmigbS/n3X3X+qXJWi6hsYrViKpZrakaBBYY3NbGYJb0c8aVxd3vI636HBbOhu0I39rv7MSjP7w8Q==}
 
   '@nuxtjs/google-fonts@3.2.0':
     resolution: {integrity: sha512-cGAjDJoeQ2jm6VJCo4AtSmKO6KjsbO9RSLj8q261fD0lMVNMZCxkCxBkg8L0/2Vfgp+5QBHWVXL71p1tiybJFw==}
@@ -5201,7 +5201,7 @@ snapshots:
       - vue-tsc
       - yaml
 
-  '@nuxtjs/device@3.2.4':
+  '@nuxtjs/device@4.0.0':
     dependencies:
       defu: 6.1.4
 
