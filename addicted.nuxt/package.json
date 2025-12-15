@@ -26,7 +26,7 @@
     "typescript": "^5.9.2",
     "vite": "^7.1.1",
     "vite-plugin-vuetify": "^2.1.2",
-    "vuetify-nuxt-module": "^0.18.7"
+    "vuetify-nuxt-module": "^0.19.0"
   },
   "dependencies": {
     "@mdi/js": "^7.4.47",
