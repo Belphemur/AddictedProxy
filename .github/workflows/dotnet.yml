@@ -50,7 +50,7 @@ jobs:
             nuxt:
               - 'addicted.nuxt/**'
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5.0.1
+        uses: actions/setup-dotnet@v5.1.0
         if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
         with:
           dotnet-version: ${{ env.DOTNET }}
