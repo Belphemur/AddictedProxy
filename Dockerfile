@@ -1,18 +1,18 @@
 ARG MAIN_PROJECT=AddictedProxy
 ARG DATA_DIRECTORY="/data"
-ARG RELEASE_VERSION
+ARG RELEASE_VERSION="1.0.0"
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-bookworm-slim AS base
-RUN  adduser --disabled-password --gecos '' dotnetuser
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS base
+RUN  adduser -D dotnetuser
 
-RUN apt update && apt install -y curl dumb-init && apt-get clean
+RUN apk add --no-cache curl dumb-init
 USER dotnetuser
 
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0-bookworm-slim AS restore
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS restore
 ARG MAIN_PROJECT
 WORKDIR /src
 COPY . .
