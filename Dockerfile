@@ -4,13 +4,6 @@ ARG RELEASE_VERSION
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0-bookworm-slim AS base
 RUN  adduser --disabled-password --gecos '' dotnetuser
-# Install zstd
-RUN echo "deb http://httpredir.debian.org/debian trixie main" > /etc/apt/sources.list.d/trixie.list && \
-    apt-get update && \
-    apt-get -t trixie install -y --no-install-recommends libzstd1 && \
-    apt-get clean && \
-    cd /lib/*-linux-gnu/ && \
-    ln -srf libzstd.so.1 libzstd.so
 
 RUN apt update && apt install -y curl dumb-init && apt-get clean
 USER dotnetuser
