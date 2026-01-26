@@ -1,3 +1,9 @@
+## [4.41.1](https://github.com/Belphemur/AddictedProxy/compare/v4.41.0...v4.41.1) (2026-01-26)
+
+### Bug Fixes
+
+* building the images ([8dd680e](https://github.com/Belphemur/AddictedProxy/commit/8dd680e35db9a1a8d5d82fef73bf43390067e38f))
+
 ## [4.41.0](https://github.com/Belphemur/AddictedProxy/compare/v4.40.3...v4.41.0) (2026-01-26)
 
 ### Bug Fixes
