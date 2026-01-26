@@ -1,20 +1,20 @@
 ﻿using Compressor.Utils;
-using ZstdNet;
+using ZstdSharp;
 
 namespace Compressor.Factory.Impl;
 
 public class ZstdCompressor : ICompressorService
 {
     public AlgorithmEnum Enum => AlgorithmEnum.Zstd;
-    
 
-    public CompressorDefinition Definition { get; } =  new("28-B5-2F-FD");
+
+    public CompressorDefinition Definition { get; } = new("28-B5-2F-FD");
 
     public async Task<Stream> CompressAsync(Stream inputStream, CancellationToken cancellationToken)
     {
         var outputStream = new MemoryStream();
         {
-            await using var compressionStream = new CompressionStream(outputStream, new CompressionOptions(5));
+            await using var compressionStream = new CompressionStream(outputStream, 5);
             await inputStream.CopyToAsync(compressionStream, cancellationToken);
             await compressionStream.FlushAsync(cancellationToken);
         }

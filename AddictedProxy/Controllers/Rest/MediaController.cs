@@ -154,12 +154,13 @@ public class MediaController : Controller
 
         return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
     }
-    
+
     /// <summary>
     /// Get the show details with the last season and episodes
     /// </summary>
     /// <param name="showId"></param>
     /// <param name="language"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
     [Route("{showId:guid}/episodes/{**language}")]
@@ -168,7 +169,7 @@ public class MediaController : Controller
     [ProducesResponseType(typeof(string), 429)]
     [ProducesResponseType(404)]
     [Produces("application/json")]
-    public async Task<Results<Ok<MediaDetailsWithEpisodeAndSubtitlesDto>, NotFound, BadRequest<string>>> GetShowDetails(Guid showId, string language)
+    public async Task<Results<Ok<MediaDetailsWithEpisodeAndSubtitlesDto>, NotFound, BadRequest<string>>> GetShowDetails(Guid showId, string language, CancellationToken cancellationToken)
     {
         Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
         {
@@ -176,25 +177,25 @@ public class MediaController : Controller
             MaxAge = TimeSpan.FromDays(0.5)
         };
 
-        var searchLanguage = await _cultureParser.FromStringAsync(language, default);
+        var searchLanguage = await _cultureParser.FromStringAsync(language, cancellationToken);
         if (searchLanguage == null)
         {
             return TypedResults.BadRequest("Invalid language");
         }
 
-        var show = await _showRefresher.GetShowByGuidAsync(showId, default);
+        var show = await _showRefresher.GetShowByGuidAsync(showId, cancellationToken);
         if (show == null)
         {
             return TypedResults.NotFound();
         }
 
-        var detailsTask = _mediaDetailsService.GetDetailsDtoCachedAsync(show, default);
+        var detailsTask = _mediaDetailsService.GetDetailsDtoCachedAsync(show, cancellationToken);
 
         var lastSeason = show.Seasons.OrderBy(season => season.Number).LastOrDefault();
         if (lastSeason == null)
         {
-            BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, default));
-            return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), AsyncEnumerable.Empty<EpisodeWithSubtitlesDto>(), null));
+            BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, CancellationToken.None));
+            return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), Array.Empty<EpisodeWithSubtitlesDto>().ToAsyncEnumerable(), null));
         }
 
         var episodes = _episodeRepository.GetSeasonEpisodesByLangUntrackedAsync(show.Id, searchLanguage, lastSeason.Number)
