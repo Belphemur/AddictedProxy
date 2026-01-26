@@ -4,6 +4,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <Version>4.40.2</Version>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -51,8 +52,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Content Include="..\.dockerignore">
+          <Link>.dockerignore</Link>
+        </Content>
         <None Remove="publish\**" />
-        <None Remove="Dockerfile" />
         <Content Remove="publish\**" />
     </ItemGroup>
 
