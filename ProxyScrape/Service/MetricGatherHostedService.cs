@@ -14,10 +14,10 @@ public class MetricGatherHostedService : BackgroundService
     private readonly PeriodicTimer _timer;
 
     // Define Prometheus metrics
-    private readonly Gauge _used = Metrics.CreateGauge("proxy_scrape_quota_used_bytes", "Used quota in bytes", "account_id", "sub_user_id");
-    private readonly Gauge _remaining = Metrics.CreateGauge("proxy_scrape_quota_remaining_bytes", "Remaining quota in bytes", "account_id", "sub_user_id");
-    private readonly Gauge _scrapeTime = Metrics.CreateGauge("proxy_scrape_last_scraping_timestamp", "Last time we scraped successfully data for this account/subuser", "account_id", "sub_user_id");
-    private readonly Gauge _maxBytes = Metrics.CreateGauge("proxy_scrape_quota_max_bytes", "Maximum quota in bytes", "account_id", "sub_user_id");
+    private readonly Gauge _used = Metrics.CreateGauge("proxy_scrape_quota_used_bytes", "Used quota in bytes", "account_id", "sub_user_id", "plan_id");
+    private readonly Gauge _remaining = Metrics.CreateGauge("proxy_scrape_quota_remaining_bytes", "Remaining quota in bytes", "account_id", "sub_user_id", "plan_id");
+    private readonly Gauge _scrapeTime = Metrics.CreateGauge("proxy_scrape_last_scraping_timestamp", "Last time we scraped successfully data for this account/subuser", "account_id", "sub_user_id", "plan_id");
+    private readonly Gauge _maxBytes = Metrics.CreateGauge("proxy_scrape_quota_max_bytes", "Maximum quota in bytes", "account_id", "sub_user_id", "plan_id");
 
     public MetricGatherHostedService(IServiceProvider services, ILogger<MetricGatherHostedService> logger)
     {
@@ -61,10 +61,20 @@ public class MetricGatherHostedService : BackgroundService
                 return;
             }
 
-            _used.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.Data.Plans[0].BytesUsed);
-            _remaining.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.Data.Plans[0].MaxBytes - metrics.Data.Plans[0].BytesUsed);
-            _scrapeTime.Labels(config.Value.AccountId, config.Value.SubUserId).SetToCurrentTimeUtc();
-            _maxBytes.Labels(config.Value.AccountId, config.Value.SubUserId).Set(metrics.Data.Plans[0].MaxBytes);
+            var plans = metrics.Data.Plans.Where(x => !string.Equals(x.Status, "expired", StringComparison.OrdinalIgnoreCase)).ToList();
+            if (plans.Count == 0)
+            {
+                _logger.LogWarning("No active plan found");
+                return;
+            }
+
+            foreach (var plan in plans)
+            {
+                _used.Labels(config.Value.AccountId, config.Value.SubUserId, plan.Id.ToString()).Set(plan.BytesUsed);
+                _remaining.Labels(config.Value.AccountId, config.Value.SubUserId, plan.Id.ToString()).Set(plan.MaxBytes - plan.BytesUsed);
+                _scrapeTime.Labels(config.Value.AccountId, config.Value.SubUserId, plan.Id.ToString()).SetToCurrentTimeUtc();
+                _maxBytes.Labels(config.Value.AccountId, config.Value.SubUserId, plan.Id.ToString()).Set(plan.MaxBytes);
+            }
         }
         catch (Exception e)
         {
