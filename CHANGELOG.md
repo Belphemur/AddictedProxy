@@ -1,3 +1,21 @@
+## [4.41.1](https://github.com/Belphemur/AddictedProxy/compare/v4.41.0...v4.41.1) (2026-01-26)
+
+### Bug Fixes
+
+* building the images ([8dd680e](https://github.com/Belphemur/AddictedProxy/commit/8dd680e35db9a1a8d5d82fef73bf43390067e38f))
+
+## [4.41.0](https://github.com/Belphemur/AddictedProxy/compare/v4.40.3...v4.41.0) (2026-01-26)
+
+### Bug Fixes
+
+* **deps:** update dependency @microsoft/signalr to v10 ([da66269](https://github.com/Belphemur/AddictedProxy/commit/da6626956bac45433212e972547b50b75a7fceb5))
+* **deps:** update semantic-release monorepo ([0f4f010](https://github.com/Belphemur/AddictedProxy/commit/0f4f01076837510864988056d8908b769ecd8fab))
+* docker image to use .NET 10 ([a87f0a2](https://github.com/Belphemur/AddictedProxy/commit/a87f0a21adb3e95be4c9c86f84cb8ac48ae461a2))
+
+### Features
+
+* move to use native zstd implementation ([f697f33](https://github.com/Belphemur/AddictedProxy/commit/f697f3347189869498e9830725d58bd030550675))
+
 ## [4.40.3](https://github.com/Belphemur/AddictedProxy/compare/v4.40.2...v4.40.3) (2025-10-14)
 
 ### Bug Fixes
