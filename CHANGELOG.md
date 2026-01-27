@@ -1,3 +1,9 @@
+## [4.41.2](https://github.com/Belphemur/AddictedProxy/compare/v4.41.1...v4.41.2) (2026-01-27)
+
+### Bug Fixes
+
+* missing metric for proxyscrape plan ([4ad4be7](https://github.com/Belphemur/AddictedProxy/commit/4ad4be7a9b28b3c2a1d99709c319edfe69ea1cdc))
+
 ## [4.41.1](https://github.com/Belphemur/AddictedProxy/compare/v4.41.0...v4.41.1) (2026-01-26)
 
 ### Bug Fixes
