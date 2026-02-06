@@ -1,6 +1,6 @@
 # AddictedProxy
 
-A subtitle search and download proxy for [Addic7ed](https://www.addic7ed.com/), built with .NET 10 and Nuxt 3.
+A subtitle search and download proxy for [Addic7ed](https://www.addic7ed.com/), built with .NET 10 and Nuxt 4.
 
 [![.NET](https://github.com/Belphemur/AddictedProxy/actions/workflows/dotnet.yml/badge.svg)](https://github.com/Belphemur/AddictedProxy/actions/workflows/dotnet.yml)
 [![CodeQL](https://github.com/Belphemur/AddictedProxy/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Belphemur/AddictedProxy/actions/workflows/codeql-analysis.yml)
@@ -12,8 +12,8 @@ AddictedProxy provides a REST API and web interface for searching and downloadin
 ## Tech Stack
 
 - **Backend:** .NET 10, ASP.NET Core, Entity Framework Core 10 (PostgreSQL)
-- **Frontend:** Nuxt 3, Vue.js 3, Vuetify 3
-- **Caching:** Redis + In-Memory
+- **Frontend:** Nuxt 4, Vue.js 3, Vuetify 3
+- **Caching:** PostgreSQL (primary) + Redis (optional) + In-Memory
 - **Jobs:** Hangfire (PostgreSQL storage)
 - **Observability:** OpenTelemetry, Sentry, Prometheus
 - **Container:** Docker (Alpine-based)
@@ -86,11 +86,11 @@ Tests use NUnit 4, NSubstitute for mocking, and FluentAssertions.
 | `ProxyProvider` / `ProxyScrape` | HTTP proxy management |
 | `TvMovieDatabaseClient` | TMDB API client |
 | `AntiCaptcha` | CAPTCHA solving integration |
-| `addicted.nuxt` | Nuxt 3 frontend application |
+| `addicted.nuxt` | Nuxt 4 frontend application |
 
 ## Configuration
 
-Environment variables use the `A7D_` prefix. See `appsettings.json` and `appsettings.Development.json` for available settings including connection strings, Redis, rate limiting, and Sentry configuration.
+Environment variables use the `A7D_` prefix. See `appsettings.json` and `appsettings.Development.json` for available settings including connection strings, PostgreSQL caching, rate limiting, and Sentry configuration.
 
 ## License
 

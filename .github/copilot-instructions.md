@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-AddictedProxy is a .NET 10 ASP.NET Core application that provides a proxy API for searching and downloading subtitles from Addic7ed. It includes a Nuxt 3 (Vue.js) frontend, PostgreSQL database, background job scheduling with Hangfire, and comprehensive observability via OpenTelemetry and Sentry.
+AddictedProxy is a .NET 10 ASP.NET Core application that provides a proxy API for searching and downloading subtitles from Addic7ed. It includes a Nuxt 4 (Vue.js) frontend, PostgreSQL database, background job scheduling with Hangfire, and comprehensive observability via OpenTelemetry and Sentry.
 
 **License:** GPL-3.0
 
@@ -33,7 +33,7 @@ ProxyProvider/              # HTTP proxy provider abstraction
 ProxyProvider.Tests/        # Tests for proxy provider
 ProxyScrape/                # Proxy scraping implementation
 TvMovieDatabaseClient/      # TMDB API client
-addicted.nuxt/              # Nuxt 3 frontend (Vue.js + Vuetify)
+addicted.nuxt/              # Nuxt 4 frontend (Vue.js + Vuetify)
 ```
 
 ## Tech Stack
@@ -42,11 +42,11 @@ addicted.nuxt/              # Nuxt 3 frontend (Vue.js + Vuetify)
 |-------|-----------|
 | Runtime | .NET 10.0, ASP.NET Core |
 | Database | PostgreSQL 18 via EF Core 10 + Npgsql |
-| Caching | Redis (StackExchange.Redis) + In-Memory |
+| Caching | PostgreSQL (primary) + Redis (optional) + In-Memory |
 | Jobs | Hangfire with PostgreSQL storage |
 | Observability | OpenTelemetry, Sentry, Prometheus |
 | Compression | ZstdSharp.Port |
-| Frontend | Nuxt 3, Vue.js 3, Vuetify 3, pnpm |
+| Frontend | Nuxt 4, Vue.js 3, Vuetify 3, pnpm |
 | Testing | NUnit 4, NSubstitute, FluentAssertions |
 | CI/CD | GitHub Actions, semantic-release |
 | Container | Docker (Alpine-based), Docker Compose |
@@ -122,7 +122,7 @@ Controllers are in `AddictedProxy/Controllers/Rest/` and use:
 
 - Environment variables use `A7D_` prefix convention
 - Settings files: `appsettings.json` and `appsettings.Development.json`
-- Key config sections: connection strings, Redis, rate limiting, proxy scraping, Sentry
+- Key config sections: connection strings, PostgreSQL caching, rate limiting, proxy scraping, Sentry
 
 ### Centralized Package Management
 
