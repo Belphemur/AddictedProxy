@@ -23,10 +23,10 @@ public interface ISearchSubtitlesService
     Task<Results<Ok<TvShow>, NotFound>> GetByShowUniqueIdAsync(Guid showUniqueId, CancellationToken token);
 
     /// <summary>
-    /// Find subtitles
+    /// Find subtitles. Returns StatusCodeHttpResult with 423 when language is invalid (resource locked/refreshing).
     /// </summary>
     /// <param name="request"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<Results<Ok<SubtitleFound>, BadRequest>> FindSubtitlesAsync(SearchPayload request, CancellationToken token);
+    Task<Results<Ok<SubtitleFound>, StatusCodeHttpResult>> FindSubtitlesAsync(SearchPayload request, CancellationToken token);
 }

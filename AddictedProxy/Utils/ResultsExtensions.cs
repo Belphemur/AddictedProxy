@@ -43,6 +43,44 @@ public static class ResultsExtensions
     }
 
     /// <summary>
+    /// Match on a Results&lt;Ok&lt;T&gt;, StatusCodeHttpResult&gt; to handle both cases
+    /// </summary>
+    /// <remarks>
+    /// The Ok&lt;T&gt; value is guaranteed to be non-null by the ASP.NET Core framework.
+    /// </remarks>
+    public static TResult Match<T, TResult>(
+        this Results<Ok<T>, StatusCodeHttpResult> result,
+        Func<T, TResult> onOk,
+        Func<StatusCodeHttpResult, TResult> onStatusCode)
+    {
+        return result.Result switch
+        {
+            Ok<T> ok => onOk(ok.Value!), // Value is guaranteed non-null by Ok<T>
+            StatusCodeHttpResult statusCode => onStatusCode(statusCode),
+            _ => throw new InvalidOperationException("Unexpected result type")
+        };
+    }
+
+    /// <summary>
+    /// Match on a Results&lt;Ok&lt;T&gt;, StatusCodeHttpResult&gt; to handle both cases asynchronously
+    /// </summary>
+    /// <remarks>
+    /// The Ok&lt;T&gt; value is guaranteed to be non-null by the ASP.NET Core framework.
+    /// </remarks>
+    public static async Task<TResult> MatchAsync<T, TResult>(
+        this Results<Ok<T>, StatusCodeHttpResult> result,
+        Func<T, Task<TResult>> onOk,
+        Func<StatusCodeHttpResult, TResult> onStatusCode)
+    {
+        return result.Result switch
+        {
+            Ok<T> ok => await onOk(ok.Value!), // Value is guaranteed non-null by Ok<T>
+            StatusCodeHttpResult statusCode => onStatusCode(statusCode),
+            _ => throw new InvalidOperationException("Unexpected result type")
+        };
+    }
+
+    /// <summary>
     /// Match on a Results&lt;Ok&lt;T&gt;, BadRequest&gt; to handle both cases
     /// </summary>
     /// <remarks>

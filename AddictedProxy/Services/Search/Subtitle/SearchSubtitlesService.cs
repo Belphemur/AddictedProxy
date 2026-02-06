@@ -65,14 +65,14 @@ public class SearchSubtitlesService : ISearchSubtitlesService
     /// <param name="request"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public async Task<Results<Ok<SubtitleFound>, BadRequest>> FindSubtitlesAsync(SearchPayload request, CancellationToken token)
+    public async Task<Results<Ok<SubtitleFound>, StatusCodeHttpResult>> FindSubtitlesAsync(SearchPayload request, CancellationToken token)
     {
         using var _ = _performanceTracker.BeginNestedSpan("find-subtitles", $"Show {request.Show.UniqueId}/{request.Show.Name}");
 
         var language = await _cultureParser.FromStringAsync(request.LanguageIso, token);
         if (language == null)
         {
-            return TypedResults.BadRequest();
+            return TypedResults.StatusCode(423);
         }
 
         var show = request.Show;

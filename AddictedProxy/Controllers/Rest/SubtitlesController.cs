@@ -125,8 +125,8 @@ public class SubtitlesController : Controller
 
         var findShow = await _searchSubtitlesService.FindShowAsync(show, token);
         
-        // Note: Cannot reuse ProcessSubtitleSearch due to different return type signature (includes BadRequest<WrongFormatResponse>)
-        return await findShow.MatchAsync<TvShow, Results<Ok<SubtitleSearchResponse>, NotFound<ErrorResponse>, StatusCodeHttpResult, BadRequest<WrongFormatResponse>>>(
+        // Inline implementation needed due to BadRequest<WrongFormatResponse> in return type
+        Results<Ok<SubtitleSearchResponse>, NotFound<ErrorResponse>, StatusCodeHttpResult, BadRequest<WrongFormatResponse>> result = await findShow.MatchAsync(
             onOk: async tvShow =>
             {
                 var found = await _searchSubtitlesService.FindSubtitlesAsync(new SearchPayload(tvShow, episode, season, lang, null), token);
@@ -145,15 +145,14 @@ public class SubtitlesController : Controller
                         
                         return TypedResults.Ok(new SubtitleSearchResponse(foundMatchingSubtitles, subtitleFound.Episode));
                     },
-                    onBadRequest: () =>
+                    onStatusCode: statusCode =>
                     {
-                        // Return 423 (Locked) when language is invalid, indicating the resource is temporarily unavailable (refreshing)
                         Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
                         {
                             Public = true,
                             MaxAge = TimeSpan.FromDays(0.5)
                         };
-                        return TypedResults.StatusCode(423);
+                        return statusCode;
                     }
                 );
             },
@@ -167,6 +166,8 @@ public class SubtitlesController : Controller
                 return TypedResults.NotFound(new ErrorResponse("Couldn't find show"));
             }
         );
+        
+        return result;
     }
 
 
@@ -196,15 +197,15 @@ public class SubtitlesController : Controller
                         
                         return TypedResults.Ok(new SubtitleSearchResponse(foundMatchingSubtitles, subtitleFound.Episode));
                     },
-                    onBadRequest: () =>
+                    onStatusCode: statusCode =>
                     {
-                        // Return 423 (Locked) when language is invalid, indicating the resource is temporarily unavailable (refreshing)
+                        // StatusCode 423 (Locked) indicates the resource is temporarily unavailable (refreshing)
                         Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
                         {
                             Public = true,
                             MaxAge = TimeSpan.FromDays(0.5)
                         };
-                        return TypedResults.StatusCode(423);
+                        return statusCode;
                     }
                 );
             },
