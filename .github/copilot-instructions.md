@@ -180,6 +180,9 @@ All NuGet package versions are managed centrally in `Directory.Packages.props` a
 3. Return ASP.NET Core `Results<Ok<T>, NotFound, ...>` with `TypedResults.Ok()`, `TypedResults.NotFound()`, etc. for structured responses
 4. Add XML documentation for Swagger
 
+### Committing
+For commiting, use Conventional Commits.
+
 ### Adding a new background job
 
 1. Create a job class in the relevant module
