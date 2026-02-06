@@ -114,7 +114,9 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
 
 Controllers are in `AddictedProxy/Controllers/Rest/` and use:
 - Attribute routing (`[Route("...")]`)
-- ASP.NET Core's built-in `IResult` with `TypedResults` and `Results<T1, T2, ...>` for new endpoints (see [Action return types](https://learn.microsoft.com/en-us/aspnet/core/web-api/action-return-types)). Some legacy endpoints still use `Ardalis.Result` — prefer `TypedResults` for new code.
+- ASP.NET Core's built-in `IResult` with `TypedResults` and `Results<T1, T2, ...>` for new endpoints
+  - See [Action return types](https://learn.microsoft.com/en-us/aspnet/core/web-api/action-return-types)
+  - Some legacy endpoints still use `Ardalis.Result` — prefer `TypedResults` for new code
 - Response caching
 - XML documentation (documentation file generation is enabled)
 
