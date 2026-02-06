@@ -10,6 +10,7 @@ using AddictedProxy.Model.Search;
 using AddictedProxy.Services.Provider.Subtitle;
 using AddictedProxy.Services.Search;
 using AddictedProxy.Upstream.Service.Exception;
+using AddictedProxy.Utils;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
@@ -124,40 +125,96 @@ public class SubtitlesController : Controller
 
         var findShow = await _searchSubtitlesService.FindShowAsync(show, token);
         
-        if (findShow.Result is NotFound)
-        {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+        return await findShow.MatchAsync<TvShow, Results<Ok<SubtitleSearchResponse>, NotFound<ErrorResponse>, StatusCodeHttpResult, BadRequest<WrongFormatResponse>>>(
+            onOk: async tvShow =>
             {
-                Public = true,
-                MaxAge = TimeSpan.FromDays(0.5)
-            };
-            return TypedResults.NotFound(new ErrorResponse("Couldn't find show"));
-        }
-
-        var tvShow = ((Ok<TvShow>)findShow.Result).Value;
-        var found = await _searchSubtitlesService.FindSubtitlesAsync(new SearchPayload(tvShow, episode, season, lang, null), token);
-        
-        if (found.Result is BadRequest)
-        {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+                var found = await _searchSubtitlesService.FindSubtitlesAsync(new SearchPayload(tvShow, episode, season, lang, null), token);
+                
+                return found.Match<SubtitleFound, Results<Ok<SubtitleSearchResponse>, NotFound<ErrorResponse>, StatusCodeHttpResult, BadRequest<WrongFormatResponse>>>(
+                    onOk: subtitleFound =>
+                    {
+                        var foundMatchingSubtitles = subtitleFound.MatchingSubtitles.Select(
+                            subtitle => new SubtitleDto(
+                                subtitle,
+                                Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
+                                throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                                subtitleFound.Language
+                            )
+                        );
+                        
+                        return TypedResults.Ok(new SubtitleSearchResponse(foundMatchingSubtitles, subtitleFound.Episode));
+                    },
+                    onBadRequest: () =>
+                    {
+                        Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+                        {
+                            Public = true,
+                            MaxAge = TimeSpan.FromDays(0.5)
+                        };
+                        return TypedResults.StatusCode(423);
+                    }
+                );
+            },
+            onNotFound: () =>
             {
-                Public = true,
-                MaxAge = TimeSpan.FromDays(0.5)
-            };
-            return TypedResults.StatusCode(423);
-        }
-
-        var subtitleFound = ((Ok<SubtitleFound>)found.Result).Value;
-        var foundMatchingSubtitles = subtitleFound.MatchingSubtitles.Select(
-            subtitle => new SubtitleDto(
-                subtitle,
-                Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
-                throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
-                subtitleFound.Language
-            )
+                Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+                {
+                    Public = true,
+                    MaxAge = TimeSpan.FromDays(0.5)
+                };
+                return TypedResults.NotFound(new ErrorResponse("Couldn't find show"));
+            }
         );
-        
-        return TypedResults.Ok(new SubtitleSearchResponse(foundMatchingSubtitles, subtitleFound.Episode));
+    }
+
+
+    private async Task<Results<Ok<SubtitleSearchResponse>, NotFound<ErrorResponse>, StatusCodeHttpResult>> ProcessSubtitleSearch(
+        Results<Ok<TvShow>, NotFound> showResult, 
+        int episode, 
+        int season, 
+        string lang, 
+        CancellationToken token)
+    {
+        return await showResult.MatchAsync(
+            onOk: async tvShow =>
+            {
+                var found = await _searchSubtitlesService.FindSubtitlesAsync(new SearchPayload(tvShow, episode, season, lang, null), token);
+                
+                return found.Match<SubtitleFound, Results<Ok<SubtitleSearchResponse>, NotFound<ErrorResponse>, StatusCodeHttpResult>>(
+                    onOk: subtitleFound =>
+                    {
+                        var foundMatchingSubtitles = subtitleFound.MatchingSubtitles.Select(
+                            subtitle => new SubtitleDto(
+                                subtitle,
+                                Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
+                                throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                                subtitleFound.Language
+                            )
+                        );
+                        
+                        return TypedResults.Ok(new SubtitleSearchResponse(foundMatchingSubtitles, subtitleFound.Episode));
+                    },
+                    onBadRequest: () =>
+                    {
+                        Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+                        {
+                            Public = true,
+                            MaxAge = TimeSpan.FromDays(0.5)
+                        };
+                        return TypedResults.StatusCode(423);
+                    }
+                );
+            },
+            onNotFound: () =>
+            {
+                Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
+                {
+                    Public = true,
+                    MaxAge = TimeSpan.FromDays(0.5)
+                };
+                return TypedResults.NotFound(new ErrorResponse("Couldn't find show"));
+            }
+        );
     }
 
 
@@ -188,41 +245,7 @@ public class SubtitlesController : Controller
     public async Task<Results<Ok<SubtitleSearchResponse>, NotFound<ErrorResponse>, StatusCodeHttpResult>> Find(string language, string show, int season, int episode, CancellationToken token)
     {
         var findShow = await _searchSubtitlesService.FindShowAsync(show, token);
-        
-        if (findShow.Result is NotFound)
-        {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
-            {
-                Public = true,
-                MaxAge = TimeSpan.FromDays(0.5)
-            };
-            return TypedResults.NotFound(new ErrorResponse("Couldn't find show"));
-        }
-
-        var tvShow = ((Ok<TvShow>)findShow.Result).Value;
-        var found = await _searchSubtitlesService.FindSubtitlesAsync(new SearchPayload(tvShow, episode, season, language, null), token);
-        
-        if (found.Result is BadRequest)
-        {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
-            {
-                Public = true,
-                MaxAge = TimeSpan.FromDays(0.5)
-            };
-            return TypedResults.StatusCode(423);
-        }
-
-        var subtitleFound = ((Ok<SubtitleFound>)found.Result).Value;
-        var foundMatchingSubtitles = subtitleFound.MatchingSubtitles.Select(
-            subtitle => new SubtitleDto(
-                subtitle,
-                Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
-                throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
-                subtitleFound.Language
-            )
-        );
-        
-        return TypedResults.Ok(new SubtitleSearchResponse(foundMatchingSubtitles, subtitleFound.Episode));
+        return await ProcessSubtitleSearch(findShow, episode, season, language, token);
     }
 
     /// <summary>
@@ -255,41 +278,7 @@ public class SubtitlesController : Controller
     public async Task<Results<Ok<SubtitleSearchResponse>, NotFound<ErrorResponse>, StatusCodeHttpResult>> GetSubtitles(string language, Guid showUniqueId, int season, int episode, CancellationToken token)
     {
         var findShow = await _searchSubtitlesService.GetByShowUniqueIdAsync(showUniqueId, token);
-        
-        if (findShow.Result is NotFound)
-        {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
-            {
-                Public = true,
-                MaxAge = TimeSpan.FromDays(0.5)
-            };
-            return TypedResults.NotFound(new ErrorResponse("Couldn't find show"));
-        }
-
-        var tvShow = ((Ok<TvShow>)findShow.Result).Value;
-        var found = await _searchSubtitlesService.FindSubtitlesAsync(new SearchPayload(tvShow, episode, season, language, null), token);
-        
-        if (found.Result is BadRequest)
-        {
-            Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
-            {
-                Public = true,
-                MaxAge = TimeSpan.FromDays(0.5)
-            };
-            return TypedResults.StatusCode(423);
-        }
-
-        var subtitleFound = ((Ok<SubtitleFound>)found.Result).Value;
-        var foundMatchingSubtitles = subtitleFound.MatchingSubtitles.Select(
-            subtitle => new SubtitleDto(
-                subtitle,
-                Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
-                throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
-                subtitleFound.Language
-            )
-        );
-        
-        return TypedResults.Ok(new SubtitleSearchResponse(foundMatchingSubtitles, subtitleFound.Episode));
+        return await ProcessSubtitleSearch(findShow, episode, season, language, token);
     }
 
     /// <summary>
