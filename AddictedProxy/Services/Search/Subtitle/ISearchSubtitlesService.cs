@@ -1,6 +1,6 @@
 ﻿using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Model.Search;
-using Ardalis.Result;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AddictedProxy.Services.Search;
 
@@ -12,7 +12,7 @@ public interface ISearchSubtitlesService
     /// <param name="showName"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<Result<TvShow>> FindShowAsync(string showName, CancellationToken token);
+    Task<Results<Ok<TvShow>, NotFound>> FindShowAsync(string showName, CancellationToken token);
 
     /// <summary>
     /// Get a show by unique id
@@ -20,13 +20,13 @@ public interface ISearchSubtitlesService
     /// <param name="showUniqueId"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<Result<TvShow>> GetByShowUniqueIdAsync(Guid showUniqueId, CancellationToken token);
+    Task<Results<Ok<TvShow>, NotFound>> GetByShowUniqueIdAsync(Guid showUniqueId, CancellationToken token);
 
     /// <summary>
-    /// Find subtitles
+    /// Find subtitles. Returns StatusCodeHttpResult with 423 when language is invalid (resource locked/refreshing).
     /// </summary>
     /// <param name="request"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    Task<Result<SubtitleFound>> FindSubtitlesAsync(SearchPayload request, CancellationToken token);
+    Task<Results<Ok<SubtitleFound>, StatusCodeHttpResult>> FindSubtitlesAsync(SearchPayload request, CancellationToken token);
 }

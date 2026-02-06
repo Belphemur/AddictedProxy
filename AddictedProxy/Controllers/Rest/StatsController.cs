@@ -1,5 +1,6 @@
 ﻿using AddictedProxy.Model.Dto;
 using AddictedProxy.Stats.Popularity.Service;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AddictedProxy.Controllers.Rest;
@@ -23,8 +24,8 @@ public class StatsController : Controller
     /// <returns></returns>
     [HttpGet]
     [Route("downloads/{top:range(1,50)}")]
-    public async Task<ActionResult<TopShowDto[]>> GetTopDownloads([FromRoute] int top, CancellationToken token)
+    public async Task<Ok<TopShowDto[]>> GetTopDownloads([FromRoute] int top, CancellationToken token)
     {
-        return Ok(await _showPopularityService.GetTopDownloadPopularity(top).Select(record => new TopShowDto(new ShowDto(record.Show), record.TotalDownloads)).ToArrayAsync(token));
+        return TypedResults.Ok(await _showPopularityService.GetTopDownloadPopularity(top).Select(record => new TopShowDto(new ShowDto(record.Show), record.TotalDownloads)).ToArrayAsync(token));
     }
 }
