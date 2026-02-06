@@ -6,6 +6,21 @@ AddictedProxy is a .NET 10 ASP.NET Core application that provides a proxy API fo
 
 **License:** GPL-3.0
 
+## Documentation
+
+For a deeper understanding of the application architecture, refer to the `docs/` folder at the repository root:
+
+| Document | Description |
+|----------|-------------|
+| [Architecture Overview](../docs/architecture-overview.md) | High-level architecture, tech stack, data flow, bootstrap pattern, and design patterns |
+| [Database Schema](../docs/database-schema.md) | Entity relationships, indexes, enums, repository interfaces, and migration strategy |
+| [Provider System](../docs/provider-system.md) | Current single-provider (Addic7ed) architecture, service interfaces, data flows, and credential management |
+| [API Surface](../docs/api-surface.md) | REST endpoints, DTOs, response models, SignalR hub, and caching strategy |
+| [Background Jobs](../docs/background-jobs.md) | Hangfire jobs, queues, one-time migration framework, and job pipelines |
+| [Multi-Provider Plan](../docs/multi-provider-plan.md) | Architecture plan for adding SuperSubtitles as a second provider |
+
+**Always consult these docs** before making significant architectural changes to understand the current state and planned direction.
+
 ## Repository Structure
 
 ```
