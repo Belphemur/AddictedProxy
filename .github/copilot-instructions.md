@@ -181,7 +181,85 @@ All NuGet package versions are managed centrally in `Directory.Packages.props` a
 4. Add XML documentation for Swagger
 
 ### Committing
-For commiting, use Conventional Commits.
+
+**ALWAYS use Conventional Commits format for all commit messages.**
+
+Follow the [Conventional Commits specification](https://www.conventionalcommits.org/):
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+#### Commit Types
+
+- **feat**: A new feature for the user
+  - Example: `feat(api): add endpoint for subtitle search by IMDB ID`
+- **fix**: A bug fix
+  - Example: `fix(database): resolve connection timeout issue in EF Core`
+- **docs**: Documentation only changes
+  - Example: `docs(readme): update installation instructions`
+- **style**: Changes that don't affect code meaning (formatting, whitespace, etc.)
+  - Example: `style(controllers): fix indentation in SubtitlesController`
+- **refactor**: Code change that neither fixes a bug nor adds a feature
+  - Example: `refactor(caching): simplify cache key generation logic`
+- **perf**: Performance improvements
+  - Example: `perf(database): add index on subtitle language column`
+- **test**: Adding or updating tests
+  - Example: `test(upstream): add tests for Addic7ed scraper`
+- **build**: Changes to build system or dependencies
+  - Example: `build(deps): update Npgsql to 10.0.1`
+- **ci**: Changes to CI configuration files and scripts
+  - Example: `ci(github): add CodeQL security scanning`
+- **chore**: Other changes that don't modify src or test files
+  - Example: `chore(gitignore): add VS Code workspace files`
+
+#### Scopes (Optional but Recommended)
+
+Common scopes in this project:
+- `api`, `controllers`, `services`
+- `database`, `caching`, `storage`
+- `upstream`, `proxy`, `captcha`
+- `frontend`, `nuxt`
+- `deps`, `docker`, `ci`
+
+#### Breaking Changes
+
+For breaking changes, add `!` after type/scope and include `BREAKING CHANGE:` in footer:
+
+```
+feat(api)!: change subtitle search response format
+
+BREAKING CHANGE: SubtitleSearchResponse now returns array instead of object
+```
+
+#### Examples
+
+```
+feat(controllers): migrate all endpoints to ASP.NET Core Results types
+
+Replace Ardalis.Result with built-in Results<T1, T2, ...> for better type safety
+and improved OpenAPI documentation.
+
+fix(database): handle null reference in episode repository
+
+Fixes #123
+
+docs(copilot): add Conventional Commits guidelines
+
+chore(deps): update all NuGet packages to latest versions
+```
+
+#### Rules
+
+1. Use lowercase for type, scope, and description
+2. Keep description under 72 characters
+3. Use imperative mood ("add" not "added" or "adds")
+4. No period at the end of description
+5. Body and footer are optional but recommended for complex changes
 
 ### Adding a new background job
 
