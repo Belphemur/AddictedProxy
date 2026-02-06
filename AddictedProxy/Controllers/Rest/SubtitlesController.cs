@@ -125,6 +125,7 @@ public class SubtitlesController : Controller
 
         var findShow = await _searchSubtitlesService.FindShowAsync(show, token);
         
+        // Note: Cannot reuse ProcessSubtitleSearch due to different return type signature (includes BadRequest<WrongFormatResponse>)
         return await findShow.MatchAsync<TvShow, Results<Ok<SubtitleSearchResponse>, NotFound<ErrorResponse>, StatusCodeHttpResult, BadRequest<WrongFormatResponse>>>(
             onOk: async tvShow =>
             {
@@ -146,6 +147,7 @@ public class SubtitlesController : Controller
                     },
                     onBadRequest: () =>
                     {
+                        // Return 423 (Locked) when language is invalid, indicating the resource is temporarily unavailable (refreshing)
                         Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
                         {
                             Public = true,
@@ -196,6 +198,7 @@ public class SubtitlesController : Controller
                     },
                     onBadRequest: () =>
                     {
+                        // Return 423 (Locked) when language is invalid, indicating the resource is temporarily unavailable (refreshing)
                         Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
                         {
                             Public = true,
