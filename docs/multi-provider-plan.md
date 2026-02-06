@@ -146,7 +146,7 @@ Episodes are matched by their **natural key**: `(TvShowId, Season, Number)`. Thi
 ```
 For each subtitle from SuperSubtitles for a (merged) show:
     │
-    ├─ Build Episode object: TvShowId = mergedShow.Id, Season = sub.Season, Episode = sub.Episode
+    ├─ Build Episode object: TvShowId = mergedShow.Id, Season = sub.Season, Number = sub.EpisodeNumber
     │
     ├─ Call EpisodeRepository.UpsertEpisodes() with the episode + its subtitles
     │   └─ BulkMerge uses (TvShowId, Season, Number) as key
@@ -333,8 +333,11 @@ public class RefreshSuperSubtitlesJob
 
     public async Task ExecuteAsync(CancellationToken token)
     {
-        // 1. Fetch all shows + subtitles from SuperSubtitles API
-        var showSubtitles = await _superSubtitlesClient.GetShowSubtitles(shows);
+        // 1. Fetch all shows from SuperSubtitles API
+        var allShows = await _superSubtitlesClient.GetShowList();
+        
+        // 2. Fetch subtitles + third-party IDs for all shows (batched)
+        var showSubtitles = await _superSubtitlesClient.GetShowSubtitles(allShows);
 
         foreach (var showData in showSubtitles)
         {
@@ -368,9 +371,9 @@ public class RefreshSuperSubtitlesJob
     private async Task<TvShow?> TryMatchShow(ThirdPartyIds ids)
     {
         if (ids.TVDBID > 0)
-            return await _tvShowRepository.GetByTvdbIdAsync(ids.TVDBID);
+            return await _tvShowRepository.GetByTvdbIdAsync(ids.TVDBID).FirstOrDefaultAsync();
         if (ids.TMDBID > 0)
-            return await _tvShowRepository.GetShowsByTmdbIdAsync(ids.TMDBID);
+            return await _tvShowRepository.GetShowsByTmdbIdAsync(ids.TMDBID).FirstOrDefaultAsync();
         // IMDB fallback: lookup TMDB ID via IMDB, then match
         return null;
     }
