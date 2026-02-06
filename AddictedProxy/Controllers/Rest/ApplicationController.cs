@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AddictedProxy.Controllers.Rest;
@@ -25,9 +26,9 @@ public class ApplicationController : Controller
     [Route("info")]
     [ResponseCache(Duration = 2 * 3600)]
     [Produces("application/json")]
-    public ActionResult<ApplicationInfoDto> Version()
+    public Ok<ApplicationInfoDto> Version()
     {
         var executingAssembly = Assembly.GetExecutingAssembly();
-        return Ok(new ApplicationInfoDto(executingAssembly.GetName().Version!.ToString(3)));
+        return TypedResults.Ok(new ApplicationInfoDto(executingAssembly.GetName().Version!.ToString(3)));
     }
 }

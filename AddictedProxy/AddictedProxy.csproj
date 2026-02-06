@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Ardalis.Result.AspNetCore" />
         <PackageReference Include="Hangfire.AspNetCore" />
         <PackageReference Include="Hangfire.Dashboard.BasicAuthorization" />
         <PackageReference Include="Hangfire.MaximumConcurrentExecutions" />

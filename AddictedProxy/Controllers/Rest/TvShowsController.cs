@@ -6,6 +6,7 @@ using AddictedProxy.Model.Responses;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Shows.Jobs;
 using Hangfire;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
@@ -55,7 +56,7 @@ public class TvShowsController : Controller
     [ProducesResponseType(typeof(string), 404)]
     [Produces("application/json")]
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
-    public async Task<IActionResult> Search(string search, CancellationToken cancellationToken)
+    public async Task<Results<Ok<ShowSearchResponse>, NotFound<string>>> Search(string search, CancellationToken cancellationToken)
     {
         var shows = await _showRefresher.FindShowsAsync(search.Trim(), cancellationToken)
                                         .Select(show => new ShowDto(show))
@@ -63,7 +64,7 @@ public class TvShowsController : Controller
         return ShowsToActionResult(search, shows);
     }
 
-    private IActionResult ShowsToActionResult<T>(T search, ShowDto[] shows)
+    private Results<Ok<ShowSearchResponse>, NotFound<string>> ShowsToActionResult<T>(T search, ShowDto[] shows)
     {
         if (shows.Length == 0)
         {
@@ -72,13 +73,13 @@ public class TvShowsController : Controller
                 Public = true,
                 MaxAge = TimeSpan.FromDays(0.5)
             };
-            return NotFound($"Couldn't find show: {search}");
+            return TypedResults.NotFound($"Couldn't find show: {search}");
         }
 
-        return Ok(new ShowSearchResponse(shows));
+        return TypedResults.Ok(new ShowSearchResponse(shows));
     }
     
-    
+
 
 
     /// <summary>
@@ -95,7 +96,7 @@ public class TvShowsController : Controller
     [ProducesResponseType(typeof(string), 404)]
     [Produces("application/json")]
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
-    public async Task<IActionResult> GetByTvdbId(int tvdbId, CancellationToken cancellationToken)
+    public async Task<Results<Ok<ShowSearchResponse>, NotFound<string>>> GetByTvdbId(int tvdbId, CancellationToken cancellationToken)
     {
         var shows = await _showRefresher.GetShowByTvDbIdAsync(tvdbId, cancellationToken)
                                         .Select(show => new ShowDto(show))
@@ -116,17 +117,17 @@ public class TvShowsController : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [HttpPost]
-    public async Task<IActionResult> Refresh([FromRoute] Guid showId, CancellationToken token)
+    public async Task<Results<NotFound, NoContent>> Refresh([FromRoute] Guid showId, CancellationToken token)
     {
         var show = await _showRefresher.GetShowByGuidAsync(showId, token);
         if (show == null)
         {
-            return NotFound();
+            return TypedResults.NotFound();
         }
 
         BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, default));
 
-        return NoContent();
+        return TypedResults.NoContent();
     }
 
 
@@ -146,19 +147,19 @@ public class TvShowsController : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(string), 429)]
     [ProducesResponseType(typeof(TvShowSubtitleResponse), 200)]
-    public async Task<IActionResult> GetSubtitlesForSeason([FromRoute] Guid showId, [FromRoute] int seasonNumber, [FromRoute] string language, CancellationToken cancellationToken)
+    public async Task<Results<Ok<TvShowSubtitleResponse>, NotFound, BadRequest<ErrorResponse>>> GetSubtitlesForSeason([FromRoute] Guid showId, [FromRoute] int seasonNumber, [FromRoute] string language, CancellationToken cancellationToken)
     {
         var show = await _showRefresher.GetShowByGuidAsync(showId, cancellationToken);
         if (show == null)
         {
-            return NotFound();
+            return TypedResults.NotFound();
         }
 
         var searchLanguage = await _cultureParser.FromStringAsync(language, cancellationToken);
 
         if (searchLanguage == null)
         {
-            return BadRequest(new ErrorResponse("Unknown language"));
+            return TypedResults.BadRequest(new ErrorResponse("Unknown language"));
         }
 
 
@@ -176,6 +177,6 @@ public class TvShowsController : Controller
                                                         );
                                              return new EpisodeWithSubtitlesDto(episode, subs);
                                          });
-        return Ok(new TvShowSubtitleResponse(episodes));
+        return TypedResults.Ok(new TvShowSubtitleResponse(episodes));
     }
 }
