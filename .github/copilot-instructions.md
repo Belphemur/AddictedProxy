@@ -1,0 +1,185 @@
+# Copilot Instructions for AddictedProxy
+
+## Project Overview
+
+AddictedProxy is a .NET 10 ASP.NET Core application that provides a proxy API for searching and downloading subtitles from Addic7ed. It includes a Nuxt 3 (Vue.js) frontend, PostgreSQL database, background job scheduling with Hangfire, and comprehensive observability via OpenTelemetry and Sentry.
+
+**License:** GPL-3.0
+
+## Repository Structure
+
+```
+AddictedProxy/              # Main ASP.NET Core web application (entry point)
+AddictedProxy.Caching/      # Caching abstractions and implementations
+AddictedProxy.Culture/      # Culture/language parsing utilities
+AddictedProxy.Database/     # EF Core DbContext, entities, repositories (PostgreSQL)
+AddictedProxy.Image/        # Image processing with ImageSharp
+AddictedProxy.OneTimeMigration/ # One-time data migration utilities
+AddictedProxy.Stats/        # Statistics tracking
+AddictedProxy.Storage/      # Storage abstraction (AWS S3)
+AddictedProxy.Storage.Caching/ # Cached storage layer
+AddictedProxy.Tools.Database/  # Database tooling helpers
+AddictedProxy.Upstream/     # Upstream Addic7ed communication
+AddictedProxy.Upstream.Tests/  # Tests for upstream module
+AntiCaptcha/                # CAPTCHA solving integration
+AntiCaptcha.Tests/          # Tests for AntiCaptcha
+Compressor/                 # Zstandard compression utilities
+Compressor.Tests/           # Tests for compressor
+InversionOfControl/         # Custom DI bootstrap framework
+InversionOfControl.Tests/   # Tests for IoC
+Locking/                    # Async keyed locking utilities
+Performance/                # OpenTelemetry tracing/metrics
+ProxyProvider/              # HTTP proxy provider abstraction
+ProxyProvider.Tests/        # Tests for proxy provider
+ProxyScrape/                # Proxy scraping implementation
+TvMovieDatabaseClient/      # TMDB API client
+addicted.nuxt/              # Nuxt 3 frontend (Vue.js + Vuetify)
+```
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Runtime | .NET 10.0, ASP.NET Core |
+| Database | PostgreSQL 18 via EF Core 10 + Npgsql |
+| Caching | Redis (StackExchange.Redis) + In-Memory |
+| Jobs | Hangfire with PostgreSQL storage |
+| Observability | OpenTelemetry, Sentry, Prometheus |
+| Compression | ZstdSharp.Port |
+| Frontend | Nuxt 3, Vue.js 3, Vuetify 3, pnpm |
+| Testing | NUnit 4, NSubstitute, FluentAssertions |
+| CI/CD | GitHub Actions, semantic-release |
+| Container | Docker (Alpine-based), Docker Compose |
+
+## Build & Development Commands
+
+### Backend (.NET)
+
+```bash
+# Restore dependencies
+dotnet restore
+
+# Build the solution
+dotnet build -c Release
+
+# Run all tests
+dotnet test -c Release
+
+# Run the main application
+dotnet run --project AddictedProxy/AddictedProxy.csproj
+
+# Start local PostgreSQL via Docker Compose
+docker compose up -d
+```
+
+### Frontend (Nuxt)
+
+```bash
+cd addicted.nuxt
+pnpm install
+pnpm dev
+```
+
+### Docker
+
+```bash
+docker build -t addictedproxy .
+```
+
+## Architecture & Key Patterns
+
+### Bootstrap Pattern (Dependency Injection)
+
+The project uses a custom DI bootstrap system in the `InversionOfControl` project. Each module registers its services by implementing `IBootstrap` (for service registration) and/or `IBootstrapApp` (for middleware/app configuration).
+
+```csharp
+// Registration in Program.cs
+builder.AddBootstrap(typeof(BootstrapDatabase).Assembly, typeof(BootstrapController).Assembly, ...);
+app.UseBootstrap(typeof(BootstrapDatabase).Assembly, typeof(BootstrapController).Assembly, ...);
+```
+
+**When adding a new module:** Create a class implementing `IBootstrap` in the module project. It will be discovered by assembly scanning in `Program.cs`. If the module's assembly isn't already passed to `AddBootstrap`/`UseBootstrap`, add it there.
+
+Conditional bootstrapping is supported via `IBootstrapConditional` (checked at registration time) and environment variable parsing via `IBootstrapEnvironmentVariable<T, TParser>`.
+
+### Database
+
+- **DbContext:** `EntityContext` in `AddictedProxy.Database`
+- **Entities:** `TvShow`, `Season`, `Episode`, `Subtitle`, `AddictedUserCredentials`
+- **Repositories:** Follow repository pattern in `AddictedProxy.Database/Repositories/`
+- **Migrations:** Auto-applied on application startup
+- **IDs:** Sortable GUIDs via RT.Comb
+
+### API Controllers
+
+Controllers are in `AddictedProxy/Controllers/Rest/` and use:
+- Attribute routing (`[Route("...")]`)
+- `Ardalis.Result` for structured responses
+- Response caching
+- XML documentation (documentation file generation is enabled)
+
+### Configuration
+
+- Environment variables use `A7D_` prefix convention
+- Settings files: `appsettings.json` and `appsettings.Development.json`
+- Key config sections: connection strings, Redis, rate limiting, proxy scraping, Sentry
+
+### Centralized Package Management
+
+All NuGet package versions are managed centrally in `Directory.Packages.props` at the solution root. Project `.csproj` files reference packages without version numbers. **Always update versions in `Directory.Packages.props`**, not in individual project files.
+
+## Testing Guidelines
+
+- **Framework:** NUnit 4 with `NUnit3TestAdapter`
+- **Mocking:** NSubstitute
+- **Assertions:** FluentAssertions
+- **Coverage:** coverlet.collector
+- Test projects follow the `{ProjectName}.Tests` naming convention
+- Run tests: `dotnet test -c Release`
+
+## Code Style & Conventions
+
+- **Nullable reference types** enabled globally
+- **Implicit usings** enabled globally
+- **C# latest** language version (via .NET 10 SDK)
+- No `.editorconfig` — follow existing code patterns
+- XML documentation comments on public API surfaces (controllers, public services)
+- `record` types used for DTOs
+- Async/await throughout with `CancellationToken` support
+- Dependency injection everywhere — no service locator pattern
+
+## CI/CD Notes
+
+- GitHub Actions workflow in `.github/workflows/dotnet.yml`
+- Restore uses `dotnet restore` (no lock files present currently)
+- Semantic versioning via `semantic-release` (npm package at root)
+- Docker images published to GitHub Container Registry (ghcr.io)
+- Build provenance attestation enabled
+- CodeQL analysis configured for C# and JavaScript
+
+## Common Tasks
+
+### Adding a new NuGet package
+
+1. Add the version to `Directory.Packages.props`
+2. Add the `<PackageReference>` (without version) to the relevant `.csproj`
+
+### Adding a new project
+
+1. Create the project: `dotnet new classlib -n ProjectName`
+2. Set `<TargetFramework>net10.0</TargetFramework>` with `<Nullable>enable</Nullable>` and `<ImplicitUsings>enable</ImplicitUsings>`
+3. Add it to `AddictedProxy.sln`
+4. If it has a bootstrap class, add its assembly reference to `Program.cs`
+
+### Adding a new API endpoint
+
+1. Create or extend a controller in `AddictedProxy/Controllers/Rest/`
+2. Use `[ApiController]` and `[Route("...")]` attributes
+3. Return `Ardalis.Result` types for structured responses
+4. Add XML documentation for Swagger
+
+### Adding a new background job
+
+1. Create a job class in the relevant module
+2. Register it via the module's `IBootstrap` implementation
+3. Schedule via Hangfire's `IRecurringJobManager` or `IBackgroundJobClient`
