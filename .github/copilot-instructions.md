@@ -114,7 +114,7 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
 
 Controllers are in `AddictedProxy/Controllers/Rest/` and use:
 - Attribute routing (`[Route("...")]`)
-- `Ardalis.Result` for structured responses
+- ASP.NET Core's built-in `IResult` with `TypedResults` and `Results<T1, T2, ...>` for new endpoints (see [Action return types](https://learn.microsoft.com/en-us/aspnet/core/web-api/action-return-types)). Some legacy endpoints still use `Ardalis.Result` — prefer `TypedResults` for new code.
 - Response caching
 - XML documentation (documentation file generation is enabled)
 
@@ -175,7 +175,7 @@ All NuGet package versions are managed centrally in `Directory.Packages.props` a
 
 1. Create or extend a controller in `AddictedProxy/Controllers/Rest/`
 2. Use `[ApiController]` and `[Route("...")]` attributes
-3. Return `Ardalis.Result` types for structured responses
+3. Return ASP.NET Core `Results<Ok<T>, NotFound, ...>` with `TypedResults.Ok()`, `TypedResults.NotFound()`, etc. for structured responses
 4. Add XML documentation for Swagger
 
 ### Adding a new background job
