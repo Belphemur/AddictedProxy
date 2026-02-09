@@ -49,6 +49,9 @@ AddictedProxy.Upstream/           # Upstream Addic7ed communication
 ├── Model/                        # Upstream-specific models (SubtitleRow, DownloadUsage)
 └── Boostrap/                     # DI registration for upstream services
 
+AddictedProxy.SuperSubtitles/     # (Planned) SuperSubtitles gRPC client and ingestion
+                                  # See docs/multi-provider-plan.md for details
+
 AddictedProxy.Caching/            # Caching abstractions and implementations
 AddictedProxy.Culture/            # Culture/language parsing utilities
 AddictedProxy.Image/              # Image processing with ImageSharp
@@ -150,6 +153,11 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
      │  Upstream Module   │
      │  (Addic7ed Client) │──────► addic7ed.com
      └───────────────────┘
+              │
+     ┌────────▼─────────────────┐
+     │  SuperSubtitles Module   │
+     │  (gRPC Client, planned)  │──────► SuperSubtitles gRPC API ──► feliratok.eu
+     └──────────────────────────┘
 ```
 
 ## Application Startup

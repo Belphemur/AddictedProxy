@@ -240,3 +240,17 @@ The database already has `Source` fields on key entities:
 - **`Subtitle.Source`**: `DataSource` enum (default: `Addic7ed`) — which provider contributed this subtitle
 
 The `DataSource` enum currently only has `Addic7ed` as a value.
+
+## Planned: SuperSubtitles Provider
+
+See [Multi-Provider Plan](multi-provider-plan.md) for full architecture details.
+
+SuperSubtitles is a Go-based gRPC service that scrapes feliratok.eu (a Hungarian subtitle site). It will be integrated as a second provider with these key characteristics:
+
+- **gRPC client** instead of HTTP/HTML scraping — communicates via Protocol Buffers with the [`supersubtitles.proto`](https://github.com/Belphemur/SuperSubtitles/blob/main/api/proto/v1/supersubtitles.proto) API
+- **No credentials needed** — unlike Addic7ed, no authentication or rate-limited credential rotation
+- **Season/episode parsing required** — SuperSubtitles does not provide reliable season/episode data; a `SeasonEpisodeParser` will extract this from subtitle `filename`/`name`/`release` fields
+- **Async keyed locking** — show match-or-create operations are protected by `AsyncKeyedLocker<long>` keyed on the SuperSubtitles show ID to prevent duplicate `TvShow` creation
+- **Two-phase ingestion**: one-time bulk import (with batch delays for rate limiting) + recurring 15-minute incremental updates
+- **Subtitle downloads** via gRPC `DownloadSubtitle` method (supports season pack episode extraction)
+- **Season packs ignored** during ingestion — only individual episode subtitles are imported

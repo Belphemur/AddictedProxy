@@ -471,16 +471,16 @@ public class ImportSuperSubtitlesMigration : IMigration
                 // Subtitles where season/episode cannot be determined are skipped.
                 await _episodeRepository.UpsertEpisodes(episodes, token);
 
-                // 7. Track max ID
+                // 8. Track max ID
                 maxSubtitleId = Math.Max(maxSubtitleId,
                     nonPackSubtitles.Max(s => s.Id));
             }
 
-            // 8. Wait between batches to avoid rate limiting
+            // 9. Wait between batches to avoid rate limiting
             await Task.Delay(_config.DelayBetweenBatches, token); // e.g. 2-5 seconds
         }
 
-        // 9. Store max ID for incremental updates
+        // 10. Store max ID for incremental updates
         await _superSubtitlesStateRepository.SetMaxSubtitleIdAsync(maxSubtitleId);
     }
 }
@@ -605,7 +605,7 @@ public class RefreshSuperSubtitlesJob
                 nonPackSubtitles.DefaultIfEmpty().Max(s => s?.Id ?? 0));
         }
 
-        // 8. Persist updated cursor
+        // 9. Persist updated cursor
         await _stateRepository.SetMaxSubtitleIdAsync(newMaxId);
     }
 }
@@ -753,7 +753,7 @@ public class SeasonEpisodeParser
 }
 ```
 
-#### 5.2 gRPC Client Interface
+#### 5.3 gRPC Client Interface
 
 ```csharp
 public interface ISuperSubtitlesClient
@@ -779,7 +779,7 @@ public interface ISuperSubtitlesClient
 }
 ```
 
-#### 5.3 gRPC Channel Configuration
+#### 5.4 gRPC Channel Configuration
 
 ```csharp
 public class BootstrapSuperSubtitles : IBootstrap
@@ -800,7 +800,7 @@ public class BootstrapSuperSubtitles : IBootstrap
 }
 ```
 
-#### 5.2 Addic7ed Adapter
+#### 5.5 Addic7ed Adapter
 
 Wrap existing `IAddic7edClient` and `IAddic7edDownloader` to implement the new interfaces:
 
