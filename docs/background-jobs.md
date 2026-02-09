@@ -170,3 +170,44 @@ public class BootstrapMigration : IBootstrap
 - Tracks download usage per Addic7ed account
 - Resets exceeded credentials after cooldown period
 - Monitors account health via `GetDownloadUsageAsync()`
+
+## SuperSubtitles Jobs (Planned)
+
+See [Multi-Provider Plan](multi-provider-plan.md) for full details.
+
+### ImportSuperSubtitlesMigration (One-Time)
+
+**Trigger**: One-time migration via `OneTimeMigration` framework (runs once on first deployment)  
+**Purpose**: Bulk import all shows and subtitles from the SuperSubtitles gRPC API  
+**Concurrency**: Max 1  
+**Locking**: Async keyed lock per SuperSubtitles show ID to prevent duplicate show creation  
+
+**Behavior**:
+1. Calls `GetShowList()` via gRPC to fetch all available shows
+2. Splits shows into configurable batches (e.g. 10 shows per batch)
+3. For each batch: calls `GetShowSubtitles()` to fetch subtitles + third-party IDs
+4. Acquires async keyed lock on each show ID before match-or-create
+5. Matches shows to existing `TvShow` rows by TvDB/TMDB ID, or creates new ones
+6. Filters out season packs (`is_season_pack = true`)
+7. Parses season/episode from subtitle `filename`/`name`/`release` fields via `SeasonEpisodeParser` (skips unparseable subtitles)
+8. Upserts episodes and subtitles via `EpisodeRepository.UpsertEpisodes()`
+9. **Waits between batches** (configurable delay, e.g. 3 seconds) to avoid upstream rate limiting
+10. Stores the max subtitle ID as a cursor for subsequent incremental updates
+
+### RefreshSuperSubtitlesJob (Recurring)
+
+**Trigger**: Scheduled recurring job every 15 minutes (Hangfire cron: `*/15 * * * *`)  
+**Purpose**: Incrementally fetch new subtitles from SuperSubtitles since the last known subtitle ID  
+**Concurrency**: Max 1  
+**Locking**: Async keyed lock per SuperSubtitles show ID to prevent duplicate show creation  
+
+**Behavior**:
+1. Loads the stored max SuperSubtitles subtitle ID
+2. Calls `CheckForUpdates()` via gRPC with the stored ID
+3. If no updates → exits early
+4. Calls `GetRecentSubtitles(since_id)` to fetch only new subtitles
+5. Acquires async keyed lock on each show ID before match-or-create
+6. Matches/merges shows and upserts episodes + subtitles (same logic as bulk import)
+7. Filters out season packs
+8. Parses season/episode from subtitle metadata via `SeasonEpisodeParser`
+9. Updates the stored max subtitle ID
