@@ -66,7 +66,7 @@ message ShowSubtitles {
 - Includes video quality metadata and release group information
 - Supports season packs (with server-side episode extraction via `DownloadSubtitle`)
 - Supports incremental updates via `CheckForUpdates` + `GetRecentSubtitles`
-- **Does not provide reliable season/episode data** — the `season` and `episode` fields in the `Subtitle` message may not be populated or accurate. Season and episode information must be **rebuilt on our side** by parsing the `filename`, `name`, or `release` fields (e.g., extracting `S01E03` or `1x03` patterns)
+- **Provides season/episode data** — the `season` and `episode` fields in the `Subtitle` message are populated as `int32` values and can be used directly
 
 ## Architecture Changes
 
@@ -151,15 +151,15 @@ Shows from different providers that represent the same media must be merged into
 
 **Merge Logic (executed by the new `RefreshSuperSubtitlesJob`, see [Phase 4](#phase-4-background-job-pipeline)):**
 
-**Concurrency safety:** Show matching and creation must be protected by an **async keyed lock** (using the existing `AsyncKeyedLocker` pattern from the `Locking` module). The lock key is derived from the SuperSubtitles show ID to prevent two concurrent operations from creating duplicate `TvShow` rows for the same upstream show. This is especially important during the bulk import where multiple batches may reference the same show via different subtitle entries.
+**Show lookup via `ShowExternalId`:** The first step when processing a SuperSubtitles show is to check if we've already imported it by looking up `ShowExternalId(Source=SuperSubtitles, ExternalId=showId)`. If found, the existing `TvShow` is reused directly. If not found, we fall back to matching by third-party IDs (TvDB, then TMDB). Shows are unique per provider, so no locking is needed.
 
 ```
 For each show from SuperSubtitles API:
     │
-    ├─ Acquire async keyed lock on SuperSubtitles show ID
-    │   └─ using var releaser = await AsyncKeyedLocker.LockOrNullAsync(showId, timeout, token)
+    ├─ Try lookup via ShowExternalId(Source=SuperSubtitles, ExternalId=showId)
+    │   └─ If found → use the linked TvShow directly (already imported)
     │
-    ├─ Extract ThirdPartyIds (TvDB ID, IMDB ID, TMDB ID)
+    ├─ If not found: Extract ThirdPartyIds (TvDB ID, IMDB ID, TMDB ID)
     │
     ├─ Try match existing TvShow by TvDB ID (most reliable)
     │   └─ SELECT * FROM "TvShows" WHERE "TvdbId" = @tvdbId
@@ -174,11 +174,9 @@ For each show from SuperSubtitles API:
     │   ├─ Backfill any missing IDs on TvShow (e.g., set TvdbId if it was null)
     │   └─ Use the EXISTING TvShow.Id for episodes/subtitles below
     │
-    ├─ If NO MATCH:
-    │   ├─ Create new TvShow(Source=SuperSubtitles, TvdbId=..., TmdbId=...)
-    │   └─ Create ShowExternalId(Source=SuperSubtitles, ExternalId=superSubId)
-    │
-    └─ Release lock (automatic via using/IDisposable)
+    └─ If NO MATCH:
+        ├─ Create new TvShow(Source=SuperSubtitles, TvdbId=..., TmdbId=...)
+        └─ Create ShowExternalId(Source=SuperSubtitles, ExternalId=superSubId)
 ```
 
 **Edge cases:**
@@ -189,23 +187,7 @@ For each show from SuperSubtitles API:
 
 Episodes are matched by their **natural key**: `(TvShowId, Season, Number)`. This is already the unique index on the `Episode` table.
 
-**Season/Episode Rebuilding:** SuperSubtitles data does not provide reliable `season` and `episode` fields. The season and episode numbers must be **parsed on our side** from the subtitle's `filename`, `name`, or `release` fields before building `Episode` objects.
-
-**Parsing strategy (implemented in a `SeasonEpisodeParser` service):**
-
-```
-Input: subtitle.Filename, subtitle.Name, subtitle.Release
-    │
-    ├─ Try regex: S(\d+)E(\d+)         → e.g. "S01E03" → Season=1, Episode=3
-    ├─ Try regex: (\d+)x(\d+)          → e.g. "1x03"   → Season=1, Episode=3
-    ├─ Try regex: Season\s+(\d+).*Episode\s+(\d+)
-    │
-    ├─ If no match and is_season_pack = true → skip (season packs are filtered out)
-    │
-    └─ If no match → log warning and skip subtitle (cannot assign to an episode)
-```
-
-**Why episode merging works with no code change (after parsing):** The existing `EpisodeRepository.UpsertEpisodes()` uses `BulkMergeAsync` with `ColumnPrimaryKeyExpression = episode => new { episode.TvShowId, episode.Season, episode.Number }`. This means:
+**Why this works with no code change:** The existing `EpisodeRepository.UpsertEpisodes()` uses `BulkMergeAsync` with `ColumnPrimaryKeyExpression = episode => new { episode.TvShowId, episode.Season, episode.Number }`. SuperSubtitles provides `season` and `episode` as `int32` fields directly in the `Subtitle` message, so these can be used as-is. This means:
 - If SuperSubtitles provides a subtitle for S01E03 of a show that already has S01E03 from Addic7ed → the existing episode row is reused (upserted)
 - If the episode doesn't exist yet → a new row is created
 - The episode's `Title` and other metadata will be updated to the latest values
@@ -215,13 +197,9 @@ Input: subtitle.Filename, subtitle.Name, subtitle.Release
 ```
 For each subtitle from SuperSubtitles for a (merged) show:
     │
-    ├─ Parse season/episode from subtitle filename/name/release
-    │   └─ SeasonEpisodeParser.Parse(sub.Filename, sub.Name, sub.Release)
-    │       └─ Returns (Season, Episode) or null if unparseable
+    ├─ Use subtitle.Season and subtitle.Episode directly (provided by gRPC API)
     │
-    ├─ Skip if season/episode could not be determined
-    │
-    ├─ Build Episode object: TvShowId = mergedShow.Id, Season = parsed, Number = parsed
+    ├─ Build Episode object: TvShowId = mergedShow.Id, Season = sub.Season, Number = sub.Episode
     │
     ├─ Call EpisodeRepository.UpsertEpisodes() with the episode + its subtitles
     │   └─ BulkMerge uses (TvShowId, Season, Number) as key
@@ -296,7 +274,6 @@ The `Subtitle.Source` field (already present in the database) determines which d
 | `SubtitlesController` | No change | Already returns all matching subtitles |
 | `EpisodeRepository` | No change | `BulkMergeAsync` already handles upserts by natural keys |
 | `SubtitleProvider` | **Minor change** | Route download to correct provider via `subtitle.Source` |
-| `SeasonEpisodeParser` | **New** | Parses season/episode from SuperSubtitles subtitle filename/name/release fields |
 | Background jobs | **New jobs** | `ImportSuperSubtitlesMigration` (one-time bulk import) + `RefreshSuperSubtitlesJob` (15-min incremental) |
 
 ### Phase 3: Provider Abstraction Layer
@@ -392,17 +369,15 @@ ImportSuperSubtitlesMigration (OneTimeMigration, runs once after FetchMissingTvd
     │   │   └─► Returns ShowSubtitles[] with ThirdPartyIds + SubtitleCollection
     │   │
     │   ├─► For each ShowSubtitles in batch response:
-    │   │   ├─► 🔒 Acquire async keyed lock on SuperSubtitles show ID
-    │   │   ├─► Match to existing TvShow by TvDB/TMDB ID (see Phase 2 merge logic)
-    │   │   ├─► Create or reuse TvShow row
+    │   │   ├─► Lookup ShowExternalId(Source=SuperSubtitles, ExternalId=showId)
+    │   │   ├─► If not found: match by TvDB/TMDB ID or create new TvShow
     │   │   ├─► Upsert ShowExternalId(Source=SuperSubtitles)
     │   │   │
     │   │   ├─► Filter out subtitles where is_season_pack = true
     │   │   │
     │   │   ├─► For each remaining subtitle:
-    │   │   │   ├─► Parse season/episode from filename/name/release via SeasonEpisodeParser
-    │   │   │   ├─► Skip if season/episode cannot be determined
-    │   │   │   ├─► Build Episode(TvShowId, Season=parsed, Number=parsed)
+    │   │   │   ├─► Use subtitle.Season and subtitle.Episode directly
+    │   │   │   ├─► Build Episode(TvShowId, Season, Number)
     │   │   │   ├─► Build Subtitle(Source=SuperSubtitles, DownloadUri=download_url)
     │   │   │   └─► Track max subtitle ID for use as incremental cursor
     │   │   │
@@ -423,7 +398,6 @@ ImportSuperSubtitlesMigration (OneTimeMigration, runs once after FetchMissingTvd
 [MigrationDate(2026, 2, 10)]
 public class ImportSuperSubtitlesMigration : IMigration
 {
-    private static readonly AsyncKeyedLocker<long> ShowLocker = new(LockOptions.Default);
     private readonly ISuperSubtitlesClient _superSubtitlesClient;
     private readonly SuperSubtitlesImportConfig _config;
     // ... other dependencies
@@ -445,43 +419,53 @@ public class ImportSuperSubtitlesMigration : IMigration
 
             foreach (var showData in showSubtitles)
             {
-                // 4. Acquire lock on SuperSubtitles show ID to prevent duplicate creation
-                using var releaser = await ShowLocker.LockOrNullAsync(
-                    showData.Show.Id, TimeSpan.FromMinutes(1), token);
-
-                if (releaser is null)
-                {
-                    _logger.LogWarning("Lock for show {ShowId} already held, skipping", showData.Show.Id);
-                    continue;
-                }
-
-                // 5. Match/merge show (safe under lock)
+                // 4. Lookup via ShowExternalId first, then fall back to TvDB/TMDB matching
                 var tvShow = await MatchOrCreateShow(showData);
                 await UpsertShowExternalId(tvShow, showData.Show.Id);
 
-                // 6. Filter out season packs and subtitles without parseable season/episode
+                // 5. Filter out season packs
                 var nonPackSubtitles = showData.SubtitleCollection.Subtitles
                     .Where(s => !s.IsSeasonPack);
 
-                // 7. Parse season/episode from filename/name/release for each subtitle
-                //    (SuperSubtitles data does not provide reliable season/episode fields)
+                // 6. Build episodes + subtitles using season/episode from proto directly
                 var episodes = BuildEpisodesFromSubtitles(tvShow, nonPackSubtitles);
-                // BuildEpisodesFromSubtitles internally calls SeasonEpisodeParser.Parse()
-                // to extract (Season, Episode) from each subtitle's metadata.
-                // Subtitles where season/episode cannot be determined are skipped.
                 await _episodeRepository.UpsertEpisodes(episodes, token);
 
-                // 8. Track max ID
+                // 7. Track max ID
                 maxSubtitleId = Math.Max(maxSubtitleId,
                     nonPackSubtitles.Max(s => s.Id));
             }
 
-            // 9. Wait between batches to avoid rate limiting
+            // 8. Wait between batches to avoid rate limiting
             await Task.Delay(_config.DelayBetweenBatches, token); // e.g. 2-5 seconds
         }
 
-        // 10. Store max ID for incremental updates
+        // 9. Store max ID for incremental updates
         await _superSubtitlesStateRepository.SetMaxSubtitleIdAsync(maxSubtitleId);
+    }
+
+    private async Task<TvShow?> MatchOrCreateShow(ShowSubtitles showData)
+    {
+        // 1. Check ShowExternalId first (fast path for already-imported shows)
+        var existingByExtId = await _showExternalIdRepository
+            .GetByExternalIdAsync(DataSource.SuperSubtitles, showData.Show.Id.ToString());
+        if (existingByExtId != null)
+            return existingByExtId.TvShow;
+
+        // 2. Fall back to TvDB/TMDB matching for first-time merge
+        var ids = showData.ThirdPartyIds;
+        if (ids.TvdbId > 0)
+        {
+            var match = await _tvShowRepository.GetByTvdbIdAsync(ids.TvdbId);
+            if (match != null) return match;
+        }
+        if (ids.ImdbId is not null)
+        {
+            // IMDB → TMDB lookup, then match
+        }
+
+        // 3. No match — create new TvShow
+        return CreateNewTvShow(showData);
     }
 }
 ```
@@ -529,16 +513,14 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
     │   └─► Returns ShowSubtitles[] with only new/updated subtitles
     │
     ├─► Step 5: For each ShowSubtitles in response:
-    │   ├─► 🔒 Acquire async keyed lock on SuperSubtitles show ID
-    │   ├─► Match to existing TvShow by TvDB/TMDB ID
-    │   ├─► Create or reuse TvShow row
+    │   ├─► Lookup ShowExternalId(Source=SuperSubtitles, ExternalId=showId)
+    │   ├─► If not found: match by TvDB/TMDB ID or create new TvShow
     │   ├─► Upsert ShowExternalId(Source=SuperSubtitles)
     │   │
     │   ├─► Filter out subtitles where is_season_pack = true
     │   │
     │   ├─► For each remaining subtitle:
-    │   │   ├─► Parse season/episode from filename/name/release via SeasonEpisodeParser
-    │   │   ├─► Skip if season/episode cannot be determined
+    │   │   ├─► Use subtitle.Season and subtitle.Episode directly
     │   │   ├─► Build Episode + Subtitle objects
     │   │   └─► Track new max subtitle ID
     │   │
@@ -553,7 +535,6 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
 ```csharp
 public class RefreshSuperSubtitlesJob
 {
-    private static readonly AsyncKeyedLocker<long> ShowLocker = new(LockOptions.Default);
     // Scheduled as recurring job: every 15 minutes
     // Cron: "*/15 * * * *"
 
@@ -577,35 +558,24 @@ public class RefreshSuperSubtitlesJob
         long newMaxId = maxId;
         foreach (var showData in recentSubtitles)
         {
-            // 4. Acquire lock to prevent duplicate show creation
-            using var releaser = await ShowLocker.LockOrNullAsync(
-                showData.Show.Id, TimeSpan.FromMinutes(1), token);
-
-            if (releaser is null)
-            {
-                _logger.LogWarning("Lock for show {ShowId} already held, skipping", showData.Show.Id);
-                continue;
-            }
-
-            // 5. Match/merge show (same logic as bulk import)
+            // 4. Lookup via ShowExternalId first, then fall back to TvDB/TMDB matching
             var tvShow = await MatchOrCreateShow(showData);
             await UpsertShowExternalId(tvShow, showData.Show.Id);
 
-            // 6. Filter out season packs
+            // 5. Filter out season packs
             var nonPackSubtitles = showData.SubtitleCollection.Subtitles
                 .Where(s => !s.IsSeasonPack);
 
-            // 7. Parse season/episode and build episodes + subtitles
-            //    (SuperSubtitles data does not provide reliable season/episode fields)
+            // 6. Build episodes + subtitles using season/episode from proto directly
             var episodes = BuildEpisodesFromSubtitles(tvShow, nonPackSubtitles);
             await _episodeRepository.UpsertEpisodes(episodes, token);
 
-            // 8. Track new max ID
+            // 7. Track new max ID
             newMaxId = Math.Max(newMaxId,
                 nonPackSubtitles.DefaultIfEmpty().Max(s => s?.Id ?? 0));
         }
 
-        // 9. Persist updated cursor
+        // 8. Persist updated cursor
         await _stateRepository.SetMaxSubtitleIdAsync(newMaxId);
     }
 }
@@ -696,8 +666,7 @@ AddictedProxy.SuperSubtitles/
 │   └── SuperSubtitlesGrpcClient.cs    # gRPC client implementation (wraps generated stubs)
 ├── Service/
 │   ├── SuperSubtitlesSource.cs        # Implements ISubtitleSource
-│   ├── SuperSubtitlesDownloader.cs    # Implements ISubtitleDownloader (uses gRPC DownloadSubtitle)
-│   └── SeasonEpisodeParser.cs         # Parses season/episode from subtitle filename/name/release
+│   └── SuperSubtitlesDownloader.cs    # Implements ISubtitleDownloader (uses gRPC DownloadSubtitle)
 ├── State/
 │   ├── ISuperSubtitlesStateRepository.cs  # Tracks max subtitle ID for incremental updates
 │   └── SuperSubtitlesStateRepository.cs
@@ -709,51 +678,7 @@ AddictedProxy.SuperSubtitles/
     └── BootstrapSuperSubtitles.cs     # DI registration (gRPC channel, client, services)
 ```
 
-#### 5.2 Season/Episode Parser
-
-Since SuperSubtitles data does not provide reliable `season` and `episode` fields, a dedicated parser extracts this information from the subtitle's metadata fields.
-
-```csharp
-public class SeasonEpisodeParser
-{
-    // Regex patterns tried in order of preference
-    private static readonly Regex[] Patterns = new[]
-    {
-        new Regex(@"S(\d+)E(\d+)", RegexOptions.IgnoreCase),    // S01E03
-        new Regex(@"(\d+)x(\d+)"),                                // 1x03
-        new Regex(@"Season\s+(\d+).*Episode\s+(\d+)",            // Season 1 Episode 3
-                  RegexOptions.IgnoreCase),
-    };
-
-    /// <summary>
-    /// Attempts to parse season and episode numbers from subtitle metadata.
-    /// Tries filename first, then name, then release field.
-    /// </summary>
-    /// <returns>Parsed (season, episode) or null if not determinable.</returns>
-    public (int Season, int Episode)? Parse(string? filename, string? name, string? release)
-    {
-        // Try each field in priority order
-        foreach (var field in new[] { filename, name, release })
-        {
-            if (string.IsNullOrWhiteSpace(field)) continue;
-
-            foreach (var pattern in Patterns)
-            {
-                var match = pattern.Match(field);
-                if (match.Success)
-                {
-                    return (int.Parse(match.Groups[1].Value),
-                            int.Parse(match.Groups[2].Value));
-                }
-            }
-        }
-
-        return null; // Cannot determine season/episode
-    }
-}
-```
-
-#### 5.3 gRPC Client Interface
+#### 5.2 gRPC Client Interface
 
 ```csharp
 public interface ISuperSubtitlesClient
@@ -779,7 +704,7 @@ public interface ISuperSubtitlesClient
 }
 ```
 
-#### 5.4 gRPC Channel Configuration
+#### 5.3 gRPC Channel Configuration
 
 ```csharp
 public class BootstrapSuperSubtitles : IBootstrap
@@ -800,7 +725,7 @@ public class BootstrapSuperSubtitles : IBootstrap
 }
 ```
 
-#### 5.5 Addic7ed Adapter
+#### 5.4 Addic7ed Adapter
 
 Wrap existing `IAddic7edClient` and `IAddic7edDownloader` to implement the new interfaces:
 
@@ -844,45 +769,39 @@ AddictedProxy.Upstream/
 1. Create `AddictedProxy.SuperSubtitles` project
 2. Add `supersubtitles.proto` and generate gRPC stubs
 3. Implement gRPC client wrapper (`SuperSubtitlesGrpcClient`)
-4. Implement `SeasonEpisodeParser` to extract season/episode from subtitle filename/name/release
-5. Implement `ISubtitleSource` and `ISubtitleDownloader` (using gRPC `DownloadSubtitle`)
-6. Register in DI via bootstrap (gRPC channel, client, services)
+4. Implement `ISubtitleSource` and `ISubtitleDownloader` (using gRPC `DownloadSubtitle`)
+5. Register in DI via bootstrap (gRPC channel, client, services)
 
 ### Step 4: SuperSubtitles Import & Refresh Jobs
 1. Create `ImportSuperSubtitlesMigration` (one-time bulk import via `OneTimeMigration` framework)
    - Fetch all shows via `GetShowList`, split into batches
    - For each batch: call `GetShowSubtitles`, process results, **wait between batches** to avoid rate limiting
    - Filter out season packs (`is_season_pack = true`)
-   - Parse season/episode from subtitle metadata via `SeasonEpisodeParser` (skip subtitles that can't be parsed)
-   - Use async keyed lock per show ID to prevent duplicate show creation
-   - Match/merge shows by TvDB → TMDB → IMDB fallback chain
+   - Use `ShowExternalId` for fast lookup of already-imported shows, fall back to TvDB → TMDB → IMDB matching for first-time merge
+   - Use season/episode fields directly from the proto `Subtitle` message
    - Reuse `EpisodeRepository.UpsertEpisodes()` for episode + subtitle ingestion
    - Store max subtitle ID as cursor for incremental updates
 2. Create `RefreshSuperSubtitlesJob` (recurring every 15 minutes)
    - Check for updates via `CheckForUpdates` using stored max subtitle ID
    - If updates exist, call `GetRecentSubtitles` to fetch only new data
    - Process and merge new subtitles (same logic as bulk import, no batch delays needed — dataset is small)
-   - Use async keyed lock per show ID to prevent duplicate show creation
 3. Add `SuperSubtitlesImportConfig` for configurable batch size and delay between batches (bulk import only)
 
 ### Step 5: Testing & Validation
-1. Unit tests for `SeasonEpisodeParser` — various filename patterns (`S01E03`, `1x03`, edge cases)
-2. Unit tests for show matching/merging logic
-3. Unit tests for episode upsert with multi-provider subtitles
-4. Integration test: verify searching a merged show returns subtitles from both providers
-5. Integration test: verify downloading routes to correct provider
-6. Verify no regressions in existing Addic7ed-only flow
+1. Unit tests for show matching/merging logic (ShowExternalId lookup + TvDB/TMDB fallback)
+2. Unit tests for episode upsert with multi-provider subtitles
+3. Integration test: verify searching a merged show returns subtitles from both providers
+4. Integration test: verify downloading routes to correct provider
+5. Verify no regressions in existing Addic7ed-only flow
 
 ## Risks and Considerations
 
 | Risk | Mitigation |
 |---|---|
 | SuperSubtitles upstream rate limiting | Bulk import batches gRPC calls with configurable delays between batches (e.g. 3s) and processes shows in chunks of ~10; incremental 15-min updates don't need delays since the recent data is small |
-| Show merging creates duplicates | Use strict TvDB ID matching first; TMDB as fallback; never merge by name alone. Async keyed lock per show ID prevents concurrent creation of the same show |
-| Concurrent show creation race conditions | Async keyed lock (`AsyncKeyedLocker<long>`) on the SuperSubtitles show ID during match-or-create operations, consistent with existing locking patterns in `RefreshSingleShowJob` and `EpisodeRefresher` |
+| Show merging creates duplicates | Use `ShowExternalId` lookup first for fast deduplication of already-imported shows; fall back to strict TvDB ID matching, then TMDB; never merge by name alone |
 | Addic7ed shows lack TvDB IDs at merge time | SuperSubtitles refresh runs independently; unmatched shows are created as new and merge on next cycle |
 | Addic7ed rate limits still apply | Provider-specific credential management stays isolated in the Addic7ed downloader |
 | Database migration on large dataset | Use `OneTimeMigration` with chunked/batched processing, configurable delays, and timeouts |
-| Season/episode data not provided by SuperSubtitles | `SeasonEpisodeParser` extracts season/episode from `filename`, `name`, and `release` fields using regex patterns (`S01E03`, `1x03`, etc.). Subtitles that cannot be parsed are skipped with a warning log |
 | Different subtitle metadata schemas | Normalize to common `Subtitle` model at the SuperSubtitles adapter layer |
 | Episode title conflicts between providers | `BulkMergeAsync` updates to latest value; both providers' subtitles are preserved regardless |

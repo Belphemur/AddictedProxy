@@ -249,8 +249,8 @@ SuperSubtitles is a Go-based gRPC service that scrapes feliratok.eu (a Hungarian
 
 - **gRPC client** instead of HTTP/HTML scraping — communicates via Protocol Buffers with the [`supersubtitles.proto`](https://github.com/Belphemur/SuperSubtitles/blob/main/api/proto/v1/supersubtitles.proto) API
 - **No credentials needed** — unlike Addic7ed, no authentication or rate-limited credential rotation
-- **Season/episode parsing required** — SuperSubtitles does not provide reliable season/episode data; a `SeasonEpisodeParser` will extract this from subtitle `filename`/`name`/`release` fields
-- **Async keyed locking** — show match-or-create operations are protected by `AsyncKeyedLocker<long>` keyed on the SuperSubtitles show ID to prevent duplicate `TvShow` creation
+- **Season/episode provided** — the `Subtitle` message includes `season` and `episode` as `int32` fields, used directly
+- **Show lookup via `ShowExternalId`** — uses the new external ID system to look up already-imported shows before falling back to TvDB/TMDB matching
 - **Two-phase ingestion**: one-time bulk import (with batch delays for rate limiting) + recurring 15-minute incremental updates
 - **Subtitle downloads** via gRPC `DownloadSubtitle` method (supports season pack episode extraction)
 - **Season packs ignored** during ingestion — only individual episode subtitles are imported
