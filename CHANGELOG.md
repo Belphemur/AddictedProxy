@@ -1,3 +1,9 @@
+## [4.41.3](https://github.com/Belphemur/AddictedProxy/compare/v4.41.2...v4.41.3) (2026-02-12)
+
+### Bug Fixes
+
+* changes to login page of ProxyScrape ([5c49f65](https://github.com/Belphemur/AddictedProxy/commit/5c49f6559a96308f21e0e38c75d09562ff2d82cd))
+
 ## [4.41.2](https://github.com/Belphemur/AddictedProxy/compare/v4.41.1...v4.41.2) (2026-01-27)
 
 ### Bug Fixes
