@@ -21,7 +21,7 @@ on:
     - cron: '33 6 * * 4'
 env:
   NODEJS: lts/*
-  DOTNET: "9.0.x"
+  DOTNET: "10.0.x"
 jobs:
   analyze:
     name: Analyze
@@ -44,7 +44,7 @@ jobs:
       with:
         path: ~/.nuget/packages
         # Look to see if there is a cache hit for the corresponding requirements file
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        key: ${{ runner.os }}-nuget-${{ hashFiles('Directory.Packages.props', '**/*.csproj') }}
         restore-keys: |
           ${{ runner.os }}-nuget
     - name: Setup .NET

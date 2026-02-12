@@ -81,8 +81,8 @@ public class ProxyScrapeClient : IProxyScrapeClient
 
                                              {_config.Value.User.Password}
                                              ------{boundary}
-                                             Content-Disposition: form-data; name="сf_trustile_token"
-
+                                             Content-Disposition: form-data; name="cf_turnstile_token"
+                                             
                                              {cfToken.Value.Token}
                                              ------{boundary}--
 
