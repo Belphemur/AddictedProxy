@@ -472,11 +472,7 @@ public class ImportSuperSubtitlesMigration : IMigration
     public async Task ExecuteAsync(CancellationToken token)
     {
         // 1. Fetch all shows via gRPC streaming
-        var allShows = new List<Show>();
-        await foreach (var show in _superSubtitlesClient.GetShowListAsync(token))
-        {
-            allShows.Add(show);
-        }
+        var allShows = await CollectShowsAsync(token);
 
         // 2. Split into batches to avoid rate limiting
         var batches = allShows.Chunk(_config.BatchSize); // e.g. 10 shows per batch
@@ -484,54 +480,92 @@ public class ImportSuperSubtitlesMigration : IMigration
         long maxSubtitleId = 0;
         foreach (var batch in batches)
         {
-            // 3. Call GetShowSubtitles for this batch via gRPC streaming
-            TvShow? currentShow = null;
+            // 3. Process batch and track max subtitle ID
+            maxSubtitleId = await ProcessShowBatchAsync(batch, maxSubtitleId, token);
 
-            await foreach (var item in _superSubtitlesClient.GetShowSubtitlesAsync(batch, token))
-            {
-                if (item.ItemCase == ShowSubtitleItem.ItemOneofCase.ShowInfo)
-                {
-                    // 4. Process show information
-                    var showInfo = item.ShowInfo;
-                    currentShow = await MatchOrCreateShow(showInfo.Show, showInfo.ThirdPartyIds);
-                    await UpsertShowExternalId(currentShow, showInfo.Show.Id);
-                }
-                else if (item.ItemCase == ShowSubtitleItem.ItemOneofCase.Subtitle)
-                {
-                    if (currentShow == null)
-                        throw new InvalidOperationException("Received subtitle without show info");
-
-                    var subtitle = item.Subtitle;
-
-                    // 5. Separate season packs from individual episode subtitles
-                    if (subtitle.IsSeasonPack)
-                    {
-                        // 6. Store season pack in dedicated table
-                        var seasonPackEntity = BuildSeasonPack(currentShow, subtitle);
-                        await _seasonPackRepository.UpsertSeasonPack(seasonPackEntity, token);
-                    }
-                    else
-                    {
-                        // 7. Build episode + subtitle using season/episode from proto directly
-                        var episode = BuildEpisodeFromSubtitle(currentShow, subtitle);
-                        await _episodeRepository.UpsertEpisodes(new[] { episode }, token);
-                        await UpsertEpisodeExternalId(episode, subtitle.Id);
-                    }
-
-                    // 8. Track max ID
-                    maxSubtitleId = Math.Max(maxSubtitleId, subtitle.Id);
-                }
-            }
-
-            // 9. Wait between batches to avoid rate limiting
+            // 4. Wait between batches to avoid rate limiting
             await Task.Delay(_config.DelayBetweenBatches, token); // e.g. 2-5 seconds
         }
 
-        // 10. Store max ID for incremental updates
+        // 5. Store max ID for incremental updates
         await _superSubtitlesStateRepository.SetMaxSubtitleIdAsync(maxSubtitleId);
     }
 
-    private async Task<TvShow?> MatchOrCreateShow(ShowSubtitles showData)
+    private async Task<List<Show>> CollectShowsAsync(CancellationToken token)
+    {
+        var shows = new List<Show>();
+        await foreach (var show in _superSubtitlesClient.GetShowListAsync(token))
+        {
+            shows.Add(show);
+        }
+        return shows;
+    }
+
+    private async Task<long> ProcessShowBatchAsync(Show[] batch, long currentMaxId, CancellationToken token)
+    {
+        TvShow? currentShow = null;
+        long maxSubtitleId = currentMaxId;
+
+        await foreach (var item in _superSubtitlesClient.GetShowSubtitlesAsync(batch, token))
+        {
+            switch (item.ItemCase)
+            {
+                case ShowSubtitleItem.ItemOneofCase.ShowInfo:
+                    currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
+                    break;
+
+                case ShowSubtitleItem.ItemOneofCase.Subtitle:
+                    maxSubtitleId = await HandleSubtitleAsync(item.Subtitle, currentShow, maxSubtitleId, token);
+                    break;
+
+                case ShowSubtitleItem.ItemOneofCase.None:
+                    _logger.LogWarning("Received ShowSubtitleItem with no data");
+                    break;
+
+                default:
+                    _logger.LogWarning("Unknown ShowSubtitleItem case: {Case}", item.ItemCase);
+                    break;
+            }
+        }
+
+        return maxSubtitleId;
+    }
+
+    private async Task<TvShow> HandleShowInfoAsync(ShowInfo showInfo, CancellationToken token)
+    {
+        var tvShow = await MatchOrCreateShow(showInfo.Show, showInfo.ThirdPartyIds);
+        await UpsertShowExternalId(tvShow, showInfo.Show.Id);
+        return tvShow;
+    }
+
+    private async Task<long> HandleSubtitleAsync(Subtitle subtitle, TvShow? currentShow, long currentMaxId, CancellationToken token)
+    {
+        if (currentShow == null)
+            throw new InvalidOperationException("Received subtitle without show info");
+
+        if (subtitle.IsSeasonPack)
+        {
+            await HandleSeasonPackAsync(currentShow, subtitle, token);
+        }
+        else
+        {
+            await HandleEpisodeSubtitleAsync(currentShow, subtitle, token);
+        }
+
+        return Math.Max(currentMaxId, subtitle.Id);
+    }
+
+    private async Task HandleSeasonPackAsync(TvShow tvShow, Subtitle subtitle, CancellationToken token)
+    {
+        var seasonPackEntity = BuildSeasonPack(tvShow, subtitle);
+        await _seasonPackRepository.UpsertSeasonPack(seasonPackEntity, token);
+    }
+
+    private async Task HandleEpisodeSubtitleAsync(TvShow tvShow, Subtitle subtitle, CancellationToken token)
+    {
+        var episode = BuildEpisodeFromSubtitle(tvShow, subtitle);
+        await _episodeRepository.UpsertEpisodes(new[] { episode }, token);
+        await UpsertEpisodeExternalId(episode, subtitle.Id);
     {
         // 1. Check ShowExternalId first (fast path for already-imported shows)
         var existingByExtId = await _showExternalIdRepository
@@ -642,50 +676,88 @@ public class RefreshSuperSubtitlesJob
             maxId.ToString(), token);
 
         if (!updateCheck.HasUpdates)
+        {
+            _logger.LogInformation("No new SuperSubtitles since {MaxId}", maxId);
             return; // Nothing new
+        }
 
-        // 3. Fetch recent subtitles via gRPC streaming since our last known ID
-        long newMaxId = maxId;
+        _logger.LogInformation("Found {FilmCount} films, {SeriesCount} series updated",
+            updateCheck.FilmCount, updateCheck.SeriesCount);
+
+        // 3. Process recent subtitles
+        var newMaxId = await ProcessRecentSubtitlesAsync(maxId, token);
+
+        // 4. Persist updated cursor
+        await _stateRepository.SetMaxSubtitleIdAsync(newMaxId);
+
+        _logger.LogInformation("SuperSubtitles refresh complete. New max ID: {MaxId}", newMaxId);
+    }
+
+    private async Task<long> ProcessRecentSubtitlesAsync(long sinceId, CancellationToken token)
+    {
+        long newMaxId = sinceId;
         TvShow? currentShow = null;
 
-        await foreach (var item in _superSubtitlesClient.GetRecentSubtitlesAsync(maxId, token))
+        await foreach (var item in _superSubtitlesClient.GetRecentSubtitlesAsync(sinceId, token))
         {
-            if (item.ItemCase == ShowSubtitleItem.ItemOneofCase.ShowInfo)
+            switch (item.ItemCase)
             {
-                // 4. Process show information
-                var showInfo = item.ShowInfo;
-                currentShow = await MatchOrCreateShow(showInfo.Show, showInfo.ThirdPartyIds);
-                await UpsertShowExternalId(currentShow, showInfo.Show.Id);
-            }
-            else if (item.ItemCase == ShowSubtitleItem.ItemOneofCase.Subtitle)
-            {
-                if (currentShow == null)
-                    throw new InvalidOperationException("Received subtitle without show info");
+                case ShowSubtitleItem.ItemOneofCase.ShowInfo:
+                    currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
+                    break;
 
-                var subtitle = item.Subtitle;
+                case ShowSubtitleItem.ItemOneofCase.Subtitle:
+                    newMaxId = await HandleSubtitleAsync(item.Subtitle, currentShow, newMaxId, token);
+                    break;
 
-                // 5. Separate season packs from individual episode subtitles
-                if (subtitle.IsSeasonPack)
-                {
-                    // 6. Store season pack in dedicated table
-                    var seasonPackEntity = BuildSeasonPack(currentShow, subtitle);
-                    await _seasonPackRepository.UpsertSeasonPack(seasonPackEntity, token);
-                }
-                else
-                {
-                    // 7. Build episode + subtitle using season/episode from proto directly
-                    var episode = BuildEpisodeFromSubtitle(currentShow, subtitle);
-                    await _episodeRepository.UpsertEpisodes(new[] { episode }, token);
-                    await UpsertEpisodeExternalId(episode, subtitle.Id);
-                }
+                case ShowSubtitleItem.ItemOneofCase.None:
+                    _logger.LogWarning("Received ShowSubtitleItem with no data");
+                    break;
 
-                // 8. Track new max ID
-                newMaxId = Math.Max(newMaxId, subtitle.Id);
+                default:
+                    _logger.LogWarning("Unknown ShowSubtitleItem case: {Case}", item.ItemCase);
+                    break;
             }
         }
 
-        // 9. Persist updated cursor
-        await _stateRepository.SetMaxSubtitleIdAsync(newMaxId);
+        return newMaxId;
+    }
+
+    private async Task<TvShow> HandleShowInfoAsync(ShowInfo showInfo, CancellationToken token)
+    {
+        var tvShow = await MatchOrCreateShow(showInfo.Show, showInfo.ThirdPartyIds);
+        await UpsertShowExternalId(tvShow, showInfo.Show.Id);
+        return tvShow;
+    }
+
+    private async Task<long> HandleSubtitleAsync(Subtitle subtitle, TvShow? currentShow, long currentMaxId, CancellationToken token)
+    {
+        if (currentShow == null)
+            throw new InvalidOperationException("Received subtitle without show info");
+
+        if (subtitle.IsSeasonPack)
+        {
+            await HandleSeasonPackAsync(currentShow, subtitle, token);
+        }
+        else
+        {
+            await HandleEpisodeSubtitleAsync(currentShow, subtitle, token);
+        }
+
+        return Math.Max(currentMaxId, subtitle.Id);
+    }
+
+    private async Task HandleSeasonPackAsync(TvShow tvShow, Subtitle subtitle, CancellationToken token)
+    {
+        var seasonPackEntity = BuildSeasonPack(tvShow, subtitle);
+        await _seasonPackRepository.UpsertSeasonPack(seasonPackEntity, token);
+    }
+
+    private async Task HandleEpisodeSubtitleAsync(TvShow tvShow, Subtitle subtitle, CancellationToken token)
+    {
+        var episode = BuildEpisodeFromSubtitle(tvShow, subtitle);
+        await _episodeRepository.UpsertEpisodes(new[] { episode }, token);
+        await UpsertEpisodeExternalId(episode, subtitle.Id);
     }
 }
 ```
