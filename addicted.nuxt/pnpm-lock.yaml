@@ -71,7 +71,7 @@ importers:
         version: 0.10.0
       swagger-typescript-api:
         specifier: ^13.2.16
-        version: 13.2.17(magicast@0.5.2)
+        version: 13.2.18(magicast@0.5.2)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -221,8 +221,8 @@ packages:
       '@biomejs/wasm-web':
         optional: true
 
-  '@biomejs/wasm-nodejs@2.3.14':
-    resolution: {integrity: sha512-XRLrEHVUlvDzWvtH8eu5cBRlApL8U6eXSp2NQ6RrBR52v6Oo4qP4s4Ccw+ROMQ2gtqEi/9Daqqi56PkAV1yDZw==}
+  '@biomejs/wasm-nodejs@2.3.15':
+    resolution: {integrity: sha512-MGt/D5Y3v2VQuhyGspB+26T1SickuQFC3+HUMe9seMSnDqoNNN4vyZdUoKcORe7DVBcqs9+eBzns15lEkq3AGw==}
 
   '@bomb.sh/tab@0.0.12':
     resolution: {integrity: sha512-dYRwg4MqfHR5/BcTy285XOGRhjQFmNpaJBZ0tl2oU+RY595MQ5ApTF6j3OvauPAooHL6cfoOZMySQrOQztT8RQ==}
@@ -804,8 +804,8 @@ packages:
     resolution: {integrity: sha512-5XUvZuffe3KetyhbWwd4n2ktd7wraocCYw10tlM+/u/95iAz29GjNiuNxbCD1T6Bn1MyGc4QLVNKOWhzJkVFAw==}
     engines: {node: ^14.16.0 || >=16.0.0}
 
-  '@netlify/open-api@2.48.0':
-    resolution: {integrity: sha512-nO2wJmzF32OETFtIqX76c9vNqKRBniEuktDNuVQ78HsxZDkEihel+O12gOaWf065ubtmeDM9/50BCX0safM9gA==}
+  '@netlify/open-api@2.49.0':
+    resolution: {integrity: sha512-zr8dElQUsZo+gqZh3SA2NYv44IKaASwYBC97pO7sPI9GKaDW6dbeJ8P+fOI3VuQaodQSuIcyda0sM3dZAyqHnA==}
     engines: {node: '>=14.8.0'}
 
   '@netlify/runtime-utils@1.3.1':
@@ -2198,6 +2198,9 @@ packages:
   citty@0.2.0:
     resolution: {integrity: sha512-8csy5IBFI2ex2hTVpaHN2j+LNE199AgiI7y4dMintrr8i0lQiFn+0AWMZrWdHKIgMOer65f8IThysYhoReqjWA==}
 
+  citty@0.2.1:
+    resolution: {integrity: sha512-kEV95lFBhQgtogAPlQfJJ0WGVSokvLr/UEoFPiKKOXF7pl98HfUVUD0ejsuTCld/9xH9vogSywZ5KqHzXrZpqg==}
+
   client-zip@2.5.0:
     resolution: {integrity: sha512-ydG4nDZesbFurnNq0VVCp/yyomIBh+X/1fZPI/P24zbnG4dtC4tQAfI5uQsomigsUMeiRO2wiTPizLWQh+IAyQ==}
 
@@ -2449,8 +2452,8 @@ packages:
     resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
     engines: {node: '>=12'}
 
-  dotenv@17.2.4:
-    resolution: {integrity: sha512-mudtfb4zRB4bVvdj0xRo+e6duH1csJRM8IukBqfTRvHotn9+LBXB8ynAidP9zHqoRC/fsllXgk4kCKlR21fIhw==}
+  dotenv@17.3.1:
+    resolution: {integrity: sha512-IO8C/dzEb6O3F9/twg6ZLXz164a2fhTnEWb95H23Dm4OuN+92NmEAlTrupP9VW6Jm3sO26tQlqyvyi4CsnY9GA==}
     engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
@@ -3949,8 +3952,8 @@ packages:
   swagger-schema-official@2.0.0-bab6bed:
     resolution: {integrity: sha512-rCC0NWGKr/IJhtRuPq/t37qvZHI/mH4I4sxflVM+qgVe5Z2uOCivzWaVbuioJaB61kvm5UvB7b49E+oBY0M8jA==}
 
-  swagger-typescript-api@13.2.17:
-    resolution: {integrity: sha512-kroHWv9sZBaltB3KlnYZWgWKQ2AmQ1fPoySr4sKirUBCIynwvCE1SlfJcfuFRIPq8z+smyfP4JpwrcqKo73Y8Q==}
+  swagger-typescript-api@13.2.18:
+    resolution: {integrity: sha512-YLcEdW3weYRB1BokCJv8RnxPdPRV36segDLu1kVIn+02S9emDU86CwRuZKmQ3izZRAuWtRYvCzB0p1vwb8mwgw==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -4023,8 +4026,8 @@ packages:
     resolution: {integrity: sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==}
     engines: {node: '>=16'}
 
-  type-fest@5.4.3:
-    resolution: {integrity: sha512-AXSAQJu79WGc79/3e9/CR77I/KQgeY1AhNvcShIH4PTcGYyC4xv6H4R4AUOwkPS5799KlVDAu8zExeCrkGquiA==}
+  type-fest@5.4.4:
+    resolution: {integrity: sha512-JnTrzGu+zPV3aXIUhnyWJj4z/wigMsdYajGLIYakqyOW1nPllzXEJee0QQbHj+CTIQtXGlAjuK0UY+2xTyjVAw==}
     engines: {node: '>=20'}
 
   type-level-regexp@0.1.17:
@@ -4653,16 +4656,16 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@biomejs/js-api@4.0.0(@biomejs/wasm-nodejs@2.3.14)':
+  '@biomejs/js-api@4.0.0(@biomejs/wasm-nodejs@2.3.15)':
     optionalDependencies:
-      '@biomejs/wasm-nodejs': 2.3.14
+      '@biomejs/wasm-nodejs': 2.3.15
 
-  '@biomejs/wasm-nodejs@2.3.14': {}
+  '@biomejs/wasm-nodejs@2.3.15': {}
 
-  '@bomb.sh/tab@0.0.12(cac@6.7.14)(citty@0.2.0)':
+  '@bomb.sh/tab@0.0.12(cac@6.7.14)(citty@0.2.1)':
     optionalDependencies:
       cac: 6.7.14
-      citty: 0.2.0
+      citty: 0.2.1
 
   '@clack/core@1.0.0':
     dependencies:
@@ -5052,7 +5055,7 @@ snapshots:
       write-file-atomic: 6.0.0
     optional: true
 
-  '@netlify/open-api@2.48.0':
+  '@netlify/open-api@2.49.0':
     optional: true
 
   '@netlify/runtime-utils@1.3.1':
@@ -5072,10 +5075,10 @@ snapshots:
 
   '@nuxt/cli@3.33.0(@nuxt/schema@4.3.1)(cac@6.7.14)(magicast@0.5.2)':
     dependencies:
-      '@bomb.sh/tab': 0.0.12(cac@6.7.14)(citty@0.2.0)
+      '@bomb.sh/tab': 0.0.12(cac@6.7.14)(citty@0.2.1)
       '@clack/prompts': 1.0.0
       c12: 3.3.3(magicast@0.5.2)
-      citty: 0.2.0
+      citty: 0.2.1
       confbox: 0.2.4
       consola: 3.4.2
       copy-paste: 2.2.0
@@ -5322,7 +5325,7 @@ snapshots:
   '@nuxt/telemetry@2.7.0(@nuxt/kit@4.3.1(magicast@0.5.2))':
     dependencies:
       '@nuxt/kit': 4.3.1(magicast@0.5.2)
-      citty: 0.2.0
+      citty: 0.2.1
       consola: 3.4.2
       ofetch: 2.0.0-alpha.3
       rc9: 3.0.0
@@ -6370,7 +6373,7 @@ snapshots:
       chokidar: 5.0.0
       confbox: 0.2.4
       defu: 6.1.4
-      dotenv: 17.2.4
+      dotenv: 17.3.1
       exsolve: 1.0.8
       giget: 2.0.0
       jiti: 2.6.1
@@ -6437,6 +6440,8 @@ snapshots:
       consola: 3.4.2
 
   citty@0.2.0: {}
+
+  citty@0.2.1: {}
 
   client-zip@2.5.0: {}
 
@@ -6656,7 +6661,7 @@ snapshots:
 
   dot-prop@10.1.0:
     dependencies:
-      type-fest: 5.4.3
+      type-fest: 5.4.4
 
   dot-prop@9.0.0:
     dependencies:
@@ -6665,7 +6670,7 @@ snapshots:
 
   dotenv@16.6.1: {}
 
-  dotenv@17.2.4: {}
+  dotenv@17.3.1: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -7385,7 +7390,7 @@ snapshots:
 
   netlify@13.3.5:
     dependencies:
-      '@netlify/open-api': 2.48.0
+      '@netlify/open-api': 2.49.0
       lodash-es: 4.17.23
       micro-api-client: 3.3.0
       node-fetch: 3.3.2
@@ -8507,13 +8512,13 @@ snapshots:
 
   swagger-schema-official@2.0.0-bab6bed: {}
 
-  swagger-typescript-api@13.2.17(magicast@0.5.2):
+  swagger-typescript-api@13.2.18(magicast@0.5.2):
     dependencies:
-      '@biomejs/js-api': 4.0.0(@biomejs/wasm-nodejs@2.3.14)
-      '@biomejs/wasm-nodejs': 2.3.14
+      '@biomejs/js-api': 4.0.0(@biomejs/wasm-nodejs@2.3.15)
+      '@biomejs/wasm-nodejs': 2.3.15
       '@types/swagger-schema-official': 2.0.25
       c12: 3.3.3(magicast@0.5.2)
-      citty: 0.2.0
+      citty: 0.2.1
       consola: 3.4.2
       es-toolkit: 1.44.0
       eta: 3.5.0
@@ -8521,6 +8526,7 @@ snapshots:
       openapi-types: 12.1.3
       swagger-schema-official: 2.0.0-bab6bed
       swagger2openapi: 7.0.8
+      type-fest: 5.4.4
       typescript: 5.9.3
       yaml: 2.8.2
     transitivePeerDependencies:
@@ -8618,7 +8624,7 @@ snapshots:
   type-fest@4.41.0:
     optional: true
 
-  type-fest@5.4.3:
+  type-fest@5.4.4:
     dependencies:
       tagged-tag: 1.0.0
 
