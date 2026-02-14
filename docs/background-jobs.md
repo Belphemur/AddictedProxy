@@ -182,15 +182,16 @@ See [Multi-Provider Plan](multi-provider-plan.md) for full details.
 **Concurrency**: Max 1  
 
 **Behavior**:
-1. Calls `GetShowList()` via gRPC to fetch all available shows
-2. Splits shows into configurable batches (e.g. 10 shows per batch)
-3. For each batch: calls `GetShowSubtitles()` to fetch subtitles + third-party IDs
-4. Looks up `ShowExternalId(Source=SuperSubtitles)` first for already-imported shows; falls back to TvDB/TMDB matching
-5. Separates season packs (`is_season_pack = true`) and stores them in `SeasonPackSubtitle` table
-6. Uses `season` and `episode` fields from the proto `Subtitle` message directly for episode subtitles
-7. Upserts episodes and subtitles via `EpisodeRepository.UpsertEpisodes()`
-8. **Waits between batches** (configurable delay, e.g. 3 seconds) to avoid upstream rate limiting
-9. Stores the max subtitle ID as a cursor for subsequent incremental updates
+1. Calls `GetShowList()` via gRPC (streams `Show` objects, consumed asynchronously and collected into batches)
+2. Splits collected shows into configurable batches (e.g. 10 shows per batch)
+3. For each batch: calls `GetShowSubtitles()` (streams `ShowSubtitleItem` containing `ShowInfo` + `Subtitle` objects linked by show_id)
+4. Processes stream asynchronously: ShowInfo contains show metadata + third-party IDs, Subtitle objects follow
+5. Looks up `ShowExternalId(Source=SuperSubtitles)` first for already-imported shows; falls back to TvDB/TMDB matching from third-party IDs
+6. Separates season packs (`is_season_pack = true`) and stores them in `SeasonPackSubtitle` table
+7. Uses `season` and `episode` fields from the proto `Subtitle` message directly for episode subtitles
+8. Upserts episodes and subtitles via `EpisodeRepository.UpsertEpisodes()`
+9. **Waits between batches** (configurable delay, e.g. 3 seconds) to avoid upstream rate limiting
+10. Stores the max subtitle ID as a cursor for subsequent incremental updates
 
 ### RefreshSuperSubtitlesJob (Recurring)
 
@@ -202,8 +203,9 @@ See [Multi-Provider Plan](multi-provider-plan.md) for full details.
 1. Loads the stored max SuperSubtitles subtitle ID
 2. Calls `CheckForUpdates()` via gRPC with the stored ID
 3. If no updates → exits early
-4. Calls `GetRecentSubtitles(since_id)` to fetch only new subtitles
-5. Looks up `ShowExternalId(Source=SuperSubtitles)` first; falls back to TvDB/TMDB matching
-6. Matches/merges shows and upserts episodes + subtitles (same logic as bulk import)
-7. Stores season packs in `SeasonPackSubtitle` table
-8. Updates the stored max subtitle ID
+4. Calls `GetRecentSubtitles(since_id)` (streams `ShowSubtitleItem` containing `ShowInfo` + `Subtitle` objects for shows with new subtitles)
+5. Processes stream asynchronously: ShowInfo sent once per show, followed by new Subtitle objects
+6. Looks up `ShowExternalId(Source=SuperSubtitles)` first; falls back to TvDB/TMDB matching from third-party IDs
+7. Matches/merges shows and upserts episodes + subtitles (same logic as bulk import)
+8. Stores season packs in `SeasonPackSubtitle` table
+9. Updates the stored max subtitle ID
