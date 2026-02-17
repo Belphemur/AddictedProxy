@@ -13,6 +13,7 @@ namespace AddictedProxy.Database.Model.Shows;
 [Index(nameof(DownloadUri), IsUnique = true)]
 [Index(nameof(EpisodeId), nameof(Language), nameof(Version), IsUnique = false)]
 [Index(nameof(UniqueId), IsUnique = true)]
+[Index(nameof(Source), nameof(ExternalId), IsUnique = true)]
 public class Subtitle : BaseEntity, IDiscoverableObject
 {
     [Key]
@@ -33,7 +34,7 @@ public class Subtitle : BaseEntity, IDiscoverableObject
     public bool HD { get; set; }
     public Uri DownloadUri { get; set; }
     public string Language { get; set; }
-    
+
     [Column(TypeName = "VARCHAR")]
     [StringLength(7)]
     public string? LanguageIsoCode { get; set; }
@@ -53,10 +54,17 @@ public class Subtitle : BaseEntity, IDiscoverableObject
     ///Number of time this sub was downloaded
     /// </summary>
     public long DownloadCount { get; set; }
-    
+
     /// <summary>
     /// Source of the subtitle
     /// </summary>
     [DefaultValue(DataSource.Addic7ed)]
     public DataSource Source { get; set; } = DataSource.Addic7ed;
+
+    /// <summary>
+    /// Provider-specific external identifier for the subtitle.
+    /// For Addic7ed, this is the download URI string.
+    /// For SuperSubtitles, this is the upstream subtitle ID.
+    /// </summary>
+    public string? ExternalId { get; set; }
 }

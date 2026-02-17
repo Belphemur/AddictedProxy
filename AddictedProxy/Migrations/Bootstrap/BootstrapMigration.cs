@@ -14,5 +14,6 @@ public class BootstrapMigration : IBootstrap
         services.AddScoped<IMigration, CleanUpInboxUsersMigration>();
         services.AddScoped<IMigration, RemoveOldCheckCompletedJobMigration>();
         services.AddScoped<IMigration, MigrateExternalIdsToNewTableMigration>();
+        services.AddScoped<IMigration, MigrateSubtitleExternalIdMigration>();
     }
 }

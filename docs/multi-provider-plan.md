@@ -184,7 +184,25 @@ Season packs from SuperSubtitles (subtitles where `is_season_pack = true`) are s
 - **Stores SuperSubtitles-specific metadata** (qualities, release groups, release, uploader) that may be useful when serving season packs later
 - **No `DownloadCount` yet** — download tracking can be added when season pack download API is implemented
 
-#### 1.5 One-Time Data Migration
+#### 1.5 Subtitle External ID
+
+Add a new `ExternalId` column to the `Subtitle` table to store the provider-specific identifier directly on the subtitle row. This avoids the need to encode/decode provider IDs in the `DownloadUri` field.
+
+| Provider       | `ExternalId` value                                  |
+| -------------- | --------------------------------------------------- |
+| Addic7ed       | The download URI string (migrated from `DownloadUri`) |
+| SuperSubtitles | The upstream subtitle ID from the gRPC API (e.g. `"12345"`) |
+
+```
+Subtitle table (updated)
+├── ExternalId (string, nullable)          ◄── Provider-specific ID
+├── Index: (Source, ExternalId) unique     ◄── Fast lookup by provider + ID
+└── ... (existing columns unchanged)
+```
+
+A one-time migration (`MigrateSubtitleExternalIdMigration`) populates `ExternalId` from `DownloadUri` for all existing Addic7ed subtitles.
+
+#### 1.6 One-Time Data Migration
 
 Use the `OneTimeMigration` framework to migrate existing data:
 
@@ -275,12 +293,14 @@ Since the episode row is shared across providers, all its subtitles (from any so
 
 Subtitles are the leaf nodes — they are never merged across providers, only **appended**. Each subtitle row belongs to a specific provider (tracked by `Subtitle.Source`).
 
-**Why this works with no code change:** The existing `BulkMergeAsync` for subtitles uses `ColumnPrimaryKeyExpression = subtitle => new { subtitle.DownloadUri }`. Since each provider has unique download URLs:
+**Why this works with no code change:** The existing `BulkMergeAsync` for subtitles uses `ColumnPrimaryKeyExpression = subtitle => new { subtitle.DownloadUri }`. Since each provider has unique download URLs, they never collide, so new subtitles are always **inserted** alongside existing ones.
 
-- Addic7ed subtitles have URIs like `https://www.addic7ed.com/...`
-- SuperSubtitles subtitles have URIs like `https://feliratok.eu/...`
+Each subtitle also carries an `ExternalId` field — a provider-specific identifier:
 
-They never collide, so new subtitles are always **inserted** alongside existing ones.
+- **Addic7ed**: `ExternalId` = the download URI string (e.g. `https://www.addic7ed.com/...`)
+- **SuperSubtitles**: `ExternalId` = the upstream subtitle ID from the gRPC API (e.g. `12345`)
+
+The `(Source, ExternalId)` pair is unique-indexed, enabling fast lookups by provider without parsing URIs.
 
 **What happens when a user searches:**
 
@@ -327,7 +347,7 @@ The `Subtitle.Source` field (already present in the database) determines which d
 | ------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------- |
 | `TvShow` table            | No schema change | Shows are merged into existing rows via TvDB/TMDB ID matching                                            |
 | `Episode` table           | No schema change | Episodes upserted by natural key `(TvShowId, Season, Number)`                                            |
-| `Subtitle` table          | No schema change | New subtitles appended with `Source = SuperSubtitles` and unique `DownloadUri`                           |
+| `Subtitle` table          | **New column**   | `ExternalId` (string, nullable) added — provider-specific ID. Indexed `(Source, ExternalId)` unique. For Addic7ed: `DownloadUri` string. For SuperSubtitles: upstream subtitle ID |
 | `ShowExternalId` table    | **New**          | Maps provider-specific show IDs to merged `TvShow` rows                                                  |
 | `EpisodeExternalId` table | **New**          | Maps provider-specific episode IDs to merged `Episode` rows                                              |
 | `DataSource` enum         | **Extended**     | Add `SuperSubtitles` value                                                                               |
@@ -355,7 +375,9 @@ public interface ISubtitleSource
 }
 ```
 
-**ISubtitleDownloader** — Replaces direct dependency on `IAddic7edDownloader`:
+**ISubtitleDownloader** — Replaces direct dependency on `IAddic7edDownloader`.
+
+Each subtitle carries an `ExternalId` field containing the provider-specific identifier (download URI for Addic7ed, upstream subtitle ID for SuperSubtitles). The downloader reads `subtitle.ExternalId` directly — no URI parsing or scheme conventions needed.
 
 ```csharp
 public interface ISubtitleDownloader
@@ -453,7 +475,7 @@ ImportSuperSubtitlesMigration (OneTimeMigration, runs once after FetchMissingTvd
     │   │           ├─► Ensure Season(TvShowId, Number) entity exists (create if missing)
     │   │           ├─► Upsert Episode(TvShowId, Season, Number) via EpisodeRepository.UpsertEpisodes()
     │   │           ├─► Upsert EpisodeExternalId(Source=SuperSubtitles, ExternalId=subtitle.id)
-    │   │           ├─► Insert Subtitle(Source=SuperSubtitles, DownloadUri=download_url)
+    │   │           ├─► Insert Subtitle(Source=SuperSubtitles, ExternalId=subtitle.id, DownloadUri=download_url)
     │   │           │   └─► BulkMerge by DownloadUri (unique per provider)
     │   │           └─► Track max subtitle ID for use as incremental cursor
     │   │
@@ -744,7 +766,7 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
     │           ├─► Ensure Season(TvShowId, Number) entity exists (create if missing)
     │           ├─► Upsert Episode(TvShowId, Season, Number) via EpisodeRepository.UpsertEpisodes()
     │           ├─► Upsert EpisodeExternalId(Source=SuperSubtitles, ExternalId=subtitle.id)
-    │           ├─► Insert Subtitle(Source=SuperSubtitles, DownloadUri=download_url)
+    │           ├─► Insert Subtitle(Source=SuperSubtitles, ExternalId=subtitle.id, DownloadUri=download_url)
     │           └─► Track new max subtitle ID
     │
     │   └─► When all subtitles for current show are processed:
@@ -954,14 +976,10 @@ public class SuperSubtitlesDownloader : ISubtitleDownloader
 
     public async Task<Stream> DownloadSubtitleAsync(Subtitle subtitle, CancellationToken token)
     {
-        // Use the gRPC DownloadSubtitle method
-        // The episode field extracts a specific episode from season packs (0 = full file)
-        var response = await _grpcClient.DownloadSubtitleAsync(new DownloadSubtitleRequest
-        {
-            DownloadUrl = subtitle.DownloadUri,
-            SubtitleId = subtitle.ExternalId,
-            Episode = subtitle.Number // Extract specific episode if from season pack
-        }, token);
+        // Use subtitle.ExternalId directly — no URI parsing needed
+        // ExternalId contains the upstream SuperSubtitles subtitle ID (e.g. "12345")
+        var response = await _grpcClient.DownloadSubtitleAsync(
+            subtitle.ExternalId, episode: null, token);
 
         return new MemoryStream(response.Content.ToByteArray());
     }
@@ -1081,8 +1099,9 @@ AddictedProxy.Upstream/
 1. Add `SuperSubtitles` to `DataSource` enum
 2. Create `ShowExternalId` and `EpisodeExternalId` entities
 3. Create `SeasonPackSubtitle` entity for storing season pack data
-4. Create EF Core migration
-5. Create one-time migration to populate `ShowExternalId`/`EpisodeExternalId` from existing data
+4. Add `ExternalId` column to `Subtitle` table with `(Source, ExternalId)` unique index
+5. Create EF Core migrations
+6. Create one-time migrations to populate `ShowExternalId`/`EpisodeExternalId` from existing data and `Subtitle.ExternalId` from `DownloadUri`
 
 ### Step 2: Provider Abstraction
 

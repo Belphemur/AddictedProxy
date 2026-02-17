@@ -7,6 +7,7 @@ using AddictedProxy.Services.Provider.ShowInfo;
 using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Services.Provider.Subtitle;
+using AddictedProxy.Services.Provider.Subtitle.Download;
 using InversionOfControl.Model;
 
 #endregion
@@ -25,5 +26,10 @@ public class BootstrapProvider : IBootstrap
         services.AddSingleton<IRefreshHubManager, RefreshHubManager>();
         services.AddScoped<SubtitleCounterUpdater>();
         services.AddScoped<IDetailsProvider, DetailsProvider>();
+
+        // Subtitle downloaders (one per provider)
+        services.AddScoped<ISubtitleDownloader, Addic7edSubtitleDownloader>();
+        services.AddScoped<ISubtitleDownloader, SuperSubtitlesSubtitleDownloader>();
+        services.AddScoped<SubtitleDownloaderFactory>();
     }
 }
