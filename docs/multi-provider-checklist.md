@@ -25,11 +25,11 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 
 ## Phase 2: Data Merging Strategy
 
-- [ ] Implement show merging logic (lookup `ShowExternalId` → fallback TvDB → TMDB → create new)
-- [ ] Implement episode merging via natural key `(TvShowId, Season, Number)` using `EpisodeRepository.UpsertEpisodes()`
-- [ ] Implement subtitle appending (insert with `Source = SuperSubtitles`, unique by `DownloadUri`)
-- [ ] Implement season pack ingestion (store `is_season_pack = true` subtitles in `SeasonPackSubtitle`)
-- [ ] Handle edge cases (missing TvDB/TMDB IDs, shows only in one provider)
+- [x] Implement show merging logic (lookup `ShowExternalId` → fallback TvDB → TMDB → create new)
+- [x] Implement episode merging via natural key `(TvShowId, Season, Number)` using `EpisodeRepository.UpsertEpisodes()`
+- [x] Implement subtitle appending (insert with `Source = SuperSubtitles`, unique by `DownloadUri`)
+- [x] Implement season pack ingestion (store `is_season_pack = true` subtitles in `SeasonPackSubtitle`)
+- [x] Handle edge cases (missing TvDB/TMDB IDs, shows only in one provider)
 
 ## Phase 3: Provider Abstraction Layer
 
@@ -97,8 +97,8 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 
 ## Testing & Validation
 
-- [ ] Unit tests for show matching/merging logic
-- [ ] Unit tests for episode upsert with multi-provider subtitles
+- [x] Unit tests for show matching/merging logic
+- [x] Unit tests for episode upsert with multi-provider subtitles
 - [ ] Integration test: search merged show returns subtitles from both providers
 - [ ] Integration test: download routes to correct provider
 - [ ] Verify no regressions in existing Addic7ed-only flow
