@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+package supersubtitles.v1;
+
+option csharp_namespace = "SuperSubtitleClient.Generated";
+
+import "google/protobuf/timestamp.proto";
+
+// SuperSubtitlesService provides access to TV show and subtitle information
+// Uses server-side streaming for list/collection endpoints to improve
+// time-to-first-result and reduce memory usage.
+service SuperSubtitlesService {
+  // GetShowList streams all available TV shows
+  rpc GetShowList(GetShowListRequest) returns (stream Show);
+
+  // GetSubtitles streams all subtitles for a specific show
+  rpc GetSubtitles(GetSubtitlesRequest) returns (stream Subtitle);
+
+  // GetShowSubtitles streams show information and subtitles for multiple shows.
+  // Streams ShowSubtitleItem messages which contain either show info (show + third-party IDs)
+  // or a subtitle, linked together by show_id.
+  rpc GetShowSubtitles(GetShowSubtitlesRequest) returns (stream ShowSubtitleItem);
+
+  // CheckForUpdates checks if there are new subtitles available since a given content ID
+  rpc CheckForUpdates(CheckForUpdatesRequest) returns (CheckForUpdatesResponse);
+
+  // DownloadSubtitle downloads a specific subtitle file
+  rpc DownloadSubtitle(DownloadSubtitleRequest) returns (DownloadSubtitleResponse);
+
+  // GetRecentSubtitles streams recently uploaded subtitles with show information.
+  // Streams ShowSubtitleItem messages: for each new show encountered, a ShowInfo
+  // item is sent first, followed by individual Subtitle items. Show info is only
+  // sent once per unique show_id within a single call.
+  rpc GetRecentSubtitles(GetRecentSubtitlesRequest) returns (stream ShowSubtitleItem);
+}
+
+// Show represents a TV show with basic information
+message Show {
+  string name = 1;
+  int64 id = 2;
+  int32 year = 3;
+  string image_url = 4;
+}
+
+// ThirdPartyIds represents identifiers from various third-party services
+message ThirdPartyIds {
+  string imdb_id = 1;   // IMDB identifier
+  int64 tvdb_id = 2;    // TVDB identifier
+  int64 tv_maze_id = 3; // TVMaze identifier
+  int64 trakt_id = 4;   // Trakt identifier
+}
+
+// Quality represents the video quality of a subtitle
+enum Quality {
+  QUALITY_UNSPECIFIED = 0;
+  QUALITY_360P = 1;
+  QUALITY_480P = 2;
+  QUALITY_720P = 3;
+  QUALITY_1080P = 4;
+  QUALITY_2160P = 5; // 4K
+}
+
+// Subtitle represents a normalized subtitle
+message Subtitle {
+  int64 id = 1;
+  int64 show_id = 2;
+  string show_name = 3;
+  string name = 4;
+  string language = 5;
+  int32 season = 6;
+  int32 episode = 7;
+  string filename = 8;
+  string download_url = 9;
+  string uploader = 10;
+  google.protobuf.Timestamp uploaded_at = 11;
+  repeated Quality qualities = 12;
+  repeated string release_groups = 13;
+  string release = 14;
+  bool is_season_pack = 15;
+}
+
+// ShowInfo represents a TV show with its third-party IDs (sent once per show in a stream)
+message ShowInfo {
+  Show show = 1;
+  ThirdPartyIds third_party_ids = 2;
+}
+
+// ShowSubtitleItem is a streaming message for GetShowSubtitles/GetRecentSubtitles.
+// Each item is either show information or a subtitle, linked by show_id.
+message ShowSubtitleItem {
+  oneof item {
+    ShowInfo show_info = 1;   // Show metadata with third-party IDs
+    Subtitle subtitle = 2;    // A single subtitle belonging to a show (use show_id to link)
+  }
+}
+
+// GetShowListRequest requests the list of all available shows
+message GetShowListRequest {}
+
+// GetSubtitlesRequest requests subtitles for a specific show
+message GetSubtitlesRequest {
+  int64 show_id = 1;
+}
+
+// GetShowSubtitlesRequest requests shows with their subtitles and third-party IDs
+message GetShowSubtitlesRequest {
+  repeated Show shows = 1;
+}
+
+// CheckForUpdatesRequest checks for new content since a given content ID
+message CheckForUpdatesRequest {
+  string content_id = 1;
+}
+
+// CheckForUpdatesResponse contains update availability information
+message CheckForUpdatesResponse {
+  int32 film_count = 1;
+  int32 series_count = 2;
+  bool has_updates = 3;
+}
+
+// DownloadSubtitleRequest requests a subtitle download
+message DownloadSubtitleRequest {
+  string subtitle_id = 1;
+  optional int32 episode = 2; // Episode number to extract from season pack (not set = download entire file)
+}
+
+// DownloadSubtitleResponse contains the downloaded subtitle data
+message DownloadSubtitleResponse {
+  string filename = 1;
+  bytes content = 2;
+  string content_type = 3;
+}
+
+// GetRecentSubtitlesRequest requests recently uploaded subtitles
+message GetRecentSubtitlesRequest {
+  int64 since_id = 1;
+}

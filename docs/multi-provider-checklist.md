@@ -1,0 +1,99 @@
+# Multi-Provider Implementation Checklist
+
+Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.md).
+
+## Phase 1: Database Schema Changes
+
+- [x] Extend `DataSource` enum with `SuperSubtitles` value
+- [x] Create `ShowExternalId` entity (PK, TvShowId FK, Source, ExternalId, unique constraints)
+- [x] Create `EpisodeExternalId` entity (PK, EpisodeId FK, Source, ExternalId, unique constraints)
+- [x] Create `SeasonPackSubtitle` entity (full schema with indexes)
+- [x] Add navigation properties to `TvShow` and `Episode` for new entities
+- [x] Update `EntityContext` with new `DbSet`s and model configuration
+- [x] Remove unique index on `TvShow.ExternalId` (replaced by `ShowExternalId` table)
+- [x] Generate EF Core migration (`AddMultiProviderTables`)
+- [x] Create `IShowExternalIdRepository` / `ShowExternalIdRepository` with bulk upsert
+- [x] Create `IEpisodeExternalIdRepository` / `EpisodeExternalIdRepository` with bulk upsert
+- [x] Create `ISeasonPackSubtitleRepository` / `SeasonPackSubtitleRepository` with bulk upsert
+- [x] Register new repositories in `BootstrapDatabase` DI
+- [x] Create one-time migration (`MigrateExternalIdsToNewTableMigration`) to populate `ShowExternalId`/`EpisodeExternalId` from existing `TvShow.ExternalId` and `Episode.ExternalId`
+- [x] Register migration in `BootstrapMigration`
+
+## Phase 2: Data Merging Strategy
+
+- [ ] Implement show merging logic (lookup `ShowExternalId` → fallback TvDB → TMDB → create new)
+- [ ] Implement episode merging via natural key `(TvShowId, Season, Number)` using `EpisodeRepository.UpsertEpisodes()`
+- [ ] Implement subtitle appending (insert with `Source = SuperSubtitles`, unique by `DownloadUri`)
+- [ ] Implement season pack ingestion (store `is_season_pack = true` subtitles in `SeasonPackSubtitle`)
+- [ ] Handle edge cases (missing TvDB/TMDB IDs, shows only in one provider)
+
+## Phase 3: Provider Abstraction Layer
+
+- [ ] Create `ISubtitleSource` interface
+- [ ] Create `ISubtitleDownloader` interface
+- [ ] Create `ISubtitleSourceRegistry` and implementation
+- [ ] Wrap Addic7ed services (`Addic7edSource`, `Addic7edSubtitleDownloader`) in new interfaces
+- [ ] Implement `SuperSubtitlesDownloader` (uses gRPC `DownloadSubtitle`)
+- [ ] Update `SubtitleProvider` to route downloads via registry and `Subtitle.Source`
+
+## Phase 4: Background Job Pipeline
+
+### Phase 4A: One-Time Bulk Import
+
+- [ ] Create `SuperSubtitlesImportConfig` (batch size, min/max delay)
+- [ ] Add config section to `appsettings.json`
+- [ ] Create `ISuperSubtitlesStateRepository` / `SuperSubtitlesStateRepository` (tracks max subtitle ID cursor)
+- [ ] Create `ImportSuperSubtitlesMigration` (one-time via `OneTimeMigration` framework)
+  - [ ] Fetch all shows via `GetShowList` (streamed), collect into batches
+  - [ ] For each batch: call `GetShowSubtitles`, process stream asynchronously
+  - [ ] Wrap each show's data in a database transaction via `ITransactionManager<EntityContext>`
+  - [ ] Process `ShowInfo` items (match/create shows, upsert `ShowExternalId`)
+  - [ ] Process `Subtitle` items (upsert episodes + subtitles, or store season packs)
+  - [ ] Ensure `Season` entities exist before upserting episodes
+  - [ ] Rate-limit with configurable delay between batches
+  - [ ] Track progress via Hangfire.Console
+  - [ ] Store max subtitle ID as cursor for incremental updates
+
+### Phase 4B: Recurring Incremental Updates
+
+- [ ] Create `RefreshSuperSubtitlesJob` (recurring every 15 minutes)
+  - [ ] Load max subtitle ID from state repository
+  - [ ] `CheckForUpdates` → early exit if no updates
+  - [ ] `GetRecentSubtitles(since_id)` → process stream (same logic as bulk import)
+  - [ ] Wrap each show's data in a database transaction
+  - [ ] Update stored max subtitle ID
+- [ ] Register recurring job in Hangfire
+
+## Phase 5: SuperSubtitles Client Module
+
+- [x] Create `SuperSubtitleClient` project and add to solution
+- [x] Add `supersubtitles.proto` and configure gRPC code generation (`Grpc.Tools`)
+- [x] Add `Google.Protobuf`, `Grpc.Net.ClientFactory`, `Grpc.Tools` to `Directory.Packages.props`
+- [x] Create `SuperSubtitlesConfig` (bound from `"SuperSubtitles"` config section via `IOptions<T>`)
+- [x] Create `ISuperSubtitlesClient` interface (all 6 RPCs, `IAsyncEnumerable<T>` for streaming)
+- [x] Create `SuperSubtitlesClientImpl` (wraps generated gRPC client, converts streams to `IAsyncEnumerable<T>`)
+- [x] Create `BootstrapSuperSubtitles` (DI: options binding, `AddGrpcClient` with standard resilience, register `ISuperSubtitlesClient`)
+- [x] Add project reference to `AddictedProxy.csproj`
+- [x] Add `BootstrapSuperSubtitles` assembly to `Program.cs`
+- [x] Add `SuperSubtitles` config section to `appsettings.json` and `appsettings.Development.json`
+- [ ] Implement `SuperSubtitlesSource` (`ISubtitleSource`)
+
+## Phase 6: API & Frontend Updates
+
+- [ ] Optionally expose `source` field in `SubtitleDto`
+- [ ] Optionally add provider badge/icon in frontend subtitle list
+- [ ] Verify no breaking changes to existing endpoints
+
+## Infrastructure
+
+- [x] Add SuperSubtitles service to `compose.yaml`
+- [x] Add Hangfire.Console package for job progress tracking
+- [x] Update multi-provider plan documentation
+
+## Testing & Validation
+
+- [ ] Unit tests for show matching/merging logic
+- [ ] Unit tests for episode upsert with multi-provider subtitles
+- [ ] Integration test: search merged show returns subtitles from both providers
+- [ ] Integration test: download routes to correct provider
+- [ ] Verify no regressions in existing Addic7ed-only flow
