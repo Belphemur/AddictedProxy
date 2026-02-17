@@ -2,6 +2,7 @@
 
 using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Services.Provider.Episodes;
+using AddictedProxy.Services.Provider.Merging;
 using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.ShowInfo;
 using AddictedProxy.Services.Provider.Shows;
@@ -31,5 +32,8 @@ public class BootstrapProvider : IBootstrap
         services.AddScoped<ISubtitleDownloader, Addic7edSubtitleDownloader>();
         services.AddScoped<ISubtitleDownloader, SuperSubtitlesSubtitleDownloader>();
         services.AddScoped<SubtitleDownloaderFactory>();
+
+        // Data merging service (used by background jobs for multi-provider ingestion)
+        services.AddScoped<IProviderDataIngestionService, ProviderDataIngestionService>();
     }
 }
