@@ -457,6 +457,9 @@ ImportSuperSubtitlesMigration (OneTimeMigration, runs once after FetchMissingTvd
     │   │           │   └─► BulkMerge by DownloadUri (unique per provider)
     │   │           └─► Track max subtitle ID for use as incremental cursor
     │   │
+    │   │   └─► When all subtitles for current show are processed:
+    │   │       └─► Commit transaction (atomic save of ShowInfo + all subtitles)
+    │   │
     │   └─► ⏳ Wait for configurable delay before next batch (rate limiting)
     │
     └─► Store the max SuperSubtitles subtitle ID for incremental updates
@@ -470,6 +473,14 @@ public class ImportSuperSubtitlesMigration : IMigration
 {
     private readonly ISuperSubtitlesClient _superSubtitlesClient;
     private readonly SuperSubtitlesImportConfig _config;
+    private readonly ITransactionManager<EntityContext> _transactionManager;
+    private readonly IEpisodeRepository _episodeRepository;
+    private readonly ISeasonRepository _seasonRepository;
+    private readonly ISeasonPackSubtitleRepository _seasonPackRepository;
+    private readonly IShowExternalIdRepository _showExternalIdRepository;
+    private readonly IEpisodeExternalIdRepository _episodeExternalIdRepository;
+    private readonly ITvShowRepository _tvShowRepository;
+    private readonly ISuperSubtitlesStateRepository _superSubtitlesStateRepository;
     // ... other dependencies
 
     public async Task ExecuteAsync(PerformContext context, CancellationToken token)
@@ -547,16 +558,24 @@ public class ImportSuperSubtitlesMigration : IMigration
             switch (item.ItemCase)
             {
                 case ShowSubtitleItem.ItemOneofCase.ShowInfo:
-                    currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
+                    // New show - wrap all its data in a transaction
+                    await _transactionManager.WrapInTransactionAsync(async () =>
+                    {
+                        currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
+                    }, token);
                     break;
 
                 case ShowSubtitleItem.ItemOneofCase.Subtitle:
-                    var subtitleStats = await HandleSubtitleAsync(item.Subtitle, currentShow, maxSubtitleId, token);
-                    maxSubtitleId = subtitleStats.MaxId;
-                    if (subtitleStats.IsSeasonPack)
-                        seasonPackCount++;
-                    else
-                        subtitleCount++;
+                    // Process subtitle within show's transaction context
+                    await _transactionManager.WrapInTransactionAsync(async () =>
+                    {
+                        var subtitleStats = await HandleSubtitleAsync(item.Subtitle, currentShow, maxSubtitleId, token);
+                        maxSubtitleId = subtitleStats.MaxId;
+                        if (subtitleStats.IsSeasonPack)
+                            seasonPackCount++;
+                        else
+                            subtitleCount++;
+                    }, token);
                     break;
 
                 case ShowSubtitleItem.ItemOneofCase.None:
@@ -705,7 +724,11 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
     │
     ├─► Step 5: Process stream asynchronously:
     │   │
+    │   │   ⚠️  Each show's data (ShowInfo + all its Subtitles) is wrapped in a database transaction
+    │   │   using ITransactionManager<EntityContext> for atomic commits per show.
+    │   │
     │   ├─► When ShowSubtitleItem.show_info received:
+    │   │   ├─► Begin new transaction scope for this show
     │   │   ├─► Lookup ShowExternalId(Source=SuperSubtitles, ExternalId=show.id)
     │   │   ├─► If not found: match by TvDB/TMDB ID from third_party_ids or create new TvShow
     │   │   └─► Upsert ShowExternalId(Source=SuperSubtitles)
@@ -724,6 +747,9 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
     │           ├─► Insert Subtitle(Source=SuperSubtitles, DownloadUri=download_url)
     │           └─► Track new max subtitle ID
     │
+    │   └─► When all subtitles for current show are processed:
+    │       └─► Commit transaction (atomic save of ShowInfo + all subtitles)
+    │
     └─► Update stored max subtitle ID
 ```
 
@@ -732,6 +758,17 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
 ```csharp
 public class RefreshSuperSubtitlesJob
 {
+    private readonly ISuperSubtitlesClient _superSubtitlesClient;
+    private readonly ITransactionManager<EntityContext> _transactionManager;
+    private readonly IEpisodeRepository _episodeRepository;
+    private readonly ISeasonRepository _seasonRepository;
+    private readonly ISeasonPackSubtitleRepository _seasonPackRepository;
+    private readonly IShowExternalIdRepository _showExternalIdRepository;
+    private readonly IEpisodeExternalIdRepository _episodeExternalIdRepository;
+    private readonly ITvShowRepository _tvShowRepository;
+    private readonly ISuperSubtitlesStateRepository _stateRepository;
+    private readonly ILogger<RefreshSuperSubtitlesJob> _logger;
+
     // Scheduled as recurring job: every 15 minutes
     // Cron: "*/15 * * * *"
 
@@ -773,11 +810,19 @@ public class RefreshSuperSubtitlesJob
             switch (item.ItemCase)
             {
                 case ShowSubtitleItem.ItemOneofCase.ShowInfo:
-                    currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
+                    // New show - wrap all its data in a transaction
+                    await _transactionManager.WrapInTransactionAsync(async () =>
+                    {
+                        currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
+                    }, token);
                     break;
 
                 case ShowSubtitleItem.ItemOneofCase.Subtitle:
-                    newMaxId = await HandleSubtitleAsync(item.Subtitle, currentShow, newMaxId, token);
+                    // Process subtitle within show's transaction context
+                    await _transactionManager.WrapInTransactionAsync(async () =>
+                    {
+                        newMaxId = await HandleSubtitleAsync(item.Subtitle, currentShow, newMaxId, token);
+                    }, token);
                     break;
 
                 case ShowSubtitleItem.ItemOneofCase.None:
@@ -1059,15 +1104,18 @@ AddictedProxy.Upstream/
 1. Create `ImportSuperSubtitlesMigration` (one-time bulk import via `OneTimeMigration` framework)
    - Fetch all shows via `GetShowList` (streamed), collect into batches
    - For each batch: call `GetShowSubtitles` (streams `ShowSubtitleItem`), process stream asynchronously, **wait between batches** to avoid rate limiting
+   - **Wrap each show's data processing in a database transaction** using `ITransactionManager<EntityContext>` for atomic commits (ShowInfo + all its subtitles)
    - Process streamed show info (ShowInfo) and subtitles (Subtitle) linked by show_id
    - Store season packs (`is_season_pack = true`) in `SeasonPackSubtitle` table
    - Use `ShowExternalId` for fast lookup of already-imported shows, fall back to TvDB → TMDB matching for first-time merge
+   - Ensure Season entities exist before upserting episodes (create via `SeasonRepository.InsertNewSeasonsAsync` if missing)
    - Use season/episode fields directly from the proto `Subtitle` message
    - Reuse `EpisodeRepository.UpsertEpisodes()` for episode + subtitle ingestion
    - Store max subtitle ID as cursor for incremental updates
 2. Create `RefreshSuperSubtitlesJob` (recurring every 15 minutes)
    - Check for updates via `CheckForUpdates` using stored max subtitle ID
    - If updates exist, call `GetRecentSubtitles` (streams `ShowSubtitleItem`) to fetch only new data
+   - **Wrap each show's data processing in a database transaction** for atomic commits (same as bulk import)
    - Process stream asynchronously (same logic as bulk import, no batch delays needed — dataset is small)
 3. Add `SuperSubtitlesImportConfig` for configurable batch size and delay between batches (bulk import only)
 
