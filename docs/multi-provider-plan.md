@@ -450,6 +450,7 @@ ImportSuperSubtitlesMigration (OneTimeMigration, runs once after FetchMissingTvd
     │   │       │
     │   │       └─► Else (non-season-pack subtitle):
     │   │           ├─► Use subtitle.Season and subtitle.Episode directly
+    │   │           ├─► Ensure Season(TvShowId, Number) entity exists (create if missing)
     │   │           ├─► Upsert Episode(TvShowId, Season, Number) via EpisodeRepository.UpsertEpisodes()
     │   │           ├─► Upsert EpisodeExternalId(Source=SuperSubtitles, ExternalId=subtitle.id)
     │   │           ├─► Insert Subtitle(Source=SuperSubtitles, DownloadUri=download_url)
@@ -605,9 +606,31 @@ public class ImportSuperSubtitlesMigration : IMigration
 
     private async Task HandleEpisodeSubtitleAsync(TvShow tvShow, Subtitle subtitle, CancellationToken token)
     {
+        // Ensure Season entity exists for this season number
+        await EnsureSeasonExistsAsync(tvShow.Id, subtitle.Season, token);
+
         var episode = BuildEpisodeFromSubtitle(tvShow, subtitle);
         await _episodeRepository.UpsertEpisodes(new[] { episode }, token);
         await UpsertEpisodeExternalId(episode, subtitle.Id);
+    }
+
+    private async Task EnsureSeasonExistsAsync(long tvShowId, int seasonNumber, CancellationToken token)
+    {
+        var existingSeason = await _seasonRepository.GetSeasonForShowAsync(tvShowId, seasonNumber, token);
+        if (existingSeason == null)
+        {
+            var newSeason = new Season
+            {
+                TvShowId = tvShowId,
+                Number = seasonNumber,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await _seasonRepository.InsertNewSeasonsAsync(tvShowId, new[] { newSeason }, token);
+        }
+    }
+
+    private async Task<TvShow> MatchOrCreateShow(ShowData showData, CancellationToken token)
     {
         // 1. Check ShowExternalId first (fast path for already-imported shows)
         var existingByExtId = await _showExternalIdRepository
@@ -695,6 +718,7 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
     │       │
     │       └─► Else (non-season-pack subtitle):
     │           ├─► Use subtitle.Season and subtitle.Episode directly
+    │           ├─► Ensure Season(TvShowId, Number) entity exists (create if missing)
     │           ├─► Upsert Episode(TvShowId, Season, Number) via EpisodeRepository.UpsertEpisodes()
     │           ├─► Upsert EpisodeExternalId(Source=SuperSubtitles, ExternalId=subtitle.id)
     │           ├─► Insert Subtitle(Source=SuperSubtitles, DownloadUri=download_url)
@@ -801,9 +825,28 @@ public class RefreshSuperSubtitlesJob
 
     private async Task HandleEpisodeSubtitleAsync(TvShow tvShow, Subtitle subtitle, CancellationToken token)
     {
+        // Ensure Season entity exists for this season number
+        await EnsureSeasonExistsAsync(tvShow.Id, subtitle.Season, token);
+
         var episode = BuildEpisodeFromSubtitle(tvShow, subtitle);
         await _episodeRepository.UpsertEpisodes(new[] { episode }, token);
         await UpsertEpisodeExternalId(episode, subtitle.Id);
+    }
+
+    private async Task EnsureSeasonExistsAsync(long tvShowId, int seasonNumber, CancellationToken token)
+    {
+        var existingSeason = await _seasonRepository.GetSeasonForShowAsync(tvShowId, seasonNumber, token);
+        if (existingSeason == null)
+        {
+            var newSeason = new Season
+            {
+                TvShowId = tvShowId,
+                Number = seasonNumber,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await _seasonRepository.InsertNewSeasonsAsync(tvShowId, new[] { newSeason }, token);
+        }
     }
 }
 ```
