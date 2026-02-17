@@ -12,6 +12,12 @@
       - "5432:5432"
     restart: unless-stopped
 
+  supersubtitles:
+    image: ghcr.io/belphemur/supersubtitles:latest
+    container_name: supersubtitles
+    ports:
+      - "3001:8080"
+    restart: unless-stopped
+
 volumes:
   postgres_data:
-
