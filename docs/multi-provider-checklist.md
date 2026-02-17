@@ -17,7 +17,11 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 - [x] Create `ISeasonPackSubtitleRepository` / `SeasonPackSubtitleRepository` with bulk upsert
 - [x] Register new repositories in `BootstrapDatabase` DI
 - [x] Create one-time migration (`MigrateExternalIdsToNewTableMigration`) to populate `ShowExternalId`/`EpisodeExternalId` from existing `TvShow.ExternalId` and `Episode.ExternalId`
-- [x] Register migration in `BootstrapMigration`
+- [x] Add `ExternalId` column to `Subtitle` entity with `(Source, ExternalId)` unique index
+- [x] Generate EF Core migration (`AddExternalIdToSubtitle`)
+- [x] Create one-time migration (`MigrateSubtitleExternalIdMigration`) to populate `Subtitle.ExternalId` from `DownloadUri`
+- [x] Update `BulkMergeAsync` to ignore `ExternalId` on merge update
+- [x] Register migrations in `BootstrapMigration`
 
 ## Phase 2: Data Merging Strategy
 
@@ -29,12 +33,13 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 
 ## Phase 3: Provider Abstraction Layer
 
-- [ ] Create `ISubtitleSource` interface
-- [ ] Create `ISubtitleDownloader` interface
-- [ ] Create `ISubtitleSourceRegistry` and implementation
-- [ ] Wrap Addic7ed services (`Addic7edSource`, `Addic7edSubtitleDownloader`) in new interfaces
-- [ ] Implement `SuperSubtitlesDownloader` (uses gRPC `DownloadSubtitle`)
-- [ ] Update `SubtitleProvider` to route downloads via registry and `Subtitle.Source`
+- [x] Create `ISubtitleSource` interface
+- [x] Create `ISubtitleDownloader` interface (extends `IEnumService<DataSource>`)
+- [x] Create `SubtitleDownloaderFactory` (extends `EnumFactory<DataSource, ISubtitleDownloader>`)
+- [x] Implement `Addic7edSubtitleDownloader` (wraps `IAddic7edDownloader` + `ICredentialsService` with retry/rotation)
+- [x] Implement `SuperSubtitlesSubtitleDownloader` (uses gRPC `DownloadSubtitle` via `subtitle.ExternalId`)
+- [x] Update `SubtitleProvider` to route downloads via `SubtitleDownloaderFactory` and `Subtitle.Source`
+- [x] Register downloaders and factory in `BootstrapProvider`
 
 ## Phase 4: Background Job Pipeline
 
@@ -76,7 +81,7 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 - [x] Add project reference to `AddictedProxy.csproj`
 - [x] Add `BootstrapSuperSubtitles` assembly to `Program.cs`
 - [x] Add `SuperSubtitles` config section to `appsettings.json` and `appsettings.Development.json`
-- [ ] Implement `SuperSubtitlesSource` (`ISubtitleSource`)
+- [x] Implement `SuperSubtitlesSource` (`ISubtitleSource`)
 
 ## Phase 6: API & Frontend Updates
 

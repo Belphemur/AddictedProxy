@@ -1092,6 +1092,10 @@ AddictedProxy.Upstream/
 - Subtitle list could optionally show provider badge/icon
 - No changes needed to search/download flow
 
+## Progress Tracking
+
+A detailed checklist lives in [`docs/multi-provider-checklist.md`](multi-provider-checklist.md). **Update the checklist as each item is completed** to maintain an accurate view of progress across sessions.
+
 ## Implementation Order
 
 ### Step 1: Database Changes
