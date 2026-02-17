@@ -420,6 +420,8 @@ This job runs once (via the `OneTimeMigration` framework) to populate the databa
 
 **Rate limiting:** The show list is split into batches (configurable, e.g. 10 shows per batch). After each `GetShowSubtitles` gRPC call, the job waits for a configurable delay (e.g. 2–5 seconds) before sending the next batch. This prevents overwhelming the upstream SuperSubtitles server, which itself scrapes feliratok.eu.
 
+**Progress tracking:** The job uses **Hangfire.Console** to display real-time progress in the Hangfire Dashboard. Progress bars track batch processing, and console output logs each completed batch with statistics (shows processed, subtitles imported, season packs stored).
+
 ```
 ImportSuperSubtitlesMigration (OneTimeMigration, runs once after FetchMissingTvdbIdJob)
     │
@@ -469,26 +471,53 @@ public class ImportSuperSubtitlesMigration : IMigration
     private readonly SuperSubtitlesImportConfig _config;
     // ... other dependencies
 
-    public async Task ExecuteAsync(CancellationToken token)
+    public async Task ExecuteAsync(PerformContext context, CancellationToken token)
     {
+        // Initialize progress tracking
+        var progressBar = context.WriteProgressBar();
+        context.WriteLine("Starting SuperSubtitles bulk import...");
+
         // 1. Fetch all shows via gRPC streaming
+        context.WriteLine("Fetching show list from SuperSubtitles...");
         var allShows = await CollectShowsAsync(token);
+        context.WriteLine($"Collected {allShows.Count} shows");
 
         // 2. Split into batches to avoid rate limiting
-        var batches = allShows.Chunk(_config.BatchSize); // e.g. 10 shows per batch
+        var batches = allShows.Chunk(_config.BatchSize).ToArray(); // e.g. 10 shows per batch
+        context.WriteLine($"Split into {batches.Length} batches of {_config.BatchSize} shows each");
 
         long maxSubtitleId = 0;
-        foreach (var batch in batches)
+        int totalSubtitles = 0;
+        int totalSeasonPacks = 0;
+        
+        for (int i = 0; i < batches.Length; i++)
         {
+            var batch = batches[i];
+            
+            // Update progress bar
+            progressBar.SetValue((int)((i / (double)batches.Length) * 100));
+            context.WriteLine($"Processing batch {i + 1}/{batches.Length}...");
+
             // 3. Process batch and track max subtitle ID
-            maxSubtitleId = await ProcessShowBatchAsync(batch, maxSubtitleId, token);
+            var batchStats = await ProcessShowBatchAsync(batch, maxSubtitleId, token);
+            maxSubtitleId = batchStats.MaxSubtitleId;
+            totalSubtitles += batchStats.SubtitleCount;
+            totalSeasonPacks += batchStats.SeasonPackCount;
+
+            context.WriteLine($"Batch {i + 1} complete: {batchStats.SubtitleCount} subtitles, {batchStats.SeasonPackCount} season packs");
 
             // 4. Wait between batches to avoid rate limiting
-            await Task.Delay(_config.DelayBetweenBatches, token); // e.g. 2-5 seconds
+            if (i < batches.Length - 1) // Don't wait after last batch
+            {
+                await Task.Delay(_config.DelayBetweenBatches, token); // e.g. 2-5 seconds
+            }
         }
 
         // 5. Store max ID for incremental updates
         await _superSubtitlesStateRepository.SetMaxSubtitleIdAsync(maxSubtitleId);
+        
+        progressBar.SetValue(100);
+        context.WriteLine($"Import complete! Total: {totalSubtitles} subtitles, {totalSeasonPacks} season packs");
     }
 
     private async Task<List<Show>> CollectShowsAsync(CancellationToken token)
@@ -501,10 +530,14 @@ public class ImportSuperSubtitlesMigration : IMigration
         return shows;
     }
 
-    private async Task<long> ProcessShowBatchAsync(Show[] batch, long currentMaxId, CancellationToken token)
+    private record BatchStats(long MaxSubtitleId, int SubtitleCount, int SeasonPackCount);
+
+    private async Task<BatchStats> ProcessShowBatchAsync(Show[] batch, long currentMaxId, CancellationToken token)
     {
         TvShow? currentShow = null;
         long maxSubtitleId = currentMaxId;
+        int subtitleCount = 0;
+        int seasonPackCount = 0;
 
         await foreach (var item in _superSubtitlesClient.GetShowSubtitlesAsync(batch, token))
         {
@@ -515,7 +548,12 @@ public class ImportSuperSubtitlesMigration : IMigration
                     break;
 
                 case ShowSubtitleItem.ItemOneofCase.Subtitle:
-                    maxSubtitleId = await HandleSubtitleAsync(item.Subtitle, currentShow, maxSubtitleId, token);
+                    var subtitleStats = await HandleSubtitleAsync(item.Subtitle, currentShow, maxSubtitleId, token);
+                    maxSubtitleId = subtitleStats.MaxId;
+                    if (subtitleStats.IsSeasonPack)
+                        seasonPackCount++;
+                    else
+                        subtitleCount++;
                     break;
 
                 case ShowSubtitleItem.ItemOneofCase.None:
@@ -528,7 +566,7 @@ public class ImportSuperSubtitlesMigration : IMigration
             }
         }
 
-        return maxSubtitleId;
+        return new BatchStats(maxSubtitleId, subtitleCount, seasonPackCount);
     }
 
     private async Task<TvShow> HandleShowInfoAsync(ShowInfo showInfo, CancellationToken token)
@@ -538,7 +576,9 @@ public class ImportSuperSubtitlesMigration : IMigration
         return tvShow;
     }
 
-    private async Task<long> HandleSubtitleAsync(Subtitle subtitle, TvShow? currentShow, long currentMaxId, CancellationToken token)
+    private record SubtitleStats(long MaxId, bool IsSeasonPack);
+
+    private async Task<SubtitleStats> HandleSubtitleAsync(Subtitle subtitle, TvShow? currentShow, long currentMaxId, CancellationToken token)
     {
         if (currentShow == null)
             throw new InvalidOperationException("Received subtitle without show info");
@@ -546,13 +586,13 @@ public class ImportSuperSubtitlesMigration : IMigration
         if (subtitle.IsSeasonPack)
         {
             await HandleSeasonPackAsync(currentShow, subtitle, token);
+            return new SubtitleStats(Math.Max(currentMaxId, subtitle.Id), IsSeasonPack: true);
         }
         else
         {
             await HandleEpisodeSubtitleAsync(currentShow, subtitle, token);
+            return new SubtitleStats(Math.Max(currentMaxId, subtitle.Id), IsSeasonPack: false);
         }
-
-        return Math.Max(currentMaxId, subtitle.Id);
     }
 
     private async Task HandleSeasonPackAsync(TvShow tvShow, Subtitle subtitle, CancellationToken token)
