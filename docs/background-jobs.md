@@ -4,6 +4,8 @@
 
 AddictedProxy uses **Hangfire** with PostgreSQL storage for background job processing. Jobs handle show/episode refresh, subtitle storage, TMDB mapping, and one-time data migrations. Each job type runs on a dedicated queue with configurable concurrency.
 
+**Hangfire.Console** is integrated to provide real-time progress tracking and console output within the Hangfire Dashboard for all background jobs.
+
 ## Job Infrastructure
 
 ### Queues and Concurrency
@@ -21,6 +23,25 @@ Custom Hangfire attributes used:
 - **`[UniqueJob(Order, TTL)]`**: Prevents duplicate jobs (deduplication by parameters)
 - **`[MaxConcurrency(n)]`**: Limits concurrent execution
 - **`[AutoRetry(attempts, backoffType)]`**: Automatic retry with exponential backoff
+
+### Progress Tracking
+
+Hangfire.Console provides:
+- **Progress bars**: `IProgressBar progressBar = context.WriteProgressBar();`
+- **Console output**: `context.WriteLine("message");`
+- **Time series data**: Real-time updates visible in Hangfire Dashboard
+- **Structured logging**: Color-coded output (Info, Warning, Error)
+
+Jobs receive `PerformContext` as a parameter to access console features:
+
+```csharp
+public async Task Execute(PerformContext context)
+{
+    var progress = context.WriteProgressBar();
+    progress.SetValue(50); // 50% complete
+    context.WriteLine("Processing item...");
+}
+```
 
 ## Show Refresh Jobs
 
