@@ -77,6 +77,16 @@ public interface ITMDBClient
     Task<Genre[]> GetTvGenresAsync(CancellationToken token = default);
 
     /// <summary>
+    /// Find a show or movie by an external ID (e.g. IMDB ID).
+    /// Uses TMDB's /find/{external_id} endpoint.
+    /// </summary>
+    /// <param name="externalId">The external ID value (e.g. "tt1234567" for IMDB)</param>
+    /// <param name="externalSource">The external source (e.g. "imdb_id", "tvdb_id")</param>
+    /// <param name="token"></param>
+    /// <returns>Results containing matched TV shows and movies, or null on failure</returns>
+    Task<FindByExternalIdResult?> FindByExternalIdAsync(string externalId, string externalSource, CancellationToken token);
+
+    /// <summary>
     /// Get the image hosted on TMDB
     /// </summary>
     /// <param name="imagePath"></param>
