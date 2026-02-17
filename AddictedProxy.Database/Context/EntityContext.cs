@@ -23,6 +23,9 @@ public class EntityContext : DbContext
     public DbSet<Subtitle> Subtitles { get; set; } = null!;
     public DbSet<Episode> Episodes { get; set; } = null!;
     public DbSet<Season> Seasons { get; set; } = null!;
+    public DbSet<ShowExternalId> ShowExternalIds { get; set; } = null!;
+    public DbSet<EpisodeExternalId> EpisodeExternalIds { get; set; } = null!;
+    public DbSet<SeasonPackSubtitle> SeasonPackSubtitles { get; set; } = null!;
     public DbSet<AddictedUserCredentials> AddictedUserCreds { get; set; } = null!;
 
     public DbSet<OneTimeMigrationRelease> OneTimeMigrationRelease { get; set; } = null!;
@@ -42,6 +45,10 @@ public class EntityContext : DbContext
             .HasDefaultValueSql("uuidv7()");
 
         modelBuilder.Entity<Subtitle>()
+            .Property(s => s.UniqueId)
+            .HasDefaultValueSql("uuidv7()");
+
+        modelBuilder.Entity<SeasonPackSubtitle>()
             .Property(s => s.UniqueId)
             .HasDefaultValueSql("uuidv7()");
     }

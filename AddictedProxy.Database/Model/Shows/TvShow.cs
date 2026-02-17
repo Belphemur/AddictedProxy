@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AddictedProxy.Database.Model.Shows;
 
-[Index(nameof(ExternalId), IsUnique = true)]
 [Index(nameof(UniqueId), IsUnique = true)]
 [Index(nameof(TvdbId))]
 public class TvShow : BaseEntity, IDiscoverableObject
@@ -19,11 +18,16 @@ public class TvShow : BaseEntity, IDiscoverableObject
 
     public Guid UniqueId { get; set; }
 
+    /// <summary>
+    /// Legacy Addic7ed external ID. Use <see cref="ExternalIds"/> for multi-provider lookups.
+    /// </summary>
     public long ExternalId { get; set; }
     public string Name { get; set; }
 
     public virtual IList<Episode> Episodes { get; set; }
     public virtual IList<Season> Seasons { get; set; }
+    public virtual IList<ShowExternalId> ExternalIds { get; set; } = [];
+    public virtual IList<SeasonPackSubtitle> SeasonPackSubtitles { get; set; } = [];
 
     public DateTime LastUpdated { get; set; }
 
@@ -41,17 +45,17 @@ public class TvShow : BaseEntity, IDiscoverableObject
     /// Priority of the show when searching
     /// </summary>
     public int Priority { get; set; } = 0;
-    
+
     /// <summary>
     /// Id in the Tmdb database for show/movie
     /// </summary>
     public int? TmdbId { get; set; }
-    
+
     /// <summary>
     /// Id in the TvDb database for show
     /// </summary>
     public int? TvdbId { get; set; }
-    
+
     /// <summary>
     /// Is the show completed. No more episode coming.
     /// </summary>

@@ -26,6 +26,7 @@ public class Episode : BaseEntity, IDiscoverableObject
     public int Number { get; set; }
     public string Title { get; set; }
     public IList<Subtitle> Subtitles { get; set; }
+    public virtual IList<EpisodeExternalId> ExternalIds { get; set; } = [];
 
     /// <summary>
     ///     When was the episode discovered
