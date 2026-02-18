@@ -19,6 +19,7 @@ internal class Addic7edEpisodeRefresher : IProviderEpisodeRefresher
 {
     private readonly IAddic7edClient _client;
     private readonly IEpisodeRepository _episodeRepository;
+    private readonly IEpisodeExternalIdRepository _episodeExternalIdRepository;
     private readonly ISeasonRepository _seasonRepository;
     private readonly ICredentialsService _credentialsService;
     private readonly IOptions<RefreshConfig> _refreshConfig;
@@ -29,6 +30,7 @@ internal class Addic7edEpisodeRefresher : IProviderEpisodeRefresher
 
     public Addic7edEpisodeRefresher(IAddic7edClient client,
                                     IEpisodeRepository episodeRepository,
+                                    IEpisodeExternalIdRepository episodeExternalIdRepository,
                                     ISeasonRepository seasonRepository,
                                     ICredentialsService credentialsService,
                                     IOptions<RefreshConfig> refreshConfig,
@@ -38,6 +40,7 @@ internal class Addic7edEpisodeRefresher : IProviderEpisodeRefresher
     {
         _client = client;
         _episodeRepository = episodeRepository;
+        _episodeExternalIdRepository = episodeExternalIdRepository;
         _seasonRepository = seasonRepository;
         _credentialsService = credentialsService;
         _refreshConfig = refreshConfig;
@@ -79,6 +82,7 @@ internal class Addic7edEpisodeRefresher : IProviderEpisodeRefresher
         await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
         var episodes = (await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, show, season.Number, token)).ToArray();
         await _episodeRepository.UpsertEpisodes(episodes, token);
+        await UpsertEpisodeExternalIdsAsync(episodes, token);
         await _seasonRepository.UpdateLastRefreshedFromIdAsync(season.Id, DateTime.UtcNow, token);
         _logger.LogInformation("Refreshed {episodes} episodes of {show} S{season} (Addic7ed)", episodes.Length, show.Name, season.Number);
     }
@@ -153,6 +157,7 @@ internal class Addic7edEpisodeRefresher : IProviderEpisodeRefresher
         {
             total += episodes.Length;
             await _episodeRepository.UpsertEpisodes(episodes, token);
+            await UpsertEpisodeExternalIdsAsync(episodes, token);
             currentProgress += progressIncrement;
             await sendProgress(currentProgress);
         }
@@ -165,5 +170,22 @@ internal class Addic7edEpisodeRefresher : IProviderEpisodeRefresher
         }
 
         _logger.LogInformation("Refreshed {episodes} episodes of {show} {season} (Addic7ed)", total, show.Name, seasonsText);
+    }
+
+    /// <summary>
+    /// Upsert EpisodeExternalId entries for Addic7ed episodes after they have been upserted
+    /// (and have their database-generated Id populated).
+    /// </summary>
+    private Task UpsertEpisodeExternalIdsAsync(Episode[] episodes, CancellationToken token)
+    {
+        var externalIds = episodes
+            .Where(ep => ep.Id > 0 && ep.ExternalId > 0)
+            .Select(ep => new EpisodeExternalId
+            {
+                EpisodeId = ep.Id,
+                Source = DataSource.Addic7ed,
+                ExternalId = ep.ExternalId.ToString()
+            });
+        return _episodeExternalIdRepository.BulkUpsertAsync(externalIds, token);
     }
 }

@@ -5,6 +5,7 @@ using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Upstream.Service;
+using Microsoft.Extensions.Logging;
 using Performance.Service;
 
 #endregion
@@ -29,8 +30,7 @@ public class ShowRefresher : IShowRefresher
                          IShowExternalIdRepository showExternalIdRepository,
                          ILogger<ShowRefresher> logger,
                          IRefreshHubManager refreshHubManager,
-                         IPerformanceTracker performanceTracker
-    )
+                         IPerformanceTracker performanceTracker)
     {
         _tvShowRepository = tvShowRepository;
         _addic7EdClient = addic7EdClient;
@@ -53,6 +53,18 @@ public class ShowRefresher : IShowRefresher
         using var _ = _performanceTracker.BeginNestedSpan(nameof(ShowRefresher), "save-in-db");
 
         await _tvShowRepository.UpsertRefreshedShowsAsync(tvShows, token);
+
+        // Ensure ShowExternalId entries exist for all Addic7ed shows
+        var showExternalIds = tvShows
+            .Where(show => show.Id > 0)
+            .Select(show => new ShowExternalId
+            {
+                TvShowId = show.Id,
+                Source = DataSource.Addic7ed,
+                ExternalId = show.ExternalId.ToString()
+            });
+        await _showExternalIdRepository.BulkUpsertAsync(showExternalIds, token);
+        _logger.LogInformation("Upserted ShowExternalId entries for {Count} Addic7ed shows", tvShows.Length);
     }
 
     public IAsyncEnumerable<TvShow> GetShowByTvDbIdAsync(int id, CancellationToken cancellationToken)
