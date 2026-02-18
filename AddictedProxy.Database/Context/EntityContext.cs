@@ -3,6 +3,7 @@
 using AddictedProxy.Database.Model.Credentials;
 using AddictedProxy.Database.Model.Migration;
 using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Database.Model.State;
 using Microsoft.EntityFrameworkCore;
 
 #endregion
@@ -27,6 +28,7 @@ public class EntityContext : DbContext
     public DbSet<EpisodeExternalId> EpisodeExternalIds { get; set; } = null!;
     public DbSet<SeasonPackSubtitle> SeasonPackSubtitles { get; set; } = null!;
     public DbSet<AddictedUserCredentials> AddictedUserCreds { get; set; } = null!;
+    public DbSet<SuperSubtitlesState> SuperSubtitlesStates { get; set; } = null!;
 
     public DbSet<OneTimeMigrationRelease> OneTimeMigrationRelease { get; set; } = null!;
 
