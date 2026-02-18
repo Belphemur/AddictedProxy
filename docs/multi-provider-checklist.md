@@ -54,19 +54,20 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 
 ### Phase 4A: One-Time Bulk Import
 
-- [ ] Create `SuperSubtitlesImportConfig` (batch size, min/max delay)
-- [ ] Add config section to `appsettings.json`
-- [ ] Create `ISuperSubtitlesStateRepository` / `SuperSubtitlesStateRepository` (tracks max subtitle ID cursor)
-- [ ] Create `ImportSuperSubtitlesMigration` (one-time via `OneTimeMigration` framework)
-  - [ ] Fetch all shows via `GetShowList` (streamed), collect into batches
-  - [ ] For each batch: call `GetShowSubtitles`, process stream asynchronously
-  - [ ] Wrap each show's data in a database transaction via `ITransactionManager<EntityContext>`
-  - [ ] Process `ShowInfo` items (match/create shows, upsert `ShowExternalId`)
-  - [ ] Process `Subtitle` items (upsert episodes + subtitles, or store season packs)
-  - [ ] Ensure `Season` entities exist before upserting episodes
-  - [ ] Rate-limit with configurable delay between batches
-  - [ ] Track progress via Hangfire.Console
-  - [ ] Store max subtitle ID as cursor for incremental updates
+- [x] Create `SuperSubtitlesImportConfig` (batch size, min/max delay)
+- [x] Add config section to `appsettings.json`
+- [x] Create `ISuperSubtitlesStateRepository` / `SuperSubtitlesStateRepository` (tracks max subtitle ID cursor)
+- [x] Create `ImportSuperSubtitlesJob` (one-time Hangfire fire-and-forget job, enqueued at startup)
+  - [x] Idempotent: skips if max subtitle ID cursor already exists
+  - [x] Fetch all shows via `GetShowList` (streamed), collect into batches
+  - [x] For each batch: call `GetShowSubtitles`, process stream asynchronously
+  - [x] Wrap each show's data in a database transaction via `ITransactionManager<EntityContext>`
+  - [x] Process `ShowInfo` items (match/create shows, upsert `ShowExternalId`)
+  - [x] Process `Subtitle` items (upsert episodes + subtitles, or store season packs)
+  - [x] Ensure `Season` entities exist before upserting episodes
+  - [x] Rate-limit with configurable delay between batches
+  - [x] Track progress via Hangfire.Console (`PerformContext`, progress bar, console lines)
+  - [x] Store max subtitle ID as cursor for incremental updates
 
 ### Phase 4B: Recurring Incremental Updates
 
