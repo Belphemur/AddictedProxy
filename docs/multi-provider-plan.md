@@ -188,9 +188,9 @@ Season packs from SuperSubtitles (subtitles where `is_season_pack = true`) are s
 
 Add a new `ExternalId` column to the `Subtitle` table to store the provider-specific identifier directly on the subtitle row. This avoids the need to encode/decode provider IDs in the `DownloadUri` field.
 
-| Provider       | `ExternalId` value                                  |
-| -------------- | --------------------------------------------------- |
-| Addic7ed       | The download URI string (migrated from `DownloadUri`) |
+| Provider       | `ExternalId` value                                          |
+| -------------- | ----------------------------------------------------------- |
+| Addic7ed       | The download URI string (migrated from `DownloadUri`)       |
 | SuperSubtitles | The upstream subtitle ID from the gRPC API (e.g. `"12345"`) |
 
 ```
@@ -343,19 +343,19 @@ The `Subtitle.Source` field (already present in the database) determines which d
 
 #### 2.5 Summary: What Changes vs. What Stays the Same
 
-| Component                 | Changes?         | Details                                                                                                  |
-| ------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------- |
-| `TvShow` table            | No schema change | Shows are merged into existing rows via TvDB/TMDB ID matching                                            |
-| `Episode` table           | No schema change | Episodes upserted by natural key `(TvShowId, Season, Number)`                                            |
+| Component                 | Changes?         | Details                                                                                                                                                                           |
+| ------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TvShow` table            | No schema change | Shows are merged into existing rows via TvDB/TMDB ID matching                                                                                                                     |
+| `Episode` table           | No schema change | Episodes upserted by natural key `(TvShowId, Season, Number)`                                                                                                                     |
 | `Subtitle` table          | **New column**   | `ExternalId` (string, nullable) added — provider-specific ID. Indexed `(Source, ExternalId)` unique. For Addic7ed: `DownloadUri` string. For SuperSubtitles: upstream subtitle ID |
-| `ShowExternalId` table    | **New**          | Maps provider-specific show IDs to merged `TvShow` rows                                                  |
-| `EpisodeExternalId` table | **New**          | Maps provider-specific episode IDs to merged `Episode` rows                                              |
-| `DataSource` enum         | **Extended**     | Add `SuperSubtitles` value                                                                               |
-| `SearchSubtitlesService`  | No change        | Already queries all subtitles for an episode regardless of source                                        |
-| `SubtitlesController`     | No change        | Already returns all matching subtitles                                                                   |
-| `EpisodeRepository`       | No change        | `BulkMergeAsync` already handles upserts by natural keys                                                 |
-| `SubtitleProvider`        | **Minor change** | Route download to correct provider via `subtitle.Source`                                                 |
-| Background jobs           | **New jobs**     | `ImportSuperSubtitlesMigration` (one-time bulk import) + `RefreshSuperSubtitlesJob` (15-min incremental) |
+| `ShowExternalId` table    | **New**          | Maps provider-specific show IDs to merged `TvShow` rows                                                                                                                           |
+| `EpisodeExternalId` table | **New**          | Maps provider-specific episode IDs to merged `Episode` rows                                                                                                                       |
+| `DataSource` enum         | **Extended**     | Add `SuperSubtitles` value                                                                                                                                                        |
+| `SearchSubtitlesService`  | No change        | Already queries all subtitles for an episode regardless of source                                                                                                                 |
+| `SubtitlesController`     | No change        | Already returns all matching subtitles                                                                                                                                            |
+| `EpisodeRepository`       | No change        | `BulkMergeAsync` already handles upserts by natural keys                                                                                                                          |
+| `SubtitleProvider`        | **Minor change** | Route download to correct provider via `subtitle.Source`                                                                                                                          |
+| Background jobs           | **New jobs**     | `ImportSuperSubtitlesMigration` (one-time bulk import) + `RefreshSuperSubtitlesJob` (15-min incremental)                                                                          |
 
 ### Phase 3: Provider Abstraction Layer
 
@@ -408,26 +408,79 @@ public interface ISubtitleSourceRegistry
 - Route download to the correct provider
 - Addic7ed-specific credential rotation stays isolated in the Addic7ed downloader
 
-**ShowRefresher, SeasonRefresher, EpisodeRefresher** — Refactored to use factory pattern:
+**ShowRefresher, SeasonRefresher, EpisodeRefresher** — Internal factory routing via ExternalId tables:
 
-The refresher services follow the same `IEnumService<DataSource>` + `EnumFactory` pattern as `ISubtitleDownloader`. Each refresher interface extends `IEnumService<DataSource>`, enabling a factory to route to the correct provider-specific implementation based on the `DataSource` enum.
+The refresher services keep their **existing interfaces and class names unchanged**. Instead of exposing `IEnumService<DataSource>` or creating top-level factories, each refresher uses an **internal factory pattern**: it looks up the `ShowExternalId` table to determine which providers own a given show, then delegates to provider-specific internal implementations.
 
-| Interface | Factory | Addic7ed Implementation | SuperSubtitles Implementation |
-|-----------|---------|------------------------|-------------------------------|
-| `IShowRefresher` | `ShowRefresherFactory` | `Addic7edShowRefresher` (current `ShowRefresher` logic) | `SuperSubtitlesShowRefresher` (no-op) |
-| `ISeasonRefresher` | `SeasonRefresherFactory` | `Addic7edSeasonRefresher` (current `SeasonRefresher` logic) | `SuperSubtitlesSeasonRefresher` (no-op) |
-| `IEpisodeRefresher` | `EpisodeRefresherFactory` | `Addic7edEpisodeRefresher` (current `EpisodeRefresher` logic) | `SuperSubtitlesEpisodeRefresher` (no-op) |
+This approach means **no changes to callers** (background jobs, controllers) — they continue using `IShowRefresher`, `ISeasonRefresher`, `IEpisodeRefresher` as before.
+
+**Internal provider-specific interfaces:**
+
+```csharp
+/// <summary>Provider-specific show refresh logic, keyed by DataSource.</summary>
+public interface IProviderShowRefresher : IEnumService<DataSource>
+{
+    Task RefreshShowAsync(TvShow show, ShowExternalId externalId, CancellationToken token);
+    bool IsShowNeedsRefresh(TvShow show);
+}
+
+/// <summary>Provider-specific season refresh logic, keyed by DataSource.</summary>
+public interface IProviderSeasonRefresher : IEnumService<DataSource>
+{
+    Task<Season?> GetRefreshSeasonAsync(TvShow show, ShowExternalId externalId, int seasonNumber, CancellationToken token);
+    Task RefreshSeasonsAsync(TvShow show, ShowExternalId externalId, CancellationToken token);
+    bool IsShowNeedsRefresh(TvShow show);
+}
+
+/// <summary>Provider-specific episode refresh logic, keyed by DataSource.</summary>
+public interface IProviderEpisodeRefresher : IEnumService<DataSource>
+{
+    Task<Episode?> GetRefreshEpisodeAsync(TvShow show, ShowExternalId showExternalId, Season season, int episodeNumber, CancellationToken token);
+    Task RefreshEpisodesAsync(TvShow show, ShowExternalId showExternalId, IEnumerable<Season> seasonsToRefresh, Func<int, Task> sendProgress, CancellationToken token);
+    bool IsSeasonNeedRefresh(TvShow show, Season season);
+}
+```
+
+**Provider-specific implementations:**
+
+| Internal Interface          | Addic7ed Implementation                                                         | SuperSubtitles Implementation            |
+| --------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------- |
+| `IProviderShowRefresher`    | `Addic7edShowRefresher` (current `ShowRefresher` Addic7ed-specific logic)       | `SuperSubtitlesShowRefresher` (no-op)    |
+| `IProviderSeasonRefresher`  | `Addic7edSeasonRefresher` (current `SeasonRefresher` Addic7ed-specific logic)   | `SuperSubtitlesSeasonRefresher` (no-op)  |
+| `IProviderEpisodeRefresher` | `Addic7edEpisodeRefresher` (current `EpisodeRefresher` Addic7ed-specific logic) | `SuperSubtitlesEpisodeRefresher` (no-op) |
+
+**Routing logic inside `ShowRefresher.RefreshShowAsync(long tvShowId, ...)`:**
+
+```
+1. Load TvShow by ID
+2. Load ALL ShowExternalId entries for the TvShow
+3. For EACH ShowExternalId entry (i.e., for each provider that owns this show):
+   └─ Resolve the IProviderShowRefresher for that DataSource via EnumFactory
+   └─ Call provider impl with (TvShow, ShowExternalId)
+4. Example: a merged show has 2 ShowExternalId entries (Addic7ed + SuperSubtitles)
+   └─ Addic7edShowRefresher: fetches seasons/episodes from Addic7ed API using the Addic7ed external ID
+   └─ SuperSubtitlesShowRefresher: no-op (data comes via dedicated pipeline)
+```
+
+Same routing pattern applies to `SeasonRefresher` and `EpisodeRefresher`:
+1. Receive the `TvShow` from callers (the public interface is unchanged)
+2. Look up all `ShowExternalId` entries for that show
+3. Call **each** matching provider-specific refresher with `(TvShow, ShowExternalId)`
+
+The `ShowExternalId` is passed to provider implementations so they can use the provider's external show ID for upstream API calls (e.g., Addic7ed needs its own show ID to query its API).
+
+**Why use ExternalId tables instead of `TvShow.Source`?** A merged show can have external IDs from **both** providers. The `ShowExternalId` table is the source of truth for which providers own a given show. The `Source` field on `TvShow` only indicates which provider originally created the row, not which providers currently contribute data to it.
 
 **Why no-op for SuperSubtitles?** SuperSubtitles data is ingested via dedicated bulk import and incremental update jobs (Phase 4), not through the on-demand refresh pipeline. The no-op implementations ensure the factory can resolve any `DataSource` without throwing, and provide a clean extension point if SuperSubtitles ever needs on-demand refresh in the future.
 
 **Migration steps:**
 
-1. Add `IEnumService<DataSource>` to each refresher interface (adds `DataSource Enum { get; }` property)
-2. Rename existing implementations: `ShowRefresher` → `Addic7edShowRefresher`, `SeasonRefresher` → `Addic7edSeasonRefresher`, `EpisodeRefresher` → `Addic7edEpisodeRefresher`
+1. Create internal `IProviderShowRefresher`, `IProviderSeasonRefresher`, `IProviderEpisodeRefresher` interfaces extending `IEnumService<DataSource>`
+2. Extract Addic7ed-specific logic from `ShowRefresher` → `Addic7edShowRefresher`, `SeasonRefresher` → `Addic7edSeasonRefresher`, `EpisodeRefresher` → `Addic7edEpisodeRefresher`
 3. Create no-op `SuperSubtitlesShowRefresher`, `SuperSubtitlesSeasonRefresher`, `SuperSubtitlesEpisodeRefresher`
-4. Create factory classes: `ShowRefresherFactory`, `SeasonRefresherFactory`, `EpisodeRefresherFactory`
-5. Update `BootstrapProvider` DI to register both implementations per interface and the corresponding factories
-6. Update callers (background jobs, controllers) to use factories where provider-specific routing is needed
+4. Update `ShowRefresher`, `SeasonRefresher`, `EpisodeRefresher` to inject `EnumFactory<DataSource, IProviderXxxRefresher>` + `IShowExternalIdRepository` and route internally via `ShowExternalId` lookups
+5. Register provider-specific implementations in `BootstrapProvider` DI (auto-discovered via `IEnumService<DataSource>` convention)
+6. No changes needed to callers — they continue using the existing `IShowRefresher` / `ISeasonRefresher` / `IEpisodeRefresher` interfaces
 
 ### Phase 4: Background Job Pipeline
 
@@ -963,10 +1016,12 @@ The two pipelines are **independent** — SuperSubtitles does not chain off the 
 
 #### 4.5 On-Demand Episode Refresh (FetchSubtitlesJob)
 
-The existing `FetchSubtitlesJob` (triggered when a user searches and episodes are missing) uses the refresher factories to route to the correct provider implementation:
+The existing `FetchSubtitlesJob` (triggered when a user searches and episodes are missing) continues to use the **unchanged** `IShowRefresher` / `ISeasonRefresher` / `IEpisodeRefresher` interfaces. Internally, these refreshers now look up `ShowExternalId` for the given show and delegate to the appropriate provider-specific implementation:
 
-- **Addic7ed**: The `Addic7edShowRefresher` / `Addic7edSeasonRefresher` / `Addic7edEpisodeRefresher` handle on-demand refresh by querying the Addic7ed API with credentials
-- **SuperSubtitles**: The no-op refreshers return immediately — SuperSubtitles data is kept fresh by the 15-minute `RefreshSuperSubtitlesJob` instead
+- **Addic7ed**: The internal `Addic7edShowRefresher` / `Addic7edSeasonRefresher` / `Addic7edEpisodeRefresher` handle on-demand refresh by querying the Addic7ed API with credentials
+- **SuperSubtitles**: The internal no-op refreshers return immediately — SuperSubtitles data is kept fresh by the 15-minute `RefreshSuperSubtitlesJob` instead
+
+Callers (background jobs, controllers) are **unaffected** — they still inject and call `IShowRefresher`, `ISeasonRefresher`, `IEpisodeRefresher` directly.
 
 This is acceptable because:
 
