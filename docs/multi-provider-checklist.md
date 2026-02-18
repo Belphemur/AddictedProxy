@@ -40,15 +40,15 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 - [x] Implement `SuperSubtitlesSubtitleDownloader` (uses gRPC `DownloadSubtitle` via `subtitle.ExternalId`)
 - [x] Update `SubtitleProvider` to route downloads via `SubtitleDownloaderFactory` and `Subtitle.Source`
 - [x] Register downloaders and factory in `BootstrapProvider`
-- [ ] Create internal `IProviderShowRefresher`, `IProviderSeasonRefresher`, `IProviderEpisodeRefresher` interfaces extending `IEnumService<DataSource>`
-- [ ] Extract Addic7ed-specific logic into `Addic7edShowRefresher` (`IProviderShowRefresher`), create no-op `SuperSubtitlesShowRefresher`
-- [ ] Extract Addic7ed-specific logic into `Addic7edSeasonRefresher` (`IProviderSeasonRefresher`), create no-op `SuperSubtitlesSeasonRefresher`
-- [ ] Extract Addic7ed-specific logic into `Addic7edEpisodeRefresher` (`IProviderEpisodeRefresher`), create no-op `SuperSubtitlesEpisodeRefresher`
-- [ ] Update `ShowRefresher` to route via `ShowExternalId` lookup + `EnumFactory<DataSource, IProviderShowRefresher>` (keep `IShowRefresher` interface unchanged)
-- [ ] Update `SeasonRefresher` to route via `ShowExternalId` lookup + `EnumFactory<DataSource, IProviderSeasonRefresher>` (keep `ISeasonRefresher` interface unchanged)
-- [ ] Update `EpisodeRefresher` to route via `ShowExternalId` lookup + `EnumFactory<DataSource, IProviderEpisodeRefresher>` (keep `IEpisodeRefresher` interface unchanged, pass `ShowExternalId` to provider impls)
-- [ ] Register provider-specific implementations in `BootstrapProvider` DI (auto-discovered via `IEnumService<DataSource>`)
-- [ ] No changes needed to callers — they continue using `IShowRefresher` / `ISeasonRefresher` / `IEpisodeRefresher`
+- [x] Create internal `IProviderShowRefresher`, `IProviderSeasonRefresher`, `IProviderEpisodeRefresher` interfaces extending `IEnumService<DataSource>`
+- [x] Extract Addic7ed-specific logic into `Addic7edShowRefresher` (`IProviderShowRefresher`), create no-op `SuperSubtitlesShowRefresher`
+- [x] Extract Addic7ed-specific logic into `Addic7edSeasonRefresher` (`IProviderSeasonRefresher`), create no-op `SuperSubtitlesSeasonRefresher`
+- [x] Extract Addic7ed-specific logic into `Addic7edEpisodeRefresher` (`IProviderEpisodeRefresher`), create no-op `SuperSubtitlesEpisodeRefresher`
+- [x] Update `ShowRefresher` to route via `ShowExternalId` lookup + `EnumFactory<DataSource, IProviderShowRefresher>` (keep `IShowRefresher` interface unchanged)
+- [x] Update `SeasonRefresher` to route via `ShowExternalId` lookup + `EnumFactory<DataSource, IProviderSeasonRefresher>` (keep `ISeasonRefresher` interface unchanged)
+- [x] Update `EpisodeRefresher` to route via `ShowExternalId` lookup + `EnumFactory<DataSource, IProviderEpisodeRefresher>` (keep `IEpisodeRefresher` interface unchanged, pass `ShowExternalId` to provider impls)
+- [x] Register provider-specific implementations in `BootstrapProvider` DI (auto-discovered via `IEnumService<DataSource>`)
+- [x] No changes needed to callers — they continue using `IShowRefresher` / `ISeasonRefresher` / `IEpisodeRefresher`
 
 ## Phase 4: Background Job Pipeline
 
