@@ -408,15 +408,26 @@ public interface ISubtitleSourceRegistry
 - Route download to the correct provider
 - Addic7ed-specific credential rotation stays isolated in the Addic7ed downloader
 
-**ShowRefresher** — Stays Addic7ed-specific (see [Phase 4](#phase-4-background-job-pipeline) for why):
+**ShowRefresher, SeasonRefresher, EpisodeRefresher** — Refactored to use factory pattern:
 
-- The existing `ShowRefresher` and `RefreshAvailableShowsJob` continue to handle Addic7ed only
-- SuperSubtitles gets its own dedicated refresh job that runs separately
+The refresher services follow the same `IEnumService<DataSource>` + `EnumFactory` pattern as `ISubtitleDownloader`. Each refresher interface extends `IEnumService<DataSource>`, enabling a factory to route to the correct provider-specific implementation based on the `DataSource` enum.
 
-**EpisodeRefresher** — Stays Addic7ed-specific:
+| Interface | Factory | Addic7ed Implementation | SuperSubtitles Implementation |
+|-----------|---------|------------------------|-------------------------------|
+| `IShowRefresher` | `ShowRefresherFactory` | `Addic7edShowRefresher` (current `ShowRefresher` logic) | `SuperSubtitlesShowRefresher` (no-op) |
+| `ISeasonRefresher` | `SeasonRefresherFactory` | `Addic7edSeasonRefresher` (current `SeasonRefresher` logic) | `SuperSubtitlesSeasonRefresher` (no-op) |
+| `IEpisodeRefresher` | `EpisodeRefresherFactory` | `Addic7edEpisodeRefresher` (current `EpisodeRefresher` logic) | `SuperSubtitlesEpisodeRefresher` (no-op) |
 
-- The existing `EpisodeRefresher` and `FetchSubtitlesJob` continue to handle Addic7ed episodes
-- SuperSubtitles episodes/subtitles are ingested by the SuperSubtitles refresh job
+**Why no-op for SuperSubtitles?** SuperSubtitles data is ingested via dedicated bulk import and incremental update jobs (Phase 4), not through the on-demand refresh pipeline. The no-op implementations ensure the factory can resolve any `DataSource` without throwing, and provide a clean extension point if SuperSubtitles ever needs on-demand refresh in the future.
+
+**Migration steps:**
+
+1. Add `IEnumService<DataSource>` to each refresher interface (adds `DataSource Enum { get; }` property)
+2. Rename existing implementations: `ShowRefresher` → `Addic7edShowRefresher`, `SeasonRefresher` → `Addic7edSeasonRefresher`, `EpisodeRefresher` → `Addic7edEpisodeRefresher`
+3. Create no-op `SuperSubtitlesShowRefresher`, `SuperSubtitlesSeasonRefresher`, `SuperSubtitlesEpisodeRefresher`
+4. Create factory classes: `ShowRefresherFactory`, `SeasonRefresherFactory`, `EpisodeRefresherFactory`
+5. Update `BootstrapProvider` DI to register both implementations per interface and the corresponding factories
+6. Update callers (background jobs, controllers) to use factories where provider-specific routing is needed
 
 ### Phase 4: Background Job Pipeline
 
@@ -952,7 +963,12 @@ The two pipelines are **independent** — SuperSubtitles does not chain off the 
 
 #### 4.5 On-Demand Episode Refresh (FetchSubtitlesJob)
 
-The existing `FetchSubtitlesJob` (triggered when a user searches and episodes are missing) stays **Addic7ed-only**. This is acceptable because:
+The existing `FetchSubtitlesJob` (triggered when a user searches and episodes are missing) uses the refresher factories to route to the correct provider implementation:
+
+- **Addic7ed**: The `Addic7edShowRefresher` / `Addic7edSeasonRefresher` / `Addic7edEpisodeRefresher` handle on-demand refresh by querying the Addic7ed API with credentials
+- **SuperSubtitles**: The no-op refreshers return immediately — SuperSubtitles data is kept fresh by the 15-minute `RefreshSuperSubtitlesJob` instead
+
+This is acceptable because:
 
 1. SuperSubtitles data is bulk-ingested by the one-time migration, then kept fresh via the 15-minute recurring job
 2. The Addic7ed on-demand flow is needed because Addic7ed requires per-season/per-episode queries with credentials

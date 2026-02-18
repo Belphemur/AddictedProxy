@@ -40,6 +40,14 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 - [x] Implement `SuperSubtitlesSubtitleDownloader` (uses gRPC `DownloadSubtitle` via `subtitle.ExternalId`)
 - [x] Update `SubtitleProvider` to route downloads via `SubtitleDownloaderFactory` and `Subtitle.Source`
 - [x] Register downloaders and factory in `BootstrapProvider`
+- [ ] Make `IShowRefresher` extend `IEnumService<DataSource>`, create `ShowRefresherFactory`
+- [ ] Rename `ShowRefresher` → `Addic7edShowRefresher`, create no-op `SuperSubtitlesShowRefresher`
+- [ ] Make `ISeasonRefresher` extend `IEnumService<DataSource>`, create `SeasonRefresherFactory`
+- [ ] Rename `SeasonRefresher` → `Addic7edSeasonRefresher`, create no-op `SuperSubtitlesSeasonRefresher`
+- [ ] Make `IEpisodeRefresher` extend `IEnumService<DataSource>`, create `EpisodeRefresherFactory`
+- [ ] Rename `EpisodeRefresher` → `Addic7edEpisodeRefresher`, create no-op `SuperSubtitlesEpisodeRefresher`
+- [ ] Update `BootstrapProvider` DI to register refresher implementations and factories
+- [ ] Update callers (background jobs, controllers) to use refresher factories
 
 ## Phase 4: Background Job Pipeline
 
