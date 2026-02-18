@@ -9,6 +9,7 @@ using AddictedProxy.Services.Provider.Shows;
 using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Services.Provider.Subtitle;
 using AddictedProxy.Services.Provider.Subtitle.Download;
+using AddictedProxy.Services.Provider.SuperSubtitles.Config;
 using InversionOfControl.Model;
 
 #endregion
@@ -50,5 +51,9 @@ public class BootstrapProvider : IBootstrap
 
         // Data merging service (used by background jobs for multi-provider ingestion)
         services.AddScoped<IProviderDataIngestionService, ProviderDataIngestionService>();
+
+        // SuperSubtitles import config
+        services.Configure<SuperSubtitlesImportConfig>(
+            configuration.GetSection(SuperSubtitlesImportConfig.SectionName));
     }
 }
