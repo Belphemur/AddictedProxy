@@ -29,26 +29,6 @@ public class BootstrapProvider : IBootstrap
         services.AddScoped<SubtitleCounterUpdater>();
         services.AddScoped<IDetailsProvider, DetailsProvider>();
 
-        // Subtitle downloaders (one per provider)
-        services.AddScoped<ISubtitleDownloader, Addic7edSubtitleDownloader>();
-        services.AddScoped<ISubtitleDownloader, SuperSubtitlesSubtitleDownloader>();
-        services.AddScoped<SubtitleDownloaderFactory>();
-
-        // Provider-specific show refreshers
-        services.AddScoped<IProviderShowRefresher, Addic7edShowRefresher>();
-        services.AddScoped<IProviderShowRefresher, SuperSubtitlesShowRefresher>();
-        services.AddScoped<ProviderShowRefresherFactory>();
-
-        // Provider-specific season refreshers
-        services.AddScoped<IProviderSeasonRefresher, Addic7edSeasonRefresher>();
-        services.AddScoped<IProviderSeasonRefresher, SuperSubtitlesSeasonRefresher>();
-        services.AddScoped<ProviderSeasonRefresherFactory>();
-
-        // Provider-specific episode refreshers
-        services.AddScoped<IProviderEpisodeRefresher, Addic7edEpisodeRefresher>();
-        services.AddScoped<IProviderEpisodeRefresher, SuperSubtitlesEpisodeRefresher>();
-        services.AddScoped<ProviderEpisodeRefresherFactory>();
-
         // Data merging service (used by background jobs for multi-provider ingestion)
         services.AddScoped<IProviderDataIngestionService, ProviderDataIngestionService>();
 
