@@ -65,7 +65,7 @@ public class RefreshSuperSubtitlesJob
         }
 
         // Early-exit: check for updates before streaming
-        var updateCheck = await _superSubtitlesClient.CheckForUpdatesAsync(maxId.ToString(), token);
+        var updateCheck = await _superSubtitlesClient.CheckForUpdatesAsync(maxId, token);
         if (updateCheck.SeriesCount == 0)
         {
             context.WriteLine($"No new series subtitles since ID {maxId}, nothing to do.");

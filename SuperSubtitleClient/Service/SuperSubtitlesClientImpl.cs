@@ -41,7 +41,7 @@ public class SuperSubtitlesClientImpl : ISuperSubtitlesClient
     }
 
     /// <inheritdoc />
-    public async Task<CheckForUpdatesResponse> CheckForUpdatesAsync(string contentId, CancellationToken cancellationToken = default)
+    public async Task<CheckForUpdatesResponse> CheckForUpdatesAsync(long contentId, CancellationToken cancellationToken = default)
     {
         return await _client.CheckForUpdatesAsync(new CheckForUpdatesRequest { ContentId = contentId }, cancellationToken: cancellationToken);
     }

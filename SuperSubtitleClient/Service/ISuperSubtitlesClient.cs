@@ -26,7 +26,7 @@ public interface ISuperSubtitlesClient
     /// <summary>
     /// Check if new subtitles are available since a given content ID.
     /// </summary>
-    Task<CheckForUpdatesResponse> CheckForUpdatesAsync(string contentId, CancellationToken cancellationToken = default);
+    Task<CheckForUpdatesResponse> CheckForUpdatesAsync(long contentId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Download a subtitle file by ID, optionally extracting a specific episode from a season pack.

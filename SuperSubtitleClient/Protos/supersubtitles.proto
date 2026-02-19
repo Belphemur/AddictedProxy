@@ -109,7 +109,7 @@ message GetShowSubtitlesRequest {
 
 // CheckForUpdatesRequest checks for new content since a given content ID
 message CheckForUpdatesRequest {
-  string content_id = 1;
+  int64 content_id = 1;
 }
 
 // CheckForUpdatesResponse contains update availability information
