@@ -28,6 +28,7 @@ public class BootstrapProvider : IBootstrap
         services.AddSingleton<IRefreshHubManager, RefreshHubManager>();
         services.AddScoped<SubtitleCounterUpdater>();
         services.AddScoped<IDetailsProvider, DetailsProvider>();
+        services.AddScoped<IShowTmdbMapper, ShowTmdbMapper>();
 
         // Data merging service (used by background jobs for multi-provider ingestion)
         services.AddScoped<IProviderDataIngestionService, ProviderDataIngestionService>();

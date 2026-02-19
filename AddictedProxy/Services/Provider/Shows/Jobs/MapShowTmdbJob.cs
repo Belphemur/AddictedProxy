@@ -2,7 +2,6 @@
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Provider.ShowInfo;
-using AddictedProxy.Utils;
 using Hangfire;
 using Performance.Service;
 
@@ -13,15 +12,14 @@ public partial class MapShowTmdbJob
     private readonly ILogger<MapShowTmdbJob> _logger;
     private readonly IPerformanceTracker _performanceTracker;
     private readonly ITvShowRepository _tvShowRepository;
-    private readonly IDetailsProvider _detailsProvider;
+    private readonly IShowTmdbMapper _showTmdbMapper;
 
-
-    public MapShowTmdbJob(ILogger<MapShowTmdbJob> logger, IPerformanceTracker performanceTracker, ITvShowRepository tvShowRepository, IDetailsProvider detailsProvider)
+    public MapShowTmdbJob(ILogger<MapShowTmdbJob> logger, IPerformanceTracker performanceTracker, ITvShowRepository tvShowRepository, IShowTmdbMapper showTmdbMapper)
     {
         _logger = logger;
         _performanceTracker = performanceTracker;
         _tvShowRepository = tvShowRepository;
-        _detailsProvider = detailsProvider;
+        _showTmdbMapper = showTmdbMapper;
     }
 
     [MaximumConcurrentExecutions(1)]
@@ -34,41 +32,18 @@ public partial class MapShowTmdbJob
         var countNotMatched = 0;
         foreach (var show in await _tvShowRepository.GetShowWithoutTmdbIdAsync().ToArrayAsync(cancellationToken))
         {
-            var dateMatch = ShowNameRegexes.ReleaseYearRegex().Match(show.Name);
-            var countryMatch = ShowNameRegexes.CountryRegex().Match(show.Name);
+            var showInfo = await _showTmdbMapper.TryResolveShowAsync(show, cancellationToken);
 
-            var showInfo = await _detailsProvider.GetShowInfoAsync(show, searchResult =>
-            {
-                var takeResult = true;
-                if (show.Name.Contains("BBC ") || show.Name.Contains("BBC:"))
-                {
-                    takeResult &= searchResult.OriginCountry.Contains("GB");
-                }
-
-                if (dateMatch.Success)
-                {
-                    takeResult &= searchResult.FirstAirDate.StartsWith(dateMatch.Groups[1].Value);
-                }
-                else if (countryMatch.Success)
-                {
-                    var country = CountryCleanup.AddictedCountryToTmdb(countryMatch.Groups[1].Value);
-                    takeResult &= searchResult.OriginCountry.Contains(country);
-                }
-
-                return takeResult;
-            }, cancellationToken);
-
-
-            if (showInfo == default)
+            if (showInfo == null)
             {
                 mightBeMovie.Add(show);
                 countNotMatched++;
                 continue;
             }
 
-            show.TmdbId = showInfo.Details.Id;
-            show.IsCompleted = showInfo.Details.Status == "Ended";
-            show.TvdbId = showInfo.ExternalIds?.TvdbId;
+            show.TmdbId = showInfo.TmdbId;
+            show.IsCompleted = showInfo.IsEnded;
+            show.TvdbId = showInfo.TvdbId;
 
 
             if (++count % 50 == 0)
@@ -85,27 +60,17 @@ public partial class MapShowTmdbJob
         count = 0;
         foreach (var show in mightBeMovie)
         {
-            var dateMatch = ShowNameRegexes.ReleaseYearRegex().Match(show.Name);
+            var movieInfo = await _showTmdbMapper.TryResolveMovieAsync(show, cancellationToken);
 
-            var movieInfo = await _detailsProvider.GetMovieInfoAsync(show, searchResult =>
-            {
-                var takeResult = true;
-                if (dateMatch.Success)
-                {
-                    takeResult &= searchResult.ReleaseDate.StartsWith(dateMatch.Groups[1].Value);
-                }
-
-                return takeResult;
-            }, cancellationToken);
-
-            if (movieInfo == default)
+            if (movieInfo == null)
             {
                 continue;
             }
-            show.TmdbId = movieInfo.Details.Id;
+
+            show.TmdbId = movieInfo.TmdbId;
             show.IsCompleted = true;
             show.Type = ShowType.Movie;
-            show.TvdbId = movieInfo.ExternalIds?.TvdbId;
+            show.TvdbId = movieInfo.TvdbId;
             if (++count % 50 == 0)
             {
                 _logger.LogInformation("Found TMDB info for {count} movies", count);
