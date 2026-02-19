@@ -47,6 +47,11 @@
           <span v-else></span>
         </template>
 
+        <template v-slot:item.subtitle.source="{ item }">
+          <v-chip :color="item.subtitle.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
+            label>{{ item.subtitle.source }}</v-chip>
+        </template>
+
         <template v-slot:item.subtitle.downloadCount="{item}">
           <v-btn
               color="primary"
@@ -99,6 +104,10 @@
                       <v-col v-if="subtitle.hd" cols="12">
                         <v-icon>{{mdiCheck}}</v-icon>
                         HD
+                      </v-col>
+                      <v-col cols="12">
+                        <v-chip :color="subtitle.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
+                          label>{{ subtitle.source }}</v-chip>
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -153,6 +162,7 @@ const headers = [
   {title: "Completed", key: "subtitle.completed"},
   {title: "Hearing Impaired", key: "subtitle.hearingImpaired"},
   {title: "HD", key: "subtitle.hd"},
+  { title: "Source", key: "subtitle.source" },
   {title: "Downloads", key: "subtitle.downloadCount"},
 ];
 
