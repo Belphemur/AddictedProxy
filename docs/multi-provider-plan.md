@@ -355,7 +355,7 @@ The `Subtitle.Source` field (already present in the database) determines which d
 | `SubtitlesController`     | No change        | Already returns all matching subtitles                                                                                                                                            |
 | `EpisodeRepository`       | No change        | `BulkMergeAsync` already handles upserts by natural keys                                                                                                                          |
 | `SubtitleProvider`        | **Minor change** | Route download to correct provider via `subtitle.Source`                                                                                                                          |
-| Background jobs           | **New jobs**     | `ImportSuperSubtitlesMigration` (one-time bulk import) + `RefreshSuperSubtitlesJob` (15-min incremental)                                                                          |
+| Background jobs           | **New jobs**     | `ImportSuperSubtitlesJob` (one-time startup bulk import, idempotent) + `RefreshSuperSubtitlesJob` (15-min incremental)                                                            |
 
 ### Phase 3: Provider Abstraction Layer
 
@@ -502,14 +502,14 @@ This design is critical because:
 
 #### 4.2 Phase A: One-Time Bulk Import Job
 
-This job runs once (via the `OneTimeMigration` framework) to populate the database with all existing SuperSubtitles data.
+This job is enqueued once at startup (when enabled) to populate the database with all existing SuperSubtitles data.
 
 **Rate limiting:** The show list is split into batches (configurable, e.g. 60 shows per batch). After each `GetShowSubtitles` gRPC call, the job waits for a random delay between 10-30 seconds before sending the next batch. This prevents overwhelming the upstream SuperSubtitles server, which itself scrapes feliratok.eu.
 
 **Progress tracking:** The job uses **Hangfire.Console** to display real-time progress in the Hangfire Dashboard. Progress bars track batch processing, and console output logs each completed batch with statistics (shows processed, subtitles imported, season packs stored).
 
 ```
-ImportSuperSubtitlesMigration (OneTimeMigration, runs once after FetchMissingTvdbIdJob)
+ImportSuperSubtitlesJob (startup fire-and-forget, gated by config)
     │
     ├─► Step 1: GetShowList() via gRPC → stream Show (consume asynchronously)
     │   └─► Collects all Show objects into batches (id, name, year, image_url)
@@ -543,19 +543,17 @@ ImportSuperSubtitlesMigration (OneTimeMigration, runs once after FetchMissingTvd
     │   │           │   └─► BulkMerge by DownloadUri (unique per provider)
     │   │           └─► Track max subtitle ID for use as incremental cursor
     │   │
-    │   │   └─► When all subtitles for current show are processed:
-    │   │       └─► Commit transaction (atomic save of ShowInfo + all subtitles)
+    │   │   └─► Commit transaction once the full batch stream is processed
     │   │
     │   └─► ⏳ Wait for configurable delay before next batch (rate limiting)
     │
     └─► Store the max SuperSubtitles subtitle ID for incremental updates
 ```
 
-**Registration as a one-time migration:**
+**Registration in startup scheduler:**
 
 ```csharp
-[MigrationDate(2026, 2, 10)]
-public class ImportSuperSubtitlesMigration : IMigration
+public class ImportSuperSubtitlesJob
 {
     private readonly ISuperSubtitlesClient _superSubtitlesClient;
     private readonly SuperSubtitlesImportConfig _config;
@@ -810,11 +808,10 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
     │
     ├─► Step 5: Process stream asynchronously:
     │   │
-    │   │   ⚠️  Each show's data (ShowInfo + all its Subtitles) is wrapped in a database transaction
-    │   │   using ITransactionManager<EntityContext> for atomic commits per show.
+    │   │   ⚠️  The full incremental stream run is wrapped in one database transaction
+    │   │   using ITransactionManager<EntityContext>.
     │   │
     │   ├─► When ShowSubtitleItem.show_info received:
-    │   │   ├─► Begin new transaction scope for this show
     │   │   ├─► Lookup ShowExternalId(Source=SuperSubtitles, ExternalId=show.id)
     │   │   ├─► If not found: match by TvDB/TMDB ID from third_party_ids or create new TvShow
     │   │   └─► Upsert ShowExternalId(Source=SuperSubtitles)
@@ -833,8 +830,7 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
     │           ├─► Insert Subtitle(Source=SuperSubtitles, ExternalId=subtitle.id, DownloadUri=download_url)
     │           └─► Track new max subtitle ID
     │
-    │   └─► When all subtitles for current show are processed:
-    │       └─► Commit transaction (atomic save of ShowInfo + all subtitles)
+    │   └─► Commit transaction once the incremental stream run is processed
     │
     └─► Update stored max subtitle ID
 ```
@@ -1003,7 +999,7 @@ public class RefreshSuperSubtitlesJob
 │                 SUPERSUBTITLES PIPELINE (new)                       │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
-│  ImportSuperSubtitlesMigration (one-time, via OneTimeMigration)     │
+│  ImportSuperSubtitlesJob (one-time startup job, idempotent)          │
 │      └─► Bulk import: GetShowList → GetShowSubtitles (streamed) → merge all │
 │                                                                     │
 │  RefreshSuperSubtitlesJob (recurring every 15 minutes)             │
@@ -1061,10 +1057,10 @@ No credentials, no rate limiting, no retry rotation needed — the SuperSubtitle
 
 ### Phase 5: SuperSubtitles Client Module
 
-#### 5.1 New Project: `AddictedProxy.SuperSubtitles`
+#### 5.1 New Project: `SuperSubtitleClient`
 
 ```
-AddictedProxy.SuperSubtitles/
+SuperSubtitleClient/
 ├── Client/
 │   ├── ISuperSubtitlesClient.cs       # Client interface
 │   └── SuperSubtitlesGrpcClient.cs    # gRPC client implementation (wraps generated stubs)
@@ -1187,7 +1183,7 @@ A detailed checklist lives in [`docs/multi-provider-checklist.md`](multi-provide
 
 ### Step 3: SuperSubtitles Client
 
-1. Create `AddictedProxy.SuperSubtitles` project
+1. Create `SuperSubtitleClient` project
 2. Add `supersubtitles.proto` and generate gRPC stubs
 3. Implement gRPC client wrapper (`SuperSubtitlesGrpcClient`)
 4. Implement `ISubtitleSource` and `ISubtitleDownloader` (using gRPC `DownloadSubtitle`)
@@ -1195,10 +1191,10 @@ A detailed checklist lives in [`docs/multi-provider-checklist.md`](multi-provide
 
 ### Step 4: SuperSubtitles Import & Refresh Jobs
 
-1. Create `ImportSuperSubtitlesMigration` (one-time bulk import via `OneTimeMigration` framework)
+1. Create `ImportSuperSubtitlesJob` (one-time startup bulk import, idempotent)
    - Fetch all shows via `GetShowList` (streamed), collect into batches
    - For each batch: call `GetShowSubtitles` (streams `ShowSubtitleItem`), process stream asynchronously, **wait between batches** to avoid rate limiting
-   - **Wrap each show's data processing in a database transaction** using `ITransactionManager<EntityContext>` for atomic commits (ShowInfo + all its subtitles)
+    - **Wrap each import batch in a database transaction** using `ITransactionManager<EntityContext>`
    - Process streamed show info (ShowInfo) and subtitles (Subtitle) linked by show_id
    - Store season packs (`is_season_pack = true`) in `SeasonPackSubtitle` table
    - Use `ShowExternalId` for fast lookup of already-imported shows, fall back to TvDB → TMDB matching for first-time merge
@@ -1209,7 +1205,7 @@ A detailed checklist lives in [`docs/multi-provider-checklist.md`](multi-provide
 2. Create `RefreshSuperSubtitlesJob` (recurring every 15 minutes)
    - Check for updates via `CheckForUpdates` using stored max subtitle ID
    - If updates exist, call `GetRecentSubtitles` (streams `ShowSubtitleItem`) to fetch only new data
-   - **Wrap each show's data processing in a database transaction** for atomic commits (same as bulk import)
+    - **Wrap each incremental refresh run in a database transaction**
    - Process stream asynchronously (same logic as bulk import, no batch delays needed — dataset is small)
 3. Add `SuperSubtitlesImportConfig` for configurable batch size and delay between batches (bulk import only)
 

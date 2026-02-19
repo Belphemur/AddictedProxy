@@ -192,15 +192,19 @@ public class BootstrapMigration : IBootstrap
 - Resets exceeded credentials after cooldown period
 - Monitors account health via `GetDownloadUsageAsync()`
 
-## SuperSubtitles Jobs (Planned)
+## SuperSubtitles Jobs
 
 See [Multi-Provider Plan](multi-provider-plan.md) for full details.
 
-### ImportSuperSubtitlesMigration (One-Time)
+### ImportSuperSubtitlesJob (One-Time Startup Job)
 
-**Trigger**: One-time migration via `OneTimeMigration` framework (runs once on first deployment)  
+**Trigger**: Enqueued once on startup when `SuperSubtitles:Import:EnableImport=true`  
 **Purpose**: Bulk import all shows and subtitles from the SuperSubtitles gRPC API  
 **Concurrency**: Max 1  
+
+**Notes**:
+- Idempotent: skips when a max subtitle cursor already exists.
+- Uses one database transaction per configured show batch (not per streamed item).
 
 **Behavior**:
 1. Calls `GetShowList()` via gRPC (streams `Show` objects, consumed asynchronously and collected into batches)
@@ -230,3 +234,5 @@ See [Multi-Provider Plan](multi-provider-plan.md) for full details.
 7. Matches/merges shows and upserts episodes + subtitles (same logic as bulk import)
 8. Stores season packs in `SeasonPackSubtitle` table
 9. Updates the stored max subtitle ID
+
+The refresh execution processes the streamed incremental payload in a single database transaction for the run.

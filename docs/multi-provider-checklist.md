@@ -63,7 +63,7 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
   - [x] Idempotent: skips if max subtitle ID cursor already exists
   - [x] Fetch all shows via `GetShowList` (streamed), collect into batches
   - [x] For each batch: call `GetShowSubtitles`, process stream asynchronously
-  - [x] Wrap each show's data in a database transaction via `ITransactionManager<EntityContext>`
+  - [x] Wrap each import batch in a database transaction via `ITransactionManager<EntityContext>`
   - [x] Process `ShowInfo` items (match/create shows, upsert `ShowExternalId`)
   - [x] Process `Subtitle` items (upsert episodes + subtitles, or store season packs)
   - [x] Ensure `Season` entities exist before upserting episodes
@@ -77,7 +77,7 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
   - [x] Load max subtitle ID from state repository
   - [x] `CheckForUpdates` → early exit if no updates
   - [x] `GetRecentSubtitles(since_id)` → process stream (same logic as bulk import)
-  - [x] Wrap each show's data in a database transaction
+  - [x] Wrap each incremental refresh run in a database transaction
   - [x] Update stored max subtitle ID
 - [x] Register recurring job in Hangfire
 
