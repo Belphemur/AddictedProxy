@@ -8,6 +8,9 @@ public class SuperSubtitlesImportConfig
 {
     public const string SectionName = "SuperSubtitles:Import";
 
+    /// <summary>When true, the bulk import job will be enqueued on startup.</summary>
+    public bool EnableImport { get; set; } = false;
+
     /// <summary>Number of shows to request per gRPC batch call.</summary>
     public int BatchSize { get; set; } = 60;
 

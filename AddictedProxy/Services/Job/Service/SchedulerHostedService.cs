@@ -1,12 +1,21 @@
 ﻿using AddictedProxy.Services.Credentials.Job;
 using AddictedProxy.Services.Provider.Shows.Jobs;
+using AddictedProxy.Services.Provider.SuperSubtitles.Config;
 using AddictedProxy.Services.Provider.SuperSubtitles.Jobs;
 using Hangfire;
+using Microsoft.Extensions.Options;
 
 namespace AddictedProxy.Services.Job.Service;
 
 public class SchedulerHostedService : IHostedService
 {
+    private readonly SuperSubtitlesImportConfig _importConfig;
+
+    public SchedulerHostedService(IOptions<SuperSubtitlesImportConfig> importConfig)
+    {
+        _importConfig = importConfig.Value;
+    }
+
     public Task StartAsync(CancellationToken cancellationToken)
     {
         RecurringJob.AddOrUpdate<RefreshAvailableShowsJob>(nameof(RefreshAvailableShowsJob), job => job.ExecuteAsync(CancellationToken.None), "0 2 * * *");
@@ -15,7 +24,10 @@ public class SchedulerHostedService : IHostedService
         RecurringJob.AddOrUpdate<DownloadCredsRedeemerJob>(nameof(DownloadCredsRedeemerJob), job => job.ExecuteAsync(CancellationToken.None), "11 * * * *");
 
         // One-time bulk import from SuperSubtitles (idempotent — skips if already imported)
-        BackgroundJob.Enqueue<ImportSuperSubtitlesJob>(job => job.ExecuteAsync(null!, CancellationToken.None));
+        if (_importConfig.EnableImport)
+        {
+            BackgroundJob.Enqueue<ImportSuperSubtitlesJob>(job => job.ExecuteAsync(null!, CancellationToken.None));
+        }
 
         return Task.CompletedTask;
     }
