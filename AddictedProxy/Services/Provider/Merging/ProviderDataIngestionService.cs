@@ -180,7 +180,6 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
         var episode = new Episode
         {
             TvShowId = show.Id,
-            TvShow = show,
             Season = season,
             Number = episodeNumber,
             Title = episodeTitle ?? string.Empty,

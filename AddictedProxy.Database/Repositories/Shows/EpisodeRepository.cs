@@ -53,9 +53,6 @@ public class EpisodeRepository : IEpisodeRepository
                             bulkEp.IgnoreOnMergeUpdateExpression = episode => new { episode.Id, episode.Discovered, episode.CreatedAt };
                             bulkEp.IgnoreOnMergeInsertExpression = episode => episode.Id;
                             break;
-                        case BulkOperation<TvShow> bulkShow:
-                            bulkShow.IsReadOnly = true;
-                            break;
                     }
                 };
             }, token);
