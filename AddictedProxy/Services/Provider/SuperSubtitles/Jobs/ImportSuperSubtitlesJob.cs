@@ -2,6 +2,8 @@ using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.State;
+using AddictedProxy.Services.Job.Filter;
+using AddictedProxy.Services.Job.Service;
 using AddictedProxy.Services.Provider.Merging;
 using AddictedProxy.Services.Provider.Merging.Model;
 using AddictedProxy.Services.Provider.SuperSubtitles.Config;
@@ -28,6 +30,7 @@ namespace AddictedProxy.Services.Provider.SuperSubtitles.Jobs;
 /// Idempotent: checks if a max subtitle ID cursor already exists and skips if so.
 /// Enqueued once at startup from <see cref="SchedulerHostedService"/>.
 /// </remarks>
+[UniqueJob]
 public class ImportSuperSubtitlesJob
 {
     private readonly ISuperSubtitlesClient _superSubtitlesClient;
