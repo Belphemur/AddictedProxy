@@ -15,7 +15,9 @@
     <v-container v-else>
       <v-data-table
           :items="subtitles"
-          :headers="headers" items-per-page="25"
+          :headers="headers"
+          :items-per-page="-1"
+          hide-default-footer
           :group-by="groupBy"
           v-if="!device.isMobile">
         <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
