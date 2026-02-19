@@ -26,6 +26,8 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 ## Phase 2: Data Merging Strategy
 
 - [x] Implement show merging logic (lookup `ShowExternalId` → fallback TvDB → TMDB → create new)
+- [x] Extract TMDB name-matching heuristics into `IShowTmdbMapper` / `ShowTmdbMapper` (shared by `MapShowTmdbJob` and `ShowRefresher`)
+- [x] Optimize `ShowRefresher.RefreshShowsAsync`: bulk-check `ShowExternalId` table in one query, resolve missing TMDB IDs via `IShowTmdbMapper`, merge via `IProviderDataIngestionService`
 - [x] Implement episode merging via natural key `(TvShowId, Season, Number)` using `EpisodeRepository.UpsertEpisodes()`
 - [x] Implement subtitle appending (insert with `Source = SuperSubtitles`, unique by `DownloadUri`)
 - [x] Implement season pack ingestion (store `is_season_pack = true` subtitles in `SeasonPackSubtitle`)

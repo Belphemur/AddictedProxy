@@ -23,6 +23,8 @@ public class BootstrapProvider : IBootstrap
         services.AddSingleton<IRefreshHubManager, RefreshHubManager>();
         services.AddScoped<SubtitleCounterUpdater>();
         services.AddScoped<IDetailsProvider, DetailsProvider>();
+        services.AddScoped<IShowTmdbMapper, ShowTmdbMapper>();
+        services.AddScoped<IProviderDataIngestionService, ProviderDataIngestionService>();
     }
 }
 ```
@@ -45,8 +47,8 @@ public interface IShowRefresher
 ```
 
 **Current Implementation (`ShowRefresher`):**
-- `RefreshShowsAsync()`: Calls `IAddic7edClient.GetTvShowsAsync()` to fetch all shows, then upserts them into the database
-- `RefreshShowAsync()`: Refreshes seasons and episodes for a specific show using `ISeasonRefresher` and `IEpisodeRefresher`
+- `RefreshShowsAsync()`: Fetches all shows from Addic7ed, bulk-checks which are already in `ShowExternalId` (single query), resolves missing TMDB IDs via `IShowTmdbMapper`, then merges each new show via `IProviderDataIngestionService.MergeShowAsync()` (TvDB → TMDB ID matching for deduplication across providers)
+- `RefreshShowAsync()`: Routes per-provider refresh by loading all `ShowExternalId` entries and delegating to `IProviderShowRefresher` implementations via factory
 - `FindShowsAsync()`: Delegates to `ITvShowRepository.FindAsync()` for full-text search
 - Sends real-time progress via `IRefreshHubManager` (SignalR)
 
@@ -118,6 +120,31 @@ public interface IDetailsProvider
 }
 ```
 
+#### IShowTmdbMapper
+
+Encapsulates the TMDB search filter heuristics (release year, origin country, BBC detection) that are shared across `MapShowTmdbJob` and `ShowRefresher`. Returns strongly-typed result records instead of raw TMDB API responses.
+
+```csharp
+public interface IShowTmdbMapper
+{
+    /// <summary>Try to find TMDB (and TvDB) data for a TV show. Returns null if no match found.</summary>
+    Task<ShowTmdbInfo?> TryResolveShowAsync(TvShow show, CancellationToken token);
+
+    /// <summary>Try to find TMDB (and TvDB) data for a movie. Returns null if no match found.</summary>
+    Task<MovieTmdbInfo?> TryResolveMovieAsync(TvShow show, CancellationToken token);
+}
+
+// Result records
+public record ShowTmdbInfo(int TmdbId, int? TvdbId, bool IsEnded);
+public record MovieTmdbInfo(int TmdbId, int? TvdbId);
+```
+
+**Filter heuristics applied to TMDB search results:**
+- Shows with `BBC ` / `BBC:` in name → require `OriginCountry` contains `GB`
+- Shows with a year in parentheses e.g. `Show Name (2019)` → require `FirstAirDate` starts with that year
+- Shows with a 2–3 letter country code in parentheses e.g. `Show Name (US)` → require matching `OriginCountry`
+- Movies: year-in-parentheses filter applied to `ReleaseDate`
+
 ### Upstream Module (Addic7ed)
 
 The `AddictedProxy.Upstream` project contains the Addic7ed-specific client implementation:
@@ -175,7 +202,13 @@ ShowRefresher.RefreshShowsAsync()
     │       │
     │       └─► Parser.GetShowsAsync()                        // Parse HTML response
     │
-    └─► ITvShowRepository.UpsertRefreshedShowsAsync()         // Save to database
+    ├─► IShowExternalIdRepository.GetExistingExternalIdsAsync()  // Bulk check already-known shows (single query)
+    │
+    ├─► For each NEW show (not in ShowExternalId table):
+    │   ├─► If TmdbId missing: IShowTmdbMapper.TryResolveShowAsync()  // Resolve via TMDB search
+    │   └─► IProviderDataIngestionService.MergeShowAsync()            // Merge or create TvShow
+    │
+    └─► Log: merged N new shows, skipped M already-known shows
 ```
 
 ### Data Flow: Search & Download Subtitle
