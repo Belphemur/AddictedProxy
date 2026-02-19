@@ -254,7 +254,7 @@ public class ImportSuperSubtitlesJob
 
         var subtitleEntity = new SubtitleEntity
         {
-            Scene = subtitle.Release,
+            Scene = string.Join(", ", subtitle.ReleaseGroups),
             Version = 0,
             Completed = true,
             CompletionPct = 100.0,

@@ -11,6 +11,9 @@ public class SuperSubtitlesImportConfig
     /// <summary>When true, the bulk import job will be enqueued on startup.</summary>
     public bool EnableImport { get; set; } = false;
 
+    /// <summary>When true, the recurring incremental refresh job will be registered on startup.</summary>
+    public bool EnableRefresh { get; set; } = false;
+
     /// <summary>Number of shows to request per gRPC batch call.</summary>
     public int BatchSize { get; set; } = 60;
 
