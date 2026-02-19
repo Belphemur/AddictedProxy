@@ -17,6 +17,7 @@ public class SubtitleDto
         Discovered = subtitle.Discovered;
         SubtitleId = subtitle.UniqueId.ToString();
         DownloadCount = subtitle.DownloadCount;
+        Source = subtitle.Source.ToString();
     }
 
 
@@ -73,4 +74,11 @@ public class SubtitleDto
     /// <example>100</example>
     [Required]
     public long DownloadCount { get; }
+
+    /// <summary>
+    /// Source provider of the subtitle
+    /// </summary>
+    /// <example>Addic7ed</example>
+    [Required]
+    public string Source { get; }
 }
