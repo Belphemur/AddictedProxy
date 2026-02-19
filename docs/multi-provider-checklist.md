@@ -73,13 +73,13 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 
 ### Phase 4B: Recurring Incremental Updates
 
-- [ ] Create `RefreshSuperSubtitlesJob` (recurring every 15 minutes)
-  - [ ] Load max subtitle ID from state repository
-  - [ ] `CheckForUpdates` → early exit if no updates
-  - [ ] `GetRecentSubtitles(since_id)` → process stream (same logic as bulk import)
-  - [ ] Wrap each show's data in a database transaction
-  - [ ] Update stored max subtitle ID
-- [ ] Register recurring job in Hangfire
+- [x] Create `RefreshSuperSubtitlesJob` (recurring every 15 minutes)
+  - [x] Load max subtitle ID from state repository
+  - [x] `CheckForUpdates` → early exit if no updates
+  - [x] `GetRecentSubtitles(since_id)` → process stream (same logic as bulk import)
+  - [x] Wrap each show's data in a database transaction
+  - [x] Update stored max subtitle ID
+- [x] Register recurring job in Hangfire
 
 ## Phase 5: SuperSubtitles Client Module
 
