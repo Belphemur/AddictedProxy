@@ -143,46 +143,43 @@ public class ImportSuperSubtitlesJob
         var subtitleCount = 0;
         var seasonPackCount = 0;
 
-        await foreach (var item in _superSubtitlesClient.GetShowSubtitlesAsync(batch, token))
+        await _transactionManager.WrapInTransactionAsync(async () =>
         {
-            switch (item.ItemCase)
+            await foreach (var item in _superSubtitlesClient.GetShowSubtitlesAsync(batch, token))
             {
-                case ShowSubtitleItem.ItemOneofCase.ShowInfo:
-                    await _transactionManager.WrapInTransactionAsync(async () =>
-                    {
+                switch (item.ItemCase)
+                {
+                    case ShowSubtitleItem.ItemOneofCase.ShowInfo:
                         currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
-                    }, token);
-                    break;
-
-                case ShowSubtitleItem.ItemOneofCase.Subtitle:
-                    if (currentShow == null)
-                    {
-                        _logger.LogWarning(
-                            "Received subtitle {SubtitleId} without preceding ShowInfo, skipping",
-                            item.Subtitle.Id);
                         break;
-                    }
 
-                    await _transactionManager.WrapInTransactionAsync(async () =>
-                    {
+                    case ShowSubtitleItem.ItemOneofCase.Subtitle:
+                        if (currentShow == null)
+                        {
+                            _logger.LogWarning(
+                                "Received subtitle {SubtitleId} without preceding ShowInfo, skipping",
+                                item.Subtitle.Id);
+                            break;
+                        }
+
                         var isSeasonPack = await HandleSubtitleAsync(item.Subtitle, currentShow, token);
                         maxSubtitleId = Math.Max(maxSubtitleId, item.Subtitle.Id);
                         if (isSeasonPack)
                             seasonPackCount++;
                         else
                             subtitleCount++;
-                    }, token);
-                    break;
+                        break;
 
-                case ShowSubtitleItem.ItemOneofCase.None:
-                    _logger.LogWarning("Received ShowSubtitleItem with no data");
-                    break;
+                    case ShowSubtitleItem.ItemOneofCase.None:
+                        _logger.LogWarning("Received ShowSubtitleItem with no data");
+                        break;
 
-                default:
-                    _logger.LogWarning("Unknown ShowSubtitleItem case: {Case}", item.ItemCase);
-                    break;
+                    default:
+                        _logger.LogWarning("Unknown ShowSubtitleItem case: {Case}", item.ItemCase);
+                        break;
+                }
             }
-        }
+        }, token);
 
         return new BatchStats(maxSubtitleId, subtitleCount, seasonPackCount);
     }
