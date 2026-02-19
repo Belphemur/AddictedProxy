@@ -97,9 +97,9 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 
 ## Phase 6: API & Frontend Updates
 
-- [ ] Optionally expose `source` field in `SubtitleDto`
-- [ ] Optionally add provider badge/icon in frontend subtitle list
-- [ ] Verify no breaking changes to existing endpoints
+- [x] Optionally expose `source` field in `SubtitleDto`
+- [x] Optionally add provider badge/icon in frontend subtitle list
+- [x] Verify no breaking changes to existing endpoints
 
 ## Infrastructure
 
