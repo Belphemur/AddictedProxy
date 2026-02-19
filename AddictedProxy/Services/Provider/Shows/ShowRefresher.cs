@@ -3,6 +3,9 @@
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Credentials;
+using AddictedProxy.Services.Provider.Merging;
+using AddictedProxy.Services.Provider.Merging.Model;
+using AddictedProxy.Services.Provider.ShowInfo;
 using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Upstream.Service;
 using Microsoft.Extensions.Logging;
@@ -18,6 +21,8 @@ public class ShowRefresher : IShowRefresher
     private readonly ICredentialsService _credentialsService;
     private readonly ProviderShowRefresherFactory _providerShowRefresherFactory;
     private readonly IShowExternalIdRepository _showExternalIdRepository;
+    private readonly IProviderDataIngestionService _ingestionService;
+    private readonly IShowTmdbMapper _showTmdbMapper;
     private readonly ILogger<ShowRefresher> _logger;
     private readonly IRefreshHubManager _refreshHubManager;
     private readonly IPerformanceTracker _performanceTracker;
@@ -28,6 +33,8 @@ public class ShowRefresher : IShowRefresher
                          ICredentialsService credentialsService,
                          ProviderShowRefresherFactory providerShowRefresherFactory,
                          IShowExternalIdRepository showExternalIdRepository,
+                         IProviderDataIngestionService ingestionService,
+                         IShowTmdbMapper showTmdbMapper,
                          ILogger<ShowRefresher> logger,
                          IRefreshHubManager refreshHubManager,
                          IPerformanceTracker performanceTracker)
@@ -37,6 +44,8 @@ public class ShowRefresher : IShowRefresher
         _credentialsService = credentialsService;
         _providerShowRefresherFactory = providerShowRefresherFactory;
         _showExternalIdRepository = showExternalIdRepository;
+        _ingestionService = ingestionService;
+        _showTmdbMapper = showTmdbMapper;
         _logger = logger;
         _refreshHubManager = refreshHubManager;
         _performanceTracker = performanceTracker;
@@ -47,24 +56,55 @@ public class ShowRefresher : IShowRefresher
         await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
         var transaction = _performanceTracker.BeginNestedSpan(nameof(ShowRefresher), "fetch-from-addicted");
 
-        var tvShows = await _addic7EdClient.GetTvShowsAsync(credentials.AddictedUserCredentials, token).ToArrayAsync(token);
+        var addic7edShows = await _addic7EdClient.GetTvShowsAsync(credentials.AddictedUserCredentials, token).ToArrayAsync(token);
         transaction.Finish();
 
-        using var _ = _performanceTracker.BeginNestedSpan(nameof(ShowRefresher), "save-in-db");
+        using var _ = _performanceTracker.BeginNestedSpan(nameof(ShowRefresher), "merge-shows");
 
-        await _tvShowRepository.UpsertRefreshedShowsAsync(tvShows, token);
+        // Bulk-check which Addic7ed external IDs are already mapped — single SQL query
+        var allExternalIds = addic7edShows.Select(s => s.ExternalId.ToString()).ToList();
+        var existingIds = await _showExternalIdRepository.GetExistingExternalIdsAsync(
+            DataSource.Addic7ed, allExternalIds, token);
 
-        // Ensure ShowExternalId entries exist for all Addic7ed shows
-        var showExternalIds = tvShows
-            .Where(show => show.Id > 0)
-            .Select(show => new ShowExternalId
+        var mergeCount = 0;
+        var skipCount = 0;
+
+        foreach (var addic7edShow in addic7edShows)
+        {
+            // Fast path: skip shows already mapped in ShowExternalId — no re-merge needed
+            if (existingIds.Contains(addic7edShow.ExternalId.ToString()))
             {
-                TvShowId = show.Id,
-                Source = DataSource.Addic7ed,
-                ExternalId = show.ExternalId.ToString()
-            });
-        await _showExternalIdRepository.BulkUpsertAsync(showExternalIds, token);
-        _logger.LogInformation("Upserted ShowExternalId entries for {Count} Addic7ed shows", tvShows.Length);
+                skipCount++;
+                continue;
+            }
+
+            var tmdbId = addic7edShow.TmdbId;
+            var tvdbId = addic7edShow.TvdbId;
+
+            // If TMDB ID is missing, resolve it now so the merge service can match by ID
+            if (!tmdbId.HasValue)
+            {
+                var showInfo = await _showTmdbMapper.TryResolveShowAsync(addic7edShow, token);
+                if (showInfo != null)
+                {
+                    tmdbId = showInfo.TmdbId;
+                    tvdbId ??= showInfo.TvdbId;
+                }
+            }
+
+            await _ingestionService.MergeShowAsync(
+                DataSource.Addic7ed,
+                addic7edShow.ExternalId.ToString(),
+                addic7edShow.Name,
+                new ThirdPartyShowIds(TvdbId: tvdbId, ImdbId: null, TmdbId: tmdbId),
+                token);
+
+            mergeCount++;
+        }
+
+        _logger.LogInformation(
+            "Merged {MergeCount} new shows from Addic7ed, skipped {SkipCount} already-known shows",
+            mergeCount, skipCount);
     }
 
     public IAsyncEnumerable<TvShow> GetShowByTvDbIdAsync(int id, CancellationToken cancellationToken)
@@ -103,4 +143,5 @@ public class ShowRefresher : IShowRefresher
     {
         return _tvShowRepository.GetByGuidAsync(id, cancellationToken);
     }
+
 }
