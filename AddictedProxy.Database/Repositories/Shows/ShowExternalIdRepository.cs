@@ -56,6 +56,17 @@ public class ShowExternalIdRepository : IShowExternalIdRepository
         await _entityContext.SaveChangesAsync(token);
     }
 
+    public async Task<IReadOnlySet<string>> GetExistingExternalIdsAsync(DataSource source, IEnumerable<string> externalIds, CancellationToken token)
+    {
+        var ids = externalIds as string[] ?? externalIds.ToArray();
+        var existing = await _entityContext.ShowExternalIds
+            .Where(e => e.Source == source && ids.Contains(e.ExternalId))
+            .Select(e => e.ExternalId)
+            .AsNoTracking()
+            .ToListAsync(token);
+        return existing.ToHashSet();
+    }
+
     public async Task BulkUpsertAsync(IEnumerable<ShowExternalId> showExternalIds, CancellationToken token)
     {
         await _transactionManager.WrapInTransactionAsync(async () =>

@@ -25,6 +25,12 @@ public interface IShowExternalIdRepository
     Task UpsertAsync(ShowExternalId showExternalId, CancellationToken token);
 
     /// <summary>
+    /// Returns the subset of the provided external IDs that already exist for the given source.
+    /// Use this for bulk existence checks instead of querying one by one.
+    /// </summary>
+    Task<IReadOnlySet<string>> GetExistingExternalIdsAsync(DataSource source, IEnumerable<string> externalIds, CancellationToken token);
+
+    /// <summary>
     /// Add or update multiple show external IDs
     /// </summary>
     Task BulkUpsertAsync(IEnumerable<ShowExternalId> showExternalIds, CancellationToken token);
