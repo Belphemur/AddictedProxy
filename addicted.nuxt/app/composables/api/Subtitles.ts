@@ -10,13 +10,14 @@
  * ---------------------------------------------------------------
  */
 
-import {
+import type {
   ErrorResponse,
   SearchRequest,
   SubtitleSearchResponse,
   WrongFormatResponse,
 } from "./data-contracts";
-import { ContentType, HttpClient, RequestParams } from "./http-client";
+import { ContentType, HttpClient } from "./http-client";
+import type { RequestParams } from "./http-client";
 
 export class Subtitles<
   SecurityDataType = unknown,

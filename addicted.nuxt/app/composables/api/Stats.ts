@@ -10,8 +10,9 @@
  * ---------------------------------------------------------------
  */
 
-import { TopShowDto } from "./data-contracts";
-import { HttpClient, RequestParams } from "./http-client";
+import type { TopShowDto } from "./data-contracts";
+import { HttpClient } from "./http-client";
+import type { RequestParams } from "./http-client";
 
 export class Stats<
   SecurityDataType = unknown,

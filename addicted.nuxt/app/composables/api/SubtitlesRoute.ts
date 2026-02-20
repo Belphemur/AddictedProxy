@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { SearchRequest, SubtitleSearchResponse } from "./data-contracts";
+import type { SearchRequest, SubtitleSearchResponse } from "./data-contracts";
 
 export namespace Subtitles {
   /**

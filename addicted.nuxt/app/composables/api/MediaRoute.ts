@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import {
+import type {
   MediaDetailsDto,
   MediaDetailsWithEpisodeAndSubtitlesDto,
 } from "./data-contracts";

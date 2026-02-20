@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { ApplicationInfoDto } from "./data-contracts";
+import type { ApplicationInfoDto } from "./data-contracts";
 
 export namespace Application {
   /**

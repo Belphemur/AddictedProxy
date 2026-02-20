@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import { TopShowDto } from "./data-contracts";
+import type { TopShowDto } from "./data-contracts";
 
 export namespace Stats {
   /**

@@ -10,12 +10,13 @@
  * ---------------------------------------------------------------
  */
 
-import {
+import type {
   ErrorResponse,
   ShowSearchResponse,
   TvShowSubtitleResponse,
 } from "./data-contracts";
-import { HttpClient, RequestParams } from "./http-client";
+import { HttpClient } from "./http-client";
+import type { RequestParams } from "./http-client";
 
 export class Shows<
   SecurityDataType = unknown,
