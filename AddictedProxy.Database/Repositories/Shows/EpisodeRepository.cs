@@ -85,12 +85,12 @@ public class EpisodeRepository : IEpisodeRepository
              INSERT INTO "Subtitles"
                  ("EpisodeId", "Scene", "Version", "Completed", "CompletionPct", "HearingImpaired",
                   "Corrected", "Qualities", "Release", "HD", "DownloadUri", "Language", "LanguageIsoCode",
-                  "Source", "ExternalId", "Discovered", "CreatedAt", "UpdatedAt")
+                  "Source", "ExternalId", "DownloadCount", "Discovered", "CreatedAt", "UpdatedAt")
              SELECT
                  "Id", {subtitle.Scene}, {subtitle.Version}, {subtitle.Completed}, {subtitle.CompletionPct},
                  {subtitle.HearingImpaired}, {subtitle.Corrected}, {(int)subtitle.Qualities}, {subtitle.Release},
                  {false}, {downloadUri}, {subtitle.Language}, {subtitle.LanguageIsoCode},
-                 {(int)subtitle.Source}, {subtitle.ExternalId}, {now}, {now}, {now}
+                 {(int)subtitle.Source}, {subtitle.ExternalId}, {0L}, {now}, {now}, {now}
              FROM upsert_episode
              ON CONFLICT ("Source", "ExternalId")
              DO UPDATE SET
