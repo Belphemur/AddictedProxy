@@ -233,9 +233,7 @@ public class ImportSuperSubtitlesJob
             Release = string.IsNullOrEmpty(subtitle.Release) ? null : subtitle.Release,
             Uploader = string.IsNullOrEmpty(subtitle.Uploader) ? null : subtitle.Uploader,
             UploadedAt = subtitle.UploadedAt?.ToDateTime(),
-            Qualities = subtitle.Qualities.Count > 0
-                ? string.Join(",", subtitle.Qualities)
-                : null,
+            Qualities = ToVideoQuality(subtitle.Qualities),
             ReleaseGroups = subtitle.ReleaseGroups.Count > 0
                 ? string.Join(",", subtitle.ReleaseGroups)
                 : null,
@@ -257,7 +255,8 @@ public class ImportSuperSubtitlesJob
             CompletionPct = 100.0,
             HearingImpaired = false,
             Corrected = false,
-            HD = subtitle.Qualities.Any(q => q is Quality._1080P or Quality._2160P or Quality._720P),
+            Qualities = ToVideoQuality(subtitle.Qualities),
+            Release = string.IsNullOrEmpty(subtitle.Release) ? null : subtitle.Release,
             DownloadUri = new Uri(subtitle.DownloadUrl),
             Language = subtitle.Language,
             LanguageIsoCode = culture?.TwoLetterISOLanguageName,
@@ -275,5 +274,23 @@ public class ImportSuperSubtitlesJob
             subtitle.Id.ToString(),
             subtitleEntity,
             token);
+    }
+
+    private static VideoQuality ToVideoQuality(IEnumerable<Quality> protoQualities)
+    {
+        var result = VideoQuality.None;
+        foreach (var q in protoQualities)
+        {
+            result |= q switch
+            {
+                Quality._360P  => VideoQuality.Q360P,
+                Quality._480P  => VideoQuality.Q480P,
+                Quality._720P  => VideoQuality.Q720P,
+                Quality._1080P => VideoQuality.Q1080P,
+                Quality._2160P => VideoQuality.Q2160P,
+                _              => VideoQuality.None,
+            };
+        }
+        return result;
     }
 }
