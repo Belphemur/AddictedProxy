@@ -238,7 +238,9 @@ public partial class Parser
                     Discovered = DateTime.UtcNow,
                     Episode = episode,
                     Version = subtitleRow.Version,
-                    LanguageIsoCode = languageIsoCode
+                    LanguageIsoCode = languageIsoCode,
+                    Source = DataSource.Addic7ed,
+                    ExternalId = subtitleRow.DownloadUri.ToString()
                 });
             }
             episode.Subtitles = subtitles;
