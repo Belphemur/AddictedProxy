@@ -10,11 +10,12 @@
  * ---------------------------------------------------------------
  */
 
-import type { TopShowDto } from "./data-contracts";
-import type { RequestParams } from "./http-client";
-import { HttpClient } from "./http-client";
+import { TopShowDto } from "./data-contracts";
+import { HttpClient, RequestParams } from "./http-client";
 
-export class Stats<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+export class Stats<
+  SecurityDataType = unknown,
+> extends HttpClient<SecurityDataType> {
   /**
    * No description
    *

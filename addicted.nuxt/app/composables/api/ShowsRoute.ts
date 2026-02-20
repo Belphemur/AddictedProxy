@@ -10,7 +10,7 @@
  * ---------------------------------------------------------------
  */
 
-import type { ShowSearchResponse, TvShowSubtitleResponse } from "./data-contracts";
+import { ShowSearchResponse, TvShowSubtitleResponse } from "./data-contracts";
 
 export namespace Shows {
   /**

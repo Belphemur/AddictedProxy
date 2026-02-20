@@ -10,11 +10,17 @@
  * ---------------------------------------------------------------
  */
 
-import type { ErrorResponse, SearchRequest, SubtitleSearchResponse, WrongFormatResponse } from "./data-contracts";
-import type { RequestParams } from "./http-client";
-import { ContentType, HttpClient } from "./http-client";
+import {
+  ErrorResponse,
+  SearchRequest,
+  SubtitleSearchResponse,
+  WrongFormatResponse,
+} from "./data-contracts";
+import { ContentType, HttpClient, RequestParams } from "./http-client";
 
-export class Subtitles<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+export class Subtitles<
+  SecurityDataType = unknown,
+> extends HttpClient<SecurityDataType> {
   /**
    * No description
    *
@@ -39,7 +45,10 @@ export class Subtitles<SecurityDataType = unknown> extends HttpClient<SecurityDa
    * @deprecated
    */
   searchCreate = (data: SearchRequest, params: RequestParams = {}) =>
-    this.request<SubtitleSearchResponse, WrongFormatResponse | ErrorResponse | string>({
+    this.request<
+      SubtitleSearchResponse,
+      WrongFormatResponse | ErrorResponse | string
+    >({
       path: `/subtitles/search`,
       method: "POST",
       body: data,
@@ -56,8 +65,17 @@ export class Subtitles<SecurityDataType = unknown> extends HttpClient<SecurityDa
    * @request GET:/subtitles/find/{language}/{show}/{season}/{episode}
    * @deprecated
    */
-  findDetail = (language: string, show: string, season: number, episode: number, params: RequestParams = {}) =>
-    this.request<SubtitleSearchResponse, WrongFormatResponse | ErrorResponse | string>({
+  findDetail = (
+    language: string,
+    show: string,
+    season: number,
+    episode: number,
+    params: RequestParams = {},
+  ) =>
+    this.request<
+      SubtitleSearchResponse,
+      WrongFormatResponse | ErrorResponse | string
+    >({
       path: `/subtitles/find/${language}/${show}/${season}/${episode}`,
       method: "GET",
       format: "json",
@@ -78,7 +96,10 @@ export class Subtitles<SecurityDataType = unknown> extends HttpClient<SecurityDa
     episode: number,
     params: RequestParams = {},
   ) =>
-    this.request<SubtitleSearchResponse, WrongFormatResponse | ErrorResponse | void | string>({
+    this.request<
+      SubtitleSearchResponse,
+      WrongFormatResponse | ErrorResponse | void | string
+    >({
       path: `/subtitles/get/${showUniqueId}/${season}/${episode}/${language}`,
       method: "GET",
       format: "json",

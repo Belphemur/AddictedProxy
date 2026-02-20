@@ -10,11 +10,15 @@
  * ---------------------------------------------------------------
  */
 
-import type { MediaDetailsDto, MediaDetailsWithEpisodeAndSubtitlesDto } from "./data-contracts";
-import type { RequestParams } from "./http-client";
-import { HttpClient } from "./http-client";
+import {
+  MediaDetailsDto,
+  MediaDetailsWithEpisodeAndSubtitlesDto,
+} from "./data-contracts";
+import { HttpClient, RequestParams } from "./http-client";
 
-export class Media<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+export class Media<
+  SecurityDataType = unknown,
+> extends HttpClient<SecurityDataType> {
   /**
    * No description
    *
@@ -53,8 +57,12 @@ export class Media<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
    * @summary Get the show details with the last season and episodes
    * @request GET:/media/{showId}/episodes/{language}
    */
-  episodesDetail = (showId: string, language: string, params: RequestParams = {}) =>
-    this.request<MediaDetailsWithEpisodeAndSubtitlesDto, void | string>({
+  episodesDetail = (
+    showId: string,
+    language: string,
+    params: RequestParams = {},
+  ) =>
+    this.request<MediaDetailsWithEpisodeAndSubtitlesDto, string | void>({
       path: `/media/${showId}/episodes/${language}`,
       method: "GET",
       format: "json",

@@ -10,7 +10,10 @@
  * ---------------------------------------------------------------
  */
 
-import type { MediaDetailsDto, MediaDetailsWithEpisodeAndSubtitlesDto } from "./data-contracts";
+import {
+  MediaDetailsDto,
+  MediaDetailsWithEpisodeAndSubtitlesDto,
+} from "./data-contracts";
 
 export namespace Media {
   /**
