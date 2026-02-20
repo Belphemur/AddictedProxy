@@ -78,9 +78,9 @@ public class SeasonPackSubtitle : BaseEntity, IDiscoverableObject
     public DateTime? UploadedAt { get; set; }
 
     /// <summary>
-    /// Serialized quality values from the provider (e.g. "HD,FullHD")
+    /// Bitmask of <see cref="VideoQuality"/> flags for this subtitle.
     /// </summary>
-    public string? Qualities { get; set; }
+    public VideoQuality Qualities { get; set; } = VideoQuality.None;
 
     /// <summary>
     /// Serialized release group names from the provider
