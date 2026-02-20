@@ -1,3 +1,17 @@
+## [4.44.0](https://github.com/Belphemur/AddictedProxy/compare/v4.43.2...v4.44.0) (2026-02-20)
+
+### Bug Fixes
+
+* **database:** combine episode+subtitle upserts into single CTE query ([0fa561f](https://github.com/Belphemur/AddictedProxy/commit/0fa561f85b5e857d1b9815d0a251da1114da749d))
+* **database:** guard CTE UPDATE against ExternalId constraint violation ([5516411](https://github.com/Belphemur/AddictedProxy/commit/55164114bed9ffc58ed8f9db1b9d009092f51b17))
+* **database:** include DownloadCount column in subtitle upsert SQL ([bb1faa0](https://github.com/Belphemur/AddictedProxy/commit/bb1faa060f9c2396932292768045e59b37b97233))
+* **database:** update MergeEpisodeWithSubtitleAsync to include external ID handling and adjust raw SQL warning ([7bd7d7a](https://github.com/Belphemur/AddictedProxy/commit/7bd7d7a1b5810b63b9f4a1524d265f12a077bc17))
+* **database:** use ExecuteSqlAsync for data-modifying CTE upsert ([57a22c3](https://github.com/Belphemur/AddictedProxy/commit/57a22c3a972f6e9537d94d122e6b4bb27288e199))
+
+### Features
+
+* **database:** handle EpisodeExternalId in UpsertEpisodes IncludeGraph ([1cb6d68](https://github.com/Belphemur/AddictedProxy/commit/1cb6d682b10f058680cb71b38272b8ce7c1baf97))
+
 ## [4.43.2](https://github.com/Belphemur/AddictedProxy/compare/v4.43.1...v4.43.2) (2026-02-20)
 
 ### Bug Fixes
