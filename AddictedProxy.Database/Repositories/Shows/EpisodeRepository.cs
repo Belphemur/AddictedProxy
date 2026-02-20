@@ -68,54 +68,53 @@ public class EpisodeRepository : IEpisodeRepository
     public async Task<long> MergeEpisodeWithSubtitleAsync(Episode episode, Subtitle subtitle, CancellationToken token)
     {
         var now = DateTime.UtcNow;
-        long episodeId = 0;
+        var downloadUri = subtitle.DownloadUri.ToString();
 
-        await _transactionManager.WrapInTransactionAsync(async () =>
-        {
-            // Step 1: Upsert Episode by (TvShowId, Season, Number).
-            // On conflict, update the title; preserve Id, Discovered, CreatedAt.
-            episodeId = await _entityContext.Database.SqlQuery<long>(
+        // Single CTE-based SQL: upsert episode, then upsert subtitle using the episode ID.
+        // Returns the episode ID via a final SELECT.
+        var episodeId = await _entityContext.Database
+            .SqlQuery<long>(
                 $"""
-                 INSERT INTO "Episodes" ("TvShowId", "Season", "Number", "Title", "ExternalId", "Discovered", "CreatedAt", "UpdatedAt")
-                 VALUES ({episode.TvShowId}, {episode.Season}, {episode.Number}, {episode.Title}, {episode.ExternalId}, {now}, {now}, {now})
-                 ON CONFLICT ("TvShowId", "Season", "Number")
-                 DO UPDATE SET "Title" = EXCLUDED."Title", "UpdatedAt" = EXCLUDED."UpdatedAt"
-                 RETURNING "Id"
-                 """).FirstAsync(token);
-
-            // Step 2: Upsert Subtitle by (Source, ExternalId).
-            // On conflict, update mutable fields; preserve Id, Discovered, CreatedAt,
-            // StoragePath, StoredAt, DownloadCount, UniqueId.
-            var downloadUri = subtitle.DownloadUri.ToString();
-            await _entityContext.Database.ExecuteSqlAsync(
-                $"""
-                 INSERT INTO "Subtitles"
-                     ("EpisodeId", "Scene", "Version", "Completed", "CompletionPct", "HearingImpaired",
-                      "Corrected", "Qualities", "Release", "HD", "DownloadUri", "Language", "LanguageIsoCode",
-                      "Source", "ExternalId", "Discovered", "CreatedAt", "UpdatedAt")
-                 VALUES
-                     ({episodeId}, {subtitle.Scene}, {subtitle.Version}, {subtitle.Completed}, {subtitle.CompletionPct},
-                      {subtitle.HearingImpaired}, {subtitle.Corrected}, {(int)subtitle.Qualities}, {subtitle.Release},
-                      {false}, {downloadUri}, {subtitle.Language}, {subtitle.LanguageIsoCode},
-                      {(int)subtitle.Source}, {subtitle.ExternalId}, {now}, {now}, {now})
-                 ON CONFLICT ("Source", "ExternalId")
-                 DO UPDATE SET
-                     "EpisodeId"        = EXCLUDED."EpisodeId",
-                     "DownloadUri"      = EXCLUDED."DownloadUri",
-                     "Scene"            = EXCLUDED."Scene",
-                     "Version"          = EXCLUDED."Version",
-                     "Completed"        = EXCLUDED."Completed",
-                     "CompletionPct"    = EXCLUDED."CompletionPct",
-                     "HearingImpaired"  = EXCLUDED."HearingImpaired",
-                     "Corrected"        = EXCLUDED."Corrected",
-                     "Qualities"        = EXCLUDED."Qualities",
-                     "Release"          = EXCLUDED."Release",
-                     "Language"         = EXCLUDED."Language",
-                     "LanguageIsoCode"  = EXCLUDED."LanguageIsoCode",
-                     "UpdatedAt"        = EXCLUDED."UpdatedAt"
-                 """,
-                token);
-        }, token);
+                 SELECT ep_id AS "Value" FROM (
+                     WITH upsert_episode AS (
+                         INSERT INTO "Episodes" ("TvShowId", "Season", "Number", "Title", "ExternalId", "Discovered", "CreatedAt", "UpdatedAt")
+                         VALUES ({episode.TvShowId}, {episode.Season}, {episode.Number}, {episode.Title}, {episode.ExternalId}, {now}, {now}, {now})
+                         ON CONFLICT ("TvShowId", "Season", "Number")
+                         DO UPDATE SET "Title" = EXCLUDED."Title", "UpdatedAt" = EXCLUDED."UpdatedAt"
+                         RETURNING "Id" AS ep_id
+                     ),
+                     upsert_subtitle AS (
+                         INSERT INTO "Subtitles"
+                             ("EpisodeId", "Scene", "Version", "Completed", "CompletionPct", "HearingImpaired",
+                              "Corrected", "Qualities", "Release", "HD", "DownloadUri", "Language", "LanguageIsoCode",
+                              "Source", "ExternalId", "Discovered", "CreatedAt", "UpdatedAt")
+                         SELECT
+                             ep_id, {subtitle.Scene}, {subtitle.Version}, {subtitle.Completed}, {subtitle.CompletionPct},
+                             {subtitle.HearingImpaired}, {subtitle.Corrected}, {(int)subtitle.Qualities}, {subtitle.Release},
+                             {false}, {downloadUri}, {subtitle.Language}, {subtitle.LanguageIsoCode},
+                             {(int)subtitle.Source}, {subtitle.ExternalId}, {now}, {now}, {now}
+                         FROM upsert_episode
+                         ON CONFLICT ("Source", "ExternalId")
+                         DO UPDATE SET
+                             "EpisodeId"        = EXCLUDED."EpisodeId",
+                             "DownloadUri"      = EXCLUDED."DownloadUri",
+                             "Scene"            = EXCLUDED."Scene",
+                             "Version"          = EXCLUDED."Version",
+                             "Completed"        = EXCLUDED."Completed",
+                             "CompletionPct"    = EXCLUDED."CompletionPct",
+                             "HearingImpaired"  = EXCLUDED."HearingImpaired",
+                             "Corrected"        = EXCLUDED."Corrected",
+                             "Qualities"        = EXCLUDED."Qualities",
+                             "Release"          = EXCLUDED."Release",
+                             "Language"         = EXCLUDED."Language",
+                             "LanguageIsoCode"  = EXCLUDED."LanguageIsoCode",
+                             "UpdatedAt"        = EXCLUDED."UpdatedAt"
+                     )
+                     SELECT ep_id FROM upsert_episode
+                 ) AS result
+                 """)
+            .AsAsyncEnumerable()
+            .FirstAsync(token);
 
         return episodeId;
     }
