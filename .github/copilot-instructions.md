@@ -125,6 +125,8 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
 - **Migrations:** Auto-applied on application startup
 - **IDs:** Sortable GUIDs via RT.Comb
 
+> **⚠️ Raw SQL in EpisodeRepository:** `EpisodeRepository.MergeEpisodeWithSubtitleAsync` uses raw SQL (`INSERT ... ON CONFLICT`) that references `Episode` and `Subtitle` columns by name. When adding, removing, or renaming columns on the `Episode` or `Subtitle` entities, you **must** update the SQL in this method to match. The compiler will not catch mismatches — they will only surface at runtime.
+
 ### API Controllers
 
 Controllers are in `AddictedProxy/Controllers/Rest/` and use:
