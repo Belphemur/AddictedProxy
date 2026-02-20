@@ -1,3 +1,21 @@
+## [4.43.0](https://github.com/Belphemur/AddictedProxy/compare/v4.42.2...v4.43.0) (2026-02-20)
+
+### Bug Fixes
+
+* contract ([84e1d83](https://github.com/Belphemur/AddictedProxy/commit/84e1d83d9983d5e3ef2c9468ff80b9720cf6b660))
+* **migrations:** update Qualities column type in SeasonPackSubtitles to integer ([8af3d91](https://github.com/Belphemur/AddictedProxy/commit/8af3d9166fa2c92f271f71981296c78d005a6674))
+* missing migration ([17fe2d6](https://github.com/Belphemur/AddictedProxy/commit/17fe2d6db0609b0621a31a07fe215c7898539969))
+* quality chip module ([0b35940](https://github.com/Belphemur/AddictedProxy/commit/0b35940b12f7da162083349c370b7f2e7b9241f9))
+
+### Features
+
+* **api:** expose Qualities enum array and Release in SubtitleDto ([ad748cb](https://github.com/Belphemur/AddictedProxy/commit/ad748cbad40bf0a75f6b0bca5cd1ca7bdf63363d))
+* **database:** add VideoQuality bitfield and Release to subtitle entities ([99c75f9](https://github.com/Belphemur/AddictedProxy/commit/99c75f9aaa072d59471a701bdb7dd770fbaa2f55))
+* **jobs:** use VideoQuality bitfield and store Release in SuperSubtitles jobs ([ed96a74](https://github.com/Belphemur/AddictedProxy/commit/ed96a740600eee3c016ecd39d294a4a4cff5f148))
+* **migrations:** backport Addic7ed HD flag to VideoQuality bitfield ([2c9e84b](https://github.com/Belphemur/AddictedProxy/commit/2c9e84b0a6f62318842918cf6c6ff6d0cde98182))
+* **subtitles:** implement QualityChips component and update subtitle data structure for video qualities ([1f4f710](https://github.com/Belphemur/AddictedProxy/commit/1f4f710ece322219902f5462d41b714bbb312040))
+* **upstream:** map Addic7ed HD flag to VideoQuality bitfield in parser ([bb444df](https://github.com/Belphemur/AddictedProxy/commit/bb444df88ee30157ae36e64e47b35da3af3788f3))
+
 ## [4.42.2](https://github.com/Belphemur/AddictedProxy/compare/v4.42.1...v4.42.2) (2026-02-20)
 
 ### Bug Fixes
