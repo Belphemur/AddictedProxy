@@ -1,3 +1,9 @@
+## [4.43.2](https://github.com/Belphemur/AddictedProxy/compare/v4.43.1...v4.43.2) (2026-02-20)
+
+### Bug Fixes
+
+* **database:** atomic upsert for EpisodeExternalId to prevent duplicate key violations ([f3b4086](https://github.com/Belphemur/AddictedProxy/commit/f3b4086f05144c380585d7850aab51b704e38f44))
+
 ## [4.43.1](https://github.com/Belphemur/AddictedProxy/compare/v4.43.0...v4.43.1) (2026-02-20)
 
 ### Bug Fixes
