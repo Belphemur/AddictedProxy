@@ -82,14 +82,14 @@ public class FetchSubtitlesJob
         // Early-exit: check if a refresh is still needed before doing expensive work.
         // The same check is done at scheduling time in SearchSubtitlesService.TryScheduleJob,
         // but the state may have changed between scheduling and execution (e.g. another job already refreshed).
-        var showSeason = show.Seasons.FirstOrDefault(s => s.Number == data.Season);
-        if (showSeason == null && !_seasonRefresher.IsShowNeedsRefresh(show))
+        var requestedSeason = show.Seasons.FirstOrDefault(s => s.Number == data.Season);
+        if (requestedSeason == null && !_seasonRefresher.IsShowNeedsRefresh(show))
         {
             _logger.LogInformation("Show {show} doesn't need season refresh, skipping job", show.Name);
             return;
         }
 
-        if (showSeason != null && !_episodeRefresher.IsSeasonNeedRefresh(show, showSeason))
+        if (requestedSeason != null && !_episodeRefresher.IsSeasonNeedRefresh(show, requestedSeason))
         {
             _logger.LogInformation("Season S{season} of show {show} doesn't need episode refresh, skipping job", data.Season, show.Name);
             return;
