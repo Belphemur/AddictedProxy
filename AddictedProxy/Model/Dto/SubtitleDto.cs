@@ -17,19 +17,9 @@ public class SubtitleDto
         SubtitleId = subtitle.UniqueId.ToString();
         DownloadCount = subtitle.DownloadCount;
         Source = subtitle.Source.ToString();
-        Qualities = DecomposeFlags(subtitle.Qualities);
+        Qualities = VideoQualityFactory.ToDisplayNames(subtitle.Qualities);
         HD = (subtitle.Qualities & (VideoQuality.Q720P | VideoQuality.Q1080P | VideoQuality.Q2160P)) != VideoQuality.None;
         Release = subtitle.Release;
-    }
-
-    private static VideoQuality[] DecomposeFlags(VideoQuality qualities)
-    {
-        if (qualities == VideoQuality.None)
-            return [];
-
-        return Enum.GetValues<VideoQuality>()
-            .Where(q => q != VideoQuality.None && qualities.HasFlag(q))
-            .ToArray();
     }
 
     /// <summary>
@@ -101,9 +91,9 @@ public class SubtitleDto
     /// Available video qualities for this subtitle.
     /// Empty array when quality information is unavailable (e.g. legacy Addic7ed subtitles).
     /// </summary>
-    /// <example>["Q720P","Q1080P"]</example>
+    /// <example>["720p","1080p"]</example>
     [Required]
-    public VideoQuality[] Qualities { get; }
+    public string[] Qualities { get; }
 
     /// <summary>
     /// Full release name from the provider (e.g. filename without extension).
