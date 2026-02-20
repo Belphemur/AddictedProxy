@@ -297,9 +297,9 @@ export interface SubtitleDto {
   /**
    * Available video qualities for this subtitle.
    * Empty array when quality information is unavailable (e.g. legacy Addic7ed subtitles).
-   * @example ["Q720P","Q1080P"]
+   * @example ["720p","1080p"]
    */
-  qualities: VideoQuality[];
+  qualities: string[];
   /**
    * Full release name from the provider (e.g. filename without extension).
    * Populated for SuperSubtitles; null for Addic7ed.
