@@ -1,3 +1,9 @@
+## [4.42.2](https://github.com/Belphemur/AddictedProxy/compare/v4.42.1...v4.42.2) (2026-02-20)
+
+### Bug Fixes
+
+* **docker:** update user creation and package installation commands ([3433cbb](https://github.com/Belphemur/AddictedProxy/commit/3433cbba3db9388c6340e9c70e9c814b025f335a))
+
 ## [4.42.1](https://github.com/Belphemur/AddictedProxy/compare/v4.42.0...v4.42.1) (2026-02-20)
 
 ### Bug Fixes
