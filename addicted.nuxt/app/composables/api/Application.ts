@@ -11,10 +11,12 @@
  */
 
 import type { ApplicationInfoDto } from "./data-contracts";
-import type { RequestParams } from "./http-client";
 import { HttpClient } from "./http-client";
+import type { RequestParams } from "./http-client";
 
-export class Application<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+export class Application<
+  SecurityDataType = unknown,
+> extends HttpClient<SecurityDataType> {
   /**
    * No description
    *

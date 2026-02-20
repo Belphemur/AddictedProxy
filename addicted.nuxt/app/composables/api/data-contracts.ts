@@ -10,6 +10,21 @@
  * ---------------------------------------------------------------
  */
 
+export enum VideoQuality {
+  None = "None",
+  Q360P = "Q360P",
+  Q480P = "Q480P",
+  Q720P = "Q720P",
+  Q1080P = "Q1080P",
+  Q2160P = "Q2160P",
+}
+
+/** Represent the type of media */
+export enum MediaType {
+  Show = "Show",
+  Movie = "Movie",
+}
+
 export interface ApplicationInfoDto {
   /**
    * Version of the application
@@ -165,12 +180,6 @@ export interface MediaDetailsWithEpisodeAndSubtitlesDto {
   lastSeasonNumber?: number | null;
 }
 
-/** Represent the type of media */
-export type MediaType = "Show" | "Movie";
-
-/** Source provider of the subtitle */
-export type DataSource = "Addic7ed" | "SuperSubtitles";
-
 /** Use for the website to provide easy search for the user */
 export interface SearchRequest {
   /**
@@ -250,6 +259,10 @@ export interface SubtitleDto {
   completed: boolean;
   hearingImpaired: boolean;
   corrected: boolean;
+  /**
+   * Whether this subtitle has HD quality (720P, 1080P, or 2160P).
+   * Derived from AddictedProxy.Model.Dto.SubtitleDto.Qualities.
+   */
   hd: boolean;
   /**
    * Url to download the subtitle
@@ -275,8 +288,24 @@ export interface SubtitleDto {
    * @example 100
    */
   downloadCount: number;
-  /** Source provider of the subtitle */
-  source: DataSource;
+  /**
+   * Source provider of the subtitle
+   * @minLength 1
+   * @example "Addic7ed"
+   */
+  source: string;
+  /**
+   * Available video qualities for this subtitle.
+   * Empty array when quality information is unavailable (e.g. legacy Addic7ed subtitles).
+   * @example ["720p","1080p"]
+   */
+  qualities: string[];
+  /**
+   * Full release name from the provider (e.g. filename without extension).
+   * Populated for SuperSubtitles; null for Addic7ed.
+   * @example "Show.S01E03.720p.BluRay.x264-GROUP"
+   */
+  release?: string | null;
 }
 
 export interface SubtitleSearchResponse {

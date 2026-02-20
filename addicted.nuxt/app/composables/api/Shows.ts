@@ -10,11 +10,17 @@
  * ---------------------------------------------------------------
  */
 
-import type { ShowSearchResponse, TvShowSubtitleResponse } from "./data-contracts";
-import type { RequestParams } from "./http-client";
+import type {
+  ErrorResponse,
+  ShowSearchResponse,
+  TvShowSubtitleResponse,
+} from "./data-contracts";
 import { HttpClient } from "./http-client";
+import type { RequestParams } from "./http-client";
 
-export class Shows<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+export class Shows<
+  SecurityDataType = unknown,
+> extends HttpClient<SecurityDataType> {
   /**
    * No description
    *
@@ -67,8 +73,13 @@ export class Shows<SecurityDataType = unknown> extends HttpClient<SecurityDataTy
    * @summary Get all subtitle of the given season for a specific language
    * @request GET:/shows/{showId}/{seasonNumber}/{language}
    */
-  showsDetail = (showId: string, seasonNumber: number, language: string, params: RequestParams = {}) =>
-    this.request<TvShowSubtitleResponse, void | string>({
+  showsDetail = (
+    showId: string,
+    seasonNumber: number,
+    language: string,
+    params: RequestParams = {},
+  ) =>
+    this.request<TvShowSubtitleResponse, ErrorResponse | void | string>({
       path: `/shows/${showId}/${seasonNumber}/${language}`,
       method: "GET",
       format: "json",

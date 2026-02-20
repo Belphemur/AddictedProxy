@@ -10,7 +10,6 @@ public class SubtitleDto
         Version = subtitle.Scene;
         Completed = subtitle.Completed;
         HearingImpaired = subtitle.HearingImpaired;
-        HD = subtitle.HD;
         Corrected = subtitle.Completed;
         DownloadUri = downloadUri;
         Language = language?.EnglishName ?? "Unknown";
@@ -18,8 +17,10 @@ public class SubtitleDto
         SubtitleId = subtitle.UniqueId.ToString();
         DownloadCount = subtitle.DownloadCount;
         Source = subtitle.Source.ToString();
+        Qualities = VideoQualityFactory.ToDisplayNames(subtitle.Qualities);
+        HD = (subtitle.Qualities & (VideoQuality.Q720P | VideoQuality.Q1080P | VideoQuality.Q2160P)) != VideoQuality.None;
+        Release = subtitle.Release;
     }
-
 
     /// <summary>
     /// Unique Id of the subtitle
@@ -44,6 +45,10 @@ public class SubtitleDto
     [Required]
     public bool Corrected { get; }
 
+    /// <summary>
+    /// Whether this subtitle has HD quality (720P, 1080P, or 2160P).
+    /// Derived from <see cref="Qualities"/>.
+    /// </summary>
     [Required]
     public bool HD { get; }
 
@@ -81,4 +86,19 @@ public class SubtitleDto
     /// <example>Addic7ed</example>
     [Required]
     public string Source { get; }
+
+    /// <summary>
+    /// Available video qualities for this subtitle.
+    /// Empty array when quality information is unavailable (e.g. legacy Addic7ed subtitles).
+    /// </summary>
+    /// <example>["720p","1080p"]</example>
+    [Required]
+    public string[] Qualities { get; }
+
+    /// <summary>
+    /// Full release name from the provider (e.g. filename without extension).
+    /// Populated for SuperSubtitles; null for Addic7ed.
+    /// </summary>
+    /// <example>Show.S01E03.720p.BluRay.x264-GROUP</example>
+    public string? Release { get; }
 }

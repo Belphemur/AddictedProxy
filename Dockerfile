@@ -2,17 +2,17 @@ ARG MAIN_PROJECT=AddictedProxy
 ARG DATA_DIRECTORY="/data"
 ARG RELEASE_VERSION="1.0.0"
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS base
-RUN  adduser -D dotnetuser
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+RUN useradd -r -s /bin/false dotnetuser
 
-RUN apk add --no-cache curl dumb-init
+RUN apt-get update && apt-get install -y --no-install-recommends curl dumb-init && rm -rf /var/lib/apt/lists/*
 USER dotnetuser
 
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS restore
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS restore
 ARG MAIN_PROJECT
 WORKDIR /src
 COPY . .

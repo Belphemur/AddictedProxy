@@ -31,7 +31,25 @@ public class Subtitle : BaseEntity, IDiscoverableObject
     public double CompletionPct { get; set; }
     public bool HearingImpaired { get; set; }
     public bool Corrected { get; set; }
+    /// <summary>
+    ///     Video qualities available for this subtitle.
+    ///     Stored as a bitmask of <see cref="VideoQuality" /> flags.
+    /// </summary>
+    public VideoQuality Qualities { get; set; } = VideoQuality.None;
+
+    /// <summary>
+    ///     Full release name (e.g. filename minus extension) from the provider.
+    ///     Populated for SuperSubtitles; null for Addic7ed.
+    /// </summary>
+    public string? Release { get; set; }
+
+    /// <summary>
+    ///     Legacy Addic7ed HD flag. Kept in the database until the
+    ///     <c>BackportHdToQualitiesMigration</c> one-time job has run.
+    /// </summary>
+    [Obsolete("Use Qualities instead. Will be removed after BackportHdToQualitiesMigration completes.")]
     public bool HD { get; set; }
+
     public Uri DownloadUri { get; set; }
     public string Language { get; set; }
 

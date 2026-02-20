@@ -5,6 +5,7 @@ using AddictedProxy.Database.Repositories.State;
 using AddictedProxy.Services.Job.Filter;
 using AddictedProxy.Services.Provider.Merging;
 using AddictedProxy.Services.Provider.Merging.Model;
+using AddictedProxy.Services.Provider.SuperSubtitles;
 using AddictedProxy.Tools.Database.Transaction;
 using Hangfire.Console;
 using Hangfire.Server;
@@ -181,9 +182,7 @@ public class RefreshSuperSubtitlesJob
             Release = string.IsNullOrEmpty(subtitle.Release) ? null : subtitle.Release,
             Uploader = string.IsNullOrEmpty(subtitle.Uploader) ? null : subtitle.Uploader,
             UploadedAt = subtitle.UploadedAt?.ToDateTime(),
-            Qualities = subtitle.Qualities.Count > 0
-                ? string.Join(",", subtitle.Qualities)
-                : null,
+            Qualities = subtitle.Qualities.ToVideoQuality(),
             ReleaseGroups = subtitle.ReleaseGroups.Count > 0
                 ? string.Join(",", subtitle.ReleaseGroups)
                 : null,
@@ -205,7 +204,8 @@ public class RefreshSuperSubtitlesJob
             CompletionPct = 100.0,
             HearingImpaired = false,
             Corrected = false,
-            HD = subtitle.Qualities.Any(q => q is Quality._1080P or Quality._2160P or Quality._720P),
+            Qualities = subtitle.Qualities.ToVideoQuality(),
+            Release = string.IsNullOrEmpty(subtitle.Release) ? null : subtitle.Release,
             DownloadUri = new Uri(subtitle.DownloadUrl),
             Language = subtitle.Language,
             LanguageIsoCode = culture?.TwoLetterISOLanguageName,
