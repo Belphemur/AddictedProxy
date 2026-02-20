@@ -1,6 +1,8 @@
 ﻿using AddictedProxy.Services.Job.Filter;
 using AsyncKeyedLock;
 using Hangfire;
+using Hangfire.Console;
+using Hangfire.Server;
 using Locking;
 using Performance.Model;
 using Performance.Service;
@@ -25,8 +27,9 @@ public class RefreshSingleShowJob
     [AutomaticRetry(Attempts = 20, OnAttemptsExceeded = AttemptsExceededAction.Delete, DelaysInSeconds = [60, 10 * 60, 15 * 60, 45 * 60, 60 * 60, 10 * 60, 20 * 60, 40 * 60, 45 * 60, 60*60])]
     [MaximumConcurrentExecutions(6, 10)]
     [Queue("refresh-one-show")]
-    public async Task ExecuteAsync(long showId, CancellationToken cancellationToken)
+    public async Task ExecuteAsync(long showId, PerformContext context, CancellationToken cancellationToken)
     {
+        context.WriteLine($"Starting to refresh show {showId}");
         using var ctsLinked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         ctsLinked.CancelAfter(TimeSpan.FromMinutes(10));
         var token = ctsLinked.Token;
@@ -39,11 +42,13 @@ public class RefreshSingleShowJob
         if (releaser is null)
         {
             _logger.LogInformation("Lock for {show} already taken", showId);
+            context.WriteLine($"Lock already held for show {showId}, skipping");
             transaction.Finish(Status.Unavailable);
             return;
         }
 
         _logger.LogInformation("Refreshing show: {Show}", showId);
         await _showRefresher.RefreshShowAsync(showId, token);
+        context.WriteLine($"Completed refresh for show {showId}");
     }
 }

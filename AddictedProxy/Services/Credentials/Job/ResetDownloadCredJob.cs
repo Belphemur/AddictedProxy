@@ -1,5 +1,7 @@
 ﻿using AddictedProxy.Services.Job.Filter;
 using Hangfire;
+using Hangfire.Console;
+using Hangfire.Server;
 using Performance.Service;
 
 namespace AddictedProxy.Services.Credentials.Job;
@@ -22,16 +24,19 @@ public class ResetDownloadCredJob
     [UniqueJob(TtlFingerprintSeconds = TimeSpan.SecondsPerHour)]
     [Queue("download-creds-checker")]
     [MaximumConcurrentExecutions(3)]
-    public async Task CheckAndResetCredAsync(long credentialId, CancellationToken token)
+    public async Task CheckAndResetCredAsync(long credentialId, PerformContext context, CancellationToken token)
     {
+        context.WriteLine($"Starting to check and reset credentials for ID {credentialId}");
         using var span = _performanceTracker.BeginNestedSpan(nameof(ResetDownloadCredJob), "check-download-cred");
         try
         {
             await _credentialsService.CheckAndResetCredentialsAsync(credentialId, token);
+            context.WriteLine($"Successfully reset credentials for ID {credentialId}");
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Couldn't reset credential {CredId}", credentialId);
+            context.WriteLine($"Error: Failed to reset credentials for ID {credentialId}");
             span.Finish(e);
             throw;
         }

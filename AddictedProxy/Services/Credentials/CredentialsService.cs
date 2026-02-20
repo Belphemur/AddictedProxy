@@ -93,7 +93,7 @@ public class CredentialsService : ICredentialsService
         await foreach (var cred in _addictedUserCredentialRepository.GetDownloadExceededCredentialsAsync()
                                                                     .WithCancellation(token))
         {
-            BackgroundJob.Enqueue<ResetDownloadCredJob>(job => job.CheckAndResetCredAsync(cred.Id, token));
+            BackgroundJob.Enqueue<ResetDownloadCredJob>(job => job.CheckAndResetCredAsync(cred.Id, null, token));
         }
     }
 

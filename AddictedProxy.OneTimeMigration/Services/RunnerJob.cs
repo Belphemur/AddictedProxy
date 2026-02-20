@@ -1,6 +1,8 @@
 ﻿using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Migration;
 using AddictedProxy.OneTimeMigration.Model;
+using Hangfire.Console;
+using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Performance.Model;
@@ -23,8 +25,9 @@ internal class RunnerJob
         _logger = logger;
     }
 
-    public async Task RunMigrationAsync(string migrationType, CancellationToken token)
+    public async Task RunMigrationAsync(string migrationType, PerformContext context, CancellationToken token)
     {
+        context.WriteLine($"Starting migration: {migrationType}");
         using var span = _performanceTracker.BeginNestedSpan("migration");
         span.SetTag("migration.type", migrationType);
 
@@ -50,11 +53,13 @@ internal class RunnerJob
             await migration.ExecuteAsync(token);
             migrationEntry.State = OneTimeMigrationRelease.MigrationState.Success;
             _logger.LogInformation("Successfully migrated");
+            context.WriteLine($"Successfully completed migration: {migrationType}");
         }
         catch (Exception e)
         {
             migrationEntry.State = OneTimeMigrationRelease.MigrationState.Fail;
             _logger.LogError(e, "Couldn't migrate");
+            context.WriteLine($"Error: Migration {migrationType} failed: {e.Message}");
             span.Finish(e, Status.InternalError);
             throw;
         }

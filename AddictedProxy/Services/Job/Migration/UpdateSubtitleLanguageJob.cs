@@ -1,6 +1,8 @@
 ﻿using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
+using Hangfire.Console;
+using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
 using Performance.Service;
 
@@ -23,8 +25,9 @@ public class UpdateSubtitleLanguageJob
         _provider = provider;
     }
 
-    public async Task ProcessAsync(CancellationToken token)
+    public async Task ProcessAsync(PerformContext context, CancellationToken token)
     {
+        context.WriteLine("Starting subtitle language migration...");
         async ValueTask UpdateSubtitleChunk(Subtitle[] subtitles, CancellationToken cancellationToken)
         {
             foreach (var subtitle in subtitles)
@@ -41,6 +44,8 @@ public class UpdateSubtitleLanguageJob
         using var _ = _performanceTracker.BeginNestedSpan("subtitles", "update-language");
         var count = 0L;
         var total = await _entityContext.Subtitles.Where(subtitle => subtitle.LanguageIsoCode == null).CountAsync(token);
+        context.WriteLine($"Found {total} subtitles to update");
+        var progressBar = context.WriteProgressBar();
         Subtitle[] subtitles;
         do
         {
@@ -54,6 +59,9 @@ public class UpdateSubtitleLanguageJob
             await db.SaveChangesAsync(token);
             count += subtitles.Length;
             _logger.LogInformation("[Migration] Language: {count}/{total} subtitles updated", count, total);
+            context.WriteLine($"Progress: {count}/{total} subtitles updated");
+            progressBar.SetValue(total > 0 ? count * 100.0 / total : 100);
         } while (subtitles.Length > 0);
+        context.WriteLine("Subtitle language migration completed.");
     }
 }

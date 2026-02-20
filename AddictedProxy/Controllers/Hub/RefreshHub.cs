@@ -44,7 +44,7 @@ public class RefreshHub : Hub<IRefreshClient>
             return;
         }
 
-        BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, default));
+        BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, null, default));
     }
     
 

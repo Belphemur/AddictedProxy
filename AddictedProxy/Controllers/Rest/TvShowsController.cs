@@ -125,7 +125,7 @@ public class TvShowsController : Controller
             return TypedResults.NotFound();
         }
 
-        BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, default));
+        BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, null, default));
 
         return TypedResults.NoContent();
     }

@@ -3,6 +3,8 @@ using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Provider.ShowInfo;
 using AddictedProxy.Utils;
+using Hangfire.Console;
+using Hangfire.Server;
 using Performance.Service;
 using TvMovieDatabaseClient.Model.Show.Search;
 
@@ -23,19 +25,25 @@ public partial class CleanDuplicateTmdbJob
         _detailsProvider = detailsProvider;
     }
 
-    public async Task ExecuteAsync(CancellationToken token)
+    public async Task ExecuteAsync(PerformContext context, CancellationToken token)
     {
+        context.WriteLine("Starting to clean duplicate TMDB show entries...");
         using var span = _performanceTracker.BeginNestedSpan("dedupe-show-tmdb");
         var duplicateTvShow = await _tvShowRepository.GetDuplicateTvShowByTmdbIdAsync(token);
         _logger.LogInformation("Looking to dedupe {count} shows", duplicateTvShow.Count);
+        context.WriteLine(string.Format("Found {0} groups with duplicate TMDB IDs", duplicateTvShow.Count));
 
         var count = 0;
         //Only works when we have only 2 that are dupe, more than that and its quite complex
-        foreach (var (_, shows) in duplicateTvShow.Where(pair => pair.Value.Length == 2))
+        var eligibleGroups = duplicateTvShow.Where(pair => pair.Value.Length == 2).ToArray();
+        var progressBar = context.WriteProgressBar();
+        for (var i = 0; i < eligibleGroups.Length; i++)
         {
+            var (_, shows) = eligibleGroups[i];
             if (await CheckShowWithAsync(shows, ShowNameRegexes.ReleaseYearRegex(), (result, year) => !result.FirstAirDate.StartsWith(year), token))
             {
                 count++;
+                progressBar.SetValue((i + 1) * 100.0 / eligibleGroups.Length);
                 continue;
             }
 
@@ -47,9 +55,11 @@ public partial class CleanDuplicateTmdbJob
             {
                 count++;
             }
+            progressBar.SetValue((i + 1) * 100.0 / eligibleGroups.Length);
         }
 
         _logger.LogInformation("Deduped {count} shows", count);
+        context.WriteLine(string.Format("Successfully deduped {0} shows", count));
         await _tvShowRepository.BulkSaveChangesAsync(token);
     }
 
