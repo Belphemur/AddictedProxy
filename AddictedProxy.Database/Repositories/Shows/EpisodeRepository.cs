@@ -53,6 +53,11 @@ public class EpisodeRepository : IEpisodeRepository
                             bulkEp.IgnoreOnMergeUpdateExpression = episode => new { episode.Id, episode.Discovered, episode.CreatedAt };
                             bulkEp.IgnoreOnMergeInsertExpression = episode => episode.Id;
                             break;
+                        case BulkOperation<EpisodeExternalId> bulkExtId:
+                            bulkExtId.ColumnPrimaryKeyExpression = e => new { e.EpisodeId, e.Source };
+                            bulkExtId.IgnoreOnMergeInsertExpression = e => e.Id;
+                            bulkExtId.IgnoreOnMergeUpdateExpression = e => new { e.Id, e.CreatedAt };
+                            break;
                     }
                 };
             }, token);
@@ -65,11 +70,12 @@ public class EpisodeRepository : IEpisodeRepository
     /// Atomically upsert a single episode, its subtitle, and optionally its external ID via SQL.
     /// Returns the database-generated episode ID.
     /// </summary>
-    public async Task<long> MergeEpisodeWithSubtitleAsync(Episode episode, Subtitle subtitle, string? episodeExternalId, CancellationToken token)
+    public async Task<long> MergeEpisodeWithSubtitleAsync(Episode episode, Subtitle subtitle, CancellationToken token)
     {
         var now = DateTime.UtcNow;
         var downloadUri = subtitle.DownloadUri.ToString();
         var source = (int)subtitle.Source;
+        var episodeExternalId = episode.ExternalIds.FirstOrDefault()?.ExternalId;
 
         // Top-level CTE: upsert episode, then subtitle, then episode external ID.
         // ExecuteSqlAsync sends the SQL directly without wrapping in a subquery,
@@ -80,8 +86,8 @@ public class EpisodeRepository : IEpisodeRepository
         await _entityContext.Database.ExecuteSqlAsync(
             $"""
              WITH upsert_episode AS (
-                 INSERT INTO "Episodes" ("TvShowId", "Season", "Number", "Title", "ExternalId", "Discovered", "CreatedAt", "UpdatedAt")
-                 VALUES ({episode.TvShowId}, {episode.Season}, {episode.Number}, {episode.Title}, {episode.ExternalId}, {now}, {now}, {now})
+                 INSERT INTO "Episodes" ("TvShowId", "Season", "Number", "Title", "Discovered", "CreatedAt", "UpdatedAt")
+                 VALUES ({episode.TvShowId}, {episode.Season}, {episode.Number}, {episode.Title}, {now}, {now}, {now})
                  ON CONFLICT ("TvShowId", "Season", "Number")
                  DO UPDATE SET "Title" = EXCLUDED."Title", "UpdatedAt" = EXCLUDED."UpdatedAt"
                  RETURNING "Id"

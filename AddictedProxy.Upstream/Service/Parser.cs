@@ -210,8 +210,15 @@ public partial class Parser
                 Title = episodeGroup.First().Title,
                 Number = episodeGroup.First().Number,
                 Season = episodeGroup.First().Season,
-                ExternalId = episodeGroup.First().EpisodeId,
-                Discovered = DateTime.UtcNow
+                Discovered = DateTime.UtcNow,
+                ExternalIds =
+                [
+                    new EpisodeExternalId
+                    {
+                        Source = DataSource.Addic7ed,
+                        ExternalId = episodeGroup.First().EpisodeId.ToString()
+                    }
+                ]
             };
 
             var subtitles = new List<Subtitle>();
