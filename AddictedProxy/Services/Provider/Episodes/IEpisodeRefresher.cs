@@ -24,10 +24,11 @@ public interface IEpisodeRefresher
     Task RefreshEpisodesAsync(TvShow show, IEnumerable<Season> seasonsToRefresh, Func<int, Task> sendProgress, CancellationToken token);
 
     /// <summary>
-    /// Does the episode of the season needs to be refreshed
+    /// Does the episode of the season need to be refreshed from any registered provider
     /// </summary>
     /// <param name="show"></param>
     /// <param name="season"></param>
+    /// <param name="token"></param>
     /// <returns></returns>
-    bool IsSeasonNeedRefresh(TvShow show, Season season);
+    Task<bool> IsSeasonNeedRefreshAsync(TvShow show, Season season, CancellationToken token);
 }

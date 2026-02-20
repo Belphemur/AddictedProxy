@@ -61,12 +61,15 @@ public class EpisodeRefresher : IEpisodeRefresher
     }
 
     /// <summary>
-    /// Does the episode of the season need to be refreshed from any provider.
+    /// Does the episode of the season need to be refreshed from any registered provider.
     /// </summary>
-    public bool IsSeasonNeedRefresh(TvShow show, Season season)
+    public async Task<bool> IsSeasonNeedRefreshAsync(TvShow show, Season season, CancellationToken token)
     {
-        foreach (var refresher in _providerEpisodeRefresherFactory.Services)
+        var externalIds = await _showExternalIdRepository.GetByShowIdAsync(show.Id, token);
+
+        foreach (var extId in externalIds)
         {
+            var refresher = _providerEpisodeRefresherFactory.GetService(extId.Source);
             if (refresher.IsSeasonNeedRefresh(show, season))
             {
                 return true;

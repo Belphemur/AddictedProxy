@@ -53,14 +53,18 @@ public class SeasonRefresher : ISeasonRefresher
     }
 
     /// <summary>
-    /// Does the show need to have its seasons refreshed from any provider
+    /// Does the show need to have its seasons refreshed from any registered provider
     /// </summary>
     /// <param name="show"></param>
+    /// <param name="token"></param>
     /// <returns></returns>
-    public bool IsShowNeedsRefresh(TvShow show)
+    public async Task<bool> IsShowNeedsRefreshAsync(TvShow show, CancellationToken token)
     {
-        foreach (var refresher in _providerSeasonRefresherFactory.Services)
+        var externalIds = await _showExternalIdRepository.GetByShowIdAsync(show.Id, token);
+
+        foreach (var extId in externalIds)
         {
+            var refresher = _providerSeasonRefresherFactory.GetService(extId.Source);
             if (refresher.IsShowNeedsRefresh(show))
             {
                 return true;

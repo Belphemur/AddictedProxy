@@ -82,7 +82,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
 
         if (episode == null)
         {
-            TryScheduleJob(request, show, season, language);
+            await TryScheduleJobAsync(request, show, season, language, token);
             return TypedResults.Ok(new SubtitleFound(ArraySegment<Database.Model.Shows.Subtitle>.Empty, new EpisodeDto(request.Season, request.Episode, show.Name), language));
         }
 
@@ -90,7 +90,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         //Only refresh if we couldn't find subtitle and the season list or episode/subtitle list needs to be refreshed
         if (matchingSubtitles.Length == 0)
         {
-            TryScheduleJob(request, show, season, language);
+            await TryScheduleJobAsync(request, show, season, language, token);
         }
 
         return TypedResults.Ok(new SubtitleFound(matchingSubtitles, new EpisodeDto(episode), language));
@@ -108,15 +108,15 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         return await search.ToArrayAsync(token);
     }
 
-    private void TryScheduleJob(SearchPayload payload, TvShow show, Season? season, Culture.Model.Culture language)
+    private async Task TryScheduleJobAsync(SearchPayload payload, TvShow show, Season? season, Culture.Model.Culture language, CancellationToken token)
     {
-        if (season == null && !_seasonRefresher.IsShowNeedsRefresh(show))
+        if (season == null && !await _seasonRefresher.IsShowNeedsRefreshAsync(show, token))
         {
             _logger.LogInformation("Don't need to refresh seasons of show {show} returning empty data", show.Name);
             return;
         }
 
-        if (season != null && !_episodeRefresher.IsSeasonNeedRefresh(show, season))
+        if (season != null && !await _episodeRefresher.IsSeasonNeedRefreshAsync(show, season, token))
         {
             _logger.LogInformation("Don't need to refresh episodes of {season} of show {show} returning empty data", payload.Season, show.Name);
             return;
