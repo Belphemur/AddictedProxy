@@ -1,3 +1,9 @@
+## [4.45.1](https://github.com/Belphemur/AddictedProxy/compare/v4.45.0...v4.45.1) (2026-02-20)
+
+### Bug Fixes
+
+* **provider:** filter IsXxxNeedsRefresh to providers with registered external IDs ([bfb694c](https://github.com/Belphemur/AddictedProxy/commit/bfb694c0ed4b006ec5c62bb8d96717aa73a9c509))
+
 ## [4.45.0](https://github.com/Belphemur/AddictedProxy/compare/v4.44.1...v4.45.0) (2026-02-20)
 
 ### Bug Fixes
