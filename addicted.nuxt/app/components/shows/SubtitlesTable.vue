@@ -34,7 +34,7 @@
           <span v-else></span>
         </template>
         <template v-slot:item.subtitle.qualities="{ item }">
-          <quality-chips :qualities="item.subtitle.qualities" />
+          <shows-quality-chips :qualities="item.subtitle.qualities" />
         </template>
 
         <template v-slot:item.subtitle.source="{ item }">
@@ -79,7 +79,7 @@
                         Hearing Impaired
                       </v-col>
                       <v-col v-if="subtitle.qualities?.length" cols="12">
-                        <quality-chips :qualities="subtitle.qualities" />
+                        <shows-quality-chips :qualities="subtitle.qualities" />
                       </v-col>
                       <v-col cols="12">
                         <v-chip :color="subtitle.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
