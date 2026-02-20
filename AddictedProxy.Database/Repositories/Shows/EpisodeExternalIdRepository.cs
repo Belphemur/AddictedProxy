@@ -45,7 +45,14 @@ public class EpisodeExternalIdRepository : IEpisodeExternalIdRepository
              WITH update_by_episode AS (
                  UPDATE "EpisodeExternalIds"
                  SET "ExternalId" = {episodeExternalId.ExternalId}, "UpdatedAt" = {now}
-                 WHERE "EpisodeId" = {episodeExternalId.EpisodeId} AND "Source" = {(int)episodeExternalId.Source}
+                 WHERE "EpisodeId" = {episodeExternalId.EpisodeId}
+                   AND "Source" = {(int)episodeExternalId.Source}
+                   AND NOT EXISTS (
+                       SELECT 1 FROM "EpisodeExternalIds" e2
+                       WHERE e2."Source" = {(int)episodeExternalId.Source}
+                         AND e2."ExternalId" = {episodeExternalId.ExternalId}
+                         AND e2."EpisodeId" != {episodeExternalId.EpisodeId}
+                   )
                  RETURNING "Id"
              )
              INSERT INTO "EpisodeExternalIds" ("EpisodeId", "Source", "ExternalId", "CreatedAt", "UpdatedAt")
