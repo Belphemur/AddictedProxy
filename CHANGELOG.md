@@ -1,3 +1,9 @@
+## [4.42.1](https://github.com/Belphemur/AddictedProxy/compare/v4.42.0...v4.42.1) (2026-02-20)
+
+### Bug Fixes
+
+* **docker:** fix building image ([7fafdd3](https://github.com/Belphemur/AddictedProxy/commit/7fafdd34e9f509cad745da898fe82190384917fa))
+
 ## [4.42.0](https://github.com/Belphemur/AddictedProxy/compare/v4.41.3...v4.42.0) (2026-02-20)
 
 ### Performance improvements
