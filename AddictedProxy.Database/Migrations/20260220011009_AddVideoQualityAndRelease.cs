@@ -23,15 +23,17 @@ namespace AddictedProxy.Database.Migrations
                 type: "text",
                 nullable: true);
 
-            migrationBuilder.AlterColumn<int>(
+            // PostgreSQL cannot automatically cast text → integer; drop the old text column and add a new integer one.
+            migrationBuilder.DropColumn(
+                name: "Qualities",
+                table: "SeasonPackSubtitles");
+
+            migrationBuilder.AddColumn<int>(
                 name: "Qualities",
                 table: "SeasonPackSubtitles",
                 type: "integer",
                 nullable: false,
-                defaultValue: 0,
-                oldClrType: typeof(string),
-                oldType: "text",
-                oldNullable: true);
+                defaultValue: 0);
         }
 
         /// <inheritdoc />
@@ -45,13 +47,15 @@ namespace AddictedProxy.Database.Migrations
                 name: "Release",
                 table: "Subtitles");
 
-            migrationBuilder.AlterColumn<string>(
+            migrationBuilder.DropColumn(
+                name: "Qualities",
+                table: "SeasonPackSubtitles");
+
+            migrationBuilder.AddColumn<string>(
                 name: "Qualities",
                 table: "SeasonPackSubtitles",
                 type: "text",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "integer");
+                nullable: true);
         }
     }
 }
