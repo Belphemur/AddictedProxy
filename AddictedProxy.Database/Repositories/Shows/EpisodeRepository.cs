@@ -70,53 +70,50 @@ public class EpisodeRepository : IEpisodeRepository
         var now = DateTime.UtcNow;
         var downloadUri = subtitle.DownloadUri.ToString();
 
-        // Single CTE-based SQL: upsert episode, then upsert subtitle using the episode ID.
-        // Returns the episode ID via a final SELECT.
-        var episodeId = await _entityContext.Database
-            .SqlQuery<long>(
-                $"""
-                 SELECT ep_id AS "Value" FROM (
-                     WITH upsert_episode AS (
-                         INSERT INTO "Episodes" ("TvShowId", "Season", "Number", "Title", "ExternalId", "Discovered", "CreatedAt", "UpdatedAt")
-                         VALUES ({episode.TvShowId}, {episode.Season}, {episode.Number}, {episode.Title}, {episode.ExternalId}, {now}, {now}, {now})
-                         ON CONFLICT ("TvShowId", "Season", "Number")
-                         DO UPDATE SET "Title" = EXCLUDED."Title", "UpdatedAt" = EXCLUDED."UpdatedAt"
-                         RETURNING "Id" AS ep_id
-                     ),
-                     upsert_subtitle AS (
-                         INSERT INTO "Subtitles"
-                             ("EpisodeId", "Scene", "Version", "Completed", "CompletionPct", "HearingImpaired",
-                              "Corrected", "Qualities", "Release", "HD", "DownloadUri", "Language", "LanguageIsoCode",
-                              "Source", "ExternalId", "Discovered", "CreatedAt", "UpdatedAt")
-                         SELECT
-                             ep_id, {subtitle.Scene}, {subtitle.Version}, {subtitle.Completed}, {subtitle.CompletionPct},
-                             {subtitle.HearingImpaired}, {subtitle.Corrected}, {(int)subtitle.Qualities}, {subtitle.Release},
-                             {false}, {downloadUri}, {subtitle.Language}, {subtitle.LanguageIsoCode},
-                             {(int)subtitle.Source}, {subtitle.ExternalId}, {now}, {now}, {now}
-                         FROM upsert_episode
-                         ON CONFLICT ("Source", "ExternalId")
-                         DO UPDATE SET
-                             "EpisodeId"        = EXCLUDED."EpisodeId",
-                             "DownloadUri"      = EXCLUDED."DownloadUri",
-                             "Scene"            = EXCLUDED."Scene",
-                             "Version"          = EXCLUDED."Version",
-                             "Completed"        = EXCLUDED."Completed",
-                             "CompletionPct"    = EXCLUDED."CompletionPct",
-                             "HearingImpaired"  = EXCLUDED."HearingImpaired",
-                             "Corrected"        = EXCLUDED."Corrected",
-                             "Qualities"        = EXCLUDED."Qualities",
-                             "Release"          = EXCLUDED."Release",
-                             "Language"         = EXCLUDED."Language",
-                             "LanguageIsoCode"  = EXCLUDED."LanguageIsoCode",
-                             "UpdatedAt"        = EXCLUDED."UpdatedAt"
-                     )
-                     SELECT ep_id FROM upsert_episode
-                 ) AS result
-                 """)
-            .AsAsyncEnumerable()
-            .FirstAsync(token);
+        // Top-level CTE: upsert episode, then upsert subtitle using the episode ID.
+        // ExecuteSqlAsync sends the SQL directly without wrapping in a subquery,
+        // which is required because PostgreSQL forbids data-modifying CTEs inside subqueries.
+        await _entityContext.Database.ExecuteSqlAsync(
+            $"""
+             WITH upsert_episode AS (
+                 INSERT INTO "Episodes" ("TvShowId", "Season", "Number", "Title", "ExternalId", "Discovered", "CreatedAt", "UpdatedAt")
+                 VALUES ({episode.TvShowId}, {episode.Season}, {episode.Number}, {episode.Title}, {episode.ExternalId}, {now}, {now}, {now})
+                 ON CONFLICT ("TvShowId", "Season", "Number")
+                 DO UPDATE SET "Title" = EXCLUDED."Title", "UpdatedAt" = EXCLUDED."UpdatedAt"
+                 RETURNING "Id"
+             )
+             INSERT INTO "Subtitles"
+                 ("EpisodeId", "Scene", "Version", "Completed", "CompletionPct", "HearingImpaired",
+                  "Corrected", "Qualities", "Release", "HD", "DownloadUri", "Language", "LanguageIsoCode",
+                  "Source", "ExternalId", "Discovered", "CreatedAt", "UpdatedAt")
+             SELECT
+                 "Id", {subtitle.Scene}, {subtitle.Version}, {subtitle.Completed}, {subtitle.CompletionPct},
+                 {subtitle.HearingImpaired}, {subtitle.Corrected}, {(int)subtitle.Qualities}, {subtitle.Release},
+                 {false}, {downloadUri}, {subtitle.Language}, {subtitle.LanguageIsoCode},
+                 {(int)subtitle.Source}, {subtitle.ExternalId}, {now}, {now}, {now}
+             FROM upsert_episode
+             ON CONFLICT ("Source", "ExternalId")
+             DO UPDATE SET
+                 "EpisodeId"        = EXCLUDED."EpisodeId",
+                 "DownloadUri"      = EXCLUDED."DownloadUri",
+                 "Scene"            = EXCLUDED."Scene",
+                 "Version"          = EXCLUDED."Version",
+                 "Completed"        = EXCLUDED."Completed",
+                 "CompletionPct"    = EXCLUDED."CompletionPct",
+                 "HearingImpaired"  = EXCLUDED."HearingImpaired",
+                 "Corrected"        = EXCLUDED."Corrected",
+                 "Qualities"        = EXCLUDED."Qualities",
+                 "Release"          = EXCLUDED."Release",
+                 "Language"         = EXCLUDED."Language",
+                 "LanguageIsoCode"  = EXCLUDED."LanguageIsoCode",
+                 "UpdatedAt"        = EXCLUDED."UpdatedAt"
+             """, token);
 
-        return episodeId;
+        // Retrieve the episode ID (runs in the same transaction as the upsert above)
+        return await _entityContext.Episodes
+            .Where(e => e.TvShowId == episode.TvShowId && e.Season == episode.Season && e.Number == episode.Number)
+            .Select(e => e.Id)
+            .FirstAsync(token);
     }
 
     /// <summary>
