@@ -1,3 +1,14 @@
+## [4.45.0](https://github.com/Belphemur/AddictedProxy/compare/v4.44.1...v4.45.0) (2026-02-20)
+
+### Bug Fixes
+
+* **jobs:** pass null PerformContext at all Hangfire call sites ([58a382d](https://github.com/Belphemur/AddictedProxy/commit/58a382df8c7b3713013451f7aade263cad80d6e0))
+
+### Features
+
+* **jobs:** add PerformContext logging to all Hangfire jobs ([041426c](https://github.com/Belphemur/AddictedProxy/commit/041426c72715575141626335b6c4254a57791515))
+* **jobs:** add progress bars to jobs with iterative loops ([74b15c1](https://github.com/Belphemur/AddictedProxy/commit/74b15c15f9bf141bfc7f29975e4e97bfc95130e5))
+
 ## [4.44.1](https://github.com/Belphemur/AddictedProxy/compare/v4.44.0...v4.44.1) (2026-02-20)
 
 ### Bug Fixes
