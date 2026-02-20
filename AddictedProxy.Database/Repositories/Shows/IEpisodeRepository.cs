@@ -14,6 +14,13 @@ public interface IEpisodeRepository
     Task UpsertEpisodes(IEnumerable<Episode> episodes, CancellationToken token);
 
     /// <summary>
+    /// Atomically upsert a single episode, its subtitle, and optionally its external ID via SQL.
+    /// The external ID is derived from <see cref="Episode.ExternalIds"/> on the episode.
+    /// Returns the database-generated episode ID.
+    /// </summary>
+    Task<long> MergeEpisodeWithSubtitleAsync(Episode episode, Subtitle subtitle, CancellationToken token);
+
+    /// <summary>
     ///     Get a specific episode
     /// </summary>
     Task<Episode?> GetEpisodeUntrackedAsync(long tvShowId, int season, int episodeNumber, CancellationToken token);

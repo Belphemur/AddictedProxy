@@ -16,7 +16,6 @@ namespace AddictedProxy.Services.Provider.Merging;
 public class ProviderDataIngestionService : IProviderDataIngestionService
 {
     private readonly IShowExternalIdRepository _showExternalIdRepo;
-    private readonly IEpisodeExternalIdRepository _episodeExternalIdRepo;
     private readonly ITvShowRepository _tvShowRepo;
     private readonly IEpisodeRepository _episodeRepo;
     private readonly ISeasonRepository _seasonRepo;
@@ -26,7 +25,6 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
 
     public ProviderDataIngestionService(
         IShowExternalIdRepository showExternalIdRepo,
-        IEpisodeExternalIdRepository episodeExternalIdRepo,
         ITvShowRepository tvShowRepo,
         IEpisodeRepository episodeRepo,
         ISeasonRepository seasonRepo,
@@ -35,7 +33,6 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
         ILogger<ProviderDataIngestionService> logger)
     {
         _showExternalIdRepo = showExternalIdRepo;
-        _episodeExternalIdRepo = episodeExternalIdRepo;
         _tvShowRepo = tvShowRepo;
         _episodeRepo = episodeRepo;
         _seasonRepo = seasonRepo;
@@ -175,8 +172,7 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
         // Step 1: Ensure the Season entity exists for this season number
         await EnsureSeasonExistsAsync(show.Id, season, token);
 
-        // Step 2: Build Episode with the Subtitle attached.
-        // UpsertEpisodes handles both episode and subtitle merge via IncludeGraph.
+        // Step 2: Build Episode shell for the upsert
         var episode = new Episode
         {
             TvShowId = show.Id,
@@ -184,37 +180,13 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
             Number = episodeNumber,
             Title = episodeTitle ?? string.Empty,
             Discovered = DateTime.UtcNow,
-            Subtitles = [subtitle]
+            ExternalIds = episodeExternalId != null
+                ? [new EpisodeExternalId { Source = source, ExternalId = episodeExternalId }]
+                : []
         };
 
-        // Step 3: Upsert Episode + Subtitle
-        // Episode key: (TvShowId, Season, Number)
-        // Subtitle key: DownloadUri
-        await _episodeRepo.UpsertEpisodes([episode], token);
-
-        // Step 4: Upsert EpisodeExternalId if provider-specific ID is available
-        if (!string.IsNullOrEmpty(episodeExternalId))
-        {
-            // Re-fetch the episode to get its database-generated Id
-            var upsertedEp = await _episodeRepo
-                .GetEpisodeUntrackedAsync(show.Id, season, episodeNumber, token);
-
-            if (upsertedEp != null)
-            {
-                await _episodeExternalIdRepo.UpsertAsync(new EpisodeExternalId
-                {
-                    EpisodeId = upsertedEp.Id,
-                    Source = source,
-                    ExternalId = episodeExternalId
-                }, token);
-            }
-            else
-            {
-                _logger.LogWarning(
-                    "Failed to retrieve episode after upsert for show {ShowId} S{Season:D2}E{Episode:D2}",
-                    show.Id, season, episodeNumber);
-            }
-        }
+        // Step 3: Atomic upsert Episode + Subtitle + EpisodeExternalId via SQL
+        await _episodeRepo.MergeEpisodeWithSubtitleAsync(episode, subtitle, token);
     }
 
     /// <inheritdoc />

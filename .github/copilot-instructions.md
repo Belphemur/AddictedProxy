@@ -10,14 +10,14 @@ AddictedProxy is a .NET 10 ASP.NET Core application that provides a proxy API fo
 
 For a deeper understanding of the application architecture, refer to the `docs/` folder at the repository root:
 
-| Document | Description |
-|----------|-------------|
-| [Architecture Overview](../docs/architecture-overview.md) | High-level architecture, tech stack, data flow, bootstrap pattern, and design patterns |
-| [Database Schema](../docs/database-schema.md) | Entity relationships, indexes, enums, repository interfaces, and migration strategy |
-| [Provider System](../docs/provider-system.md) | Current single-provider (Addic7ed) architecture, service interfaces, data flows, and credential management |
-| [API Surface](../docs/api-surface.md) | REST endpoints, DTOs, response models, SignalR hub, and caching strategy |
-| [Background Jobs](../docs/background-jobs.md) | Hangfire jobs, queues, one-time migration framework, and job pipelines |
-| [Multi-Provider Plan](../docs/multi-provider-plan.md) | Architecture plan for adding SuperSubtitles as a second provider |
+| Document                                                  | Description                                                                                                |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| [Architecture Overview](../docs/architecture-overview.md) | High-level architecture, tech stack, data flow, bootstrap pattern, and design patterns                     |
+| [Database Schema](../docs/database-schema.md)             | Entity relationships, indexes, enums, repository interfaces, and migration strategy                        |
+| [Provider System](../docs/provider-system.md)             | Current single-provider (Addic7ed) architecture, service interfaces, data flows, and credential management |
+| [API Surface](../docs/api-surface.md)                     | REST endpoints, DTOs, response models, SignalR hub, and caching strategy                                   |
+| [Background Jobs](../docs/background-jobs.md)             | Hangfire jobs, queues, one-time migration framework, and job pipelines                                     |
+| [Multi-Provider Plan](../docs/multi-provider-plan.md)     | Architecture plan for adding SuperSubtitles as a second provider                                           |
 
 **Always consult these docs** before making significant architectural changes to understand the current state and planned direction.
 
@@ -53,18 +53,18 @@ addicted.nuxt/              # Nuxt 4 frontend (Vue.js + Vuetify)
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Runtime | .NET 10.0, ASP.NET Core |
-| Database | PostgreSQL 18 via EF Core 10 + Npgsql |
-| Caching | PostgreSQL (primary) + Redis (optional) + In-Memory |
-| Jobs | Hangfire with PostgreSQL storage |
-| Observability | OpenTelemetry, Sentry, Prometheus |
-| Compression | ZstdSharp.Port |
-| Frontend | Nuxt 4, Vue.js 3, Vuetify 3, pnpm |
-| Testing | NUnit 4, NSubstitute, FluentAssertions |
-| CI/CD | GitHub Actions, semantic-release |
-| Container | Docker (Alpine-based), Docker Compose |
+| Layer         | Technology                                          |
+| ------------- | --------------------------------------------------- |
+| Runtime       | .NET 10.0, ASP.NET Core                             |
+| Database      | PostgreSQL 18 via EF Core 10 + Npgsql               |
+| Caching       | PostgreSQL (primary) + Redis (optional) + In-Memory |
+| Jobs          | Hangfire with PostgreSQL storage                    |
+| Observability | OpenTelemetry, Sentry, Prometheus                   |
+| Compression   | ZstdSharp.Port                                      |
+| Frontend      | Nuxt 4, Vue.js 3, Vuetify 3, pnpm                   |
+| Testing       | NUnit 4, NSubstitute, FluentAssertions              |
+| CI/CD         | GitHub Actions, semantic-release                    |
+| Container     | Docker (Alpine-based), Docker Compose               |
 
 ## Build & Development Commands
 
@@ -125,9 +125,12 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
 - **Migrations:** Auto-applied on application startup
 - **IDs:** Sortable GUIDs via RT.Comb
 
+> **⚠️ Raw SQL in EpisodeRepository:** `EpisodeRepository.MergeEpisodeWithSubtitleAsync` uses raw SQL (`INSERT ... ON CONFLICT`) that references `Episode`, `Subtitle`, and `EpisodeExternalId` columns by name. When adding, removing, or renaming columns on these entities, you **must** update the SQL in this method to match. The compiler will not catch mismatches — they will only surface at runtime.
+
 ### API Controllers
 
 Controllers are in `AddictedProxy/Controllers/Rest/` and use:
+
 - Attribute routing (`[Route("...")]`)
 - ASP.NET Core's built-in `IResult` with `TypedResults` and `Results<T1, T2, ...>` for new endpoints
   - See [Action return types](https://learn.microsoft.com/en-us/aspnet/core/web-api/action-return-types)
@@ -235,6 +238,7 @@ Follow the [Conventional Commits specification](https://www.conventionalcommits.
 #### Scopes (Optional but Recommended)
 
 Common scopes in this project:
+
 - `api`, `controllers`, `services`
 - `database`, `caching`, `storage`
 - `upstream`, `proxy`, `captcha`

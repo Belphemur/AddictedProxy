@@ -68,35 +68,19 @@ public class MigrateExternalIdsToNewTableMigration : IMigration
     {
         _logger.LogInformation("Migrating Episode.ExternalId to EpisodeExternalIds table");
 
-        const int batchSize = 1000;
-        var totalMigrated = 0;
+        // Uses raw SQL because the Episode.ExternalId property has been removed from the entity.
+        // This migration should already have been executed; it's kept for historical completeness.
+        var migrated = await _entityContext.Database.ExecuteSqlAsync(
+            $"""
+             INSERT INTO "EpisodeExternalIds" ("EpisodeId", "Source", "ExternalId", "CreatedAt", "UpdatedAt")
+             SELECT e."Id", {(int)DataSource.Addic7ed}, CAST(e."ExternalId" AS TEXT), NOW(), NOW()
+             FROM "Episodes" e
+             WHERE NOT EXISTS (
+                 SELECT 1 FROM "EpisodeExternalIds" ext
+                 WHERE ext."EpisodeId" = e."Id" AND ext."Source" = {(int)DataSource.Addic7ed}
+             )
+             """, token);
 
-        // Get all episodes that have an ExternalId and don't already have an EpisodeExternalId for Addic7ed
-        var episodeIds = await _entityContext.Episodes
-            .Where(ep => !_entityContext.EpisodeExternalIds
-                .Any(ext => ext.EpisodeId == ep.Id && ext.Source == DataSource.Addic7ed))
-            .Select(ep => new { ep.Id, ep.ExternalId })
-            .ToListAsync(token);
-
-        _logger.LogInformation("Found {Count} episodes to migrate", episodeIds.Count);
-
-        foreach (var batch in episodeIds.Chunk(batchSize))
-        {
-            var externalIds = batch.Select(ep => new EpisodeExternalId
-            {
-                EpisodeId = ep.Id,
-                Source = DataSource.Addic7ed,
-                ExternalId = ep.ExternalId.ToString(),
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
-            }).ToArray();
-
-            await _entityContext.EpisodeExternalIds.BulkInsertAsync(externalIds, token);
-            totalMigrated += externalIds.Length;
-
-            _logger.LogInformation("Migrated {Count}/{Total} episode external IDs", totalMigrated, episodeIds.Count);
-        }
-
-        _logger.LogInformation("Completed migrating {Count} episode external IDs", totalMigrated);
+        _logger.LogInformation("Completed migrating {Count} episode external IDs", migrated);
     }
 }

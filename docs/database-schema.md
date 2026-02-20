@@ -39,17 +39,16 @@ One-time **data migrations** (not schema changes) are handled by the `OneTimeMig
 │     Season       │  │             Episode                   │
 ├──────────────────┤  ├──────────────────────────────────────┤
 │ Id (PK, long)    │  │ Id (PK, long)                        │
-│ TvShowId (FK)    │  │ ExternalId (long, legacy)            │  ◄── Legacy Addic7ed episode ID
-│ Number (int)     │  │ TvShowId (FK)                        │
-│ LastRefreshed    │  │ Season (int)                         │
-│ (DateTime?)      │  │ Number (int)                         │
-│ CreatedAt /      │  │ Title (string)                       │
-│ UpdatedAt        │  │ Discovered (DateTime)                │
-├──────────────────┤  │ CreatedAt / UpdatedAt                │
-│ Unique:          │  ├──────────────────────────────────────┤
-│ (TvShowId,Number)│  │ Unique: (TvShowId, Season, Number)   │
-└──────────────────┘  │ ◄──── 1:M ────► Subtitles[]         │
-                      └──────────────────────────────────────┘
+│ TvShowId (FK)    │  │ TvShowId (FK)                        │
+│ Number (int)     │  │ Season (int)                         │
+│ LastRefreshed    │  │ Number (int)                         │
+│ (DateTime?)      │  │ Title (string)                       │
+│ CreatedAt /      │  │ Discovered (DateTime)                │
+│ UpdatedAt        │  │ CreatedAt / UpdatedAt                │
+├──────────────────┤  ├──────────────────────────────────────┤
+│ Unique:          │  │ Unique: (TvShowId, Season, Number)   │
+│ (TvShowId,Number)│  │ ◄──── 1:M ────► Subtitles[]         │
+└──────────────────┘  └──────────────────────────────────────┘
                                         │
                                         │ 1:M
                                         ▼
@@ -188,11 +187,14 @@ BulkSaveChangesAsync()                       // Batch save
 ### IEpisodeRepository
 
 ```csharp
-UpsertEpisodes(episodes)                     // Bulk upsert episodes with subtitles
+UpsertEpisodes(episodes)                     // Bulk upsert episodes with subtitles (BulkMergeAsync, used by Addic7ed)
+MergeEpisodeWithSubtitleAsync(episode, sub)  // Atomic single episode+subtitle upsert via raw SQL CTE (used by SuperSubtitles)
 GetEpisodeUntrackedAsync(showId, season, ep) // Get episode (no change tracking)
 GetSeasonEpisodesAsync(showId, season)       // All episodes in a season
 GetSeasonEpisodesByLangUntrackedAsync(...)   // Episodes filtered by language
 ```
+
+> **⚠️ Raw SQL:** `MergeEpisodeWithSubtitleAsync` uses a raw SQL CTE (`INSERT ... ON CONFLICT`) that references `Episode`, `Subtitle`, and `EpisodeExternalId` columns by name. When adding, removing, or renaming columns on these entities, you **must** update the SQL manually — the compiler will not catch mismatches.
 
 ### ISeasonRepository
 
