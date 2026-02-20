@@ -34,20 +34,26 @@ public class EpisodeExternalIdRepository : IEpisodeExternalIdRepository
 
     public async Task UpsertAsync(EpisodeExternalId episodeExternalId, CancellationToken token)
     {
-        var existing = await _entityContext.EpisodeExternalIds
-            .FirstOrDefaultAsync(e => e.EpisodeId == episodeExternalId.EpisodeId && e.Source == episodeExternalId.Source, token);
-
-        if (existing != null)
-        {
-            existing.ExternalId = episodeExternalId.ExternalId;
-            existing.UpdatedAt = DateTime.UtcNow;
-        }
-        else
-        {
-            await _entityContext.EpisodeExternalIds.AddAsync(episodeExternalId, token);
-        }
-
-        await _entityContext.SaveChangesAsync(token);
+        var now = DateTime.UtcNow;
+        // Atomic upsert via CTE:
+        // 1. Try to UPDATE the existing row for (EpisodeId, Source) — sets the new ExternalId
+        // 2. If no row was updated (no existing mapping), INSERT a new row
+        // 3. If the INSERT conflicts on (Source, ExternalId) — same external ID already
+        //    mapped to a different episode — ignore it gracefully (DO NOTHING)
+        await _entityContext.Database.ExecuteSqlAsync(
+            $"""
+             WITH update_by_episode AS (
+                 UPDATE "EpisodeExternalIds"
+                 SET "ExternalId" = {episodeExternalId.ExternalId}, "UpdatedAt" = {now}
+                 WHERE "EpisodeId" = {episodeExternalId.EpisodeId} AND "Source" = {(int)episodeExternalId.Source}
+                 RETURNING "Id"
+             )
+             INSERT INTO "EpisodeExternalIds" ("EpisodeId", "Source", "ExternalId", "CreatedAt", "UpdatedAt")
+             SELECT {episodeExternalId.EpisodeId}, {(int)episodeExternalId.Source}, {episodeExternalId.ExternalId}, {now}, {now}
+             WHERE NOT EXISTS (SELECT 1 FROM update_by_episode)
+             ON CONFLICT ("Source", "ExternalId") DO NOTHING
+             """,
+            token);
     }
 
     public async Task BulkUpsertAsync(IEnumerable<EpisodeExternalId> episodeExternalIds, CancellationToken token)
