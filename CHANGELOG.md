@@ -1,3 +1,45 @@
+## [4.42.0](https://github.com/Belphemur/AddictedProxy/compare/v4.41.3...v4.42.0) (2026-02-20)
+
+### Performance improvements
+
+* **services:** batch supersubtitles imports in single transaction ([4a32d2b](https://github.com/Belphemur/AddictedProxy/commit/4a32d2b27fa4e8482f4230e4b4eb1397c04159a1))
+
+### Bug Fixes
+
+* be sure the job is unique and we don't make it multiple time ([fc1efa9](https://github.com/Belphemur/AddictedProxy/commit/fc1efa9a2a7cfc88b7656347e3071cb577438a9f))
+* **client:** change CheckForUpdatesRequest.content_id from string to int64 ([ed5aa85](https://github.com/Belphemur/AddictedProxy/commit/ed5aa859fbd5de45ad0a504f0cda5c1beb5672c8))
+* importing episode ([8d40b87](https://github.com/Belphemur/AddictedProxy/commit/8d40b87bc635e5000b8ecc2d9f457414d9f3ed07))
+* **services:** use EnumServiceLifetime to register provider factories as scoped\n\nApply [EnumServiceLifetime(Scoped)] to all four provider factory\nsubclasses and remove redundant manual registrations from\nBootstrapProvider. Fixes DI validation errors where singleton\nfactories consumed scoped services. ([fc29315](https://github.com/Belphemur/AddictedProxy/commit/fc2931528abb8fda6d098324e66f4fc8f5a940ac))
+* **upstream:** populate ExternalId tables when adding Addic7ed shows and episodes ([eb59c85](https://github.com/Belphemur/AddictedProxy/commit/eb59c850f9d4b39240c6a7ab588edc6299c22075))
+* use proper server address ([5d20ceb](https://github.com/Belphemur/AddictedProxy/commit/5d20cebb555298e53d9efe66a574007a9e062f33))
+
+### Features
+
+* **api:** expose source provider field in SubtitleDto ([52cd491](https://github.com/Belphemur/AddictedProxy/commit/52cd491978ed0bc509ac2cecd8362fd3fd29ec93))
+* **database:** add bulk external ID existence check to IShowExternalIdRepository ([2548b9e](https://github.com/Belphemur/AddictedProxy/commit/2548b9e9f758176669de9caca2db912dafb8ef77))
+* **database:** add ExternalId to Subtitle entity for provider-specific IDs ([2a923c2](https://github.com/Belphemur/AddictedProxy/commit/2a923c29ffde419c7a403fcbfcbbf3f98485d977))
+* **database:** add InsertShowAsync to TvShow repository\n\nAdd method for inserting new shows during multi-provider data merging.\nUsed when no existing show matches by TvDB/TMDB/IMDB IDs. ([33bf4fd](https://github.com/Belphemur/AddictedProxy/commit/33bf4fdd904fc9deb0e00fc0c473e0f2c0e4bb31))
+* **database:** add multi-provider external ID tables and SeasonPackSubtitle\n\nAdd SuperSubtitles to DataSource enum.\nCreate ShowExternalId and EpisodeExternalId entities to map provider-specific\nIDs to TvShow/Episode rows with unique constraints per provider.\nCreate SeasonPackSubtitle entity for storing season pack data from providers.\nRemove unique index on TvShow.ExternalId (replaced by ShowExternalId table).\nAdd navigation properties to TvShow and Episode for new entities.\nUpdate EntityContext with new DbSets and model configuration.\nGenerate EF Core migration AddMultiProviderTables." ([0eccce3](https://github.com/Belphemur/AddictedProxy/commit/0eccce39880eec045c6bc6b9bc32174d8c863d87))
+* **database:** add one-time migration to populate external ID tables\n\nCreate MigrateExternalIdsToNewTableMigration that populates ShowExternalIds\nand EpisodeExternalIds from existing TvShow.ExternalId and Episode.ExternalId\nfields for the Addic7ed source in batches.\nRegister migration in BootstrapMigration." ([ce12133](https://github.com/Belphemur/AddictedProxy/commit/ce12133c7a9620bd828236e4997e4d6c93bfbb97))
+* **database:** add repositories for external ID and season pack tables\n\nCreate IShowExternalIdRepository/ShowExternalIdRepository with bulk upsert.\nCreate IEpisodeExternalIdRepository/EpisodeExternalIdRepository with bulk upsert.\nCreate ISeasonPackSubtitleRepository/SeasonPackSubtitleRepository with bulk upsert.\nRegister all new repositories in BootstrapDatabase DI." ([0870130](https://github.com/Belphemur/AddictedProxy/commit/0870130b4b4f2719175cd540b83c99c48fc397aa))
+* **database:** add SuperSubtitlesState entity and repository\n\nAdd entity, repository, EF Core migration, and DI registration for\ntracking the SuperSubtitles sync cursor (max subtitle ID).\nUsed by bulk import and incremental update jobs. ([e492c10](https://github.com/Belphemur/AddictedProxy/commit/e492c10a4a41c75628dabd74456465b9a7ec7f46))
+* **docs:** update multi-provider checklist and add progress tracking section ([f83bd8b](https://github.com/Belphemur/AddictedProxy/commit/f83bd8b6dbd95cc0907a55dd0a080c2548832abb))
+* **frontend:** add provider source badge to subtitle table ([8492570](https://github.com/Belphemur/AddictedProxy/commit/8492570071819fc912cbf69f0118f6ae41b2ccdf))
+* **frontend:** display all subtitles without pagination in table ([c01524e](https://github.com/Belphemur/AddictedProxy/commit/c01524e2ad9104a6c00752876077967aef7a5e39))
+* **frontend:** rebrand to subtitle aggregator, mention all providers ([7179911](https://github.com/Belphemur/AddictedProxy/commit/71799119bc27491249638fc6b40456642e37ceb7))
+* **import:** be sure we can enable the import when we're ready ([9cd2223](https://github.com/Belphemur/AddictedProxy/commit/9cd2223861ea363db592250628451ea62053b086))
+* **ioc:** add EnumServiceLifetimeAttribute for factory lifetime override\n\nAdd [EnumServiceLifetime] attribute that can be placed on concrete\nEnumFactory<,> subclasses to override the DI lifetime from the\ndefault Singleton. BootstrapRegister pre-scans assemblies for the\nattribute and applies the lifetime to both services and factory.\nAlso registers concrete factory subclass types for direct injection. ([49a5bd0](https://github.com/Belphemur/AddictedProxy/commit/49a5bd070240bf183a4a21715c21af4edb685c75))
+* **jobs:** add Hangfire.Console for job progress tracking ([2998ec1](https://github.com/Belphemur/AddictedProxy/commit/2998ec1c6fe21346fc6ad55f6b69b04945d375ff))
+* **jobs:** add RefreshSuperSubtitlesJob for incremental SuperSubtitles updates ([e05bd26](https://github.com/Belphemur/AddictedProxy/commit/e05bd260e3ccf22c80e2b35a3e326bc6c875dfd5))
+* **jobs:** gate SuperSubtitles import behind EnableImport config flag ([e06e7fd](https://github.com/Belphemur/AddictedProxy/commit/e06e7fd50644b0eef9c83d9072867e392b84a634))
+* **provider:** add no-op SuperSubtitles refresher implementations ([3f500c5](https://github.com/Belphemur/AddictedProxy/commit/3f500c55d616ea8ed80d899cf4d5982f4f848a87))
+* **provider:** add provider-specific refresher interfaces and factories ([fb13fd3](https://github.com/Belphemur/AddictedProxy/commit/fb13fd3944b45b7a3f8bbc736a984336c1f15fa1))
+* **services:** add SuperSubtitles bulk import Hangfire job\n\nCreate ImportSuperSubtitlesJob as a one-time fire-and-forget Hangfire\njob that streams all shows/subtitles from SuperSubtitles via gRPC,\nprocesses them in configurable batches with rate limiting, and stores\nthe max subtitle ID cursor for incremental updates.\n\nFeatures:\n- Idempotent: skips if cursor already exists\n- Hangfire.Console progress bar and console output\n- Per-show transaction wrapping via ITransactionManager\n- Enqueued at startup from SchedulerHostedService ([0562428](https://github.com/Belphemur/AddictedProxy/commit/0562428e05f0f8b759ab5b835a7045a9e842de83))
+* **services:** add SuperSubtitles import configuration\n\nAdd SuperSubtitlesImportConfig with batch size and rate-limit delay\nsettings, register via BootstrapProvider, and add config sections\nto appsettings.json and appsettings.Development.json. ([b2648ed](https://github.com/Belphemur/AddictedProxy/commit/b2648ed377c25bd8f03db3ec1ff24755c207214b))
+* **services:** implement data merging service for multi-provider ingestion\n\nPhase 2 of multi-provider plan. ProviderDataIngestionService handles:\n- Show merging with 6-step lookup (ShowExternalId → TvDB → TMDB → IMDB→TMDB → backfill → create new)\n- Episode merging via natural key (TvShowId, Season, Number) with subtitle upsert\n- Season pack ingestion via SeasonPackSubtitle bulk upsert\n- Backfilling missing TvDB/TMDB IDs on matched shows\n- ThirdPartyShowIds DTO for passing provider IDs\n\nRegistered as scoped service in BootstrapProvider DI. ([74f885e](https://github.com/Belphemur/AddictedProxy/commit/74f885eb7ae01045531993963335ce489dabdbf0))
+* **supersubtitles:** add gRPC client project and implementation checklist ([601a30a](https://github.com/Belphemur/AddictedProxy/commit/601a30ac9c6b298b22be881ba74f2a7e6003c600))
+* **tmdb:** add FindByExternalId endpoint support\n\nAdd TMDB /find/{external_id} endpoint for resolving IMDB IDs to TMDB\nshow/movie IDs. Includes FindByExternalIdResult model, ITMDBClient\ninterface method, TMDBClient implementation, and JsonContext registration. ([4e931bb](https://github.com/Belphemur/AddictedProxy/commit/4e931bb196c1df9d6d1e9f52f2d2ae5ab3ba177a))
+
 ## [4.41.3](https://github.com/Belphemur/AddictedProxy/compare/v4.41.2...v4.41.3) (2026-02-12)
 
 ### Bug Fixes
