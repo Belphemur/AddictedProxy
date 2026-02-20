@@ -40,8 +40,8 @@ public interface IProviderDataIngestionService
     /// <summary>
     /// Merge an episode and its subtitle into the database.
     /// Creates the <see cref="Season"/> entity if it doesn't exist yet.
-    /// Uses <see cref="Database.Repositories.Shows.IEpisodeRepository.MergeEpisodeWithSubtitleAsync"/> which atomically
-    /// upserts the episode, subtitle, and episode external ID in a single SQL CTE.
+    /// The episode external ID (if provided) is stored in the episode's <see cref="Episode.ExternalIds"/> collection
+    /// and atomically upserted alongside the episode and subtitle in a single SQL CTE.
     /// </summary>
     /// <param name="show">The parent TvShow (must have a valid Id)</param>
     /// <param name="source">The provider source</param>

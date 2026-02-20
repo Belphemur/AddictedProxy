@@ -179,11 +179,14 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
             Season = season,
             Number = episodeNumber,
             Title = episodeTitle ?? string.Empty,
-            Discovered = DateTime.UtcNow
+            Discovered = DateTime.UtcNow,
+            ExternalIds = episodeExternalId != null
+                ? [new EpisodeExternalId { Source = source, ExternalId = episodeExternalId }]
+                : []
         };
 
         // Step 3: Atomic upsert Episode + Subtitle + EpisodeExternalId via SQL
-        await _episodeRepo.MergeEpisodeWithSubtitleAsync(episode, subtitle, episodeExternalId, token);
+        await _episodeRepo.MergeEpisodeWithSubtitleAsync(episode, subtitle, token);
     }
 
     /// <inheritdoc />
