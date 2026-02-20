@@ -32,7 +32,7 @@ internal class MigrationsRunner : IMigrationsRunner
 
         foreach (var migrationType in migrations.Keys.Except(success.Keys))
         {
-            BackgroundJob.Enqueue<RunnerJob>(job => job.RunMigrationAsync(migrationType, default));
+            BackgroundJob.Enqueue<RunnerJob>(job => job.RunMigrationAsync(migrationType, null, default));
         }
     }
 }

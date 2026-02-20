@@ -51,7 +51,7 @@ public class CredsContainerNormalUsage : ICredsContainer
         await _credentialsService.UpdateUsageCredentialsAsync(AddictedUserCredentials, _forDownloadOperation, default);
         if (_addictedUserCredentials.DownloadExceededDate != null)
         {
-            BackgroundJob.Enqueue<ResetDownloadCredJob>(job => job.CheckAndResetCredAsync(_addictedUserCredentials.Id, default));
+            BackgroundJob.Enqueue<ResetDownloadCredJob>(job => job.CheckAndResetCredAsync(_addictedUserCredentials.Id, null, default));
         }
     }
 }

@@ -39,7 +39,7 @@ public class CompressedStorageProvider : ICompressedStorageProvider
             return stream;
         }
 
-        BackgroundJob.Enqueue<MigrateCompressionJob>(x => x.ExecuteAsync(oldPath, cancellationToken));
+        BackgroundJob.Enqueue<MigrateCompressionJob>(x => x.ExecuteAsync(oldPath, null, cancellationToken));
 
         return await _compressor.DecompressAsync(AlgorithmEnum.BrotliDefault, stream, cancellationToken);
     }

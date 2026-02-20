@@ -194,7 +194,7 @@ public class MediaController : Controller
         var lastSeason = show.Seasons.OrderBy(season => season.Number).LastOrDefault();
         if (lastSeason == null)
         {
-            BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, CancellationToken.None));
+            BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, null, CancellationToken.None));
             return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), Array.Empty<EpisodeWithSubtitlesDto>().ToAsyncEnumerable(), null));
         }
 

@@ -18,10 +18,10 @@ public class SchedulerHostedService : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        RecurringJob.AddOrUpdate<RefreshAvailableShowsJob>(nameof(RefreshAvailableShowsJob), job => job.ExecuteAsync(CancellationToken.None), "0 2 * * *");
-        RecurringJob.AddOrUpdate<CheckCompletedTmdbJob>($"{nameof(CheckCompletedTmdbJob)}-not-completed", job => job.ExecuteAsync(false, CancellationToken.None), "50 2 * * *");
-        RecurringJob.AddOrUpdate<CheckCompletedTmdbJob>($"{nameof(CheckCompletedTmdbJob)}-completed", job => job.ExecuteAsync(true, CancellationToken.None), "10 2 * * */2");
-        RecurringJob.AddOrUpdate<DownloadCredsRedeemerJob>(nameof(DownloadCredsRedeemerJob), job => job.ExecuteAsync(CancellationToken.None), "11 * * * *");
+        RecurringJob.AddOrUpdate<RefreshAvailableShowsJob>(nameof(RefreshAvailableShowsJob), job => job.ExecuteAsync(null, CancellationToken.None), "0 2 * * *");
+        RecurringJob.AddOrUpdate<CheckCompletedTmdbJob>($"{nameof(CheckCompletedTmdbJob)}-not-completed", job => job.ExecuteAsync(false, null, CancellationToken.None), "50 2 * * *");
+        RecurringJob.AddOrUpdate<CheckCompletedTmdbJob>($"{nameof(CheckCompletedTmdbJob)}-completed", job => job.ExecuteAsync(true, null, CancellationToken.None), "10 2 * * */2");
+        RecurringJob.AddOrUpdate<DownloadCredsRedeemerJob>(nameof(DownloadCredsRedeemerJob), job => job.ExecuteAsync(null, CancellationToken.None), "11 * * * *");
 
         if (_importConfig.EnableRefresh)
         {

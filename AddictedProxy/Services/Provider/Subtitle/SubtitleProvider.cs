@@ -77,7 +77,7 @@ internal class SubtitleProvider : ISubtitleProvider
 
             var blob = buffer.ToArray();
 
-            BackgroundJob.Enqueue<StoreSubtitleJob>(job => job.ExecuteAsync(subtitle.UniqueId, blob, default));
+            BackgroundJob.Enqueue<StoreSubtitleJob>(job => job.ExecuteAsync(subtitle.UniqueId, blob, null, default));
 
             await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
             return new MemoryStream(blob);
