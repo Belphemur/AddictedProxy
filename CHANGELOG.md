@@ -1,3 +1,9 @@
+## [4.43.1](https://github.com/Belphemur/AddictedProxy/compare/v4.43.0...v4.43.1) (2026-02-20)
+
+### Bug Fixes
+
+* **frontend:** fix top menu visited color and single-click navigation ([8a10429](https://github.com/Belphemur/AddictedProxy/commit/8a1042944ad42fd71cbeaddeb0607d61d118d085))
+
 ## [4.43.0](https://github.com/Belphemur/AddictedProxy/compare/v4.42.2...v4.43.0) (2026-02-20)
 
 ### Bug Fixes
