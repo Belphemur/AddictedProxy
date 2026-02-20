@@ -532,9 +532,11 @@ public class ProviderDataIngestionServiceTests
                 e.TvShowId == 1 &&
                 e.Season == 2 &&
                 e.Number == 7 &&
-                e.Title == "Test Episode"),
+                e.Title == "Test Episode" &&
+                e.ExternalIds.Count == 1 &&
+                e.ExternalIds[0].Source == DataSource.SuperSubtitles &&
+                e.ExternalIds[0].ExternalId == "ext-ep-2"),
             subtitle,
-            "ext-ep-2",
             Arg.Any<CancellationToken>());
     }
 
@@ -555,11 +557,13 @@ public class ProviderDataIngestionServiceTests
             show, DataSource.SuperSubtitles, 1, 1, null, "ext-123",
             subtitle, CancellationToken.None);
 
-        // Assert — MergeEpisodeWithSubtitleAsync called with the external ID
+        // Assert — MergeEpisodeWithSubtitleAsync called with the external ID in ExternalIds
         await _episodeRepo.Received(1).MergeEpisodeWithSubtitleAsync(
-            Arg.Any<Episode>(),
+            Arg.Is<Episode>(e =>
+                e.ExternalIds.Count == 1 &&
+                e.ExternalIds[0].Source == DataSource.SuperSubtitles &&
+                e.ExternalIds[0].ExternalId == "ext-123"),
             subtitle,
-            "ext-123",
             Arg.Any<CancellationToken>());
     }
 
@@ -580,11 +584,10 @@ public class ProviderDataIngestionServiceTests
             show, DataSource.SuperSubtitles, 1, 1, null, null,
             subtitle, CancellationToken.None);
 
-        // Assert — MergeEpisodeWithSubtitleAsync called with null external ID
+        // Assert — MergeEpisodeWithSubtitleAsync called with empty ExternalIds
         await _episodeRepo.Received(1).MergeEpisodeWithSubtitleAsync(
-            Arg.Any<Episode>(),
+            Arg.Is<Episode>(e => e.ExternalIds.Count == 0),
             subtitle,
-            null,
             Arg.Any<CancellationToken>());
     }
 
@@ -609,7 +612,6 @@ public class ProviderDataIngestionServiceTests
         await _episodeRepo.Received(1).MergeEpisodeWithSubtitleAsync(
             Arg.Is<Episode>(e => e.Title == string.Empty),
             subtitle,
-            Arg.Any<string?>(),
             Arg.Any<CancellationToken>());
     }
 

@@ -39,17 +39,16 @@ One-time **data migrations** (not schema changes) are handled by the `OneTimeMig
 │     Season       │  │             Episode                   │
 ├──────────────────┤  ├──────────────────────────────────────┤
 │ Id (PK, long)    │  │ Id (PK, long)                        │
-│ TvShowId (FK)    │  │ ExternalId (long, legacy)            │  ◄── Legacy Addic7ed episode ID
-│ Number (int)     │  │ TvShowId (FK)                        │
-│ LastRefreshed    │  │ Season (int)                         │
-│ (DateTime?)      │  │ Number (int)                         │
-│ CreatedAt /      │  │ Title (string)                       │
-│ UpdatedAt        │  │ Discovered (DateTime)                │
-├──────────────────┤  │ CreatedAt / UpdatedAt                │
-│ Unique:          │  ├──────────────────────────────────────┤
-│ (TvShowId,Number)│  │ Unique: (TvShowId, Season, Number)   │
-└──────────────────┘  │ ◄──── 1:M ────► Subtitles[]         │
-                      └──────────────────────────────────────┘
+│ TvShowId (FK)    │  │ TvShowId (FK)                        │
+│ Number (int)     │  │ Season (int)                         │
+│ LastRefreshed    │  │ Number (int)                         │
+│ (DateTime?)      │  │ Title (string)                       │
+│ CreatedAt /      │  │ Discovered (DateTime)                │
+│ UpdatedAt        │  │ CreatedAt / UpdatedAt                │
+├──────────────────┤  ├──────────────────────────────────────┤
+│ Unique:          │  │ Unique: (TvShowId, Season, Number)   │
+│ (TvShowId,Number)│  │ ◄──── 1:M ────► Subtitles[]         │
+└──────────────────┘  └──────────────────────────────────────┘
                                         │
                                         │ 1:M
                                         ▼
