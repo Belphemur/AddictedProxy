@@ -44,7 +44,7 @@ public class EpisodeRepository : IEpisodeRepository
                     switch (operation)
                     {
                         case BulkOperation<Subtitle> bulkSub:
-                            bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Id, subtitle.Discovered, subtitle.CreatedAt, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount, subtitle.UniqueId, subtitle.Source, subtitle.ExternalId };
+                            bulkSub.IgnoreOnMergeUpdateExpression = subtitle => new { subtitle.Id, subtitle.Discovered, subtitle.CreatedAt, subtitle.StoragePath, subtitle.StoredAt, subtitle.DownloadCount, subtitle.UniqueId, subtitle.Source, subtitle.ExternalId, subtitle.Qualities, subtitle.Release, subtitle.Scene };
                             bulkSub.ColumnPrimaryKeyExpression = subtitle => new { subtitle.DownloadUri };
                             bulkSub.IgnoreOnMergeInsertExpression = subtitle => new { subtitle.Id };
                             break;
@@ -59,6 +59,65 @@ public class EpisodeRepository : IEpisodeRepository
         }, token);
 
 
+    }
+
+    /// <summary>
+    /// Atomically upsert a single episode and its subtitle via SQL.
+    /// Returns the database-generated episode ID.
+    /// </summary>
+    public async Task<long> MergeEpisodeWithSubtitleAsync(Episode episode, Subtitle subtitle, CancellationToken token)
+    {
+        var now = DateTime.UtcNow;
+        long episodeId = 0;
+
+        await _transactionManager.WrapInTransactionAsync(async () =>
+        {
+            // Step 1: Upsert Episode by (TvShowId, Season, Number).
+            // On conflict, update the title; preserve Id, Discovered, CreatedAt.
+            episodeId = await _entityContext.Database.SqlQuery<long>(
+                $"""
+                 INSERT INTO "Episodes" ("TvShowId", "Season", "Number", "Title", "ExternalId", "Discovered", "CreatedAt", "UpdatedAt")
+                 VALUES ({episode.TvShowId}, {episode.Season}, {episode.Number}, {episode.Title}, {episode.ExternalId}, {now}, {now}, {now})
+                 ON CONFLICT ("TvShowId", "Season", "Number")
+                 DO UPDATE SET "Title" = EXCLUDED."Title", "UpdatedAt" = EXCLUDED."UpdatedAt"
+                 RETURNING "Id"
+                 """).FirstAsync(token);
+
+            // Step 2: Upsert Subtitle by (Source, ExternalId).
+            // On conflict, update mutable fields; preserve Id, Discovered, CreatedAt,
+            // StoragePath, StoredAt, DownloadCount, UniqueId.
+            var downloadUri = subtitle.DownloadUri.ToString();
+            await _entityContext.Database.ExecuteSqlAsync(
+                $"""
+                 INSERT INTO "Subtitles"
+                     ("EpisodeId", "Scene", "Version", "Completed", "CompletionPct", "HearingImpaired",
+                      "Corrected", "Qualities", "Release", "HD", "DownloadUri", "Language", "LanguageIsoCode",
+                      "Source", "ExternalId", "Discovered", "CreatedAt", "UpdatedAt")
+                 VALUES
+                     ({episodeId}, {subtitle.Scene}, {subtitle.Version}, {subtitle.Completed}, {subtitle.CompletionPct},
+                      {subtitle.HearingImpaired}, {subtitle.Corrected}, {(int)subtitle.Qualities}, {subtitle.Release},
+                      {false}, {downloadUri}, {subtitle.Language}, {subtitle.LanguageIsoCode},
+                      {(int)subtitle.Source}, {subtitle.ExternalId}, {now}, {now}, {now})
+                 ON CONFLICT ("Source", "ExternalId")
+                 DO UPDATE SET
+                     "EpisodeId"        = EXCLUDED."EpisodeId",
+                     "DownloadUri"      = EXCLUDED."DownloadUri",
+                     "Scene"            = EXCLUDED."Scene",
+                     "Version"          = EXCLUDED."Version",
+                     "Completed"        = EXCLUDED."Completed",
+                     "CompletionPct"    = EXCLUDED."CompletionPct",
+                     "HearingImpaired"  = EXCLUDED."HearingImpaired",
+                     "Corrected"        = EXCLUDED."Corrected",
+                     "Qualities"        = EXCLUDED."Qualities",
+                     "Release"          = EXCLUDED."Release",
+                     "Language"         = EXCLUDED."Language",
+                     "LanguageIsoCode"  = EXCLUDED."LanguageIsoCode",
+                     "UpdatedAt"        = EXCLUDED."UpdatedAt"
+                 """,
+                token);
+        }, token);
+
+        return episodeId;
     }
 
     /// <summary>

@@ -175,45 +175,28 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
         // Step 1: Ensure the Season entity exists for this season number
         await EnsureSeasonExistsAsync(show.Id, season, token);
 
-        // Step 2: Build Episode with the Subtitle attached.
-        // UpsertEpisodes handles both episode and subtitle merge via IncludeGraph.
+        // Step 2: Build Episode shell for the upsert
         var episode = new Episode
         {
             TvShowId = show.Id,
             Season = season,
             Number = episodeNumber,
             Title = episodeTitle ?? string.Empty,
-            Discovered = DateTime.UtcNow,
-            Subtitles = [subtitle]
+            Discovered = DateTime.UtcNow
         };
 
-        // Step 3: Upsert Episode + Subtitle
-        // Episode key: (TvShowId, Season, Number)
-        // Subtitle key: DownloadUri
-        await _episodeRepo.UpsertEpisodes([episode], token);
+        // Step 3: Atomic upsert Episode + Subtitle via SQL, returns the episode ID
+        var episodeId = await _episodeRepo.MergeEpisodeWithSubtitleAsync(episode, subtitle, token);
 
         // Step 4: Upsert EpisodeExternalId if provider-specific ID is available
         if (!string.IsNullOrEmpty(episodeExternalId))
         {
-            // Re-fetch the episode to get its database-generated Id
-            var upsertedEp = await _episodeRepo
-                .GetEpisodeUntrackedAsync(show.Id, season, episodeNumber, token);
-
-            if (upsertedEp != null)
+            await _episodeExternalIdRepo.UpsertAsync(new EpisodeExternalId
             {
-                await _episodeExternalIdRepo.UpsertAsync(new EpisodeExternalId
-                {
-                    EpisodeId = upsertedEp.Id,
-                    Source = source,
-                    ExternalId = episodeExternalId
-                }, token);
-            }
-            else
-            {
-                _logger.LogWarning(
-                    "Failed to retrieve episode after upsert for show {ShowId} S{Season:D2}E{Episode:D2}",
-                    show.Id, season, episodeNumber);
-            }
+                EpisodeId = episodeId,
+                Source = source,
+                ExternalId = episodeExternalId
+            }, token);
         }
     }
 
