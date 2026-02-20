@@ -16,7 +16,6 @@ namespace AddictedProxy.Services.Provider.Merging;
 public class ProviderDataIngestionService : IProviderDataIngestionService
 {
     private readonly IShowExternalIdRepository _showExternalIdRepo;
-    private readonly IEpisodeExternalIdRepository _episodeExternalIdRepo;
     private readonly ITvShowRepository _tvShowRepo;
     private readonly IEpisodeRepository _episodeRepo;
     private readonly ISeasonRepository _seasonRepo;
@@ -26,7 +25,6 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
 
     public ProviderDataIngestionService(
         IShowExternalIdRepository showExternalIdRepo,
-        IEpisodeExternalIdRepository episodeExternalIdRepo,
         ITvShowRepository tvShowRepo,
         IEpisodeRepository episodeRepo,
         ISeasonRepository seasonRepo,
@@ -35,7 +33,6 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
         ILogger<ProviderDataIngestionService> logger)
     {
         _showExternalIdRepo = showExternalIdRepo;
-        _episodeExternalIdRepo = episodeExternalIdRepo;
         _tvShowRepo = tvShowRepo;
         _episodeRepo = episodeRepo;
         _seasonRepo = seasonRepo;
@@ -185,19 +182,8 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
             Discovered = DateTime.UtcNow
         };
 
-        // Step 3: Atomic upsert Episode + Subtitle via SQL, returns the episode ID
-        var episodeId = await _episodeRepo.MergeEpisodeWithSubtitleAsync(episode, subtitle, token);
-
-        // Step 4: Upsert EpisodeExternalId if provider-specific ID is available
-        if (!string.IsNullOrEmpty(episodeExternalId))
-        {
-            await _episodeExternalIdRepo.UpsertAsync(new EpisodeExternalId
-            {
-                EpisodeId = episodeId,
-                Source = source,
-                ExternalId = episodeExternalId
-            }, token);
-        }
+        // Step 3: Atomic upsert Episode + Subtitle + EpisodeExternalId via SQL
+        await _episodeRepo.MergeEpisodeWithSubtitleAsync(episode, subtitle, episodeExternalId, token);
     }
 
     /// <inheritdoc />

@@ -62,17 +62,21 @@ public class EpisodeRepository : IEpisodeRepository
     }
 
     /// <summary>
-    /// Atomically upsert a single episode and its subtitle via SQL.
+    /// Atomically upsert a single episode, its subtitle, and optionally its external ID via SQL.
     /// Returns the database-generated episode ID.
     /// </summary>
-    public async Task<long> MergeEpisodeWithSubtitleAsync(Episode episode, Subtitle subtitle, CancellationToken token)
+    public async Task<long> MergeEpisodeWithSubtitleAsync(Episode episode, Subtitle subtitle, string? episodeExternalId, CancellationToken token)
     {
         var now = DateTime.UtcNow;
         var downloadUri = subtitle.DownloadUri.ToString();
+        var source = (int)subtitle.Source;
 
-        // Top-level CTE: upsert episode, then upsert subtitle using the episode ID.
+        // Top-level CTE: upsert episode, then subtitle, then episode external ID.
         // ExecuteSqlAsync sends the SQL directly without wrapping in a subquery,
         // which is required because PostgreSQL forbids data-modifying CTEs inside subqueries.
+        //
+        // The episode external ID CTEs use a WHERE guard ({episodeExternalId} IS NOT NULL)
+        // so they become no-ops when no external ID is provided.
         await _entityContext.Database.ExecuteSqlAsync(
             $"""
              WITH upsert_episode AS (
@@ -81,32 +85,55 @@ public class EpisodeRepository : IEpisodeRepository
                  ON CONFLICT ("TvShowId", "Season", "Number")
                  DO UPDATE SET "Title" = EXCLUDED."Title", "UpdatedAt" = EXCLUDED."UpdatedAt"
                  RETURNING "Id"
+             ),
+             upsert_subtitle AS (
+                 INSERT INTO "Subtitles"
+                     ("EpisodeId", "Scene", "Version", "Completed", "CompletionPct", "HearingImpaired",
+                      "Corrected", "Qualities", "Release", "HD", "DownloadUri", "Language", "LanguageIsoCode",
+                      "Source", "ExternalId", "DownloadCount", "Discovered", "CreatedAt", "UpdatedAt")
+                 SELECT
+                     "Id", {subtitle.Scene}, {subtitle.Version}, {subtitle.Completed}, {subtitle.CompletionPct},
+                     {subtitle.HearingImpaired}, {subtitle.Corrected}, {(int)subtitle.Qualities}, {subtitle.Release},
+                     {false}, {downloadUri}, {subtitle.Language}, {subtitle.LanguageIsoCode},
+                     {source}, {subtitle.ExternalId}, {0L}, {now}, {now}, {now}
+                 FROM upsert_episode
+                 ON CONFLICT ("Source", "ExternalId")
+                 DO UPDATE SET
+                     "EpisodeId"        = EXCLUDED."EpisodeId",
+                     "DownloadUri"      = EXCLUDED."DownloadUri",
+                     "Scene"            = EXCLUDED."Scene",
+                     "Version"          = EXCLUDED."Version",
+                     "Completed"        = EXCLUDED."Completed",
+                     "CompletionPct"    = EXCLUDED."CompletionPct",
+                     "HearingImpaired"  = EXCLUDED."HearingImpaired",
+                     "Corrected"        = EXCLUDED."Corrected",
+                     "Qualities"        = EXCLUDED."Qualities",
+                     "Release"          = EXCLUDED."Release",
+                     "Language"         = EXCLUDED."Language",
+                     "LanguageIsoCode"  = EXCLUDED."LanguageIsoCode",
+                     "UpdatedAt"        = EXCLUDED."UpdatedAt"
+             ),
+             update_episode_ext_id AS (
+                 UPDATE "EpisodeExternalIds"
+                 SET "ExternalId" = {episodeExternalId}, "UpdatedAt" = {now}
+                 FROM upsert_episode
+                 WHERE "EpisodeExternalIds"."EpisodeId" = upsert_episode."Id"
+                   AND "EpisodeExternalIds"."Source" = {source}
+                   AND {episodeExternalId} IS NOT NULL
+                   AND NOT EXISTS (
+                       SELECT 1 FROM "EpisodeExternalIds" e2
+                       WHERE e2."Source" = {source}
+                         AND e2."ExternalId" = {episodeExternalId}
+                         AND e2."EpisodeId" != upsert_episode."Id"
+                   )
+                 RETURNING "EpisodeExternalIds"."Id"
              )
-             INSERT INTO "Subtitles"
-                 ("EpisodeId", "Scene", "Version", "Completed", "CompletionPct", "HearingImpaired",
-                  "Corrected", "Qualities", "Release", "HD", "DownloadUri", "Language", "LanguageIsoCode",
-                  "Source", "ExternalId", "DownloadCount", "Discovered", "CreatedAt", "UpdatedAt")
-             SELECT
-                 "Id", {subtitle.Scene}, {subtitle.Version}, {subtitle.Completed}, {subtitle.CompletionPct},
-                 {subtitle.HearingImpaired}, {subtitle.Corrected}, {(int)subtitle.Qualities}, {subtitle.Release},
-                 {false}, {downloadUri}, {subtitle.Language}, {subtitle.LanguageIsoCode},
-                 {(int)subtitle.Source}, {subtitle.ExternalId}, {0L}, {now}, {now}, {now}
+             INSERT INTO "EpisodeExternalIds" ("EpisodeId", "Source", "ExternalId", "CreatedAt", "UpdatedAt")
+             SELECT "Id", {source}, {episodeExternalId}, {now}, {now}
              FROM upsert_episode
-             ON CONFLICT ("Source", "ExternalId")
-             DO UPDATE SET
-                 "EpisodeId"        = EXCLUDED."EpisodeId",
-                 "DownloadUri"      = EXCLUDED."DownloadUri",
-                 "Scene"            = EXCLUDED."Scene",
-                 "Version"          = EXCLUDED."Version",
-                 "Completed"        = EXCLUDED."Completed",
-                 "CompletionPct"    = EXCLUDED."CompletionPct",
-                 "HearingImpaired"  = EXCLUDED."HearingImpaired",
-                 "Corrected"        = EXCLUDED."Corrected",
-                 "Qualities"        = EXCLUDED."Qualities",
-                 "Release"          = EXCLUDED."Release",
-                 "Language"         = EXCLUDED."Language",
-                 "LanguageIsoCode"  = EXCLUDED."LanguageIsoCode",
-                 "UpdatedAt"        = EXCLUDED."UpdatedAt"
+             WHERE {episodeExternalId} IS NOT NULL
+               AND NOT EXISTS (SELECT 1 FROM update_episode_ext_id)
+             ON CONFLICT ("Source", "ExternalId") DO NOTHING
              """, token);
 
         // Retrieve the episode ID (runs in the same transaction as the upsert above)

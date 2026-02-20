@@ -195,7 +195,7 @@ GetSeasonEpisodesAsync(showId, season)       // All episodes in a season
 GetSeasonEpisodesByLangUntrackedAsync(...)   // Episodes filtered by language
 ```
 
-> **⚠️ Raw SQL:** `MergeEpisodeWithSubtitleAsync` uses a raw SQL CTE (`INSERT ... ON CONFLICT`) that references `Episode` and `Subtitle` columns by name. When adding, removing, or renaming columns on these entities, you **must** update the SQL manually — the compiler will not catch mismatches.
+> **⚠️ Raw SQL:** `MergeEpisodeWithSubtitleAsync` uses a raw SQL CTE (`INSERT ... ON CONFLICT`) that references `Episode`, `Subtitle`, and `EpisodeExternalId` columns by name. When adding, removing, or renaming columns on these entities, you **must** update the SQL manually — the compiler will not catch mismatches.
 
 ### ISeasonRepository
 

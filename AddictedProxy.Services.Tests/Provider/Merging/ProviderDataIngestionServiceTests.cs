@@ -18,7 +18,6 @@ namespace AddictedProxy.Services.Tests.Provider.Merging;
 public class ProviderDataIngestionServiceTests
 {
     private IShowExternalIdRepository _showExternalIdRepo = null!;
-    private IEpisodeExternalIdRepository _episodeExternalIdRepo = null!;
     private ITvShowRepository _tvShowRepo = null!;
     private IEpisodeRepository _episodeRepo = null!;
     private ISeasonRepository _seasonRepo = null!;
@@ -31,7 +30,6 @@ public class ProviderDataIngestionServiceTests
     public void SetUp()
     {
         _showExternalIdRepo = Substitute.For<IShowExternalIdRepository>();
-        _episodeExternalIdRepo = Substitute.For<IEpisodeExternalIdRepository>();
         _tvShowRepo = Substitute.For<ITvShowRepository>();
         _episodeRepo = Substitute.For<IEpisodeRepository>();
         _seasonRepo = Substitute.For<ISeasonRepository>();
@@ -41,7 +39,6 @@ public class ProviderDataIngestionServiceTests
 
         _sut = new ProviderDataIngestionService(
             _showExternalIdRepo,
-            _episodeExternalIdRepo,
             _tvShowRepo,
             _episodeRepo,
             _seasonRepo,
@@ -476,10 +473,6 @@ public class ProviderDataIngestionServiceTests
             .GetSeasonForShowAsync(1, 3, Arg.Any<CancellationToken>())
             .ReturnsNull();
 
-        _episodeRepo
-            .GetEpisodeUntrackedAsync(1, 3, 5, Arg.Any<CancellationToken>())
-            .Returns(new Episode { Id = 10, TvShowId = 1, Season = 3, Number = 5 });
-
         var subtitle = CreateSubtitle(source: DataSource.SuperSubtitles);
 
         // Act
@@ -504,10 +497,6 @@ public class ProviderDataIngestionServiceTests
             .GetSeasonForShowAsync(1, 3, Arg.Any<CancellationToken>())
             .Returns(new Season { Id = 5, TvShowId = 1, Number = 3 });
 
-        _episodeRepo
-            .GetEpisodeUntrackedAsync(1, 3, 5, Arg.Any<CancellationToken>())
-            .Returns(new Episode { Id = 10, TvShowId = 1, Season = 3, Number = 5 });
-
         var subtitle = CreateSubtitle(source: DataSource.SuperSubtitles);
 
         // Act
@@ -530,10 +519,6 @@ public class ProviderDataIngestionServiceTests
             .GetSeasonForShowAsync(1, 2, Arg.Any<CancellationToken>())
             .Returns(new Season { Id = 5, TvShowId = 1, Number = 2 });
 
-        _episodeRepo
-            .GetEpisodeUntrackedAsync(1, 2, 7, Arg.Any<CancellationToken>())
-            .Returns(new Episode { Id = 10, TvShowId = 1, Season = 2, Number = 7 });
-
         var subtitle = CreateSubtitle(source: DataSource.SuperSubtitles);
 
         // Act
@@ -541,15 +526,15 @@ public class ProviderDataIngestionServiceTests
             show, DataSource.SuperSubtitles, 2, 7, "Test Episode", "ext-ep-2",
             subtitle, CancellationToken.None);
 
-        // Assert — UpsertEpisodes called with correct episode structure
-        await _episodeRepo.Received(1).UpsertEpisodes(
-            Arg.Is<IEnumerable<Episode>>(eps =>
-                eps.Any(e =>
-                    e.TvShowId == 1 &&
-                    e.Season == 2 &&
-                    e.Number == 7 &&
-                    e.Title == "Test Episode" &&
-                    e.Subtitles.Contains(subtitle))),
+        // Assert — MergeEpisodeWithSubtitleAsync called with correct parameters
+        await _episodeRepo.Received(1).MergeEpisodeWithSubtitleAsync(
+            Arg.Is<Episode>(e =>
+                e.TvShowId == 1 &&
+                e.Season == 2 &&
+                e.Number == 7 &&
+                e.Title == "Test Episode"),
+            subtitle,
+            "ext-ep-2",
             Arg.Any<CancellationToken>());
     }
 
@@ -563,10 +548,6 @@ public class ProviderDataIngestionServiceTests
             .GetSeasonForShowAsync(1, 1, Arg.Any<CancellationToken>())
             .Returns(new Season { Id = 1, TvShowId = 1, Number = 1 });
 
-        _episodeRepo
-            .GetEpisodeUntrackedAsync(1, 1, 1, Arg.Any<CancellationToken>())
-            .Returns(new Episode { Id = 99, TvShowId = 1, Season = 1, Number = 1 });
-
         var subtitle = CreateSubtitle(source: DataSource.SuperSubtitles);
 
         // Act
@@ -574,17 +555,16 @@ public class ProviderDataIngestionServiceTests
             show, DataSource.SuperSubtitles, 1, 1, null, "ext-123",
             subtitle, CancellationToken.None);
 
-        // Assert
-        await _episodeExternalIdRepo.Received(1).UpsertAsync(
-            Arg.Is<EpisodeExternalId>(e =>
-                e.EpisodeId == 99 &&
-                e.Source == DataSource.SuperSubtitles &&
-                e.ExternalId == "ext-123"),
+        // Assert — MergeEpisodeWithSubtitleAsync called with the external ID
+        await _episodeRepo.Received(1).MergeEpisodeWithSubtitleAsync(
+            Arg.Any<Episode>(),
+            subtitle,
+            "ext-123",
             Arg.Any<CancellationToken>());
     }
 
     [Test]
-    public async Task MergeEpisodeSubtitleAsync_NoExternalId_SkipsExternalIdUpsert()
+    public async Task MergeEpisodeSubtitleAsync_NoExternalId_PassesNullToMerge()
     {
         // Arrange
         var show = CreateTvShow(id: 1, name: "Test Show");
@@ -600,9 +580,12 @@ public class ProviderDataIngestionServiceTests
             show, DataSource.SuperSubtitles, 1, 1, null, null,
             subtitle, CancellationToken.None);
 
-        // Assert — no external ID upsert
-        await _episodeExternalIdRepo.DidNotReceive().UpsertAsync(
-            Arg.Any<EpisodeExternalId>(), Arg.Any<CancellationToken>());
+        // Assert — MergeEpisodeWithSubtitleAsync called with null external ID
+        await _episodeRepo.Received(1).MergeEpisodeWithSubtitleAsync(
+            Arg.Any<Episode>(),
+            subtitle,
+            null,
+            Arg.Any<CancellationToken>());
     }
 
     [Test]
@@ -623,9 +606,10 @@ public class ProviderDataIngestionServiceTests
             subtitle, CancellationToken.None);
 
         // Assert — title defaults to empty string
-        await _episodeRepo.Received(1).UpsertEpisodes(
-            Arg.Is<IEnumerable<Episode>>(eps =>
-                eps.Any(e => e.Title == string.Empty)),
+        await _episodeRepo.Received(1).MergeEpisodeWithSubtitleAsync(
+            Arg.Is<Episode>(e => e.Title == string.Empty),
+            subtitle,
+            Arg.Any<string?>(),
             Arg.Any<CancellationToken>());
     }
 
