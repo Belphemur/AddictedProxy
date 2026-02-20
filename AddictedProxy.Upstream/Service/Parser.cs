@@ -223,7 +223,7 @@ public partial class Parser
                     Scene = subtitleRow.Scene.Trim(),
                     Corrected = subtitleRow.Corrected,
                     DownloadUri = subtitleRow.DownloadUri,
-                    HD = subtitleRow.HD,
+                    Qualities = subtitleRow.HD ? VideoQuality.Q720P | VideoQuality.Q1080P : VideoQuality.None,
                     HearingImpaired = subtitleRow.HearingImpaired,
                     Language = subtitleRow.Language,
                     Completed = subtitleRow.Completed,
