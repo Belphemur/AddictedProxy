@@ -16,7 +16,7 @@ One-time **data migrations** (not schema changes) are handled by the `OneTimeMig
 ├─────────────────────────────────────────┤
 │ Id (PK, long)                           │
 │ UniqueId (Guid, unique, default uuidv7) │
-│ ExternalId (long, unique)               │  ◄── Provider-specific ID (e.g., Addic7ed show ID)
+│ ExternalId (long, legacy)               │  ◄── Legacy Addic7ed show ID (kept for compatibility)
 │ Name (string)                           │
 │ TmdbId (int?, indexed)                  │  ◄── The Movie Database ID
 │ TvdbId (int?, indexed)                  │  ◄── TheTVDB ID
@@ -39,7 +39,7 @@ One-time **data migrations** (not schema changes) are handled by the `OneTimeMig
 │     Season       │  │             Episode                   │
 ├──────────────────┤  ├──────────────────────────────────────┤
 │ Id (PK, long)    │  │ Id (PK, long)                        │
-│ TvShowId (FK)    │  │ ExternalId (long)                    │  ◄── Provider-specific episode ID
+│ TvShowId (FK)    │  │ ExternalId (long, legacy)            │  ◄── Legacy Addic7ed episode ID
 │ Number (int)     │  │ TvShowId (FK)                        │
 │ LastRefreshed    │  │ Season (int)                         │
 │ (DateTime?)      │  │ Number (int)                         │
@@ -73,14 +73,24 @@ One-time **data migrations** (not schema changes) are handled by the `OneTimeMig
                       │ StoragePath (string?, nullable)           │  ◄── Path in S3/storage
                       │ StoredAt (DateTime?, nullable)            │
                       │ Source (DataSource enum)                  │  ◄── Which provider this came from
+                      │ ExternalId (string?, nullable)            │  ◄── Provider-specific subtitle ID
                       │ Discovered (DateTime)                     │
                       │ CreatedAt / UpdatedAt (BaseEntity)        │
                       ├──────────────────────────────────────────┤
                       │ Index: (DownloadUri) unique               │
+                      │ Index: (Source, ExternalId) unique         │
                       │ Index: (EpisodeId, Language, Version)     │
                       │ Index: (UniqueId) unique                  │
                       └──────────────────────────────────────────┘
 ```
+
+## Multi-Provider Entities
+
+The schema also includes provider mapping tables used by the merge pipeline:
+
+- **ShowExternalId**: maps provider `(Source, ExternalId)` values to a single `TvShow` (`Unique: (TvShowId, Source)` and `Unique: (Source, ExternalId)`).
+- **EpisodeExternalId**: maps provider `(Source, ExternalId)` values to a single `Episode` (`Unique: (EpisodeId, Source)` and `Unique: (Source, ExternalId)`).
+- **SeasonPackSubtitle**: stores season-pack subtitles (provider metadata + optional storage path), unique by `(Source, ExternalId)`.
 
 ## Enums
 
@@ -91,7 +101,8 @@ Identifies the upstream provider that contributed a show or subtitle.
 ```csharp
 public enum DataSource
 {
-    Addic7ed,    // Currently the only provider
+    Addic7ed,
+    SuperSubtitles
 }
 ```
 

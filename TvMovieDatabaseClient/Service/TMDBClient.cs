@@ -200,6 +200,17 @@ internal class TMDBClient : ITMDBClient
         } while (response.IsSuccessStatusCode && page < results.TotalPages && page < maxPage);
     }
 
+    /// <inheritdoc />
+    public async Task<FindByExternalIdResult?> FindByExternalIdAsync(string externalId, string externalSource, CancellationToken token)
+    {
+        var queryParams = new Dictionary<string, string>
+        {
+            { "external_source", externalSource }
+        };
+        var request = PrepareRequest($"find/{externalId}", HttpMethod.Get, queryParams);
+        return await GetDataAsync<FindByExternalIdResult>(request, token);
+    }
+
     public async Task<TmdbImage?> GetImageAsync(string imagePath, CancellationToken cancellationToken)
     {
         var response = await _httpClient.GetAsync($"https://image.tmdb.org/t/p/original/{imagePath}", cancellationToken);

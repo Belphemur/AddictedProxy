@@ -98,4 +98,12 @@ public interface ITvShowRepository
     /// </summary>
     /// <returns></returns>
     IAsyncEnumerable<TvShow> GetShowsWithoutTvdbIdWithTmdbIdAsync();
+
+    /// <summary>
+    /// Insert a new show into the database
+    /// </summary>
+    /// <param name="show">The show to insert. Will have its Id populated after insert.</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    Task InsertShowAsync(TvShow show, CancellationToken token);
 }

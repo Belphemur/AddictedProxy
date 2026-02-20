@@ -23,6 +23,7 @@ using Performance.Bootstrap;
 using Performance.Model;
 using Prometheus;
 using ProxyScrape.Bootstrap;
+using SuperSubtitleClient.Bootstrap;
 using TvMovieDatabaseClient.Bootstrap;
 
 #endregion
@@ -74,7 +75,8 @@ var currentAssemblies = new[]
     typeof(BootstrapMigration).Assembly,
     typeof(BootstrapImage).Assembly,
     typeof(BootstrapStoreCompression).Assembly,
-    typeof(BootstrapProxyScrape).Assembly
+    typeof(BootstrapProxyScrape).Assembly,
+    typeof(BootstrapSuperSubtitles).Assembly
 };
 
 builder.AddBootstrap(currentAssemblies);

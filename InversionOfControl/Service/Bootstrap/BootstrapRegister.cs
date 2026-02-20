@@ -37,6 +37,23 @@ internal class BootstrapRegister : IDisposable
         var keys = new Dictionary<string, Type>();
         var factories = new HashSet<Type>();
 
+        // Pre-scan all assemblies for concrete EnumFactory<,> subclasses with lifetime overrides.
+        // Key: generic base type (e.g. EnumFactory<DataSource, IProviderSeasonRefresher>)
+        // Value: (concrete subclass type, lifetime)
+        var factoryOverrides = new Dictionary<Type, (Type ConcreteType, ServiceLifetime Lifetime)>();
+        foreach (var assembly in assemblies)
+        {
+            foreach (var type in GetSetCachedTypes(assembly))
+            {
+                var baseType = type.BaseType;
+                if (baseType is not { IsGenericType: true } || baseType.GetGenericTypeDefinition() != _factoryType)
+                    continue;
+
+                var attr = type.GetCustomAttribute<EnumServiceLifetimeAttribute>();
+                factoryOverrides[baseType] = (type, attr?.Lifetime ?? ServiceLifetime.Singleton);
+            }
+        }
+
         void RegisterEnvVar(Type[] genericTypes, object registration, Type currentBootstrapType)
         {
             var envVarType = genericTypes[0];
@@ -77,13 +94,26 @@ internal class BootstrapRegister : IDisposable
             {
                 throw new ArgumentNullException($"{type} isn't implementing an interface of the factory pattern ({_factoryServiceType.Name}).");
             }
-            services.Add(new ServiceDescriptor(interfaceInheritingFromServiceInterface, type, ServiceLifetime.Singleton));
 
             var enumFactoryType = _factoryType.MakeGenericType(enumType, interfaceInheritingFromServiceInterface);
 
+            // Check for a lifetime override from a concrete factory subclass attribute; default to Singleton.
+            var lifetime = factoryOverrides.TryGetValue(enumFactoryType, out var @override)
+                ? @override.Lifetime
+                : ServiceLifetime.Singleton;
+
+            services.Add(new ServiceDescriptor(interfaceInheritingFromServiceInterface, type, lifetime));
+
             if (!factories.Contains(enumFactoryType))
             {
-                services.Add(new ServiceDescriptor(enumFactoryType, enumFactoryType, ServiceLifetime.Singleton));
+                services.Add(new ServiceDescriptor(enumFactoryType, enumFactoryType, lifetime));
+
+                // Also register the concrete factory subclass so it can be injected directly.
+                if (@override.ConcreteType != null && @override.ConcreteType != enumFactoryType)
+                {
+                    services.Add(new ServiceDescriptor(@override.ConcreteType, @override.ConcreteType, lifetime));
+                }
+
                 factories.Add(enumFactoryType);
             }
         }

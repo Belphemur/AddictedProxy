@@ -184,7 +184,25 @@ Season packs from SuperSubtitles (subtitles where `is_season_pack = true`) are s
 - **Stores SuperSubtitles-specific metadata** (qualities, release groups, release, uploader) that may be useful when serving season packs later
 - **No `DownloadCount` yet** — download tracking can be added when season pack download API is implemented
 
-#### 1.5 One-Time Data Migration
+#### 1.5 Subtitle External ID
+
+Add a new `ExternalId` column to the `Subtitle` table to store the provider-specific identifier directly on the subtitle row. This avoids the need to encode/decode provider IDs in the `DownloadUri` field.
+
+| Provider       | `ExternalId` value                                          |
+| -------------- | ----------------------------------------------------------- |
+| Addic7ed       | The download URI string (migrated from `DownloadUri`)       |
+| SuperSubtitles | The upstream subtitle ID from the gRPC API (e.g. `"12345"`) |
+
+```
+Subtitle table (updated)
+├── ExternalId (string, nullable)          ◄── Provider-specific ID
+├── Index: (Source, ExternalId) unique     ◄── Fast lookup by provider + ID
+└── ... (existing columns unchanged)
+```
+
+A one-time migration (`MigrateSubtitleExternalIdMigration`) populates `ExternalId` from `DownloadUri` for all existing Addic7ed subtitles.
+
+#### 1.6 One-Time Data Migration
 
 Use the `OneTimeMigration` framework to migrate existing data:
 
@@ -275,12 +293,14 @@ Since the episode row is shared across providers, all its subtitles (from any so
 
 Subtitles are the leaf nodes — they are never merged across providers, only **appended**. Each subtitle row belongs to a specific provider (tracked by `Subtitle.Source`).
 
-**Why this works with no code change:** The existing `BulkMergeAsync` for subtitles uses `ColumnPrimaryKeyExpression = subtitle => new { subtitle.DownloadUri }`. Since each provider has unique download URLs:
+**Why this works with no code change:** The existing `BulkMergeAsync` for subtitles uses `ColumnPrimaryKeyExpression = subtitle => new { subtitle.DownloadUri }`. Since each provider has unique download URLs, they never collide, so new subtitles are always **inserted** alongside existing ones.
 
-- Addic7ed subtitles have URIs like `https://www.addic7ed.com/...`
-- SuperSubtitles subtitles have URIs like `https://feliratok.eu/...`
+Each subtitle also carries an `ExternalId` field — a provider-specific identifier:
 
-They never collide, so new subtitles are always **inserted** alongside existing ones.
+- **Addic7ed**: `ExternalId` = the download URI string (e.g. `https://www.addic7ed.com/...`)
+- **SuperSubtitles**: `ExternalId` = the upstream subtitle ID from the gRPC API (e.g. `12345`)
+
+The `(Source, ExternalId)` pair is unique-indexed, enabling fast lookups by provider without parsing URIs.
 
 **What happens when a user searches:**
 
@@ -323,19 +343,19 @@ The `Subtitle.Source` field (already present in the database) determines which d
 
 #### 2.5 Summary: What Changes vs. What Stays the Same
 
-| Component                 | Changes?         | Details                                                                                                  |
-| ------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------- |
-| `TvShow` table            | No schema change | Shows are merged into existing rows via TvDB/TMDB ID matching                                            |
-| `Episode` table           | No schema change | Episodes upserted by natural key `(TvShowId, Season, Number)`                                            |
-| `Subtitle` table          | No schema change | New subtitles appended with `Source = SuperSubtitles` and unique `DownloadUri`                           |
-| `ShowExternalId` table    | **New**          | Maps provider-specific show IDs to merged `TvShow` rows                                                  |
-| `EpisodeExternalId` table | **New**          | Maps provider-specific episode IDs to merged `Episode` rows                                              |
-| `DataSource` enum         | **Extended**     | Add `SuperSubtitles` value                                                                               |
-| `SearchSubtitlesService`  | No change        | Already queries all subtitles for an episode regardless of source                                        |
-| `SubtitlesController`     | No change        | Already returns all matching subtitles                                                                   |
-| `EpisodeRepository`       | No change        | `BulkMergeAsync` already handles upserts by natural keys                                                 |
-| `SubtitleProvider`        | **Minor change** | Route download to correct provider via `subtitle.Source`                                                 |
-| Background jobs           | **New jobs**     | `ImportSuperSubtitlesMigration` (one-time bulk import) + `RefreshSuperSubtitlesJob` (15-min incremental) |
+| Component                 | Changes?         | Details                                                                                                                                                                           |
+| ------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TvShow` table            | No schema change | Shows are merged into existing rows via TvDB/TMDB ID matching                                                                                                                     |
+| `Episode` table           | No schema change | Episodes upserted by natural key `(TvShowId, Season, Number)`                                                                                                                     |
+| `Subtitle` table          | **New column**   | `ExternalId` (string, nullable) added — provider-specific ID. Indexed `(Source, ExternalId)` unique. For Addic7ed: `DownloadUri` string. For SuperSubtitles: upstream subtitle ID |
+| `ShowExternalId` table    | **New**          | Maps provider-specific show IDs to merged `TvShow` rows                                                                                                                           |
+| `EpisodeExternalId` table | **New**          | Maps provider-specific episode IDs to merged `Episode` rows                                                                                                                       |
+| `DataSource` enum         | **Extended**     | Add `SuperSubtitles` value                                                                                                                                                        |
+| `SearchSubtitlesService`  | No change        | Already queries all subtitles for an episode regardless of source                                                                                                                 |
+| `SubtitlesController`     | No change        | Already returns all matching subtitles                                                                                                                                            |
+| `EpisodeRepository`       | No change        | `BulkMergeAsync` already handles upserts by natural keys                                                                                                                          |
+| `SubtitleProvider`        | **Minor change** | Route download to correct provider via `subtitle.Source`                                                                                                                          |
+| Background jobs           | **New jobs**     | `ImportSuperSubtitlesJob` (one-time startup bulk import, idempotent) + `RefreshSuperSubtitlesJob` (15-min incremental)                                                            |
 
 ### Phase 3: Provider Abstraction Layer
 
@@ -355,7 +375,9 @@ public interface ISubtitleSource
 }
 ```
 
-**ISubtitleDownloader** — Replaces direct dependency on `IAddic7edDownloader`:
+**ISubtitleDownloader** — Replaces direct dependency on `IAddic7edDownloader`.
+
+Each subtitle carries an `ExternalId` field containing the provider-specific identifier (download URI for Addic7ed, upstream subtitle ID for SuperSubtitles). The downloader reads `subtitle.ExternalId` directly — no URI parsing or scheme conventions needed.
 
 ```csharp
 public interface ISubtitleDownloader
@@ -386,15 +408,79 @@ public interface ISubtitleSourceRegistry
 - Route download to the correct provider
 - Addic7ed-specific credential rotation stays isolated in the Addic7ed downloader
 
-**ShowRefresher** — Stays Addic7ed-specific (see [Phase 4](#phase-4-background-job-pipeline) for why):
+**ShowRefresher, SeasonRefresher, EpisodeRefresher** — Internal factory routing via ExternalId tables:
 
-- The existing `ShowRefresher` and `RefreshAvailableShowsJob` continue to handle Addic7ed only
-- SuperSubtitles gets its own dedicated refresh job that runs separately
+The refresher services keep their **existing interfaces and class names unchanged**. Instead of exposing `IEnumService<DataSource>` or creating top-level factories, each refresher uses an **internal factory pattern**: it looks up the `ShowExternalId` table to determine which providers own a given show, then delegates to provider-specific internal implementations.
 
-**EpisodeRefresher** — Stays Addic7ed-specific:
+This approach means **no changes to callers** (background jobs, controllers) — they continue using `IShowRefresher`, `ISeasonRefresher`, `IEpisodeRefresher` as before.
 
-- The existing `EpisodeRefresher` and `FetchSubtitlesJob` continue to handle Addic7ed episodes
-- SuperSubtitles episodes/subtitles are ingested by the SuperSubtitles refresh job
+**Internal provider-specific interfaces:**
+
+```csharp
+/// <summary>Provider-specific show refresh logic, keyed by DataSource.</summary>
+public interface IProviderShowRefresher : IEnumService<DataSource>
+{
+    Task RefreshShowAsync(TvShow show, ShowExternalId externalId, CancellationToken token);
+    bool IsShowNeedsRefresh(TvShow show);
+}
+
+/// <summary>Provider-specific season refresh logic, keyed by DataSource.</summary>
+public interface IProviderSeasonRefresher : IEnumService<DataSource>
+{
+    Task<Season?> GetRefreshSeasonAsync(TvShow show, ShowExternalId externalId, int seasonNumber, CancellationToken token);
+    Task RefreshSeasonsAsync(TvShow show, ShowExternalId externalId, CancellationToken token);
+    bool IsShowNeedsRefresh(TvShow show);
+}
+
+/// <summary>Provider-specific episode refresh logic, keyed by DataSource.</summary>
+public interface IProviderEpisodeRefresher : IEnumService<DataSource>
+{
+    Task<Episode?> GetRefreshEpisodeAsync(TvShow show, ShowExternalId showExternalId, Season season, int episodeNumber, CancellationToken token);
+    Task RefreshEpisodesAsync(TvShow show, ShowExternalId showExternalId, IEnumerable<Season> seasonsToRefresh, Func<int, Task> sendProgress, CancellationToken token);
+    bool IsSeasonNeedRefresh(TvShow show, Season season);
+}
+```
+
+**Provider-specific implementations:**
+
+| Internal Interface          | Addic7ed Implementation                                                         | SuperSubtitles Implementation            |
+| --------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------- |
+| `IProviderShowRefresher`    | `Addic7edShowRefresher` (current `ShowRefresher` Addic7ed-specific logic)       | `SuperSubtitlesShowRefresher` (no-op)    |
+| `IProviderSeasonRefresher`  | `Addic7edSeasonRefresher` (current `SeasonRefresher` Addic7ed-specific logic)   | `SuperSubtitlesSeasonRefresher` (no-op)  |
+| `IProviderEpisodeRefresher` | `Addic7edEpisodeRefresher` (current `EpisodeRefresher` Addic7ed-specific logic) | `SuperSubtitlesEpisodeRefresher` (no-op) |
+
+**Routing logic inside `ShowRefresher.RefreshShowAsync(long tvShowId, ...)`:**
+
+```
+1. Load TvShow by ID
+2. Load ALL ShowExternalId entries for the TvShow
+3. For EACH ShowExternalId entry (i.e., for each provider that owns this show):
+   └─ Resolve the IProviderShowRefresher for that DataSource via EnumFactory
+   └─ Call provider impl with (TvShow, ShowExternalId)
+4. Example: a merged show has 2 ShowExternalId entries (Addic7ed + SuperSubtitles)
+   └─ Addic7edShowRefresher: fetches seasons/episodes from Addic7ed API using the Addic7ed external ID
+   └─ SuperSubtitlesShowRefresher: no-op (data comes via dedicated pipeline)
+```
+
+Same routing pattern applies to `SeasonRefresher` and `EpisodeRefresher`:
+1. Receive the `TvShow` from callers (the public interface is unchanged)
+2. Look up all `ShowExternalId` entries for that show
+3. Call **each** matching provider-specific refresher with `(TvShow, ShowExternalId)`
+
+The `ShowExternalId` is passed to provider implementations so they can use the provider's external show ID for upstream API calls (e.g., Addic7ed needs its own show ID to query its API).
+
+**Why use ExternalId tables instead of `TvShow.Source`?** A merged show can have external IDs from **both** providers. The `ShowExternalId` table is the source of truth for which providers own a given show. The `Source` field on `TvShow` only indicates which provider originally created the row, not which providers currently contribute data to it.
+
+**Why no-op for SuperSubtitles?** SuperSubtitles data is ingested via dedicated bulk import and incremental update jobs (Phase 4), not through the on-demand refresh pipeline. The no-op implementations ensure the factory can resolve any `DataSource` without throwing, and provide a clean extension point if SuperSubtitles ever needs on-demand refresh in the future.
+
+**Migration steps:**
+
+1. Create internal `IProviderShowRefresher`, `IProviderSeasonRefresher`, `IProviderEpisodeRefresher` interfaces extending `IEnumService<DataSource>`
+2. Extract Addic7ed-specific logic from `ShowRefresher` → `Addic7edShowRefresher`, `SeasonRefresher` → `Addic7edSeasonRefresher`, `EpisodeRefresher` → `Addic7edEpisodeRefresher`
+3. Create no-op `SuperSubtitlesShowRefresher`, `SuperSubtitlesSeasonRefresher`, `SuperSubtitlesEpisodeRefresher`
+4. Update `ShowRefresher`, `SeasonRefresher`, `EpisodeRefresher` to inject `EnumFactory<DataSource, IProviderXxxRefresher>` + `IShowExternalIdRepository` and route internally via `ShowExternalId` lookups
+5. Register provider-specific implementations in `BootstrapProvider` DI (auto-discovered via `IEnumService<DataSource>` convention)
+6. No changes needed to callers — they continue using the existing `IShowRefresher` / `ISeasonRefresher` / `IEpisodeRefresher` interfaces
 
 ### Phase 4: Background Job Pipeline
 
@@ -416,12 +502,14 @@ This design is critical because:
 
 #### 4.2 Phase A: One-Time Bulk Import Job
 
-This job runs once (via the `OneTimeMigration` framework) to populate the database with all existing SuperSubtitles data.
+This job is enqueued once at startup (when enabled) to populate the database with all existing SuperSubtitles data.
 
-**Rate limiting:** The show list is split into batches (configurable, e.g. 10 shows per batch). After each `GetShowSubtitles` gRPC call, the job waits for a configurable delay (e.g. 2–5 seconds) before sending the next batch. This prevents overwhelming the upstream SuperSubtitles server, which itself scrapes feliratok.eu.
+**Rate limiting:** The show list is split into batches (configurable, e.g. 60 shows per batch). After each `GetShowSubtitles` gRPC call, the job waits for a random delay between 10-30 seconds before sending the next batch. This prevents overwhelming the upstream SuperSubtitles server, which itself scrapes feliratok.eu.
+
+**Progress tracking:** The job uses **Hangfire.Console** to display real-time progress in the Hangfire Dashboard. Progress bars track batch processing, and console output logs each completed batch with statistics (shows processed, subtitles imported, season packs stored).
 
 ```
-ImportSuperSubtitlesMigration (OneTimeMigration, runs once after FetchMissingTvdbIdJob)
+ImportSuperSubtitlesJob (startup fire-and-forget, gated by config)
     │
     ├─► Step 1: GetShowList() via gRPC → stream Show (consume asynchronously)
     │   └─► Collects all Show objects into batches (id, name, year, image_url)
@@ -448,47 +536,86 @@ ImportSuperSubtitlesMigration (OneTimeMigration, runs once after FetchMissingTvd
     │   │       │
     │   │       └─► Else (non-season-pack subtitle):
     │   │           ├─► Use subtitle.Season and subtitle.Episode directly
+    │   │           ├─► Ensure Season(TvShowId, Number) entity exists (create if missing)
     │   │           ├─► Upsert Episode(TvShowId, Season, Number) via EpisodeRepository.UpsertEpisodes()
     │   │           ├─► Upsert EpisodeExternalId(Source=SuperSubtitles, ExternalId=subtitle.id)
-    │   │           ├─► Insert Subtitle(Source=SuperSubtitles, DownloadUri=download_url)
+    │   │           ├─► Insert Subtitle(Source=SuperSubtitles, ExternalId=subtitle.id, DownloadUri=download_url)
     │   │           │   └─► BulkMerge by DownloadUri (unique per provider)
     │   │           └─► Track max subtitle ID for use as incremental cursor
+    │   │
+    │   │   └─► Commit transaction once the full batch stream is processed
     │   │
     │   └─► ⏳ Wait for configurable delay before next batch (rate limiting)
     │
     └─► Store the max SuperSubtitles subtitle ID for incremental updates
 ```
 
-**Registration as a one-time migration:**
+**Registration in startup scheduler:**
 
 ```csharp
-[MigrationDate(2026, 2, 10)]
-public class ImportSuperSubtitlesMigration : IMigration
+public class ImportSuperSubtitlesJob
 {
     private readonly ISuperSubtitlesClient _superSubtitlesClient;
     private readonly SuperSubtitlesImportConfig _config;
+    private readonly ITransactionManager<EntityContext> _transactionManager;
+    private readonly IEpisodeRepository _episodeRepository;
+    private readonly ISeasonRepository _seasonRepository;
+    private readonly ISeasonPackSubtitleRepository _seasonPackRepository;
+    private readonly IShowExternalIdRepository _showExternalIdRepository;
+    private readonly IEpisodeExternalIdRepository _episodeExternalIdRepository;
+    private readonly ITvShowRepository _tvShowRepository;
+    private readonly ISuperSubtitlesStateRepository _superSubtitlesStateRepository;
     // ... other dependencies
 
-    public async Task ExecuteAsync(CancellationToken token)
+    public async Task ExecuteAsync(PerformContext context, CancellationToken token)
     {
+        // Initialize progress tracking
+        var progressBar = context.WriteProgressBar();
+        context.WriteLine("Starting SuperSubtitles bulk import...");
+
         // 1. Fetch all shows via gRPC streaming
+        context.WriteLine("Fetching show list from SuperSubtitles...");
         var allShows = await CollectShowsAsync(token);
+        context.WriteLine($"Collected {allShows.Count} shows");
 
         // 2. Split into batches to avoid rate limiting
-        var batches = allShows.Chunk(_config.BatchSize); // e.g. 10 shows per batch
+        var batches = allShows.Chunk(_config.BatchSize).ToArray(); // e.g. 60 shows per batch
+        context.WriteLine($"Split into {batches.Length} batches of {_config.BatchSize} shows each");
 
         long maxSubtitleId = 0;
-        foreach (var batch in batches)
-        {
-            // 3. Process batch and track max subtitle ID
-            maxSubtitleId = await ProcessShowBatchAsync(batch, maxSubtitleId, token);
+        int totalSubtitles = 0;
+        int totalSeasonPacks = 0;
 
-            // 4. Wait between batches to avoid rate limiting
-            await Task.Delay(_config.DelayBetweenBatches, token); // e.g. 2-5 seconds
+        for (int i = 0; i < batches.Length; i++)
+        {
+            var batch = batches[i];
+
+            // Update progress bar
+            progressBar.SetValue((int)((i / (double)batches.Length) * 100));
+            context.WriteLine($"Processing batch {i + 1}/{batches.Length}...");
+
+            // 3. Process batch and track max subtitle ID
+            var batchStats = await ProcessShowBatchAsync(batch, maxSubtitleId, token);
+            maxSubtitleId = batchStats.MaxSubtitleId;
+            totalSubtitles += batchStats.SubtitleCount;
+            totalSeasonPacks += batchStats.SeasonPackCount;
+
+            context.WriteLine($"Batch {i + 1} complete: {batchStats.SubtitleCount} subtitles, {batchStats.SeasonPackCount} season packs");
+
+            // 4. Wait between batches to avoid rate limiting (random delay)
+            if (i < batches.Length - 1) // Don't wait after last batch
+            {
+                var randomDelay = TimeSpan.FromSeconds(Random.Shared.Next(_config.MinDelaySeconds, _config.MaxDelaySeconds));
+                context.WriteLine($"Waiting {randomDelay.TotalSeconds:F0} seconds before next batch...");
+                await Task.Delay(randomDelay, token);
+            }
         }
 
         // 5. Store max ID for incremental updates
         await _superSubtitlesStateRepository.SetMaxSubtitleIdAsync(maxSubtitleId);
+
+        progressBar.SetValue(100);
+        context.WriteLine($"Import complete! Total: {totalSubtitles} subtitles, {totalSeasonPacks} season packs");
     }
 
     private async Task<List<Show>> CollectShowsAsync(CancellationToken token)
@@ -501,21 +628,38 @@ public class ImportSuperSubtitlesMigration : IMigration
         return shows;
     }
 
-    private async Task<long> ProcessShowBatchAsync(Show[] batch, long currentMaxId, CancellationToken token)
+    private record BatchStats(long MaxSubtitleId, int SubtitleCount, int SeasonPackCount);
+
+    private async Task<BatchStats> ProcessShowBatchAsync(Show[] batch, long currentMaxId, CancellationToken token)
     {
         TvShow? currentShow = null;
         long maxSubtitleId = currentMaxId;
+        int subtitleCount = 0;
+        int seasonPackCount = 0;
 
         await foreach (var item in _superSubtitlesClient.GetShowSubtitlesAsync(batch, token))
         {
             switch (item.ItemCase)
             {
                 case ShowSubtitleItem.ItemOneofCase.ShowInfo:
-                    currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
+                    // New show - wrap all its data in a transaction
+                    await _transactionManager.WrapInTransactionAsync(async () =>
+                    {
+                        currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
+                    }, token);
                     break;
 
                 case ShowSubtitleItem.ItemOneofCase.Subtitle:
-                    maxSubtitleId = await HandleSubtitleAsync(item.Subtitle, currentShow, maxSubtitleId, token);
+                    // Process subtitle within show's transaction context
+                    await _transactionManager.WrapInTransactionAsync(async () =>
+                    {
+                        var subtitleStats = await HandleSubtitleAsync(item.Subtitle, currentShow, maxSubtitleId, token);
+                        maxSubtitleId = subtitleStats.MaxId;
+                        if (subtitleStats.IsSeasonPack)
+                            seasonPackCount++;
+                        else
+                            subtitleCount++;
+                    }, token);
                     break;
 
                 case ShowSubtitleItem.ItemOneofCase.None:
@@ -528,7 +672,7 @@ public class ImportSuperSubtitlesMigration : IMigration
             }
         }
 
-        return maxSubtitleId;
+        return new BatchStats(maxSubtitleId, subtitleCount, seasonPackCount);
     }
 
     private async Task<TvShow> HandleShowInfoAsync(ShowInfo showInfo, CancellationToken token)
@@ -538,7 +682,9 @@ public class ImportSuperSubtitlesMigration : IMigration
         return tvShow;
     }
 
-    private async Task<long> HandleSubtitleAsync(Subtitle subtitle, TvShow? currentShow, long currentMaxId, CancellationToken token)
+    private record SubtitleStats(long MaxId, bool IsSeasonPack);
+
+    private async Task<SubtitleStats> HandleSubtitleAsync(Subtitle subtitle, TvShow? currentShow, long currentMaxId, CancellationToken token)
     {
         if (currentShow == null)
             throw new InvalidOperationException("Received subtitle without show info");
@@ -546,13 +692,13 @@ public class ImportSuperSubtitlesMigration : IMigration
         if (subtitle.IsSeasonPack)
         {
             await HandleSeasonPackAsync(currentShow, subtitle, token);
+            return new SubtitleStats(Math.Max(currentMaxId, subtitle.Id), IsSeasonPack: true);
         }
         else
         {
             await HandleEpisodeSubtitleAsync(currentShow, subtitle, token);
+            return new SubtitleStats(Math.Max(currentMaxId, subtitle.Id), IsSeasonPack: false);
         }
-
-        return Math.Max(currentMaxId, subtitle.Id);
     }
 
     private async Task HandleSeasonPackAsync(TvShow tvShow, Subtitle subtitle, CancellationToken token)
@@ -563,9 +709,31 @@ public class ImportSuperSubtitlesMigration : IMigration
 
     private async Task HandleEpisodeSubtitleAsync(TvShow tvShow, Subtitle subtitle, CancellationToken token)
     {
+        // Ensure Season entity exists for this season number
+        await EnsureSeasonExistsAsync(tvShow.Id, subtitle.Season, token);
+
         var episode = BuildEpisodeFromSubtitle(tvShow, subtitle);
         await _episodeRepository.UpsertEpisodes(new[] { episode }, token);
         await UpsertEpisodeExternalId(episode, subtitle.Id);
+    }
+
+    private async Task EnsureSeasonExistsAsync(long tvShowId, int seasonNumber, CancellationToken token)
+    {
+        var existingSeason = await _seasonRepository.GetSeasonForShowAsync(tvShowId, seasonNumber, token);
+        if (existingSeason == null)
+        {
+            var newSeason = new Season
+            {
+                TvShowId = tvShowId,
+                Number = seasonNumber,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await _seasonRepository.InsertNewSeasonsAsync(tvShowId, new[] { newSeason }, token);
+        }
+    }
+
+    private async Task<TvShow> MatchOrCreateShow(ShowData showData, CancellationToken token)
     {
         // 1. Check ShowExternalId first (fast path for already-imported shows)
         var existingByExtId = await _showExternalIdRepository
@@ -597,10 +765,13 @@ public class ImportSuperSubtitlesMigration : IMigration
 public class SuperSubtitlesImportConfig
 {
     /// <summary>Number of shows to request per gRPC batch call.</summary>
-    public int BatchSize { get; set; } = 10;
+    public int BatchSize { get; set; } = 60;
 
-    /// <summary>Delay between batch calls to avoid upstream rate limiting.</summary>
-    public TimeSpan DelayBetweenBatches { get; set; } = TimeSpan.FromSeconds(3);
+    /// <summary>Minimum delay in seconds between batch calls (random delay will be between Min and Max).</summary>
+    public int MinDelaySeconds { get; set; } = 10;
+
+    /// <summary>Maximum delay in seconds between batch calls (random delay will be between Min and Max).</summary>
+    public int MaxDelaySeconds { get; set; } = 30;
 }
 ```
 
@@ -609,8 +780,9 @@ public class SuperSubtitlesImportConfig
   "SuperSubtitles": {
     "GrpcAddress": "http://supersubtitles:8080",
     "Import": {
-      "BatchSize": 10,
-      "DelayBetweenBatches": "00:00:03"
+      "BatchSize": 60,
+      "MinDelaySeconds": 10,
+      "MaxDelaySeconds": 30
     }
   }
 }
@@ -636,6 +808,9 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
     │
     ├─► Step 5: Process stream asynchronously:
     │   │
+    │   │   ⚠️  The full incremental stream run is wrapped in one database transaction
+    │   │   using ITransactionManager<EntityContext>.
+    │   │
     │   ├─► When ShowSubtitleItem.show_info received:
     │   │   ├─► Lookup ShowExternalId(Source=SuperSubtitles, ExternalId=show.id)
     │   │   ├─► If not found: match by TvDB/TMDB ID from third_party_ids or create new TvShow
@@ -649,10 +824,13 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
     │       │
     │       └─► Else (non-season-pack subtitle):
     │           ├─► Use subtitle.Season and subtitle.Episode directly
+    │           ├─► Ensure Season(TvShowId, Number) entity exists (create if missing)
     │           ├─► Upsert Episode(TvShowId, Season, Number) via EpisodeRepository.UpsertEpisodes()
     │           ├─► Upsert EpisodeExternalId(Source=SuperSubtitles, ExternalId=subtitle.id)
-    │           ├─► Insert Subtitle(Source=SuperSubtitles, DownloadUri=download_url)
+    │           ├─► Insert Subtitle(Source=SuperSubtitles, ExternalId=subtitle.id, DownloadUri=download_url)
     │           └─► Track new max subtitle ID
+    │
+    │   └─► Commit transaction once the incremental stream run is processed
     │
     └─► Update stored max subtitle ID
 ```
@@ -662,6 +840,17 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
 ```csharp
 public class RefreshSuperSubtitlesJob
 {
+    private readonly ISuperSubtitlesClient _superSubtitlesClient;
+    private readonly ITransactionManager<EntityContext> _transactionManager;
+    private readonly IEpisodeRepository _episodeRepository;
+    private readonly ISeasonRepository _seasonRepository;
+    private readonly ISeasonPackSubtitleRepository _seasonPackRepository;
+    private readonly IShowExternalIdRepository _showExternalIdRepository;
+    private readonly IEpisodeExternalIdRepository _episodeExternalIdRepository;
+    private readonly ITvShowRepository _tvShowRepository;
+    private readonly ISuperSubtitlesStateRepository _stateRepository;
+    private readonly ILogger<RefreshSuperSubtitlesJob> _logger;
+
     // Scheduled as recurring job: every 15 minutes
     // Cron: "*/15 * * * *"
 
@@ -703,11 +892,19 @@ public class RefreshSuperSubtitlesJob
             switch (item.ItemCase)
             {
                 case ShowSubtitleItem.ItemOneofCase.ShowInfo:
-                    currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
+                    // New show - wrap all its data in a transaction
+                    await _transactionManager.WrapInTransactionAsync(async () =>
+                    {
+                        currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
+                    }, token);
                     break;
 
                 case ShowSubtitleItem.ItemOneofCase.Subtitle:
-                    newMaxId = await HandleSubtitleAsync(item.Subtitle, currentShow, newMaxId, token);
+                    // Process subtitle within show's transaction context
+                    await _transactionManager.WrapInTransactionAsync(async () =>
+                    {
+                        newMaxId = await HandleSubtitleAsync(item.Subtitle, currentShow, newMaxId, token);
+                    }, token);
                     break;
 
                 case ShowSubtitleItem.ItemOneofCase.None:
@@ -755,9 +952,28 @@ public class RefreshSuperSubtitlesJob
 
     private async Task HandleEpisodeSubtitleAsync(TvShow tvShow, Subtitle subtitle, CancellationToken token)
     {
+        // Ensure Season entity exists for this season number
+        await EnsureSeasonExistsAsync(tvShow.Id, subtitle.Season, token);
+
         var episode = BuildEpisodeFromSubtitle(tvShow, subtitle);
         await _episodeRepository.UpsertEpisodes(new[] { episode }, token);
         await UpsertEpisodeExternalId(episode, subtitle.Id);
+    }
+
+    private async Task EnsureSeasonExistsAsync(long tvShowId, int seasonNumber, CancellationToken token)
+    {
+        var existingSeason = await _seasonRepository.GetSeasonForShowAsync(tvShowId, seasonNumber, token);
+        if (existingSeason == null)
+        {
+            var newSeason = new Season
+            {
+                TvShowId = tvShowId,
+                Number = seasonNumber,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await _seasonRepository.InsertNewSeasonsAsync(tvShowId, new[] { newSeason }, token);
+        }
     }
 }
 ```
@@ -783,7 +999,7 @@ public class RefreshSuperSubtitlesJob
 │                 SUPERSUBTITLES PIPELINE (new)                       │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
-│  ImportSuperSubtitlesMigration (one-time, via OneTimeMigration)     │
+│  ImportSuperSubtitlesJob (one-time startup job, idempotent)          │
 │      └─► Bulk import: GetShowList → GetShowSubtitles (streamed) → merge all │
 │                                                                     │
 │  RefreshSuperSubtitlesJob (recurring every 15 minutes)             │
@@ -796,7 +1012,14 @@ The two pipelines are **independent** — SuperSubtitles does not chain off the 
 
 #### 4.5 On-Demand Episode Refresh (FetchSubtitlesJob)
 
-The existing `FetchSubtitlesJob` (triggered when a user searches and episodes are missing) stays **Addic7ed-only**. This is acceptable because:
+The existing `FetchSubtitlesJob` (triggered when a user searches and episodes are missing) continues to use the **unchanged** `IShowRefresher` / `ISeasonRefresher` / `IEpisodeRefresher` interfaces. Internally, these refreshers now look up `ShowExternalId` for the given show and delegate to the appropriate provider-specific implementation:
+
+- **Addic7ed**: The internal `Addic7edShowRefresher` / `Addic7edSeasonRefresher` / `Addic7edEpisodeRefresher` handle on-demand refresh by querying the Addic7ed API with credentials
+- **SuperSubtitles**: The internal no-op refreshers return immediately — SuperSubtitles data is kept fresh by the 15-minute `RefreshSuperSubtitlesJob` instead
+
+Callers (background jobs, controllers) are **unaffected** — they still inject and call `IShowRefresher`, `ISeasonRefresher`, `IEpisodeRefresher` directly.
+
+This is acceptable because:
 
 1. SuperSubtitles data is bulk-ingested by the one-time migration, then kept fresh via the 15-minute recurring job
 2. The Addic7ed on-demand flow is needed because Addic7ed requires per-season/per-episode queries with credentials
@@ -820,14 +1043,10 @@ public class SuperSubtitlesDownloader : ISubtitleDownloader
 
     public async Task<Stream> DownloadSubtitleAsync(Subtitle subtitle, CancellationToken token)
     {
-        // Use the gRPC DownloadSubtitle method
-        // The episode field extracts a specific episode from season packs (0 = full file)
-        var response = await _grpcClient.DownloadSubtitleAsync(new DownloadSubtitleRequest
-        {
-            DownloadUrl = subtitle.DownloadUri,
-            SubtitleId = subtitle.ExternalId,
-            Episode = subtitle.Number // Extract specific episode if from season pack
-        }, token);
+        // Use subtitle.ExternalId directly — no URI parsing needed
+        // ExternalId contains the upstream SuperSubtitles subtitle ID (e.g. "12345")
+        var response = await _grpcClient.DownloadSubtitleAsync(
+            subtitle.ExternalId, episode: null, token);
 
         return new MemoryStream(response.Content.ToByteArray());
     }
@@ -838,10 +1057,10 @@ No credentials, no rate limiting, no retry rotation needed — the SuperSubtitle
 
 ### Phase 5: SuperSubtitles Client Module
 
-#### 5.1 New Project: `AddictedProxy.SuperSubtitles`
+#### 5.1 New Project: `SuperSubtitleClient`
 
 ```
-AddictedProxy.SuperSubtitles/
+SuperSubtitleClient/
 ├── Client/
 │   ├── ISuperSubtitlesClient.cs       # Client interface
 │   └── SuperSubtitlesGrpcClient.cs    # gRPC client implementation (wraps generated stubs)
@@ -940,6 +1159,10 @@ AddictedProxy.Upstream/
 - Subtitle list could optionally show provider badge/icon
 - No changes needed to search/download flow
 
+## Progress Tracking
+
+A detailed checklist lives in [`docs/multi-provider-checklist.md`](multi-provider-checklist.md). **Update the checklist as each item is completed** to maintain an accurate view of progress across sessions.
+
 ## Implementation Order
 
 ### Step 1: Database Changes
@@ -947,8 +1170,9 @@ AddictedProxy.Upstream/
 1. Add `SuperSubtitles` to `DataSource` enum
 2. Create `ShowExternalId` and `EpisodeExternalId` entities
 3. Create `SeasonPackSubtitle` entity for storing season pack data
-4. Create EF Core migration
-5. Create one-time migration to populate `ShowExternalId`/`EpisodeExternalId` from existing data
+4. Add `ExternalId` column to `Subtitle` table with `(Source, ExternalId)` unique index
+5. Create EF Core migrations
+6. Create one-time migrations to populate `ShowExternalId`/`EpisodeExternalId` from existing data and `Subtitle.ExternalId` from `DownloadUri`
 
 ### Step 2: Provider Abstraction
 
@@ -959,7 +1183,7 @@ AddictedProxy.Upstream/
 
 ### Step 3: SuperSubtitles Client
 
-1. Create `AddictedProxy.SuperSubtitles` project
+1. Create `SuperSubtitleClient` project
 2. Add `supersubtitles.proto` and generate gRPC stubs
 3. Implement gRPC client wrapper (`SuperSubtitlesGrpcClient`)
 4. Implement `ISubtitleSource` and `ISubtitleDownloader` (using gRPC `DownloadSubtitle`)
@@ -967,18 +1191,21 @@ AddictedProxy.Upstream/
 
 ### Step 4: SuperSubtitles Import & Refresh Jobs
 
-1. Create `ImportSuperSubtitlesMigration` (one-time bulk import via `OneTimeMigration` framework)
+1. Create `ImportSuperSubtitlesJob` (one-time startup bulk import, idempotent)
    - Fetch all shows via `GetShowList` (streamed), collect into batches
    - For each batch: call `GetShowSubtitles` (streams `ShowSubtitleItem`), process stream asynchronously, **wait between batches** to avoid rate limiting
+    - **Wrap each import batch in a database transaction** using `ITransactionManager<EntityContext>`
    - Process streamed show info (ShowInfo) and subtitles (Subtitle) linked by show_id
    - Store season packs (`is_season_pack = true`) in `SeasonPackSubtitle` table
    - Use `ShowExternalId` for fast lookup of already-imported shows, fall back to TvDB → TMDB matching for first-time merge
+   - Ensure Season entities exist before upserting episodes (create via `SeasonRepository.InsertNewSeasonsAsync` if missing)
    - Use season/episode fields directly from the proto `Subtitle` message
    - Reuse `EpisodeRepository.UpsertEpisodes()` for episode + subtitle ingestion
    - Store max subtitle ID as cursor for incremental updates
 2. Create `RefreshSuperSubtitlesJob` (recurring every 15 minutes)
    - Check for updates via `CheckForUpdates` using stored max subtitle ID
    - If updates exist, call `GetRecentSubtitles` (streams `ShowSubtitleItem`) to fetch only new data
+    - **Wrap each incremental refresh run in a database transaction**
    - Process stream asynchronously (same logic as bulk import, no batch delays needed — dataset is small)
 3. Add `SuperSubtitlesImportConfig` for configurable batch size and delay between batches (bulk import only)
 

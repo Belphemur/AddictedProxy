@@ -15,7 +15,9 @@
     <v-container v-else>
       <v-data-table
           :items="subtitles"
-          :headers="headers" items-per-page="25"
+          :headers="headers"
+          :items-per-page="-1"
+          hide-default-footer
           :group-by="groupBy"
           v-if="!device.isMobile">
         <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
@@ -43,6 +45,11 @@
         <template v-slot:item.subtitle.hd="{item}">
           <v-icon height="24px" v-if="item.subtitle.hd">{{mdiCheck}}</v-icon>
           <span v-else></span>
+        </template>
+
+        <template v-slot:item.subtitle.source="{ item }">
+          <v-chip :color="item.subtitle.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
+            label>{{ item.subtitle.source }}</v-chip>
         </template>
 
         <template v-slot:item.subtitle.downloadCount="{item}">
@@ -98,6 +105,10 @@
                         <v-icon>{{mdiCheck}}</v-icon>
                         HD
                       </v-col>
+                      <v-col cols="12">
+                        <v-chip :color="subtitle.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
+                          label>{{ subtitle.source }}</v-chip>
+                      </v-col>
                     </v-row>
                   </v-card-text>
                   <v-card-actions  class="justify-center">
@@ -151,6 +162,7 @@ const headers = [
   {title: "Completed", key: "subtitle.completed"},
   {title: "Hearing Impaired", key: "subtitle.hearingImpaired"},
   {title: "HD", key: "subtitle.hd"},
+  { title: "Source", key: "subtitle.source" },
   {title: "Downloads", key: "subtitle.downloadCount"},
 ];
 

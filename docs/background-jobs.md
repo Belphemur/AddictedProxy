@@ -4,6 +4,8 @@
 
 AddictedProxy uses **Hangfire** with PostgreSQL storage for background job processing. Jobs handle show/episode refresh, subtitle storage, TMDB mapping, and one-time data migrations. Each job type runs on a dedicated queue with configurable concurrency.
 
+**Hangfire.Console** is integrated to provide real-time progress tracking and console output within the Hangfire Dashboard for all background jobs.
+
 ## Job Infrastructure
 
 ### Queues and Concurrency
@@ -21,6 +23,25 @@ Custom Hangfire attributes used:
 - **`[UniqueJob(Order, TTL)]`**: Prevents duplicate jobs (deduplication by parameters)
 - **`[MaxConcurrency(n)]`**: Limits concurrent execution
 - **`[AutoRetry(attempts, backoffType)]`**: Automatic retry with exponential backoff
+
+### Progress Tracking
+
+Hangfire.Console provides:
+- **Progress bars**: `IProgressBar progressBar = context.WriteProgressBar();`
+- **Console output**: `context.WriteLine("message");`
+- **Time series data**: Real-time updates visible in Hangfire Dashboard
+- **Structured logging**: Color-coded output (Info, Warning, Error)
+
+Jobs receive `PerformContext` as a parameter to access console features:
+
+```csharp
+public async Task Execute(PerformContext context)
+{
+    var progress = context.WriteProgressBar();
+    progress.SetValue(50); // 50% complete
+    context.WriteLine("Processing item...");
+}
+```
 
 ## Show Refresh Jobs
 
@@ -171,15 +192,19 @@ public class BootstrapMigration : IBootstrap
 - Resets exceeded credentials after cooldown period
 - Monitors account health via `GetDownloadUsageAsync()`
 
-## SuperSubtitles Jobs (Planned)
+## SuperSubtitles Jobs
 
 See [Multi-Provider Plan](multi-provider-plan.md) for full details.
 
-### ImportSuperSubtitlesMigration (One-Time)
+### ImportSuperSubtitlesJob (One-Time Startup Job)
 
-**Trigger**: One-time migration via `OneTimeMigration` framework (runs once on first deployment)  
+**Trigger**: Enqueued once on startup when `SuperSubtitles:Import:EnableImport=true`  
 **Purpose**: Bulk import all shows and subtitles from the SuperSubtitles gRPC API  
 **Concurrency**: Max 1  
+
+**Notes**:
+- Idempotent: skips when a max subtitle cursor already exists.
+- Uses one database transaction per configured show batch (not per streamed item).
 
 **Behavior**:
 1. Calls `GetShowList()` via gRPC (streams `Show` objects, consumed asynchronously and collected into batches)
@@ -209,3 +234,5 @@ See [Multi-Provider Plan](multi-provider-plan.md) for full details.
 7. Matches/merges shows and upserts episodes + subtitles (same logic as bulk import)
 8. Stores season packs in `SeasonPackSubtitle` table
 9. Updates the stored max subtitle ID
+
+The refresh execution processes the streamed incremental payload in a single database transaction for the run.

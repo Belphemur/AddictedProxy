@@ -2,9 +2,9 @@
 
 ## Overview
 
-The provider system is responsible for fetching show metadata and subtitle data from upstream subtitle sources. Currently, AddictedProxy has a single provider: **Addic7ed**. The system is designed around service interfaces that abstract the operations of refreshing shows, seasons, episodes, and downloading subtitles.
+The provider system fetches and merges subtitle data from upstream sources. AddictedProxy now runs with two providers: **Addic7ed** and **SuperSubtitles**. The service layer keeps the same public refresh/search/download interfaces while routing provider-specific behavior internally.
 
-## Current Architecture (Single Provider: Addic7ed)
+## Current Architecture (Multi-Provider: Addic7ed + SuperSubtitles)
 
 ### Service Layer
 
@@ -23,6 +23,8 @@ public class BootstrapProvider : IBootstrap
         services.AddSingleton<IRefreshHubManager, RefreshHubManager>();
         services.AddScoped<SubtitleCounterUpdater>();
         services.AddScoped<IDetailsProvider, DetailsProvider>();
+        services.AddScoped<IShowTmdbMapper, ShowTmdbMapper>();
+        services.AddScoped<IProviderDataIngestionService, ProviderDataIngestionService>();
     }
 }
 ```
@@ -45,8 +47,8 @@ public interface IShowRefresher
 ```
 
 **Current Implementation (`ShowRefresher`):**
-- `RefreshShowsAsync()`: Calls `IAddic7edClient.GetTvShowsAsync()` to fetch all shows, then upserts them into the database
-- `RefreshShowAsync()`: Refreshes seasons and episodes for a specific show using `ISeasonRefresher` and `IEpisodeRefresher`
+- `RefreshShowsAsync()`: Fetches all shows from Addic7ed, bulk-checks which are already in `ShowExternalId` (single query), resolves missing TMDB IDs via `IShowTmdbMapper`, then merges each new show via `IProviderDataIngestionService.MergeShowAsync()` (TvDB → TMDB ID matching for deduplication across providers)
+- `RefreshShowAsync()`: Routes per-provider refresh by loading all `ShowExternalId` entries and delegating to `IProviderShowRefresher` implementations via factory
 - `FindShowsAsync()`: Delegates to `ITvShowRepository.FindAsync()` for full-text search
 - Sends real-time progress via `IRefreshHubManager` (SignalR)
 
@@ -101,9 +103,9 @@ public interface ISubtitleProvider
 
 **Current Implementation (`SubtitleProvider`):**
 - Checks cached storage first (`ICachedStorageProvider`)
-- Falls back to downloading via `IAddic7edDownloader.DownloadSubtitle()`
-- Rotates credentials via `ICredentialsService` for rate limit distribution
-- Retries up to 3 times on `DownloadLimitExceededException`
+- Falls back to provider-routed download via `SubtitleDownloaderFactory` using `subtitle.Source`
+- Addic7ed downloader keeps credential rotation and retry behavior
+- SuperSubtitles downloader calls gRPC `DownloadSubtitle` using `subtitle.ExternalId`
 - Stores completed subtitles in background via `StoreSubtitleJob`
 
 #### IDetailsProvider
@@ -117,6 +119,31 @@ public interface IDetailsProvider
     Task<(MovieDetails details, ExternalIds? externalIds)?> GetMovieInfoAsync(TvShow show, CancellationToken token);
 }
 ```
+
+#### IShowTmdbMapper
+
+Encapsulates the TMDB search filter heuristics (release year, origin country, BBC detection) that are shared across `MapShowTmdbJob` and `ShowRefresher`. Returns strongly-typed result records instead of raw TMDB API responses.
+
+```csharp
+public interface IShowTmdbMapper
+{
+    /// <summary>Try to find TMDB (and TvDB) data for a TV show. Returns null if no match found.</summary>
+    Task<ShowTmdbInfo?> TryResolveShowAsync(TvShow show, CancellationToken token);
+
+    /// <summary>Try to find TMDB (and TvDB) data for a movie. Returns null if no match found.</summary>
+    Task<MovieTmdbInfo?> TryResolveMovieAsync(TvShow show, CancellationToken token);
+}
+
+// Result records
+public record ShowTmdbInfo(int TmdbId, int? TvdbId, bool IsEnded);
+public record MovieTmdbInfo(int TmdbId, int? TvdbId);
+```
+
+**Filter heuristics applied to TMDB search results:**
+- Shows with `BBC ` / `BBC:` in name → require `OriginCountry` contains `GB`
+- Shows with a year in parentheses e.g. `Show Name (2019)` → require `FirstAirDate` starts with that year
+- Shows with a 2–3 letter country code in parentheses e.g. `Show Name (US)` → require matching `OriginCountry`
+- Movies: year-in-parentheses filter applied to `ReleaseDate`
 
 ### Upstream Module (Addic7ed)
 
@@ -175,7 +202,13 @@ ShowRefresher.RefreshShowsAsync()
     │       │
     │       └─► Parser.GetShowsAsync()                        // Parse HTML response
     │
-    └─► ITvShowRepository.UpsertRefreshedShowsAsync()         // Save to database
+    ├─► IShowExternalIdRepository.GetExistingExternalIdsAsync()  // Bulk check already-known shows (single query)
+    │
+    ├─► For each NEW show (not in ShowExternalId table):
+    │   ├─► If TmdbId missing: IShowTmdbMapper.TryResolveShowAsync()  // Resolve via TMDB search
+    │   └─► IProviderDataIngestionService.MergeShowAsync()            // Merge or create TvShow
+    │
+    └─► Log: merged N new shows, skipped M already-known shows
 ```
 
 ### Data Flow: Search & Download Subtitle
@@ -239,18 +272,18 @@ The database already has `Source` fields on key entities:
 - **`TvShow.Source`**: `DataSource` enum (default: `Addic7ed`) — where the show was first discovered
 - **`Subtitle.Source`**: `DataSource` enum (default: `Addic7ed`) — which provider contributed this subtitle
 
-The `DataSource` enum currently only has `Addic7ed` as a value.
+The `DataSource` enum includes both `Addic7ed` and `SuperSubtitles`.
 
-## Planned: SuperSubtitles Provider
+## SuperSubtitles Provider (Implemented)
 
 See [Multi-Provider Plan](multi-provider-plan.md) for full architecture details.
 
-SuperSubtitles is a Go-based gRPC service that scrapes feliratok.eu (a Hungarian subtitle site). It will be integrated as a second provider with these key characteristics:
+SuperSubtitles is a Go-based gRPC service that scrapes feliratok.eu (a Hungarian subtitle site). It is integrated as a second provider with these characteristics:
 
 - **gRPC client** instead of HTTP/HTML scraping — communicates via Protocol Buffers with the [`supersubtitles.proto`](https://github.com/Belphemur/SuperSubtitles/blob/main/api/proto/v1/supersubtitles.proto) API
 - **No credentials needed** — unlike Addic7ed, no authentication or rate-limited credential rotation
 - **Season/episode provided** — the `Subtitle` message includes `season` and `episode` as `int32` fields, used directly
 - **Show lookup via `ShowExternalId`** — uses the new external ID system to look up already-imported shows before falling back to TvDB/TMDB matching
-- **Two-phase ingestion**: one-time bulk import (with batch delays for rate limiting) + recurring 15-minute incremental updates
+- **Two-phase ingestion**: one-time startup bulk import job (idempotent) + recurring 15-minute incremental updates
 - **Subtitle downloads** via gRPC `DownloadSubtitle` method (supports season pack episode extraction)
 - **Season packs stored** in dedicated `SeasonPackSubtitle` table during ingestion — not served yet, but data is preserved for future download support

@@ -17,7 +17,7 @@ namespace AddictedProxy.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.9")
+                .HasAnnotation("ProductVersion", "10.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -128,6 +128,41 @@ namespace AddictedProxy.Database.Migrations
                     b.ToTable("Episodes");
                 });
 
+            modelBuilder.Entity("AddictedProxy.Database.Model.Shows.EpisodeExternalId", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("EpisodeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ExternalId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EpisodeId", "Source")
+                        .IsUnique();
+
+                    b.HasIndex("Source", "ExternalId")
+                        .IsUnique();
+
+                    b.ToTable("EpisodeExternalIds");
+                });
+
             modelBuilder.Entity("AddictedProxy.Database.Model.Shows.Season", b =>
                 {
                     b.Property<long>("Id")
@@ -157,6 +192,121 @@ namespace AddictedProxy.Database.Migrations
                         .IsUnique();
 
                     b.ToTable("Seasons");
+                });
+
+            modelBuilder.Entity("AddictedProxy.Database.Model.Shows.SeasonPackSubtitle", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("Discovered")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("ExternalId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Filename")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LanguageIsoCode")
+                        .HasMaxLength(7)
+                        .HasColumnType("VARCHAR");
+
+                    b.Property<string>("Qualities")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Release")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReleaseGroups")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Season")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("StoragePath")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("StoredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("TvShowId")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("UniqueId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("uuidv7()");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UploadedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Uploader")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UniqueId")
+                        .IsUnique();
+
+                    b.HasIndex("Source", "ExternalId")
+                        .IsUnique();
+
+                    b.HasIndex("TvShowId", "Season");
+
+                    b.ToTable("SeasonPackSubtitles");
+                });
+
+            modelBuilder.Entity("AddictedProxy.Database.Model.Shows.ShowExternalId", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ExternalId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("TvShowId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Source", "ExternalId")
+                        .IsUnique();
+
+                    b.HasIndex("TvShowId", "Source")
+                        .IsUnique();
+
+                    b.ToTable("ShowExternalIds");
                 });
 
             modelBuilder.Entity("AddictedProxy.Database.Model.Shows.Subtitle", b =>
@@ -191,6 +341,9 @@ namespace AddictedProxy.Database.Migrations
 
                     b.Property<long>("EpisodeId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("text");
 
                     b.Property<bool>("HD")
                         .HasColumnType("boolean");
@@ -236,6 +389,9 @@ namespace AddictedProxy.Database.Migrations
                         .IsUnique();
 
                     b.HasIndex("UniqueId")
+                        .IsUnique();
+
+                    b.HasIndex("Source", "ExternalId")
                         .IsUnique();
 
                     b.HasIndex("EpisodeId", "Language", "Version");
@@ -298,15 +454,34 @@ namespace AddictedProxy.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExternalId")
-                        .IsUnique();
-
                     b.HasIndex("TvdbId");
 
                     b.HasIndex("UniqueId")
                         .IsUnique();
 
                     b.ToTable("TvShows");
+                });
+
+            modelBuilder.Entity("AddictedProxy.Database.Model.State.SuperSubtitlesState", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("MaxSubtitleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SuperSubtitlesState");
                 });
 
             modelBuilder.Entity("AddictedProxy.Database.Model.Shows.Episode", b =>
@@ -320,10 +495,43 @@ namespace AddictedProxy.Database.Migrations
                     b.Navigation("TvShow");
                 });
 
+            modelBuilder.Entity("AddictedProxy.Database.Model.Shows.EpisodeExternalId", b =>
+                {
+                    b.HasOne("AddictedProxy.Database.Model.Shows.Episode", "Episode")
+                        .WithMany("ExternalIds")
+                        .HasForeignKey("EpisodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Episode");
+                });
+
             modelBuilder.Entity("AddictedProxy.Database.Model.Shows.Season", b =>
                 {
                     b.HasOne("AddictedProxy.Database.Model.Shows.TvShow", "TvShow")
                         .WithMany("Seasons")
+                        .HasForeignKey("TvShowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TvShow");
+                });
+
+            modelBuilder.Entity("AddictedProxy.Database.Model.Shows.SeasonPackSubtitle", b =>
+                {
+                    b.HasOne("AddictedProxy.Database.Model.Shows.TvShow", "TvShow")
+                        .WithMany("SeasonPackSubtitles")
+                        .HasForeignKey("TvShowId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TvShow");
+                });
+
+            modelBuilder.Entity("AddictedProxy.Database.Model.Shows.ShowExternalId", b =>
+                {
+                    b.HasOne("AddictedProxy.Database.Model.Shows.TvShow", "TvShow")
+                        .WithMany("ExternalIds")
                         .HasForeignKey("TvShowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -344,12 +552,18 @@ namespace AddictedProxy.Database.Migrations
 
             modelBuilder.Entity("AddictedProxy.Database.Model.Shows.Episode", b =>
                 {
+                    b.Navigation("ExternalIds");
+
                     b.Navigation("Subtitles");
                 });
 
             modelBuilder.Entity("AddictedProxy.Database.Model.Shows.TvShow", b =>
                 {
                     b.Navigation("Episodes");
+
+                    b.Navigation("ExternalIds");
+
+                    b.Navigation("SeasonPackSubtitles");
 
                     b.Navigation("Seasons");
                 });

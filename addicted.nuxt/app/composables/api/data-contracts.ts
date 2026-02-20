@@ -168,6 +168,9 @@ export interface MediaDetailsWithEpisodeAndSubtitlesDto {
 /** Represent the type of media */
 export type MediaType = "Show" | "Movie";
 
+/** Source provider of the subtitle */
+export type DataSource = "Addic7ed" | "SuperSubtitles";
+
 /** Use for the website to provide easy search for the user */
 export interface SearchRequest {
   /**
@@ -272,6 +275,8 @@ export interface SubtitleDto {
    * @example 100
    */
   downloadCount: number;
+  /** Source provider of the subtitle */
+  source: DataSource;
 }
 
 export interface SubtitleSearchResponse {
