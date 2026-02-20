@@ -1,3 +1,9 @@
+## [4.44.1](https://github.com/Belphemur/AddictedProxy/compare/v4.44.0...v4.44.1) (2026-02-20)
+
+### Bug Fixes
+
+* **parser:** add source and external ID to subtitle metadata ([b82a4e4](https://github.com/Belphemur/AddictedProxy/commit/b82a4e47921839ca29c5204602a8db1b249b4965))
+
 ## [4.44.0](https://github.com/Belphemur/AddictedProxy/compare/v4.43.2...v4.44.0) (2026-02-20)
 
 ### Bug Fixes
