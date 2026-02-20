@@ -9,6 +9,8 @@ using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
 using AsyncKeyedLock;
 using Hangfire;
+using Hangfire.Console;
+using Hangfire.Server;
 using Locking;
 using Performance.Model;
 using Performance.Service;
@@ -62,8 +64,9 @@ public class FetchSubtitlesJob
     [MaximumConcurrentExecutions(10, 10)]
     [AutomaticRetry(Attempts = 20, OnAttemptsExceeded = AttemptsExceededAction.Delete, DelaysInSeconds = [60, 10 * 60, 15 * 60, 45 * 60, 60 * 60, 10 * 60, 20 * 60, 40 * 60, 45 * 60, 60*60])]
     [Queue("fetch-subtitles")]
-    public async Task ExecuteAsync(JobData data, CancellationToken cancellationToken)
+    public async Task ExecuteAsync(JobData data, PerformContext context, CancellationToken cancellationToken)
     {
+        context.WriteLine(string.Format("Fetching subtitles for {0}", data.RequestData));
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         cts.CancelAfter(TimeSpan.FromMinutes(10));
         var token = cts.Token;
@@ -76,6 +79,7 @@ public class FetchSubtitlesJob
         if (releaser is null)
         {
             _logger.LogInformation("Lock for {key} already taken", data.Key);
+            context.WriteLine(string.Format("Lock already held for {0}, skipping", data.Key));
             return;
         }
 
@@ -87,6 +91,7 @@ public class FetchSubtitlesJob
             if (season == null)
             {
                 _logger.LogInformation("Couldn't find season {season} for show {showName}", data.Season, show.Name);
+                context.WriteLine(string.Format("Season {0} not found for {1}", data.Season, show.Name));
                 return;
             }
 
@@ -95,6 +100,7 @@ public class FetchSubtitlesJob
             if (episode == null)
             {
                 _logger.LogInformation("Couldn't find episode S{season}E{episode} for show {showName}", data.Season, data.Episode, show.Name);
+                context.WriteLine(string.Format("Episode S{0}E{1} not found for {2}", data.Season, data.Episode, show.Name));
                 return;
             }
 
@@ -105,16 +111,19 @@ public class FetchSubtitlesJob
             if (matchingSubtitles || DateTime.UtcNow - latestDiscovered > TimeSpan.FromDays(180))
             {
                 _logger.LogInformation("Matching subtitles found or episode was already refreshed");
+                context.WriteLine("Matching subtitles found or episode was already refreshed");
             }
             else
             {
                 _logger.LogInformation("Couldn't find matching subtitles for {search}", data.RequestData);
+                context.WriteLine(string.Format("No matching subtitles found for {0}", data.RequestData));
             }
         }
         catch (Exception e)
         {
             transaction.Finish(e, Status.InternalError);
             _logger.LogCritical(e, "Failed to fetch subtitles for {search}", data.RequestData);
+            context.WriteLine(string.Format("Error: Failed to fetch subtitles for {0}: {1}", data.RequestData, e.Message));
             throw;
         }
     }

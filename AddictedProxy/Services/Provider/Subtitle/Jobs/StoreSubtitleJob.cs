@@ -4,6 +4,8 @@ using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Storage.Store.Compression;
 using AsyncKeyedLock;
 using Hangfire;
+using Hangfire.Console;
+using Hangfire.Server;
 using Locking;
 using Performance.Service;
 
@@ -29,13 +31,15 @@ public class StoreSubtitleJob
 
 
     [Queue("store-subtitle")]
-    public async Task ExecuteAsync(Guid subtitleId, byte[] subtitleBlob, CancellationToken cancellationToken)
+    public async Task ExecuteAsync(Guid subtitleId, byte[] subtitleBlob, PerformContext context, CancellationToken cancellationToken)
     {
+        context.WriteLine(string.Format("Starting to store subtitle {0}", subtitleId));
         using var releaser = await _asyncKeyedLocker.LockOrNullAsync(subtitleId, 0, cancellationToken).ConfigureAwait(false);
 
         if (releaser is null)
         {
             _logger.LogInformation("Lock already taken for {subtitleId}", subtitleId);
+            context.WriteLine(string.Format("Lock already held for subtitle {0}, skipping", subtitleId));
             return;
         }
 
@@ -46,6 +50,7 @@ public class StoreSubtitleJob
         if (subtitle == null)
         {
             _logger.LogWarning("Subtitle couldn't be found with GUID {subtitleId}", subtitleId);
+            context.WriteLine(string.Format("Subtitle {0} not found in database", subtitleId));
             return;
         }
 
@@ -53,12 +58,14 @@ public class StoreSubtitleJob
         var storageName = GetStorageName(subtitle);
         if (!await _storageProvider.StoreAsync(storageName, buffer, cancellationToken: cancellationToken))
         {
-            throw new InvalidOperationException($"Couldn't store the subtitle {subtitleId}");
+            context.WriteLine(string.Format("Error: Failed to store subtitle {0} to storage", subtitleId));
+            throw new InvalidOperationException(string.Format("Couldn't store the subtitle {0}", subtitleId));
         }
 
         subtitle.StoragePath = storageName;
         subtitle.StoredAt = DateTime.UtcNow;
         await _subtitleRepository.SaveChangeAsync(cancellationToken);
+        context.WriteLine(string.Format("Successfully stored subtitle {0} to {1}", subtitleId, storageName));
     }
 
     private string GetStorageName(Database.Model.Shows.Subtitle subtitle)
