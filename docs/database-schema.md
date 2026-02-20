@@ -188,11 +188,14 @@ BulkSaveChangesAsync()                       // Batch save
 ### IEpisodeRepository
 
 ```csharp
-UpsertEpisodes(episodes)                     // Bulk upsert episodes with subtitles
+UpsertEpisodes(episodes)                     // Bulk upsert episodes with subtitles (BulkMergeAsync, used by Addic7ed)
+MergeEpisodeWithSubtitleAsync(episode, sub)  // Atomic single episode+subtitle upsert via raw SQL CTE (used by SuperSubtitles)
 GetEpisodeUntrackedAsync(showId, season, ep) // Get episode (no change tracking)
 GetSeasonEpisodesAsync(showId, season)       // All episodes in a season
 GetSeasonEpisodesByLangUntrackedAsync(...)   // Episodes filtered by language
 ```
+
+> **⚠️ Raw SQL:** `MergeEpisodeWithSubtitleAsync` uses a raw SQL CTE (`INSERT ... ON CONFLICT`) that references `Episode` and `Subtitle` columns by name. When adding, removing, or renaming columns on these entities, you **must** update the SQL manually — the compiler will not catch mismatches.
 
 ### ISeasonRepository
 
