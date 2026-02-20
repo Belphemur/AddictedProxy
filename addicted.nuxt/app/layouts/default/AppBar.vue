@@ -22,7 +22,7 @@
     </template>
     <v-app-bar-title>
       <v-icon :icon="logo"/>
-      Gestdown: Addic7ed Proxy
+      Gestdown: Subtitle Aggregator
     </v-app-bar-title>
 
   </v-app-bar>

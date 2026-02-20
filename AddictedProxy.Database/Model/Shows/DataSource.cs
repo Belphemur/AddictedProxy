@@ -3,4 +3,5 @@
 public enum DataSource
 {
     Addic7ed,
+    SuperSubtitles,
 }

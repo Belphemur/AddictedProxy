@@ -22,6 +22,7 @@
         <PackageReference Include="Polly" />
         <PackageReference Include="Polly.Contrib.WaitAndRetry" />
         <PackageReference Include="Hangfire.AspNetCore" />
+        <PackageReference Include="Hangfire.Console" />
         <PackageReference Include="System.Text.Encodings.Web" />
     </ItemGroup>
 

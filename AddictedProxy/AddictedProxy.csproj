@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="Hangfire.AspNetCore" />
+        <PackageReference Include="Hangfire.Console" />
         <PackageReference Include="Hangfire.Dashboard.BasicAuthorization" />
         <PackageReference Include="Hangfire.MaximumConcurrentExecutions" />
         <PackageReference Include="Hangfire.PostgreSql" />
@@ -41,6 +42,7 @@
         <ProjectReference Include="..\Locking\Locking.csproj" />
         <ProjectReference Include="..\Performance\Performance.csproj" />
         <ProjectReference Include="..\ProxyScrape\ProxyScrape.csproj" />
+        <ProjectReference Include="..\SuperSubtitleClient\SuperSubtitleClient.csproj" />
         <ProjectReference Include="..\TvMovieDatabaseClient\TvMovieDatabaseClient.csproj" />
     </ItemGroup>
 
@@ -71,4 +73,3 @@
     </ItemGroup>
 
 </Project>
-

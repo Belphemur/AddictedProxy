@@ -2,6 +2,7 @@
 
 using AddictedProxy.Services.Job.Service;
 using Hangfire;
+using Hangfire.Console;
 using Hangfire.Dashboard.BasicAuthorization;
 using Hangfire.PostgreSql;
 using InversionOfControl.Model;
@@ -18,6 +19,7 @@ public class BootstrapJobScheduler : IBootstrap, IBootstrapApp
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
+            .UseConsole()
             .UsePostgreSqlStorage(options =>
             {
                 var config = configuration.GetConnectionString("Job");

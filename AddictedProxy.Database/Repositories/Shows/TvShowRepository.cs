@@ -154,6 +154,13 @@ public class TvShowRepository : ITvShowRepository
             .ToAsyncEnumerable();
     }
 
+    /// <inheritdoc />
+    public async Task InsertShowAsync(TvShow show, CancellationToken token)
+    {
+        await _entityContext.TvShows.AddAsync(show, token);
+        await _entityContext.SaveChangesAsync(token);
+    }
+
     /// <summary>
     /// Get shows having at least one season
     /// </summary>

@@ -1,10 +1,9 @@
 ﻿#region
 
 using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Services.Credentials;
+using AddictedProxy.Services.Provider.Subtitle.Download;
 using AddictedProxy.Services.Provider.Subtitle.Jobs;
 using AddictedProxy.Storage.Caching.Service;
-using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.Exception;
 using Hangfire;
 
@@ -14,25 +13,21 @@ namespace AddictedProxy.Services.Provider.Subtitle;
 
 internal class SubtitleProvider : ISubtitleProvider
 {
-    private readonly IAddic7edDownloader _addic7EdDownloader;
-    private readonly ICredentialsService _credentialsService;
+    private readonly SubtitleDownloaderFactory _downloaderFactory;
     private readonly ILogger<SubtitleProvider> _logger;
     private readonly SubtitleCounterUpdater _subtitleCounterUpdater;
     private readonly ICachedStorageProvider _cachedStorageProvider;
     private readonly ISubtitleRepository _subtitleRepository;
-    private const int MAX_ATTEMPTS = 3;
 
-    public SubtitleProvider(IAddic7edDownloader addic7EdDownloader,
+    public SubtitleProvider(SubtitleDownloaderFactory downloaderFactory,
                             ICachedStorageProvider cachedStorageProvider,
                             ISubtitleRepository subtitleRepository,
-                            ICredentialsService credentialsService,
                             ILogger<SubtitleProvider> logger,
                             SubtitleCounterUpdater subtitleCounterUpdater)
     {
-        _addic7EdDownloader = addic7EdDownloader;
+        _downloaderFactory = downloaderFactory;
         _cachedStorageProvider = cachedStorageProvider;
         _subtitleRepository = subtitleRepository;
-        _credentialsService = credentialsService;
         _logger = logger;
         _subtitleCounterUpdater = subtitleCounterUpdater;
     }
@@ -59,55 +54,40 @@ internal class SubtitleProvider : ISubtitleProvider
             _logger.LogWarning("Couldn't find subtitle with path [{path}] in storage, even if we have a path for it", subtitle.StoragePath);
         }
 
-        return await DownloadStoreSubtitleAsync(subtitle, 0, token);
+        return await DownloadStoreSubtitleAsync(subtitle, token);
     }
 
-    private async Task<Stream> DownloadStoreSubtitleAsync(Database.Model.Shows.Subtitle subtitle, int attempts, CancellationToken token)
+    private async Task<Stream> DownloadStoreSubtitleAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token)
     {
-        if (attempts >= MAX_ATTEMPTS)
-        {
-            throw new DownloadLimitExceededException($"Reached maximum attempts ({MAX_ATTEMPTS}) to download subtitle");
-        }
+        var downloader = _downloaderFactory.GetService(subtitle.Source);
 
-        await using (var creds = await _credentialsService.GetLeastUsedCredsDownloadAsync(token))
+        try
         {
-            try
+            //Subtitle isn't complete, no need to store it, just directly return the download stream
+            if (!subtitle.Completed)
             {
-                //Subtitle isn't complete, no need to store it, just directly return the download stream
-                if (!subtitle.Completed)
-                {
-                    await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
-                    return await _addic7EdDownloader.DownloadSubtitle(creds?.AddictedUserCredentials, subtitle, token);
-                }
-
-
-                await using var subtitleStream = await _addic7EdDownloader.DownloadSubtitle(creds?.AddictedUserCredentials, subtitle, token);
-                await using var buffer = new MemoryStream();
-
-                await subtitleStream.CopyToAsync(buffer, token);
-
-                var blob = buffer.ToArray();
-
-                BackgroundJob.Enqueue<StoreSubtitleJob>(job => job.ExecuteAsync(subtitle.UniqueId, blob, default));
-
-
                 await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
-                return new MemoryStream(blob);
+                return await downloader.DownloadSubtitleAsync(subtitle, token);
             }
-            catch (DownloadLimitExceededException)
-            {
-                creds?.TagAsDownloadExceeded();
-            }
-            catch (SubtitleFileDeletedException)
-            {
-                _subtitleRepository.TagForRemoval(subtitle);
-                await _subtitleRepository.SaveChangeAsync(token);
-                throw;
-            }
-        }
 
-        await Task.Delay(TimeSpan.FromMilliseconds(100), token);
-        return await DownloadStoreSubtitleAsync(subtitle, attempts + 1, token);
+            await using var subtitleStream = await downloader.DownloadSubtitleAsync(subtitle, token);
+            await using var buffer = new MemoryStream();
+
+            await subtitleStream.CopyToAsync(buffer, token);
+
+            var blob = buffer.ToArray();
+
+            BackgroundJob.Enqueue<StoreSubtitleJob>(job => job.ExecuteAsync(subtitle.UniqueId, blob, default));
+
+            await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
+            return new MemoryStream(blob);
+        }
+        catch (SubtitleFileDeletedException)
+        {
+            _subtitleRepository.TagForRemoval(subtitle);
+            await _subtitleRepository.SaveChangeAsync(token);
+            throw;
+        }
     }
 
     public Task<Database.Model.Shows.Subtitle?> GetSubtitleFullAsync(Guid subtitleId, CancellationToken token)

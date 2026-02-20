@@ -4,6 +4,7 @@ using AddictedProxy.Database.Context;
 using AddictedProxy.Database.EnvVar;
 using AddictedProxy.Database.Repositories.Credentials;
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Database.Repositories.State;
 using AddictedProxy.Tools.Database.Transaction;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
@@ -36,6 +37,10 @@ public class BootstrapDatabase : IBootstrap,
         services.AddScoped<ISeasonRepository, SeasonRepository>();
         services.AddScoped<IEpisodeRepository, EpisodeRepository>();
         services.AddScoped<ISubtitleRepository, SubtitleRepository>();
+        services.AddScoped<IShowExternalIdRepository, ShowExternalIdRepository>();
+        services.AddScoped<IEpisodeExternalIdRepository, EpisodeExternalIdRepository>();
+        services.AddScoped<ISeasonPackSubtitleRepository, SeasonPackSubtitleRepository>();
+        services.AddScoped<ISuperSubtitlesStateRepository, SuperSubtitlesStateRepository>();
         services.AddScoped<IAddictedUserCredentialRepository, AddictedUserCredentialRepository>();
         services.AddScoped<ITransactionManager<EntityContext>, TransactionManager<EntityContext>>();
     }

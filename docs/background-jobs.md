@@ -4,6 +4,8 @@
 
 AddictedProxy uses **Hangfire** with PostgreSQL storage for background job processing. Jobs handle show/episode refresh, subtitle storage, TMDB mapping, and one-time data migrations. Each job type runs on a dedicated queue with configurable concurrency.
 
+**Hangfire.Console** is integrated to provide real-time progress tracking and console output within the Hangfire Dashboard for all background jobs.
+
 ## Job Infrastructure
 
 ### Queues and Concurrency
@@ -21,6 +23,25 @@ Custom Hangfire attributes used:
 - **`[UniqueJob(Order, TTL)]`**: Prevents duplicate jobs (deduplication by parameters)
 - **`[MaxConcurrency(n)]`**: Limits concurrent execution
 - **`[AutoRetry(attempts, backoffType)]`**: Automatic retry with exponential backoff
+
+### Progress Tracking
+
+Hangfire.Console provides:
+- **Progress bars**: `IProgressBar progressBar = context.WriteProgressBar();`
+- **Console output**: `context.WriteLine("message");`
+- **Time series data**: Real-time updates visible in Hangfire Dashboard
+- **Structured logging**: Color-coded output (Info, Warning, Error)
+
+Jobs receive `PerformContext` as a parameter to access console features:
+
+```csharp
+public async Task Execute(PerformContext context)
+{
+    var progress = context.WriteProgressBar();
+    progress.SetValue(50); // 50% complete
+    context.WriteLine("Processing item...");
+}
+```
 
 ## Show Refresh Jobs
 
@@ -170,3 +191,48 @@ public class BootstrapMigration : IBootstrap
 - Tracks download usage per Addic7ed account
 - Resets exceeded credentials after cooldown period
 - Monitors account health via `GetDownloadUsageAsync()`
+
+## SuperSubtitles Jobs
+
+See [Multi-Provider Plan](multi-provider-plan.md) for full details.
+
+### ImportSuperSubtitlesJob (One-Time Startup Job)
+
+**Trigger**: Enqueued once on startup when `SuperSubtitles:Import:EnableImport=true`  
+**Purpose**: Bulk import all shows and subtitles from the SuperSubtitles gRPC API  
+**Concurrency**: Max 1  
+
+**Notes**:
+- Idempotent: skips when a max subtitle cursor already exists.
+- Uses one database transaction per configured show batch (not per streamed item).
+
+**Behavior**:
+1. Calls `GetShowList()` via gRPC (streams `Show` objects, consumed asynchronously and collected into batches)
+2. Splits collected shows into configurable batches (e.g. 10 shows per batch)
+3. For each batch: calls `GetShowSubtitles()` (streams `ShowSubtitleItem` containing `ShowInfo` + `Subtitle` objects linked by show_id)
+4. Processes stream asynchronously: ShowInfo contains show metadata + third-party IDs, Subtitle objects follow
+5. Looks up `ShowExternalId(Source=SuperSubtitles)` first for already-imported shows; falls back to TvDB/TMDB matching from third-party IDs
+6. Separates season packs (`is_season_pack = true`) and stores them in `SeasonPackSubtitle` table
+7. Uses `season` and `episode` fields from the proto `Subtitle` message directly for episode subtitles
+8. Upserts episodes and subtitles via `EpisodeRepository.UpsertEpisodes()`
+9. **Waits between batches** (configurable delay, e.g. 3 seconds) to avoid upstream rate limiting
+10. Stores the max subtitle ID as a cursor for subsequent incremental updates
+
+### RefreshSuperSubtitlesJob (Recurring)
+
+**Trigger**: Scheduled recurring job every 15 minutes (Hangfire cron: `*/15 * * * *`)  
+**Purpose**: Incrementally fetch new subtitles from SuperSubtitles since the last known subtitle ID  
+**Concurrency**: Max 1  
+
+**Behavior**:
+1. Loads the stored max SuperSubtitles subtitle ID
+2. Calls `CheckForUpdates()` via gRPC with the stored ID
+3. If no updates → exits early
+4. Calls `GetRecentSubtitles(since_id)` (streams `ShowSubtitleItem` containing `ShowInfo` + `Subtitle` objects for shows with new subtitles)
+5. Processes stream asynchronously: ShowInfo sent once per show, followed by new Subtitle objects
+6. Looks up `ShowExternalId(Source=SuperSubtitles)` first; falls back to TvDB/TMDB matching from third-party IDs
+7. Matches/merges shows and upserts episodes + subtitles (same logic as bulk import)
+8. Stores season packs in `SeasonPackSubtitle` table
+9. Updates the stored max subtitle ID
+
+The refresh execution processes the streamed incremental payload in a single database transaction for the run.
