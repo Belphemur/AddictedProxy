@@ -35,11 +35,7 @@ public class EpisodeRefresher : IEpisodeRefresher
         foreach (var extId in externalIds)
         {
             var refresher = _providerEpisodeRefresherFactory.GetService(extId.Source);
-            var result = await refresher.GetRefreshEpisodeAsync(show, extId, season, episodeNumber, token);
-            if (result != null)
-            {
-                return result;
-            }
+            await refresher.GetRefreshEpisodeAsync(show, extId, season, episodeNumber, token);
         }
 
         // Final fallback: check DB in case episodes were already loaded by another path
