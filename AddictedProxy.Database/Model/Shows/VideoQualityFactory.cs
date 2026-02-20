@@ -30,9 +30,12 @@ public static class VideoQualityFactory
         if (qualities == VideoQuality.None)
             return [];
 
-        return Enum.GetValues<VideoQuality>()
-            .Where(q => q != VideoQuality.None && qualities.HasFlag(q))
-            .Select(GetDisplayName)
-            .ToArray();
+        var names = new List<string>(5);
+        if (qualities.HasFlag(VideoQuality.Q360P)) names.Add(GetDisplayName(VideoQuality.Q360P));
+        if (qualities.HasFlag(VideoQuality.Q480P)) names.Add(GetDisplayName(VideoQuality.Q480P));
+        if (qualities.HasFlag(VideoQuality.Q720P)) names.Add(GetDisplayName(VideoQuality.Q720P));
+        if (qualities.HasFlag(VideoQuality.Q1080P)) names.Add(GetDisplayName(VideoQuality.Q1080P));
+        if (qualities.HasFlag(VideoQuality.Q2160P)) names.Add(GetDisplayName(VideoQuality.Q2160P));
+        return names.ToArray();
     }
 }

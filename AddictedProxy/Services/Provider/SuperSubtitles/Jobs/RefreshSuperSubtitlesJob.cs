@@ -5,6 +5,7 @@ using AddictedProxy.Database.Repositories.State;
 using AddictedProxy.Services.Job.Filter;
 using AddictedProxy.Services.Provider.Merging;
 using AddictedProxy.Services.Provider.Merging.Model;
+using AddictedProxy.Services.Provider.SuperSubtitles;
 using AddictedProxy.Tools.Database.Transaction;
 using Hangfire.Console;
 using Hangfire.Server;
@@ -181,7 +182,7 @@ public class RefreshSuperSubtitlesJob
             Release = string.IsNullOrEmpty(subtitle.Release) ? null : subtitle.Release,
             Uploader = string.IsNullOrEmpty(subtitle.Uploader) ? null : subtitle.Uploader,
             UploadedAt = subtitle.UploadedAt?.ToDateTime(),
-            Qualities = ToVideoQuality(subtitle.Qualities),
+            Qualities = subtitle.Qualities.ToVideoQuality(),
             ReleaseGroups = subtitle.ReleaseGroups.Count > 0
                 ? string.Join(",", subtitle.ReleaseGroups)
                 : null,
@@ -203,7 +204,7 @@ public class RefreshSuperSubtitlesJob
             CompletionPct = 100.0,
             HearingImpaired = false,
             Corrected = false,
-            Qualities = ToVideoQuality(subtitle.Qualities),
+            Qualities = subtitle.Qualities.ToVideoQuality(),
             Release = string.IsNullOrEmpty(subtitle.Release) ? null : subtitle.Release,
             DownloadUri = new Uri(subtitle.DownloadUrl),
             Language = subtitle.Language,
@@ -222,23 +223,5 @@ public class RefreshSuperSubtitlesJob
             subtitle.Id.ToString(),
             subtitleEntity,
             token);
-    }
-
-    private static VideoQuality ToVideoQuality(IEnumerable<Quality> protoQualities)
-    {
-        var result = VideoQuality.None;
-        foreach (var q in protoQualities)
-        {
-            result |= q switch
-            {
-                Quality._360P  => VideoQuality.Q360P,
-                Quality._480P  => VideoQuality.Q480P,
-                Quality._720P  => VideoQuality.Q720P,
-                Quality._1080P => VideoQuality.Q1080P,
-                Quality._2160P => VideoQuality.Q2160P,
-                _              => VideoQuality.None,
-            };
-        }
-        return result;
     }
 }
