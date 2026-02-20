@@ -15,8 +15,6 @@ public class Episode : BaseEntity, IDiscoverableObject
     [Key]
     public long Id { get; set; }
 
-    public long ExternalId { get; set; }
-
     public long TvShowId { get; set; }
 
     [ForeignKey(nameof(TvShowId))]
