@@ -3,7 +3,7 @@
     <v-sheet v-if="noSubtitles" rounded="xl" color="error" class="text-center">
       <v-row>
         <v-col>
-          <v-icon size="50">{{mdiAlertCircle}}</v-icon>
+          <v-icon size="50">{{ mdiAlertCircle }}</v-icon>
         </v-col>
       </v-row>
       <v-row>
@@ -13,38 +13,28 @@
       </v-row>
     </v-sheet>
     <v-container v-else>
-      <v-data-table
-          :items="subtitles"
-          :headers="headers"
-          :items-per-page="-1"
-          hide-default-footer
-          :group-by="groupBy"
-          v-if="!device.isMobile">
+      <v-data-table :items="subtitles" :headers="headers" :items-per-page="-1" hide-default-footer :group-by="groupBy"
+        v-if="!device.isMobile">
         <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
           <tr>
             <td :colspan="columns.length" @click="toggleGroup(item)">
-              <v-btn
-                  size="large"
-                  density="comfortable"
-                  variant="text"
-                  :prepend-icon="isGroupOpen(item) ? '$expand' : '$next'"
-              > {{ item.value }}
+              <v-btn size="large" density="comfortable" variant="text"
+                :prepend-icon="isGroupOpen(item) ? '$expand' : '$next'"> {{ item.value }}
               </v-btn>
 
             </td>
           </tr>
         </template>
-        <template v-slot:item.subtitle.completed="{item}">
-          <v-icon height="24px" v-if="item.subtitle.completed">{{mdiCheck}}</v-icon>
+        <template v-slot:item.subtitle.completed="{ item }">
+          <v-icon height="24px" v-if="item.subtitle.completed">{{ mdiCheck }}</v-icon>
           <span v-else></span>
         </template>
-        <template v-slot:item.subtitle.hearingImpaired="{item}">
-          <v-icon v-if=" item.subtitle.hearingImpaired">{{mdiEarHearingOff}}</v-icon>
+        <template v-slot:item.subtitle.hearingImpaired="{ item }">
+          <v-icon v-if="item.subtitle.hearingImpaired">{{ mdiEarHearingOff }}</v-icon>
           <span v-else></span>
         </template>
-        <template v-slot:item.subtitle.hd="{item}">
-          <v-icon height="24px" v-if="item.subtitle.hd">{{mdiCheck}}</v-icon>
-          <span v-else></span>
+        <template v-slot:item.subtitle.qualities="{ item }">
+          <quality-chips :qualities="item.subtitle.qualities" />
         </template>
 
         <template v-slot:item.subtitle.source="{ item }">
@@ -52,21 +42,13 @@
             label>{{ item.subtitle.source }}</v-chip>
         </template>
 
-        <template v-slot:item.subtitle.downloadCount="{item}">
-          <v-btn
-              color="primary"
-              :prepend-icon="mdiDownload"
-              @click="downloadSubtitle(item.subtitle)"
-              :disabled="currentlyDownloading.has(item.subtitle.subtitleId)"
-          >
+        <template v-slot:item.subtitle.downloadCount="{ item }">
+          <v-btn color="primary" :prepend-icon="mdiDownload" @click="downloadSubtitle(item.subtitle)"
+            :disabled="currentlyDownloading.has(item.subtitle.subtitleId)">
             {{ item.subtitle.downloadCount }}
           </v-btn>
-          <v-progress-linear
-              v-show="currentlyDownloading.has(item.subtitle.subtitleId)"
-              :value="100"
-              color="success"
-              indeterminate
-          ></v-progress-linear>
+          <v-progress-linear v-show="currentlyDownloading.has(item.subtitle.subtitleId)" :value="100" color="success"
+            indeterminate></v-progress-linear>
         </template>
 
       </v-data-table>
@@ -78,32 +60,26 @@
           <v-expansion-panel-text>
             <v-row v-for="subtitle in episode.subtitles" :key="subtitle.subtitleId" class="mb-4">
               <v-col>
-                <v-card elevation="2"
-                        outlined
-                        shaped
-                        tile
-                        :loading="currentlyDownloading.has(subtitle.subtitleId)"
-                >
+                <v-card elevation="2" outlined shaped tile :loading="currentlyDownloading.has(subtitle.subtitleId)">
                   <v-card-title>
                     <h3>{{ subtitle.title }}</h3>
                   </v-card-title>
                   <v-card-text>
                     <v-row>
                       <v-col cols="12">
-                        <v-icon>{{mdiSubtitlesOutline}}</v-icon>
+                        <v-icon>{{ mdiSubtitlesOutline }}</v-icon>
                         {{ subtitle.version }}
                       </v-col>
                       <v-col v-if="subtitle.completed" cols="12">
-                        <v-icon>{{mdiCheck}}</v-icon>
+                        <v-icon>{{ mdiCheck }}</v-icon>
                         Completed
                       </v-col>
                       <v-col v-if="subtitle.hearingImpaired" cols="12">
-                        <v-icon>{{mdiEarHearingOff}}</v-icon>
+                        <v-icon>{{ mdiEarHearingOff }}</v-icon>
                         Hearing Impaired
                       </v-col>
-                      <v-col v-if="subtitle.hd" cols="12">
-                        <v-icon>{{mdiCheck}}</v-icon>
-                        HD
+                      <v-col v-if="subtitle.qualities?.length" cols="12">
+                        <quality-chips :qualities="subtitle.qualities" />
                       </v-col>
                       <v-col cols="12">
                         <v-chip :color="subtitle.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
@@ -111,13 +87,9 @@
                       </v-col>
                     </v-row>
                   </v-card-text>
-                  <v-card-actions  class="justify-center">
-                    <v-btn
-                        color="primary"
-                        :prepend-icon="mdiDownload"
-                        @click="downloadSubtitle(subtitle)"
-                        :disabled="currentlyDownloading.has(subtitle.subtitleId)"
-                    >
+                  <v-card-actions class="justify-center">
+                    <v-btn color="primary" :prepend-icon="mdiDownload" @click="downloadSubtitle(subtitle)"
+                      :disabled="currentlyDownloading.has(subtitle.subtitleId)">
                       Download subtitle
                     </v-btn>
                   </v-card-actions>
@@ -132,15 +104,15 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, ref} from "vue";
+import { defineProps, ref } from "vue";
 
-import {mevent} from "~/composables/data/event";
-import type {EpisodeWithSubtitlesDto, SubtitleDto} from "~/composables/api/data-contracts";
-import {useSubtitles} from "~/composables/rest/api";
-import type {SubtitleWithEpisode} from "~/composables/dto/SubtitleWithEpisode";
-import {forEach, orderBy} from "lodash-es";
-import {trim} from "~/composables/utils/trim";
-import {mdiAlertCircle, mdiCheck, mdiDownload, mdiEarHearingOff, mdiSubtitlesOutline} from "@mdi/js";
+import { mevent } from "~/composables/data/event";
+import type { EpisodeWithSubtitlesDto, SubtitleDto } from "~/composables/api/data-contracts";
+import { useSubtitles } from "~/composables/rest/api";
+import type { SubtitleWithEpisode } from "~/composables/dto/SubtitleWithEpisode";
+import { forEach, orderBy } from "lodash-es";
+import { trim } from "~/composables/utils/trim";
+import { mdiAlertCircle, mdiCheck, mdiDownload, mdiEarHearingOff, mdiSubtitlesOutline } from "@mdi/js";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto> | null;
@@ -158,12 +130,12 @@ const groupBy = [
   }
 ]
 const headers = [
-  {title: "Version", key: "subtitle.version"},
-  {title: "Completed", key: "subtitle.completed"},
-  {title: "Hearing Impaired", key: "subtitle.hearingImpaired"},
-  {title: "HD", key: "subtitle.hd"},
+  { title: "Version", key: "subtitle.version" },
+  { title: "Completed", key: "subtitle.completed" },
+  { title: "Hearing Impaired", key: "subtitle.hearingImpaired" },
+  { title: "Quality", key: "subtitle.qualities" },
   { title: "Source", key: "subtitle.source" },
-  {title: "Downloads", key: "subtitle.downloadCount"},
+  { title: "Downloads", key: "subtitle.downloadCount" },
 ];
 
 const noSubtitles = computed<boolean>(() => {
@@ -189,7 +161,7 @@ const subtitles = computed<SubtitleWithEpisode[]>(() => {
 
 const currentlyDownloading = ref<Map<string, boolean>>(new Map());
 const downloadSubtitle = async (sub: SubtitleDto) => {
-  mevent("download-subtitle", {subtitle: sub});
+  mevent("download-subtitle", { subtitle: sub });
   currentlyDownloading.value.set(sub.subtitleId!, true);
   const UpdateDownloaded = () => {
     sub.downloadCount!++;
@@ -211,5 +183,4 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
   UpdateDownloaded();
 };
 </script>
-<style scoped>
-</style>
+<style scoped></style>

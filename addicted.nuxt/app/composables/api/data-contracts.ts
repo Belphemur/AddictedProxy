@@ -250,6 +250,7 @@ export interface SubtitleDto {
   completed: boolean;
   hearingImpaired: boolean;
   corrected: boolean;
+  /** Whether this subtitle has HD quality (720P, 1080P, or 2160P). Derived from qualities. */
   hd: boolean;
   /**
    * Url to download the subtitle
@@ -277,6 +278,26 @@ export interface SubtitleDto {
   downloadCount: number;
   /** Source provider of the subtitle */
   source: DataSource;
+  /**
+   * Available video qualities for this subtitle.
+   * @example ["Q720P","Q1080P"]
+   */
+  qualities: VideoQuality[];
+  /**
+   * Full release name from the provider.
+   * Populated for SuperSubtitles; null for Addic7ed.
+   * @example "Show.S01E03.720p.BluRay.x264-GROUP"
+   */
+  release?: string | null;
+}
+
+export enum VideoQuality {
+  None = "None",
+  Q360P = "Q360P",
+  Q480P = "Q480P",
+  Q720P = "Q720P",
+  Q1080P = "Q1080P",
+  Q2160P = "Q2160P",
 }
 
 export interface SubtitleSearchResponse {
