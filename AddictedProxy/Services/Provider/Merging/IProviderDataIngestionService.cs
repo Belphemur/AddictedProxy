@@ -68,4 +68,24 @@ public interface IProviderDataIngestionService
     /// <param name="seasonPack">The season pack subtitle to upsert</param>
     /// <param name="token">Cancellation token</param>
     Task IngestSeasonPackAsync(SeasonPackSubtitle seasonPack, CancellationToken token);
+
+    /// <summary>
+    /// Bulk merge multiple episodes (with their <see cref="Episode.Subtitles"/> and <see cref="Episode.ExternalIds"/> populated)
+    /// for a show. Creates <see cref="Season"/> entities for any new season numbers encountered.
+    /// Uses <see cref="IEpisodeRepository.UpsertEpisodes"/> for efficient graph-based bulk merging.
+    /// </summary>
+    /// <param name="show">The parent TvShow (must have a valid Id)</param>
+    /// <param name="episodes">Episodes with their Subtitles and ExternalIds collections populated</param>
+    /// <param name="token">Cancellation token</param>
+    Task MergeEpisodesWithSubtitlesAsync(
+        TvShow show,
+        IEnumerable<Episode> episodes,
+        CancellationToken token);
+
+    /// <summary>
+    /// Bulk ingest multiple season pack subtitles into the <see cref="SeasonPackSubtitle"/> table.
+    /// </summary>
+    /// <param name="seasonPacks">The season pack subtitles to upsert</param>
+    /// <param name="token">Cancellation token</param>
+    Task IngestSeasonPacksAsync(IEnumerable<SeasonPackSubtitle> seasonPacks, CancellationToken token);
 }
