@@ -19,9 +19,10 @@ public interface ISuperSubtitlesClient
     IAsyncEnumerable<Subtitle> GetSubtitlesAsync(long showId, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Stream show information and subtitles for multiple shows.
+    /// Stream complete show subtitle collections for multiple shows.
+    /// Each item contains the show info (with third-party IDs) and all subtitles for that show.
     /// </summary>
-    IAsyncEnumerable<ShowSubtitleItem> GetShowSubtitlesAsync(IEnumerable<Show> shows, CancellationToken cancellationToken = default);
+    IAsyncEnumerable<ShowSubtitlesCollection> GetShowSubtitlesAsync(IEnumerable<Show> shows, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Check if new subtitles are available since a given content ID.
@@ -35,6 +36,7 @@ public interface ISuperSubtitlesClient
 
     /// <summary>
     /// Stream recently uploaded subtitles with show information since a given subtitle ID.
+    /// Each item contains a show's complete information and all its recent subtitles.
     /// </summary>
-    IAsyncEnumerable<ShowSubtitleItem> GetRecentSubtitlesAsync(long sinceId, CancellationToken cancellationToken = default);
+    IAsyncEnumerable<ShowSubtitlesCollection> GetRecentSubtitlesAsync(long sinceId, CancellationToken cancellationToken = default);
 }

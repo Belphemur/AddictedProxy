@@ -139,48 +139,41 @@ public class ImportSuperSubtitlesJob
 
     private async Task<BatchStats> ProcessShowBatchAsync(Show[] batch, long currentMaxId, CancellationToken token)
     {
-        TvShow? currentShow = null;
         var maxSubtitleId = currentMaxId;
         var subtitleCount = 0;
         var seasonPackCount = 0;
 
         await _transactionManager.WrapInTransactionAsync(async () =>
         {
-            await foreach (var item in _superSubtitlesClient.GetShowSubtitlesAsync(batch, token))
+            await foreach (var collection in _superSubtitlesClient.GetShowSubtitlesAsync(batch, token))
             {
-                switch (item.ItemCase)
-                {
-                    case ShowSubtitleItem.ItemOneofCase.ShowInfo:
-                        currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
-                        break;
-
-                    case ShowSubtitleItem.ItemOneofCase.Subtitle:
-                        if (currentShow == null)
-                        {
-                            _logger.LogWarning(
-                                "Received subtitle {SubtitleId} without preceding ShowInfo, skipping",
-                                item.Subtitle.Id);
-                            break;
-                        }
-
-                        var isSeasonPack = await HandleSubtitleAsync(item.Subtitle, currentShow, token);
-                        maxSubtitleId = Math.Max(maxSubtitleId, item.Subtitle.Id);
-                        if (isSeasonPack)
-                            seasonPackCount++;
-                        else
-                            subtitleCount++;
-                        break;
-
-                    case ShowSubtitleItem.ItemOneofCase.None:
-                        _logger.LogWarning("Received ShowSubtitleItem with no data");
-                        break;
-
-                    default:
-                        _logger.LogWarning("Unknown ShowSubtitleItem case: {Case}", item.ItemCase);
-                        break;
-                }
+                var stats = await ProcessShowCollectionAsync(collection, maxSubtitleId, token);
+                maxSubtitleId = stats.MaxSubtitleId;
+                subtitleCount += stats.SubtitleCount;
+                seasonPackCount += stats.SeasonPackCount;
             }
         }, token);
+
+        return new BatchStats(maxSubtitleId, subtitleCount, seasonPackCount);
+    }
+
+    private async Task<BatchStats> ProcessShowCollectionAsync(ShowSubtitlesCollection collection, long currentMaxId, CancellationToken token)
+    {
+        var maxSubtitleId = currentMaxId;
+        var subtitleCount = 0;
+        var seasonPackCount = 0;
+
+        var currentShow = await HandleShowInfoAsync(collection.ShowInfo, token);
+
+        foreach (var subtitle in collection.Subtitles)
+        {
+            var isSeasonPack = await HandleSubtitleAsync(subtitle, currentShow, token);
+            maxSubtitleId = Math.Max(maxSubtitleId, subtitle.Id);
+            if (isSeasonPack)
+                seasonPackCount++;
+            else
+                subtitleCount++;
+        }
 
         return new BatchStats(maxSubtitleId, subtitleCount, seasonPackCount);
     }
@@ -203,7 +196,7 @@ public class ImportSuperSubtitlesJob
     }
 
     /// <summary>
-    /// Process a single subtitle from the stream.
+    /// Process a single subtitle from the collection.
     /// Returns true if the subtitle was a season pack, false otherwise.
     /// </summary>
     private async Task<bool> HandleSubtitleAsync(ProtoSubtitle subtitle, TvShow currentShow, CancellationToken token)

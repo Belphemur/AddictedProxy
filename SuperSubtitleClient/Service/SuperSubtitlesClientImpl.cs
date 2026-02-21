@@ -32,7 +32,7 @@ public class SuperSubtitlesClientImpl : ISuperSubtitlesClient
     }
 
     /// <inheritdoc />
-    public IAsyncEnumerable<ShowSubtitleItem> GetShowSubtitlesAsync(IEnumerable<Show> shows, CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<ShowSubtitlesCollection> GetShowSubtitlesAsync(IEnumerable<Show> shows, CancellationToken cancellationToken = default)
     {
         var request = new GetShowSubtitlesRequest();
         request.Shows.AddRange(shows);
@@ -59,7 +59,7 @@ public class SuperSubtitlesClientImpl : ISuperSubtitlesClient
     }
 
     /// <inheritdoc />
-    public IAsyncEnumerable<ShowSubtitleItem> GetRecentSubtitlesAsync(long sinceId, CancellationToken cancellationToken = default)
+    public IAsyncEnumerable<ShowSubtitlesCollection> GetRecentSubtitlesAsync(long sinceId, CancellationToken cancellationToken = default)
     {
         var call = _client.GetRecentSubtitles(new GetRecentSubtitlesRequest { SinceId = sinceId }, cancellationToken: cancellationToken);
         return ReadStreamAsync(call.ResponseStream, cancellationToken);

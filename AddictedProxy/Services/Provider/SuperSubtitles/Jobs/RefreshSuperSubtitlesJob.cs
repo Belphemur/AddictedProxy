@@ -79,45 +79,24 @@ public class RefreshSuperSubtitlesJob
             "SuperSubtitles incremental refresh: {SeriesCount} new series subtitles since ID {MaxId}",
             updateCheck.SeriesCount, maxId);
 
-        TvShow? currentShow = null;
         long newMaxId = maxId;
         var subtitleCount = 0;
         var seasonPackCount = 0;
 
         await _transactionManager.WrapInTransactionAsync(async () =>
         {
-            await foreach (var item in _superSubtitlesClient.GetRecentSubtitlesAsync(maxId, token))
+            await foreach (var collection in _superSubtitlesClient.GetRecentSubtitlesAsync(maxId, token))
             {
-                switch (item.ItemCase)
+                var currentShow = await HandleShowInfoAsync(collection.ShowInfo, token);
+
+                foreach (var subtitle in collection.Subtitles)
                 {
-                    case ShowSubtitleItem.ItemOneofCase.ShowInfo:
-                        currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
-                        break;
-
-                    case ShowSubtitleItem.ItemOneofCase.Subtitle:
-                        if (currentShow == null)
-                        {
-                            _logger.LogWarning(
-                                "Received subtitle {SubtitleId} without preceding ShowInfo, skipping",
-                                item.Subtitle.Id);
-                            break;
-                        }
-
-                        var isSeasonPack = await HandleSubtitleAsync(item.Subtitle, currentShow, token);
-                        newMaxId = Math.Max(newMaxId, item.Subtitle.Id);
-                        if (isSeasonPack)
-                            seasonPackCount++;
-                        else
-                            subtitleCount++;
-                        break;
-
-                    case ShowSubtitleItem.ItemOneofCase.None:
-                        _logger.LogWarning("Received ShowSubtitleItem with no data");
-                        break;
-
-                    default:
-                        _logger.LogWarning("Unknown ShowSubtitleItem case: {Case}", item.ItemCase);
-                        break;
+                    var isSeasonPack = await HandleSubtitleAsync(subtitle, currentShow, token);
+                    newMaxId = Math.Max(newMaxId, subtitle.Id);
+                    if (isSeasonPack)
+                        seasonPackCount++;
+                    else
+                        subtitleCount++;
                 }
             }
         }, token);
@@ -151,7 +130,7 @@ public class RefreshSuperSubtitlesJob
     }
 
     /// <summary>
-    /// Process a single subtitle from the stream.
+    /// Process a single subtitle from the collection.
     /// Returns true if the subtitle was a season pack, false otherwise.
     /// </summary>
     private async Task<bool> HandleSubtitleAsync(ProtoSubtitle subtitle, TvShow currentShow, CancellationToken token)
