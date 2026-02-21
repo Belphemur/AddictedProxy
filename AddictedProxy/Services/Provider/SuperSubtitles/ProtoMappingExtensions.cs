@@ -39,6 +39,9 @@ internal static class ProtoMappingExtensions
     /// <param name="languageIsoCode">Pre-resolved ISO language code (e.g. "en"), or null if the language could not be parsed</param>
     public static SubtitleEntity ToSubtitleEntity(this ProtoSubtitle subtitle, string? languageIsoCode)
     {
+        if (string.IsNullOrEmpty(subtitle.DownloadUrl))
+            throw new ArgumentException($"Subtitle {subtitle.Id} has no download URL", nameof(subtitle));
+
         return new SubtitleEntity
         {
             Scene = string.Join(", ", subtitle.ReleaseGroups),
