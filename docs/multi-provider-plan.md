@@ -12,9 +12,9 @@ SuperSubtitles is a Go-based scraper for feliratok.eu (a Hungarian subtitle site
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | **`GetShowList`**        | Streams all available `Show` objects: `{ id, name, year, image_url }` via server-side streaming                                            |
 | **`GetSubtitles`**       | Streams all `Subtitle` messages for a specific show by `show_id` via server-side streaming                                                 |
-| **`GetShowSubtitles`**   | Batch: accepts a list of `Show` objects, streams `ShowSubtitleItem` (show info + subtitles) via server-side streaming                      |
+| **`GetShowSubtitles`**   | Batch: accepts a list of `Show` objects, streams `ShowSubtitlesCollection` (each message contains a complete show with all its subtitles) via server-side streaming |
 | **`CheckForUpdates`**    | Checks if new subtitles are available since a given `content_id` (returns simple response, not streamed)                                   |
-| **`GetRecentSubtitles`** | Streams recently uploaded `ShowSubtitleItem` (show info + subtitles) since a given `since_id` via server-side streaming                    |
+| **`GetRecentSubtitles`** | Streams recently uploaded `ShowSubtitlesCollection` (each message contains a complete show with all its subtitles) since a given `since_id` via server-side streaming |
 | **`DownloadSubtitle`**   | Downloads a subtitle file by `subtitle_id`, with optional `episode` number for season pack extraction (returns simple response with bytes) |
 
 ### Key gRPC Messages
@@ -66,11 +66,9 @@ message ShowInfo {
   ThirdPartyIds third_party_ids = 2;
 }
 
-message ShowSubtitleItem {
-  oneof item {
-    ShowInfo show_info = 1;   // Show metadata with third-party IDs
-    Subtitle subtitle = 2;    // A single subtitle (use show_id to link)
-  }
+message ShowSubtitlesCollection {
+  ShowInfo show_info = 1;          // Show metadata with third-party IDs
+  repeated Subtitle subtitles = 2; // All subtitles for this show
 }
 ```
 
@@ -79,7 +77,7 @@ message ShowSubtitleItem {
 - **gRPC API** with Protocol Buffers — structured, type-safe access (no HTML scraping)
 - **Server-side streaming** — all list/collection endpoints stream results progressively for better performance and reduced memory usage
 - No credential/authentication system needed
-- Provides third-party IDs natively (IMDB, TVDB, TVMaze, Trakt) via `ShowInfo` messages in streams
+- Provides third-party IDs natively (IMDB, TVDB, TVMaze, Trakt) via `ShowInfo` in each `ShowSubtitlesCollection` message
 - Includes video quality metadata (`repeated Quality`) and release group information
 - Supports season packs (with server-side episode extraction via `DownloadSubtitle`)
 - Supports incremental updates via `CheckForUpdates` + `GetRecentSubtitles` (streamed)
@@ -517,19 +515,18 @@ ImportSuperSubtitlesJob (startup fire-and-forget, gated by config)
     ├─► Step 2: Split collected shows into batches of N (configurable batch size)
     │
     ├─► Step 3: For each batch:
-    │   ├─► GetShowSubtitles(batch) via gRPC → stream ShowSubtitleItem
-    │   │   └─► Stream contains ShowInfo + Subtitle items linked by show_id
-    │   │       Server sends ShowInfo first, then all its Subtitles
+    │   ├─► GetShowSubtitles(batch) via gRPC → stream ShowSubtitlesCollection
+    │   │   └─► Each streamed message contains a complete show with all its subtitles
     │   │
-    │   ├─► Process stream asynchronously:
+    │   ├─► Process stream asynchronously (per collection):
     │   │   │
-    │   │   ├─► When ShowSubtitleItem.show_info received:
+    │   │   ├─► Process collection.ShowInfo:
     │   │   │   ├─► Lookup ShowExternalId(Source=SuperSubtitles, ExternalId=show.id)
     │   │   │   ├─► If not found: match by TvDB/TMDB ID from third_party_ids or create new TvShow
     │   │   │   └─► Upsert ShowExternalId(Source=SuperSubtitles)
     │   │   │
-    │   │   └─► When ShowSubtitleItem.subtitle received:
-    │   │       ├─► Link to TvShowId via show_id from stream context
+    │   │   └─► Iterate collection.Subtitles:
+    │   │       ├─► Link to TvShowId via resolved show
     │   │       │
     │   │       ├─► If is_season_pack == true:
     │   │       │   └─► Store in SeasonPackSubtitle(TvShowId, Season, DownloadUri, ...)
@@ -632,43 +629,27 @@ public class ImportSuperSubtitlesJob
 
     private async Task<BatchStats> ProcessShowBatchAsync(Show[] batch, long currentMaxId, CancellationToken token)
     {
-        TvShow? currentShow = null;
         long maxSubtitleId = currentMaxId;
         int subtitleCount = 0;
         int seasonPackCount = 0;
 
-        await foreach (var item in _superSubtitlesClient.GetShowSubtitlesAsync(batch, token))
+        await foreach (var collection in _superSubtitlesClient.GetShowSubtitlesAsync(batch, token))
         {
-            switch (item.ItemCase)
+            // Each collection contains a complete show with all its subtitles
+            var currentShow = await _transactionManager.WrapInTransactionAsync(
+                async () => await HandleShowInfoAsync(collection.ShowInfo, token), token);
+
+            foreach (var subtitle in collection.Subtitles)
             {
-                case ShowSubtitleItem.ItemOneofCase.ShowInfo:
-                    // New show - wrap all its data in a transaction
-                    await _transactionManager.WrapInTransactionAsync(async () =>
-                    {
-                        currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
-                    }, token);
-                    break;
-
-                case ShowSubtitleItem.ItemOneofCase.Subtitle:
-                    // Process subtitle within show's transaction context
-                    await _transactionManager.WrapInTransactionAsync(async () =>
-                    {
-                        var subtitleStats = await HandleSubtitleAsync(item.Subtitle, currentShow, maxSubtitleId, token);
-                        maxSubtitleId = subtitleStats.MaxId;
-                        if (subtitleStats.IsSeasonPack)
-                            seasonPackCount++;
-                        else
-                            subtitleCount++;
-                    }, token);
-                    break;
-
-                case ShowSubtitleItem.ItemOneofCase.None:
-                    _logger.LogWarning("Received ShowSubtitleItem with no data");
-                    break;
-
-                default:
-                    _logger.LogWarning("Unknown ShowSubtitleItem case: {Case}", item.ItemCase);
-                    break;
+                await _transactionManager.WrapInTransactionAsync(async () =>
+                {
+                    var subtitleStats = await HandleSubtitleAsync(subtitle, currentShow, maxSubtitleId, token);
+                    maxSubtitleId = subtitleStats.MaxId;
+                    if (subtitleStats.IsSeasonPack)
+                        seasonPackCount++;
+                    else
+                        subtitleCount++;
+                }, token);
             }
         }
 
@@ -802,22 +783,21 @@ RefreshSuperSubtitlesJob (Recurring, every 15 minutes)
     │
     ├─► Step 3: If has_updates = false → exit early (nothing to do)
     │
-    ├─► Step 4: GetRecentSubtitles(since_id = maxSubtitleId) via gRPC → stream ShowSubtitleItem
-    │   └─► Stream contains ShowInfo + Subtitle items (only new/updated, linked by show_id)
-    │       Server sends ShowInfo first, then new Subtitles for that show
+    ├─► Step 4: GetRecentSubtitles(since_id = maxSubtitleId) via gRPC → stream ShowSubtitlesCollection
+    │   └─► Each streamed message contains a complete show with all its new subtitles
     │
-    ├─► Step 5: Process stream asynchronously:
+    ├─► Step 5: Process stream asynchronously (per collection):
     │   │
     │   │   ⚠️  The full incremental stream run is wrapped in one database transaction
     │   │   using ITransactionManager<EntityContext>.
     │   │
-    │   ├─► When ShowSubtitleItem.show_info received:
+    │   ├─► Process collection.ShowInfo:
     │   │   ├─► Lookup ShowExternalId(Source=SuperSubtitles, ExternalId=show.id)
     │   │   ├─► If not found: match by TvDB/TMDB ID from third_party_ids or create new TvShow
     │   │   └─► Upsert ShowExternalId(Source=SuperSubtitles)
     │   │
-    │   └─► When ShowSubtitleItem.subtitle received:
-    │       ├─► Link to TvShowId via show_id from stream context
+    │   └─► Iterate collection.Subtitles:
+    │       ├─► Link to TvShowId via resolved show
     │       │
     │       ├─► If is_season_pack == true:
     │       │   └─► Store in SeasonPackSubtitle(TvShowId, Season, DownloadUri, ...)
@@ -885,35 +865,19 @@ public class RefreshSuperSubtitlesJob
     private async Task<long> ProcessRecentSubtitlesAsync(long sinceId, CancellationToken token)
     {
         long newMaxId = sinceId;
-        TvShow? currentShow = null;
 
-        await foreach (var item in _superSubtitlesClient.GetRecentSubtitlesAsync(sinceId, token))
+        await foreach (var collection in _superSubtitlesClient.GetRecentSubtitlesAsync(sinceId, token))
         {
-            switch (item.ItemCase)
+            // Each collection contains a complete show with all its new subtitles
+            var currentShow = await _transactionManager.WrapInTransactionAsync(
+                async () => await HandleShowInfoAsync(collection.ShowInfo, token), token);
+
+            foreach (var subtitle in collection.Subtitles)
             {
-                case ShowSubtitleItem.ItemOneofCase.ShowInfo:
-                    // New show - wrap all its data in a transaction
-                    await _transactionManager.WrapInTransactionAsync(async () =>
-                    {
-                        currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
-                    }, token);
-                    break;
-
-                case ShowSubtitleItem.ItemOneofCase.Subtitle:
-                    // Process subtitle within show's transaction context
-                    await _transactionManager.WrapInTransactionAsync(async () =>
-                    {
-                        newMaxId = await HandleSubtitleAsync(item.Subtitle, currentShow, newMaxId, token);
-                    }, token);
-                    break;
-
-                case ShowSubtitleItem.ItemOneofCase.None:
-                    _logger.LogWarning("Received ShowSubtitleItem with no data");
-                    break;
-
-                default:
-                    _logger.LogWarning("Unknown ShowSubtitleItem case: {Case}", item.ItemCase);
-                    break;
+                await _transactionManager.WrapInTransactionAsync(async () =>
+                {
+                    newMaxId = await HandleSubtitleAsync(subtitle, currentShow, newMaxId, token);
+                }, token);
             }
         }
 
@@ -1088,10 +1052,10 @@ public interface ISuperSubtitlesClient
 
     /// <summary>Streams show information and subtitles for multiple shows (batch) via server-side streaming.</summary>
     /// <remarks>
-    /// Each streamed item is either a ShowInfo (show metadata + third-party IDs) or a Subtitle.
-    /// The server sends ShowInfo first, then all subtitles for that show, linked by show_id.
+    /// Each streamed message is a ShowSubtitlesCollection containing a complete show
+    /// (ShowInfo metadata + third-party IDs) together with all its subtitles.
     /// </remarks>
-    IAsyncEnumerable<ShowSubtitleItem> GetShowSubtitlesAsync(
+    IAsyncEnumerable<ShowSubtitlesCollection> GetShowSubtitlesAsync(
         IEnumerable<Show> shows, CancellationToken token);
 
     /// <summary>Checks if new subtitles are available since a given content ID.</summary>
@@ -1100,10 +1064,10 @@ public interface ISuperSubtitlesClient
 
     /// <summary>Streams recently uploaded subtitles since a given subtitle ID via server-side streaming.</summary>
     /// <remarks>
-    /// Each streamed item is either a ShowInfo or a Subtitle. ShowInfo is sent once per show,
-    /// followed by new subtitles for that show.
+    /// Each streamed message is a ShowSubtitlesCollection containing a complete show
+    /// together with its new subtitles since the given ID.
     /// </remarks>
-    IAsyncEnumerable<ShowSubtitleItem> GetRecentSubtitlesAsync(
+    IAsyncEnumerable<ShowSubtitlesCollection> GetRecentSubtitlesAsync(
         long sinceId, CancellationToken token);
 
     /// <summary>Downloads a subtitle file via gRPC.</summary>
@@ -1193,7 +1157,7 @@ A detailed checklist lives in [`docs/multi-provider-checklist.md`](multi-provide
 
 1. Create `ImportSuperSubtitlesJob` (one-time startup bulk import, idempotent)
    - Fetch all shows via `GetShowList` (streamed), collect into batches
-   - For each batch: call `GetShowSubtitles` (streams `ShowSubtitleItem`), process stream asynchronously, **wait between batches** to avoid rate limiting
+   - For each batch: call `GetShowSubtitles` (streams `ShowSubtitlesCollection`), process stream asynchronously, **wait between batches** to avoid rate limiting
     - **Wrap each import batch in a database transaction** using `ITransactionManager<EntityContext>`
    - Process streamed show info (ShowInfo) and subtitles (Subtitle) linked by show_id
    - Store season packs (`is_season_pack = true`) in `SeasonPackSubtitle` table
@@ -1204,7 +1168,7 @@ A detailed checklist lives in [`docs/multi-provider-checklist.md`](multi-provide
    - Store max subtitle ID as cursor for incremental updates
 2. Create `RefreshSuperSubtitlesJob` (recurring every 15 minutes)
    - Check for updates via `CheckForUpdates` using stored max subtitle ID
-   - If updates exist, call `GetRecentSubtitles` (streams `ShowSubtitleItem`) to fetch only new data
+   - If updates exist, call `GetRecentSubtitles` (streams `ShowSubtitlesCollection`) to fetch only new data
     - **Wrap each incremental refresh run in a database transaction**
    - Process stream asynchronously (same logic as bulk import, no batch delays needed — dataset is small)
 3. Add `SuperSubtitlesImportConfig` for configurable batch size and delay between batches (bulk import only)
