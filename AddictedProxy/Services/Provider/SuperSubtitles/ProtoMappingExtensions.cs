@@ -36,7 +36,7 @@ internal static class ProtoMappingExtensions
     /// Converts a proto <see cref="ProtoSubtitle"/> to a <see cref="SubtitleEntity"/> domain entity.
     /// </summary>
     /// <param name="subtitle">The proto subtitle</param>
-    /// <param name="languageIsoCode">Pre-resolved ISO language code (e.g. "en")</param>
+    /// <param name="languageIsoCode">Pre-resolved ISO language code (e.g. "en"), or null if the language could not be parsed</param>
     public static SubtitleEntity ToSubtitleEntity(this ProtoSubtitle subtitle, string? languageIsoCode)
     {
         return new SubtitleEntity
@@ -63,7 +63,7 @@ internal static class ProtoMappingExtensions
     /// </summary>
     /// <param name="subtitle">The proto subtitle (must be a season pack)</param>
     /// <param name="tvShowId">The database TvShow ID to link to</param>
-    /// <param name="languageIsoCode">Pre-resolved ISO language code (e.g. "en")</param>
+    /// <param name="languageIsoCode">Pre-resolved ISO language code (e.g. "en"), or null if the language could not be parsed</param>
     public static SeasonPackSubtitle ToSeasonPackSubtitle(this ProtoSubtitle subtitle, long tvShowId, string? languageIsoCode)
     {
         return new SeasonPackSubtitle

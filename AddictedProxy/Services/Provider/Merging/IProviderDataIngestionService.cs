@@ -72,7 +72,6 @@ public interface IProviderDataIngestionService
     /// <summary>
     /// Bulk merge multiple episodes (with their <see cref="Episode.Subtitles"/> and <see cref="Episode.ExternalIds"/> populated)
     /// for a show. Creates <see cref="Season"/> entities for any new season numbers encountered.
-    /// Uses <see cref="IEpisodeRepository.UpsertEpisodes"/> for efficient graph-based bulk merging.
     /// </summary>
     /// <param name="show">The parent TvShow (must have a valid Id)</param>
     /// <param name="episodes">Episodes with their Subtitles and ExternalIds collections populated</param>
