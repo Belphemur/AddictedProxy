@@ -1,20 +1,17 @@
 <template>
-  <v-app-bar dense elevation="4" shaped>
-    <v-app-bar-nav-icon variant="text" @click.stop='emit("drawerClicked")' v-if="isMobile"></v-app-bar-nav-icon>
-    <template v-else>
-      <NuxtLink v-for="route in routes" :key="route.path" :to="route.path" custom v-slot="{ navigate, isActive }">
-        <v-app-bar-nav-icon :active="isActive" :text="route.name" @click="navigate">
-          <v-icon>{{ route.meta.icon }}</v-icon>
-          <v-tooltip activator="parent" location="bottom">{{ route.name }}
-          </v-tooltip>
-        </v-app-bar-nav-icon>
-      </NuxtLink>
-    </template>
-    <v-app-bar-title>
-      <v-icon :icon="logo" />
-      Gestdown: Subtitle Aggregator
+  <v-app-bar density="compact" elevation="2" color="rgba(0,0,0,0.7)">
+    <v-app-bar-title class="text-body-1 flex-grow-0">
+      <v-icon :icon="logo" size="small" />
+      Gestdown
     </v-app-bar-title>
 
+    <v-spacer />
+    <NuxtLink v-for="route in routes" :key="route.path" :to="route.path" custom v-slot="{ navigate, isActive }">
+      <v-btn :active="isActive" @click="navigate" variant="text" size="small">
+        <v-icon size="small" start>{{ route.meta.icon }}</v-icon>
+        {{ route.name }}
+      </v-btn>
+    </NuxtLink>
   </v-app-bar>
 </template>
 

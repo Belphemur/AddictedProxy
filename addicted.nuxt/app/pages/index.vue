@@ -1,43 +1,33 @@
 <template>
-  <v-row justify="center">
-    <v-col cols="12" sm="10" xl="8" style="max-width: 1600px">
-      <v-card>
-        <v-card-item class="py-2">
-          <v-card-title class="text-h6 text-sm-h5">Welcome to Gestdown</v-card-title>
-          <v-card-subtitle class="text-body-2 text-sm-body-1 text-wrap">
-            A subtitle aggregator pulling from multiple providers including <strong>Addic7ed</strong> and
-            <strong>SuperSubtitles</strong>.
-            Search and download subtitles for your favourite shows.
-          </v-card-subtitle>
-        </v-card-item>
-        <v-card-text class="pt-1">
-          <v-row dense>
-            <v-col>
-              <h2 class="text-h6 text-sm-h4 mb-2">Search</h2>
-              <SearchComponent ref="searchBox" v-on:selected="goToPage" v-on:cleared="clear" />
-            </v-col>
-          </v-row>
-          <v-row dense class="mt-n2">
-            <v-col>
-              <h2 class="text-h6 text-sm-h4">Trending</h2>
-            </v-col>
-          </v-row>
-          <v-row dense justify-lg="center">
-            <v-col align-self="center">
-              <media-trending :medias="trendingMedias"></media-trending>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
-    </v-col>
-  </v-row>
+  <v-container fluid class="pa-4 pa-sm-6" style="max-width: 1600px">
+    <v-sheet rounded="lg" color="rgba(0,0,0,0.75)" class="pa-4 pa-sm-6 mb-4">
+      <div class="text-center mb-4">
+        <h1 class="text-h5 text-sm-h4 font-weight-bold">
+          <v-icon :icon="logo" class="mr-1" />
+          Gestdown
+        </h1>
+        <p class="text-body-2 text-sm-body-1 text-medium-emphasis mt-1">
+          Search and download subtitles from <strong>Addic7ed</strong> &amp; <strong>SuperSubtitles</strong>
+        </p>
+      </div>
 
+      <v-row justify="center">
+        <v-col cols="12" sm="8" md="6">
+          <SearchComponent ref="searchBox" v-on:selected="goToPage" v-on:cleared="clear" />
+        </v-col>
+      </v-row>
+    </v-sheet>
+
+    <h2 class="text-h6 text-sm-h5 mb-2 trending-title">Trending</h2>
+    <media-trending :medias="trendingMedias"></media-trending>
+  </v-container>
 </template>
 
 <script setup lang="ts">
 
 import { ref } from "vue";
 import SearchComponent from "@/components/shows/SearchComponent.vue";
+import logo from "@/components/icon/logo.vue";
 import type { EpisodeWithSubtitlesDto, ShowDto } from "~/composables/api/data-contracts";
 import { useMedia } from "~/composables/rest/api";
 import type { SelectedShow } from "~/composables/dto/SelectedShow";
@@ -89,4 +79,8 @@ const clear = () => {
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.trending-title {
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+}
+</style>
