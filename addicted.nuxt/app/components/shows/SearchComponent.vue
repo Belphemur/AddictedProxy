@@ -1,12 +1,6 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-        <show-autocomplete :results="results" :is-loading="isLoading" :error="error" @search="onSearch"
-          @selected="updateSelectedShow" @cleared="clearSearch" />
-      </v-col>
-    </v-row>
-  </v-container>
+  <show-autocomplete :results="results" :is-loading="isLoading" :error="error" @search="onSearch"
+    @selected="updateSelectedShow" @cleared="clearSearch" />
 </template>
 
 <script setup lang="ts">
