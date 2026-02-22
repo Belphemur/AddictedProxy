@@ -5,8 +5,6 @@ using Microsoft.Extensions.Logging;
 using TvMovieDatabaseClient.Model.Mapping;
 using TvMovieDatabaseClient.Service;
 
-using SubtitleEntity = AddictedProxy.Database.Model.Shows.Subtitle;
-
 namespace AddictedProxy.Services.Provider.Merging;
 
 /// <summary>
@@ -159,37 +157,6 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
     }
 
     /// <inheritdoc />
-    public async Task MergeEpisodeSubtitleAsync(
-        TvShow show,
-        DataSource source,
-        int season,
-        int episodeNumber,
-        string? episodeTitle,
-        string? episodeExternalId,
-        SubtitleEntity subtitle,
-        CancellationToken token)
-    {
-        // Step 1: Ensure the Season entity exists for this season number
-        await EnsureSeasonExistsAsync(show.Id, season, token);
-
-        // Step 2: Build Episode shell for the upsert
-        var episode = new Episode
-        {
-            TvShowId = show.Id,
-            Season = season,
-            Number = episodeNumber,
-            Title = episodeTitle ?? string.Empty,
-            Discovered = DateTime.UtcNow,
-            ExternalIds = episodeExternalId != null
-                ? [new EpisodeExternalId { Source = source, ExternalId = episodeExternalId }]
-                : []
-        };
-
-        // Step 3: Atomic upsert Episode + Subtitle + EpisodeExternalId via SQL
-        await _episodeRepo.MergeEpisodeWithSubtitleAsync(episode, subtitle, token);
-    }
-
-    /// <inheritdoc />
     public Task IngestSeasonPackAsync(SeasonPackSubtitle seasonPack, CancellationToken token)
     {
         return _seasonPackRepo.BulkUpsertAsync([seasonPack], token);
@@ -290,26 +257,6 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
                 "Backfilled IDs on show {ShowName} (Id={ShowId}): TvdbId={TvdbId}, TmdbId={TmdbId}",
                 show.Name, show.Id, show.TvdbId, show.TmdbId);
             await _tvShowRepo.UpdateShowAsync(show, token);
-        }
-    }
-
-    /// <summary>
-    /// Ensure a Season entity exists for the given show and season number.
-    /// Creates it via InsertNewSeasonsAsync if missing.
-    /// </summary>
-    private async Task EnsureSeasonExistsAsync(long showId, int seasonNumber, CancellationToken token)
-    {
-        var existing = await _seasonRepo.GetSeasonForShowAsync(showId, seasonNumber, token);
-        if (existing == null)
-        {
-            await _seasonRepo.InsertNewSeasonsAsync(showId,
-            [
-                new Season
-                {
-                    TvShowId = showId,
-                    Number = seasonNumber
-                }
-            ], token);
         }
     }
 }
