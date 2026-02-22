@@ -1,3 +1,19 @@
+## [4.46.0](https://github.com/Belphemur/AddictedProxy/compare/v4.45.3...v4.46.0) (2026-02-22)
+
+### Bug Fixes
+
+* **database:** order episodes by number in repository queries ([a04d09d](https://github.com/Belphemur/AddictedProxy/commit/a04d09d73655a04faea4bfb379af3c2b0b3f570d))
+* **frontend:** keep vote circle overlaid on trending card images ([8cd9c35](https://github.com/Belphemur/AddictedProxy/commit/8cd9c35eeeb240501b8c6d12b0100c750e230eb5))
+* **frontend:** prevent layout shift in lazy-loaded images with responsive aspect-ratio ([cd46444](https://github.com/Belphemur/AddictedProxy/commit/cd4644471f4cd7394630512c37e5a756f33ac69d))
+* **frontend:** reduce vertical whitespace on desktop home page ([e206a31](https://github.com/Belphemur/AddictedProxy/commit/e206a31168413876f712ac2db935d7609d2cc94c))
+* **frontend:** reduce vertical whitespace on mobile home page ([fe881d6](https://github.com/Belphemur/AddictedProxy/commit/fe881d649d62790c8decbab15b77ed64dbc74487))
+* **frontend:** update AppBar and index page layout for improved UI and user experience ([b698446](https://github.com/Belphemur/AddictedProxy/commit/b69844669838690124853976471f033916d6c6b4))
+
+### Features
+
+* **frontend:** improve show detail UX for mobile and desktop ([c0e1ae9](https://github.com/Belphemur/AddictedProxy/commit/c0e1ae974a921e1a6ed8e2083891391b28a568b9))
+* **frontend:** redesign show detail page with glass panels and reduced whitespace ([a1e56c2](https://github.com/Belphemur/AddictedProxy/commit/a1e56c210ca9c32fa9d1bea7d58e206016839aa7))
+
 ## [4.45.3](https://github.com/Belphemur/AddictedProxy/compare/v4.45.2...v4.45.3) (2026-02-22)
 
 ### Bug Fixes
