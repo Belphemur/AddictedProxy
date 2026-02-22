@@ -1,27 +1,18 @@
 <template>
-  <v-container>
-    <v-sheet v-if="noSubtitles" rounded="xl" color="error" class="text-center">
-      <v-row>
-        <v-col>
-          <v-icon size="50">{{ mdiAlertCircle }}</v-icon>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          Sorry, we couldn't find subtitles for your language for this season.
-        </v-col>
-      </v-row>
+  <div>
+    <v-sheet v-if="noSubtitles" rounded="lg" color="error" class="text-center pa-4">
+      <v-icon size="50" class="mb-2">{{ mdiAlertCircle }}</v-icon>
+      <div>Sorry, we couldn't find subtitles for your language for this season.</div>
     </v-sheet>
-    <v-container v-else>
+    <template v-else>
       <v-data-table :items="subtitles" :headers="headers" :items-per-page="-1" hide-default-footer :group-by="groupBy"
-        v-if="!device.isMobile">
+        v-if="!device.isMobile" class="transparent-table">
         <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
           <tr>
             <td :colspan="columns.length" @click="toggleGroup(item)">
               <v-btn size="large" density="comfortable" variant="text"
                 :prepend-icon="isGroupOpen(item) ? '$expand' : '$next'"> {{ item.value }}
               </v-btn>
-
             </td>
           </tr>
         </template>
@@ -52,55 +43,40 @@
         </template>
 
       </v-data-table>
-      <v-expansion-panels v-else bg-color="#2f3237">
-        <v-expansion-panel v-for="episode in props.episodes">
+      <v-expansion-panels v-else bg-color="transparent">
+        <v-expansion-panel v-for="episode in props.episodes" bg-color="rgba(255,255,255,0.05)">
           <v-expansion-panel-title>
             <h3> Ep {{ episode.number }}. {{ episode.title }}</h3>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <v-row v-for="subtitle in episode.subtitles" :key="subtitle.subtitleId" class="mb-4">
-              <v-col>
-                <v-card elevation="2" outlined shaped tile :loading="currentlyDownloading.has(subtitle.subtitleId)">
-                  <v-card-title>
-                    <h3>{{ subtitle.title }}</h3>
-                  </v-card-title>
-                  <v-card-text>
-                    <v-row>
-                      <v-col cols="12">
-                        <v-icon>{{ mdiSubtitlesOutline }}</v-icon>
-                        {{ subtitle.version }}
-                      </v-col>
-                      <v-col v-if="subtitle.completed" cols="12">
-                        <v-icon>{{ mdiCheck }}</v-icon>
-                        Completed
-                      </v-col>
-                      <v-col v-if="subtitle.hearingImpaired" cols="12">
-                        <v-icon>{{ mdiEarHearingOff }}</v-icon>
-                        Hearing Impaired
-                      </v-col>
-                      <v-col v-if="subtitle.qualities?.length" cols="12">
-                        <shows-quality-chips :qualities="subtitle.qualities" />
-                      </v-col>
-                      <v-col cols="12">
-                        <v-chip :color="subtitle.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
-                          label>{{ subtitle.source }}</v-chip>
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                  <v-card-actions class="justify-center">
-                    <v-btn color="primary" :prepend-icon="mdiDownload" @click="downloadSubtitle(subtitle)"
-                      :disabled="currentlyDownloading.has(subtitle.subtitleId)">
-                      Download subtitle
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-            </v-row>
+            <div v-for="subtitle in episode.subtitles" :key="subtitle.subtitleId" class="mb-3">
+              <v-sheet rounded="lg" color="rgba(255,255,255,0.08)" class="pa-3">
+                <div class="d-flex align-center flex-wrap ga-2 mb-2">
+                  <v-icon size="small">{{ mdiSubtitlesOutline }}</v-icon>
+                  <span class="font-weight-medium">{{ subtitle.version }}</span>
+                  <v-icon v-if="subtitle.completed" size="small" color="success">{{ mdiCheck }}</v-icon>
+                  <span v-if="subtitle.completed" class="text-success text-body-2">Completed</span>
+                  <v-icon v-if="subtitle.hearingImpaired" size="small">{{ mdiEarHearingOff }}</v-icon>
+                  <span v-if="subtitle.hearingImpaired" class="text-body-2">HI</span>
+                </div>
+                <div class="d-flex align-center flex-wrap ga-2">
+                  <shows-quality-chips v-if="subtitle.qualities?.length" :qualities="subtitle.qualities" />
+                  <v-chip :color="subtitle.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
+                    label>{{ subtitle.source }}</v-chip>
+                  <v-spacer />
+                  <v-btn color="primary" size="small" :prepend-icon="mdiDownload" @click="downloadSubtitle(subtitle)"
+                    :disabled="currentlyDownloading.has(subtitle.subtitleId)"
+                    :loading="currentlyDownloading.has(subtitle.subtitleId)">
+                    Download
+                  </v-btn>
+                </div>
+              </v-sheet>
+            </div>
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
-    </v-container>
-  </v-container>
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -183,4 +159,12 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
   UpdateDownloaded();
 };
 </script>
-<style scoped></style>
+<style scoped>
+.transparent-table {
+  background: transparent !important;
+}
+
+.transparent-table :deep(.v-table__wrapper) {
+  background: transparent;
+}
+</style>
