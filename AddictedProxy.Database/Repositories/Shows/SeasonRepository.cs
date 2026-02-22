@@ -3,7 +3,6 @@
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Frozen;
 
 #endregion
 
@@ -19,10 +18,10 @@ public class SeasonRepository : ISeasonRepository
         _entityContext = entityContext;
     }
 
-    public Task InsertNewSeasonsAsync(long showId, IEnumerable<Season> seasons, CancellationToken token)
+    public async Task InsertNewSeasonsAsync(long showId, IEnumerable<Season> seasons, CancellationToken token)
     {
-        var currentSeasons = _entityContext.Seasons.Where(season => season.TvShowId == showId).AsNoTracking().Select(season => season.Number).ToFrozenSet();
-        return _entityContext.Seasons.BulkInsertAsync(seasons.Where(season => !currentSeasons.Contains(season.Number)), token);
+        var currentSeasons = await _entityContext.Seasons.Where(season => season.TvShowId == showId).AsNoTracking().Select(season => season.Number).ToListAsync(token);
+        await _entityContext.Seasons.BulkInsertAsync(seasons.Where(season => !currentSeasons.Contains(season.Number)), token);
     }
 
     public Task<Season?> GetSeasonForShowAsync(long showId, int seasonNumber, CancellationToken token)

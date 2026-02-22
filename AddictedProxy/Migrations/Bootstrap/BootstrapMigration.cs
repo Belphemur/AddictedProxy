@@ -16,5 +16,6 @@ public class BootstrapMigration : IBootstrap
         services.AddScoped<IMigration, MigrateExternalIdsToNewTableMigration>();
         services.AddScoped<IMigration, MigrateSubtitleExternalIdMigration>();
         services.AddScoped<IMigration, BackportHdToQualitiesMigration>();
+        services.AddScoped<IMigration, CleanSuperSubtitlesDataMigration>();
     }
 }

@@ -195,6 +195,34 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
         return _seasonPackRepo.BulkUpsertAsync([seasonPack], token);
     }
 
+    /// <inheritdoc />
+    public async Task MergeEpisodesWithSubtitlesAsync(
+        TvShow show,
+        IEnumerable<Episode> episodes,
+        CancellationToken token)
+    {
+        var episodeArray = episodes as Episode[] ?? episodes.ToArray();
+        if (episodeArray.Length == 0)
+        {
+            return;
+        }
+
+        // Ensure all needed seasons exist in a single call
+        var seasonNumbers = episodeArray.Select(e => e.Season).Distinct();
+        await _seasonRepo.InsertNewSeasonsAsync(show.Id,
+            seasonNumbers.Select(num => new Season { TvShowId = show.Id, Number = num }),
+            token);
+
+        // Bulk upsert episodes with their subtitles and external IDs via IncludeGraph
+        await _episodeRepo.UpsertEpisodes(episodeArray, token);
+    }
+
+    /// <inheritdoc />
+    public Task IngestSeasonPacksAsync(IEnumerable<SeasonPackSubtitle> seasonPacks, CancellationToken token)
+    {
+        return _seasonPackRepo.BulkUpsertAsync(seasonPacks, token);
+    }
+
     /// <summary>
     /// Resolve an IMDB ID to a TMDB ID using the TMDB find endpoint.
     /// Checks TV results first, then movie results.

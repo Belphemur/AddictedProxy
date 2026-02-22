@@ -13,8 +13,6 @@ using Microsoft.Extensions.Logging;
 using SuperSubtitleClient.Generated;
 using SuperSubtitleClient.Service;
 
-using ProtoShowInfo = SuperSubtitleClient.Generated.ShowInfo;
-using ProtoSubtitle = SuperSubtitleClient.Generated.Subtitle;
 using SubtitleEntity = AddictedProxy.Database.Model.Shows.Subtitle;
 
 namespace AddictedProxy.Services.Provider.SuperSubtitles.Jobs;
@@ -79,46 +77,18 @@ public class RefreshSuperSubtitlesJob
             "SuperSubtitles incremental refresh: {SeriesCount} new series subtitles since ID {MaxId}",
             updateCheck.SeriesCount, maxId);
 
-        TvShow? currentShow = null;
         long newMaxId = maxId;
         var subtitleCount = 0;
         var seasonPackCount = 0;
 
         await _transactionManager.WrapInTransactionAsync(async () =>
         {
-            await foreach (var item in _superSubtitlesClient.GetRecentSubtitlesAsync(maxId, token))
+            await foreach (var collection in _superSubtitlesClient.GetRecentSubtitlesAsync(maxId, token))
             {
-                switch (item.ItemCase)
-                {
-                    case ShowSubtitleItem.ItemOneofCase.ShowInfo:
-                        currentShow = await HandleShowInfoAsync(item.ShowInfo, token);
-                        break;
-
-                    case ShowSubtitleItem.ItemOneofCase.Subtitle:
-                        if (currentShow == null)
-                        {
-                            _logger.LogWarning(
-                                "Received subtitle {SubtitleId} without preceding ShowInfo, skipping",
-                                item.Subtitle.Id);
-                            break;
-                        }
-
-                        var isSeasonPack = await HandleSubtitleAsync(item.Subtitle, currentShow, token);
-                        newMaxId = Math.Max(newMaxId, item.Subtitle.Id);
-                        if (isSeasonPack)
-                            seasonPackCount++;
-                        else
-                            subtitleCount++;
-                        break;
-
-                    case ShowSubtitleItem.ItemOneofCase.None:
-                        _logger.LogWarning("Received ShowSubtitleItem with no data");
-                        break;
-
-                    default:
-                        _logger.LogWarning("Unknown ShowSubtitleItem case: {Case}", item.ItemCase);
-                        break;
-                }
+                var stats = await ProcessShowCollectionAsync(collection, newMaxId, token);
+                newMaxId = stats.MaxSubtitleId;
+                subtitleCount += stats.SubtitleCount;
+                seasonPackCount += stats.SeasonPackCount;
             }
         }, token);
 
@@ -133,95 +103,90 @@ public class RefreshSuperSubtitlesJob
             subtitleCount, seasonPackCount, newMaxId);
     }
 
-    private async Task<TvShow> HandleShowInfoAsync(ProtoShowInfo showInfo, CancellationToken token)
+    private record ProcessingStats(long MaxSubtitleId, int SubtitleCount, int SeasonPackCount);
+
+    private async Task<ProcessingStats> ProcessShowCollectionAsync(ShowSubtitlesCollection collection, long currentMaxId, CancellationToken token)
     {
-        var thirdPartyIds = showInfo.ThirdPartyIds != null
+        // 1. Merge show
+        var thirdPartyIds = collection.ShowInfo.ThirdPartyIds != null
             ? new ThirdPartyShowIds(
-                TvdbId: showInfo.ThirdPartyIds.TvdbId > 0 ? (int)showInfo.ThirdPartyIds.TvdbId : null,
-                ImdbId: !string.IsNullOrEmpty(showInfo.ThirdPartyIds.ImdbId) ? showInfo.ThirdPartyIds.ImdbId : null,
+                TvdbId: collection.ShowInfo.ThirdPartyIds.TvdbId > 0 ? (int)collection.ShowInfo.ThirdPartyIds.TvdbId : null,
+                ImdbId: !string.IsNullOrEmpty(collection.ShowInfo.ThirdPartyIds.ImdbId) ? collection.ShowInfo.ThirdPartyIds.ImdbId : null,
                 TmdbId: null)
             : null;
 
-        return await _ingestionService.MergeShowAsync(
+        var currentShow = await _ingestionService.MergeShowAsync(
             DataSource.SuperSubtitles,
-            showInfo.Show.Id.ToString(),
-            showInfo.Show.Name,
+            collection.ShowInfo.Show.Id.ToString(),
+            collection.ShowInfo.Show.Name,
             thirdPartyIds,
             token);
-    }
 
-    /// <summary>
-    /// Process a single subtitle from the stream.
-    /// Returns true if the subtitle was a season pack, false otherwise.
-    /// </summary>
-    private async Task<bool> HandleSubtitleAsync(ProtoSubtitle subtitle, TvShow currentShow, CancellationToken token)
-    {
-        if (subtitle.IsSeasonPack)
+        // 2. Build episodes and season packs from the collection's subtitles
+        var now = DateTime.UtcNow;
+        var seasonPacks = new List<SeasonPackSubtitle>();
+        var subtitlesByEpisode = new Dictionary<(int Season, int Episode), (string Title, List<SubtitleEntity> Subtitles)>();
+        long maxSubtitleId = currentMaxId;
+        var languageCache = new Dictionary<string, string?>();
+
+        foreach (var subtitle in collection.Subtitles)
         {
-            await HandleSeasonPackAsync(currentShow, subtitle, token);
-            return true;
+            maxSubtitleId = Math.Max(maxSubtitleId, subtitle.Id);
+            var languageIsoCode = await GetOrCacheLanguageIsoCodeAsync(subtitle.Language, languageCache, token);
+
+            if (subtitle.IsSeasonPack)
+            {
+                seasonPacks.Add(subtitle.ToSeasonPackSubtitle(currentShow.Id, languageIsoCode));
+            }
+            else
+            {
+                var key = (subtitle.Season, subtitle.Episode);
+                if (!subtitlesByEpisode.TryGetValue(key, out var group))
+                {
+                    group = (subtitle.Name ?? string.Empty, new List<SubtitleEntity>());
+                    subtitlesByEpisode[key] = group;
+                }
+                group.Subtitles.Add(subtitle.ToSubtitleEntity(languageIsoCode));
+            }
         }
 
-        await HandleEpisodeSubtitleAsync(currentShow, subtitle, token);
-        return false;
+        // 3. Build Episode entities with their Subtitles and ExternalIds
+        var showExternalId = collection.ShowInfo.Show.Id;
+        var episodes = subtitlesByEpisode.Select(kvp => new Episode
+        {
+            TvShowId = currentShow.Id,
+            Season = kvp.Key.Season,
+            Number = kvp.Key.Episode,
+            Title = kvp.Value.Title,
+            Discovered = now,
+            Subtitles = kvp.Value.Subtitles,
+            ExternalIds = [new EpisodeExternalId
+            {
+                Source = DataSource.SuperSubtitles,
+                ExternalId = $"{showExternalId}-S{kvp.Key.Season}E{kvp.Key.Episode}"
+            }]
+        }).ToList();
+
+        // 4. Bulk upsert episodes (with subtitles + external IDs) and season packs
+        await _ingestionService.MergeEpisodesWithSubtitlesAsync(currentShow, episodes, token);
+
+        if (seasonPacks.Count > 0)
+        {
+            await _ingestionService.IngestSeasonPacksAsync(seasonPacks, token);
+        }
+
+        var subtitleCount = subtitlesByEpisode.Values.Sum(g => g.Subtitles.Count);
+        return new ProcessingStats(maxSubtitleId, subtitleCount, seasonPacks.Count);
     }
 
-    private async Task HandleSeasonPackAsync(TvShow tvShow, ProtoSubtitle subtitle, CancellationToken token)
+    private async Task<string?> GetOrCacheLanguageIsoCodeAsync(string language, Dictionary<string, string?> cache, CancellationToken token)
     {
-        var culture = await _cultureParser.FromStringAsync(subtitle.Language, token);
+        if (cache.TryGetValue(language, out var cached))
+            return cached;
 
-        var seasonPack = new SeasonPackSubtitle
-        {
-            TvShowId = tvShow.Id,
-            Season = subtitle.Season,
-            Source = DataSource.SuperSubtitles,
-            ExternalId = subtitle.Id,
-            Filename = subtitle.Filename,
-            Language = subtitle.Language,
-            LanguageIsoCode = culture?.TwoLetterISOLanguageName,
-            Release = string.IsNullOrEmpty(subtitle.Release) ? null : subtitle.Release,
-            Uploader = string.IsNullOrEmpty(subtitle.Uploader) ? null : subtitle.Uploader,
-            UploadedAt = subtitle.UploadedAt?.ToDateTime(),
-            Qualities = subtitle.Qualities.ToVideoQuality(),
-            ReleaseGroups = subtitle.ReleaseGroups.Count > 0
-                ? string.Join(",", subtitle.ReleaseGroups)
-                : null,
-            Discovered = DateTime.UtcNow
-        };
-
-        await _ingestionService.IngestSeasonPackAsync(seasonPack, token);
-    }
-
-    private async Task HandleEpisodeSubtitleAsync(TvShow tvShow, ProtoSubtitle subtitle, CancellationToken token)
-    {
-        var culture = await _cultureParser.FromStringAsync(subtitle.Language, token);
-
-        var subtitleEntity = new SubtitleEntity
-        {
-            Scene = string.Join(", ", subtitle.ReleaseGroups),
-            Version = 0,
-            Completed = true,
-            CompletionPct = 100.0,
-            HearingImpaired = false,
-            Corrected = false,
-            Qualities = subtitle.Qualities.ToVideoQuality(),
-            Release = string.IsNullOrEmpty(subtitle.Release) ? null : subtitle.Release,
-            DownloadUri = new Uri(subtitle.DownloadUrl),
-            Language = subtitle.Language,
-            LanguageIsoCode = culture?.TwoLetterISOLanguageName,
-            Discovered = DateTime.UtcNow,
-            Source = DataSource.SuperSubtitles,
-            ExternalId = subtitle.Id.ToString()
-        };
-
-        await _ingestionService.MergeEpisodeSubtitleAsync(
-            tvShow,
-            DataSource.SuperSubtitles,
-            subtitle.Season,
-            subtitle.Episode,
-            subtitle.Name,
-            subtitle.Id.ToString(),
-            subtitleEntity,
-            token);
+        var culture = await _cultureParser.FromStringAsync(language, token);
+        var isoCode = culture?.TwoLetterISOLanguageName;
+        cache[language] = isoCode;
+        return isoCode;
     }
 }

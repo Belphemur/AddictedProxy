@@ -16,10 +16,9 @@ service SuperSubtitlesService {
   // GetSubtitles streams all subtitles for a specific show
   rpc GetSubtitles(GetSubtitlesRequest) returns (stream Subtitle);
 
-  // GetShowSubtitles streams show information and subtitles for multiple shows.
-  // Streams ShowSubtitleItem messages which contain either show info (show + third-party IDs)
-  // or a subtitle, linked together by show_id.
-  rpc GetShowSubtitles(GetShowSubtitlesRequest) returns (stream ShowSubtitleItem);
+  // GetShowSubtitles streams complete show subtitle collections for multiple shows.
+  // Each streamed item contains the show info (with third-party IDs) and all subtitles for that show.
+  rpc GetShowSubtitles(GetShowSubtitlesRequest) returns (stream ShowSubtitlesCollection);
 
   // CheckForUpdates checks if there are new subtitles available since a given content ID
   rpc CheckForUpdates(CheckForUpdatesRequest) returns (CheckForUpdatesResponse);
@@ -28,10 +27,9 @@ service SuperSubtitlesService {
   rpc DownloadSubtitle(DownloadSubtitleRequest) returns (DownloadSubtitleResponse);
 
   // GetRecentSubtitles streams recently uploaded subtitles with show information.
-  // Streams ShowSubtitleItem messages: for each new show encountered, a ShowInfo
-  // item is sent first, followed by individual Subtitle items. Show info is only
-  // sent once per unique show_id within a single call.
-  rpc GetRecentSubtitles(GetRecentSubtitlesRequest) returns (stream ShowSubtitleItem);
+  // Streams ShowSubtitlesCollection messages: each message contains a show's
+  // complete information and all its recent subtitles.
+  rpc GetRecentSubtitles(GetRecentSubtitlesRequest) returns (stream ShowSubtitlesCollection);
 }
 
 // Show represents a TV show with basic information
@@ -85,13 +83,11 @@ message ShowInfo {
   ThirdPartyIds third_party_ids = 2;
 }
 
-// ShowSubtitleItem is a streaming message for GetShowSubtitles/GetRecentSubtitles.
-// Each item is either show information or a subtitle, linked by show_id.
-message ShowSubtitleItem {
-  oneof item {
-    ShowInfo show_info = 1;   // Show metadata with third-party IDs
-    Subtitle subtitle = 2;    // A single subtitle belonging to a show (use show_id to link)
-  }
+// ShowSubtitlesCollection contains a show's complete information and all its subtitles.
+// Streamed by GetShowSubtitles and GetRecentSubtitles — one message per show.
+message ShowSubtitlesCollection {
+  ShowInfo show_info = 1;               // Show metadata with third-party IDs
+  repeated Subtitle subtitles = 2;      // All subtitles for this show
 }
 
 // GetShowListRequest requests the list of all available shows
