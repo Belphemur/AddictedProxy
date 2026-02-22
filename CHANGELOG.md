@@ -1,3 +1,12 @@
+## [4.45.2](https://github.com/Belphemur/AddictedProxy/compare/v4.45.1...v4.45.2) (2026-02-22)
+
+### Bug Fixes
+
+* make InsertNewSeasonsAsync properly async and validate download URL in ToSubtitleEntity ([f9db066](https://github.com/Belphemur/AddictedProxy/commit/f9db06638caf4d42944a178448724136a44261db))
+* **migration:** include migration type in start/success/failure log messages ([6612da6](https://github.com/Belphemur/AddictedProxy/commit/6612da68336b41f0d37c4a2701f4e7dad56b6fab))
+* refresh from all providers ([78b29d7](https://github.com/Belphemur/AddictedProxy/commit/78b29d7dd0d2a8142be6efcc073be12ef1a2be56))
+* restore ToSeasonPackSubtitle method signature and improve nullable docs ([3039a7c](https://github.com/Belphemur/AddictedProxy/commit/3039a7c561915b747551e780a93b16d5380ae268))
+
 ## [4.45.1](https://github.com/Belphemur/AddictedProxy/compare/v4.45.0...v4.45.1) (2026-02-20)
 
 ### Bug Fixes
