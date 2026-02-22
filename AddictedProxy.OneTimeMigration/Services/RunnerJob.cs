@@ -32,7 +32,7 @@ internal class RunnerJob
         span.SetTag("migration.type", migrationType);
 
         using var scope = _logger.BeginScope(migrationType);
-        _logger.LogInformation("Starting migration");
+        _logger.LogInformation("Starting migration: {MigrationType}", migrationType);
         var migration = _migrations.Single(mig => mig.MigrationType == migrationType);
         var migrationEntry = await _entityContext.OneTimeMigrationRelease.FirstOrDefaultAsync(release => release.MigrationType == migration.MigrationType, cancellationToken: token);
         if (migrationEntry == null)
@@ -50,15 +50,15 @@ internal class RunnerJob
 
         try
         {
-            await migration.ExecuteAsync(token);
+            await migration.ExecuteAsync(context, token);
             migrationEntry.State = OneTimeMigrationRelease.MigrationState.Success;
-            _logger.LogInformation("Successfully migrated");
+            _logger.LogInformation("Successfully completed migration: {MigrationType}", migrationType);
             context.WriteLine($"Successfully completed migration: {migrationType}");
         }
         catch (Exception e)
         {
             migrationEntry.State = OneTimeMigrationRelease.MigrationState.Fail;
-            _logger.LogError(e, "Couldn't migrate");
+            _logger.LogError(e, "Migration failed: {MigrationType}", migrationType);
             context.WriteLine($"Error: Migration {migrationType} failed: {e.Message}");
             span.Finish(e, Status.InternalError);
             throw;
