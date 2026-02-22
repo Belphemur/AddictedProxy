@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-col cols="12" sm="10">
+    <v-col cols="12" sm="10" xl="8" style="max-width: 1600px">
       <v-card>
         <v-card-item class="py-2">
           <v-card-title class="text-h6 text-sm-h5">Welcome to Gestdown</v-card-title>
@@ -17,7 +17,7 @@
               <SearchComponent ref="searchBox" v-on:selected="goToPage" v-on:cleared="clear" />
             </v-col>
           </v-row>
-          <v-row dense class="mt-3">
+          <v-row dense class="mt-n2">
             <v-col>
               <h2 class="text-h6 text-sm-h4">Trending</h2>
             </v-col>
