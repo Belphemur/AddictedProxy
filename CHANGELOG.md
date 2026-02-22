@@ -1,3 +1,9 @@
+## [4.46.1](https://github.com/Belphemur/AddictedProxy/compare/v4.46.0...v4.46.1) (2026-02-22)
+
+### Bug Fixes
+
+* **frontend:** fix version text wrapping in mobile subtitle cards ([e341d02](https://github.com/Belphemur/AddictedProxy/commit/e341d027fc589c10460287d13842da4f6f4fd028))
+
 ## [4.46.0](https://github.com/Belphemur/AddictedProxy/compare/v4.45.3...v4.46.0) (2026-02-22)
 
 ### Bug Fixes
