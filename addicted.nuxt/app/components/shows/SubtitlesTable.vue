@@ -54,16 +54,15 @@
                 <div class="d-flex align-center flex-wrap ga-2 mb-2">
                   <v-icon size="small">{{ mdiSubtitlesOutline }}</v-icon>
                   <span class="font-weight-medium">{{ subtitle.version }}</span>
-                  <v-icon v-if="subtitle.completed" size="small" color="success">{{ mdiCheck }}</v-icon>
-                  <span v-if="subtitle.completed" class="text-success text-body-2">Completed</span>
                   <v-icon v-if="subtitle.hearingImpaired" size="small">{{ mdiEarHearingOff }}</v-icon>
                   <span v-if="subtitle.hearingImpaired" class="text-body-2">HI</span>
                 </div>
-                <div class="d-flex align-center flex-wrap ga-2">
+                <div class="d-flex align-center flex-wrap ga-2 mb-2">
                   <shows-quality-chips v-if="subtitle.qualities?.length" :qualities="subtitle.qualities" />
                   <v-chip :color="subtitle.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
                     label>{{ subtitle.source }}</v-chip>
-                  <v-spacer />
+                </div>
+                <div class="d-flex justify-end">
                   <v-btn color="primary" size="small" :prepend-icon="mdiDownload" @click="downloadSubtitle(subtitle)"
                     :disabled="currentlyDownloading.has(subtitle.subtitleId)"
                     :loading="currentlyDownloading.has(subtitle.subtitleId)">
