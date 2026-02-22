@@ -1,21 +1,17 @@
 <template>
   <v-app :style="defaultBackground">
     <div class="bg-image"></div>
-    <default-bar v-on:drawer-clicked="drawer = !drawer" :is-mobile="isMobile"/>
-
-    <ButtomNavigation v-model="drawer" v-if="isMobile"/>
-
-    <default-view/>
+    <default-bar v-on:drawer-clicked="drawer = !drawer" :is-mobile="isMobile" />
+    <default-view />
   </v-app>
 </template>
 
 <script lang="ts" setup>
 import DefaultBar from '@/layouts/default/AppBar.vue';
 import DefaultView from '@/layouts/default/View.vue';
-import {ref} from "vue";
-import ButtomNavigation from "~/layouts/default/ButtomNavigation.vue";
+import { ref } from "vue";
 
-const {isMobile} = useDevice();
+const { isMobile } = useDevice();
 
 const drawer = ref<boolean>(isMobile)
 
@@ -23,14 +19,14 @@ const defaultBackground = {
   background: "none",
 }
 useHead({
-      link: [
-        {
-          rel: 'preload',
-          as: 'image',
-          href: '/img/background-small.webp'
-        }
-      ]
+  link: [
+    {
+      rel: 'preload',
+      as: 'image',
+      href: '/img/background-small.webp'
     }
+  ]
+}
 )
 </script>
 <style scoped>
