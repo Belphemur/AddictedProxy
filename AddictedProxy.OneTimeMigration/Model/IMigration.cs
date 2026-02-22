@@ -1,11 +1,12 @@
 ﻿using System.Reflection;
+using Hangfire.Server;
 
 namespace AddictedProxy.OneTimeMigration.Model;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class MigrationDateAttribute : Attribute
 {
-    public readonly string Date; 
+    public readonly string Date;
 
     public MigrationDateAttribute(int year, int month, int day)
     {
@@ -28,7 +29,8 @@ public interface IMigration
     /// <summary>
     /// Execute the migration
     /// </summary>
+    /// <param name="context">Hangfire perform context for console output</param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task ExecuteAsync(CancellationToken token);
+    public Task ExecuteAsync(PerformContext context, CancellationToken token);
 }

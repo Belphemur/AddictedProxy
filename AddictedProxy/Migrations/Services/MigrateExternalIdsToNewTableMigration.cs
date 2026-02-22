@@ -22,7 +22,7 @@ public class MigrateExternalIdsToNewTableMigration : IMigration
         _logger = logger;
     }
 
-    public async Task ExecuteAsync(CancellationToken token)
+    public async Task ExecuteAsync(Hangfire.Server.PerformContext context, CancellationToken token)
     {
         await MigrateShowExternalIdsAsync(token);
         await MigrateEpisodeExternalIdsAsync(token);

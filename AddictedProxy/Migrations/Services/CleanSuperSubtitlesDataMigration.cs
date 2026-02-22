@@ -4,6 +4,8 @@ using AddictedProxy.OneTimeMigration.Model;
 using AddictedProxy.Services.Provider.SuperSubtitles.Config;
 using AddictedProxy.Services.Provider.SuperSubtitles.Jobs;
 using Hangfire;
+using Hangfire.Console;
+using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -38,18 +40,21 @@ public class CleanSuperSubtitlesDataMigration : IMigration
         _logger = logger;
     }
 
-    public async Task ExecuteAsync(CancellationToken token)
+    public async Task ExecuteAsync(PerformContext context, CancellationToken token)
     {
+        context.WriteLine("Starting SuperSubtitles data cleanup...");
         _logger.LogInformation("Starting SuperSubtitles data cleanup...");
 
         // 1. Delete SuperSubtitles season pack subtitles
         var seasonPacksDeleted = await _entityContext.Database.ExecuteSqlAsync(
             $"""DELETE FROM "SeasonPackSubtitles" WHERE "Source" = {SuperSubtitlesSource}""", token);
+        context.WriteLine($"Deleted {seasonPacksDeleted} SuperSubtitles season pack subtitles");
         _logger.LogInformation("Deleted {Count} SuperSubtitles season pack subtitles", seasonPacksDeleted);
 
         // 2. Delete SuperSubtitles subtitles
         var subtitlesDeleted = await _entityContext.Database.ExecuteSqlAsync(
             $"""DELETE FROM "Subtitles" WHERE "Source" = {SuperSubtitlesSource}""", token);
+        context.WriteLine($"Deleted {subtitlesDeleted} SuperSubtitles subtitles");
         _logger.LogInformation("Deleted {Count} SuperSubtitles subtitles", subtitlesDeleted);
 
         // 3. Delete episodes that only had subtitles from SuperSubtitles (no remaining subtitles)
@@ -64,34 +69,33 @@ public class CleanSuperSubtitlesDataMigration : IMigration
                  WHERE ext."EpisodeId" = e."Id" AND ext."Source" = {SuperSubtitlesSource}
              )
              """, token);
+        context.WriteLine($"Deleted {episodesDeleted} episodes that only had SuperSubtitles subtitles");
         _logger.LogInformation("Deleted {Count} episodes that only had SuperSubtitles subtitles", episodesDeleted);
 
         // 4. Delete SuperSubtitles episode external IDs
         var episodeExtIdsDeleted = await _entityContext.Database.ExecuteSqlAsync(
             $"""DELETE FROM "EpisodeExternalIds" WHERE "Source" = {SuperSubtitlesSource}""", token);
+        context.WriteLine($"Deleted {episodeExtIdsDeleted} SuperSubtitles episode external IDs");
         _logger.LogInformation("Deleted {Count} SuperSubtitles episode external IDs", episodeExtIdsDeleted);
 
         // 5. Delete SuperSubtitles show external IDs
         var showExtIdsDeleted = await _entityContext.Database.ExecuteSqlAsync(
             $"""DELETE FROM "ShowExternalIds" WHERE "Source" = {SuperSubtitlesSource}""", token);
+        context.WriteLine($"Deleted {showExtIdsDeleted} SuperSubtitles show external IDs");
         _logger.LogInformation("Deleted {Count} SuperSubtitles show external IDs", showExtIdsDeleted);
 
         // 6. Truncate SuperSubtitles state (sync cursor)
         var stateDeleted = await _entityContext.Database.ExecuteSqlAsync(
             $"""DELETE FROM "SuperSubtitlesState" """, token);
+        context.WriteLine($"Cleared SuperSubtitles state ({stateDeleted} rows)");
         _logger.LogInformation("Cleared SuperSubtitles state ({Count} rows)", stateDeleted);
 
+        context.WriteLine("SuperSubtitles data cleanup complete. Scheduling fresh import...");
         _logger.LogInformation("SuperSubtitles data cleanup complete. Scheduling fresh import...");
 
         // 7. Schedule a fresh bulk import if imports are enabled
-        if (_importConfig.EnableImport)
-        {
-            _backgroundJobClient.Enqueue<ImportSuperSubtitlesJob>(job => job.ExecuteAsync(null!, CancellationToken.None));
-            _logger.LogInformation("Scheduled fresh SuperSubtitles bulk import job");
-        }
-        else
-        {
-            _logger.LogInformation("SuperSubtitles import is disabled — skipping import scheduling");
-        }
+        _backgroundJobClient.Enqueue<ImportSuperSubtitlesJob>(job => job.ExecuteAsync(null!, CancellationToken.None));
+        context.WriteLine("Scheduled fresh SuperSubtitles bulk import job");
+        _logger.LogInformation("Scheduled fresh SuperSubtitles bulk import job");
     }
 }

@@ -31,7 +31,7 @@ public class BackportHdToQualitiesMigration : IMigration
         _logger = logger;
     }
 
-    public async Task ExecuteAsync(CancellationToken token)
+    public async Task ExecuteAsync(Hangfire.Server.PerformContext context, CancellationToken token)
     {
         _logger.LogInformation(
             "Backporting HD=true → Qualities={Mask} (Q720P|Q1080P) for Addic7ed subtitles",

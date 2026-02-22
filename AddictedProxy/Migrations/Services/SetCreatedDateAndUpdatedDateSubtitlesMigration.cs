@@ -16,7 +16,7 @@ public class SetCreatedDateAndUpdatedDateSubtitlesMigration : IMigration
         _logger = logger;
     }
 
-    public async Task ExecuteAsync(CancellationToken token)
+    public async Task ExecuteAsync(Hangfire.Server.PerformContext context, CancellationToken token)
     {
         try
         {

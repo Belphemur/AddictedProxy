@@ -19,7 +19,7 @@ public class PopulateTvDbIdsMigration : IMigration
         _tmdbClient = tmdbClient;
     }
 
-    public async Task ExecuteAsync(CancellationToken token)
+    public async Task ExecuteAsync(Hangfire.Server.PerformContext context, CancellationToken token)
     {
         var count = 0;
         foreach (var tvShow in await _entityContext.TvShows.Where(show => show.TmdbId != null)

@@ -18,7 +18,7 @@ public class CleanUpInboxUsersMigration : IMigration
         _logger = logger;
     }
 
-    public async Task ExecuteAsync(CancellationToken token)
+    public async Task ExecuteAsync(Hangfire.Server.PerformContext context, CancellationToken token)
     {
         var creds = await _credentialRepository.GetAllCredentialsAsync().ToArrayAsync(token);
         foreach (var cred in creds)
