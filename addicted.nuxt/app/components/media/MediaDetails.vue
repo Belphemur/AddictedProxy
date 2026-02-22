@@ -3,7 +3,7 @@
 import type { MediaDetailsDto } from "~/composables/api/data-contracts";
 import { langs } from "~/composables/language/lang";
 import LazyOptimizedPicture from "~/components/image/LazyOptimizedPicture.vue";
-import { mdiMovie, mdiTelevision } from "@mdi/js";
+import { mdiChevronDown, mdiChevronUp, mdiMovie, mdiTelevision } from "@mdi/js";
 
 export interface Props {
   details: MediaDetailsDto;
@@ -14,6 +14,9 @@ const props = defineProps<Props>();
 const seasons = computed<Number[]>(() => props.details.media!.seasons!)
 
 const season = defineModel<number>();
+
+const device = useDevice();
+const showOverview = ref(false);
 
 const setLanguage = (lang: string) => {
   if (lang == language.lang) {
@@ -94,16 +97,23 @@ const setLanguage = (lang: string) => {
               {{ props.details.details!.genre.join(", ") }}
             </v-col>
           </v-row>
-          <v-row dense>
-            <v-col align-self="end">
-              <h6 class="text-subtitle-1 font-weight-bold">Overview</h6>
-              <p class="overview-clamp" :title="props.details.details!.overview">
-                {{ props.details.details!.overview }}
-              </p>
-            </v-col>
-          </v-row>
         </v-col>
       </v-row>
+    </div>
+    <div v-if="device.isMobile" class="mt-2">
+      <v-btn variant="text" size="small" class="text-none text-medium-emphasis"
+        :append-icon="showOverview ? mdiChevronUp : mdiChevronDown" @click="showOverview = !showOverview">
+        {{ showOverview ? 'Hide overview' : 'Show overview' }}
+      </v-btn>
+      <p v-show="showOverview" class="mt-1 text-body-2">
+        {{ props.details.details!.overview }}
+      </p>
+    </div>
+    <div v-else v-once class="mt-2">
+      <h6 class="text-subtitle-1 font-weight-bold">Overview</h6>
+      <p class="overview-clamp" :title="props.details.details!.overview">
+        {{ props.details.details!.overview }}
+      </p>
     </div>
     <v-row dense class="mt-1">
       <v-col xl="4" cols="6">

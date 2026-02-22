@@ -115,7 +115,7 @@ async function loadViewData() {
 }
 
 watch([currentSeason, language], async ([newSeason], [oldSeason]) => {
-  if(loadingEpisodes.value) {
+  if (loadingEpisodes.value) {
     console.warn("Loading episodes already in progress, skipping season change");
     return;
   }
@@ -280,34 +280,36 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
       Downloading subtitles
     </v-progress-linear>
     <div class="mt-2">
-        <v-skeleton-loader type="card" :loading="loadingEpisodes">
+      <v-skeleton-loader type="card" :loading="loadingEpisodes">
         <v-sheet rounded="lg" color="rgba(0,0,0,0.75)" class="pa-4 pa-sm-6">
-          <h2 class="text-h6 mb-2">Season {{ currentSeason }}</h2>
-          <div class="d-flex align-center mb-4">
-            <v-btn :prepend-icon="mdiRefresh" class="text-none" color="indigo-lighten-3" @click="refreshShow"
+          <div class="d-flex align-center flex-wrap ga-2 mb-4">
+            <h2 class="text-h6">Season {{ currentSeason }}</h2>
+            <v-spacer />
+            <div class="d-flex ga-2">
+              <v-btn :prepend-icon="mdiRefresh" class="text-none" color="primary" size="small" @click="refreshShow"
                 :disabled="refreshingProgress != null || downloadingInProgress">Refresh
-                <v-tooltip activator="parent" location="end">Fetch from Addic7ed
+                <v-tooltip activator="parent" location="bottom">Fetch from Addic7ed
                 </v-tooltip>
               </v-btn>
-              <v-spacer></v-spacer>
-            <v-btn v-if="onlyOneTypeAvailable" :prepend-icon="mdiDownload" class="text-none"
-                color="indigo-lighten-3" @click="handleDownloadClick"
+              <v-btn v-if="onlyOneTypeAvailable" :prepend-icon="mdiDownload" class="text-none" color="primary"
+                size="small" @click="handleDownloadClick"
                 :disabled="refreshingProgress != null || downloadingInProgress">
                 Download season
-                <v-tooltip activator="parent" location="end">Download all subtitles of the season as ZIP file
+                <v-tooltip activator="parent" location="bottom">Download all subtitles of the season as ZIP file
                 </v-tooltip>
               </v-btn>
-            <v-btn v-else :prepend-icon="mdiDownload" class="text-none" color="indigo-lighten-3"
+              <v-btn v-else :prepend-icon="mdiDownload" class="text-none" color="primary" size="small"
                 :disabled="refreshingProgress != null || downloadingInProgress">
                 <SubtitleTypeChooser @selected="downloadSeasonSubtitles" :available-types="availableSubtitleTypes" />
                 Download season
-                <v-tooltip activator="parent" location="end">Download all subtitles of the season as ZIP file
+                <v-tooltip activator="parent" location="bottom">Download all subtitles of the season as ZIP file
                 </v-tooltip>
               </v-btn>
+            </div>
           </div>
           <subtitles-table :episodes="episodes"></subtitles-table>
         </v-sheet>
-        </v-skeleton-loader>
+      </v-skeleton-loader>
     </div>
   </div>
 </template>

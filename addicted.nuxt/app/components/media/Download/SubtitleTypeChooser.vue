@@ -73,7 +73,7 @@ const onDialogDownload = (dialogRef: vue.Ref<boolean>) => {
 
           <v-spacer></v-spacer>
 
-          <v-btn color="surface-variant" text="Download" variant="flat" @click="onDialogDownload(isActive)"></v-btn>
+          <v-btn color="primary" text="Download" variant="flat" @click="onDialogDownload(isActive)"></v-btn>
         </v-card-actions>
       </v-card>
     </template>
