@@ -10,16 +10,16 @@ definePageMeta({
 </script>
 
 <template>
-    <v-col cols="12" lg="8" offset-lg="2" >
-      <suspense>
-        <template #default>
-          <media-detail-view :show-id="showId"></media-detail-view>
-        </template>
-        <template #fallback>
-          <v-progress-linear indeterminate></v-progress-linear>
-        </template>
-      </suspense>
-    </v-col>
+  <v-container fluid class="pa-2 pa-sm-4" style="max-width: 1600px">
+    <suspense>
+      <template #default>
+        <media-detail-view :show-id="showId"></media-detail-view>
+      </template>
+      <template #fallback>
+        <v-progress-linear indeterminate></v-progress-linear>
+      </template>
+    </suspense>
+  </v-container>
 </template>
 
 <style scoped>

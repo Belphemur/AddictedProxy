@@ -270,63 +270,45 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
 
 <template>
   <div>
-    <v-row v-if="mediaInfo?.details != null">
-      <v-col cols="12" offset="0" lg="8" offset-lg="2">
-        <media-details :details="mediaInfo" v-model="currentSeason" />
-      </v-col>
-    </v-row>
-    <v-row justify="center" v-if="refreshingProgress != null">
-      <v-col cols="10">
-        <v-col cols="11" align-self="center">
-          <v-progress-linear v-model="refreshingProgress" color="blue" height="18">
-            {{ formattedProgress }}
-          </v-progress-linear>
-        </v-col>
-      </v-col>
-    </v-row>
-    <v-row justify="center" v-if="downloadingProgress != null">
-      <v-col cols="10">
-        <v-col cols="11" align-self="center">
-          <v-progress-linear v-model="downloadingProgress" color="blue" height="18">
-            Downloading subtitles
-          </v-progress-linear>
-        </v-col>
-      </v-col>
-    </v-row>
-    <v-row justify="center">
-      <v-col cols="12">
+    <media-details v-if="mediaInfo?.details != null" :details="mediaInfo" v-model="currentSeason" />
+    <v-progress-linear v-if="refreshingProgress != null" v-model="refreshingProgress" color="blue" height="18"
+      class="mt-2">
+      {{ formattedProgress }}
+    </v-progress-linear>
+    <v-progress-linear v-if="downloadingProgress != null" v-model="downloadingProgress" color="blue" height="18"
+      class="mt-2">
+      Downloading subtitles
+    </v-progress-linear>
+    <div class="mt-2">
         <v-skeleton-loader type="card" :loading="loadingEpisodes">
-          <v-card width="100%">
-            <v-card-title>Season {{ currentSeason }}</v-card-title>
-            <v-card-actions>
-              <v-btn :prepend-icon="mdiRefresh" class="text-none mb-4" color="indigo-lighten-3" @click="refreshShow"
+        <v-sheet rounded="lg" color="rgba(0,0,0,0.75)" class="pa-4 pa-sm-6">
+          <h2 class="text-h6 mb-2">Season {{ currentSeason }}</h2>
+          <div class="d-flex align-center mb-4">
+            <v-btn :prepend-icon="mdiRefresh" class="text-none" color="indigo-lighten-3" @click="refreshShow"
                 :disabled="refreshingProgress != null || downloadingInProgress">Refresh
                 <v-tooltip activator="parent" location="end">Fetch from Addic7ed
                 </v-tooltip>
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn v-if="onlyOneTypeAvailable" :prepend-icon="mdiDownload" class="text-none mb-4"
+            <v-btn v-if="onlyOneTypeAvailable" :prepend-icon="mdiDownload" class="text-none"
                 color="indigo-lighten-3" @click="handleDownloadClick"
                 :disabled="refreshingProgress != null || downloadingInProgress">
                 Download season
                 <v-tooltip activator="parent" location="end">Download all subtitles of the season as ZIP file
                 </v-tooltip>
               </v-btn>
-              <v-btn v-else :prepend-icon="mdiDownload" class="text-none mb-4" color="indigo-lighten-3"
+            <v-btn v-else :prepend-icon="mdiDownload" class="text-none" color="indigo-lighten-3"
                 :disabled="refreshingProgress != null || downloadingInProgress">
                 <SubtitleTypeChooser @selected="downloadSeasonSubtitles" :available-types="availableSubtitleTypes" />
                 Download season
                 <v-tooltip activator="parent" location="end">Download all subtitles of the season as ZIP file
                 </v-tooltip>
               </v-btn>
-            </v-card-actions>
-            <v-card-text>
-              <subtitles-table :episodes="episodes"></subtitles-table>
-            </v-card-text>
-          </v-card>
+          </div>
+          <subtitles-table :episodes="episodes"></subtitles-table>
+        </v-sheet>
         </v-skeleton-loader>
-      </v-col>
-    </v-row>
+    </div>
   </div>
 </template>
 

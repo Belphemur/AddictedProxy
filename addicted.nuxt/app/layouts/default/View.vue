@@ -1,5 +1,5 @@
 <template>
-  <v-main style="padding-top: 6rem">
+  <v-main style="padding-top: 3rem">
     <NuxtPage />
   </v-main>
 </template>
