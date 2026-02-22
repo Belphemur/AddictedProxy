@@ -17,6 +17,7 @@ For a deeper understanding of the application architecture, refer to the `docs/`
 | [Provider System](../docs/provider-system.md)             | Current single-provider (Addic7ed) architecture, service interfaces, data flows, and credential management |
 | [API Surface](../docs/api-surface.md)                     | REST endpoints, DTOs, response models, SignalR hub, and caching strategy                                   |
 | [Background Jobs](../docs/background-jobs.md)             | Hangfire jobs, queues, one-time migration framework, and job pipelines                                     |
+| [Frontend UX & Design](../docs/frontend-ux-design.md)     | Glass panel design system, component patterns, responsive strategy, color palette, and Playwright testing  |
 | [Multi-Provider Plan](../docs/multi-provider-plan.md)     | Architecture plan for adding SuperSubtitles as a second provider                                           |
 
 **Always consult these docs** before making significant architectural changes to understand the current state and planned direction.
@@ -94,6 +95,18 @@ cd addicted.nuxt
 pnpm install
 pnpm dev
 ```
+
+> **Important:** When making frontend changes, you **must** consult [Frontend UX & Design](../docs/frontend-ux-design.md) for the glass panel design system, color palette, spacing conventions, responsive patterns, and component standards. All new UI must follow the established glassmorphism aesthetic.
+
+### Verifying Frontend Changes with Playwright
+
+**All frontend visual changes must be verified using Playwright MCP** before committing. Never commit UI changes without visually confirming they render correctly.
+
+1. **Desktop:** Navigate to the affected page, take a full-page screenshot, interact with elements (expand groups, click controls), and screenshot again
+2. **Mobile:** Set a mobile User-Agent via `context.setExtraHTTPHeaders` (required for `@nuxtjs/device` SSR detection), also override client UA with `context.addInitScript`, resize viewport to 390x844, navigate, and screenshot
+3. **Check console** for hydration mismatch warnings — these indicate SSR/client rendering differences that must be fixed
+
+> **Warning:** `context.addInitScript` is permanent per browser context. To switch back to desktop after mobile testing, close the page (`mcp_playwright_browser_close`) and create a fresh one.
 
 ### Docker
 
