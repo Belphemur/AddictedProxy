@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-col cols="10">
       <v-card title="Welcome to Gestdown">
-        <v-card-subtitle>
+        <v-card-subtitle class="text-body-2 text-sm-body-1">
           A subtitle aggregator pulling from multiple providers including <strong>Addic7ed</strong> and
           <strong>SuperSubtitles</strong>.
           Search and download subtitles for your favourite shows.
@@ -10,14 +10,14 @@
         <v-card-text>
           <v-row>
             <v-col>
-              <h2 class="text-h4">Search</h2>
+              <h2 class="text-h5 text-sm-h4">Search</h2>
 
               <SearchComponent ref="searchBox" v-on:selected="goToPage" v-on:cleared="clear" />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <h2 class="text-h4">Trending</h2>
+              <h2 class="text-h5 text-sm-h4">Trending</h2>
             </v-col>
           </v-row>
           <v-row justify-lg="center">
