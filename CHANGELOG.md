@@ -1,3 +1,9 @@
+## [4.45.3](https://github.com/Belphemur/AddictedProxy/compare/v4.45.2...v4.45.3) (2026-02-22)
+
+### Bug Fixes
+
+* **frontend:** use vuetify typography utilities ([83091d7](https://github.com/Belphemur/AddictedProxy/commit/83091d7720bd3c5fc13e57fbaf932217cf8dbd69))
+
 ## [4.45.2](https://github.com/Belphemur/AddictedProxy/compare/v4.45.1...v4.45.2) (2026-02-22)
 
 ### Bug Fixes
