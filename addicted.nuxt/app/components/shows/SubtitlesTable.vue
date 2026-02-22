@@ -62,13 +62,11 @@
                   <v-chip :color="subtitle.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
                     label>{{ subtitle.source }}</v-chip>
                 </div>
-                <div class="d-flex justify-end">
-                  <v-btn color="primary" size="small" :prepend-icon="mdiDownload" @click="downloadSubtitle(subtitle)"
-                    :disabled="currentlyDownloading.has(subtitle.subtitleId)"
-                    :loading="currentlyDownloading.has(subtitle.subtitleId)">
-                    Download
-                  </v-btn>
-                </div>
+                <v-btn color="primary" size="default" :prepend-icon="mdiDownload" @click="downloadSubtitle(subtitle)"
+                  :disabled="currentlyDownloading.has(subtitle.subtitleId)"
+                  :loading="currentlyDownloading.has(subtitle.subtitleId)" block class="mt-1">
+                  Download
+                </v-btn>
               </v-sheet>
             </div>
           </v-expansion-panel-text>
