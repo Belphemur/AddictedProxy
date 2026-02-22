@@ -51,11 +51,14 @@
           <v-expansion-panel-text>
             <div v-for="subtitle in episode.subtitles" :key="subtitle.subtitleId" class="mb-3">
               <v-sheet rounded="lg" color="rgba(255,255,255,0.08)" class="pa-3">
-                <div class="d-flex align-center flex-wrap ga-2 mb-2">
-                  <v-icon size="small">{{ mdiSubtitlesOutline }}</v-icon>
-                  <span class="font-weight-medium">{{ subtitle.version }}</span>
-                  <v-icon v-if="subtitle.hearingImpaired" size="small">{{ mdiEarHearingOff }}</v-icon>
-                  <span v-if="subtitle.hearingImpaired" class="text-body-2">HI</span>
+                <div class="d-flex align-center ga-2 mb-2">
+                  <v-icon size="small" class="flex-shrink-0">{{ mdiSubtitlesOutline }}</v-icon>
+                  <span class="font-weight-medium"
+                    style="min-width:0; word-break:break-word;">{{ subtitle.version }}</span>
+                  <div v-if="subtitle.hearingImpaired" class="d-flex align-center ga-1 flex-shrink-0 ms-auto">
+                    <v-icon size="small">{{ mdiEarHearingOff }}</v-icon>
+                    <span class="text-body-2">HI</span>
+                  </div>
                 </div>
                 <div class="d-flex align-center flex-wrap ga-2 mb-2">
                   <shows-quality-chips v-if="subtitle.qualities?.length" :qualities="subtitle.qualities" />
