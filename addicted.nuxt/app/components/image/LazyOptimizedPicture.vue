@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import OptimizedPicture from "~/components/image/OptimizedPicture.vue";
-import type {PictureSource, SupportedFormat} from "~/components/image/OptimizedPicture.vue";
+import type { PictureSource, SupportedFormat } from "~/components/image/OptimizedPicture.vue";
 
 export interface Props {
   src: string;
@@ -43,18 +43,18 @@ onMounted(() => {
   }
 
   const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            shouldLoad.value = true;
-            observer.disconnect();
-          }
-        });
-      },
-      {
-        rootMargin: '50px', // Start loading 50px before the image enters viewport
-        threshold: 0.01
-      }
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          shouldLoad.value = true;
+          observer.disconnect();
+        }
+      });
+    },
+    {
+      rootMargin: '50px', // Start loading 50px before the image enters viewport
+      threshold: 0.01
+    }
   );
 
   observer.observe(imageRef.value);
@@ -82,72 +82,100 @@ const initials = computed(() => {
   }
   return words.slice(0, 2).map(w => (w ?? '')[0]?.toUpperCase() ?? '').join('');
 });
+
+// Deterministic unique ID to avoid SSR/client hydration mismatch
+const instanceId = `lazy-img-${useId()}`;
+
+// Breakpoints matching OptimizedPicture's toMediaQuery logic
+const breakpoints = {
+  xs: 0,
+  sm: 600,
+  md: 900,
+  lg: 1200,
+  xl: 1536,
+  xxl: 1920,
+} as const;
+
+type BreakpointKey = keyof typeof breakpoints;
+
+// Replicate the full media query from OptimizedPicture (breakpoint + extra media)
+const toMediaQuery = (source: PictureSource): string => {
+  const size = source.size;
+  const extraMedia = source.media ? ` and ${source.media}` : '';
+
+  if (typeof size === 'number') {
+    return `(max-width: ${size}px)${extraMedia}`;
+  }
+
+  if (size === 'xs') {
+    return `(max-width: ${breakpoints.sm - 1}px)${extraMedia}`;
+  }
+
+  const sizes = Object.keys(breakpoints) as BreakpointKey[];
+  const currentIndex = sizes.indexOf(size);
+  const nextSize = sizes[currentIndex + 1];
+
+  if (nextSize) {
+    return `(max-width: ${breakpoints[nextSize] - 1}px)${extraMedia}`;
+  }
+
+  return `(min-width: ${breakpoints[size]}px)${extraMedia}`;
+};
+
+// Generate aspect-ratio CSS rules in reverse source order.
+// <picture> uses first-match semantics; CSS uses last-rule-wins.
+// Reversing ensures narrower/more-specific rules appear last and override wider ones.
+const aspectStyles = computed(() => {
+  const rules: string[] = [];
+  const selector = `[data-lazy-id="${instanceId}"]`;
+
+  for (let i = props.sources.length - 1; i >= 0; i--) {
+    const source = props.sources[i];
+    if (!source.width || !source.height) continue;
+    const w = typeof source.width === 'string' ? parseInt(source.width) : source.width;
+    const h = typeof source.height === 'string' ? parseInt(source.height) : source.height;
+    if (w <= 0 || h <= 0) continue;
+
+    const mediaQuery = toMediaQuery(source);
+    rules.push(`@media ${mediaQuery} { ${selector} { aspect-ratio: ${w} / ${h}; } }`);
+  }
+
+  return rules.join('\n');
+});
+
+useHead({
+  style: [{ innerHTML: aspectStyles }]
+});
 </script>
 
 <template>
-  <div ref="imageRef" class="lazy-image-wrapper">
+  <div ref="imageRef" class="lazy-image-wrapper" :data-lazy-id="instanceId">
     <!-- Placeholder -->
     <div v-if="!isLoaded" class="lazy-image-placeholder" :style="{ backgroundColor: placeholderColor }">
       <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="placeholder-svg">
-        <rect width="100" height="100" :fill="placeholderColor"/>
-        <text
-          x="50"
-          y="50"
-          text-anchor="middle"
-          dominant-baseline="middle"
-          fill="rgba(255, 255, 255, 0.9)"
-          font-size="16"
-          font-weight="bold"
-          font-family="system-ui, -apple-system, sans-serif"
-        >
+        <rect width="100" height="100" :fill="placeholderColor" />
+        <text x="50" y="50" text-anchor="middle" dominant-baseline="middle" fill="rgba(255, 255, 255, 0.9)"
+          font-size="16" font-weight="bold" font-family="system-ui, -apple-system, sans-serif">
           {{ initials }}
         </text>
-        <text
-          x="50"
-          y="70"
-          text-anchor="middle"
-          dominant-baseline="middle"
-          fill="rgba(255, 255, 255, 0.7)"
-          font-size="6"
-          font-family="system-ui, -apple-system, sans-serif"
-          class="placeholder-text"
-        >
+        <text x="50" y="70" text-anchor="middle" dominant-baseline="middle" fill="rgba(255, 255, 255, 0.7)"
+          font-size="6" font-family="system-ui, -apple-system, sans-serif" class="placeholder-text">
           {{ placeholderText }}
         </text>
       </svg>
       <!-- Loading spinner -->
       <div class="loading-spinner">
         <svg width="40" height="40" viewBox="0 0 50 50" class="spinner">
-          <circle
-            cx="25"
-            cy="25"
-            r="20"
-            fill="none"
-            stroke="rgba(255, 255, 255, 0.6)"
-            stroke-width="4"
-            stroke-dasharray="80, 200"
-            stroke-linecap="round"
-          />
+          <circle cx="25" cy="25" r="20" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="4"
+            stroke-dasharray="80, 200" stroke-linecap="round" />
         </svg>
       </div>
     </div>
 
     <!-- Actual image (loaded lazily) -->
-    <div
-      v-show="shouldLoad"
-      class="lazy-image-content"
-      :class="{ 'is-loaded': isLoaded, 'has-error': hasError }"
-    >
-      <optimized-picture
-        v-if="shouldLoad"
-        :src="src"
-        :sources="sources"
-        :alt="alt"
-        :formats="formats"
-        :preload="preload"
-        @load="onImageLoad"
-        @error="onImageError"
-      />
+    <div v-show="shouldLoad" class="lazy-image-content" :class="{ 'is-loaded': isLoaded, 'has-error': hasError }">
+      <optimized-picture v-if="shouldLoad" :src="src" :sources="sources" :alt="alt" :formats="formats"
+        :preload="preload" @load="onImageLoad" @error="onImageError" />
     </div>
   </div>
 </template>
@@ -156,8 +184,6 @@ const initials = computed(() => {
 .lazy-image-wrapper {
   position: relative;
   width: 100%;
-  height: 100%;
-  min-height: 225px; /* Minimum height to ensure placeholder is visible */
   overflow: hidden;
   display: block;
 }
@@ -168,7 +194,6 @@ const initials = computed(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  min-height: 225px; /* Match wrapper min-height */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -180,7 +205,6 @@ const initials = computed(() => {
 .placeholder-svg {
   width: 100%;
   height: 100%;
-  min-height: 225px;
 }
 
 .placeholder-text {
@@ -222,10 +246,12 @@ const initials = computed(() => {
     stroke-dasharray: 1, 200;
     stroke-dashoffset: 0;
   }
+
   50% {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -35px;
   }
+
   100% {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -124px;
@@ -233,9 +259,12 @@ const initials = computed(() => {
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.8;
   }
@@ -252,7 +281,8 @@ const initials = computed(() => {
 
 .lazy-image-content.is-loaded {
   opacity: 1;
-  z-index: 2; /* Move above placeholder when loaded */
+  z-index: 2;
+  /* Move above placeholder when loaded */
 }
 
 .lazy-image-content.has-error {
