@@ -44,11 +44,6 @@ const props = defineProps<Props>();
   </v-row>
 </template>
 
-<style>
-.media-trending-backdrop img {
-  max-width: 100%;
-}
-</style>
 <style scoped>
 
 .text {
@@ -67,7 +62,9 @@ const props = defineProps<Props>();
   z-index: 10;
 }
 
-.media-trending-backdrop img {
-  max-width: 100%;
+.media-trending-backdrop :deep(img) {
+  width: 100%;
+  height: 225px;
+  object-fit: cover;
 }
 </style>
