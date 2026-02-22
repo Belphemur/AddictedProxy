@@ -159,6 +159,7 @@ public class EpisodeRepository : IEpisodeRepository
     {
         return _entityContext.Episodes.Where(episode => episode.Season == season)
             .Where(episode => episode.TvShow.Id == tvShowId)
+            .OrderBy(episode => episode.Number)
             .Include(episode => episode.TvShow)
             .Include(episode => episode.Subtitles)
             .ToAsyncEnumerable();
@@ -175,6 +176,7 @@ public class EpisodeRepository : IEpisodeRepository
     {
         return _entityContext.Episodes.Where(episode => episode.Season == season)
             .Where(episode => episode.TvShow.Id == tvShowId)
+            .OrderBy(episode => episode.Number)
             .Include(episode => episode.TvShow)
             .Include(episode => episode.Subtitles.Where(subtitle => subtitle.LanguageIsoCode == language.Name || subtitle.Language == language.EnglishName))
             .AsNoTracking()
