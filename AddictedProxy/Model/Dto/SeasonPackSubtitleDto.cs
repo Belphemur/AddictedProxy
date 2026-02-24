@@ -13,6 +13,7 @@ public class SeasonPackSubtitleDto
         SubtitleId = $"sp_{seasonPack.UniqueId}";
         Language = language?.EnglishName ?? "Unknown";
         Version = seasonPack.Release ?? seasonPack.Filename;
+        ReleaseGroups = seasonPack.ReleaseGroups?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
         Uploader = seasonPack.Uploader;
         UploadedAt = seasonPack.UploadedAt;
         Qualities = VideoQualityFactory.ToDisplayNames(seasonPack.Qualities);
@@ -41,6 +42,13 @@ public class SeasonPackSubtitleDto
     /// <example>WEBRip.NTb</example>
     [Required]
     public string Version { get; }
+
+    /// <summary>
+    /// Release groups associated with this season pack
+    /// </summary>
+    /// <example>["NTb","FLUX"]</example>
+    [Required]
+    public string[] ReleaseGroups { get; }
 
     /// <summary>
     /// Who uploaded this subtitle

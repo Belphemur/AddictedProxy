@@ -2,6 +2,11 @@
     <div v-if="seasonPacks.length > 0">
         <v-data-table v-if="!device.isMobile" :items="seasonPacks" :headers="headers" :items-per-page="-1"
             hide-default-footer class="transparent-table">
+            <template v-slot:item.releaseGroups="{ item }">
+                <div class="d-flex flex-wrap ga-1">
+                    <v-chip v-for="group in item.releaseGroups" :key="group" size="small" label>{{ group }}</v-chip>
+                </div>
+            </template>
             <template v-slot:item.qualities="{ item }">
                 <shows-quality-chips :qualities="item.qualities" />
             </template>
@@ -25,13 +30,15 @@
                     <div class="d-flex align-center ga-2">
                         <v-icon size="small">{{ mdiPackageVariantClosed }}</v-icon>
                         <span class="font-weight-medium"
-                            style="min-width:0; word-break:break-word;">{{ pack.version }}</span>
+                            style="min-width:0; word-break:break-word;">{{ pack.releaseGroups.join(', ') || pack.version }}</span>
                     </div>
                 </v-expansion-panel-title>
                 <v-expansion-panel-text>
                     <v-sheet rounded="lg" :color="layout.colors.nestedItem" :class="layout.classes.nestedItem">
                         <div class="d-flex align-center ga-2 mb-2">
-                            <span class="text-body-2 text-medium-emphasis">{{ pack.language }}</span>
+                            <div v-if="pack.releaseGroups.length" class="d-flex flex-wrap ga-1">
+                                <v-chip v-for="group in pack.releaseGroups" :key="group" size="small" label>{{ group }}</v-chip>
+                            </div>
                             <v-chip :color="pack.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
                                 label>{{ pack.source }}</v-chip>
                         </div>
@@ -71,8 +78,7 @@ const subtitlesApi = useSubtitles();
 const device = useDevice();
 
 const headers = [
-    { title: "Language", key: "language" },
-    { title: "Version", key: "version" },
+    { title: "Release Group", key: "releaseGroups" },
     { title: "Quality", key: "qualities" },
     { title: "Uploader", key: "uploader" },
     { title: "Source", key: "source" },

@@ -351,6 +351,11 @@ export interface SeasonPackSubtitleDto {
    * @example "WEBRip.NTb"
    */
   version: string;
+  /**
+   * Release groups associated with this season pack
+   * @example ["NTb","FLUX"]
+   */
+  releaseGroups: string[];
   /** Who uploaded this subtitle */
   uploader?: string | null;
   /**
