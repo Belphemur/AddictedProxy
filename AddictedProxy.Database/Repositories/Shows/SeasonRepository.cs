@@ -40,15 +40,15 @@ public class SeasonRepository : ISeasonRepository
     }
 
     /// <summary>
-    /// Batch-fetch all seasons for a set of show IDs in a single query.
+    /// Batch-fetch a (TvShowId, SeasonNumber) → SeasonId lookup for a set of show IDs in a single query.
     /// </summary>
-    public async Task<IReadOnlyList<Season>> GetSeasonsByShowIdsAsync(IEnumerable<long> showIds, CancellationToken token)
+    public async Task<Dictionary<(long TvShowId, int Number), long>> GetSeasonIdLookupAsync(IEnumerable<long> showIds, CancellationToken token)
     {
         var ids = showIds as long[] ?? showIds.ToArray();
         return await _entityContext.Seasons
             .Where(s => ids.Contains(s.TvShowId))
             .AsNoTracking()
-            .ToListAsync(token);
+            .ToDictionaryAsync(s => (s.TvShowId, s.Number), s => s.Id, token);
     }
     
     /// <summary>

@@ -210,10 +210,9 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
                 token);
         }
 
-        // Batch-fetch all seasons for the relevant shows in a single query
+        // Batch-fetch (TvShowId, SeasonNumber) → SeasonId lookup in a single query
         var tvShowIds = packsArray.Select(sp => sp.TvShowId).Distinct().ToArray();
-        var allSeasons = await _seasonRepo.GetSeasonsByShowIdsAsync(tvShowIds, token);
-        var seasonIdLookup = allSeasons.ToDictionary(s => (s.TvShowId, s.Number), s => (long?)s.Id);
+        var seasonIdLookup = await _seasonRepo.GetSeasonIdLookupAsync(tvShowIds, token);
 
         // Assign SeasonIds to packs from the lookup
         foreach (var pack in packsArray)
