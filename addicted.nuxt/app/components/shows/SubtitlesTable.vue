@@ -120,7 +120,7 @@ const headers = [
 const noSubtitles = computed<boolean>(() => {
   if ((props.seasonPackCount ?? 0) > 0) return false;
   if (props.episodes == null) return true;
-  return props.episodes!.every((e) => e.subtitles?.length === 0)
+  return props.episodes.every((e) => e.subtitles?.length === 0)
 });
 
 const hasEpisodeSubtitles = computed<boolean>(() => {

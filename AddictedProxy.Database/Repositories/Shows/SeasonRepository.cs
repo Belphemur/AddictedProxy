@@ -38,6 +38,18 @@ public class SeasonRepository : ISeasonRepository
     {
         return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).ToAsyncEnumerable();
     }
+
+    /// <summary>
+    /// Batch-fetch all seasons for a set of show IDs in a single query.
+    /// </summary>
+    public async Task<IReadOnlyList<Season>> GetSeasonsByShowIdsAsync(IEnumerable<long> showIds, CancellationToken token)
+    {
+        var ids = showIds as long[] ?? showIds.ToArray();
+        return await _entityContext.Seasons
+            .Where(s => ids.Contains(s.TvShowId))
+            .AsNoTracking()
+            .ToListAsync(token);
+    }
     
     /// <summary>
     /// Update the lastRefreshed field of the season

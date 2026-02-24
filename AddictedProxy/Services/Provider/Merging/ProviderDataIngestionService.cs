@@ -204,25 +204,23 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
         foreach (var group in packsArray.GroupBy(sp => sp.TvShowId))
         {
             var tvShowId = group.Key;
-            var seasonNumbers = group.Select(sp => sp.Season).Distinct().ToArray();
+            var seasonNumbers = group.Select(sp => sp.Season).Distinct();
             await _seasonRepo.InsertNewSeasonsAsync(tvShowId,
                 seasonNumbers.Select(num => new Season { TvShowId = tvShowId, Number = num }),
                 token);
+        }
 
-            // Resolve SeasonId for each distinct season number once, then assign to all packs
-            var seasonIdByNumber = new Dictionary<int, long?>();
-            foreach (var seasonNumber in seasonNumbers)
-            {
-                var season = await _seasonRepo.GetSeasonForShowAsync(tvShowId, seasonNumber, token);
-                seasonIdByNumber[seasonNumber] = season?.Id;
-            }
+        // Batch-fetch all seasons for the relevant shows in a single query
+        var tvShowIds = packsArray.Select(sp => sp.TvShowId).Distinct().ToArray();
+        var allSeasons = await _seasonRepo.GetSeasonsByShowIdsAsync(tvShowIds, token);
+        var seasonIdLookup = allSeasons.ToDictionary(s => (s.TvShowId, s.Number), s => (long?)s.Id);
 
-            foreach (var pack in group)
+        // Assign SeasonIds to packs from the lookup
+        foreach (var pack in packsArray)
+        {
+            if (seasonIdLookup.TryGetValue((pack.TvShowId, pack.Season), out var seasonId))
             {
-                if (seasonIdByNumber.TryGetValue(pack.Season, out var seasonId))
-                {
-                    pack.SeasonId = seasonId;
-                }
+                pack.SeasonId = seasonId;
             }
         }
 
