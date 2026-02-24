@@ -28,4 +28,9 @@ public interface ISeasonPackSubtitleRepository
     /// Atomically increment the download count for a season pack subtitle
     /// </summary>
     Task IncrementDownloadCountAsync(SeasonPackSubtitle seasonPackSubtitle, CancellationToken token);
+
+    /// <summary>
+    /// Save tracked changes to the database
+    /// </summary>
+    Task SaveChangeAsync(CancellationToken token);
 }

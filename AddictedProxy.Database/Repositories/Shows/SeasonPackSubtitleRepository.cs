@@ -34,6 +34,7 @@ public class SeasonPackSubtitleRepository : ISeasonPackSubtitleRepository
     public Task<SeasonPackSubtitle?> GetByUniqueIdAsync(Guid uniqueId, CancellationToken token)
     {
         return _entityContext.SeasonPackSubtitles
+            .Include(s => s.TvShow)
             .FirstOrDefaultAsync(s => s.UniqueId == uniqueId, token);
     }
 
@@ -63,5 +64,10 @@ public class SeasonPackSubtitleRepository : ISeasonPackSubtitleRepository
             var sql = FormattableStringFactory.Create("""UPDATE "SeasonPackSubtitles" SET "DownloadCount" = "DownloadCount" + 1, "UpdatedAt" = now() WHERE "Id" = {0}""", seasonPackSubtitle.Id);
             await _entityContext.Database.ExecuteSqlAsync(sql, token);
         }, token);
+    }
+
+    public Task SaveChangeAsync(CancellationToken token)
+    {
+        return _entityContext.SaveChangesAsync(token);
     }
 }
