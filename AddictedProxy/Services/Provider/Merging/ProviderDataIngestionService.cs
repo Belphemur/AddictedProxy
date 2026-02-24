@@ -157,9 +157,16 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
     }
 
     /// <inheritdoc />
-    public Task IngestSeasonPackAsync(SeasonPackSubtitle seasonPack, CancellationToken token)
+    public async Task IngestSeasonPackAsync(SeasonPackSubtitle seasonPack, CancellationToken token)
     {
-        return _seasonPackRepo.BulkUpsertAsync([seasonPack], token);
+        // Ensure Season entity exists and resolve SeasonId
+        await _seasonRepo.InsertNewSeasonsAsync(seasonPack.TvShowId,
+            [new Season { TvShowId = seasonPack.TvShowId, Number = seasonPack.Season }],
+            token);
+        var season = await _seasonRepo.GetSeasonForShowAsync(seasonPack.TvShowId, seasonPack.Season, token);
+        seasonPack.SeasonId = season?.Id;
+
+        await _seasonPackRepo.BulkUpsertAsync([seasonPack], token);
     }
 
     /// <inheritdoc />
@@ -185,9 +192,32 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
     }
 
     /// <inheritdoc />
-    public Task IngestSeasonPacksAsync(IEnumerable<SeasonPackSubtitle> seasonPacks, CancellationToken token)
+    public async Task IngestSeasonPacksAsync(IEnumerable<SeasonPackSubtitle> seasonPacks, CancellationToken token)
     {
-        return _seasonPackRepo.BulkUpsertAsync(seasonPacks, token);
+        var packsArray = seasonPacks as SeasonPackSubtitle[] ?? seasonPacks.ToArray();
+        if (packsArray.Length == 0)
+        {
+            return;
+        }
+
+        // Ensure Season entities exist for all season numbers in the packs
+        foreach (var group in packsArray.GroupBy(sp => sp.TvShowId))
+        {
+            var tvShowId = group.Key;
+            var seasonNumbers = group.Select(sp => sp.Season).Distinct();
+            await _seasonRepo.InsertNewSeasonsAsync(tvShowId,
+                seasonNumbers.Select(num => new Season { TvShowId = tvShowId, Number = num }),
+                token);
+
+            // Resolve SeasonId for each pack
+            foreach (var pack in group)
+            {
+                var season = await _seasonRepo.GetSeasonForShowAsync(tvShowId, pack.Season, token);
+                pack.SeasonId = season?.Id;
+            }
+        }
+
+        await _seasonPackRepo.BulkUpsertAsync(packsArray, token);
     }
 
     /// <summary>
