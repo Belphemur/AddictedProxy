@@ -42,12 +42,13 @@ public class SeasonRepository : ISeasonRepository
     /// <summary>
     /// Batch-fetch a (TvShowId, SeasonNumber) → SeasonId lookup for a set of show IDs in a single query.
     /// </summary>
-    public async Task<Dictionary<(long TvShowId, int Number), long>> GetSeasonIdLookupAsync(IEnumerable<long> showIds, CancellationToken token)
+    public Task<Dictionary<(long TvShowId, int Number), long>> GetSeasonIdLookupAsync(IEnumerable<long> showIds, CancellationToken token)
     {
         var ids = showIds as long[] ?? showIds.ToArray();
-        return await _entityContext.Seasons
+        return _entityContext.Seasons
             .Where(s => ids.Contains(s.TvShowId))
             .AsNoTracking()
+            .Select(s => new { s.TvShowId, s.Number, s.Id })
             .ToDictionaryAsync(s => (s.TvShowId, s.Number), s => s.Id, token);
     }
     
