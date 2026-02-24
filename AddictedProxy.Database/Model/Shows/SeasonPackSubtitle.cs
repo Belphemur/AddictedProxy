@@ -36,6 +36,19 @@ public class SeasonPackSubtitle : BaseEntity, IDiscoverableObject
     public int Season { get; set; }
 
     /// <summary>
+    /// Optional FK to the <see cref="Shows.Season"/> entity. Backfilled via one-time migration.
+    /// </summary>
+    public long? SeasonId { get; set; }
+
+    [ForeignKey(nameof(SeasonId))]
+    public virtual Season? SeasonEntity { get; set; }
+
+    /// <summary>
+    /// Number of times this season pack was downloaded
+    /// </summary>
+    public long DownloadCount { get; set; }
+
+    /// <summary>
     /// Provider source (e.g. SuperSubtitles)
     /// </summary>
     public DataSource Source { get; set; }
