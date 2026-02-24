@@ -178,6 +178,8 @@ export interface MediaDetailsWithEpisodeAndSubtitlesDto {
   episodeWithSubtitles: EpisodeWithSubtitlesDto[];
   /** @format int32 */
   lastSeasonNumber?: number | null;
+  /** Season pack subtitles available for the last season */
+  seasonPacks?: SeasonPackSubtitleDto[] | null;
 }
 
 /** Use for the website to provide easy search for the user */
@@ -325,6 +327,65 @@ export interface TopShowDto {
 export interface TvShowSubtitleResponse {
   /** Episode with their subtitles */
   episodes?: EpisodeWithSubtitlesDto[] | null;
+  /** Season pack subtitles available for this season */
+  seasonPacks?: SeasonPackSubtitleDto[] | null;
+}
+
+/** Season pack subtitle information */
+export interface SeasonPackSubtitleDto {
+  /**
+   * Unique Id of the season pack subtitle (prefixed with sp_)
+   * @minLength 1
+   * @example "sp_1086727A-EB71-4B24-A209-7CF22374574D"
+   */
+  subtitleId: string;
+  /**
+   * Language of the subtitle (in English)
+   * @minLength 1
+   * @example "English"
+   */
+  language: string;
+  /**
+   * Version/release name of the season pack
+   * @minLength 1
+   * @example "WEBRip.NTb"
+   */
+  version: string;
+  /** Who uploaded this subtitle */
+  uploader?: string | null;
+  /**
+   * When the subtitle was uploaded to the provider
+   * @format date-time
+   */
+  uploadedAt?: string | null;
+  /**
+   * Available video qualities for this season pack
+   * @example ["720p","1080p"]
+   */
+  qualities: string[];
+  /**
+   * Source provider of the subtitle
+   * @minLength 1
+   * @example "SuperSubtitles"
+   */
+  source: string;
+  /**
+   * Url to download the season pack (ZIP archive)
+   * @minLength 1
+   * @example "/subtitles/download/sp_1086727A-EB71-4B24-A209-7CF22374574D"
+   */
+  downloadUri: string;
+  /**
+   * Number of times the season pack was downloaded from the proxy
+   * @format int64
+   * @example 42
+   */
+  downloadCount: number;
+}
+
+/** Response containing season pack subtitles */
+export interface SeasonPackResponse {
+  seasonPacks: SeasonPackSubtitleDto[];
 }
 
 /** Returned when the search wasn't formatted properly */
