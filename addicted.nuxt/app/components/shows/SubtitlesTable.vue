@@ -44,13 +44,13 @@
 
       </v-data-table>
       <v-expansion-panels v-else bg-color="transparent">
-        <v-expansion-panel v-for="episode in props.episodes" bg-color="rgba(255,255,255,0.05)">
+        <v-expansion-panel v-for="episode in props.episodes" :bg-color="layout.colors.expansionPanel">
           <v-expansion-panel-title>
             <h3> Ep {{ episode.number }}. {{ episode.title }}</h3>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <div v-for="subtitle in episode.subtitles" :key="subtitle.subtitleId" class="mb-3">
-              <v-sheet rounded="lg" color="rgba(255,255,255,0.08)" class="pa-3">
+              <v-sheet rounded="lg" :color="layout.colors.nestedItem" :class="layout.classes.nestedItem">
                 <div class="d-flex align-center ga-2 mb-2">
                   <v-icon size="small" class="flex-shrink-0">{{ mdiSubtitlesOutline }}</v-icon>
                   <span class="font-weight-medium"
@@ -89,11 +89,13 @@ import type { SubtitleWithEpisode } from "~/composables/dto/SubtitleWithEpisode"
 import { forEach, orderBy } from "lodash-es";
 import { trim } from "~/composables/utils/trim";
 import { mdiAlertCircle, mdiCheck, mdiDownload, mdiEarHearingOff, mdiSubtitlesOutline } from "@mdi/js";
+import { usePageLayout } from "~/composables/usePageLayout";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto> | null;
 }
 
+const layout = usePageLayout();
 const subtitlesApi = useSubtitles();
 
 const props = defineProps<Props>();

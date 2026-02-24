@@ -12,6 +12,7 @@ import { SubtitleTypeFlag } from "~/composables/dto/SubtitleType";
 import { trim } from "~/composables/utils/trim";
 import { downloadZip } from "client-zip";
 import { mevent } from "~/composables/data/event";
+import { usePageLayout } from "~/composables/usePageLayout";
 import { mdiDownload, mdiRefresh } from "@mdi/js";
 import { last } from "lodash-es";
 
@@ -19,6 +20,7 @@ export interface Props {
   showId: string;
 }
 
+const layout = usePageLayout();
 const props = defineProps<Props>();
 const mediaApi = useMedia();
 const showsApi = useShows();
@@ -281,7 +283,7 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
     </v-progress-linear>
     <div class="mt-2">
       <v-skeleton-loader type="card" :loading="loadingEpisodes">
-        <v-sheet rounded="lg" color="rgba(0,0,0,0.75)" class="pa-4 pa-sm-6">
+        <v-sheet rounded="lg" :color="layout.colors.primaryPanel" :class="layout.classes.primaryPanel">
           <div class="d-flex align-center flex-wrap ga-2 mb-4">
             <h2 class="text-h6">Season {{ currentSeason }}</h2>
             <v-spacer />

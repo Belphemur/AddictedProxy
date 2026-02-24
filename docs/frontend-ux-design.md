@@ -280,6 +280,40 @@ Use `LazyOptimizedPicture` for all images:
 - Route-based nav buttons from `router.getRoutes()` filtered by `meta.order`
 - `variant="text" size="small"` for nav buttons
 
+## Design System Composable
+
+A centralized `usePageLayout()` composable manages all glass panel colors and class definitions:
+
+```ts
+const layout = usePageLayout();
+// Returns:
+// - layout.colors.primaryPanel: "rgba(0,0,0,0.75)"
+// - layout.colors.appBar: "rgba(0,0,0,0.7)"
+// - layout.colors.nestedItem: "rgba(255,255,255,0.08)"
+// - layout.colors.expansionPanel: "rgba(255,255,255,0.05)"
+// - layout.classes.pageContainer: "pa-2 pa-sm-4"
+// - layout.classes.primaryPanel: "pa-4 pa-sm-6 mb-4"
+// - layout.classes.nestedItem: "pa-3"
+// - layout.classes.pageHeading: "text-center mb-4"
+// - layout.classes.pageTitle: "text-h5 text-sm-h4 font-weight-bold"
+// - layout.classes.pageSubtitle: "text-body-2 text-sm-body-1 text-medium-emphasis mt-1"
+// - layout.classes.bodyText: "text-body-2 text-sm-body-1"
+// - layout.classes.sectionHeading: "text-h6 mt-4"
+// - layout.maxWidth: "1600px"
+```
+
+**Usage in pages and components:**
+
+```html
+<v-container fluid :class="layout.classes.pageContainer" :style="{ maxWidth: layout.maxWidth }">
+  <v-sheet rounded="lg" :color="layout.colors.primaryPanel" :class="layout.classes.primaryPanel">
+    <!-- content -->
+  </v-sheet>
+</v-container>
+```
+
+This ensures design consistency across all pages and components while making global updates trivial.
+
 ## Performance Optimizations
 
 - `v-once` on static content blocks that don't change after initial render
