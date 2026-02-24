@@ -258,6 +258,23 @@ Use `LazyOptimizedPicture` for all images:
 - **Source chips:** `<v-chip size="small" label>` with `teal` (SuperSubtitles) or `blue-darken-2` (Addic7ed)
 - **Quality chips:** Use `ShowsQualityChips` component
 
+### Season Packs Section
+
+The `SeasonPacksSection` component displays season pack subtitles (ZIP archives covering an entire season). It appears below the episode subtitles table in the media detail view when season packs are available.
+
+- **Desktop:** `v-data-table` with `transparent-table` class, columns: Language, Version, Quality, Uploader, Source, Downloads (with download button)
+- **Mobile:** `v-expansion-panels` with `mdiPackageVariantClosed` icon, quality chips, source chip, and full-width download button
+- **Download:** Triggers download of ZIP archive via `subtitlesApi.downloadSubtitle(pack.subtitleId)` with Content-Disposition filename
+- **Visibility:** Hidden when `seasonPacks.length === 0`
+
+```html
+<!-- In MediaDetailView.vue, after SubtitlesTable -->
+<div v-if="seasonPacks.length > 0" class="mt-4">
+  <h3 class="text-subtitle-1 font-weight-medium mb-2">Season Packs</h3>
+  <season-packs-section :season-packs="seasonPacks" />
+</div>
+```
+
 ## Loading States
 
 | Context | Component | Pattern |
