@@ -85,13 +85,13 @@ const headers = [
     { title: "Downloads", key: "downloadCount" },
 ];
 
-const currentlyDownloading = ref<Map<string, boolean>>(new Map());
+const currentlyDownloading = ref<Set<string>>(new Set());
 const localDownloadCounts = ref<Map<string, number>>(new Map());
 
 const RFC5987_PREFIX = "utf-8''";
 
 const downloadSeasonPack = async (pack: SeasonPackSubtitleDto) => {
-    currentlyDownloading.value.set(pack.subtitleId, true);
+    currentlyDownloading.value.add(pack.subtitleId);
 
     try {
         const response = await subtitlesApi.downloadSubtitle(pack.subtitleId);
