@@ -285,8 +285,8 @@ public class SubtitlesController : Controller
             {
                 var found = await _searchSubtitlesService.FindSubtitlesAsync(new SearchPayload(tvShow, episode, season, lang, null), token);
                 
-                return found.Match<SubtitleFound, Results<Ok<SubtitleSearchResponse>, NotFound<ErrorResponse>, StatusCodeHttpResult>>(
-                    onOk: subtitleFound =>
+                return await found.MatchAsync<SubtitleFound, Results<Ok<SubtitleSearchResponse>, NotFound<ErrorResponse>, StatusCodeHttpResult>>(
+                    onOk: async subtitleFound =>
                     {
                         var foundMatchingSubtitles = subtitleFound.MatchingSubtitles.Select(
                             subtitle => new SubtitleDto(
@@ -300,7 +300,7 @@ public class SubtitlesController : Controller
                         // Fall back to season packs when no episode subtitles found
                         if (foundMatchingSubtitles.Count == 0)
                         {
-                            var seasonPackDtos = GetSeasonPackFallbackSubtitleDtos(tvShow, season, episode, subtitleFound.Language, token).GetAwaiter().GetResult();
+                            var seasonPackDtos = await GetSeasonPackFallbackSubtitleDtos(tvShow, season, episode, subtitleFound.Language, token);
                             foundMatchingSubtitles.AddRange(seasonPackDtos);
                         }
 

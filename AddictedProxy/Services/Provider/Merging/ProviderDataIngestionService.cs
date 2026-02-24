@@ -204,16 +204,25 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
         foreach (var group in packsArray.GroupBy(sp => sp.TvShowId))
         {
             var tvShowId = group.Key;
-            var seasonNumbers = group.Select(sp => sp.Season).Distinct();
+            var seasonNumbers = group.Select(sp => sp.Season).Distinct().ToArray();
             await _seasonRepo.InsertNewSeasonsAsync(tvShowId,
                 seasonNumbers.Select(num => new Season { TvShowId = tvShowId, Number = num }),
                 token);
 
-            // Resolve SeasonId for each pack
+            // Resolve SeasonId for each distinct season number once, then assign to all packs
+            var seasonIdByNumber = new Dictionary<int, long?>();
+            foreach (var seasonNumber in seasonNumbers)
+            {
+                var season = await _seasonRepo.GetSeasonForShowAsync(tvShowId, seasonNumber, token);
+                seasonIdByNumber[seasonNumber] = season?.Id;
+            }
+
             foreach (var pack in group)
             {
-                var season = await _seasonRepo.GetSeasonForShowAsync(tvShowId, pack.Season, token);
-                pack.SeasonId = season?.Id;
+                if (seasonIdByNumber.TryGetValue(pack.Season, out var seasonId))
+                {
+                    pack.SeasonId = seasonId;
+                }
             }
         }
 

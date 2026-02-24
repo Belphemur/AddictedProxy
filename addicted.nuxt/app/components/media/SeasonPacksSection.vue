@@ -17,7 +17,7 @@
             <template v-slot:item.downloadCount="{ item }">
                 <v-btn color="primary" :prepend-icon="mdiDownload" @click="downloadSeasonPack(item)"
                     :disabled="currentlyDownloading.has(item.subtitleId)">
-                    {{ item.downloadCount }}
+                    {{ localDownloadCounts.get(item.subtitleId) ?? item.downloadCount }}
                 </v-btn>
                 <v-progress-linear v-show="currentlyDownloading.has(item.subtitleId)" :value="100" color="success"
                     indeterminate></v-progress-linear>
@@ -86,24 +86,60 @@ const headers = [
 ];
 
 const currentlyDownloading = ref<Map<string, boolean>>(new Map());
+const localDownloadCounts = ref<Map<string, number>>(new Map());
+
+const RFC5987_PREFIX = "utf-8''";
 
 const downloadSeasonPack = async (pack: SeasonPackSubtitleDto) => {
     currentlyDownloading.value.set(pack.subtitleId, true);
 
     try {
         const response = await subtitlesApi.downloadSubtitle(pack.subtitleId);
+
+        if (!response.ok) {
+            console.error("Failed to download season pack subtitle", {
+                subtitleId: pack.subtitleId,
+                status: response.status,
+                statusText: response.statusText,
+            });
+            return;
+        }
+
         const header = response.headers.get("Content-Disposition");
-        const parts = header!.split(";");
-        const filename = parts[1].split("=")[1] ?? "season-pack.zip";
+        let filename = "season-pack.zip";
+
+        if (header) {
+            const parts = header.split(";").map(p => p.trim());
+            const filenameStarPart = parts.find(p => p.toLowerCase().startsWith("filename*="));
+            if (filenameStarPart) {
+                const value = filenameStarPart.substring(filenameStarPart.indexOf("=") + 1).trim();
+                const withoutQuotes = trim(value, '"');
+                const encoded = withoutQuotes.toLowerCase().startsWith(RFC5987_PREFIX)
+                    ? withoutQuotes.substring(RFC5987_PREFIX.length)
+                    : withoutQuotes;
+                try {
+                    filename = decodeURIComponent(encoded);
+                } catch {
+                    filename = withoutQuotes || filename;
+                }
+            } else {
+                const filenamePart = parts.find(p => p.toLowerCase().startsWith("filename="));
+                if (filenamePart) {
+                    const value = filenamePart.substring(filenamePart.indexOf("=") + 1).trim();
+                    filename = trim(value, '"') || filename;
+                }
+            }
+        }
 
         const link = document.createElement("a");
         link.rel = "noopener nofollow noreferrer";
         link.href = URL.createObjectURL(await response.blob());
-        link.download = trim(filename, '"');
+        link.download = filename;
         link.click();
         URL.revokeObjectURL(link.href);
 
-        pack.downloadCount++;
+        const currentCount = localDownloadCounts.value.get(pack.subtitleId) ?? pack.downloadCount;
+        localDownloadCounts.value.set(pack.subtitleId, currentCount + 1);
     } finally {
         currentlyDownloading.value.delete(pack.subtitleId);
     }
