@@ -1,13 +1,15 @@
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Storage.Caching.Service;
+using Grpc.Core;
 using Hangfire;
 using SuperSubtitleClient.Service;
 
 namespace AddictedProxy.Services.Provider.SeasonPack;
 
-internal class SeasonPackProvider : ISeasonPackProvider
+public class SeasonPackProvider : ISeasonPackProvider
 {
+    public const string EpisodeNotFoundInZipDetail = "not found in season pack ZIP";
     private readonly ISeasonPackSubtitleRepository _seasonPackSubtitleRepository;
     private readonly ICachedStorageProvider _cachedStorageProvider;
     private readonly ISuperSubtitlesClient _superSubtitlesClient;
@@ -56,9 +58,16 @@ internal class SeasonPackProvider : ISeasonPackProvider
 
     private async Task<Stream> DownloadFromUpstreamAsync(SeasonPackSubtitle seasonPack, int episode, CancellationToken token)
     {
-        var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), episode: episode, cancellationToken: token);
-        await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
-        return new MemoryStream(response.Content.ToByteArray());
+        try
+        {
+            var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), episode: episode, cancellationToken: token);
+            await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
+            return new MemoryStream(response.Content.ToByteArray());
+        }
+        catch (RpcException e) when (e.StatusCode == StatusCode.Internal && e.Status.Detail.Contains(EpisodeNotFoundInZipDetail))
+        {
+            throw new EpisodeNotInSeasonPackException(episode, e.Status.Detail);
+        }
     }
 
     private async Task<Stream> DownloadAndStoreAsync(SeasonPackSubtitle seasonPack, CancellationToken token)
