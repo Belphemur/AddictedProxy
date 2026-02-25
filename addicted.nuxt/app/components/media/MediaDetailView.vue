@@ -321,11 +321,13 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
               </v-btn>
             </div>
           </div>
-          <subtitles-table :episodes="episodes" :season-pack-count="seasonPacks.length"></subtitles-table>
-          <div v-if="seasonPacks.length > 0" class="mt-4">
+          <div v-if="seasonPacks.length > 0" class="mb-4">
             <h3 class="text-subtitle-1 font-weight-medium mb-2">Season Packs</h3>
             <season-packs-section :season-packs="seasonPacks" />
           </div>
+          <v-divider v-if="seasonPacks.length > 0" class="mb-4" />
+          <h3 v-if="seasonPacks.length > 0" class="text-subtitle-1 font-weight-medium mb-2">Episodes</h3>
+          <subtitles-table :episodes="episodes" :season-pack-count="seasonPacks.length"></subtitles-table>
         </v-sheet>
       </v-skeleton-loader>
     </div>
