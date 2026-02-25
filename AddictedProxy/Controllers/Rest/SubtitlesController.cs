@@ -13,6 +13,7 @@ using AddictedProxy.Services.Provider.Subtitle;
 using AddictedProxy.Services.Search;
 using AddictedProxy.Upstream.Service.Exception;
 using AddictedProxy.Utils;
+using SuperSubtitleClient.Service.Exception;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
@@ -33,6 +34,7 @@ public class SubtitlesController : Controller
     private readonly ISeasonPackProvider _seasonPackProvider;
     private readonly ISeasonPackSubtitleRepository _seasonPackSubtitleRepository;
     private readonly ISearchSubtitlesService _searchSubtitlesService;
+    private readonly ILogger<SubtitlesController> _logger;
     private readonly Regex _searchPattern = new(@"(?<show>.+)S(?<season>\d+)E(?<episode>\d+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private const string SeasonPackPrefix = "sp_";
@@ -43,7 +45,8 @@ public class SubtitlesController : Controller
         ISubtitleProvider subtitleProvider,
         ISeasonPackProvider seasonPackProvider,
         ISeasonPackSubtitleRepository seasonPackSubtitleRepository,
-        ISearchSubtitlesService searchSubtitlesService
+        ISearchSubtitlesService searchSubtitlesService,
+        ILogger<SubtitlesController> logger
     )
     {
         _cultureParser = cultureParser;
@@ -51,6 +54,7 @@ public class SubtitlesController : Controller
         _seasonPackProvider = seasonPackProvider;
         _seasonPackSubtitleRepository = seasonPackSubtitleRepository;
         _searchSubtitlesService = searchSubtitlesService;
+        _logger = logger;
     }
 
 
@@ -120,6 +124,11 @@ public class SubtitlesController : Controller
         catch (SubtitleFileDeletedException)
         {
             return TypedResults.NotFound("Subtitle was deleted from Addicted");
+        }
+        catch (SuperSubtitleDownloadException e)
+        {
+            _logger.LogWarning(e, "Failed to download subtitle {SubtitleId} from SuperSubtitles", subtitleId);
+            return TypedResults.NotFound($"Subtitle ({subtitleId}) couldn't be downloaded from SuperSubtitles");
         }
     }
 

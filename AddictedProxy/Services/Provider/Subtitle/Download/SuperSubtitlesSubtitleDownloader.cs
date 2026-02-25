@@ -1,5 +1,7 @@
 using AddictedProxy.Database.Model.Shows;
+using Grpc.Core;
 using SuperSubtitleClient.Service;
+using SuperSubtitleClient.Service.Exception;
 
 namespace AddictedProxy.Services.Provider.Subtitle.Download;
 
@@ -30,7 +32,14 @@ internal class SuperSubtitlesSubtitleDownloader : ISubtitleDownloader
                 $"Subtitle {subtitle.Id} (Source={subtitle.Source}) has no ExternalId set");
         }
 
-        var response = await _superSubtitlesClient.DownloadSubtitleAsync(subtitle.ExternalId, episode: null, cancellationToken: token);
-        return new MemoryStream(response.Content.ToByteArray());
+        try
+        {
+            var response = await _superSubtitlesClient.DownloadSubtitleAsync(subtitle.ExternalId, episode: null, cancellationToken: token);
+            return new MemoryStream(response.Content.ToByteArray());
+        }
+        catch (RpcException e)
+        {
+            throw new SuperSubtitleDownloadException(subtitle.ExternalId, e);
+        }
     }
 }
