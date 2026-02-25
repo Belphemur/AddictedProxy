@@ -1,3 +1,9 @@
+## [4.49.0](https://github.com/Belphemur/AddictedProxy/compare/v4.48.0...v4.49.0) (2026-02-25)
+
+### Features
+
+* **frontend:** move season packs section above episodes table ([913da79](https://github.com/Belphemur/AddictedProxy/commit/913da79a44cd4d23cdc07de798a01bce730ff64d))
+
 ## [4.48.0](https://github.com/Belphemur/AddictedProxy/compare/v4.47.0...v4.48.0) (2026-02-25)
 
 ### Bug Fixes
