@@ -142,10 +142,10 @@ Expose season packs via augmented existing responses and a dedicated Bazarr endp
     - `watch([currentSeason, language])`: extract `seasonPacks` from `showsDetail` response
     - `doneHandler`: after `getEpisodes` (SignalR), also call `showsApi.showsDetail(...)` to refresh season packs from REST
     - **Display logic**:
-      - Default: always show `SubtitlesTable` (episode list) first
+      - Season packs always appear **above** the episodes table when available
       - `showSeasonPackFallback` computed: `episodes` is empty/null **and** `seasonPacks.length > 0`
       - When `showSeasonPackFallback` is true: hide `SubtitlesTable`, render `SeasonPacksSection` prominently with an info banner ("No per-episode subtitles found for this language — showing season packs instead")
-      - When both episodes and season packs coexist: render `SubtitlesTable` then `SeasonPacksSection` below it (season packs as a secondary section)
+      - When both episodes and season packs coexist: render `SeasonPacksSection` first, then `SubtitlesTable` below it
 
 ---
 
@@ -169,6 +169,13 @@ Expose season packs via augmented existing responses and a dedicated Bazarr endp
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │  Season 5                                    [↺ Refresh]  [⬇ Download season]  │
 │─────────────────────────────────────────────────────────────────────────────────│
+│  📦 Season Packs                                                                 │
+│─────────────────────────────────────────────────────────────────────────────────│
+│  Release              Uploader    Quality       Source           DL   Download   │
+│─────────────────────────────────────────────────────────────────────────────────│
+│  WEBRip.NTb           NTb         720p 1080p    [SuperSubtitles]  42  [⬇ ZIP]   │
+│  BluRay.TrollHD       TrollHD     2160p         [SuperSubtitles]  18  [⬇ ZIP]   │
+│─────────────────────────────────────────────────────────────────────────────────│
 │  Group              Version   ✓  HI  Quality       Source      Downloads        │
 │─────────────────────────────────────────────────────────────────────────────────│
 │  ▶ 1 — Chapter One: The Crawl                                                   │
@@ -180,21 +187,12 @@ Expose season packs via augmented existing responses and a dedicated Bazarr endp
 │  ▶ 3 — Chapter Three: The Turnbow Trap                                          │
 │  ...                                                                            │
 └─────────────────────────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│  📦 Season Packs                                                                 │
-│─────────────────────────────────────────────────────────────────────────────────│
-│  Release              Uploader    Quality       Source           DL   Download   │
-│─────────────────────────────────────────────────────────────────────────────────│
-│  WEBRip.NTb           NTb         720p 1080p    [SuperSubtitles]  42  [⬇ ZIP]   │
-│  BluRay.TrollHD       TrollHD     2160p         [SuperSubtitles]  18  [⬇ ZIP]   │
-└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Notes:**
 
-- Season Packs section appears **below** the episodes table, always — never pushes episodes off screen
-- When **no episode subtitles exist** for the selected language, episodes table is hidden and season packs section moves to the top position with an info banner:
+- Season Packs section appears **above** the episodes table when season packs are available
+- When **no episode subtitles exist** for the selected language, episodes table is hidden and season packs section is shown with an info banner:
   ```
   ┌─────────────────────────────────────────────────────────────────────────────┐
   │  ℹ  No per-episode subtitles available for English — showing season packs   │

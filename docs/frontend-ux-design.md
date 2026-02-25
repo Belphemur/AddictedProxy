@@ -279,7 +279,7 @@ Use `LazyOptimizedPicture` for all images:
 
 ### Season Packs Section
 
-The `SeasonPacksSection` component displays season pack subtitles (ZIP archives covering an entire season). It appears below the episode subtitles table in the media detail view when season packs are available.
+The `SeasonPacksSection` component displays season pack subtitles (ZIP archives covering an entire season). It appears **above** the episode subtitles table in the media detail view when season packs are available.
 
 - **Desktop:** `v-data-table` with `transparent-table` class, columns: Release Group (chips), Quality, Uploader, Source, Downloads (with download button)
 - **Mobile:** `v-expansion-panels` with `mdiPackageVariantClosed` icon, release group chips, quality chips, source chip, and full-width download button
@@ -287,8 +287,8 @@ The `SeasonPacksSection` component displays season pack subtitles (ZIP archives 
 - **Visibility:** Hidden when `seasonPacks.length === 0`
 
 ```html
-<!-- In MediaDetailView.vue, after SubtitlesTable -->
-<div v-if="seasonPacks.length > 0" class="mt-4">
+<!-- In MediaDetailView.vue, before SubtitlesTable -->
+<div v-if="seasonPacks.length > 0" class="mb-4">
   <h3 class="text-subtitle-1 font-weight-medium mb-2">Season Packs</h3>
   <season-packs-section :season-packs="seasonPacks" />
 </div>
