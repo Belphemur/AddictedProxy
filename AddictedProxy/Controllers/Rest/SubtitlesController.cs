@@ -178,17 +178,24 @@ public class SubtitlesController : Controller
             return TypedResults.NotFound($"Season pack ({packGuid}) couldn't be found");
         }
 
-        var stream = await _seasonPackProvider.GetSeasonPackFileAsync(seasonPack, episode: episodeNumber, token);
-        var lang = (await _cultureParser.FromStringAsync(seasonPack.Language, token))?.TwoLetterISOLanguageName.ToLowerInvariant() ?? seasonPack.LanguageIsoCode?.ToLowerInvariant() ?? "unknown";
-        var fileName = $"{seasonPack.TvShow.Name.Replace(" ", ".")}.S{seasonPack.Season:D2}E{episodeNumber:D2}.{lang}.srt";
+        try
+        {
+            var stream = await _seasonPackProvider.GetSeasonPackFileAsync(seasonPack, episode: episodeNumber, token);
+            var lang = (await _cultureParser.FromStringAsync(seasonPack.Language, token))?.TwoLetterISOLanguageName.ToLowerInvariant() ?? seasonPack.LanguageIsoCode?.ToLowerInvariant() ?? "unknown";
+            var fileName = $"{seasonPack.TvShow.Name.Replace(" ", ".")}.S{seasonPack.Season:D2}E{episodeNumber:D2}.{lang}.srt";
 
-        return TypedResults.Stream(
-            stream,
-            contentType: "text/srt",
-            fileDownloadName: fileName,
-            lastModified: seasonPack.StoredAt,
-            entityTag: new EntityTagHeaderValue('"' + $"{seasonPack.UniqueId}{(seasonPack.StoredAt.HasValue ? "-" + seasonPack.StoredAt.Value.Ticks : "")}" + '"')
-        );
+            return TypedResults.Stream(
+                stream,
+                contentType: "text/srt",
+                fileDownloadName: fileName,
+                lastModified: seasonPack.StoredAt,
+                entityTag: new EntityTagHeaderValue('"' + $"{seasonPack.UniqueId}{(seasonPack.StoredAt.HasValue ? "-" + seasonPack.StoredAt.Value.Ticks : "")}" + '"')
+            );
+        }
+        catch (EpisodeNotInSeasonPackException)
+        {
+            return TypedResults.NotFound($"Episode {episodeNumber} not found in season pack ({packGuid})");
+        }
     }
 
     /// <summary>
