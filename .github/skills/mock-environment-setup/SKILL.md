@@ -1,0 +1,185 @@
+---
+name: mock-environment-setup
+description: Step-by-step guide for spinning up the Docker Compose mock environment to develop and test the Nuxt frontend without a real .NET backend or database. Use this skill whenever asked to start, configure, or troubleshoot the local mock dev stack.
+---
+
+The AddictedProxy repository ships a self-contained development stack in
+`docker-compose.dev.yml` that wires together two containers:
+
+| Service      | URL                       | Description                                           |
+| ------------ | ------------------------- | ----------------------------------------------------- |
+| `mock-api`   | `http://localhost:8080`   | Go mock server — emulates every REST + SignalR endpoint the frontend consumes |
+| `frontend`   | `http://localhost:3000`   | Production-built Nuxt 4 app pointed at the mock API   |
+
+No real .NET backend, PostgreSQL database, or external credentials are required.
+
+---
+
+## 1 — Prerequisites
+
+- **Docker Desktop** (or Docker Engine + Compose plugin) installed and running.
+- Repository checked out locally.
+
+---
+
+## 2 — Start the full stack
+
+From the repository root run:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+The `--build` flag re-builds both images from source so any recent code changes
+are picked up.  On subsequent starts you can omit `--build` if neither the
+mock server nor the frontend source has changed:
+
+```bash
+docker compose -f docker-compose.dev.yml up
+```
+
+Once both services report healthy, open:
+
+- **Frontend:** <http://localhost:3000>
+- **Mock API:**  <http://localhost:8080>
+
+---
+
+## 3 — How it works
+
+### Mock API server (`mock-server/`)
+
+- Written in Go; built with a multi-stage Dockerfile that produces a static
+  binary in a `scratch` image.
+- Listens on port **8080** inside the container (mapped to `8080` on the host).
+- Serves three hard-coded shows with dynamically generated episodes:
+
+  | Show            | ID                                     | Seasons |
+  | --------------- | -------------------------------------- | ------- |
+  | Breaking Bad    | `a1b2c3d4-0001-0001-0001-000000000001` | 1–5     |
+  | Game of Thrones | `a1b2c3d4-0002-0002-0002-000000000002` | 1–8     |
+  | Succession      | `a1b2c3d4-0003-0003-0003-000000000003` | 1–4     |
+
+- Each episode returns two subtitle variants (regular + hearing-impaired) with
+  alternating `Addic7ed` / `SuperSubtitles` sources and quality chips.
+- SignalR connections (`/refresh`) are accepted and held open; no hub events
+  are emitted.
+- See `mock-server/README.md` for the full endpoint list.
+
+### Nuxt frontend (`addicted.nuxt/`)
+
+The Nuxt container is built with production presets (`NUXT_PRESET=node-server`)
+and its API URLs are overridden at runtime via environment variables:
+
+| Variable                      | Value in dev stack              | Purpose                            |
+| ----------------------------- | ------------------------------- | ---------------------------------- |
+| `NUXT_PUBLIC_API_CLIENT_URL`  | `http://localhost:8080`         | Browser-side fetch target          |
+| `NUXT_PUBLIC_API_SERVER_URL`  | `http://mock-api:8080`          | SSR fetch target (Docker hostname) |
+| `NUXT_PUBLIC_URL`             | `http://localhost:3000`         | Canonical frontend URL             |
+| `NUXT_PUBLIC_SENTRY_CONFIG_ENABLED` | `false`                   | Disable Sentry in the dev stack    |
+
+---
+
+## 4 — Alternative: native Nuxt dev server
+
+If you prefer hot-reload during UI development, run the Go mock server
+natively and start the Nuxt dev server against it:
+
+```bash
+# Terminal 1 — start the mock API
+cd mock-server
+go run .          # listens on :8080; use -port NNNN to override
+
+# Terminal 2 — start the Nuxt dev server
+cd addicted.nuxt
+APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm dev
+```
+
+Nuxt dev server runs on <http://localhost:3000> with HMR enabled.
+
+---
+
+## 5 — Playwright testing against the mock stack
+
+The mock server is the correct backend for all Playwright tests.  Start the
+stack first (either via Docker Compose or natively), then run:
+
+```bash
+cd addicted.nuxt
+pnpm exec playwright test
+```
+
+### Desktop verification
+
+1. Navigate to the page under test.
+2. Take a full-page screenshot to confirm layout.
+3. Interact with elements (expand season panels, click download buttons) and
+   screenshot again.
+4. Check the browser console for hydration mismatch warnings — these indicate
+   SSR / client rendering differences that must be fixed.
+
+### Mobile verification
+
+Because `@nuxtjs/device` detects mobile from the **server-side** `User-Agent`
+header you must emulate mobile on the request, not just the viewport:
+
+1. Open a **new browser tab** so that `context.addInitScript` does not bleed
+   into other tests.
+2. Override the User-Agent header and viewport:
+
+   ```js
+   const context = page.context();
+   const mobileUA =
+     "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) " +
+     "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1";
+   await context.setExtraHTTPHeaders({ "User-Agent": mobileUA });
+   await context.addInitScript(() => {
+     Object.defineProperty(navigator, "userAgent", {
+       get: () =>
+         "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) " +
+         "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+     });
+   });
+   await page.setViewportSize({ width: 390, height: 844 });
+   ```
+
+3. Navigate to the page, take screenshots, and interact with elements.
+4. Check the console for hydration mismatch warnings.
+
+---
+
+## 6 — Stopping the stack
+
+```bash
+docker compose -f docker-compose.dev.yml down
+```
+
+To also remove the built images (forces a full rebuild next time):
+
+```bash
+docker compose -f docker-compose.dev.yml down --rmi local
+```
+
+---
+
+## 7 — Rebuilding a single service
+
+```bash
+# Rebuild and restart only the mock API
+docker compose -f docker-compose.dev.yml up --build mock-api
+
+# Rebuild and restart only the frontend
+docker compose -f docker-compose.dev.yml up --build frontend
+```
+
+---
+
+## 8 — Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| ------- | ------------ | --- |
+| `frontend` fails to fetch data | `NUXT_PUBLIC_API_SERVER_URL` must use the Docker service name (`mock-api`), not `localhost` | Verify the env var in `docker-compose.dev.yml` |
+| Port already in use | Another process is using 3000 or 8080 | Stop the conflicting process or change the port mapping in `docker-compose.dev.yml` |
+| Mock API returns unexpected data | Code changes in `mock-server/main.go` not picked up | Re-run with `--build` |
+| Frontend shows old UI | Nuxt build cache | Re-run with `--build` |
+| `go build` fails inside Docker | Go version mismatch | Check `mock-server/go.mod` and the `FROM golang:` line in `mock-server/Dockerfile` match |
