@@ -102,44 +102,43 @@ const downloadSeasonPack = async (pack: SeasonPackSubtitleDto) => {
                 status: response.status,
                 statusText: response.statusText,
             });
-            return;
-        }
+        } else {
+            const header = response.headers.get("Content-Disposition");
+            let filename = "season-pack.zip";
 
-        const header = response.headers.get("Content-Disposition");
-        let filename = "season-pack.zip";
-
-        if (header) {
-            const parts = header.split(";").map(p => p.trim());
-            const filenameStarPart = parts.find(p => p.toLowerCase().startsWith("filename*="));
-            if (filenameStarPart) {
-                const value = filenameStarPart.substring(filenameStarPart.indexOf("=") + 1).trim();
-                const withoutQuotes = trim(value, '"');
-                const encoded = withoutQuotes.toLowerCase().startsWith(RFC5987_PREFIX)
-                    ? withoutQuotes.substring(RFC5987_PREFIX.length)
-                    : withoutQuotes;
-                try {
-                    filename = decodeURIComponent(encoded);
-                } catch {
-                    filename = withoutQuotes || filename;
-                }
-            } else {
-                const filenamePart = parts.find(p => p.toLowerCase().startsWith("filename="));
-                if (filenamePart) {
-                    const value = filenamePart.substring(filenamePart.indexOf("=") + 1).trim();
-                    filename = trim(value, '"') || filename;
+            if (header) {
+                const parts = header.split(";").map(p => p.trim());
+                const filenameStarPart = parts.find(p => p.toLowerCase().startsWith("filename*="));
+                if (filenameStarPart) {
+                    const value = filenameStarPart.substring(filenameStarPart.indexOf("=") + 1).trim();
+                    const withoutQuotes = trim(value, '"');
+                    const encoded = withoutQuotes.toLowerCase().startsWith(RFC5987_PREFIX)
+                        ? withoutQuotes.substring(RFC5987_PREFIX.length)
+                        : withoutQuotes;
+                    try {
+                        filename = decodeURIComponent(encoded);
+                    } catch {
+                        filename = withoutQuotes || filename;
+                    }
+                } else {
+                    const filenamePart = parts.find(p => p.toLowerCase().startsWith("filename="));
+                    if (filenamePart) {
+                        const value = filenamePart.substring(filenamePart.indexOf("=") + 1).trim();
+                        filename = trim(value, '"') || filename;
+                    }
                 }
             }
+
+            const link = document.createElement("a");
+            link.rel = "noopener nofollow noreferrer";
+            link.href = URL.createObjectURL(await response.blob());
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(link.href);
+
+            const currentCount = localDownloadCounts.value.get(pack.subtitleId) ?? pack.downloadCount;
+            localDownloadCounts.value.set(pack.subtitleId, currentCount + 1);
         }
-
-        const link = document.createElement("a");
-        link.rel = "noopener nofollow noreferrer";
-        link.href = URL.createObjectURL(await response.blob());
-        link.download = filename;
-        link.click();
-        URL.revokeObjectURL(link.href);
-
-        const currentCount = localDownloadCounts.value.get(pack.subtitleId) ?? pack.downloadCount;
-        localDownloadCounts.value.set(pack.subtitleId, currentCount + 1);
     } finally {
         currentlyDownloading.value.delete(pack.subtitleId);
     }
