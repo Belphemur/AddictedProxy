@@ -124,7 +124,7 @@ cd addicted.nuxt
 APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm dev
 ```
 
-Mocked shows: *Breaking Bad* (5 seasons), *Game of Thrones* (8 seasons), *Succession* (4 seasons).  
+Mocked shows: _Breaking Bad_ (5 seasons), _Game of Thrones_ (8 seasons), _Succession_ (4 seasons).  
 Each season returns dynamically generated episodes with dual subtitle variants (regular + hearing-impaired),
 alternating `Addic7ed`/`SuperSubtitles` sources, quality chips, and season packs.  
 SignalR connections (`/refresh`) are accepted and held open; no hub events are emitted.
@@ -139,12 +139,12 @@ docker compose -f docker-compose.dev.yml up --build
 
 This starts two services:
 
-| Service | URL | Description |
-|---|---|---|
-| `mock-api` | `http://localhost:8080` | Go mock server (built from `mock-server/Dockerfile`) |
-| `frontend` | `http://localhost:3000` | Nuxt dev server with Vite HMR (source bind-mounted from `addicted.nuxt/`) |
+| Service    | URL                     | Description                                                                 |
+| ---------- | ----------------------- | --------------------------------------------------------------------------- |
+| `mock-api` | `http://localhost:8080` | Go mock server (built from `mock-server/Dockerfile`)                        |
+| `frontend` | `http://localhost:3000` | Production-built Nuxt app pointed at the mock API via environment variables |
 
-The `addicted.nuxt/` directory is **bind-mounted** into the `frontend` container, so any edits you make on the host are picked up instantly by Vite HMR — no rebuild needed. `node_modules` inside the container is kept isolated from the host to avoid platform-specific binary conflicts.
+The frontend container builds the production Nuxt image (`addicted.nuxt/Dockerfile`) and uses Nuxt's `NUXT_PUBLIC_*` environment variables to override API URLs at runtime, pointing them at the mock API server.
 
 ### Verifying Frontend Changes with Playwright
 
@@ -179,11 +179,13 @@ Since `@nuxtjs/device` detects mobile from the **server-side request User-Agent 
 2. Set up mobile UA and viewport in the new tab:
    ```js
    const context = page.context();
-   const mobileUA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
-   await context.setExtraHTTPHeaders({ 'User-Agent': mobileUA });
+   const mobileUA =
+     "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1";
+   await context.setExtraHTTPHeaders({ "User-Agent": mobileUA });
    await context.addInitScript(() => {
-     Object.defineProperty(navigator, 'userAgent', {
-       get: () => 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'
+     Object.defineProperty(navigator, "userAgent", {
+       get: () =>
+         "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
      });
    });
    await page.setViewportSize({ width: 390, height: 844 });

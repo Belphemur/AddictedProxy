@@ -1,6 +1,6 @@
 # docker-compose.dev.yml
 #
-# Local UI development stack: mock API server + Nuxt hot-reload frontend.
+# Local UI development stack: mock API server + production-built Nuxt frontend.
 # No real .NET backend or database required.
 #
 # Usage:
@@ -10,7 +10,6 @@
 # Mock API available at:  http://localhost:8080
 
 services:
-
   # ── Mock API server ──────────────────────────────────────────────────────────
   # Serves all REST + SignalR endpoints the frontend needs.
   # See mock-server/README.md for the full endpoint list.
@@ -22,32 +21,24 @@ services:
       - "8080:8080"
     restart: unless-stopped
 
-  # ── Nuxt dev server ──────────────────────────────────────────────────────────
-  # Runs `pnpm dev --host` with the source tree bind-mounted so edits on the
-  # host are reflected instantly via Vite HMR.
+  # ── Nuxt frontend ───────────────────────────────────────────────────────────
+  # Builds the production Nuxt image and overrides API URLs at runtime via
+  # Nuxt's NUXT_PUBLIC_* environment variable convention.
   frontend:
     build:
       context: ./addicted.nuxt
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
-      - "24678:24678"   # Vite HMR websocket
-    volumes:
-      # Bind-mount the entire frontend source for live editing.
-      - ./addicted.nuxt:/app
-      # Keep the container's node_modules isolated from the host to avoid
-      # platform-specific binary mismatches.
-      - /app/node_modules
     environment:
       # Point both client-side and server-side fetches at the mock API.
-      # Inside Docker the service is reachable by its service name.
-      APP_API_PATH: "http://localhost:8080"
-      APP_SERVER_PATH: "http://mock-api:8080"
-      APP_URL: "http://localhost:3000"
+      # Client-side (browser) uses localhost; server-side (SSR) uses the
+      # Docker service name.
+      NUXT_PUBLIC_API_CLIENT_URL: "http://localhost:8080"
+      NUXT_PUBLIC_API_SERVER_URL: "http://mock-api:8080"
+      NUXT_PUBLIC_URL: "http://localhost:3000"
       # Disable Sentry in the dev stack.
-      SENTRY_ENABLE: "false"
-      # Nuxt devtools
-      NUXT_DEVTOOLS_ENABLED: "true"
+      NUXT_PUBLIC_SENTRY_CONFIG_ENABLED: "false"
     depends_on:
       - mock-api
     restart: unless-stopped
