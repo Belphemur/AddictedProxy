@@ -375,18 +375,13 @@ This ensures design consistency across all pages and components while making glo
 The frontend requires a running API to render any meaningful content. Use the mock server in `mock-server/` — no database or .NET backend needed.
 
 ```bash
-# Option A — native Go (Go 1.25 required)
+# Option A — Docker Compose dev stack (recommended, starts both services)
+docker compose -f docker-compose.dev.yml up --build
+# Frontend: http://localhost:3000  |  Mock API: http://localhost:8080
+
+# Option B — native Go (Go 1.25 required)
 cd mock-server && go run .
-
-# Option B — Docker
-docker build -t addictedproxy-mock-server ./mock-server
-docker run --rm -p 8080:8080 addictedproxy-mock-server
-```
-
-Start the Nuxt dev server pointed at the mock:
-
-```bash
-cd addicted.nuxt
+# separate terminal:
 APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm dev
 ```
 

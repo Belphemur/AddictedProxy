@@ -129,6 +129,23 @@ Each season returns dynamically generated episodes with dual subtitle variants (
 alternating `Addic7ed`/`SuperSubtitles` sources, quality chips, and season packs.  
 SignalR connections (`/refresh`) are accepted and held open; no hub events are emitted.
 
+### Docker Compose Dev Stack
+
+The fastest way to spin up the full local dev environment is with the dedicated compose file at the repo root:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+This starts two services:
+
+| Service | URL | Description |
+|---|---|---|
+| `mock-api` | `http://localhost:8080` | Go mock server (built from `mock-server/Dockerfile`) |
+| `frontend` | `http://localhost:3000` | Nuxt dev server with Vite HMR (source bind-mounted from `addicted.nuxt/`) |
+
+The `addicted.nuxt/` directory is **bind-mounted** into the `frontend` container, so any edits you make on the host are picked up instantly by Vite HMR — no rebuild needed. `node_modules` inside the container is kept isolated from the host to avoid platform-specific binary conflicts.
+
 ### Verifying Frontend Changes with Playwright
 
 **All frontend visual changes must be verified using Playwright MCP** before committing. Never commit UI changes without visually confirming they render correctly.
@@ -138,18 +155,12 @@ SignalR connections (`/refresh`) are accepted and held open; no hub events are e
 Before running Playwright or the Nuxt dev server for visual testing, start the mock server so the frontend has data to render:
 
 ```bash
-# Option A — native Go (Go 1.25 required)
+# Option A — Docker Compose dev stack (recommended)
+docker compose -f docker-compose.dev.yml up --build
+
+# Option B — native Go (Go 1.25 required)
 cd mock-server && go run .
-
-# Option B — Docker
-docker build -t addictedproxy-mock-server ./mock-server
-docker run --rm -p 8080:8080 addictedproxy-mock-server
-```
-
-Then start the frontend pointing at the mock server:
-
-```bash
-cd addicted.nuxt
+# separate terminal:
 APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm dev
 ```
 
