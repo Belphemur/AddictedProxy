@@ -3,9 +3,7 @@
         <v-data-table v-if="!device.isMobile" :items="seasonPacks" :headers="headers" :items-per-page="-1"
             hide-default-footer class="transparent-table">
             <template v-slot:item.releaseGroups="{ item }">
-                <div class="d-flex flex-wrap ga-1">
-                    <v-chip v-for="group in item.releaseGroups" :key="group" size="small" label>{{ group }}</v-chip>
-                </div>
+                <shows-release-group-chips :groups="item.releaseGroups" />
             </template>
             <template v-slot:item.qualities="{ item }">
                 <shows-quality-chips :qualities="item.qualities" />
@@ -36,9 +34,7 @@
                 <v-expansion-panel-text>
                     <v-sheet rounded="lg" :color="layout.colors.nestedItem" :class="layout.classes.nestedItem">
                         <div class="d-flex align-center ga-2 mb-2">
-                            <div v-if="pack.releaseGroups.length" class="d-flex flex-wrap ga-1">
-                                <v-chip v-for="group in pack.releaseGroups" :key="group" size="small" label>{{ group }}</v-chip>
-                            </div>
+                            <shows-release-group-chips v-if="pack.releaseGroups.length" :groups="pack.releaseGroups" />
                             <v-chip :color="pack.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
                                 label>{{ pack.source }}</v-chip>
                         </div>
