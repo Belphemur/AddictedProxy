@@ -50,6 +50,7 @@ ProxyProvider.Tests/        # Tests for proxy provider
 ProxyScrape/                # Proxy scraping implementation
 TvMovieDatabaseClient/      # TMDB API client
 addicted.nuxt/              # Nuxt 4 frontend (Vue.js + Vuetify)
+mock-server/                # Go 1.25 mock API server for local UI dev and Playwright testing
 ```
 
 ## Tech Stack
@@ -98,9 +99,59 @@ pnpm dev
 
 > **Important:** When making frontend changes, you **must** consult [Frontend UX & Design](../docs/frontend-ux-design.md) for the glass panel design system, color palette, spacing conventions, responsive patterns, and component standards. All new UI must follow the established glassmorphism aesthetic.
 
+### Mock API Server
+
+A Go 1.25 mock server lives in `mock-server/` and emulates all REST + SignalR endpoints needed by the frontend. Use it for local UI development and Playwright testing without needing the real .NET backend or a database.
+
+**Run natively:**
+
+```bash
+cd mock-server
+go run . # listens on :8080 by default; use -port to override
+```
+
+**Run with Docker:**
+
+```bash
+docker build -t addictedproxy-mock-server ./mock-server
+docker run --rm -p 8080:8080 addictedproxy-mock-server
+```
+
+**Connect the frontend to the mock server:**
+
+```bash
+cd addicted.nuxt
+APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm dev
+```
+
+Mocked shows: *Breaking Bad* (5 seasons), *Game of Thrones* (8 seasons), *Succession* (4 seasons).  
+Each season returns dynamically generated episodes with dual subtitle variants (regular + hearing-impaired),
+alternating `Addic7ed`/`SuperSubtitles` sources, quality chips, and season packs.  
+SignalR connections (`/refresh`) are accepted and held open; no hub events are emitted.
+
 ### Verifying Frontend Changes with Playwright
 
 **All frontend visual changes must be verified using Playwright MCP** before committing. Never commit UI changes without visually confirming they render correctly.
+
+#### Prerequisite: Start the Mock API Server
+
+Before running Playwright or the Nuxt dev server for visual testing, start the mock server so the frontend has data to render:
+
+```bash
+# Option A — native Go (Go 1.25 required)
+cd mock-server && go run .
+
+# Option B — Docker
+docker build -t addictedproxy-mock-server ./mock-server
+docker run --rm -p 8080:8080 addictedproxy-mock-server
+```
+
+Then start the frontend pointing at the mock server:
+
+```bash
+cd addicted.nuxt
+APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm dev
+```
 
 #### Desktop Verification
 

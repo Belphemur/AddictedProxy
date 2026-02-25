@@ -370,6 +370,30 @@ This ensures design consistency across all pages and components while making glo
 
 **All frontend visual changes must be verified using Playwright MCP** before committing. This ensures the rendered output matches expectations on both desktop and mobile viewports.
 
+### Prerequisite: Start the Mock API Server
+
+The frontend requires a running API to render any meaningful content. Use the mock server in `mock-server/` — no database or .NET backend needed.
+
+```bash
+# Option A — native Go (Go 1.25 required)
+cd mock-server && go run .
+
+# Option B — Docker
+docker build -t addictedproxy-mock-server ./mock-server
+docker run --rm -p 8080:8080 addictedproxy-mock-server
+```
+
+Start the Nuxt dev server pointed at the mock:
+
+```bash
+cd addicted.nuxt
+APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm dev
+```
+
+The mock server provides three shows (*Breaking Bad*, *Game of Thrones*, *Succession*) with episodes,
+subtitles (regular + HI), quality chips, source chips, season packs, and an accepted SignalR connection.
+See `mock-server/README.md` for the full endpoint list.
+
 ### Desktop Verification
 
 1. Navigate to the page with `mcp_playwright_browser_navigate`
