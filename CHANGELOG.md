@@ -1,3 +1,16 @@
+## [4.48.0](https://github.com/Belphemur/AddictedProxy/compare/v4.47.0...v4.48.0) (2026-02-25)
+
+### Bug Fixes
+
+* **frontend:** fix button colors lost after vuetify 4 upgrade ([196d1b3](https://github.com/Belphemur/AddictedProxy/commit/196d1b37961dedbcaa33f0d5c5ee5f288cb26797))
+* restore primary colors in dark theme + add Go 1.25 mock server with SignalR accept ([5a92acd](https://github.com/Belphemur/AddictedProxy/commit/5a92acd6611cd37db2eb6fefadc208ab1d90810c))
+* return 404 when episode is absent from season pack ZIP ([#2552](https://github.com/Belphemur/AddictedProxy/issues/2552)) ([186d9e8](https://github.com/Belphemur/AddictedProxy/commit/186d9e82a8cc7df8bb782b17b2a28d988d28163a))
+
+### Features
+
+* add docker-compose.dev.yml + Dockerfile.dev for local UI dev stack ([9fd6d71](https://github.com/Belphemur/AddictedProxy/commit/9fd6d71ea4d0cbb050debdfe1fbdc14f337510cd))
+* **frontend:** add deterministic colored chips for release groups ([0edc062](https://github.com/Belphemur/AddictedProxy/commit/0edc062c3426898a8f9e8cc5ae2f0d356964712d))
+
 ## [4.47.0](https://github.com/Belphemur/AddictedProxy/compare/v4.46.1...v4.47.0) (2026-02-25)
 
 ### Bug Fixes
