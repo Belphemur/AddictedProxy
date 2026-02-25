@@ -2,6 +2,7 @@ using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Tools.Database.Transaction;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 namespace AddictedProxy.Database.Repositories.Shows;
 
@@ -30,6 +31,13 @@ public class SeasonPackSubtitleRepository : ISeasonPackSubtitleRepository
             .FirstOrDefaultAsync(s => s.Source == source && s.ExternalId == externalId, token);
     }
 
+    public Task<SeasonPackSubtitle?> GetByUniqueIdAsync(Guid uniqueId, CancellationToken token)
+    {
+        return _entityContext.SeasonPackSubtitles
+            .Include(s => s.TvShow)
+            .FirstOrDefaultAsync(s => s.UniqueId == uniqueId, token);
+    }
+
     public async Task BulkUpsertAsync(IEnumerable<SeasonPackSubtitle> seasonPackSubtitles, CancellationToken token)
     {
         await _transactionManager.WrapInTransactionAsync(async () =>
@@ -44,8 +52,22 @@ public class SeasonPackSubtitleRepository : ISeasonPackSubtitleRepository
             {
                 options.ColumnPrimaryKeyExpression = s => new { s.Source, s.ExternalId };
                 options.IgnoreOnMergeInsertExpression = s => s.Id;
-                options.IgnoreOnMergeUpdateExpression = s => new { s.Id, s.Discovered, s.CreatedAt, s.UniqueId, s.StoragePath, s.StoredAt };
+                options.IgnoreOnMergeUpdateExpression = s => new { s.Id, s.Discovered, s.CreatedAt, s.UniqueId, s.StoragePath, s.StoredAt, s.DownloadCount };
             }, token);
         }, token);
+    }
+
+    public Task IncrementDownloadCountAsync(SeasonPackSubtitle seasonPackSubtitle, CancellationToken token)
+    {
+        return _transactionManager.WrapInTransactionAsync(async () =>
+        {
+            var sql = FormattableStringFactory.Create("""UPDATE "SeasonPackSubtitles" SET "DownloadCount" = "DownloadCount" + 1, "UpdatedAt" = now() WHERE "Id" = {0}""", seasonPackSubtitle.Id);
+            await _entityContext.Database.ExecuteSqlAsync(sql, token);
+        }, token);
+    }
+
+    public Task SaveChangeAsync(CancellationToken token)
+    {
+        return _entityContext.SaveChangesAsync(token);
     }
 }

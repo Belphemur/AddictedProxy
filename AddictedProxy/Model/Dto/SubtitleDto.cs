@@ -23,6 +23,27 @@ public class SubtitleDto
     }
 
     /// <summary>
+    /// Constructor for season pack fallback entries used in the /subtitles/get/ endpoint.
+    /// Maps a season pack to a SubtitleDto shape so Bazarr picks it up without code changes.
+    /// </summary>
+    public SubtitleDto(SeasonPackSubtitle seasonPack, string downloadUri, Culture.Model.Culture? language, int episode)
+    {
+        SubtitleId = $"sp_{seasonPack.UniqueId}_ep_{episode}";
+        Version = seasonPack.Release ?? seasonPack.Filename;
+        Completed = true;
+        HearingImpaired = false;
+        Corrected = false;
+        DownloadUri = downloadUri;
+        Language = language?.EnglishName ?? "Unknown";
+        Discovered = seasonPack.Discovered;
+        DownloadCount = seasonPack.DownloadCount;
+        Source = seasonPack.Source.ToString();
+        Qualities = VideoQualityFactory.ToDisplayNames(seasonPack.Qualities);
+        HD = (seasonPack.Qualities & (VideoQuality.Q720P | VideoQuality.Q1080P | VideoQuality.Q2160P)) != VideoQuality.None;
+        Release = seasonPack.Release;
+    }
+
+    /// <summary>
     /// Unique Id of the subtitle
     /// </summary>
     /// <example>1086727A-EB71-4B24-A209-7CF22374574D</example>

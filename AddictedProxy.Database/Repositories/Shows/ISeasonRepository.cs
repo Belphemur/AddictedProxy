@@ -28,6 +28,11 @@ public interface ISeasonRepository
     IAsyncEnumerable<Season> GetSeasonsForShowAsync(long showId);
 
     /// <summary>
+    /// Batch-fetch a (TvShowId, SeasonNumber) → SeasonId lookup for a set of show IDs in a single query.
+    /// </summary>
+    Task<Dictionary<(long TvShowId, int Number), long>> GetSeasonIdLookupAsync(IEnumerable<long> showIds, CancellationToken token);
+
+    /// <summary>
     /// Update the lastRefreshed field of the season
     /// </summary>
     /// <param name="id"></param>

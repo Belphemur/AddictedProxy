@@ -12,6 +12,8 @@ namespace AddictedProxy.Controllers.Rest.Serializer;
 [JsonSerializable(typeof(MediaDetailsWithEpisodeAndSubtitlesDto))]
 [JsonSerializable(typeof(TopShowDto[]))]
 [JsonSerializable(typeof(ApplicationController.ApplicationInfoDto))]
+[JsonSerializable(typeof(SeasonPackSubtitleDto))]
+[JsonSerializable(typeof(SeasonPackResponse))]
 internal partial class SerializationContext : JsonSerializerContext
 {
     

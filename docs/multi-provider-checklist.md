@@ -107,6 +107,18 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 - [x] Add Hangfire.Console package for job progress tracking
 - [x] Update multi-provider plan documentation
 
+## Season Pack Enhancements
+
+- [x] Add `DownloadCount` (long) to `SeasonPackSubtitle` entity
+- [x] Add nullable `SeasonId` FK to `Season` entity on `SeasonPackSubtitle`
+- [x] Add `GetByUniqueIdAsync` and `IncrementDownloadCountAsync` to `ISeasonPackSubtitleRepository`
+- [x] Update `BulkUpsertAsync` to ignore `DownloadCount` on merge update
+- [x] Update `IngestSeasonPacksAsync` to ensure Season entities exist and resolve `SeasonId`
+- [x] Generate EF Core migration (`AddSeasonPackDownloadCountAndSeasonFk`)
+- [x] Create one-time migration (`BackfillSeasonPackSeasonFkMigration`) to backfill `SeasonId`
+- [x] Register migration in `BootstrapMigration`
+- [ ] Season pack API + frontend (see [Season Pack Plan](season-pack-plan.md))
+
 ## Testing & Validation
 
 - [x] Unit tests for show matching/merging logic

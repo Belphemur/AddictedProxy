@@ -4,7 +4,7 @@
       <v-icon size="50" class="mb-2">{{ mdiAlertCircle }}</v-icon>
       <div>Sorry, we couldn't find subtitles for your language for this season.</div>
     </v-sheet>
-    <template v-else>
+    <template v-else-if="hasEpisodeSubtitles">
       <v-data-table :items="subtitles" :headers="headers" :items-per-page="-1" hide-default-footer :group-by="groupBy"
         v-if="!device.isMobile" class="transparent-table">
         <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
@@ -93,6 +93,7 @@ import { usePageLayout } from "~/composables/usePageLayout";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto> | null;
+  seasonPackCount?: number;
 }
 
 const layout = usePageLayout();
@@ -117,8 +118,14 @@ const headers = [
 ];
 
 const noSubtitles = computed<boolean>(() => {
+  if ((props.seasonPackCount ?? 0) > 0) return false;
   if (props.episodes == null) return true;
-  return props.episodes!.every((e) => e.subtitles?.length === 0)
+  return props.episodes.every((e) => e.subtitles?.length === 0)
+});
+
+const hasEpisodeSubtitles = computed<boolean>(() => {
+  if (props.episodes == null) return false;
+  return props.episodes.some((e) => (e.subtitles?.length ?? 0) > 0);
 });
 
 const subtitles = computed<SubtitleWithEpisode[]>(() => {

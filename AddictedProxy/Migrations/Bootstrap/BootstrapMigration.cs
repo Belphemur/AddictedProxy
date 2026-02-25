@@ -17,5 +17,6 @@ public class BootstrapMigration : IBootstrap
         services.AddScoped<IMigration, MigrateSubtitleExternalIdMigration>();
         services.AddScoped<IMigration, BackportHdToQualitiesMigration>();
         services.AddScoped<IMigration, CleanSuperSubtitlesDataMigration>();
+        services.AddScoped<IMigration, BackfillSeasonPackSeasonFkMigration>();
     }
 }

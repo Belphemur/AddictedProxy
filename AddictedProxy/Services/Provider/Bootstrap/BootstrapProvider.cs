@@ -3,6 +3,7 @@
 using AddictedProxy.Services.Provider.Config;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Merging;
+using AddictedProxy.Services.Provider.SeasonPack;
 using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.ShowInfo;
 using AddictedProxy.Services.Provider.Shows;
@@ -32,6 +33,9 @@ public class BootstrapProvider : IBootstrap
 
         // Data merging service (used by background jobs for multi-provider ingestion)
         services.AddScoped<IProviderDataIngestionService, ProviderDataIngestionService>();
+
+        // Season pack provider
+        services.AddScoped<ISeasonPackProvider, SeasonPackProvider>();
 
         // SuperSubtitles import config
         services.Configure<SuperSubtitlesImportConfig>(
