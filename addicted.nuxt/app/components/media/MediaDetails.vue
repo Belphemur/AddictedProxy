@@ -103,7 +103,7 @@ const setLanguage = (lang: string) => {
       </v-row>
     </div>
     <div v-if="device.isMobile" class="mt-2">
-      <v-btn variant="text" size="small" class="text-none text-medium-emphasis"
+      <v-btn variant="text" size="small" class="text-medium-emphasis"
         :append-icon="showOverview ? mdiChevronUp : mdiChevronDown" @click="showOverview = !showOverview">
         {{ showOverview ? 'Hide overview' : 'Show overview' }}
       </v-btn>

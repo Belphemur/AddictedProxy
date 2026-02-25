@@ -170,7 +170,7 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
 </script>
 <style scoped>
 .transparent-table {
-  background: transparent !important;
+  background: transparent;
 }
 
 .transparent-table :deep(.v-table__wrapper) {
