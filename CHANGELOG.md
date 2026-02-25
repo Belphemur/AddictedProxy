@@ -1,3 +1,44 @@
+## [4.47.0](https://github.com/Belphemur/AddictedProxy/compare/v4.46.1...v4.47.0) (2026-02-25)
+
+### Bug Fixes
+
+* address season pack review feedback — N+1 queries, async deadlock, download handler, prop mutation ([#2546](https://github.com/Belphemur/AddictedProxy/issues/2546)) ([b791517](https://github.com/Belphemur/AddictedProxy/commit/b791517773340ff3378aad02f0c638e8b0fb6e22))
+* batch season SeasonId lookups, clean up download error handling, and add unit tests ([#2547](https://github.com/Belphemur/AddictedProxy/issues/2547)) ([623120d](https://github.com/Belphemur/AddictedProxy/commit/623120d2435cb71cc81a8609b3463d472d414edf))
+* **deps:** update dependency vuetify to v4 ([eba2abd](https://github.com/Belphemur/AddictedProxy/commit/eba2abd91ac50cfb887f431302a5e5bb88f8a8b4))
+
+### Features
+
+* **api:** add season pack DTOs, responses, and serialization context ([8400452](https://github.com/Belphemur/AddictedProxy/commit/84004525516978f869f2446e7eddc3f905e10ee1))
+* **api:** expose release groups in season pack DTO and UI ([f018aa6](https://github.com/Belphemur/AddictedProxy/commit/f018aa6a738a501cdc8b4aff73a43d11f40dcde0))
+* **controllers:** add season pack endpoints and sp_ download routing ([341ad67](https://github.com/Belphemur/AddictedProxy/commit/341ad6762c950b19e8bc7496d3f1bd176bd55fb4))
+* **database:** add DownloadCount and SeasonId FK to SeasonPackSubtitle\n\nAdd DownloadCount (long) for download tracking and nullable SeasonId FK\nto Season entity on SeasonPackSubtitle. Repository gains\nGetByUniqueIdAsync, IncrementDownloadCountAsync (atomic raw SQL), and\nBulkUpsertAsync now ignores DownloadCount on merge update.\n\nIncludes EF Core migration adding columns, FK constraint, and index." ([d1fce69](https://github.com/Belphemur/AddictedProxy/commit/d1fce694033900c37ffa92e181b46d9c5dc14dc4))
+* **database:** add SaveChangeAsync and Include TvShow to season pack repository ([d1d31cb](https://github.com/Belphemur/AddictedProxy/commit/d1d31cb536d3b29d73fe7312e832d6bda042fc02))
+* **frontend:** add season packs UI with three-state subtitle display ([ed0e678](https://github.com/Belphemur/AddictedProxy/commit/ed0e678a2de4668081f91c6613d36908a16612b9))
+* **services:** add season pack provider and store job ([cc9d297](https://github.com/Belphemur/AddictedProxy/commit/cc9d29763c4f074a1d095db85fde1f9aa80f095a))
+* **services:** resolve SeasonId during season pack ingestion\n\nUpdate IngestSeasonPacksAsync and IngestSeasonPackAsync to ensure Season\nentities exist and resolve SeasonId FK before bulk upserting. This\nhandles season-pack-only shows where MergeEpisodesWithSubtitlesAsync may\nnot have created the Season entity.\n\nAdd BackfillSeasonPackSeasonFkMigration one-time migration to backfill\nSeasonId on existing rows by joining on TvShowId + Season number.\nRegister migration in BootstrapMigration." ([67513cf](https://github.com/Belphemur/AddictedProxy/commit/67513cf15672789f2e85f7331a17946ff6e0fe7f))
+
+## [4.46.1](https://github.com/Belphemur/AddictedProxy/compare/v4.46.0...v4.46.1) (2026-02-22)
+
+### Bug Fixes
+
+* **frontend:** fix version text wrapping in mobile subtitle cards ([e341d02](https://github.com/Belphemur/AddictedProxy/commit/e341d027fc589c10460287d13842da4f6f4fd028))
+
+## [4.46.0](https://github.com/Belphemur/AddictedProxy/compare/v4.45.3...v4.46.0) (2026-02-22)
+
+### Bug Fixes
+
+* **database:** order episodes by number in repository queries ([a04d09d](https://github.com/Belphemur/AddictedProxy/commit/a04d09d73655a04faea4bfb379af3c2b0b3f570d))
+* **frontend:** keep vote circle overlaid on trending card images ([8cd9c35](https://github.com/Belphemur/AddictedProxy/commit/8cd9c35eeeb240501b8c6d12b0100c750e230eb5))
+* **frontend:** prevent layout shift in lazy-loaded images with responsive aspect-ratio ([cd46444](https://github.com/Belphemur/AddictedProxy/commit/cd4644471f4cd7394630512c37e5a756f33ac69d))
+* **frontend:** reduce vertical whitespace on desktop home page ([e206a31](https://github.com/Belphemur/AddictedProxy/commit/e206a31168413876f712ac2db935d7609d2cc94c))
+* **frontend:** reduce vertical whitespace on mobile home page ([fe881d6](https://github.com/Belphemur/AddictedProxy/commit/fe881d649d62790c8decbab15b77ed64dbc74487))
+* **frontend:** update AppBar and index page layout for improved UI and user experience ([b698446](https://github.com/Belphemur/AddictedProxy/commit/b69844669838690124853976471f033916d6c6b4))
+
+### Features
+
+* **frontend:** improve show detail UX for mobile and desktop ([c0e1ae9](https://github.com/Belphemur/AddictedProxy/commit/c0e1ae974a921e1a6ed8e2083891391b28a568b9))
+* **frontend:** redesign show detail page with glass panels and reduced whitespace ([a1e56c2](https://github.com/Belphemur/AddictedProxy/commit/a1e56c210ca9c32fa9d1bea7d58e206016839aa7))
+
 ## [4.45.3](https://github.com/Belphemur/AddictedProxy/compare/v4.45.2...v4.45.3) (2026-02-22)
 
 ### Bug Fixes
