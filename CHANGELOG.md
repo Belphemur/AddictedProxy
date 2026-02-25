@@ -1,3 +1,9 @@
+## [4.49.1](https://github.com/Belphemur/AddictedProxy/compare/v4.49.0...v4.49.1) (2026-02-25)
+
+### Bug Fixes
+
+* **subtitle:** wrap SuperSubtitles gRPC errors as 404 with warning log ([249f74a](https://github.com/Belphemur/AddictedProxy/commit/249f74ac86b28809c681b01188da0033c632c539))
+
 ## [4.49.0](https://github.com/Belphemur/AddictedProxy/compare/v4.48.0...v4.49.0) (2026-02-25)
 
 ### Features
