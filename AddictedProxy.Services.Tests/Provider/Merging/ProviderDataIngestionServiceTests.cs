@@ -461,162 +461,6 @@ public class ProviderDataIngestionServiceTests
 
     #endregion
 
-    #region MergeEpisodeSubtitleAsync
-
-    [Test]
-    public async Task MergeEpisodeSubtitleAsync_CreatesSeasonWhenMissing()
-    {
-        // Arrange
-        var show = CreateTvShow(id: 1, name: "Test Show");
-
-        _seasonRepo
-            .GetSeasonForShowAsync(1, 3, Arg.Any<CancellationToken>())
-            .ReturnsNull();
-
-        var subtitle = CreateSubtitle(source: DataSource.SuperSubtitles);
-
-        // Act
-        await _sut.MergeEpisodeSubtitleAsync(
-            show, DataSource.SuperSubtitles, 3, 5, "Episode Title", "ext-ep-1",
-            subtitle, CancellationToken.None);
-
-        // Assert — season should be inserted
-        await _seasonRepo.Received(1).InsertNewSeasonsAsync(
-            1,
-            Arg.Is<IEnumerable<Season>>(s => s.Any(season => season.Number == 3 && season.TvShowId == 1)),
-            Arg.Any<CancellationToken>());
-    }
-
-    [Test]
-    public async Task MergeEpisodeSubtitleAsync_DoesNotCreateSeasonWhenExists()
-    {
-        // Arrange
-        var show = CreateTvShow(id: 1, name: "Test Show");
-
-        _seasonRepo
-            .GetSeasonForShowAsync(1, 3, Arg.Any<CancellationToken>())
-            .Returns(new Season { Id = 5, TvShowId = 1, Number = 3 });
-
-        var subtitle = CreateSubtitle(source: DataSource.SuperSubtitles);
-
-        // Act
-        await _sut.MergeEpisodeSubtitleAsync(
-            show, DataSource.SuperSubtitles, 3, 5, "Episode Title", "ext-ep-1",
-            subtitle, CancellationToken.None);
-
-        // Assert — season should NOT be inserted
-        await _seasonRepo.DidNotReceive().InsertNewSeasonsAsync(
-            Arg.Any<long>(), Arg.Any<IEnumerable<Season>>(), Arg.Any<CancellationToken>());
-    }
-
-    [Test]
-    public async Task MergeEpisodeSubtitleAsync_UpsertsEpisodeWithSubtitle()
-    {
-        // Arrange
-        var show = CreateTvShow(id: 1, name: "Test Show");
-
-        _seasonRepo
-            .GetSeasonForShowAsync(1, 2, Arg.Any<CancellationToken>())
-            .Returns(new Season { Id = 5, TvShowId = 1, Number = 2 });
-
-        var subtitle = CreateSubtitle(source: DataSource.SuperSubtitles);
-
-        // Act
-        await _sut.MergeEpisodeSubtitleAsync(
-            show, DataSource.SuperSubtitles, 2, 7, "Test Episode", "ext-ep-2",
-            subtitle, CancellationToken.None);
-
-        // Assert — MergeEpisodeWithSubtitleAsync called with correct parameters
-        await _episodeRepo.Received(1).MergeEpisodeWithSubtitleAsync(
-            Arg.Is<Episode>(e =>
-                e.TvShowId == 1 &&
-                e.Season == 2 &&
-                e.Number == 7 &&
-                e.Title == "Test Episode" &&
-                e.ExternalIds.Count == 1 &&
-                e.ExternalIds[0].Source == DataSource.SuperSubtitles &&
-                e.ExternalIds[0].ExternalId == "ext-ep-2"),
-            subtitle,
-            Arg.Any<CancellationToken>());
-    }
-
-    [Test]
-    public async Task MergeEpisodeSubtitleAsync_UpsertsEpisodeExternalId()
-    {
-        // Arrange
-        var show = CreateTvShow(id: 1, name: "Test Show");
-
-        _seasonRepo
-            .GetSeasonForShowAsync(1, 1, Arg.Any<CancellationToken>())
-            .Returns(new Season { Id = 1, TvShowId = 1, Number = 1 });
-
-        var subtitle = CreateSubtitle(source: DataSource.SuperSubtitles);
-
-        // Act
-        await _sut.MergeEpisodeSubtitleAsync(
-            show, DataSource.SuperSubtitles, 1, 1, null, "ext-123",
-            subtitle, CancellationToken.None);
-
-        // Assert — MergeEpisodeWithSubtitleAsync called with the external ID in ExternalIds
-        await _episodeRepo.Received(1).MergeEpisodeWithSubtitleAsync(
-            Arg.Is<Episode>(e =>
-                e.ExternalIds.Count == 1 &&
-                e.ExternalIds[0].Source == DataSource.SuperSubtitles &&
-                e.ExternalIds[0].ExternalId == "ext-123"),
-            subtitle,
-            Arg.Any<CancellationToken>());
-    }
-
-    [Test]
-    public async Task MergeEpisodeSubtitleAsync_NoExternalId_PassesNullToMerge()
-    {
-        // Arrange
-        var show = CreateTvShow(id: 1, name: "Test Show");
-
-        _seasonRepo
-            .GetSeasonForShowAsync(1, 1, Arg.Any<CancellationToken>())
-            .Returns(new Season { Id = 1, TvShowId = 1, Number = 1 });
-
-        var subtitle = CreateSubtitle(source: DataSource.SuperSubtitles);
-
-        // Act
-        await _sut.MergeEpisodeSubtitleAsync(
-            show, DataSource.SuperSubtitles, 1, 1, null, null,
-            subtitle, CancellationToken.None);
-
-        // Assert — MergeEpisodeWithSubtitleAsync called with empty ExternalIds
-        await _episodeRepo.Received(1).MergeEpisodeWithSubtitleAsync(
-            Arg.Is<Episode>(e => e.ExternalIds.Count == 0),
-            subtitle,
-            Arg.Any<CancellationToken>());
-    }
-
-    [Test]
-    public async Task MergeEpisodeSubtitleAsync_NullTitle_UsesEmptyString()
-    {
-        // Arrange
-        var show = CreateTvShow(id: 1, name: "Test Show");
-
-        _seasonRepo
-            .GetSeasonForShowAsync(1, 1, Arg.Any<CancellationToken>())
-            .Returns(new Season { Id = 1, TvShowId = 1, Number = 1 });
-
-        var subtitle = CreateSubtitle(source: DataSource.SuperSubtitles);
-
-        // Act
-        await _sut.MergeEpisodeSubtitleAsync(
-            show, DataSource.SuperSubtitles, 1, 1, null, null,
-            subtitle, CancellationToken.None);
-
-        // Assert — title defaults to empty string
-        await _episodeRepo.Received(1).MergeEpisodeWithSubtitleAsync(
-            Arg.Is<Episode>(e => e.Title == string.Empty),
-            subtitle,
-            Arg.Any<CancellationToken>());
-    }
-
-    #endregion
-
     #region IngestSeasonPackAsync
 
     [Test]
@@ -645,6 +489,126 @@ public class ProviderDataIngestionServiceTests
                     p.Season == 2 &&
                     p.ExternalId == 12345)),
             Arg.Any<CancellationToken>());
+    }
+
+    #endregion
+
+    #region IngestSeasonPacksAsync
+
+    [Test]
+    public async Task IngestSeasonPacksAsync_EmptyCollection_DoesNothing()
+    {
+        // Act
+        await _sut.IngestSeasonPacksAsync([], CancellationToken.None);
+
+        // Assert — no DB calls at all
+        await _seasonRepo.DidNotReceive().InsertNewSeasonsAsync(Arg.Any<long>(), Arg.Any<IEnumerable<Season>>(), Arg.Any<CancellationToken>());
+        await _seasonRepo.DidNotReceive().GetSeasonIdLookupAsync(Arg.Any<IEnumerable<long>>(), Arg.Any<CancellationToken>());
+        await _seasonPackRepo.DidNotReceive().BulkUpsertAsync(Arg.Any<IEnumerable<SeasonPackSubtitle>>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task IngestSeasonPacksAsync_SingleShowSingleSeason_AssignsSeasonId()
+    {
+        // Arrange
+        var pack = new SeasonPackSubtitle { TvShowId = 10, Season = 1, Source = DataSource.SuperSubtitles, ExternalId = 1, Filename = "s01.zip", Language = "English", Discovered = DateTime.UtcNow };
+
+        _seasonRepo
+            .GetSeasonIdLookupAsync(Arg.Any<IEnumerable<long>>(), Arg.Any<CancellationToken>())
+            .Returns(new Dictionary<(long, int), long> { { (10L, 1), 100L } });
+
+        // Act
+        await _sut.IngestSeasonPacksAsync([pack], CancellationToken.None);
+
+        // Assert
+        pack.SeasonId.Should().Be(100L);
+        await _seasonPackRepo.Received(1).BulkUpsertAsync(Arg.Any<IEnumerable<SeasonPackSubtitle>>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task IngestSeasonPacksAsync_MultipleShowsMultipleSeasons_AssignsAllSeasonIds()
+    {
+        // Arrange — two shows, each with two seasons
+        var pack1 = new SeasonPackSubtitle { TvShowId = 10, Season = 1, Source = DataSource.SuperSubtitles, ExternalId = 1, Filename = "s01.zip", Language = "English", Discovered = DateTime.UtcNow };
+        var pack2 = new SeasonPackSubtitle { TvShowId = 10, Season = 2, Source = DataSource.SuperSubtitles, ExternalId = 2, Filename = "s02.zip", Language = "English", Discovered = DateTime.UtcNow };
+        var pack3 = new SeasonPackSubtitle { TvShowId = 20, Season = 1, Source = DataSource.SuperSubtitles, ExternalId = 3, Filename = "s01.zip", Language = "English", Discovered = DateTime.UtcNow };
+        var pack4 = new SeasonPackSubtitle { TvShowId = 20, Season = 3, Source = DataSource.SuperSubtitles, ExternalId = 4, Filename = "s03.zip", Language = "English", Discovered = DateTime.UtcNow };
+
+        _seasonRepo
+            .GetSeasonIdLookupAsync(Arg.Any<IEnumerable<long>>(), Arg.Any<CancellationToken>())
+            .Returns(new Dictionary<(long, int), long>
+            {
+                { (10L, 1), 101L },
+                { (10L, 2), 102L },
+                { (20L, 1), 201L },
+                { (20L, 3), 203L },
+            });
+
+        // Act
+        await _sut.IngestSeasonPacksAsync([pack1, pack2, pack3, pack4], CancellationToken.None);
+
+        // Assert
+        pack1.SeasonId.Should().Be(101L);
+        pack2.SeasonId.Should().Be(102L);
+        pack3.SeasonId.Should().Be(201L);
+        pack4.SeasonId.Should().Be(203L);
+        await _seasonPackRepo.Received(1).BulkUpsertAsync(Arg.Any<IEnumerable<SeasonPackSubtitle>>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task IngestSeasonPacksAsync_PackWithNoMatchingSeason_SeasonIdRemainsNull()
+    {
+        // Arrange — lookup returns nothing for this pack
+        var pack = new SeasonPackSubtitle { TvShowId = 10, Season = 5, Source = DataSource.SuperSubtitles, ExternalId = 1, Filename = "s05.zip", Language = "English", Discovered = DateTime.UtcNow };
+
+        _seasonRepo
+            .GetSeasonIdLookupAsync(Arg.Any<IEnumerable<long>>(), Arg.Any<CancellationToken>())
+            .Returns(new Dictionary<(long, int), long>());
+
+        // Act
+        await _sut.IngestSeasonPacksAsync([pack], CancellationToken.None);
+
+        // Assert — no match in lookup; SeasonId stays null
+        pack.SeasonId.Should().BeNull();
+        await _seasonPackRepo.Received(1).BulkUpsertAsync(Arg.Any<IEnumerable<SeasonPackSubtitle>>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task IngestSeasonPacksAsync_NeverCallsGetSeasonForShowAsync()
+    {
+        // Arrange
+        var pack = new SeasonPackSubtitle { TvShowId = 10, Season = 1, Source = DataSource.SuperSubtitles, ExternalId = 1, Filename = "s01.zip", Language = "English", Discovered = DateTime.UtcNow };
+
+        _seasonRepo
+            .GetSeasonIdLookupAsync(Arg.Any<IEnumerable<long>>(), Arg.Any<CancellationToken>())
+            .Returns(new Dictionary<(long, int), long> { { (10L, 1), 100L } });
+
+        // Act
+        await _sut.IngestSeasonPacksAsync([pack], CancellationToken.None);
+
+        // Assert — the old per-season query is never called
+        await _seasonRepo.DidNotReceive().GetSeasonForShowAsync(Arg.Any<long>(), Arg.Any<int>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task IngestSeasonPacksAsync_CallsInsertNewSeasonsPerShow()
+    {
+        // Arrange — two shows
+        var pack1 = new SeasonPackSubtitle { TvShowId = 10, Season = 1, Source = DataSource.SuperSubtitles, ExternalId = 1, Filename = "s01.zip", Language = "English", Discovered = DateTime.UtcNow };
+        var pack2 = new SeasonPackSubtitle { TvShowId = 20, Season = 2, Source = DataSource.SuperSubtitles, ExternalId = 2, Filename = "s02.zip", Language = "English", Discovered = DateTime.UtcNow };
+
+        _seasonRepo
+            .GetSeasonIdLookupAsync(Arg.Any<IEnumerable<long>>(), Arg.Any<CancellationToken>())
+            .Returns(new Dictionary<(long, int), long> { { (10L, 1), 100L }, { (20L, 2), 200L } });
+
+        // Act
+        await _sut.IngestSeasonPacksAsync([pack1, pack2], CancellationToken.None);
+
+        // Assert — InsertNewSeasonsAsync is called once per show
+        await _seasonRepo.Received(1).InsertNewSeasonsAsync(10L, Arg.Any<IEnumerable<Season>>(), Arg.Any<CancellationToken>());
+        await _seasonRepo.Received(1).InsertNewSeasonsAsync(20L, Arg.Any<IEnumerable<Season>>(), Arg.Any<CancellationToken>());
+        // GetSeasonIdLookupAsync called once total (not per show)
+        await _seasonRepo.Received(1).GetSeasonIdLookupAsync(Arg.Any<IEnumerable<long>>(), Arg.Any<CancellationToken>());
     }
 
     #endregion

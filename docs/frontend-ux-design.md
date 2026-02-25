@@ -22,13 +22,13 @@ A fixed full-viewport background image (`/img/background-small.webp`) with `filt
 
 All content panels use semi-transparent `v-sheet` components with `rounded="lg"`:
 
-| Layer | Color | Usage |
-|-------|-------|-------|
-| **Primary panel** | `rgba(0,0,0,0.75)` | Main content containers (hero, show details, season card) |
-| **App bar** | `rgba(0,0,0,0.7)` | Top navigation bar |
-| **Nested item** | `rgba(255,255,255,0.08)` | Cards inside panels (mobile subtitle items) |
-| **Expansion panel** | `rgba(255,255,255,0.05)` | Mobile episode accordions |
-| **Transparent overlay** | `transparent` | Tables, expansion containers that inherit parent bg |
+| Layer                   | Color                    | Usage                                                     |
+| ----------------------- | ------------------------ | --------------------------------------------------------- |
+| **Primary panel**       | `rgba(0,0,0,0.75)`       | Main content containers (hero, show details, season card) |
+| **App bar**             | `rgba(0,0,0,0.7)`        | Top navigation bar                                        |
+| **Nested item**         | `rgba(255,255,255,0.08)` | Cards inside panels (mobile subtitle items)               |
+| **Expansion panel**     | `rgba(255,255,255,0.05)` | Mobile episode accordions                                 |
+| **Transparent overlay** | `transparent`            | Tables, expansion containers that inherit parent bg       |
 
 ```html
 <!-- Primary panel -->
@@ -47,7 +47,7 @@ All content panels use semi-transparent `v-sheet` components with `rounded="lg"`
 Desktop data tables must be transparent to inherit the glass panel background:
 
 ```html
-<v-data-table class="transparent-table" ...>
+<v-data-table class="transparent-table" ...></v-data-table>
 ```
 
 ```css
@@ -61,17 +61,17 @@ Desktop data tables must be transparent to inherit the glass panel background:
 
 ## Color Palette
 
-| Usage | Color | Value |
-|-------|-------|-------|
-| Primary actions/buttons | `primary` | Theme color (`#1867C0`) |
-| Year highlight text | `text-light-blue-accent-1` | Vuetify utility |
-| Error states | `error` | Vuetify error red |
-| Success/completed | `success` | Vuetify success green |
-| Source: SuperSubtitles | `teal` | Chip color |
-| Source: Addic7ed | `blue-darken-2` | Chip color |
-| Vote circle | `yellow` | Progress circular |
-| Progress bars | `blue` | Linear progress |
-| De-emphasized text | `text-medium-emphasis` | Vuetify utility class |
+| Usage                   | Color                      | Value                   |
+| ----------------------- | -------------------------- | ----------------------- |
+| Primary actions/buttons | `primary`                  | Theme color (`#1867C0`) |
+| Year highlight text     | `text-light-blue-accent-1` | Vuetify utility         |
+| Error states            | `error`                    | Vuetify error red       |
+| Success/completed       | `success`                  | Vuetify success green   |
+| Source: SuperSubtitles  | `teal`                     | Chip color              |
+| Source: Addic7ed        | `blue-darken-2`            | Chip color              |
+| Vote circle             | `yellow`                   | Progress circular       |
+| Progress bars           | `blue`                     | Linear progress         |
+| De-emphasized text      | `text-medium-emphasis`     | Vuetify utility class   |
 
 ## Spacing Conventions
 
@@ -79,11 +79,11 @@ Desktop data tables must be transparent to inherit the glass panel background:
 
 Use responsive padding classes that scale up at the `sm` breakpoint:
 
-| Context | Classes | Description |
-|---------|---------|-------------|
-| Primary panels | `pa-4 pa-sm-5` or `pa-4 pa-sm-6` | Roomier on desktop |
-| Nested cards (mobile) | `pa-3` | Compact |
-| Page container | `pa-2 pa-sm-4` | Tight on mobile |
+| Context               | Classes                          | Description        |
+| --------------------- | -------------------------------- | ------------------ |
+| Primary panels        | `pa-4 pa-sm-5` or `pa-4 pa-sm-6` | Roomier on desktop |
+| Nested cards (mobile) | `pa-3`                           | Compact            |
+| Page container        | `pa-2 pa-sm-4`                   | Tight on mobile    |
 
 ### Margin Patterns
 
@@ -96,33 +96,39 @@ Use responsive padding classes that scale up at the `sm` breakpoint:
 ### Container Width
 
 ```html
-<v-container fluid class="pa-2 pa-sm-4" style="max-width: 1600px">
+<v-container fluid class="pa-2 pa-sm-4" style="max-width: 1600px"></v-container>
 ```
 
 ## Typography
 
-| Usage | Classes |
-|-------|---------|
-| Page title (hero) | `text-h5 text-sm-h4 font-weight-bold` |
-| Panel title (show name) | `text-h5` |
-| Section header | `text-h6` |
-| Label/subtitle | `text-subtitle-1 font-weight-bold` |
-| Body (mobile) | `text-body-2` |
-| De-emphasized | `text-medium-emphasis` |
-| Tagline | `text-medium-emphasis` + `<i>` |
+| Usage                   | Classes                               |
+| ----------------------- | ------------------------------------- |
+| Page title (hero)       | `text-h5 text-sm-h4 font-weight-bold` |
+| Panel title (show name) | `text-h5`                             |
+| Section header          | `text-h6`                             |
+| Label/subtitle          | `text-subtitle-1 font-weight-bold`    |
+| Body (mobile)           | `text-body-2`                         |
+| De-emphasized           | `text-medium-emphasis`                |
+| Tagline                 | `text-medium-emphasis` + `<i>`        |
 
 ## Button Patterns
 
 ### Standard Action Button
 
 ```html
-<v-btn color="primary" size="small" class="text-none" :prepend-icon="mdiRefresh">
+<v-btn
+  color="primary"
+  size="small"
+  class="text-none"
+  :prepend-icon="mdiRefresh"
+>
   Refresh
   <v-tooltip activator="parent" location="bottom">Description</v-tooltip>
 </v-btn>
 ```
 
 **Rules:**
+
 - **Color:** Always `color="primary"` for action buttons
 - **Size:** `size="small"` for in-panel actions
 - **Text casing:** Always `class="text-none"` (prevents Vuetify uppercase)
@@ -131,13 +137,13 @@ Use responsive padding classes that scale up at the `sm` breakpoint:
 
 ### Button Variants
 
-| Context | Pattern |
-|---------|---------|
-| Primary action | `color="primary"` (default filled) |
-| Nav button | `variant="text" size="small"` |
-| Text toggle | `variant="text" size="small" class="text-none text-medium-emphasis"` |
-| Dialog action | `color="primary" variant="flat"` |
-| Table download | `color="primary" :prepend-icon="mdiDownload"` |
+| Context        | Pattern                                                              |
+| -------------- | -------------------------------------------------------------------- |
+| Primary action | `color="primary"` (default filled)                                   |
+| Nav button     | `variant="text" size="small"`                                        |
+| Text toggle    | `variant="text" size="small" class="text-none text-medium-emphasis"` |
+| Dialog action  | `color="primary" variant="flat"`                                     |
+| Table download | `color="primary" :prepend-icon="mdiDownload"`                        |
 
 ### Button Grouping
 
@@ -168,11 +174,11 @@ const { isMobile } = useDevice();
 
 ### Conditional Rendering Patterns
 
-| Feature | Desktop | Mobile |
-|---------|---------|--------|
-| Subtitles display | `<v-data-table>` with `group-by` | `<v-expansion-panels>` with cards |
-| Overview text | 3-line CSS clamp, always visible | Collapsible toggle (hidden by default) |
-| Poster image | Portrait poster | Backdrop landscape (portrait orientation) |
+| Feature           | Desktop                          | Mobile                                    |
+| ----------------- | -------------------------------- | ----------------------------------------- |
+| Subtitles display | `<v-data-table>` with `group-by` | `<v-expansion-panels>` with cards         |
+| Overview text     | 3-line CSS clamp, always visible | Collapsible toggle (hidden by default)    |
+| Poster image      | Portrait poster                  | Backdrop landscape (portrait orientation) |
 
 ### Mobile Overview Toggle
 
@@ -180,9 +186,13 @@ On mobile, long text sections (like overview) should be collapsible and hidden b
 
 ```html
 <div v-if="device.isMobile">
-  <v-btn variant="text" size="small" class="text-none text-medium-emphasis"
+  <v-btn
+    variant="text"
+    size="small"
+    class="text-none text-medium-emphasis"
     :append-icon="showOverview ? mdiChevronUp : mdiChevronDown"
-    @click="showOverview = !showOverview">
+    @click="showOverview = !showOverview"
+  >
     {{ showOverview ? 'Hide overview' : 'Show overview' }}
   </v-btn>
   <p v-show="showOverview" class="mt-1 text-body-2">{{ text }}</p>
@@ -227,8 +237,14 @@ Use `LazyOptimizedPicture` for all images:
 ### Desktop: Data Table
 
 ```html
-<v-data-table :items="items" :headers="headers" :items-per-page="-1"
-  hide-default-footer :group-by="groupBy" class="transparent-table">
+<v-data-table
+  :items="items"
+  :headers="headers"
+  :items-per-page="-1"
+  hide-default-footer
+  :group-by="groupBy"
+  class="transparent-table"
+></v-data-table>
 ```
 
 - Show all items (`items-per-page="-1"`)
@@ -240,7 +256,10 @@ Use `LazyOptimizedPicture` for all images:
 
 ```html
 <v-expansion-panels bg-color="transparent">
-  <v-expansion-panel v-for="episode in episodes" bg-color="rgba(255,255,255,0.05)">
+  <v-expansion-panel
+    v-for="episode in episodes"
+    bg-color="rgba(255,255,255,0.05)"
+  >
     <v-expansion-panel-title>
       <h3>Ep {{ episode.number }}. {{ episode.title }}</h3>
     </v-expansion-panel-title>
@@ -258,15 +277,32 @@ Use `LazyOptimizedPicture` for all images:
 - **Source chips:** `<v-chip size="small" label>` with `teal` (SuperSubtitles) or `blue-darken-2` (Addic7ed)
 - **Quality chips:** Use `ShowsQualityChips` component
 
+### Season Packs Section
+
+The `SeasonPacksSection` component displays season pack subtitles (ZIP archives covering an entire season). It appears below the episode subtitles table in the media detail view when season packs are available.
+
+- **Desktop:** `v-data-table` with `transparent-table` class, columns: Release Group (chips), Quality, Uploader, Source, Downloads (with download button)
+- **Mobile:** `v-expansion-panels` with `mdiPackageVariantClosed` icon, release group chips, quality chips, source chip, and full-width download button
+- **Download:** Triggers download of ZIP archive via `subtitlesApi.downloadSubtitle(pack.subtitleId)` with Content-Disposition filename
+- **Visibility:** Hidden when `seasonPacks.length === 0`
+
+```html
+<!-- In MediaDetailView.vue, after SubtitlesTable -->
+<div v-if="seasonPacks.length > 0" class="mt-4">
+  <h3 class="text-subtitle-1 font-weight-medium mb-2">Season Packs</h3>
+  <season-packs-section :season-packs="seasonPacks" />
+</div>
+```
+
 ## Loading States
 
-| Context | Component | Pattern |
-|---------|-----------|---------|
-| Panel loading | `<v-skeleton-loader type="card">` | Wraps entire sheet |
-| Page initial load | `<Suspense>` + `<v-progress-linear indeterminate>` | Fallback slot |
-| Progress tracking | `<v-progress-linear v-model height="18">` | Text inside bar |
-| Button loading | `:loading="true"` on `v-btn` | Mobile download buttons |
-| Image loading | LazyOptimizedPicture placeholder | SVG + spinner |
+| Context           | Component                                          | Pattern                 |
+| ----------------- | -------------------------------------------------- | ----------------------- |
+| Panel loading     | `<v-skeleton-loader type="card">`                  | Wraps entire sheet      |
+| Page initial load | `<Suspense>` + `<v-progress-linear indeterminate>` | Fallback slot           |
+| Progress tracking | `<v-progress-linear v-model height="18">`          | Text inside bar         |
+| Button loading    | `:loading="true"` on `v-btn`                       | Mobile download buttons |
+| Image loading     | LazyOptimizedPicture placeholder                   | SVG + spinner           |
 
 ## Form Controls
 
@@ -279,6 +315,48 @@ Use `LazyOptimizedPicture` for all images:
 - **AppBar:** `density="compact"`, `elevation="2"`, `color="rgba(0,0,0,0.7)"`
 - Route-based nav buttons from `router.getRoutes()` filtered by `meta.order`
 - `variant="text" size="small"` for nav buttons
+
+## Design System Composable
+
+A centralized `usePageLayout()` composable manages all glass panel colors and class definitions:
+
+```ts
+const layout = usePageLayout();
+// Returns:
+// - layout.colors.primaryPanel: "rgba(0,0,0,0.75)"
+// - layout.colors.appBar: "rgba(0,0,0,0.7)"
+// - layout.colors.nestedItem: "rgba(255,255,255,0.08)"
+// - layout.colors.expansionPanel: "rgba(255,255,255,0.05)"
+// - layout.classes.pageContainer: "pa-2 pa-sm-4"
+// - layout.classes.primaryPanel: "pa-4 pa-sm-6 mb-4"
+// - layout.classes.nestedItem: "pa-3"
+// - layout.classes.pageHeading: "text-center mb-4"
+// - layout.classes.pageTitle: "text-h5 text-sm-h4 font-weight-bold"
+// - layout.classes.pageSubtitle: "text-body-2 text-sm-body-1 text-medium-emphasis mt-1"
+// - layout.classes.bodyText: "text-body-2 text-sm-body-1"
+// - layout.classes.sectionHeading: "text-h6 mt-4"
+// - layout.maxWidth: "1600px"
+```
+
+**Usage in pages and components:**
+
+```html
+<v-container
+  fluid
+  :class="layout.classes.pageContainer"
+  :style="{ maxWidth: layout.maxWidth }"
+>
+  <v-sheet
+    rounded="lg"
+    :color="layout.colors.primaryPanel"
+    :class="layout.classes.primaryPanel"
+  >
+    <!-- content -->
+  </v-sheet>
+</v-container>
+```
+
+This ensures design consistency across all pages and components while making global updates trivial.
 
 ## Performance Optimizations
 
@@ -306,11 +384,11 @@ Because `@nuxtjs/device` detects mobile from the **server-side request UA header
 // Set mobile UA for SSR detection + client override
 const context = page.context();
 await context.setExtraHTTPHeaders({
-  'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) ...'
+  "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) ...",
 });
 await context.addInitScript(() => {
-  Object.defineProperty(navigator, 'userAgent', {
-    get: () => 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) ...'
+  Object.defineProperty(navigator, "userAgent", {
+    get: () => "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) ...",
   });
 });
 // Also resize viewport

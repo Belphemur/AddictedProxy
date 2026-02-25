@@ -31,3 +31,9 @@ fabric.properties
 .idea/usage.statistics.xml
 .idea/dictionaries
 .idea/shelf/
+
+# Playwright MCP
+.playwright-mcp/
+
+# Screenshots
+*.png

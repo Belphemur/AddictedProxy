@@ -102,11 +102,43 @@ pnpm dev
 
 **All frontend visual changes must be verified using Playwright MCP** before committing. Never commit UI changes without visually confirming they render correctly.
 
-1. **Desktop:** Navigate to the affected page, take a full-page screenshot, interact with elements (expand groups, click controls), and screenshot again
-2. **Mobile:** Set a mobile User-Agent via `context.setExtraHTTPHeaders` (required for `@nuxtjs/device` SSR detection), also override client UA with `context.addInitScript`, resize viewport to 390x844, navigate, and screenshot
-3. **Check console** for hydration mismatch warnings — these indicate SSR/client rendering differences that must be fixed
+#### Desktop Verification
 
-> **Warning:** `context.addInitScript` is permanent per browser context. To switch back to desktop after mobile testing, close the page (`mcp_playwright_browser_close`) and create a fresh one.
+1. Navigate to the affected page with `mcp_playwright_browser_navigate`
+2. Take a full-page screenshot with `mcp_playwright_browser_run_code` (use `path: '/tmp/screenshot.png'`)
+3. Interact with elements (expand groups, click controls) and screenshot again
+4. Check console for hydration mismatch warnings — these indicate SSR/client rendering differences
+
+#### Mobile Verification
+
+Since `@nuxtjs/device` detects mobile from the **server-side request User-Agent header**, you must:
+
+1. **Create a new tab** with `mcp_playwright_browser_tabs` (action: "new") — this critical because `context.addInitScript` is permanent per browser context
+2. Set up mobile UA and viewport in the new tab:
+   ```js
+   const context = page.context();
+   const mobileUA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
+   await context.setExtraHTTPHeaders({ 'User-Agent': mobileUA });
+   await context.addInitScript(() => {
+     Object.defineProperty(navigator, 'userAgent', {
+       get: () => 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'
+     });
+   });
+   await page.setViewportSize({ width: 390, height: 844 });
+   ```
+3. Navigate to the page with `mcp_playwright_browser_navigate`
+4. Take screenshots in the mobile viewport, interact with elements, and screenshot again
+5. Check console for hydration mismatch warnings
+
+> **Important:** Always use a new tab for mobile testing. The `context.addInitScript` persists across all pages in the same context, so switching back to desktop requires closing and creating a fresh browser context.
+
+#### Verification Checklist
+
+- [ ] Desktop screenshot at default viewport
+- [ ] Desktop interaction (expand groups, click controls, verify glass panels)
+- [ ] Mobile screenshot with device emulation (new tab with UA override)
+- [ ] Mobile interaction (expand panels, toggle sections)
+- [ ] No hydration mismatch warnings in console on either viewport
 
 ### Docker
 

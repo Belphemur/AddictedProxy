@@ -10,12 +10,13 @@ Base URL: `https://api.gestdown.info`
 
 ### Shows Controller (`/shows`)
 
-| Method | Route | Description | Response Cache |
-|--------|-------|-------------|----------------|
-| `GET` | `/shows/search/{search}` | Search shows by name (min 3 chars) | 1 day |
-| `GET` | `/shows/external/tvdb/{tvdbId}` | Find show by TheTVDB ID | 1 day |
-| `POST` | `/shows/{showId:guid}/refresh` | Enqueue background refresh for a show | None |
-| `GET` | `/shows/{showId:guid}/{seasonNumber:int}/{language}` | Get all subtitles for a season in a language | 2 hours |
+| Method | Route                                                             | Description                                  | Response Cache |
+| ------ | ----------------------------------------------------------------- | -------------------------------------------- | -------------- |
+| `GET`  | `/shows/search/{search}`                                          | Search shows by name (min 3 chars)           | 1 day          |
+| `GET`  | `/shows/external/tvdb/{tvdbId}`                                   | Find show by TheTVDB ID                      | 1 day          |
+| `POST` | `/shows/{showId:guid}/refresh`                                    | Enqueue background refresh for a show        | None           |
+| `GET`  | `/shows/{showId:guid}/{seasonNumber:int}/{language}`              | Get all subtitles for a season in a language | 2 hours        |
+| `GET`  | `/shows/{showId:guid}/{seasonNumber:int}/{language}/season-packs` | Get season pack subtitles for a season       | 2 hours        |
 
 #### Search Shows
 
@@ -54,28 +55,42 @@ GET /shows/{showId:guid}/{seasonNumber:int}/{language}
 ```
 
 - **Parameters**: `showId` (Guid), `seasonNumber` (int), `language` (string, ISO code)
-- **Returns**: `TvShowSubtitleResponse` with episodes and subtitles for that season/language
+- **Returns**: `TvShowSubtitleResponse` with episodes, subtitles, and season packs for that season/language
+- **Cache**: 2 hours
+
+#### Get Season Packs
+
+```
+GET /shows/{showId:guid}/{seasonNumber:int}/{language}/season-packs
+```
+
+- **Parameters**: `showId` (Guid), `seasonNumber` (int), `language` (string, ISO code)
+- **Returns**: `SeasonPackResponse` with season pack subtitles filtered by language
 - **Cache**: 2 hours
 
 ### Subtitles Controller (`/subtitles`)
 
-| Method | Route | Description | Response Cache |
-|--------|-------|-------------|----------------|
-| `GET` | `/subtitles/download/{subtitleId:guid}` | Download a subtitle file | 8 days |
-| `POST` | `/subtitles/search` | Search subtitles (deprecated) | 2 hours |
-| `GET` | `/subtitles/find/{lang}/{show}/{season}/{episode}` | Find subtitles by name (deprecated) | 2 hours |
-| `GET` | `/subtitles/get/{showId:guid}/{season}/{episode}/{language}` | **Preferred**: Get subtitles by show ID | 2 hours |
+| Method | Route                                                        | Description                             | Response Cache |
+| ------ | ------------------------------------------------------------ | --------------------------------------- | -------------- |
+| `GET`  | `/subtitles/download/{subtitleId}`                           | Download a subtitle file or season pack | 8 days         |
+| `POST` | `/subtitles/search`                                          | Search subtitles (deprecated)           | 2 hours        |
+| `GET`  | `/subtitles/find/{lang}/{show}/{season}/{episode}`           | Find subtitles by name (deprecated)     | 2 hours        |
+| `GET`  | `/subtitles/get/{showId:guid}/{season}/{episode}/{language}` | **Preferred**: Get subtitles by show ID | 2 hours        |
 
 #### Download Subtitle
 
 ```
-GET /subtitles/download/{subtitleId:guid}
+GET /subtitles/download/{subtitleId}
 ```
 
-- **Parameters**: `subtitleId` (Guid) — subtitle's UniqueId
-- **Returns**: SRT file stream with appropriate headers
-- **Headers**: Content-Type `text/srt`, ETag support, file download name
-- **Error Codes**: 
+- **Parameters**: `subtitleId` (string) — subtitle's UniqueId or season pack ID
+  - Regular subtitle: GUID (e.g., `1086727A-EB71-4B24-A209-7CF22374574D`)
+  - Season pack ZIP: `sp_{uuid}` (e.g., `sp_1086727A-EB71-4B24-A209-7CF22374574D`)
+  - Season pack single episode: `sp_{uuid}_ep_{number}` (e.g., `sp_1086727A-EB71-4B24-A209-7CF22374574D_ep_3`)
+- **Returns**: SRT file stream (regular/episode) or ZIP archive (season pack)
+- **Headers**: Content-Type `text/srt` or `application/zip`, ETag support, file download name
+- **Error Codes**:
+  - 400: Invalid subtitleId format or missing episode number
   - 404: Subtitle not found or deleted
   - 429: Download rate limit exceeded
 - **Cache**: 8 days
@@ -86,12 +101,12 @@ GET /subtitles/download/{subtitleId:guid}
 GET /subtitles/get/{showUniqueId:guid}/{season:int}/{episode:int}/{language}
 ```
 
-- **Parameters**: 
+- **Parameters**:
   - `showUniqueId` (Guid) — from Shows::Search
   - `season` (int, min 0)
   - `episode` (int, min 0)
   - `language` (string, 2+ chars, ISO code)
-- **Returns**: `SubtitleSearchResponse` with matching subtitles
+- **Returns**: `SubtitleSearchResponse` with matching subtitles. When no episode-level subtitles are found, returns season pack entries as fallback (with `sp_{uuid}_ep_{episode}` IDs that extract the specific episode SRT from the season pack ZIP)
 - **Error Codes**:
   - 404: Show not found
   - 423: Show is being refreshed, try again later
@@ -99,11 +114,11 @@ GET /subtitles/get/{showUniqueId:guid}/{season:int}/{episode:int}/{language}
 
 ### Media Controller (`/media`)
 
-| Method | Route | Description | Response Cache |
-|--------|-------|-------------|----------------|
-| `GET` | `/media/trending/{max:range(1,50)}` | Get trending TV shows/movies | 1 day |
-| `GET` | `/media/{showId:guid}/details` | Get media details (poster, overview, etc.) | 1 day |
-| `GET` | `/media/{showId:guid}/episodes/{language}` | Get last season episodes with subtitles | 2 hours |
+| Method | Route                                      | Description                                              | Response Cache |
+| ------ | ------------------------------------------ | -------------------------------------------------------- | -------------- |
+| `GET`  | `/media/trending/{max:range(1,50)}`        | Get trending TV shows/movies                             | 1 day          |
+| `GET`  | `/media/{showId:guid}/details`             | Get media details (poster, overview, etc.)               | 1 day          |
+| `GET`  | `/media/{showId:guid}/episodes/{language}` | Get last season episodes with subtitles and season packs | 2 hours        |
 
 ### Stats Controller (`/stats`)
 
@@ -184,6 +199,40 @@ record MediaDetailsDto(
 );
 ```
 
+### SeasonPackSubtitleDto
+
+```csharp
+record SeasonPackSubtitleDto(
+    string SubtitleId,     // sp_-prefixed unique ID
+    string Language,
+    string Version,        // Release/version name
+    string[] ReleaseGroups,// e.g., ["NTb", "FLUX"]
+    string? Uploader,
+    DateTime? UploadedAt,
+    string[] Qualities,    // e.g., ["720p", "1080p"]
+    string Source,         // e.g., "SuperSubtitles"
+    string DownloadUri,    // Relative download URL
+    long DownloadCount
+);
+```
+
+### SeasonPackResponse
+
+```csharp
+record SeasonPackResponse(
+    IEnumerable<SeasonPackSubtitleDto> SeasonPacks
+);
+```
+
+### TvShowSubtitleResponse (updated)
+
+```csharp
+record TvShowSubtitleResponse(
+    IAsyncEnumerable<EpisodeWithSubtitlesDto> Episodes,
+    IEnumerable<SeasonPackSubtitleDto> SeasonPacks  // Season packs for the season
+);
+```
+
 ### ErrorResponse
 
 ```csharp
@@ -197,6 +246,7 @@ record ErrorResponse(string Error);
 Provides real-time progress updates when a show's seasons/episodes are being refreshed.
 
 **Methods (Server → Client):**
+
 - `SendProgressAsync(show, progressPercent)` — Progress update (0-100%)
 - `SendRefreshDone(show)` — Refresh completed
 
@@ -208,11 +258,11 @@ The API is **public** — no authentication is required for any endpoint. Rate l
 
 ## Response Caching Strategy
 
-| Content Type | Cache Duration | Rationale |
-|---|---|---|
-| Show search results | 1 day | Show catalog changes infrequently |
-| Media details/trending | 1 day | TMDB data is stable |
-| Subtitle search results | 2 hours | New subtitles appear periodically |
-| Season subtitle listing | 2 hours | Same as subtitle search |
-| Subtitle file download | 8 days | Subtitle content is immutable once completed |
-| Not found responses | 12 hours | Prevents hammering for non-existent content |
+| Content Type            | Cache Duration | Rationale                                    |
+| ----------------------- | -------------- | -------------------------------------------- |
+| Show search results     | 1 day          | Show catalog changes infrequently            |
+| Media details/trending  | 1 day          | TMDB data is stable                          |
+| Subtitle search results | 2 hours        | New subtitles appear periodically            |
+| Season subtitle listing | 2 hours        | Same as subtitle search                      |
+| Subtitle file download  | 8 days         | Subtitle content is immutable once completed |
+| Not found responses     | 12 hours       | Prevents hammering for non-existent content  |

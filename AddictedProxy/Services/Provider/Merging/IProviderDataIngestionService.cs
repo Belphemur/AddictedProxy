@@ -1,8 +1,6 @@
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Services.Provider.Merging.Model;
 
-using SubtitleEntity = AddictedProxy.Database.Model.Shows.Subtitle;
-
 namespace AddictedProxy.Services.Provider.Merging;
 
 /// <summary>
@@ -35,30 +33,6 @@ public interface IProviderDataIngestionService
         string providerExternalId,
         string showName,
         ThirdPartyShowIds? thirdPartyIds,
-        CancellationToken token);
-
-    /// <summary>
-    /// Merge an episode and its subtitle into the database.
-    /// Creates the <see cref="Season"/> entity if it doesn't exist yet.
-    /// The episode external ID (if provided) is stored in the episode's <see cref="Episode.ExternalIds"/> collection
-    /// and atomically upserted alongside the episode and subtitle in a single SQL CTE.
-    /// </summary>
-    /// <param name="show">The parent TvShow (must have a valid Id)</param>
-    /// <param name="source">The provider source</param>
-    /// <param name="season">Season number</param>
-    /// <param name="episodeNumber">Episode number</param>
-    /// <param name="episodeTitle">Optional episode title</param>
-    /// <param name="episodeExternalId">Optional provider-specific episode external ID</param>
-    /// <param name="subtitle">The subtitle to attach to the episode</param>
-    /// <param name="token">Cancellation token</param>
-    Task MergeEpisodeSubtitleAsync(
-        TvShow show,
-        DataSource source,
-        int season,
-        int episodeNumber,
-        string? episodeTitle,
-        string? episodeExternalId,
-        SubtitleEntity subtitle,
         CancellationToken token);
 
     /// <summary>

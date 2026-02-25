@@ -286,4 +286,4 @@ SuperSubtitles is a Go-based gRPC service that scrapes feliratok.eu (a Hungarian
 - **Show lookup via `ShowExternalId`** — uses the new external ID system to look up already-imported shows before falling back to TvDB/TMDB matching
 - **Two-phase ingestion**: one-time startup bulk import job (idempotent) + recurring 15-minute incremental updates
 - **Subtitle downloads** via gRPC `DownloadSubtitle` method (supports season pack episode extraction)
-- **Season packs stored** in dedicated `SeasonPackSubtitle` table during ingestion — not served yet, but data is preserved for future download support
+- **Season packs stored** in dedicated `SeasonPackSubtitle` table during ingestion. Season packs now have a `SeasonId` FK to the `Season` entity (resolved during ingestion by `IngestSeasonPacksAsync`) and a `DownloadCount` for download tracking. See [Season Pack Plan](season-pack-plan.md) for the API/frontend plan.

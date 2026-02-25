@@ -158,6 +158,11 @@ The `MigrationType` property auto-generates a name: `"YYYY-M-D_ClassName"`.
 | `SetCreatedDateAndUpdatedDateSubtitlesMigration` | 2023-09-16 | Backfill `CreatedAt`/`UpdatedAt` on subtitles |
 | `CleanUpInboxUsersMigration` | 2024-08-14 | Clean up Addic7ed account inboxes |
 | `RemoveOldCheckCompletedJobMigration` | 2025-01-29 | Remove obsolete Hangfire recurring job |
+| `MigrateExternalIdsToNewTableMigration` | 2026-02-17 | Populate `ShowExternalId`/`EpisodeExternalId` from legacy `ExternalId` columns |
+| `MigrateSubtitleExternalIdMigration` | 2026-02-17 | Populate `Subtitle.ExternalId` from `DownloadUri` |
+| `BackportHdToQualitiesMigration` | 2026-02-20 | Migrate legacy `HD` flag to `Qualities` bitmask |
+| `CleanSuperSubtitlesDataMigration` | 2026-02-21 | Truncate and re-import all SuperSubtitles data |
+| `BackfillSeasonPackSeasonFkMigration` | 2026-02-24 | Backfill `SeasonId` FK on `SeasonPackSubtitles` by joining on `TvShowId` + `Season` number |
 
 ### Registration
 
@@ -169,7 +174,14 @@ public class BootstrapMigration : IBootstrap
     {
         services.AddScoped<IMigration, PopulateTvDbIdsMigration>();
         services.AddScoped<IMigration, SetCreatedDateAndUpdatedDateEpisodesMigration>();
-        // ... etc
+        services.AddScoped<IMigration, SetCreatedDateAndUpdatedDateSubtitlesMigration>();
+        services.AddScoped<IMigration, CleanUpInboxUsersMigration>();
+        services.AddScoped<IMigration, RemoveOldCheckCompletedJobMigration>();
+        services.AddScoped<IMigration, MigrateExternalIdsToNewTableMigration>();
+        services.AddScoped<IMigration, MigrateSubtitleExternalIdMigration>();
+        services.AddScoped<IMigration, BackportHdToQualitiesMigration>();
+        services.AddScoped<IMigration, CleanSuperSubtitlesDataMigration>();
+        services.AddScoped<IMigration, BackfillSeasonPackSeasonFkMigration>();
     }
 }
 ```
@@ -212,7 +224,7 @@ See [Multi-Provider Plan](multi-provider-plan.md) for full details.
 3. For each batch: calls `GetShowSubtitles()` (streams `ShowSubtitlesCollection`, each message containing a complete show with all its subtitles)
 4. Processes stream asynchronously: ShowInfo contains show metadata + third-party IDs, Subtitle objects follow
 5. Looks up `ShowExternalId(Source=SuperSubtitles)` first for already-imported shows; falls back to TvDB/TMDB matching from third-party IDs
-6. Separates season packs (`is_season_pack = true`) and stores them in `SeasonPackSubtitle` table
+6. Separates season packs (`is_season_pack = true`) and stores them in `SeasonPackSubtitle` table (with `SeasonId` FK resolved via `IngestSeasonPacksAsync`)
 7. Uses `season` and `episode` fields from the proto `Subtitle` message directly for episode subtitles
 8. Upserts episodes and subtitles via `EpisodeRepository.UpsertEpisodes()`
 9. **Waits between batches** (configurable delay, e.g. 3 seconds) to avoid upstream rate limiting
@@ -232,7 +244,7 @@ See [Multi-Provider Plan](multi-provider-plan.md) for full details.
 5. Processes stream asynchronously: ShowInfo sent once per show, followed by new Subtitle objects
 6. Looks up `ShowExternalId(Source=SuperSubtitles)` first; falls back to TvDB/TMDB matching from third-party IDs
 7. Matches/merges shows and upserts episodes + subtitles (same logic as bulk import)
-8. Stores season packs in `SeasonPackSubtitle` table
+8. Stores season packs in `SeasonPackSubtitle` table (with `SeasonId` FK resolved via `IngestSeasonPacksAsync`)
 9. Updates the stored max subtitle ID
 
 The refresh execution processes the streamed incremental payload in a single database transaction for the run.

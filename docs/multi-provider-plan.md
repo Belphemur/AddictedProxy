@@ -155,15 +155,19 @@ Season packs from SuperSubtitles (subtitles where `is_season_pack = true`) are s
 │ UniqueId (Guid, unique, default uuidv7)           │
 │ TvShowId (FK → TvShow)                            │  ◄── Which show this season pack belongs to
 │ Season (int)                                      │  ◄── Season number from proto Subtitle.season
+│ SeasonId (FK → Season, nullable)                  │  ◄── Resolved during ingestion, backfilled via migration
+│ DownloadCount (long)                              │  ◄── Atomic counter, incremented on download
 │ Source (DataSource enum)                          │  ◄── Provider (SuperSubtitles)
 │ ExternalId (long)                                 │  ◄── Provider-specific subtitle ID (proto Subtitle.id)
 │ Filename (string)                                 │  ◄── From proto Subtitle.filename
+│ Language (string)                                 │  ◄── Subtitle language name
+│ LanguageIsoCode (VARCHAR(7), nullable)             │  ◄── ISO language code (e.g. "en")
 │ Release (string, nullable)                        │  ◄── From proto Subtitle.release
 │ Uploader (string, nullable)                       │  ◄── From proto Subtitle.uploader
 │ UploadedAt (DateTime, nullable)                   │  ◄── From proto Subtitle.uploaded_at
-│ Qualities (string, nullable)                      │  ◄── Serialized from proto repeated Quality
+│ Qualities (VideoQuality bitmask)                  │  ◄── Bitmask from proto repeated Quality
 │ ReleaseGroups (string, nullable)                  │  ◄── Serialized from proto repeated string
-│ StoragePath (string?, nullable)                   │  ◄── Path in S3/storage (for future caching)
+│ StoragePath (string?, nullable)                   │  ◄── Path in S3/storage (for caching)
 │ StoredAt (DateTime?, nullable)                    │
 │ Discovered (DateTime)                             │
 │ CreatedAt / UpdatedAt (BaseEntity)                │
@@ -171,16 +175,18 @@ Season packs from SuperSubtitles (subtitles where `is_season_pack = true`) are s
 │ Index: (TvShowId, Season)                         │  ◄── Fast lookup by show + season
 │ Index: (Source, ExternalId) unique                 │  ◄── Fast lookup by provider + ID
 │ Index: (UniqueId) unique                          │
+│ Index: (SeasonId)                                 │  ◄── FK index
 └──────────────────────────────────────────────────┘
 ```
 
 **Key design decisions:**
 
 - **Linked to `TvShow`**, not `Episode` — a season pack covers the whole season, not a specific episode
-- **Not linked to `Season`** entity — the `Season` entity is tightly coupled to the Addic7ed refresh pipeline; season packs simply store the season number as an int
-- **No `Language` or `DownloadUri`** — these are properties of individual subtitle files within the pack, not of the season pack itself
-- **Stores SuperSubtitles-specific metadata** (qualities, release groups, release, uploader) that may be useful when serving season packs later
-- **No `DownloadCount` yet** — download tracking can be added when season pack download API is implemented
+- **Linked to `Season`** via nullable `SeasonId` FK — resolved during ingestion by `IngestSeasonPacksAsync`, backfilled for existing rows via `BackfillSeasonPackSeasonFkMigration`. Nullable to handle edge cases where a Season entity doesn't exist yet.
+- **Has `Language` and `LanguageIsoCode`** — the language of the subtitle pack, resolved from the proto `Subtitle.language` field during ingestion
+- **Stores SuperSubtitles-specific metadata** (qualities, release groups, release, uploader) used when serving season packs
+- **`DownloadCount`** tracks downloads atomically via raw SQL increment (same pattern as `Subtitle`). `BulkUpsertAsync` ignores `DownloadCount` on merge to prevent re-imports from resetting counts.
+- See [Season Pack Plan](season-pack-plan.md) for the full API + frontend implementation plan
 
 #### 1.5 Subtitle External ID
 
@@ -494,7 +500,7 @@ This design is critical because:
 1. **Addic7ed shows need TMDB/TvDB IDs first** — The existing pipeline is: `RefreshAvailableShowsJob` → `MapShowTmdbJob` → `CleanDuplicateTmdbJob` → `FetchMissingTvdbIdJob`. Only after `FetchMissingTvdbIdJob` completes do Addic7ed shows have TvDB IDs we can use for merging.
 2. **SuperSubtitles provides TvDB IDs natively** — So SuperSubtitles data can be merged against Addic7ed shows once those have TvDB IDs.
 3. **Incremental updates are efficient** — After the initial bulk import, only new subtitles are fetched every 15 minutes using the max external subtitle ID as a cursor.
-4. **Season packs are stored separately** — Subtitles where `is_season_pack = true` are stored in the `SeasonPackSubtitle` table (linked to `TvShow` + season number). Individual episode subtitles go into the normal `Subtitle` table. This preserves season pack data for future download support.
+4. **Season packs are stored separately** — Subtitles where `is_season_pack = true` are stored in the `SeasonPackSubtitle` table (linked to `TvShow` + `Season` entity via FK). Individual episode subtitles go into the normal `Subtitle` table. `IngestSeasonPacksAsync` ensures Season entities exist and resolves `SeasonId` before upserting. See [Season Pack Plan](season-pack-plan.md) for the download/API plan.
 5. **Isolation** — If SuperSubtitles gRPC API is down, Addic7ed refresh continues unaffected.
 6. **Rate limiting protection (bulk import only)** — The one-time bulk import must avoid overwhelming the SuperSubtitles gRPC server (which scrapes feliratok.eu under the hood). The show list is split into batches with a **configurable delay between batches**. The recurring 15-minute incremental updates do **not** need batch delays because they only fetch a small number of recent subtitles.
 

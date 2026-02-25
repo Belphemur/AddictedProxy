@@ -2,9 +2,10 @@
 import MediaDetails from "@/components/media/MediaDetails.vue";
 import { onUnmounted, ref, computed } from "vue";
 import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
+import SeasonPacksSection from "@/components/media/SeasonPacksSection.vue";
 import type { DoneHandler, ProgressHandler } from "~/composables/hub/RefreshHub";
 import { useRefreshHub } from "~/composables/hub/RefreshHub";
-import type { EpisodeWithSubtitlesDto, MediaDetailsDto } from "~/composables/api/data-contracts";
+import type { EpisodeWithSubtitlesDto, MediaDetailsDto, SeasonPackSubtitleDto } from "~/composables/api/data-contracts";
 import { useMedia, useShows, useSubtitles } from "~/composables/rest/api";
 import SubtitleTypeChooser from "~/components/media/Download/SubtitleTypeChooser.vue";
 import type { SubtitleType } from "~/composables/dto/SubtitleType";
@@ -12,6 +13,7 @@ import { SubtitleTypeFlag } from "~/composables/dto/SubtitleType";
 import { trim } from "~/composables/utils/trim";
 import { downloadZip } from "client-zip";
 import { mevent } from "~/composables/data/event";
+import { usePageLayout } from "~/composables/usePageLayout";
 import { mdiDownload, mdiRefresh } from "@mdi/js";
 import { last } from "lodash-es";
 
@@ -19,11 +21,13 @@ export interface Props {
   showId: string;
 }
 
+const layout = usePageLayout();
 const props = defineProps<Props>();
 const mediaApi = useMedia();
 const showsApi = useShows();
 let loadingEpisodes = ref(false);
 let episodes = ref<EpisodeWithSubtitlesDto[] | null>([]);
+const seasonPacks = ref<SeasonPackSubtitleDto[]>([]);
 const refreshingProgress = ref<number | null>(null);
 const downloadingProgress = ref<number | null>(null);
 const downloadingInProgress = ref<boolean>(false);
@@ -87,6 +91,13 @@ const doneHandler: DoneHandler = async (show) => {
 
   loadingEpisodes.value = true;
   episodes.value = await getEpisodes(show.id!, language.lang, currentSeason.value!);
+  // Fetch season packs via REST since SignalR hub only streams episodes
+  try {
+    const response = (await showsApi.showsDetail(show.id!, currentSeason.value!, language.lang)).data;
+    seasonPacks.value = response.seasonPacks ?? [];
+  } catch {
+    // Season packs are supplementary; don't fail the whole refresh
+  }
   loadingEpisodes.value = false;
 };
 
@@ -111,6 +122,7 @@ async function loadViewData() {
   }
   currentSeason.value = data.value?.lastSeasonNumber
   episodes.value = data.value?.episodeWithSubtitles;
+  seasonPacks.value = data.value?.seasonPacks ?? [];
   loadingEpisodes.value = false;
 }
 
@@ -125,7 +137,9 @@ watch([currentSeason, language], async ([newSeason], [oldSeason]) => {
   loadingEpisodes.value = true;
 
   if (currentSeason.value != undefined) {
-    episodes.value = (await showsApi.showsDetail(props.showId, currentSeason.value!, language.lang)).data.episodes!;
+    const response = (await showsApi.showsDetail(props.showId, currentSeason.value!, language.lang)).data;
+    episodes.value = response.episodes!;
+    seasonPacks.value = response.seasonPacks ?? [];
   }
 
   loadingEpisodes.value = false;
@@ -281,7 +295,7 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
     </v-progress-linear>
     <div class="mt-2">
       <v-skeleton-loader type="card" :loading="loadingEpisodes">
-        <v-sheet rounded="lg" color="rgba(0,0,0,0.75)" class="pa-4 pa-sm-6">
+        <v-sheet rounded="lg" :color="layout.colors.primaryPanel" :class="layout.classes.primaryPanel">
           <div class="d-flex align-center flex-wrap ga-2 mb-4">
             <h2 class="text-h6">Season {{ currentSeason }}</h2>
             <v-spacer />
@@ -307,7 +321,11 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
               </v-btn>
             </div>
           </div>
-          <subtitles-table :episodes="episodes"></subtitles-table>
+          <subtitles-table :episodes="episodes" :season-pack-count="seasonPacks.length"></subtitles-table>
+          <div v-if="seasonPacks.length > 0" class="mt-4">
+            <h3 class="text-subtitle-1 font-weight-medium mb-2">Season Packs</h3>
+            <season-packs-section :season-packs="seasonPacks" />
+          </div>
         </v-sheet>
       </v-skeleton-loader>
     </div>

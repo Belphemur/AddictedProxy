@@ -1,12 +1,12 @@
 <template>
-  <v-container fluid class="pa-4 pa-sm-6" style="max-width: 1600px">
-    <v-sheet rounded="lg" color="rgba(0,0,0,0.75)" class="pa-4 pa-sm-6 mb-4">
-      <div class="text-center mb-4">
-        <h1 class="text-h5 text-sm-h4 font-weight-bold">
+  <v-container fluid :class="layout.classes.pageContainer" :style="{ maxWidth: layout.maxWidth }">
+    <v-sheet rounded="lg" :color="layout.colors.primaryPanel" :class="layout.classes.primaryPanel">
+      <div :class="layout.classes.pageHeading">
+        <h1 :class="layout.classes.pageTitle">
           <v-icon :icon="logo" class="mr-1" />
           Gestdown
         </h1>
-        <p class="text-body-2 text-sm-body-1 text-medium-emphasis mt-1">
+        <p :class="layout.classes.pageSubtitle">
           Search and download subtitles from <strong>Addic7ed</strong> &amp; <strong>SuperSubtitles</strong>
         </p>
       </div>
@@ -30,6 +30,7 @@ import SearchComponent from "@/components/shows/SearchComponent.vue";
 import logo from "@/components/icon/logo.vue";
 import type { EpisodeWithSubtitlesDto, ShowDto } from "~/composables/api/data-contracts";
 import { useMedia } from "~/composables/rest/api";
+import { usePageLayout } from "~/composables/usePageLayout";
 import type { SelectedShow } from "~/composables/dto/SelectedShow";
 import { mdiSearchWeb } from "@mdi/js";
 
@@ -49,6 +50,7 @@ useSeoMeta({
   keywords: "subtitles, Addic7ed, SuperSubtitles, subtitle aggregator, download subtitles",
 })
 
+const layout = usePageLayout();
 const mediaApi = useMedia();
 const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
 const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);

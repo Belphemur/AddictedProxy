@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import MediaDetailView from "~/components/media/MediaDetailView.vue";
+import { usePageLayout } from "~/composables/usePageLayout";
 
 const route = useRoute();
+const layout = usePageLayout();
 const showId = route.params.showId.toString();
 
 definePageMeta({
@@ -10,7 +12,7 @@ definePageMeta({
 </script>
 
 <template>
-  <v-container fluid class="pa-2 pa-sm-4" style="max-width: 1600px">
+  <v-container fluid :class="layout.classes.pageContainer" :style="{ maxWidth: layout.maxWidth }">
     <suspense>
       <template #default>
         <media-detail-view :show-id="showId"></media-detail-view>

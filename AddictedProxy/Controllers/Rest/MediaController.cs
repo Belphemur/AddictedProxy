@@ -28,12 +28,13 @@ public class MediaController : Controller
     private readonly IDistributedCache _distributedCache;
     private readonly IMediaDetailsService _mediaDetailsService;
     private readonly IEpisodeRepository _episodeRepository;
+    private readonly ISeasonPackSubtitleRepository _seasonPackSubtitleRepository;
     private readonly ICultureParser _cultureParser;
     private readonly LinkGenerator _generator;
 
     public MediaController(IShowRefresher showRefresher, ITMDBClient tmdbClient, ITvShowRepository tvShowRepository, IDistributedCache distributedCache,
         IMediaDetailsService mediaDetailsService,
-        IEpisodeRepository episodeRepository, ICultureParser cultureParser, LinkGenerator generator)
+        IEpisodeRepository episodeRepository, ISeasonPackSubtitleRepository seasonPackSubtitleRepository, ICultureParser cultureParser, LinkGenerator generator)
     {
         _showRefresher = showRefresher;
         _tmdbClient = tmdbClient;
@@ -41,6 +42,7 @@ public class MediaController : Controller
         _distributedCache = distributedCache;
         _mediaDetailsService = mediaDetailsService;
         _episodeRepository = episodeRepository;
+        _seasonPackSubtitleRepository = seasonPackSubtitleRepository;
         _cultureParser = cultureParser;
         _generator = generator;
     }
@@ -195,7 +197,7 @@ public class MediaController : Controller
         if (lastSeason == null)
         {
             BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, null, CancellationToken.None));
-            return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), Array.Empty<EpisodeWithSubtitlesDto>().ToAsyncEnumerable(), null));
+            return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), Array.Empty<EpisodeWithSubtitlesDto>().ToAsyncEnumerable(), null, Array.Empty<SeasonPackSubtitleDto>()));
         }
 
         var episodes = _episodeRepository.GetSeasonEpisodesByLangUntrackedAsync(show.Id, searchLanguage, lastSeason.Number)
@@ -212,6 +214,18 @@ public class MediaController : Controller
                     );
                 return new EpisodeWithSubtitlesDto(episode, subs);
             });
-        return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), episodes, lastSeason.Number));
+
+        var isoCode = searchLanguage.TwoLetterISOLanguageName;
+        var seasonPacks = await _seasonPackSubtitleRepository.GetByShowAndSeasonAsync(show.Id, lastSeason.Number, cancellationToken);
+        var seasonPackDtos = seasonPacks
+            .Where(sp => string.Equals(sp.LanguageIsoCode, isoCode, StringComparison.OrdinalIgnoreCase))
+            .Select(pack => new SeasonPackSubtitleDto(
+                pack,
+                _generator.GetUriByRouteValues(HttpContext, nameof(Routes.DownloadSubtitle), new { subtitleId = $"sp_{pack.UniqueId}" })
+                ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                searchLanguage))
+            .ToArray();
+
+        return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), episodes, lastSeason.Number, seasonPackDtos));
     }
 }

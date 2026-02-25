@@ -3,12 +3,14 @@
 import type { MediaDetailsDto } from "~/composables/api/data-contracts";
 import { langs } from "~/composables/language/lang";
 import LazyOptimizedPicture from "~/components/image/LazyOptimizedPicture.vue";
+import { usePageLayout } from "~/composables/usePageLayout";
 import { mdiChevronDown, mdiChevronUp, mdiMovie, mdiTelevision } from "@mdi/js";
 
 export interface Props {
   details: MediaDetailsDto;
 }
 
+const layout = usePageLayout();
 const language = useLanguage();
 const props = defineProps<Props>();
 const seasons = computed<Number[]>(() => props.details.media!.seasons!)
@@ -31,7 +33,7 @@ const setLanguage = (lang: string) => {
 </script>
 
 <template>
-  <v-sheet rounded="lg" color="rgba(0,0,0,0.75)" class="pa-4 pa-sm-5">
+  <v-sheet rounded="lg" :color="layout.colors.primaryPanel" :class="layout.classes.primaryPanel">
     <div v-once class="mb-1">
       <h1 class="text-h5">
         <v-icon>{{ props.details.details?.mediaType === 'Movie' ? mdiMovie : mdiTelevision }}</v-icon>

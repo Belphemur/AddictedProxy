@@ -17,6 +17,7 @@ public class TvShowsController : Controller
 {
     private readonly IShowRefresher _showRefresher;
     private readonly IEpisodeRepository _episodeRepository;
+    private readonly ISeasonPackSubtitleRepository _seasonPackSubtitleRepository;
     private readonly ICultureParser _cultureParser;
 
     /// <summary>
@@ -35,10 +36,11 @@ public class TvShowsController : Controller
 
     public record ShowSearchResponse(IEnumerable<ShowDto> Shows);
 
-    public TvShowsController(IShowRefresher showRefresher, IEpisodeRepository episodeRepository, ICultureParser cultureParser)
+    public TvShowsController(IShowRefresher showRefresher, IEpisodeRepository episodeRepository, ISeasonPackSubtitleRepository seasonPackSubtitleRepository, ICultureParser cultureParser)
     {
         _showRefresher = showRefresher;
         _episodeRepository = episodeRepository;
+        _seasonPackSubtitleRepository = seasonPackSubtitleRepository;
         _cultureParser = cultureParser;
     }
 
@@ -177,6 +179,59 @@ public class TvShowsController : Controller
                                                         );
                                              return new EpisodeWithSubtitlesDto(episode, subs);
                                          });
-        return TypedResults.Ok(new TvShowSubtitleResponse(episodes));
+
+        var seasonPackDtos = await GetSeasonPackDtosAsync(show.Id, seasonNumber, searchLanguage, cancellationToken);
+        return TypedResults.Ok(new TvShowSubtitleResponse(episodes, seasonPackDtos));
+    }
+
+    /// <summary>
+    /// Get season pack subtitles for a specific season and language
+    /// </summary>
+    /// <param name="showId">Unique ID of the show</param>
+    /// <param name="seasonNumber">Season number</param>
+    /// <param name="language">Language ISO code</param>
+    /// <param name="cancellationToken"></param>
+    /// <response code="200">Returns the season pack subtitles</response>
+    /// <response code="404">Couldn't find the show</response>
+    /// <response code="400">Unknown language</response>
+    /// <response code="429">Reached the rate limiting of the endpoint</response>
+    /// <returns></returns>
+    [Route("{showId:guid}/{seasonNumber:int}/{language}/season-packs")]
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string), 429)]
+    [ProducesResponseType(typeof(SeasonPackResponse), 200)]
+    [Produces("application/json")]
+    [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 7200)]
+    public async Task<Results<Ok<SeasonPackResponse>, NotFound, BadRequest<ErrorResponse>>> GetSeasonPacksForSeason([FromRoute] Guid showId, [FromRoute] int seasonNumber, [FromRoute] string language, CancellationToken cancellationToken)
+    {
+        var show = await _showRefresher.GetShowByGuidAsync(showId, cancellationToken);
+        if (show == null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var searchLanguage = await _cultureParser.FromStringAsync(language, cancellationToken);
+        if (searchLanguage == null)
+        {
+            return TypedResults.BadRequest(new ErrorResponse("Unknown language"));
+        }
+
+        var seasonPackDtos = await GetSeasonPackDtosAsync(show.Id, seasonNumber, searchLanguage, cancellationToken);
+        return TypedResults.Ok(new SeasonPackResponse(seasonPackDtos));
+    }
+
+    private async Task<SeasonPackSubtitleDto[]> GetSeasonPackDtosAsync(long tvShowId, int seasonNumber, Culture.Model.Culture searchLanguage, CancellationToken cancellationToken)
+    {
+        var isoCode = searchLanguage.TwoLetterISOLanguageName;
+        var seasonPacks = await _seasonPackSubtitleRepository.GetByShowAndSeasonAsync(tvShowId, seasonNumber, cancellationToken);
+        return seasonPacks
+            .Where(sp => string.Equals(sp.LanguageIsoCode, isoCode, StringComparison.OrdinalIgnoreCase))
+            .Select(pack => new SeasonPackSubtitleDto(
+                pack,
+                Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", $"sp_{pack.UniqueId}" } })
+                ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
+                searchLanguage))
+            .ToArray();
     }
 }
