@@ -1,0 +1,44 @@
+# docker-compose.dev.yml
+#
+# Local UI development stack: mock API server + production-built Nuxt frontend.
+# No real .NET backend or database required.
+#
+# Usage:
+#   docker compose -f docker-compose.dev.yml up --build
+#
+# Frontend available at:  http://localhost:3000
+# Mock API available at:  http://localhost:8080
+
+services:
+  # ── Mock API server ──────────────────────────────────────────────────────────
+  # Serves all REST + SignalR endpoints the frontend needs.
+  # See mock-server/README.md for the full endpoint list.
+  mock-api:
+    build:
+      context: ./mock-server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  # ── Nuxt frontend ───────────────────────────────────────────────────────────
+  # Builds the production Nuxt image and overrides API URLs at runtime via
+  # Nuxt's NUXT_PUBLIC_* environment variable convention.
+  frontend:
+    build:
+      context: ./addicted.nuxt
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      # Point both client-side and server-side fetches at the mock API.
+      # Client-side (browser) uses localhost; server-side (SSR) uses the
+      # Docker service name.
+      NUXT_PUBLIC_API_CLIENT_URL: "http://localhost:8080"
+      NUXT_PUBLIC_API_SERVER_URL: "http://mock-api:8080"
+      NUXT_PUBLIC_URL: "http://localhost:3000"
+      # Disable Sentry in the dev stack.
+      NUXT_PUBLIC_SENTRY_CONFIG_ENABLED: "false"
+    depends_on:
+      - mock-api
+    restart: unless-stopped

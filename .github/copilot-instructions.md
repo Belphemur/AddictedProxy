@@ -50,6 +50,7 @@ ProxyProvider.Tests/        # Tests for proxy provider
 ProxyScrape/                # Proxy scraping implementation
 TvMovieDatabaseClient/      # TMDB API client
 addicted.nuxt/              # Nuxt 4 frontend (Vue.js + Vuetify)
+mock-server/                # Go 1.25 mock API server for local UI dev and Playwright testing
 ```
 
 ## Tech Stack
@@ -98,9 +99,70 @@ pnpm dev
 
 > **Important:** When making frontend changes, you **must** consult [Frontend UX & Design](../docs/frontend-ux-design.md) for the glass panel design system, color palette, spacing conventions, responsive patterns, and component standards. All new UI must follow the established glassmorphism aesthetic.
 
+### Mock API Server
+
+A Go 1.25 mock server lives in `mock-server/` and emulates all REST + SignalR endpoints needed by the frontend. Use it for local UI development and Playwright testing without needing the real .NET backend or a database.
+
+**Run natively:**
+
+```bash
+cd mock-server
+go run . # listens on :8080 by default; use -port to override
+```
+
+**Run with Docker:**
+
+```bash
+docker build -t addictedproxy-mock-server ./mock-server
+docker run --rm -p 8080:8080 addictedproxy-mock-server
+```
+
+**Connect the frontend to the mock server:**
+
+```bash
+cd addicted.nuxt
+APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm dev
+```
+
+Mocked shows: _Breaking Bad_ (5 seasons), _Game of Thrones_ (8 seasons), _Succession_ (4 seasons).  
+Each season returns dynamically generated episodes with dual subtitle variants (regular + hearing-impaired),
+alternating `Addic7ed`/`SuperSubtitles` sources, quality chips, and season packs.  
+SignalR connections (`/refresh`) are accepted and held open; no hub events are emitted.
+
+### Docker Compose Dev Stack
+
+The fastest way to spin up the full local dev environment is with the dedicated compose file at the repo root:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+This starts two services:
+
+| Service    | URL                     | Description                                                                 |
+| ---------- | ----------------------- | --------------------------------------------------------------------------- |
+| `mock-api` | `http://localhost:8080` | Go mock server (built from `mock-server/Dockerfile`)                        |
+| `frontend` | `http://localhost:3000` | Production-built Nuxt app pointed at the mock API via environment variables |
+
+The frontend container builds the production Nuxt image (`addicted.nuxt/Dockerfile`) and uses Nuxt's `NUXT_PUBLIC_*` environment variables to override API URLs at runtime, pointing them at the mock API server.
+
 ### Verifying Frontend Changes with Playwright
 
 **All frontend visual changes must be verified using Playwright MCP** before committing. Never commit UI changes without visually confirming they render correctly.
+
+#### Prerequisite: Start the Mock API Server
+
+Before running Playwright or the Nuxt dev server for visual testing, start the mock server so the frontend has data to render:
+
+```bash
+# Option A — Docker Compose dev stack (recommended)
+docker compose -f docker-compose.dev.yml up --build
+
+# Option B — native Go (Go 1.25 required)
+cd mock-server && go run .
+# separate terminal:
+APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm dev
+```
 
 #### Desktop Verification
 
@@ -117,11 +179,13 @@ Since `@nuxtjs/device` detects mobile from the **server-side request User-Agent 
 2. Set up mobile UA and viewport in the new tab:
    ```js
    const context = page.context();
-   const mobileUA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1';
-   await context.setExtraHTTPHeaders({ 'User-Agent': mobileUA });
+   const mobileUA =
+     "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1";
+   await context.setExtraHTTPHeaders({ "User-Agent": mobileUA });
    await context.addInitScript(() => {
-     Object.defineProperty(navigator, 'userAgent', {
-       get: () => 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1'
+     Object.defineProperty(navigator, "userAgent", {
+       get: () =>
+         "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
      });
    });
    await page.setViewportSize({ width: 390, height: 844 });

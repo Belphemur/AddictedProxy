@@ -16,6 +16,9 @@
             </td>
           </tr>
         </template>
+        <template v-slot:item.subtitle.version="{ item }">
+          <shows-release-group-chips :groups="item.releaseGroups" />
+        </template>
         <template v-slot:item.subtitle.completed="{ item }">
           <v-icon height="24px" v-if="item.subtitle.completed">{{ mdiCheck }}</v-icon>
           <span v-else></span>
@@ -53,8 +56,7 @@
               <v-sheet rounded="lg" :color="layout.colors.nestedItem" :class="layout.classes.nestedItem">
                 <div class="d-flex align-center ga-2 mb-2">
                   <v-icon size="small" class="flex-shrink-0">{{ mdiSubtitlesOutline }}</v-icon>
-                  <span class="font-weight-medium"
-                    style="min-width:0; word-break:break-word;">{{ subtitle.version }}</span>
+                  <shows-release-group-chips :groups="parseReleaseGroups(subtitle.version)" />
                   <div v-if="subtitle.hearingImpaired" class="d-flex align-center ga-1 flex-shrink-0 ms-auto">
                     <v-icon size="small">{{ mdiEarHearingOff }}</v-icon>
                     <span class="text-body-2">HI</span>
@@ -90,6 +92,7 @@ import { forEach, orderBy } from "lodash-es";
 import { trim } from "~/composables/utils/trim";
 import { mdiAlertCircle, mdiCheck, mdiDownload, mdiEarHearingOff, mdiSubtitlesOutline } from "@mdi/js";
 import { usePageLayout } from "~/composables/usePageLayout";
+import { parseReleaseGroups } from "~/composables/useGroupColor";
 
 interface Props {
   episodes: Array<EpisodeWithSubtitlesDto> | null;
@@ -137,7 +140,8 @@ const subtitles = computed<SubtitleWithEpisode[]>(() => {
       subtitles.push({
         subtitle: subtitle,
         episode: episode,
-        title: `${episode.number} — ${episode.title}`
+        title: `${episode.number} — ${episode.title}`,
+        releaseGroups: parseReleaseGroups(subtitle.version),
       });
     })
   })
@@ -170,7 +174,7 @@ const downloadSubtitle = async (sub: SubtitleDto) => {
 </script>
 <style scoped>
 .transparent-table {
-  background: transparent !important;
+  background: transparent;
 }
 
 .transparent-table :deep(.v-table__wrapper) {

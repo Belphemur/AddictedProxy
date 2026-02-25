@@ -370,6 +370,25 @@ This ensures design consistency across all pages and components while making glo
 
 **All frontend visual changes must be verified using Playwright MCP** before committing. This ensures the rendered output matches expectations on both desktop and mobile viewports.
 
+### Prerequisite: Start the Mock API Server
+
+The frontend requires a running API to render any meaningful content. Use the mock server in `mock-server/` — no database or .NET backend needed.
+
+```bash
+# Option A — Docker Compose dev stack (recommended, starts both services)
+docker compose -f docker-compose.dev.yml up --build
+# Frontend: http://localhost:3000  |  Mock API: http://localhost:8080
+
+# Option B — native Go (Go 1.25 required)
+cd mock-server && go run .
+# separate terminal:
+APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm dev
+```
+
+The mock server provides three shows (*Breaking Bad*, *Game of Thrones*, *Succession*) with episodes,
+subtitles (regular + HI), quality chips, source chips, season packs, and an accepted SignalR connection.
+See `mock-server/README.md` for the full endpoint list.
+
 ### Desktop Verification
 
 1. Navigate to the page with `mcp_playwright_browser_navigate`

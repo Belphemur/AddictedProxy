@@ -300,19 +300,19 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
             <h2 class="text-h6">Season {{ currentSeason }}</h2>
             <v-spacer />
             <div class="d-flex ga-2">
-              <v-btn :prepend-icon="mdiRefresh" class="text-none" color="primary" size="small" @click="refreshShow"
+              <v-btn :prepend-icon="mdiRefresh" color="primary" size="small" @click="refreshShow"
                 :disabled="refreshingProgress != null || downloadingInProgress">Refresh
                 <v-tooltip activator="parent" location="bottom">Fetch from Addic7ed
                 </v-tooltip>
               </v-btn>
-              <v-btn v-if="onlyOneTypeAvailable" :prepend-icon="mdiDownload" class="text-none" color="primary"
+              <v-btn v-if="onlyOneTypeAvailable" :prepend-icon="mdiDownload" color="primary"
                 size="small" @click="handleDownloadClick"
                 :disabled="refreshingProgress != null || downloadingInProgress">
                 Download season
                 <v-tooltip activator="parent" location="bottom">Download all subtitles of the season as ZIP file
                 </v-tooltip>
               </v-btn>
-              <v-btn v-else :prepend-icon="mdiDownload" class="text-none" color="primary" size="small"
+              <v-btn v-else :prepend-icon="mdiDownload" color="primary" size="small"
                 :disabled="refreshingProgress != null || downloadingInProgress">
                 <SubtitleTypeChooser @selected="downloadSeasonSubtitles" :available-types="availableSubtitleTypes" />
                 Download season
