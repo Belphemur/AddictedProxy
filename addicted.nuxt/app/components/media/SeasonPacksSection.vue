@@ -88,7 +88,7 @@ const localDownloadCounts = ref<Map<string, number>>(new Map());
 const RFC5987_PREFIX = "utf-8''";
 
 const downloadSeasonPack = async (pack: SeasonPackSubtitleDto) => {
-    mevent("download-subtitle", { subtitle: pack, seasonPack: true });
+    mevent("download-subtitle", { subtitleId: pack.subtitleId, seasonPack: true });
     currentlyDownloading.value.add(pack.subtitleId);
 
     try {
