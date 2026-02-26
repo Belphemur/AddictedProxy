@@ -63,6 +63,7 @@ import { useSubtitles } from "~/composables/rest/api";
 import { trim } from "~/composables/utils/trim";
 import { mdiDownload, mdiPackageVariantClosed } from "@mdi/js";
 import { usePageLayout } from "~/composables/usePageLayout";
+import { mevent } from "~/composables/data/event";
 
 interface Props {
     seasonPacks: SeasonPackSubtitleDto[];
@@ -87,6 +88,7 @@ const localDownloadCounts = ref<Map<string, number>>(new Map());
 const RFC5987_PREFIX = "utf-8''";
 
 const downloadSeasonPack = async (pack: SeasonPackSubtitleDto) => {
+    mevent("download-subtitle", { subtitle: pack, seasonPack: true });
     currentlyDownloading.value.add(pack.subtitleId);
 
     try {
