@@ -1,3 +1,14 @@
+## [4.50.0](https://github.com/Belphemur/AddictedProxy/compare/v4.49.1...v4.50.0) (2026-02-27)
+
+### Bug Fixes
+
+* **frontend:** simplify season pack Matomo event to subtitleId only ([703521b](https://github.com/Belphemur/AddictedProxy/commit/703521b69385f81054bd766591ee1d2dbe5dc70d))
+
+### Features
+
+* **copilot:** add mock-environment-setup agent skill ([48b3a4b](https://github.com/Belphemur/AddictedProxy/commit/48b3a4b1aa21b91185cc0a0fc543623d4785982b))
+* **frontend:** track season pack downloads with Matomo event ([31b69a2](https://github.com/Belphemur/AddictedProxy/commit/31b69a25ac56959bbdbf294e061a1ba5e1fdb591))
+
 ## [4.49.1](https://github.com/Belphemur/AddictedProxy/compare/v4.49.0...v4.49.1) (2026-02-25)
 
 ### Bug Fixes
