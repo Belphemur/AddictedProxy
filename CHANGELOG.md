@@ -1,3 +1,19 @@
+## [4.51.0](https://github.com/Belphemur/AddictedProxy/compare/v4.50.0...v4.51.0) (2026-02-28)
+
+### Performance improvements
+
+* use prerendered for page that don't change ([b78cc51](https://github.com/Belphemur/AddictedProxy/commit/b78cc51d531906b920c367c4cd701c4cc9bd87e2))
+
+### Bug Fixes
+
+* deprecation ([c8ad7a9](https://github.com/Belphemur/AddictedProxy/commit/c8ad7a98338daf37f73edf99c248d923ab9b9e97))
+* **frontend:** remove black bar gaps on mobile trending cards ([a9f9914](https://github.com/Belphemur/AddictedProxy/commit/a9f9914af3e8123a5affe6c2b9453e33ecec10cb))
+* use NuxtLoadingIndicator for better UX ([a4ec77c](https://github.com/Belphemur/AddictedProxy/commit/a4ec77c095735cb8dce760c79420b861e8621b88))
+
+### Features
+
+* **frontend:** enable hybrid rendering with SWR caching for homepage ([c81873d](https://github.com/Belphemur/AddictedProxy/commit/c81873de9b40ed957106452bf04631e94301eeee))
+
 ## [4.50.0](https://github.com/Belphemur/AddictedProxy/compare/v4.49.1...v4.50.0) (2026-02-27)
 
 ### Bug Fixes
