@@ -1,3 +1,9 @@
+## [4.51.1](https://github.com/Belphemur/AddictedProxy/compare/v4.51.0...v4.51.1) (2026-02-28)
+
+### Bug Fixes
+
+* **frontend:** replace defineRouteRules with centralized routeRules config ([97ca758](https://github.com/Belphemur/AddictedProxy/commit/97ca7589c098e3a8df0bdddf0dd40e18ba9c90e2))
+
 ## [4.51.0](https://github.com/Belphemur/AddictedProxy/compare/v4.50.0...v4.51.0) (2026-02-28)
 
 ### Performance improvements
