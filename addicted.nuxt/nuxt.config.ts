@@ -17,6 +17,8 @@ export default defineNuxtConfig({
   },
   routeRules: {
     "/": { swr: 120 },
+    "/api": { prerender: true },
+    "/privacy": { prerender: true },
   },
   app: {
     head: {

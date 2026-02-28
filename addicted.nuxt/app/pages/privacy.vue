@@ -111,9 +111,6 @@ import { mdiShieldAccount } from "@mdi/js";
 import { usePageLayout } from "~/composables/usePageLayout";
 
 const layout = usePageLayout();
-defineRouteRules({
-  prerender: true,
-})
 
 definePageMeta({
   name: "Privacy Policy",
