@@ -53,8 +53,9 @@ const props = defineProps<Props>();
 }
 
 .media-trending-backdrop :deep(img) {
+  display: block;
   width: 100%;
-  height: 225px;
+  height: 100%;
   object-fit: cover;
 }
 </style>
