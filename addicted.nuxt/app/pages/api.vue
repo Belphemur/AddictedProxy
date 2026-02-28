@@ -23,6 +23,10 @@
 
 import {mdiCodeBraces} from "@mdi/js";
 
+defineRouteRules({
+  prerender: true,
+})
+
 definePageMeta({
   order: 20,
   icon: mdiCodeBraces,
