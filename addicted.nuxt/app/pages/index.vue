@@ -13,7 +13,7 @@
 
       <v-row justify="center">
         <v-col cols="12" sm="8" md="6">
-          <SearchComponent ref="searchBox" v-on:selected="goToPage" v-on:cleared="clear" />
+          <SearchComponent ref="searchBox" v-on:selected="goToPage" />
         </v-col>
       </v-row>
     </v-sheet>
@@ -25,14 +25,14 @@
 
 <script setup lang="ts">
 
-import { ref } from "vue";
 import SearchComponent from "@/components/shows/SearchComponent.vue";
 import logo from "@/components/icon/logo.vue";
-import type { EpisodeWithSubtitlesDto, ShowDto } from "~/composables/api/data-contracts";
+import type { MediaDetailsDto, ShowDto } from "~/composables/api/data-contracts";
 import { useMedia } from "~/composables/rest/api";
 import { usePageLayout } from "~/composables/usePageLayout";
-import type { SelectedShow } from "~/composables/dto/SelectedShow";
 import { mdiSearchWeb } from "@mdi/js";
+
+const TRENDING_LIMIT = 12;
 
 definePageMeta({
   name: "Home",
@@ -52,15 +52,14 @@ useSeoMeta({
 
 const layout = usePageLayout();
 const mediaApi = useMedia();
-const episodesWithSubtitles = ref<Array<EpisodeWithSubtitlesDto>>([]);
-const searchBox = ref<InstanceType<typeof SearchComponent> | null>(null);
-const currentShow = ref<SelectedShow | undefined>(undefined);
 
-
-const { data, error } = await useAsyncData(async () => {
-  const isMobile = useDevice().isMobile;
-  return (await mediaApi.trendingDetail(isMobile ? 4 : 12)).data;
-});
+const { data, error } = await useAsyncData<MediaDetailsDto[]>(
+  "home-trending",
+  async () => (await mediaApi.trendingDetail(TRENDING_LIMIT)).data,
+  {
+    default: () => [],
+  },
+);
 
 if (error.value != null) {
   console.error("can't get media trending", error.value);
@@ -72,11 +71,6 @@ const trendingMedias = data;
 const goToPage = async (show: ShowDto) => {
   const router = useRouter();
   await router.push({ name: 'show-details', params: { showId: show.id, showName: show.slug } })
-};
-
-const clear = () => {
-  episodesWithSubtitles.value = [];
-  currentShow.value = undefined;
 };
 
 </script>

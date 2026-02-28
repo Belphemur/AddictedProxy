@@ -15,6 +15,9 @@ export default defineNuxtConfig({
   experimental: {
     sharedPrerenderData: true,
   },
+  routeRules: {
+    "/": { swr: 120 },
+  },
   app: {
     head: {
       style: [

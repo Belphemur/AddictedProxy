@@ -1,7 +1,7 @@
 <template>
   <v-app :style="defaultBackground">
     <div class="bg-image"></div>
-    <default-bar v-on:drawer-clicked="drawer = !drawer" :is-mobile="isMobile" />
+    <default-bar />
     <default-view />
   </v-app>
 </template>
@@ -10,10 +10,6 @@
 import DefaultBar from '@/layouts/default/AppBar.vue';
 import DefaultView from '@/layouts/default/View.vue';
 import { ref } from "vue";
-
-const { isMobile } = useDevice();
-
-const drawer = ref<boolean>(isMobile)
 
 const defaultBackground = {
   background: "none",
