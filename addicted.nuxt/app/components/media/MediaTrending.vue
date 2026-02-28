@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 
-import type {MediaDetailsDto} from "~/composables/api/data-contracts";
+import type { MediaDetailsDto } from "~/composables/api/data-contracts";
 import LazyOptimizedPicture from "~/components/image/LazyOptimizedPicture.vue";
 
 export interface Props {
@@ -14,28 +14,19 @@ const props = defineProps<Props>();
 <template>
 
   <v-row justify="center">
-    <v-col cols="12" sm="6" lg="3" v-for="media in props.medias"
-           :key="media.media?.id"
-           class="ma-0 pa-1"
-           align-self="center">
-      <NuxtLink :to="{name: 'show-details', params: {showId: media.media!.id, showName: media.media!.slug}}">
+    <v-col cols="12" sm="6" lg="3" v-for="media in props.medias" :key="media.media?.id" class="ma-0 pa-1"
+      align-self="center">
+      <NuxtLink :to="{ name: 'show-details', params: { showId: media.media!.id, showName: media.media!.slug } }">
         <v-card>
-        <span
-            class="text-white text text-h6"
-        >{{ media?.details.englishName }} ({{ media!.details?.releaseYear }})
-        </span>
-          <lazy-optimized-picture :src="media.details!.backdropPath!"
-                                  :sources="[
-                                { size: 'xl', width: 400, height: 225 },
-                                { size: 'xxl', width: 500, height: 281 },
-                           ]"
-                                  :alt="`Backdrop poster for ${media.details!.englishName}`"
-                                  :formats="[ 'webp', 'jpeg']"
-                                  :placeholder-text="media.details!.englishName"
-                                  class="media-trending-backdrop"
-          />
+          <span class="text-white text text-h6">{{ media?.details.englishName }} ({{ media!.details?.releaseYear }})
+          </span>
+          <lazy-optimized-picture :src="media.details!.backdropPath!" :sources="[
+            { size: 'xl', width: 400, height: 225 },
+            { size: 'xxl', width: 500, height: 281 },
+          ]" :alt="`Backdrop poster for ${media.details!.englishName}`" :formats="['webp', 'jpeg']"
+            :placeholder-text="media.details!.englishName" class="media-trending-backdrop" />
           <v-progress-circular class="vote" color="white" bg-color="red" :size="60" :width="5"
-                               :model-value="media.details?.voteAverage *10">
+            :model-value="media.details?.voteAverage * 10">
             {{ media.details?.voteAverage }}/10
           </v-progress-circular>
         </v-card>
@@ -45,7 +36,6 @@ const props = defineProps<Props>();
 </template>
 
 <style scoped>
-
 .text {
   position: absolute;
   left: 0.5em;

@@ -1,4 +1,5 @@
 <template>
+  <NuxtLoadingIndicator />
   <v-main style="padding-top: 3rem">
     <NuxtPage />
   </v-main>
