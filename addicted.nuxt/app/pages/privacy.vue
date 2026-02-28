@@ -111,6 +111,9 @@ import { mdiShieldAccount } from "@mdi/js";
 import { usePageLayout } from "~/composables/usePageLayout";
 
 const layout = usePageLayout();
+defineRouteRules({
+  prerender: true,
+})
 
 definePageMeta({
   name: "Privacy Policy",
@@ -118,7 +121,7 @@ definePageMeta({
   icon: mdiShieldAccount,
 })
 useSeoMeta({
-  title: "Gestdown: Addic7ed Proxy",
+  title: "Gestdown: Privacy Policy",
   description: "Privacy Policy of Gestdown",
   ogDescription: "Privacy Policy of Gestdown",
   ogImage: "/img/logo.png"

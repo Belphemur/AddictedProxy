@@ -13,17 +13,8 @@ definePageMeta({
 
 <template>
   <v-container fluid :class="layout.classes.pageContainer" :style="{ maxWidth: layout.maxWidth }">
-    <suspense>
-      <template #default>
-        <media-detail-view :show-id="showId"></media-detail-view>
-      </template>
-      <template #fallback>
-        <v-progress-linear indeterminate></v-progress-linear>
-      </template>
-    </suspense>
+    <media-detail-view :show-id="showId" />
   </v-container>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

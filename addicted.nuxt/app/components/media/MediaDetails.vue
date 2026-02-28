@@ -46,7 +46,7 @@ const setLanguage = (lang: string) => {
       <p class="text-medium-emphasis mt-1"><i>{{ props.details.details.tagLine }}</i></p>
     </div>
     <div v-once>
-      <v-row dense align="center">
+      <v-row density="comfortable" align="center">
         <v-col cols="12" sm="2" class="text-left" align-self="start">
           <lazy-optimized-picture :src="props.details.details!.posterPath!" preload class="backdrop-image"
             :placeholder-text="props.details.details!.englishName" :sources="[
@@ -86,7 +86,7 @@ const setLanguage = (lang: string) => {
         </v-col>
 
         <v-col sm="10" cols="12" class="text-left">
-          <v-row dense align-content="center">
+          <v-row density="comfortable" align-content="center">
             <v-col>
               <h6 class="text-subtitle-1 font-weight-bold">User Score</h6>
               <v-progress-circular color="yellow" :size="64" :width="12"
@@ -117,7 +117,7 @@ const setLanguage = (lang: string) => {
         {{ props.details.details!.overview }}
       </p>
     </div>
-    <v-row dense class="mt-1">
+    <v-row density="comfortable" class="mt-1">
       <v-col xl="4" cols="6">
         <v-autocomplete :model-value="language.lang" @update:model-value="setLanguage" :items="langs" label="Language"
           item-title="name" item-value="code" clearable="" hide-details></v-autocomplete>

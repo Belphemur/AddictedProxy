@@ -25,12 +25,6 @@ const emit = defineEmits<{
   (e: "drawerClicked"): void;
 }>();
 
-export interface Props {
-  isMobile: boolean;
-}
-
-const { isMobile } = defineProps<Props>();
-
 const router = useRouter();
 const routes = orderBy(
   filter(router.getRoutes(), (route) => {
