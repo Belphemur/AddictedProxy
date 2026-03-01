@@ -22,6 +22,14 @@ public class BootstrapSuperSubtitles : IBootstrap
                 var config = sp.GetRequiredService<IOptions<SuperSubtitlesConfig>>().Value;
                 options.Address = config.Address;
             })
+            .ConfigurePrimaryHttpMessageHandler((sp) =>
+            {
+                var config = sp.GetRequiredService<IOptions<SuperSubtitlesConfig>>().Value;
+                return new SocketsHttpHandler
+                {
+                    PooledConnectionLifetime = config.ConnectionLifetime
+                };
+            })
             .AddStandardResilienceHandler();
 
         services.AddSingleton<ISuperSubtitlesClient, SuperSubtitlesClientImpl>();
