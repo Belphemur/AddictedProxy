@@ -174,5 +174,5 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate",
   ],
 
-  compatibilityDate: "2025-03-08",
+  compatibilityDate: "2026-02-27",
 });
