@@ -12,4 +12,11 @@ public class SuperSubtitlesConfig
     /// The gRPC endpoint address of the SuperSubtitles service (e.g., "http://localhost:3001").
     /// </summary>
     public required Uri Address { get; init; }
+
+    /// <summary>
+    /// How long a pooled gRPC connection may be reused before it is recycled.
+    /// Rotating connections periodically prevents stale connections after multi-day uptime.
+    /// Defaults to 6 hours.
+    /// </summary>
+    public TimeSpan ConnectionLifetime { get; init; } = TimeSpan.FromHours(6);
 }
