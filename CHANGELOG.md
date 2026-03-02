@@ -1,3 +1,9 @@
+## [4.51.3](https://github.com/Belphemur/AddictedProxy/compare/v4.51.2...v4.51.3) (2026-03-02)
+
+### Bug Fixes
+
+* **season-pack:** handle NotFound RpcException when episode not found in ZIP ([#2577](https://github.com/Belphemur/AddictedProxy/issues/2577)) ([6c0faf3](https://github.com/Belphemur/AddictedProxy/commit/6c0faf3cb98b237cbc4e1073586f831c2606c063))
+
 ## [4.51.2](https://github.com/Belphemur/AddictedProxy/compare/v4.51.1...v4.51.2) (2026-03-01)
 
 ### Bug Fixes
