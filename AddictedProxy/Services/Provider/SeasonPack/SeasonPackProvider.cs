@@ -64,7 +64,7 @@ public class SeasonPackProvider : ISeasonPackProvider
             await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
             return new MemoryStream(response.Content.ToByteArray());
         }
-        catch (RpcException e) when (e.StatusCode == StatusCode.Internal && e.Status.Detail.Contains(EpisodeNotFoundInZipDetail))
+        catch (RpcException e) when ((e.StatusCode == StatusCode.Internal || e.StatusCode == StatusCode.NotFound) && e.Status.Detail.Contains(EpisodeNotFoundInZipDetail))
         {
             throw new EpisodeNotInSeasonPackException(episode, e.Status.Detail);
         }

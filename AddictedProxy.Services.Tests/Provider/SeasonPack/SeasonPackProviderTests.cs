@@ -89,6 +89,26 @@ public class SeasonPackProviderTests
     }
 
     [Test]
+    public async Task GetSeasonPackFileAsync_NotFoundRpcException_ThrowsEpisodeNotInSeasonPackException()
+    {
+        // Arrange
+        var seasonPack = CreateSeasonPack(externalId: 99);
+        var rpcException = new RpcException(new Status(StatusCode.NotFound,
+            $"episode not found in subtitle ZIP archive: failed to extract episode 55 from ZIP: episode 55 {SeasonPackProvider.EpisodeNotFoundInZipDetail} (searched 34 files)"));
+
+        _superSubtitlesClient
+            .DownloadSubtitleAsync(Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
+            .ThrowsAsync(rpcException);
+
+        // Act
+        var act = () => _sut.GetSeasonPackFileAsync(seasonPack, episode: 55, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<EpisodeNotInSeasonPackException>()
+            .Where(e => e.Episode == 55);
+    }
+
+    [Test]
     public async Task GetSeasonPackFileAsync_OtherInternalRpcException_PropagatesOriginalException()
     {
         // Arrange

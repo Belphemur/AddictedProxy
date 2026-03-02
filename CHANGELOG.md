@@ -1,3 +1,16 @@
+## [4.51.2](https://github.com/Belphemur/AddictedProxy/compare/v4.51.1...v4.51.2) (2026-03-01)
+
+### Bug Fixes
+
+* compatibility date ([bafe2b2](https://github.com/Belphemur/AddictedProxy/commit/bafe2b2ff3c31f0c93102b867988da73c7cae0bb))
+* **grpc:** make SuperSubtitles gRPC connection lifetime configurable (default 6h) ([47edabe](https://github.com/Belphemur/AddictedProxy/commit/47edabe745a3af44acb2607502a679b5257a63d6))
+
+## [4.51.1](https://github.com/Belphemur/AddictedProxy/compare/v4.51.0...v4.51.1) (2026-02-28)
+
+### Bug Fixes
+
+* **frontend:** replace defineRouteRules with centralized routeRules config ([97ca758](https://github.com/Belphemur/AddictedProxy/commit/97ca7589c098e3a8df0bdddf0dd40e18ba9c90e2))
+
 ## [4.51.0](https://github.com/Belphemur/AddictedProxy/compare/v4.50.0...v4.51.0) (2026-02-28)
 
 ### Performance improvements
