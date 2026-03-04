@@ -52,19 +52,35 @@ Once both services report healthy, open:
 - Written in Go; built with a multi-stage Dockerfile that produces a static
   binary in a `scratch` image.
 - Listens on port **8080** inside the container (mapped to `8080` on the host).
-- Serves three hard-coded shows with dynamically generated episodes:
+- Serves four hard-coded shows:
 
-  | Show            | ID                                     | Seasons |
-  | --------------- | -------------------------------------- | ------- |
-  | Breaking Bad    | `a1b2c3d4-0001-0001-0001-000000000001` | 1–5     |
-  | Game of Thrones | `a1b2c3d4-0002-0002-0002-000000000002` | 1–8     |
-  | Succession      | `a1b2c3d4-0003-0003-0003-000000000003` | 1–4     |
+  | Show             | ID                                     | Seasons | Notes                                      |
+  | ---------------- | -------------------------------------- | ------- | ------------------------------------------ |
+  | Breaking Bad     | `a1b2c3d4-0001-0001-0001-000000000001` | 1–5     | Full episodes + season packs               |
+  | Game of Thrones  | `a1b2c3d4-0002-0002-0002-000000000002` | 1–8     | Full episodes + season packs               |
+  | Succession       | `a1b2c3d4-0003-0003-0003-000000000003` | 1–4     | Full episodes + season packs               |
+  | Only Season Pack | `a1b2c3d4-0004-0004-0004-000000000004` | 1–2     | **Season packs only — no episode subtitles** |
 
-- Each episode returns two subtitle variants (regular + hearing-impaired) with
-  alternating `Addic7ed` / `SuperSubtitles` sources and quality chips.
+- Each regular show episode returns two subtitle variants (regular + hearing-impaired)
+  with alternating `Addic7ed` / `SuperSubtitles` sources and quality chips.
+- **Only Season Pack** is a dedicated test show that returns zero episodes and only
+  season pack subtitles. Use it to verify UI behaviour when no per-episode subtitles
+  exist (e.g. confirming the "Episodes" header is hidden).
 - SignalR connections (`/refresh`) are accepted and held open; no hub events
   are emitted.
 - See `mock-server/README.md` for the full endpoint list.
+
+### Test case: season-pack-only show
+
+Navigate to the *Only Season Pack* show page to verify the "Episodes" header and
+divider are **not** rendered when a season has only season packs:
+
+```
+/shows/a1b2c3d4-0004-0004-0004-000000000004/only-season-pack
+```
+
+Expected: Season Packs section is visible; "Episodes" heading and the horizontal
+divider above it are **absent**.
 
 ### Nuxt frontend (`addicted.nuxt/`)
 

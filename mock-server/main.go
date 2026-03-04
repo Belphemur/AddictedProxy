@@ -172,7 +172,19 @@ var (
 		Slug:      "succession",
 	}
 
-	allShows = []ShowDto{breakingBad, gameOfThrones, succession}
+	// onlySeasonPack is a test show that has season packs but no per-episode subtitles.
+	// It is used to verify that the "Episodes" header is hidden when only season packs exist.
+	onlySeasonPack = ShowDto{
+		ID:        "a1b2c3d4-0004-0004-0004-000000000004",
+		Name:      "Only Season Pack",
+		NbSeasons: 2,
+		Seasons:   []int{1, 2},
+		TvDbID:    nil,
+		TmdbID:    nil,
+		Slug:      "only-season-pack",
+	}
+
+	allShows = []ShowDto{breakingBad, gameOfThrones, succession, onlySeasonPack}
 
 	breakingBadDetails = DetailsDto{
 		PosterPath:   "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
@@ -212,22 +224,43 @@ var (
 		TagLine:      "Who's next?",
 		ReleaseYear:  &yr2018,
 	}
+
+	onlySeasonPackDetails = DetailsDto{
+		PosterPath:   "",
+		BackdropPath: "",
+		Overview:     "A test show that only has season pack subtitles and no per-episode subtitles. Used to verify the UI hides the Episodes section when no individual episode subtitles exist.",
+		OriginalName: "Only Season Pack",
+		EnglishName:  "Only Season Pack",
+		MediaType:    MediaTypeShow,
+		VoteAverage:  0.0,
+		Genre:        []string{"Test"},
+		TagLine:      "No episodes here.",
+		ReleaseYear:  &yr2024,
+	}
 )
 
 var showDetails = map[string]*DetailsDto{
 	breakingBad.ID:   &breakingBadDetails,
 	gameOfThrones.ID: &gameOfThronesDetails,
 	succession.ID:    &successionDetails,
+	onlySeasonPack.ID: &onlySeasonPackDetails,
 }
 
 var showByID = map[string]*ShowDto{
 	breakingBad.ID:   &breakingBad,
 	gameOfThrones.ID: &gameOfThrones,
 	succession.ID:    &succession,
+	onlySeasonPack.ID: &onlySeasonPack,
 }
 
 // buildEpisodes generates mock episodes with subtitles for a given show, season, and language.
+// Returns an empty slice for shows that only have season packs (e.g. onlySeasonPack).
 func buildEpisodes(show *ShowDto, season int, language string) []EpisodeWithSubtitlesDto {
+	// Shows with no per-episode subtitles — season packs only.
+	if show.ID == onlySeasonPack.ID {
+		return []EpisodeWithSubtitlesDto{}
+	}
+
 	episodeTitles := map[string][]string{
 		breakingBad.ID:   {"Pilot", "Cat's in the Bag", "...And the Bag's in the River", "Cancer Man", "Gray Matter", "Crazy Handful of Nothin'", "A No-Rough-Stuff-Type Deal"},
 		gameOfThrones.ID: {"Winter Is Coming", "The Kingsroad", "Lord Snow", "Cripples, Bastards, and Broken Things", "The Wolf and the Lion", "A Golden Crown", "You Win or You Die", "The Pointy End", "Baelor", "Fire and Blood"},
