@@ -2,7 +2,7 @@
 # Dockerfile.dev — lightweight frontend image for the local mock dev stack.
 # Uses node:lts (Debian) for the runtime stage so no Alpine package registry
 # access is required. dumb-init is omitted — acceptable for a dev container.
-FROM node:lts-alpine AS builder
+FROM node:lts AS builder
 WORKDIR /app
 RUN npm i -g corepack@latest && corepack enable pnpm
 COPY . /app

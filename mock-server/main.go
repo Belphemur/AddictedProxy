@@ -223,6 +223,22 @@ func init() {
 	if err := json.Unmarshal(configJSON, &mockConfig); err != nil {
 		log.Fatalf("failed to parse data/config.json: %v", err)
 	}
+
+	// Validate that all episode subtitle cycles are non-empty to prevent
+	// divide-by-zero panics in buildEpisodes.
+	cfg := mockConfig.EpisodeSubtitles
+	if len(cfg.VersionCycle) == 0 {
+		log.Fatal("data/config.json: episodeSubtitles.versionCycle must not be empty")
+	}
+	if len(cfg.SourceCycle) == 0 {
+		log.Fatal("data/config.json: episodeSubtitles.sourceCycle must not be empty")
+	}
+	if len(cfg.CompletedCycle) == 0 {
+		log.Fatal("data/config.json: episodeSubtitles.completedCycle must not be empty")
+	}
+	if len(cfg.QualityCycles) == 0 {
+		log.Fatal("data/config.json: episodeSubtitles.qualityCycles must not be empty")
+	}
 }
 
 // buildEpisodes generates mock episodes with subtitles for a given show, season, and language.
