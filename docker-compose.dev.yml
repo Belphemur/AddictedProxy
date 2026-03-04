@@ -24,10 +24,11 @@ services:
   # ── Nuxt frontend ───────────────────────────────────────────────────────────
   # Builds the production Nuxt image and overrides API URLs at runtime via
   # Nuxt's NUXT_PUBLIC_* environment variable convention.
+  # Uses Dockerfile.dev (no python3/make/g++ required) for a lighter build.
   frontend:
     build:
       context: ./addicted.nuxt
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     environment:

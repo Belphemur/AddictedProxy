@@ -205,6 +205,9 @@ const availableSubtitleTypes = computed(() => {
   return result;
 });
 
+// Check if there are any episodes with subtitles
+const hasEpisodes = computed(() => episodes.value?.some(e => (e.subtitles?.length ?? 0) > 0) ?? false);
+
 // Check if there's only one subtitle type available
 const onlyOneTypeAvailable = computed(() => {
   return availableSubtitleTypes.value === SubtitleTypeFlag.Regular ||
@@ -324,8 +327,8 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
               <h3 class="text-subtitle-1 font-weight-medium mb-2">Season Packs</h3>
               <season-packs-section :season-packs="seasonPacks" />
             </div>
-            <v-divider v-if="seasonPacks.length > 0" class="mb-4" />
-            <h3 v-if="seasonPacks.length > 0" class="text-subtitle-1 font-weight-medium mb-2">Episodes</h3>
+            <v-divider v-if="seasonPacks.length > 0 && hasEpisodes" class="mb-4" />
+            <h3 v-if="seasonPacks.length > 0 && hasEpisodes" class="text-subtitle-1 font-weight-medium mb-2">Episodes</h3>
             <subtitles-table :episodes="episodes" :season-pack-count="seasonPacks.length"></subtitles-table>
           </v-sheet>
         </v-skeleton-loader>
