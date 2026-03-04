@@ -1,3 +1,14 @@
+## [4.52.0](https://github.com/Belphemur/AddictedProxy/compare/v4.51.3...v4.52.0) (2026-03-04)
+
+### Bug Fixes
+
+* **frontend:** hide Episodes header when no episode subtitles exist ([896f984](https://github.com/Belphemur/AddictedProxy/commit/896f984460bc5b52172f7f6fc57df0c368658ed4))
+* **mock-server:** address PR review comments ([bfe3213](https://github.com/Belphemur/AddictedProxy/commit/bfe321369c3357bd69ac4b7a0c174f1779e801bb))
+
+### Features
+
+* **mock-server:** extract all hardcoded data to JSON files, add OnlySeasonPack show, fix docker compose dev stack ([a77365c](https://github.com/Belphemur/AddictedProxy/commit/a77365cb870c18ab314b67d6a44c436674726eab))
+
 ## [4.51.3](https://github.com/Belphemur/AddictedProxy/compare/v4.51.2...v4.51.3) (2026-03-02)
 
 ### Bug Fixes
