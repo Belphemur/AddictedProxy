@@ -1,0 +1,22 @@
+# syntax=docker/dockerfile:1
+# Dockerfile.dev — lightweight frontend image for the local mock dev stack.
+# Uses node:lts (Debian) for the runtime stage so no Alpine package registry
+# access is required. dumb-init is omitted — acceptable for a dev container.
+FROM node:lts AS builder
+WORKDIR /app
+RUN npm i -g corepack@latest && corepack enable pnpm
+COPY . /app
+RUN pnpm install --frozen-lockfile
+RUN NUXT_PRESET=node-server pnpm build
+RUN cd .output/server && rm -rf node_modules && pnpm install && pnpm add ws
+
+
+FROM node:lts
+COPY --from=builder /app/.output /app/.output
+WORKDIR /app
+
+ENV NUXT_HOST=0.0.0.0
+ENV NUXT_PORT=3000
+
+EXPOSE 3000
+CMD ["node", ".output/server/index.mjs"]

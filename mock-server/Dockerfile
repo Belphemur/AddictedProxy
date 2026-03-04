@@ -1,10 +1,11 @@
 # syntax=docker/dockerfile:1
 
 # ── Build stage ───────────────────────────────────────────────────────────────
-FROM golang:1.26-rc-alpine AS builder
+FROM golang:alpine AS builder
 WORKDIR /app
 COPY go.mod .
 COPY main.go .
+COPY data/ data/
 # Build a fully static binary (no libc dependency needed for scratch base)
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o mock-server .
 
