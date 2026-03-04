@@ -1,0 +1,27 @@
+{
+  "app": {
+    "version": "0.0.0-mock"
+  },
+  "episodeSubtitles": {
+    "versionCycle": ["HDTV.x265", "WEBRip.NTb", "BluRay.x264-GROUP"],
+    "completedCycle": [true, true, false],
+    "sourceCycle": ["Addic7ed", "Addic7ed", "Addic7ed", "SuperSubtitles"],
+    "qualityCycles": [
+      ["720p", "1080p"],
+      ["480p", "720p"]
+    ],
+    "downloadCountBase": 100,
+    "downloadCountStep": 17,
+    "hiDownloadCountBase": 50,
+    "hiDownloadCountStep": 7
+  },
+  "seasonPack": {
+    "version": "WEBRip.NTb",
+    "releaseGroups": ["NTb", "FLUX"],
+    "uploader": "SubUploader42",
+    "qualities": ["720p", "1080p"],
+    "source": "SuperSubtitles",
+    "downloadCount": 240,
+    "uploadedHoursAgo": 48
+  }
+}

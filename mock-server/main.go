@@ -14,8 +14,10 @@ package main
 import (
 	"bufio"
 	"crypto/sha1"
+	_ "embed"
 	"encoding/base64"
 	"encoding/binary"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -26,10 +28,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"encoding/json"
 )
-
 // ── Data types (mirrors data-contracts.ts) ────────────────────────────────────
 
 type ApplicationInfoDto struct {
@@ -125,150 +124,118 @@ type SeasonPackSubtitleDto struct {
 	DownloadCount int64    `json:"downloadCount"`
 }
 
-// ── Mock data ─────────────────────────────────────────────────────────────────
+// ── Data file types ───────────────────────────────────────────────────────────
 
-var (
-	yr2008 = 2008
-	yr2011 = 2011
-	yr2018 = 2018
-	yr2019 = 2019
-	yr2024 = 2024
-
-	tvdb1 = 81189
-	tvdb2 = 121361
-	tvdb3 = 153021
-
-	tmdb1 = 1396
-	tmdb2 = 1399
-	tmdb3 = 84958
-
-	breakingBad = ShowDto{
-		ID:        "a1b2c3d4-0001-0001-0001-000000000001",
-		Name:      "Breaking Bad",
-		NbSeasons: 5,
-		Seasons:   []int{1, 2, 3, 4, 5},
-		TvDbID:    &tvdb1,
-		TmdbID:    &tmdb1,
-		Slug:      "breaking-bad",
-	}
-
-	gameOfThrones = ShowDto{
-		ID:        "a1b2c3d4-0002-0002-0002-000000000002",
-		Name:      "Game of Thrones",
-		NbSeasons: 8,
-		Seasons:   []int{1, 2, 3, 4, 5, 6, 7, 8},
-		TvDbID:    &tvdb2,
-		TmdbID:    &tmdb2,
-		Slug:      "game-of-thrones",
-	}
-
-	succession = ShowDto{
-		ID:        "a1b2c3d4-0003-0003-0003-000000000003",
-		Name:      "Succession",
-		NbSeasons: 4,
-		Seasons:   []int{1, 2, 3, 4},
-		TvDbID:    &tvdb3,
-		TmdbID:    &tmdb3,
-		Slug:      "succession",
-	}
-
-	// onlySeasonPack is a test show that has season packs but no per-episode subtitles.
-	// It is used to verify that the "Episodes" header is hidden when only season packs exist.
-	onlySeasonPack = ShowDto{
-		ID:        "a1b2c3d4-0004-0004-0004-000000000004",
-		Name:      "Only Season Pack",
-		NbSeasons: 2,
-		Seasons:   []int{1, 2},
-		TvDbID:    nil,
-		TmdbID:    nil,
-		Slug:      "only-season-pack",
-	}
-
-	allShows = []ShowDto{breakingBad, gameOfThrones, succession, onlySeasonPack}
-
-	breakingBadDetails = DetailsDto{
-		PosterPath:   "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg",
-		BackdropPath: "https://image.tmdb.org/t/p/w1280/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg",
-		Overview:     "A high school chemistry teacher turned methamphetamine manufacturer partners with a former student to secure his family's financial future.",
-		OriginalName: "Breaking Bad",
-		EnglishName:  "Breaking Bad",
-		MediaType:    MediaTypeShow,
-		VoteAverage:  9.5,
-		Genre:        []string{"Drama", "Crime", "Thriller"},
-		TagLine:      "All hail the king.",
-		ReleaseYear:  &yr2008,
-	}
-
-	gameOfThronesDetails = DetailsDto{
-		PosterPath:   "https://image.tmdb.org/t/p/w500/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg",
-		BackdropPath: "https://image.tmdb.org/t/p/w1280/suopoADq0k8YZr4dQXcU6pToj6s.jpg",
-		Overview:     "Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war.",
-		OriginalName: "Game of Thrones",
-		EnglishName:  "Game of Thrones",
-		MediaType:    MediaTypeShow,
-		VoteAverage:  8.4,
-		Genre:        []string{"Sci-Fi & Fantasy", "Drama", "Action & Adventure"},
-		TagLine:      "You win or you die.",
-		ReleaseYear:  &yr2011,
-	}
-
-	successionDetails = DetailsDto{
-		PosterPath:   "https://image.tmdb.org/t/p/w500/e2X4vnDdan9QZs8usFPBpujdHsP.jpg",
-		BackdropPath: "https://image.tmdb.org/t/p/w1280/6MnWBlMHRvEJI8LwjrPJmQj0Y31.jpg",
-		Overview:     "The Roy family is known for controlling the biggest media and entertainment company in the world. However, their world changes when their father steps down from the company.",
-		OriginalName: "Succession",
-		EnglishName:  "Succession",
-		MediaType:    MediaTypeShow,
-		VoteAverage:  8.7,
-		Genre:        []string{"Drama"},
-		TagLine:      "Who's next?",
-		ReleaseYear:  &yr2018,
-	}
-
-	onlySeasonPackDetails = DetailsDto{
-		PosterPath:   "",
-		BackdropPath: "",
-		Overview:     "A test show that only has season pack subtitles and no per-episode subtitles. Used to verify the UI hides the Episodes section when no individual episode subtitles exist.",
-		OriginalName: "Only Season Pack",
-		EnglishName:  "Only Season Pack",
-		MediaType:    MediaTypeShow,
-		VoteAverage:  0.0,
-		Genre:        []string{"Test"},
-		TagLine:      "No episodes here.",
-		ReleaseYear:  &yr2024,
-	}
-)
-
-var showDetails = map[string]*DetailsDto{
-	breakingBad.ID:   &breakingBadDetails,
-	gameOfThrones.ID: &gameOfThronesDetails,
-	succession.ID:    &successionDetails,
-	onlySeasonPack.ID: &onlySeasonPackDetails,
+// ShowData is the shape of one entry in data/shows.json.
+type ShowData struct {
+	ID            string     `json:"id"`
+	Name          string     `json:"name"`
+	NbSeasons     int        `json:"nbSeasons"`
+	Seasons       []int      `json:"seasons"`
+	TvDbID        *int       `json:"tvDbId"`
+	TmdbID        *int       `json:"tmdbId"`
+	Slug          string     `json:"slug"`
+	SeasonPackOnly bool      `json:"seasonPackOnly"`
+	Details       DetailsDto `json:"details"`
+	EpisodeTitles []string   `json:"episodeTitles"`
 }
 
-var showByID = map[string]*ShowDto{
-	breakingBad.ID:   &breakingBad,
-	gameOfThrones.ID: &gameOfThrones,
-	succession.ID:    &succession,
-	onlySeasonPack.ID: &onlySeasonPack,
+// EpisodeSubtitleConfig holds the cycling patterns used to generate per-episode subtitle variants.
+type EpisodeSubtitleConfig struct {
+	VersionCycle        []string   `json:"versionCycle"`
+	CompletedCycle      []bool     `json:"completedCycle"`
+	SourceCycle         []string   `json:"sourceCycle"`
+	QualityCycles       [][]string `json:"qualityCycles"`
+	DownloadCountBase   int64      `json:"downloadCountBase"`
+	DownloadCountStep   int64      `json:"downloadCountStep"`
+	HiDownloadCountBase int64      `json:"hiDownloadCountBase"`
+	HiDownloadCountStep int64      `json:"hiDownloadCountStep"`
+}
+
+// SeasonPackConfig holds the template values used for every generated season pack.
+type SeasonPackConfig struct {
+	Version          string   `json:"version"`
+	ReleaseGroups    []string `json:"releaseGroups"`
+	Uploader         string   `json:"uploader"`
+	Qualities        []string `json:"qualities"`
+	Source           string   `json:"source"`
+	DownloadCount    int64    `json:"downloadCount"`
+	UploadedHoursAgo int      `json:"uploadedHoursAgo"`
+}
+
+// AppConfig holds application-level mock values.
+type AppConfig struct {
+	Version string `json:"version"`
+}
+
+// MockConfig is the shape of data/config.json.
+type MockConfig struct {
+	App              AppConfig             `json:"app"`
+	EpisodeSubtitles EpisodeSubtitleConfig `json:"episodeSubtitles"`
+	SeasonPack       SeasonPackConfig      `json:"seasonPack"`
+}
+
+// ── Embedded data files ───────────────────────────────────────────────────────
+
+//go:embed data/shows.json
+var showsJSON []byte
+
+//go:embed data/config.json
+var configJSON []byte
+
+// ── Runtime data (populated from embedded JSON in init) ───────────────────────
+
+var (
+	allShows     []ShowDto
+	showByID     map[string]*ShowDto
+	showDetails  map[string]*DetailsDto
+	showDataByID map[string]*ShowData
+	mockConfig   MockConfig
+)
+
+func init() {
+	var showsData []ShowData
+	if err := json.Unmarshal(showsJSON, &showsData); err != nil {
+		log.Fatalf("failed to parse data/shows.json: %v", err)
+	}
+
+	allShows = make([]ShowDto, len(showsData))
+	showByID = make(map[string]*ShowDto, len(showsData))
+	showDetails = make(map[string]*DetailsDto, len(showsData))
+	showDataByID = make(map[string]*ShowData, len(showsData))
+
+	for i := range showsData {
+		sd := &showsData[i]
+		allShows[i] = ShowDto{
+			ID:        sd.ID,
+			Name:      sd.Name,
+			NbSeasons: sd.NbSeasons,
+			Seasons:   sd.Seasons,
+			TvDbID:    sd.TvDbID,
+			TmdbID:    sd.TmdbID,
+			Slug:      sd.Slug,
+		}
+		showByID[sd.ID] = &allShows[i]
+		showDetails[sd.ID] = &sd.Details
+		showDataByID[sd.ID] = sd
+	}
+
+	if err := json.Unmarshal(configJSON, &mockConfig); err != nil {
+		log.Fatalf("failed to parse data/config.json: %v", err)
+	}
 }
 
 // buildEpisodes generates mock episodes with subtitles for a given show, season, and language.
-// Returns an empty slice for shows that only have season packs (e.g. onlySeasonPack).
+// Returns an empty slice for shows marked seasonPackOnly in data/shows.json.
 func buildEpisodes(show *ShowDto, season int, language string) []EpisodeWithSubtitlesDto {
-	// Shows with no per-episode subtitles — season packs only.
-	if show.ID == onlySeasonPack.ID {
+	sd, ok := showDataByID[show.ID]
+	if !ok || sd.SeasonPackOnly {
 		return []EpisodeWithSubtitlesDto{}
 	}
 
-	episodeTitles := map[string][]string{
-		breakingBad.ID:   {"Pilot", "Cat's in the Bag", "...And the Bag's in the River", "Cancer Man", "Gray Matter", "Crazy Handful of Nothin'", "A No-Rough-Stuff-Type Deal"},
-		gameOfThrones.ID: {"Winter Is Coming", "The Kingsroad", "Lord Snow", "Cripples, Bastards, and Broken Things", "The Wolf and the Lion", "A Golden Crown", "You Win or You Die", "The Pointy End", "Baelor", "Fire and Blood"},
-		succession.ID:    {"Celebration", "Shit Show at the Fuck Factory", "Lifeboats", "Sad Sack Wasp Trap", "I Went to Market", "Which Side Are You On?", "Austerlitz", "Prague", "Pre-Nuptial", "Nobody Is Ever Missing"},
-	}
-
-	titles, ok := episodeTitles[show.ID]
-	if !ok {
+	cfg := mockConfig.EpisodeSubtitles
+	titles := sd.EpisodeTitles
+	if len(titles) == 0 {
 		titles = []string{"Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5"}
 	}
 
@@ -277,40 +244,27 @@ func buildEpisodes(show *ShowDto, season int, language string) []EpisodeWithSubt
 
 	for i, title := range titles {
 		epNum := i + 1
+		ver := cfg.VersionCycle[(epNum-1)%len(cfg.VersionCycle)]
+		source := cfg.SourceCycle[(epNum-1)%len(cfg.SourceCycle)]
+		completed := cfg.CompletedCycle[(epNum-1)%len(cfg.CompletedCycle)]
+		qualities := cfg.QualityCycles[(epNum-1)%len(cfg.QualityCycles)]
+
 		subID := fmt.Sprintf("sub-%s-s%02de%02d-%s", show.ID[:8], season, epNum, language)
 		hiSubID := fmt.Sprintf("sub-%s-s%02de%02d-%s-hi", show.ID[:8], season, epNum, language)
-
-		ver := "WEBRip.NTb"
-		if epNum%3 == 0 {
-			ver = "BluRay.x264-GROUP"
-		} else if epNum%3 == 1 {
-			ver = "HDTV.x265"
-		}
-
-		source := "Addic7ed"
-		if epNum%4 == 0 {
-			source = "SuperSubtitles"
-		}
-
-		qualities := []string{"720p", "1080p"}
-		if epNum%2 == 0 {
-			qualities = []string{"480p", "720p"}
-		}
-
 		rel := fmt.Sprintf("%s.S%02dE%02d.%s", strings.ReplaceAll(show.Name, " ", "."), season, epNum, ver)
 
 		subs := []*SubtitleDto{
 			{
 				SubtitleID:      subID,
 				Version:         ver,
-				Completed:       epNum%3 != 0,
+				Completed:       completed,
 				HearingImpaired: false,
 				Corrected:       false,
 				HD:              true,
 				DownloadURI:     fmt.Sprintf("/subtitles/download/%s", subID),
 				Language:        language,
 				Discovered:      discovered,
-				DownloadCount:   int64(100 + epNum*17),
+				DownloadCount:   cfg.DownloadCountBase + int64(epNum)*cfg.DownloadCountStep,
 				Source:          source,
 				Qualities:       qualities,
 				Release:         &rel,
@@ -325,7 +279,7 @@ func buildEpisodes(show *ShowDto, season int, language string) []EpisodeWithSubt
 				DownloadURI:     fmt.Sprintf("/subtitles/download/%s", hiSubID),
 				Language:        language,
 				Discovered:      discovered,
-				DownloadCount:   int64(50 + epNum*7),
+				DownloadCount:   cfg.HiDownloadCountBase + int64(epNum)*cfg.HiDownloadCountStep,
 				Source:          source,
 				Qualities:       qualities,
 				Release:         &rel,
@@ -344,23 +298,26 @@ func buildEpisodes(show *ShowDto, season int, language string) []EpisodeWithSubt
 	return episodes
 }
 
-// buildSeasonPacks generates mock season pack subtitles.
+// buildSeasonPacks generates mock season pack subtitles using the template in data/config.json.
+// Season packs are generated for every show, regardless of seasonPackOnly: shows with
+// seasonPackOnly=true have packs but no per-episode subtitles; episode-based shows have both.
 func buildSeasonPacks(show *ShowDto, season int, language string) []SeasonPackSubtitleDto {
-	uploader := "SubUploader42"
-	uploadedAt := time.Now().Add(-48 * time.Hour).UTC().Format(time.RFC3339)
+	sp := mockConfig.SeasonPack
+	uploader := sp.Uploader
+	uploadedAt := time.Now().Add(-time.Duration(sp.UploadedHoursAgo) * time.Hour).UTC().Format(time.RFC3339)
 	spID := fmt.Sprintf("sp_%s-s%02d-%s", show.ID[:8], season, language)
 	return []SeasonPackSubtitleDto{
 		{
 			SubtitleID:    spID,
 			Language:      language,
-			Version:       "WEBRip.NTb",
-			ReleaseGroups: []string{"NTb", "FLUX"},
+			Version:       sp.Version,
+			ReleaseGroups: sp.ReleaseGroups,
 			Uploader:      &uploader,
 			UploadedAt:    &uploadedAt,
-			Qualities:     []string{"720p", "1080p"},
-			Source:        "SuperSubtitles",
+			Qualities:     sp.Qualities,
+			Source:        sp.Source,
 			DownloadURI:   fmt.Sprintf("/subtitles/download/%s", spID),
-			DownloadCount: 240,
+			DownloadCount: sp.DownloadCount,
 		},
 	}
 }
@@ -520,7 +477,7 @@ func handleSignalRHandshake(conn net.Conn, buf *bufio.ReadWriter) error {
 
 // GET /application/info
 func handleApplicationInfo(w http.ResponseWriter, r *http.Request) {
-	jsonResponse(w, http.StatusOK, ApplicationInfoDto{ApplicationVersion: "0.0.0-mock"})
+	jsonResponse(w, http.StatusOK, ApplicationInfoDto{ApplicationVersion: mockConfig.App.Version})
 }
 
 // GET /media/trending/{max}

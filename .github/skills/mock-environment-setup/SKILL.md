@@ -52,7 +52,15 @@ Once both services report healthy, open:
 - Written in Go; built with a multi-stage Dockerfile that produces a static
   binary in a `scratch` image.
 - Listens on port **8080** inside the container (mapped to `8080` on the host).
-- Serves four hard-coded shows:
+- All mock data lives in **`mock-server/data/`** — edit these JSON files to add
+  shows, change episode titles, or tweak subtitle generation without touching Go:
+
+  | File            | Purpose                                                                 |
+  | --------------- | ----------------------------------------------------------------------- |
+  | `shows.json`    | Show definitions, episode titles, TMDB details, `seasonPackOnly` flag  |
+  | `config.json`   | App version, episode subtitle cycles, season pack template values       |
+
+- Serves four shows (defined in `data/shows.json`):
 
   | Show             | ID                                     | Seasons | Notes                                      |
   | ---------------- | -------------------------------------- | ------- | ------------------------------------------ |
@@ -68,7 +76,6 @@ Once both services report healthy, open:
   exist (e.g. confirming the "Episodes" header is hidden).
 - SignalR connections (`/refresh`) are accepted and held open; no hub events
   are emitted.
-- See `mock-server/README.md` for the full endpoint list.
 
 ### Test case: season-pack-only show
 
@@ -84,8 +91,10 @@ divider above it are **absent**.
 
 ### Nuxt frontend (`addicted.nuxt/`)
 
-The Nuxt container is built with production presets (`NUXT_PRESET=node-server`)
-and its API URLs are overridden at runtime via environment variables:
+The dev stack builds the frontend using `addicted.nuxt/Dockerfile.dev` (a
+lightweight variant of the production `Dockerfile` that requires no Alpine
+package registry access). It uses production presets (`NUXT_PRESET=node-server`)
+and overrides API URLs at runtime via environment variables:
 
 | Variable                      | Value in dev stack              | Purpose                            |
 | ----------------------------- | ------------------------------- | ---------------------------------- |
