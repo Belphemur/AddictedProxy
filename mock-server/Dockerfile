@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # ── Build stage ───────────────────────────────────────────────────────────────
-FROM golang:1.25-rc-alpine AS builder
+FROM golang:alpine AS builder
 WORKDIR /app
 COPY go.mod .
 COPY main.go .
