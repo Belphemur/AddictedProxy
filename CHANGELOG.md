@@ -1,3 +1,14 @@
+## [4.53.0](https://github.com/Belphemur/AddictedProxy/compare/v4.52.0...v4.53.0) (2026-03-07)
+
+### Bug Fixes
+
+* address race-condition review feedback on cleanup job scheduling ([80075e4](https://github.com/Belphemur/AddictedProxy/commit/80075e484e77b282295b5a2dc1888b039497e813))
+* cleanup seasons without episodes or season packs via Hangfire continuations ([8a667d7](https://github.com/Belphemur/AddictedProxy/commit/8a667d744c5be1d17e9a2bd9c7db9acceeec29df))
+
+### Features
+
+* **migration:** add one-time migration to cleanup existing empty seasons ([53b1e55](https://github.com/Belphemur/AddictedProxy/commit/53b1e5508b9166e40ad9b8ec4db84ac2bdc32d22))
+
 ## [4.52.0](https://github.com/Belphemur/AddictedProxy/compare/v4.51.3...v4.52.0) (2026-03-04)
 
 ### Bug Fixes
