@@ -40,4 +40,12 @@ public interface ISeasonRepository
     /// <param name="token"></param>
     /// <returns></returns>
     Task UpdateLastRefreshedFromIdAsync(long id, DateTime lastRefreshed, CancellationToken token);
+
+    /// <summary>
+    /// Delete seasons for a show that have no episodes and no season packs.
+    /// </summary>
+    /// <param name="showId">The show to clean up</param>
+    /// <param name="token"></param>
+    /// <returns>Number of seasons deleted</returns>
+    Task<int> DeleteEmptySeasonsForShowAsync(long showId, CancellationToken token);
 }

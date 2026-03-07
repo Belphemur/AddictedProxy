@@ -7,6 +7,7 @@ using AddictedProxy.Services.Job.Filter;
 using AddictedProxy.Services.Job.Model;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
+using AddictedProxy.Services.Provider.Shows.Jobs;
 using AsyncKeyedLock;
 using Hangfire;
 using Hangfire.Console;
@@ -126,6 +127,11 @@ public class FetchSubtitlesJob
             context.WriteLine(string.Format("Error: Failed to fetch subtitles for {0}: {1}", data.RequestData, e.Message));
             throw;
         }
+
+        var cleanupJobId = BackgroundJob.ContinueJobWith<CleanupEmptySeasonsJob>(
+            context.BackgroundJob.Id,
+            job => job.ExecuteAsync(new CleanupEmptySeasonsJob.JobData(data.ShowId), null!, default));
+        context.WriteLine($"Enqueued CleanupEmptySeasonsJob (ID: {cleanupJobId}) for show {data.ShowId}");
     }
 
     private string ScopeName(JobData data, TvShow show)
