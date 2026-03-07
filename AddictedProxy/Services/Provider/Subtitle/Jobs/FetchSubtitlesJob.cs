@@ -84,6 +84,15 @@ public class FetchSubtitlesJob
             return;
         }
 
+        // Schedule the cleanup continuation immediately after acquiring the lock so that it
+        // is registered for every successful exit from this method — including early returns
+        // for season/episode not found. Hangfire only executes continuations when the parent
+        // job transitions to Succeeded, so it is safe to register it before the work starts.
+        var cleanupJobId = BackgroundJob.ContinueJobWith<CleanupEmptySeasonsJob>(
+            context.BackgroundJob.Id,
+            job => job.ExecuteAsync(new CleanupEmptySeasonsJob.JobData(data.ShowId), null!, default));
+        context.WriteLine($"Enqueued CleanupEmptySeasonsJob (ID: {cleanupJobId}) for show {data.ShowId}");
+
         using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), "fetch-subtitles-one-episode");
         try
         {
@@ -127,11 +136,6 @@ public class FetchSubtitlesJob
             context.WriteLine(string.Format("Error: Failed to fetch subtitles for {0}: {1}", data.RequestData, e.Message));
             throw;
         }
-
-        var cleanupJobId = BackgroundJob.ContinueJobWith<CleanupEmptySeasonsJob>(
-            context.BackgroundJob.Id,
-            job => job.ExecuteAsync(new CleanupEmptySeasonsJob.JobData(data.ShowId), null!, default));
-        context.WriteLine($"Enqueued CleanupEmptySeasonsJob (ID: {cleanupJobId}) for show {data.ShowId}");
     }
 
     private string ScopeName(JobData data, TvShow show)
