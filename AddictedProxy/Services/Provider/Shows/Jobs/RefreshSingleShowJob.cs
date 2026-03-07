@@ -50,5 +50,10 @@ public class RefreshSingleShowJob
         _logger.LogInformation("Refreshing show: {Show}", showId);
         await _showRefresher.RefreshShowAsync(showId, token);
         context.WriteLine($"Completed refresh for show {showId}");
+
+        var cleanupJobId = BackgroundJob.ContinueJobWith<CleanupEmptySeasonsJob>(
+            context.BackgroundJob.Id,
+            job => job.ExecuteAsync(new CleanupEmptySeasonsJob.JobData(showId), null!, default));
+        context.WriteLine($"Enqueued CleanupEmptySeasonsJob (ID: {cleanupJobId}) for show {showId}");
     }
 }

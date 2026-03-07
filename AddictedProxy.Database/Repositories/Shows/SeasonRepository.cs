@@ -71,4 +71,16 @@ public class SeasonRepository : ISeasonRepository
     {
         return _entityContext.SaveChangesAsync(token);
     }
+
+    /// <summary>
+    /// Delete seasons for a show that have no episodes and no season packs.
+    /// </summary>
+    public Task<int> DeleteEmptySeasonsForShowAsync(long showId, CancellationToken token)
+    {
+        return _entityContext.Seasons
+            .Where(season => season.TvShowId == showId)
+            .Where(season => !_entityContext.Episodes.Any(e => e.TvShowId == showId && e.Season == season.Number))
+            .Where(season => !_entityContext.SeasonPackSubtitles.Any(sp => sp.TvShowId == showId && sp.Season == season.Number))
+            .ExecuteDeleteAsync(token);
+    }
 }

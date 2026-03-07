@@ -7,6 +7,7 @@ using AddictedProxy.Services.Job.Filter;
 using AddictedProxy.Services.Job.Model;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
+using AddictedProxy.Services.Provider.Shows.Jobs;
 using AsyncKeyedLock;
 using Hangfire;
 using Hangfire.Console;
@@ -82,6 +83,15 @@ public class FetchSubtitlesJob
             context.WriteLine(string.Format("Lock already held for {0}, skipping", data.Key));
             return;
         }
+
+        // Schedule the cleanup continuation immediately after acquiring the lock so that it
+        // is registered for every successful exit from this method — including early returns
+        // for season/episode not found. Hangfire only executes continuations when the parent
+        // job transitions to Succeeded, so it is safe to register it before the work starts.
+        var cleanupJobId = BackgroundJob.ContinueJobWith<CleanupEmptySeasonsJob>(
+            context.BackgroundJob.Id,
+            job => job.ExecuteAsync(new CleanupEmptySeasonsJob.JobData(data.ShowId), null!, default));
+        context.WriteLine($"Enqueued CleanupEmptySeasonsJob (ID: {cleanupJobId}) for show {data.ShowId}");
 
         using var transaction = _performanceTracker.BeginNestedSpan(nameof(FetchSubtitlesJob), "fetch-subtitles-one-episode");
         try
