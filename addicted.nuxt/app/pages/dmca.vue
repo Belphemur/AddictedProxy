@@ -7,14 +7,24 @@
       </div>
 
       <p :class="layout.classes.bodyText">
-        Gestdown (gestdown.info) is a subtitle search and proxy service. We respect intellectual property rights
+        Gestdown (gestdown.info) is a subtitle search and download service. We respect intellectual property rights
         and respond promptly to valid DMCA takedown notices.
       </p>
 
       <h2 :class="layout.classes.sectionHeading">1. About Our Service</h2>
       <p :class="layout.classes.bodyText">
-        Gestdown is a community-driven subtitle search tool. We do not host, store, or independently distribute
-        subtitle files. All subtitle content is fetched from upstream providers on behalf of the user.
+        Gestdown lets you search and directly download legal subtitle files translated by users for TV shows and
+        movies, served from our secure servers. We store subtitle files only — we do not offer, link to, or host
+        any video, audio, torrent, or other copyrighted media files. We do not provide any means to source TV
+        shows or movies. We carefully review content to ensure copyright compliance and will promptly remove any
+        questionable files brought to our attention.
+      </p>
+      <p :class="layout.classes.bodyText">
+        <strong>Important:</strong> We can only remove subtitle files from our website. We have no control over
+        content on other websites, even if those sites reference or mention Gestdown.
+      </p>
+      <p :class="layout.classes.bodyText">
+        Gestdown content is for personal use only. Commercial use is strictly prohibited.
       </p>
 
       <h2 :class="layout.classes.sectionHeading">2. Content Attribution</h2>
