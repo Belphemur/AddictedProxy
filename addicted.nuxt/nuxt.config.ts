@@ -19,6 +19,7 @@ export default defineNuxtConfig({
     "/": { swr: 120 },
     "/api": { prerender: true },
     "/privacy": { prerender: true },
+    "/dmca": { swr: 3600 },
   },
   app: {
     head: {
