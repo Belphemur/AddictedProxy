@@ -1,3 +1,9 @@
+## [4.54.0](https://github.com/Belphemur/AddictedProxy/compare/v4.53.0...v4.54.0) (2026-03-08)
+
+### Features
+
+* **frontend:** add DMCA policy page with canvas-rendered contact email ([#2605](https://github.com/Belphemur/AddictedProxy/issues/2605)) ([0724f67](https://github.com/Belphemur/AddictedProxy/commit/0724f67df84e9687390c3130eec61e91542fcc2c))
+
 ## [4.53.0](https://github.com/Belphemur/AddictedProxy/compare/v4.52.0...v4.53.0) (2026-03-07)
 
 ### Bug Fixes
