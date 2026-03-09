@@ -1,3 +1,9 @@
+## [4.55.2](https://github.com/Belphemur/AddictedProxy/compare/v4.55.1...v4.55.2) (2026-03-09)
+
+### Bug Fixes
+
+* **frontend:** hide season download without episodes ([083a728](https://github.com/Belphemur/AddictedProxy/commit/083a728b87c8960f7781b76e69312b14148ce103))
+
 ## [4.55.1](https://github.com/Belphemur/AddictedProxy/compare/v4.55.0...v4.55.1) (2026-03-09)
 
 ### Bug Fixes
