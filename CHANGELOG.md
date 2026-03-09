@@ -1,3 +1,9 @@
+## [4.57.0](https://github.com/Belphemur/AddictedProxy/compare/v4.56.0...v4.57.0) (2026-03-09)
+
+### Features
+
+* **image:** add resizer ([651c6e2](https://github.com/Belphemur/AddictedProxy/commit/651c6e2b10a1cf43ab5fca1870a96d952f40ebc9))
+
 ## [4.56.0](https://github.com/Belphemur/AddictedProxy/compare/v4.55.2...v4.56.0) (2026-03-09)
 
 ### Bug Fixes
