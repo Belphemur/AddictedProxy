@@ -18,6 +18,7 @@ public class BootstrapMigration : IBootstrap
         services.AddScoped<IMigration, BackportHdToQualitiesMigration>();
         services.AddScoped<IMigration, CleanSuperSubtitlesDataMigration>();
         services.AddScoped<IMigration, BackfillSeasonPackSeasonFkMigration>();
+        services.AddScoped<IMigration, CreateMissingSeasonsForSeasonPacksMigration>();
         services.AddScoped<IMigration, CleanupEmptySeasonsMigration>();
     }
 }
