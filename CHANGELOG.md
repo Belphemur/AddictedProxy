@@ -1,3 +1,9 @@
+## [4.55.1](https://github.com/Belphemur/AddictedProxy/compare/v4.55.0...v4.55.1) (2026-03-09)
+
+### Bug Fixes
+
+* **migrations:** cast LastRefreshed null to timestamptz ([ba6356e](https://github.com/Belphemur/AddictedProxy/commit/ba6356eb234124729d08914ef55325e2126f7a06))
+
 ## [4.55.0](https://github.com/Belphemur/AddictedProxy/compare/v4.54.0...v4.55.0) (2026-03-09)
 
 ### Bug Fixes
