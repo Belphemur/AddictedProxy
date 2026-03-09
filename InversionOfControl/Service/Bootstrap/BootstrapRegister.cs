@@ -49,7 +49,7 @@ internal class BootstrapRegister : IDisposable
                 if (baseType is not { IsGenericType: true } || baseType.GetGenericTypeDefinition() != _factoryType)
                     continue;
 
-                var attr = type.GetCustomAttribute<EnumServiceLifetimeAttribute>();
+                var attr = type.GetCustomAttribute<ServiceLifetimeAttribute>();
                 factoryOverrides[baseType] = (type, attr?.Lifetime ?? ServiceLifetime.Singleton);
             }
         }

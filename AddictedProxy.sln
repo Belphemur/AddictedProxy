@@ -67,6 +67,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperSubtitleClient", "Supe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Services.Tests", "AddictedProxy.Services.Tests\AddictedProxy.Services.Tests.csproj", "{7D6EBF57-DF92-48CA-8190-3C74DF39F5A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InversionOfControl.Generator", "InversionOfControl.Generator\InversionOfControl.Generator.csproj", "{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -389,6 +391,18 @@ Global
 		{7D6EBF57-DF92-48CA-8190-3C74DF39F5A2}.Release|x64.Build.0 = Release|Any CPU
 		{7D6EBF57-DF92-48CA-8190-3C74DF39F5A2}.Release|x86.ActiveCfg = Release|Any CPU
 		{7D6EBF57-DF92-48CA-8190-3C74DF39F5A2}.Release|x86.Build.0 = Release|Any CPU
+		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Debug|x64.Build.0 = Debug|Any CPU
+		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Debug|x86.Build.0 = Debug|Any CPU
+		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Release|x64.ActiveCfg = Release|Any CPU
+		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Release|x64.Build.0 = Release|Any CPU
+		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Release|x86.ActiveCfg = Release|Any CPU
+		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

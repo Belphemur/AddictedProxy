@@ -2,4 +2,9 @@
   <PropertyGroup>
 	  <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
   </PropertyGroup>
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'InversionOfControl.Generator'">
+    <ProjectReference
+      Include="$(MSBuildThisFileDirectory)InversionOfControl.Generator\InversionOfControl.Generator.csproj"
+      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
 </Project>

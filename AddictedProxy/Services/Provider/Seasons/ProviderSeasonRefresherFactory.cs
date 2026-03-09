@@ -7,7 +7,7 @@ namespace AddictedProxy.Services.Provider.Seasons;
 /// <summary>
 /// Factory that resolves the correct <see cref="IProviderSeasonRefresher"/> for a given <see cref="DataSource"/>.
 /// </summary>
-[EnumServiceLifetime(ServiceLifetime.Scoped)]
+[ServiceLifetime(ServiceLifetime.Scoped)]
 public class ProviderSeasonRefresherFactory : EnumFactory<DataSource, IProviderSeasonRefresher>
 {
     public ProviderSeasonRefresherFactory(IEnumerable<IProviderSeasonRefresher> services) : base(services)

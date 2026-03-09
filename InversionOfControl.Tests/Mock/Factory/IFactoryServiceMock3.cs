@@ -39,7 +39,7 @@ public class BetaService : IFactoryServiceMock3
 /// <summary>
 /// Concrete factory subclass with <see cref="EnumServiceLifetimeAttribute"/> overriding to Scoped.
 /// </summary>
-[EnumServiceLifetime(ServiceLifetime.Scoped)]
+[ServiceLifetime(ServiceLifetime.Scoped)]
 public class ScopedFactoryMock : EnumFactory<FactType3, IFactoryServiceMock3>
 {
     public ScopedFactoryMock(IEnumerable<IFactoryServiceMock3> services) : base(services)

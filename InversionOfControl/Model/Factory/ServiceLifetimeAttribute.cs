@@ -7,7 +7,7 @@ namespace InversionOfControl.Model.Factory;
 /// Place on a concrete factory subclass to change the registration lifetime from the default <see cref="ServiceLifetime.Singleton"/>.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-public sealed class EnumServiceLifetimeAttribute(ServiceLifetime lifetime) : Attribute
+public sealed class ServiceLifetimeAttribute(ServiceLifetime lifetime) : Attribute
 {
     public ServiceLifetime Lifetime { get; } = lifetime;
 }

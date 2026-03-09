@@ -7,7 +7,7 @@ namespace AddictedProxy.Services.Provider.Episodes;
 /// <summary>
 /// Factory that resolves the correct <see cref="IProviderEpisodeRefresher"/> for a given <see cref="DataSource"/>.
 /// </summary>
-[EnumServiceLifetime(ServiceLifetime.Scoped)]
+[ServiceLifetime(ServiceLifetime.Scoped)]
 public class ProviderEpisodeRefresherFactory : EnumFactory<DataSource, IProviderEpisodeRefresher>
 {
     public ProviderEpisodeRefresherFactory(IEnumerable<IProviderEpisodeRefresher> services) : base(services)
