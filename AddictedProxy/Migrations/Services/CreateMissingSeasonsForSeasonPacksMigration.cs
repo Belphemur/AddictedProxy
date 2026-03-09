@@ -37,7 +37,7 @@ public class CreateMissingSeasonsForSeasonPacksMigration : IMigration
         var seasonsCreated = await _entityContext.Database.ExecuteSqlAsync(
             $"""
              INSERT INTO "Seasons" ("TvShowId", "Number", "LastRefreshed", "CreatedAt", "UpdatedAt")
-             SELECT DISTINCT sp."TvShowId", sp."Season", NULL, NOW(), NOW()
+             SELECT DISTINCT sp."TvShowId", sp."Season", NULL::timestamp with time zone, NOW(), NOW()
              FROM "SeasonPackSubtitles" sp
              WHERE NOT EXISTS (
                  SELECT 1 FROM "Seasons" s
