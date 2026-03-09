@@ -184,7 +184,7 @@ public class EnumFactoryRegistrationGenerator : IIncrementalGenerator
     {
         // Build a set of service interface metadata names that are covered by explicit factory subclasses
         var coveredServiceInterfaces = new System.Collections.Generic.HashSet<string>();
-        
+
         // Process explicit factory subclasses first
         if (!factories.IsDefaultOrEmpty)
         {
