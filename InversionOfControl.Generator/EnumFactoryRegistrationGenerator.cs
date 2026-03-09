@@ -19,14 +19,14 @@ namespace InversionOfControl.Generator;
 ///   <item>The <c>EnumFactory&lt;TEnum, TService&gt;</c> base type</item>
 ///   <item>The concrete factory subclass (if distinct from the base)</item>
 /// </list>
+/// When no explicit factory subclass exists, the generator discovers service interfaces
+/// via their <c>IEnumService&lt;TEnum&gt;</c> base and registers <c>EnumFactory&lt;TEnum, TService&gt;</c> directly.
 /// Lifetime is determined by <c>[ServiceLifetime]</c> on the factory class, defaulting to Singleton.
 /// </para>
 /// </summary>
 [Generator]
 public class EnumFactoryRegistrationGenerator : IIncrementalGenerator
 {
-    private const string EnumFactoryFullName = "InversionOfControl.Model.Factory.EnumFactory";
-    private const string EnumServiceFullName = "IEnumService";
     private const string EnumServiceNamespace = "InversionOfControl.Model.Factory";
     private const string ServiceLifetimeAttributeName = "InversionOfControl.Model.Factory.ServiceLifetimeAttribute";
 
@@ -42,7 +42,7 @@ public class EnumFactoryRegistrationGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Find all non-partial, non-abstract class declarations that extend EnumFactory<,>
+        // Pipeline 1: Find explicit EnumFactory<,> subclasses
         var factoryCandidates = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (node, _) => IsClassCandidate(node),
@@ -50,21 +50,36 @@ public class EnumFactoryRegistrationGenerator : IIncrementalGenerator
             .Where(static info => info != null)
             .Select(static (info, _) => info!.Value);
 
-        var compilationAndFactories = context.CompilationProvider.Combine(factoryCandidates.Collect());
+        // Pipeline 2: Find interfaces that extend IEnumService<TEnum>
+        var serviceInterfaceCandidates = context.SyntaxProvider
+            .CreateSyntaxProvider(
+                predicate: static (node, _) => IsInterfaceCandidate(node),
+                transform: static (ctx, ct) => GetServiceInterfaceInfo(ctx, ct))
+            .Where(static info => info != null)
+            .Select(static (info, _) => info!.Value);
 
-        context.RegisterSourceOutput(compilationAndFactories, static (spc, source) =>
+        var combined = context.CompilationProvider
+            .Combine(factoryCandidates.Collect())
+            .Combine(serviceInterfaceCandidates.Collect());
+
+        context.RegisterSourceOutput(combined, static (spc, source) =>
         {
-            var (compilation, factories) = source;
-            Execute(compilation, factories, spc);
+            var ((compilation, factories), serviceInterfaces) = source;
+            Execute(compilation, factories, serviceInterfaces, spc);
         });
     }
 
     private static bool IsClassCandidate(SyntaxNode node)
     {
-        // Match any class that has a base list (potential EnumFactory subclass)
         return node is ClassDeclarationSyntax classDecl &&
                classDecl.BaseList != null &&
                !classDecl.Modifiers.Any(m => m.Text == "abstract");
+    }
+
+    private static bool IsInterfaceCandidate(SyntaxNode node)
+    {
+        return node is InterfaceDeclarationSyntax ifaceDecl &&
+               ifaceDecl.BaseList != null;
     }
 
     private static FactoryInfo? GetFactoryInfo(GeneratorSyntaxContext context, System.Threading.CancellationToken ct)
@@ -124,25 +139,97 @@ public class EnumFactoryRegistrationGenerator : IIncrementalGenerator
             lifetime: lifetime);
     }
 
+    private static ServiceInterfaceInfo? GetServiceInterfaceInfo(GeneratorSyntaxContext context, System.Threading.CancellationToken ct)
+    {
+        var ifaceDecl = (InterfaceDeclarationSyntax)context.Node;
+        if (!(context.SemanticModel.GetDeclaredSymbol(ifaceDecl, ct) is INamedTypeSymbol ifaceSymbol))
+            return null;
+
+        // Check if this interface directly extends IEnumService<TEnum>
+        foreach (var baseIface in ifaceSymbol.Interfaces)
+        {
+            if (!baseIface.IsGenericType)
+                continue;
+
+            var baseDef = baseIface.ConstructedFrom;
+            if (baseDef.ContainingNamespace.ToDisplayString() != EnumServiceNamespace ||
+                baseDef.Name != "IEnumService")
+                continue;
+
+            if (baseIface.TypeArguments.Length != 1)
+                continue;
+
+            var enumType = baseIface.TypeArguments[0];
+
+            // Build the EnumFactory<TEnum, TService> type string
+            var baseFactoryFullName = $"global::{EnumServiceNamespace}.EnumFactory<{enumType.ToDisplayString(GlobalPrefixFormat)}, {ifaceSymbol.ToDisplayString(GlobalPrefixFormat)}>";
+
+            return new ServiceInterfaceInfo(
+                serviceInterfaceFullName: ifaceSymbol.ToDisplayString(GlobalPrefixFormat),
+                serviceInterfaceMetadataName: ifaceSymbol.ToDisplayString(),
+                serviceInterfaceName: ifaceSymbol.Name,
+                serviceInterfaceNamespace: ifaceSymbol.ContainingNamespace.ToDisplayString(),
+                enumTypeFullName: enumType.ToDisplayString(GlobalPrefixFormat),
+                baseFactoryFullName: baseFactoryFullName);
+        }
+
+        return null;
+    }
+
     private static void Execute(
         Compilation compilation,
         ImmutableArray<FactoryInfo> factories,
+        ImmutableArray<ServiceInterfaceInfo> serviceInterfaces,
         SourceProductionContext context)
     {
-        if (factories.IsDefaultOrEmpty)
-            return;
-
-        foreach (var info in factories.Distinct())
+        // Build a set of service interface metadata names that are covered by explicit factory subclasses
+        var coveredServiceInterfaces = new System.Collections.Generic.HashSet<string>();
+        
+        // Process explicit factory subclasses first
+        if (!factories.IsDefaultOrEmpty)
         {
-            var serviceInterfaceSymbol = compilation.GetTypeByMetadataName(info.ServiceInterfaceMetadataName);
-            if (serviceInterfaceSymbol == null)
-                continue;
+            foreach (var info in factories.Distinct())
+            {
+                coveredServiceInterfaces.Add(info.ServiceInterfaceMetadataName);
 
-            // Find all concrete implementations of the service interface
-            var implementations = FindImplementations(compilation, serviceInterfaceSymbol);
+                var serviceInterfaceSymbol = compilation.GetTypeByMetadataName(info.ServiceInterfaceMetadataName);
+                if (serviceInterfaceSymbol == null)
+                    continue;
 
-            var source = GenerateSource(info, implementations);
-            context.AddSource($"{info.ConcreteFactoryName}Registration.g.cs", SourceText.From(source, Encoding.UTF8));
+                var implementations = FindImplementations(compilation, serviceInterfaceSymbol);
+                var source = GenerateSource(info, implementations);
+                context.AddSource($"{info.ConcreteFactoryName}Registration.g.cs", SourceText.From(source, Encoding.UTF8));
+            }
+        }
+
+        // Process service interfaces without explicit factory subclasses
+        if (!serviceInterfaces.IsDefaultOrEmpty)
+        {
+            foreach (var svcInfo in serviceInterfaces.Distinct())
+            {
+                if (coveredServiceInterfaces.Contains(svcInfo.ServiceInterfaceMetadataName))
+                    continue;
+
+                var serviceInterfaceSymbol = compilation.GetTypeByMetadataName(svcInfo.ServiceInterfaceMetadataName);
+                if (serviceInterfaceSymbol == null)
+                    continue;
+
+                var implementations = FindImplementations(compilation, serviceInterfaceSymbol);
+
+                // Synthesize a FactoryInfo for the implicit EnumFactory<TEnum, TService>
+                var implicitFactory = new FactoryInfo(
+                    concreteFactoryFullName: svcInfo.BaseFactoryFullName,
+                    concreteFactoryName: svcInfo.ServiceInterfaceName + "Factory",
+                    concreteFactoryNamespace: svcInfo.ServiceInterfaceNamespace,
+                    enumTypeFullName: svcInfo.EnumTypeFullName,
+                    serviceInterfaceFullName: svcInfo.ServiceInterfaceFullName,
+                    serviceInterfaceMetadataName: svcInfo.ServiceInterfaceMetadataName,
+                    baseFactoryFullName: svcInfo.BaseFactoryFullName,
+                    lifetime: "Singleton");
+
+                var source = GenerateSource(implicitFactory, implementations);
+                context.AddSource($"{implicitFactory.ConcreteFactoryName}Registration.g.cs", SourceText.From(source, Encoding.UTF8));
+            }
         }
     }
 
@@ -264,6 +351,47 @@ public class EnumFactoryRegistrationGenerator : IIncrementalGenerator
         public override int GetHashCode()
         {
             return ConcreteFactoryFullName != null ? ConcreteFactoryFullName.GetHashCode() : 0;
+        }
+    }
+
+    private readonly struct ServiceInterfaceInfo : System.IEquatable<ServiceInterfaceInfo>
+    {
+        public string ServiceInterfaceFullName { get; }
+        public string ServiceInterfaceMetadataName { get; }
+        public string ServiceInterfaceName { get; }
+        public string ServiceInterfaceNamespace { get; }
+        public string EnumTypeFullName { get; }
+        public string BaseFactoryFullName { get; }
+
+        public ServiceInterfaceInfo(
+            string serviceInterfaceFullName,
+            string serviceInterfaceMetadataName,
+            string serviceInterfaceName,
+            string serviceInterfaceNamespace,
+            string enumTypeFullName,
+            string baseFactoryFullName)
+        {
+            ServiceInterfaceFullName = serviceInterfaceFullName;
+            ServiceInterfaceMetadataName = serviceInterfaceMetadataName;
+            ServiceInterfaceName = serviceInterfaceName;
+            ServiceInterfaceNamespace = serviceInterfaceNamespace;
+            EnumTypeFullName = enumTypeFullName;
+            BaseFactoryFullName = baseFactoryFullName;
+        }
+
+        public bool Equals(ServiceInterfaceInfo other)
+        {
+            return ServiceInterfaceMetadataName == other.ServiceInterfaceMetadataName;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ServiceInterfaceInfo other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return ServiceInterfaceMetadataName != null ? ServiceInterfaceMetadataName.GetHashCode() : 0;
         }
     }
 }
