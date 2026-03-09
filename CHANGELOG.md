@@ -1,3 +1,13 @@
+## [4.56.0](https://github.com/Belphemur/AddictedProxy/compare/v4.55.2...v4.56.0) (2026-03-09)
+
+### Bug Fixes
+
+* **ioc:** generate factory registrations for implicit EnumFactory types ([f2f45a8](https://github.com/Belphemur/AddictedProxy/commit/f2f45a8e31d091712f5f3bf816618214af1c77a7))
+
+### Features
+
+* **ioc:** add EnumFactory source generator and fix nullability warning ([22a62d8](https://github.com/Belphemur/AddictedProxy/commit/22a62d8037b145eed9dd6d60a138eb1ad1d08bc7))
+
 ## [4.55.2](https://github.com/Belphemur/AddictedProxy/compare/v4.55.1...v4.55.2) (2026-03-09)
 
 ### Bug Fixes
