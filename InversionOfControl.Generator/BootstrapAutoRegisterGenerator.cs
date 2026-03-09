@@ -18,6 +18,15 @@ public class BootstrapAutoRegisterGenerator : IIncrementalGenerator
     private const string BootstrapInterfaceName = "InversionOfControl.Model.IBootstrap";
     private const string ServiceLifetimeAttributeName = "InversionOfControl.Model.Factory.ServiceLifetimeAttribute";
 
+    /// <summary>
+    /// Display format that prefixes all namespace-qualified names with <c>global::</c>,
+    /// including type arguments inside generics.
+    /// </summary>
+    private static readonly SymbolDisplayFormat GlobalPrefixFormat = new SymbolDisplayFormat(
+        globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
+        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+        genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters);
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         // Find all partial class declarations that implement IBootstrapAutoRegister<T>
@@ -108,6 +117,7 @@ public class BootstrapAutoRegisterGenerator : IIncrementalGenerator
             classSymbol.ToDisplayString(),
             classSymbol.Name,
             classSymbol.ContainingNamespace.ToDisplayString(),
+            serviceInterfaceType.ToDisplayString(GlobalPrefixFormat),
             serviceInterfaceType.ToDisplayString(),
             lifetime);
     }
@@ -122,7 +132,7 @@ public class BootstrapAutoRegisterGenerator : IIncrementalGenerator
 
         foreach (var info in autoRegisters.Distinct())
         {
-            var serviceInterfaceSymbol = compilation.GetTypeByMetadataName(info.ServiceInterfaceFullName);
+            var serviceInterfaceSymbol = compilation.GetTypeByMetadataName(info.ServiceInterfaceMetadataName);
             if (serviceInterfaceSymbol == null)
                 continue;
 
@@ -203,7 +213,7 @@ public class BootstrapAutoRegisterGenerator : IIncrementalGenerator
 
                     if (ImplementsInterface(symbol, _interfaceSymbol))
                     {
-                        _builder.Add(symbol.ToDisplayString());
+                        _builder.Add(symbol.ToDisplayString(GlobalPrefixFormat));
                     }
                 }
             }
@@ -227,14 +237,16 @@ public class BootstrapAutoRegisterGenerator : IIncrementalGenerator
         public string ClassName { get; }
         public string Namespace { get; }
         public string ServiceInterfaceFullName { get; }
+        public string ServiceInterfaceMetadataName { get; }
         public string Lifetime { get; }
 
-        public AutoRegisterInfo(string fullName, string className, string ns, string serviceInterfaceFullName, string lifetime)
+        public AutoRegisterInfo(string fullName, string className, string ns, string serviceInterfaceFullName, string serviceInterfaceMetadataName, string lifetime)
         {
             FullName = fullName;
             ClassName = className;
             Namespace = ns;
             ServiceInterfaceFullName = serviceInterfaceFullName;
+            ServiceInterfaceMetadataName = serviceInterfaceMetadataName;
             Lifetime = lifetime;
         }
 

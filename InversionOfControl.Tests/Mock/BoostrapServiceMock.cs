@@ -23,7 +23,7 @@ public class BootstrapServiceMockConditional : IBootstrapConditional
 {
     public interface IShouldntExists
     {
-        
+
     }
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {

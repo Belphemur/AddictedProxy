@@ -128,4 +128,80 @@ public class Tests
 
         factory1.Should().NotBeSameAs(factory2);
     }
+
+    [Test]
+    public void TestFactoryLifetimeAttributeOverridesToTransient()
+    {
+        var bootstrapRegister = new BootstrapRegister();
+        var serviceCollection = new ServiceCollection();
+        bootstrapRegister.RegisterBootstrapServices(serviceCollection, Substitute.For<IConfiguration>(), Substitute.For<ILoggingBuilder>(), typeof(BoostrapServiceMock).Assembly);
+
+        // Factory with [ServiceLifetime(Transient)] should be Transient
+        var factoryDescriptor = serviceCollection.First(d => d.ServiceType == typeof(EnumFactory<FactType4, IFactoryServiceMock4>));
+        factoryDescriptor.Lifetime.Should().Be(ServiceLifetime.Transient);
+
+        // Service implementations under a Transient factory should also be Transient
+        var gammaDescriptor = serviceCollection.First(d => d.ImplementationType == typeof(GammaService));
+        gammaDescriptor.Lifetime.Should().Be(ServiceLifetime.Transient);
+
+        var deltaDescriptor = serviceCollection.First(d => d.ImplementationType == typeof(DeltaService));
+        deltaDescriptor.Lifetime.Should().Be(ServiceLifetime.Transient);
+    }
+
+    [Test]
+    public void TestTransientFactoryConcreteSubclassIsResolvable()
+    {
+        var bootstrapRegister = new BootstrapRegister();
+        var serviceCollection = new ServiceCollection();
+        bootstrapRegister.RegisterBootstrapServices(serviceCollection, Substitute.For<IConfiguration>(), Substitute.For<ILoggingBuilder>(), typeof(BoostrapServiceMock).Assembly);
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+
+        var factory = serviceProvider.GetRequiredService<TransientFactoryMock>();
+        factory.Should().NotBeNull();
+        factory.GetService(FactType4.Gamma).Should().BeOfType<GammaService>();
+        factory.GetService(FactType4.Delta).Should().BeOfType<DeltaService>();
+    }
+
+    [Test]
+    public void TestTransientFactoryResolvesNewInstancesEveryTime()
+    {
+        var bootstrapRegister = new BootstrapRegister();
+        var serviceCollection = new ServiceCollection();
+        bootstrapRegister.RegisterBootstrapServices(serviceCollection, Substitute.For<IConfiguration>(), Substitute.For<ILoggingBuilder>(), typeof(BoostrapServiceMock).Assembly);
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+
+        var factory1 = serviceProvider.GetRequiredService<TransientFactoryMock>();
+        var factory2 = serviceProvider.GetRequiredService<TransientFactoryMock>();
+
+        factory1.Should().NotBeSameAs(factory2);
+    }
+
+    [Test]
+    public void TestSingletonFactoryReturnsSameInstance()
+    {
+        var bootstrapRegister = new BootstrapRegister();
+        var serviceCollection = new ServiceCollection();
+        bootstrapRegister.RegisterBootstrapServices(serviceCollection, Substitute.For<IConfiguration>(), Substitute.For<ILoggingBuilder>(), typeof(BoostrapServiceMock).Assembly);
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+
+        var factory1 = serviceProvider.GetRequiredService<EnumFactory<FactType, IFactoryServiceMock>>();
+        var factory2 = serviceProvider.GetRequiredService<EnumFactory<FactType, IFactoryServiceMock>>();
+
+        factory1.Should().BeSameAs(factory2);
+    }
+
+    [Test]
+    public void TestScopedFactoryReturnsSameInstanceWithinScope()
+    {
+        var bootstrapRegister = new BootstrapRegister();
+        var serviceCollection = new ServiceCollection();
+        bootstrapRegister.RegisterBootstrapServices(serviceCollection, Substitute.For<IConfiguration>(), Substitute.For<ILoggingBuilder>(), typeof(BoostrapServiceMock).Assembly);
+        var serviceProvider = serviceCollection.BuildServiceProvider();
+
+        using var scope = serviceProvider.CreateScope();
+        var factory1 = scope.ServiceProvider.GetRequiredService<ScopedFactoryMock>();
+        var factory2 = scope.ServiceProvider.GetRequiredService<ScopedFactoryMock>();
+
+        factory1.Should().BeSameAs(factory2);
+    }
 }

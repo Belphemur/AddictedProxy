@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using InversionOfControl.Extensions;
 using InversionOfControl.Model;
-using InversionOfControl.Model.Factory;
 using InversionOfControl.Service.EnvironmentVariable.Exception;
 using InversionOfControl.Service.EnvironmentVariable.Parser;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
@@ -21,8 +20,6 @@ internal class BootstrapRegister : IDisposable
     private readonly Type _bootstrapEnv = typeof(IBootstrapEnvironmentVariable<,>);
     private readonly Type _bootstrapApp = typeof(IBootstrapApp);
     private readonly Type _envVarRegistrationType = typeof(EnvVarRegistration<,>);
-    private readonly Type _factoryServiceType = typeof(IEnumService<>);
-    private readonly Type _factoryType = typeof(EnumFactory<,>);
 
     /// <summary>
     /// Register all the different services
@@ -35,24 +32,6 @@ internal class BootstrapRegister : IDisposable
     public void RegisterBootstrapServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging, params Assembly[] assemblies)
     {
         var keys = new Dictionary<string, Type>();
-        var factories = new HashSet<Type>();
-
-        // Pre-scan all assemblies for concrete EnumFactory<,> subclasses with lifetime overrides.
-        // Key: generic base type (e.g. EnumFactory<DataSource, IProviderSeasonRefresher>)
-        // Value: (concrete subclass type, lifetime)
-        var factoryOverrides = new Dictionary<Type, (Type ConcreteType, ServiceLifetime Lifetime)>();
-        foreach (var assembly in assemblies)
-        {
-            foreach (var type in GetSetCachedTypes(assembly))
-            {
-                var baseType = type.BaseType;
-                if (baseType is not { IsGenericType: true } || baseType.GetGenericTypeDefinition() != _factoryType)
-                    continue;
-
-                var attr = type.GetCustomAttribute<ServiceLifetimeAttribute>();
-                factoryOverrides[baseType] = (type, attr?.Lifetime ?? ServiceLifetime.Singleton);
-            }
-        }
 
         void RegisterEnvVar(Type[] genericTypes, object registration, Type currentBootstrapType)
         {
@@ -81,57 +60,12 @@ internal class BootstrapRegister : IDisposable
             }, lifeTime));
         }
 
-        void RegisterFactory(Type type, Type serviceInterface)
-        {
-            var interfaceInheritingFromServiceInterface = type.FindInterfaces((interfaceType, _) => interfaceType.GetInterface(_factoryServiceType.FullName) != null, null).SingleOrDefault();
-            if (interfaceInheritingFromServiceInterface == null)
-            {
-                throw new ArgumentNullException($"{type} isn't implementing an interface of the factory pattern ({_factoryServiceType.Name}).");
-            }
-
-            var enumType = serviceInterface.GetGenericArguments().SingleOrDefault();
-            if (enumType == null)
-            {
-                throw new ArgumentNullException($"{type} isn't implementing an interface of the factory pattern ({_factoryServiceType.Name}).");
-            }
-
-            var enumFactoryType = _factoryType.MakeGenericType(enumType, interfaceInheritingFromServiceInterface);
-
-            // Check for a lifetime override from a concrete factory subclass attribute; default to Singleton.
-            var lifetime = factoryOverrides.TryGetValue(enumFactoryType, out var @override)
-                ? @override.Lifetime
-                : ServiceLifetime.Singleton;
-
-            services.Add(new ServiceDescriptor(interfaceInheritingFromServiceInterface, type, lifetime));
-
-            if (!factories.Contains(enumFactoryType))
-            {
-                services.Add(new ServiceDescriptor(enumFactoryType, enumFactoryType, lifetime));
-
-                // Also register the concrete factory subclass so it can be injected directly.
-                if (@override.ConcreteType != null && @override.ConcreteType != enumFactoryType)
-                {
-                    services.Add(new ServiceDescriptor(@override.ConcreteType, @override.ConcreteType, lifetime));
-                }
-
-                factories.Add(enumFactoryType);
-            }
-        }
-
         foreach (var assembly in assemblies)
         {
             var types = GetSetCachedTypes(assembly);
 
             foreach (var type in types)
             {
-                //Handle registration of factories
-                var serviceInterface = type.GetInterface(_factoryServiceType.FullName!);
-                if (serviceInterface != null)
-                {
-                    RegisterFactory(type, serviceInterface);
-                    continue;
-                }
-
                 object? bootstrap = null;
                 if (_bootstrapConditionalType.IsAssignableFrom(type))
                 {
