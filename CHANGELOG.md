@@ -1,3 +1,13 @@
+## [4.55.0](https://github.com/Belphemur/AddictedProxy/compare/v4.54.0...v4.55.0) (2026-03-09)
+
+### Bug Fixes
+
+* **migrations:** link season packs by creating missing seasons ([4299f42](https://github.com/Belphemur/AddictedProxy/commit/4299f4251e153e6661a20c36ca18b431e0df5b64))
+
+### Features
+
+* **ioc:** add IBootstrapAutoRegister<T> with source generator ([c0db786](https://github.com/Belphemur/AddictedProxy/commit/c0db786356c9662d8999b89ffbe27da5c07f311b))
+
 ## [4.54.0](https://github.com/Belphemur/AddictedProxy/compare/v4.53.0...v4.54.0) (2026-03-08)
 
 ### Features
