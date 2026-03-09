@@ -1,3 +1,37 @@
+## [4.54.0](https://github.com/Belphemur/AddictedProxy/compare/v4.53.0...v4.54.0) (2026-03-08)
+
+### Features
+
+* **frontend:** add DMCA policy page with canvas-rendered contact email ([#2605](https://github.com/Belphemur/AddictedProxy/issues/2605)) ([0724f67](https://github.com/Belphemur/AddictedProxy/commit/0724f67df84e9687390c3130eec61e91542fcc2c))
+
+## [4.53.0](https://github.com/Belphemur/AddictedProxy/compare/v4.52.0...v4.53.0) (2026-03-07)
+
+### Bug Fixes
+
+* address race-condition review feedback on cleanup job scheduling ([80075e4](https://github.com/Belphemur/AddictedProxy/commit/80075e484e77b282295b5a2dc1888b039497e813))
+* cleanup seasons without episodes or season packs via Hangfire continuations ([8a667d7](https://github.com/Belphemur/AddictedProxy/commit/8a667d744c5be1d17e9a2bd9c7db9acceeec29df))
+
+### Features
+
+* **migration:** add one-time migration to cleanup existing empty seasons ([53b1e55](https://github.com/Belphemur/AddictedProxy/commit/53b1e5508b9166e40ad9b8ec4db84ac2bdc32d22))
+
+## [4.52.0](https://github.com/Belphemur/AddictedProxy/compare/v4.51.3...v4.52.0) (2026-03-04)
+
+### Bug Fixes
+
+* **frontend:** hide Episodes header when no episode subtitles exist ([896f984](https://github.com/Belphemur/AddictedProxy/commit/896f984460bc5b52172f7f6fc57df0c368658ed4))
+* **mock-server:** address PR review comments ([bfe3213](https://github.com/Belphemur/AddictedProxy/commit/bfe321369c3357bd69ac4b7a0c174f1779e801bb))
+
+### Features
+
+* **mock-server:** extract all hardcoded data to JSON files, add OnlySeasonPack show, fix docker compose dev stack ([a77365c](https://github.com/Belphemur/AddictedProxy/commit/a77365cb870c18ab314b67d6a44c436674726eab))
+
+## [4.51.3](https://github.com/Belphemur/AddictedProxy/compare/v4.51.2...v4.51.3) (2026-03-02)
+
+### Bug Fixes
+
+* **season-pack:** handle NotFound RpcException when episode not found in ZIP ([#2577](https://github.com/Belphemur/AddictedProxy/issues/2577)) ([6c0faf3](https://github.com/Belphemur/AddictedProxy/commit/6c0faf3cb98b237cbc4e1073586f831c2606c063))
+
 ## [4.51.2](https://github.com/Belphemur/AddictedProxy/compare/v4.51.1...v4.51.2) (2026-03-01)
 
 ### Bug Fixes
