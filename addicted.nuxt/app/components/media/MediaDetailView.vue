@@ -214,6 +214,8 @@ const onlyOneTypeAvailable = computed(() => {
     availableSubtitleTypes.value === SubtitleTypeFlag.HearingImpaired;
 });
 
+const hasSeasonPacks = computed(() => seasonPacks.value.length > 0);
+
 // Get the only available subtitle type if there's only one
 const getOnlyAvailableType = (): SubtitleType | null => {
   if (availableSubtitleTypes.value === SubtitleTypeFlag.Regular) {
@@ -308,13 +310,13 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
                   <v-tooltip activator="parent" location="bottom">Fetch from Addic7ed
                   </v-tooltip>
                 </v-btn>
-                <v-btn v-if="onlyOneTypeAvailable" :prepend-icon="mdiDownload" color="primary" size="small"
+              <v-btn v-if="onlyOneTypeAvailable && hasEpisodes" :prepend-icon="mdiDownload" color="primary" size="small"
                   @click="handleDownloadClick" :disabled="refreshingProgress != null || downloadingInProgress">
                   Download season
                   <v-tooltip activator="parent" location="bottom">Download all subtitles of the season as ZIP file
                   </v-tooltip>
                 </v-btn>
-                <v-btn v-else :prepend-icon="mdiDownload" color="primary" size="small"
+              <v-btn v-else-if="hasEpisodes" :prepend-icon="mdiDownload" color="primary" size="small"
                   :disabled="refreshingProgress != null || downloadingInProgress">
                   <SubtitleTypeChooser @selected="downloadSeasonSubtitles" :available-types="availableSubtitleTypes" />
                   Download season
@@ -323,12 +325,12 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
                 </v-btn>
               </div>
             </div>
-            <div v-if="seasonPacks.length > 0" class="mb-4">
+          <div v-if="hasSeasonPacks" class="mb-4">
               <h3 class="text-subtitle-1 font-weight-medium mb-2">Season Packs</h3>
               <season-packs-section :season-packs="seasonPacks" />
             </div>
-            <v-divider v-if="seasonPacks.length > 0 && hasEpisodes" class="mb-4" />
-            <h3 v-if="seasonPacks.length > 0 && hasEpisodes" class="text-subtitle-1 font-weight-medium mb-2">Episodes</h3>
+          <v-divider v-if="hasSeasonPacks && hasEpisodes" class="mb-4" />
+          <h3 v-if="hasSeasonPacks && hasEpisodes" class="text-subtitle-1 font-weight-medium mb-2">Episodes</h3>
             <subtitles-table :episodes="episodes" :season-pack-count="seasonPacks.length"></subtitles-table>
           </v-sheet>
         </v-skeleton-loader>
