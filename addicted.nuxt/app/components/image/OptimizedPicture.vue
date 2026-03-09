@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import {encodeQueryItem, joinURL} from "ufo";
-import type {ResolvableLink} from "@unhead/vue";
+import { encodeQueryItem, joinURL } from "ufo";
+import type { ResolvableLink } from "@unhead/vue";
 
-// Define the breakpoints
 const breakpoints = {
   xs: 0,
   sm: 600,
@@ -12,7 +11,6 @@ const breakpoints = {
   xxl: 1920,
 } as const;
 
-// Define a type for the breakpoint keys
 type BreakpointKey = keyof typeof breakpoints;
 
 export interface Props {
@@ -20,6 +18,7 @@ export interface Props {
   sources: PictureSource[];
   alt: string;
   formats: SupportedFormat[];
+  rsampler?: ResizeSampler;
   preload?: boolean;
 }
 
@@ -32,11 +31,28 @@ export interface PictureSource {
 }
 
 export type SupportedFormat = 'webp' | 'jpeg' | 'png'
+export type ResizeSampler =
+  | 'bicubic'
+  | 'nearest'
+  | 'box'
+  | 'mitchell'
+  | 'catmull'
+  | 'lanczos2'
+  | 'lanczos3'
+  | 'lanczos5'
+  | 'lanczos8'
+  | 'welch'
+  | 'robidoux'
+  | 'robidouxsharp'
+  | 'spline'
+  | 'triangle'
+  | 'hermite';
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  rsampler: 'lanczos8',
+});
 const baseUrl = useRuntimeConfig().public.api.clientUrl;
 
-// Add emits for load and error events
 const emit = defineEmits<{
   load: []
   error: []
@@ -44,7 +60,6 @@ const emit = defineEmits<{
 
 const fallbackSource = computed(() => props.sources.at(0));
 
-// Function to get the max-width media query
 const toMediaQuery = (source: PictureSource): string => {
   const size = source.size;
   const extraMedia = source.media ? ` and ${source.media}` : '';
@@ -53,12 +68,10 @@ const toMediaQuery = (source: PictureSource): string => {
     return `(max-width: ${size}px)${extraMedia}`;
   }
   const maxWidth = breakpoints[size];
-  // Special case for 'xs' as it doesn't have a max-width
   if (size === 'xs') {
     return `(max-width: ${breakpoints.sm - 1}px)${extraMedia}`;
   }
 
-  // For other sizes, use the next breakpoint's value minus 1
   const sizes = Object.keys(breakpoints) as BreakpointKey[];
   const currentIndex = sizes.indexOf(size);
   const nextSize = sizes[currentIndex + 1];
@@ -67,7 +80,6 @@ const toMediaQuery = (source: PictureSource): string => {
     return `(max-width: ${breakpoints[nextSize] - 1}px)${extraMedia}`;
   }
 
-  // If it's the largest size, there's no upper limit
   return `(min-width: ${maxWidth}px)${extraMedia}`;
 }
 
@@ -85,6 +97,8 @@ const toSrcSet = (source: PictureSource, format: SupportedFormat | null) => {
   let srcSet = source.src ?? props.src;
   const queryParams: Record<string, any> = {};
 
+  queryParams.rsampler = props.rsampler;
+
   if (format) {
     queryParams.format = format;
   }
@@ -96,8 +110,8 @@ const toSrcSet = (source: PictureSource, format: SupportedFormat | null) => {
   }
 
   const queryString = Object.keys(queryParams)
-      .map(key => `${encodeQueryItem(key, queryParams[key])}`)
-      .join('&');
+    .map(key => `${encodeQueryItem(key, queryParams[key])}`)
+    .join('&');
 
   if (queryString) {
     srcSet += `?${queryString}`;
@@ -121,7 +135,7 @@ if (props.preload) {
   const links = props.sources.map(source => ({
     rel: 'preload',
     as: 'image',
-    href: toSrcSet(source, props.formats[0]),
+    href: toSrcSet(source, props.formats[0] ?? null),
     media: toMediaQuery(source),
   })) as ResolvableLink[];
   useHead({
@@ -133,24 +147,13 @@ if (props.preload) {
 <template>
   <picture>
     <template v-for="source in props.sources">
-      <template v-for="format  in props.formats">
+      <template v-for="format in props.formats">
         <source :srcset="toSrcSet(source, format)" :media="toMediaQuery(source)" :type="toImageType(format)"
-                :width="source.width" :height="source.height">
+          :width="source.width" :height="source.height">
       </template>
     </template>
-    <img v-if="fallbackSource"
-         :src="toSrcSet(fallbackSource, props.formats[0] ?? null)"
-         :alt="alt"
-         :width="fallbackSource.width"
-         :height="fallbackSource.height"
-         :loading="preload ? 'eager' : 'lazy'"
-         decoding="async"
-         :fetchpriority="preload ? 'high' : 'low'"
-         @load="emit('load')"
-         @error="emit('error')">
+    <img v-if="fallbackSource" :src="toSrcSet(fallbackSource, props.formats[0] ?? null)" :alt="alt"
+      :width="fallbackSource.width" :height="fallbackSource.height" :loading="preload ? 'eager' : 'lazy'"
+      decoding="async" :fetchpriority="preload ? 'high' : 'low'" @load="emit('load')" @error="emit('error')">
   </picture>
 </template>
-
-<style scoped>
-
-</style>
