@@ -1,6 +1,7 @@
 ﻿namespace InversionOfControl.Model.Factory;
 
 public class EnumFactory<TEnum, TEnumService>
+    where TEnum : notnull
     where TEnumService : IEnumService<TEnum>
 {
     private readonly Dictionary<TEnum, TEnumService> _servicesByEnum;
