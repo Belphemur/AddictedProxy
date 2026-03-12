@@ -125,6 +125,9 @@ public class SeasonPackProvider : ISeasonPackProvider
         {
             var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), episode: episode, cancellationToken: token);
             await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
+
+            BackgroundJob.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(seasonPack.UniqueId, null!, default));
+
             return new MemoryStream(response.Content.ToByteArray());
         }
         catch (RpcException e) when ((e.StatusCode == StatusCode.Internal || e.StatusCode == StatusCode.NotFound) && e.Status.Detail.Contains(EpisodeNotFoundInZipDetail))

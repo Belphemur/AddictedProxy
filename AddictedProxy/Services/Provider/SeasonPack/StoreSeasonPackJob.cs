@@ -1,4 +1,5 @@
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Services.Job.Filter;
 using AddictedProxy.Storage.Store.Compression;
 using AsyncKeyedLock;
 using Hangfire;
@@ -59,6 +60,7 @@ public class StoreSeasonPackJob
     /// Enqueue this overload from import/refresh jobs that don't have the blob.
     /// </summary>
     [Queue("store-subtitle")]
+    [UniqueJob]
     public async Task DownloadAndStoreAsync(Guid seasonPackUniqueId, PerformContext? context, CancellationToken cancellationToken)
     {
         context?.WriteLine($"Starting download-and-store for season pack {seasonPackUniqueId}");
