@@ -122,14 +122,27 @@ public class SeasonPackCatalogServiceParsingTests
     [Test]
     public void ParseZipEntries_MultipleReleaseMarkers_AllCaptured()
     {
-        var blob = CreateZipBlob("Show.S01E01.Title.1080p.WEB-DL.HEVC.srt");
+        var blob = CreateZipBlob("Show.S01E01.Title.AMZN.WEB-DL.1080p.srt");
         var entries = SeasonPackCatalogService.ParseZipEntries(1, blob);
 
         entries.Should().HaveCount(1);
         entries[0].EpisodeTitle.Should().Be("Title");
-        entries[0].ReleaseGroup.Should().Contain("1080p");
+        entries[0].ReleaseGroup.Should().Contain("AMZN");
         entries[0].ReleaseGroup.Should().Contain("WEB-DL");
-        entries[0].ReleaseGroup.Should().Contain("HEVC");
+        entries[0].ReleaseGroup.Should().Contain("1080p");
+    }
+
+    [Test]
+    public void ParseZipEntries_StreamingServiceTag_NotIncludedInTitle()
+    {
+        var blob = CreateZipBlob("The.Night.Agent.S02E10.Buyers.Remorse.NF.WEB-DL.en.srt");
+        var entries = SeasonPackCatalogService.ParseZipEntries(1, blob);
+
+        entries.Should().HaveCount(1);
+        entries[0].EpisodeNumber.Should().Be(10);
+        entries[0].EpisodeTitle.Should().Be("Buyers Remorse");
+        entries[0].ReleaseGroup.Should().Contain("NF");
+        entries[0].ReleaseGroup.Should().Contain("WEB-DL");
     }
 
     [Test]

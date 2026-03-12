@@ -140,7 +140,8 @@ public partial class SeasonPackCatalogService : ISeasonPackCatalogService
     /// Matches common release markers in scene filenames using structural patterns
     /// (e.g. \d{3,4}p for any resolution) so new variants are caught automatically.
     /// Each marker must be a complete dot/dash/space/underscore-delimited token.
+    /// Includes well-known streaming service tags used in scene naming conventions.
     /// </summary>
-    [GeneratedRegex(@"(?<=[.\-_ ]|^)(\d{3,4}p|\dK|WEB[-.]?DL|WEB[-.]?Rip|Blu[-.]?Ray|BDRip|HDTV|DVDRip|HDRip|PDTV|SDTV|x26[45]|H\.?26[45]|HEVC|XviD|AV1|VP\d|PROPER|REPACK|INTERNAL|REMUX)(?=[.\-_ ]|$)", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"(?<=[.\-_ ]|^)(\d{3,4}p|\dK|WEB[-.]?DL|WEB[-.]?Rip|Blu[-.]?Ray|BDRip|HDTV|DVDRip|HDRip|PDTV|SDTV|x26[45]|H\.?26[45]|HEVC|XviD|AV1|VP\d|PROPER|REPACK|INTERNAL|REMUX|AMZN|NF|ATVP|HMAX|DSNP|PCOK|PMTP|iT|STAN|CRAV|HULU|RED|MA|PLAY|SHO|CRITERION)(?=[.\-_ ]|$)", RegexOptions.IgnoreCase)]
     private static partial Regex ReleaseMarkerPattern();
 }
