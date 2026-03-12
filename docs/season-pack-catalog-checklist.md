@@ -2,11 +2,11 @@
 
 ## Phase 1: Database Entity & Migration
 
-- [ ] Create `SeasonPackEntry` entity in `AddictedProxy.Database/Model/Shows/`
-- [ ] Add `ICollection<SeasonPackEntry> Entries` navigation to `SeasonPackSubtitle`
-- [ ] Add `DbSet<SeasonPackEntry>` to `EntityContext`
-- [ ] Generate EF Core migration (`dotnet ef migrations add AddSeasonPackEntries`)
-- [ ] Verify migration SQL creates correct indexes
+- [x] Create `SeasonPackEntry` entity in `AddictedProxy.Database/Model/Shows/`
+- [x] Add `ICollection<SeasonPackEntry> Entries` navigation to `SeasonPackSubtitle`
+- [x] Add `DbSet<SeasonPackEntry>` to `EntityContext`
+- [x] Generate EF Core migration (`dotnet ef migrations add AddSeasonPackEntries`)
+- [x] Verify migration SQL creates correct indexes
 
 ## Phase 2: Repository
 
