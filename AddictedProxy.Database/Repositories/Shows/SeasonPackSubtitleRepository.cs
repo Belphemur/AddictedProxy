@@ -20,6 +20,7 @@ public class SeasonPackSubtitleRepository : ISeasonPackSubtitleRepository
     public async Task<IReadOnlyList<SeasonPackSubtitle>> GetByShowAndSeasonAsync(long tvShowId, int season, CancellationToken token)
     {
         return await _entityContext.SeasonPackSubtitles
+            .Include(s => s.Entries)
             .Where(s => s.TvShowId == tvShowId && s.Season == season)
             .AsNoTracking()
             .ToListAsync(token);
