@@ -269,6 +269,8 @@ public class SubtitlesController : Controller
 
         return seasonPacks
             .Where(sp => string.Equals(sp.LanguageIsoCode, isoCode, StringComparison.OrdinalIgnoreCase))
+            // Offer the pack if: not cataloged yet (graceful degradation) OR has an entry for this episode
+            .Where(sp => sp.Entries.Count == 0 || sp.Entries.Any(e => e.EpisodeNumber == episode))
             .Select(pack =>
             {
                 var spSubtitleId = $"{SeasonPackPrefix}{pack.UniqueId}{EpisodeSeparator}{episode}";
