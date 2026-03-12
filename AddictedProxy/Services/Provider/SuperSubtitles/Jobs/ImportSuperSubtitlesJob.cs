@@ -6,9 +6,11 @@ using AddictedProxy.Services.Job.Filter;
 using AddictedProxy.Services.Job.Service;
 using AddictedProxy.Services.Provider.Merging;
 using AddictedProxy.Services.Provider.Merging.Model;
+using AddictedProxy.Services.Provider.SeasonPack;
 using AddictedProxy.Services.Provider.SuperSubtitles;
 using AddictedProxy.Services.Provider.SuperSubtitles.Config;
 using AddictedProxy.Tools.Database.Transaction;
+using Hangfire;
 using Hangfire.Console;
 using Hangfire.Server;
 using Microsoft.Extensions.Logging;
@@ -224,6 +226,12 @@ public class ImportSuperSubtitlesJob
         if (seasonPacks.Count > 0)
         {
             await _ingestionService.IngestSeasonPacksAsync(seasonPacks, token);
+
+            // Enqueue download-and-store for each season pack (idempotent — skips already-stored packs)
+            foreach (var pack in seasonPacks)
+            {
+                BackgroundJob.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(pack.UniqueId, null!, default));
+            }
         }
 
         var subtitleCount = subtitlesByEpisode.Values.Sum(g => g.Subtitles.Count);
