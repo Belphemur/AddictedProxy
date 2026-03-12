@@ -16,6 +16,7 @@ public class SeasonPackProvider : ISeasonPackProvider
     private readonly ISuperSubtitlesClient _superSubtitlesClient;
     private readonly ISeasonPackCatalogService _catalogService;
     private readonly ISeasonPackEntryRepository _entryRepository;
+    private readonly IBackgroundJobClient _backgroundJobClient;
     private readonly ILogger<SeasonPackProvider> _logger;
 
     public SeasonPackProvider(
@@ -24,6 +25,7 @@ public class SeasonPackProvider : ISeasonPackProvider
         ISuperSubtitlesClient superSubtitlesClient,
         ISeasonPackCatalogService catalogService,
         ISeasonPackEntryRepository entryRepository,
+        IBackgroundJobClient backgroundJobClient,
         ILogger<SeasonPackProvider> logger)
     {
         _seasonPackSubtitleRepository = seasonPackSubtitleRepository;
@@ -31,6 +33,7 @@ public class SeasonPackProvider : ISeasonPackProvider
         _superSubtitlesClient = superSubtitlesClient;
         _catalogService = catalogService;
         _entryRepository = entryRepository;
+        _backgroundJobClient = backgroundJobClient;
         _logger = logger;
     }
 
@@ -126,7 +129,7 @@ public class SeasonPackProvider : ISeasonPackProvider
             var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), episode: episode, cancellationToken: token);
             await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
 
-            BackgroundJob.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(seasonPack.UniqueId, null!, default));
+            _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(seasonPack.UniqueId, null!, default));
 
             return new MemoryStream(response.Content.ToByteArray());
         }
@@ -141,7 +144,7 @@ public class SeasonPackProvider : ISeasonPackProvider
         var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), episode: null, cancellationToken: token);
         var blob = response.Content.ToByteArray();
 
-        BackgroundJob.Enqueue<StoreSeasonPackJob>(job => job.StoreAsync(seasonPack.UniqueId, blob, null, default));
+        _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.StoreAsync(seasonPack.UniqueId, blob, null, default));
 
         await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
         return new MemoryStream(blob);

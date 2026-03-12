@@ -5,6 +5,7 @@ using AddictedProxy.Storage.Caching.Service;
 using FluentAssertions;
 using Google.Protobuf;
 using Grpc.Core;
+using Hangfire;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
@@ -22,6 +23,7 @@ public class SeasonPackProviderTests
     private ISuperSubtitlesClient _superSubtitlesClient = null!;
     private ISeasonPackCatalogService _catalogService = null!;
     private ISeasonPackEntryRepository _entryRepository = null!;
+    private IBackgroundJobClient _backgroundJobClient = null!;
     private ILogger<SeasonPackProvider> _logger = null!;
     private SeasonPackProvider _sut = null!;
 
@@ -33,6 +35,7 @@ public class SeasonPackProviderTests
         _superSubtitlesClient = Substitute.For<ISuperSubtitlesClient>();
         _catalogService = Substitute.For<ISeasonPackCatalogService>();
         _entryRepository = Substitute.For<ISeasonPackEntryRepository>();
+        _backgroundJobClient = Substitute.For<IBackgroundJobClient>();
         _logger = Substitute.For<ILogger<SeasonPackProvider>>();
 
         _sut = new SeasonPackProvider(
@@ -41,6 +44,7 @@ public class SeasonPackProviderTests
             _superSubtitlesClient,
             _catalogService,
             _entryRepository,
+            _backgroundJobClient,
             _logger);
     }
 
