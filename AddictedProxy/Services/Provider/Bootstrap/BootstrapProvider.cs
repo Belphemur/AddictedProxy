@@ -36,6 +36,7 @@ public class BootstrapProvider : IBootstrap
 
         // Season pack provider
         services.AddScoped<ISeasonPackProvider, SeasonPackProvider>();
+        services.AddScoped<ISeasonPackCatalogService, SeasonPackCatalogService>();
 
         // SuperSubtitles import config
         services.Configure<SuperSubtitlesImportConfig>(
