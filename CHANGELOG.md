@@ -1,3 +1,9 @@
+## [4.59.1](https://github.com/Belphemur/AddictedProxy/compare/v4.59.0...v4.59.1) (2026-03-13)
+
+### Bug Fixes
+
+* discard wrong archive ([43d77f1](https://github.com/Belphemur/AddictedProxy/commit/43d77f1b21806c8ab48d28d6bf2430beee4d1028))
+
 ## [4.59.0](https://github.com/Belphemur/AddictedProxy/compare/v4.58.2...v4.59.0) (2026-03-13)
 
 ### Features
