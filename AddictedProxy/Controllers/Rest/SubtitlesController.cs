@@ -287,12 +287,10 @@ public class SubtitlesController : Controller
                         var (catalogedPacks, uncatalogedPacks) = await GetSeasonPackSubtitleDtos(tvShow, season, episode, subtitleFound.Language, token);
                         foundMatchingSubtitles.AddRange(catalogedPacks);
 
-                        // Fall back to uncataloged season packs only when nothing else was found
-                        if (foundMatchingSubtitles.Count == 0)
-                        {
-                            foundMatchingSubtitles.AddRange(uncatalogedPacks);
-                        }
-
+                        // We'll also send the uncatalogued season packs as "matching" subtitles, even if we don't know for sure they have the episode, to give clients the chance to offer them as an option (with a "may contain the episode" disclaimer)
+                        // if taken by the user, this will trigger downloading and cataloging of the season pack
+                        foundMatchingSubtitles.AddRange(uncatalogedPacks);
+                        
                         return TypedResults.Ok(new SubtitleSearchResponse(foundMatchingSubtitles, subtitleFound.Episode));
                     },
                     onStatusCode: statusCode =>
