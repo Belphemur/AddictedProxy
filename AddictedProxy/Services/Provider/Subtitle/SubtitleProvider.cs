@@ -44,17 +44,24 @@ internal class SubtitleProvider : ISubtitleProvider
         //We have the subtitle stored
         if (subtitle.StoragePath != null)
         {
-            var stream = await _cachedStorageProvider.GetSertAsync("subtitle", subtitle.StoragePath, token);
-            if (stream != null)
+            var stream = await _cachedStorageProvider.GetSertAsync("subtitle", subtitle.StoragePath,
+                ct => DownloadSubtitleForCacheAsync(subtitle, ct), token);
+            if (stream == null)
             {
-                await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
-                return stream;
+                _logger.LogError("GetSert returned null for subtitle with path [{path}] after cache/storage miss", subtitle.StoragePath);
+                return await DownloadStoreSubtitleAsync(subtitle, token);
             }
 
-            _logger.LogWarning("Couldn't find subtitle with path [{path}] in storage, even if we have a path for it", subtitle.StoragePath);
+            await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
+            return stream;
         }
 
         return await DownloadStoreSubtitleAsync(subtitle, token);
+    }
+
+    private async Task<Stream?> DownloadSubtitleForCacheAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token)
+    {
+        return new MemoryStream(await DownloadSubtitleBlobAsync(subtitle, token));
     }
 
     private async Task<Stream> DownloadStoreSubtitleAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token)
@@ -70,17 +77,33 @@ internal class SubtitleProvider : ISubtitleProvider
                 return await downloader.DownloadSubtitleAsync(subtitle, token);
             }
 
+            var blob = await DownloadSubtitleBlobAsync(subtitle, token);
+
+            BackgroundJob.Enqueue<StoreSubtitleJob>(job => job.ExecuteAsync(subtitle.UniqueId, blob, null!, default));
+
+            await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
+            return new MemoryStream(blob);
+        }
+        catch (SubtitleFileDeletedException)
+        {
+            _subtitleRepository.TagForRemoval(subtitle);
+            await _subtitleRepository.SaveChangeAsync(token);
+            throw;
+        }
+    }
+
+    private async Task<byte[]> DownloadSubtitleBlobAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token)
+    {
+        var downloader = _downloaderFactory.GetService(subtitle.Source);
+
+        try
+        {
             await using var subtitleStream = await downloader.DownloadSubtitleAsync(subtitle, token);
             await using var buffer = new MemoryStream();
 
             await subtitleStream.CopyToAsync(buffer, token);
 
-            var blob = buffer.ToArray();
-
-            BackgroundJob.Enqueue<StoreSubtitleJob>(job => job.ExecuteAsync(subtitle.UniqueId, blob, null, default));
-
-            await _subtitleCounterUpdater.IncrementSubtitleCountAsync(subtitle, token);
-            return new MemoryStream(blob);
+            return buffer.ToArray();
         }
         catch (SubtitleFileDeletedException)
         {
