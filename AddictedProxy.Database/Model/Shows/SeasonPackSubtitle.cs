@@ -110,6 +110,11 @@ public class SeasonPackSubtitle : BaseEntity, IDiscoverableObject
     /// </summary>
     public DateTime? StoredAt { get; set; }
 
+    /// <summary>
+    /// Cataloged entries parsed from the ZIP archive
+    /// </summary>
+    public virtual ICollection<SeasonPackEntry> Entries { get; set; } = [];
+
     /// <inheritdoc />
     public DateTime Discovered { get; set; }
 }

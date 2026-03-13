@@ -1,14 +1,17 @@
 using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Database.Repositories.State;
 using AddictedProxy.Services.Job.Filter;
 using AddictedProxy.Services.Job.Service;
 using AddictedProxy.Services.Provider.Merging;
 using AddictedProxy.Services.Provider.Merging.Model;
+using AddictedProxy.Services.Provider.SeasonPack;
 using AddictedProxy.Services.Provider.SuperSubtitles;
 using AddictedProxy.Services.Provider.SuperSubtitles.Config;
 using AddictedProxy.Tools.Database.Transaction;
+using Hangfire;
 using Hangfire.Console;
 using Hangfire.Server;
 using Microsoft.Extensions.Logging;
@@ -37,6 +40,7 @@ public class ImportSuperSubtitlesJob
     private readonly IProviderDataIngestionService _ingestionService;
     private readonly ITransactionManager<EntityContext> _transactionManager;
     private readonly ISuperSubtitlesStateRepository _stateRepository;
+    private readonly ISeasonPackSubtitleRepository _seasonPackRepo;
     private readonly ICultureParser _cultureParser;
     private readonly ILogger<ImportSuperSubtitlesJob> _logger;
     private readonly SuperSubtitlesImportConfig _config;
@@ -46,6 +50,7 @@ public class ImportSuperSubtitlesJob
         IProviderDataIngestionService ingestionService,
         ITransactionManager<EntityContext> transactionManager,
         ISuperSubtitlesStateRepository stateRepository,
+        ISeasonPackSubtitleRepository seasonPackRepo,
         ICultureParser cultureParser,
         IOptions<SuperSubtitlesImportConfig> config,
         ILogger<ImportSuperSubtitlesJob> logger)
@@ -54,6 +59,7 @@ public class ImportSuperSubtitlesJob
         _ingestionService = ingestionService;
         _transactionManager = transactionManager;
         _stateRepository = stateRepository;
+        _seasonPackRepo = seasonPackRepo;
         _cultureParser = cultureParser;
         _logger = logger;
         _config = config.Value;
@@ -224,6 +230,15 @@ public class ImportSuperSubtitlesJob
         if (seasonPacks.Count > 0)
         {
             await _ingestionService.IngestSeasonPacksAsync(seasonPacks, token);
+
+            // Query DB for packs that still need storing — gets real DB-generated UniqueIds
+            // and skips packs that are already stored to avoid queue spam
+            var externalIds = seasonPacks.Select(p => p.ExternalId);
+            var unstoredPacks = await _seasonPackRepo.GetUnstoredByExternalIdsAsync(DataSource.SuperSubtitles, externalIds, token);
+            foreach (var pack in unstoredPacks)
+            {
+                BackgroundJob.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(pack.UniqueId, null!, default));
+            }
         }
 
         var subtitleCount = subtitlesByEpisode.Values.Sum(g => g.Subtitles.Count);
