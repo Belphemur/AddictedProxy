@@ -283,11 +283,14 @@ public class SubtitlesController : Controller
                             )
                         ).ToList();
 
-                        // Fall back to season packs when no episode subtitles found
+                        // Always include cataloged season pack entries for this episode
+                        var (catalogedPacks, uncatalogedPacks) = await GetSeasonPackSubtitleDtos(tvShow, season, episode, subtitleFound.Language, token);
+                        foundMatchingSubtitles.AddRange(catalogedPacks);
+
+                        // Fall back to uncataloged season packs only when nothing else was found
                         if (foundMatchingSubtitles.Count == 0)
                         {
-                            var seasonPackDtos = await GetSeasonPackFallbackSubtitleDtos(tvShow, season, episode, subtitleFound.Language, token);
-                            foundMatchingSubtitles.AddRange(seasonPackDtos);
+                            foundMatchingSubtitles.AddRange(uncatalogedPacks);
                         }
 
                         return TypedResults.Ok(new SubtitleSearchResponse(foundMatchingSubtitles, subtitleFound.Episode));
@@ -316,12 +319,13 @@ public class SubtitlesController : Controller
         );
     }
 
-    private async Task<IEnumerable<SubtitleDto>> GetSeasonPackFallbackSubtitleDtos(TvShow tvShow, int season, int episode, Culture.Model.Culture language, CancellationToken token)
+    private async Task<(IEnumerable<SubtitleDto> Cataloged, IEnumerable<SubtitleDto> Uncataloged)> GetSeasonPackSubtitleDtos(TvShow tvShow, int season, int episode, Culture.Model.Culture language, CancellationToken token)
     {
         var seasonPacks = await _seasonPackSubtitleRepository.GetByShowAndSeasonAsync(tvShow.Id, season, token);
         var isoCode = language.TwoLetterISOLanguageName;
 
-        var result = new List<SubtitleDto>();
+        var cataloged = new List<SubtitleDto>();
+        var uncataloged = new List<SubtitleDto>();
 
         foreach (var pack in seasonPacks.Where(sp => string.Equals(sp.LanguageIsoCode, isoCode, StringComparison.OrdinalIgnoreCase)))
         {
@@ -335,7 +339,7 @@ public class SubtitlesController : Controller
                     var spSubtitleId = $"{SeasonPackPrefix}{pack.UniqueId}{EntrySeparator}{entry.UniqueId}";
                     var downloadUri = Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", spSubtitleId } })
                                       ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle");
-                    result.Add(new SubtitleDto(pack, entry, downloadUri, language, episode));
+                    cataloged.Add(new SubtitleDto(pack, entry, downloadUri, language, episode));
                 }
             }
             else if (pack.Entries.Count == 0)
@@ -344,12 +348,12 @@ public class SubtitlesController : Controller
                 var spSubtitleId = $"{SeasonPackPrefix}{pack.UniqueId}{EpisodeSeparator}{episode}";
                 var downloadUri = Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", spSubtitleId } })
                                   ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle");
-                result.Add(new SubtitleDto(pack, downloadUri, language, episode));
+                uncataloged.Add(new SubtitleDto(pack, downloadUri, language, episode));
             }
             // else: cataloged but no entry for this episode — skip
         }
 
-        return result;
+        return (cataloged, uncataloged);
     }
 
 
