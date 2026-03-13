@@ -10,7 +10,6 @@ namespace AddictedProxy.Services.Provider.SeasonPack;
 
 public class SeasonPackProvider : ISeasonPackProvider
 {
-    public const string EpisodeNotFoundInZipDetail = "not found in season pack ZIP";
     private readonly ISeasonPackSubtitleRepository _seasonPackSubtitleRepository;
     private readonly ICachedStorageProvider _cachedStorageProvider;
     private readonly ISuperSubtitlesClient _superSubtitlesClient;
@@ -112,7 +111,7 @@ public class SeasonPackProvider : ISeasonPackProvider
 
             return new MemoryStream(response.Content.ToByteArray());
         }
-        catch (RpcException e) when ((e.StatusCode == StatusCode.Internal || e.StatusCode == StatusCode.NotFound) && e.Status.Detail.Contains(EpisodeNotFoundInZipDetail))
+        catch (RpcException e) when (e.StatusCode == StatusCode.NotFound)
         {
             throw new EpisodeNotInSeasonPackException(episode, e.Status.Detail);
         }
