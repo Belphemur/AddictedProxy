@@ -117,16 +117,18 @@ public class SeasonPackProvider : ISeasonPackProvider
             var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), episode: episode, cancellationToken: token);
             await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
 
+            return new MemoryStream(response.Content.ToByteArray());
+        }
+        catch (RpcException e) when (e.StatusCode is StatusCode.NotFound or StatusCode.FailedPrecondition)
+        {
+            throw new EpisodeNotInSeasonPackException(episode, e.Status.Detail);
+        }
+        finally
+        {
             if(seasonPack.StoragePath == null)
             {
                 _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(seasonPack.UniqueId, null!, default));
             }
-
-            return new MemoryStream(response.Content.ToByteArray());
-        }
-        catch (RpcException e) when (e.StatusCode == StatusCode.NotFound)
-        {
-            throw new EpisodeNotInSeasonPackException(episode, e.Status.Detail);
         }
     }
 
