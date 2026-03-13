@@ -1,3 +1,9 @@
+## [4.59.2](https://github.com/Belphemur/AddictedProxy/compare/v4.59.1...v4.59.2) (2026-03-13)
+
+### Bug Fixes
+
+* **caching:** remove implicit getsert overload ([d3c5756](https://github.com/Belphemur/AddictedProxy/commit/d3c575601e45edd4a98c68045a7ee131bd0de165))
+
 ## [4.59.1](https://github.com/Belphemur/AddictedProxy/compare/v4.59.0...v4.59.1) (2026-03-13)
 
 ### Bug Fixes
