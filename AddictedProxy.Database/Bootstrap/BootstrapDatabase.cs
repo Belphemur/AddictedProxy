@@ -40,6 +40,7 @@ public class BootstrapDatabase : IBootstrap,
         services.AddScoped<IShowExternalIdRepository, ShowExternalIdRepository>();
         services.AddScoped<IEpisodeExternalIdRepository, EpisodeExternalIdRepository>();
         services.AddScoped<ISeasonPackSubtitleRepository, SeasonPackSubtitleRepository>();
+        services.AddScoped<ISeasonPackEntryRepository, SeasonPackEntryRepository>();
         services.AddScoped<ISuperSubtitlesStateRepository, SuperSubtitlesStateRepository>();
         services.AddScoped<IAddictedUserCredentialRepository, AddictedUserCredentialRepository>();
         services.AddScoped<ITransactionManager<EntityContext>, TransactionManager<EntityContext>>();

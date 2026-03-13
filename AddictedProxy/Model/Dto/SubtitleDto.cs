@@ -23,7 +23,7 @@ public class SubtitleDto
     }
 
     /// <summary>
-    /// Constructor for season pack fallback entries used in the /subtitles/get/ endpoint.
+    /// Constructor for season pack fallback entries used in the /subtitles/get/ endpoint when the pack is not yet cataloged.
     /// Maps a season pack to a SubtitleDto shape so Bazarr picks it up without code changes.
     /// </summary>
     public SubtitleDto(SeasonPackSubtitle seasonPack, string downloadUri, Culture.Model.Culture? language, int episode)
@@ -32,6 +32,27 @@ public class SubtitleDto
         Version = seasonPack.Release ?? seasonPack.Filename;
         Completed = true;
         HearingImpaired = false;
+        Corrected = false;
+        DownloadUri = downloadUri;
+        Language = language?.EnglishName ?? "Unknown";
+        Discovered = seasonPack.Discovered;
+        DownloadCount = seasonPack.DownloadCount;
+        Source = seasonPack.Source.ToString();
+        Qualities = VideoQualityFactory.ToDisplayNames(seasonPack.Qualities);
+        HD = (seasonPack.Qualities & (VideoQuality.Q720P | VideoQuality.Q1080P | VideoQuality.Q2160P)) != VideoQuality.None;
+        Release = seasonPack.Release;
+    }
+
+    /// <summary>
+    /// Constructor for a specific catalog entry within a season pack.
+    /// Each entry represents a single file in the ZIP (e.g., regular SRT vs dubtitle).
+    /// </summary>
+    public SubtitleDto(SeasonPackSubtitle seasonPack, SeasonPackEntry entry, string downloadUri, Culture.Model.Culture? language, int episode)
+    {
+        SubtitleId = $"sp_{seasonPack.UniqueId}_entry_{entry.UniqueId}";
+        Version = entry.ReleaseGroup ?? seasonPack.Release ?? seasonPack.Filename;
+        Completed = true;
+        HearingImpaired = entry.FileName.Contains("dubtitle", StringComparison.OrdinalIgnoreCase);
         Corrected = false;
         DownloadUri = downloadUri;
         Language = language?.EnglishName ?? "Unknown";

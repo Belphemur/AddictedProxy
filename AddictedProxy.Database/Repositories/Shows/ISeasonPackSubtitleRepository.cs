@@ -20,6 +20,12 @@ public interface ISeasonPackSubtitleRepository
     Task<SeasonPackSubtitle?> GetByUniqueIdAsync(Guid uniqueId, CancellationToken token);
 
     /// <summary>
+    /// Get season pack subtitles by source and external IDs that have not yet been stored (StoragePath is null).
+    /// Used after ingestion to get DB-generated UniqueIds for job enqueuing.
+    /// </summary>
+    Task<IReadOnlyList<SeasonPackSubtitle>> GetUnstoredByExternalIdsAsync(DataSource source, IEnumerable<long> externalIds, CancellationToken token);
+
+    /// <summary>
     /// Add or update multiple season pack subtitles
     /// </summary>
     Task BulkUpsertAsync(IEnumerable<SeasonPackSubtitle> seasonPackSubtitles, CancellationToken token);

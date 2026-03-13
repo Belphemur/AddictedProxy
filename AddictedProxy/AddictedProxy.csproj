@@ -7,6 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="AddictedProxy.Services.Tests" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Hangfire.AspNetCore" />
         <PackageReference Include="Hangfire.Console" />
         <PackageReference Include="Hangfire.Dashboard.BasicAuthorization" />
