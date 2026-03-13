@@ -2,6 +2,7 @@ using System.IO.Compression;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Storage.Caching.Service;
+using AddictedProxy.Storage.Extensions;
 using Grpc.Core;
 using Hangfire;
 using SuperSubtitleClient.Service;
@@ -47,14 +48,16 @@ public class SeasonPackProvider : ISeasonPackProvider
     {
         if (seasonPack.StoragePath != null)
         {
-            var stream = await _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath, token);
-            if (stream != null)
+            var stream = await _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath,
+                async ct => await DownloadAndStoreFullZipAsync(seasonPack, ct), token);
+            if (stream == null)
             {
-                await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
-                return stream;
+                _logger.LogError("GetSert returned null for season pack with path [{path}] after cache/storage miss", seasonPack.StoragePath);
+                return await DownloadAndStoreFullZipAsync(seasonPack, token);
             }
 
-            _logger.LogWarning("Couldn't find season pack with path [{path}] in storage, downloading from upstream", seasonPack.StoragePath);
+            await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
+            return stream;
         }
 
         return await DownloadAndStoreFullZipAsync(seasonPack, token);
@@ -65,14 +68,15 @@ public class SeasonPackProvider : ISeasonPackProvider
         if (seasonPack.StoragePath == null)
         {
             _logger.LogWarning("Season pack {SeasonPackId} has no storage path, falling back to upstream for episode {Episode}", seasonPack.Id, entry.EpisodeNumber);
-            return await DownloadFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
+            return await DownloadEpisodeFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
         }
 
-        var zipStream = await _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath, token);
+        var zipStream = await _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath,
+            async ct => await DownloadAndStoreFullZipAsync(seasonPack, ct), token);
         if (zipStream == null)
         {
-            _logger.LogWarning("Couldn't find season pack with path [{path}] in storage for self-extraction, falling back to upstream", seasonPack.StoragePath);
-            return await DownloadFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
+            _logger.LogError("GetSert returned null for season pack with path [{path}] during entry extraction", seasonPack.StoragePath);
+            return await DownloadEpisodeFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
         }
 
         await using (zipStream)
@@ -82,13 +86,13 @@ public class SeasonPackProvider : ISeasonPackProvider
             if (zipEntry == null)
             {
                 _logger.LogWarning("Catalog entry {FileName} not found in ZIP for season pack {SeasonPackId}, falling back to upstream", entry.FileName, seasonPack.Id);
-                return await DownloadFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
+                return await DownloadEpisodeFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
             }
 
             var result = new MemoryStream();
             await using var entryStream = zipEntry.Open();
             await entryStream.CopyToAsync(result, token);
-            result.Position = 0;
+            result.ResetPosition();
 
             await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
             return result;
@@ -107,10 +111,10 @@ public class SeasonPackProvider : ISeasonPackProvider
             throw new EpisodeNotInSeasonPackException(episode, $"Episode {episode} is after season pack range end ({seasonPack.RangeEnd.Value})");
         }
 
-        return await DownloadFromUpstreamAsync(seasonPack, episode, token);
+        return await DownloadEpisodeFromUpstreamAsync(seasonPack, episode, token);
     }
 
-    private async Task<Stream> DownloadFromUpstreamAsync(SeasonPackSubtitle seasonPack, int episode, CancellationToken token)
+    private async Task<Stream> DownloadEpisodeFromUpstreamAsync(SeasonPackSubtitle seasonPack, int episode, CancellationToken token)
     {
         try
         {
@@ -125,7 +129,7 @@ public class SeasonPackProvider : ISeasonPackProvider
         }
         finally
         {
-            if(seasonPack.StoragePath == null)
+            if (seasonPack.StoragePath == null)
             {
                 _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(seasonPack.UniqueId, null!, default));
             }
@@ -137,7 +141,10 @@ public class SeasonPackProvider : ISeasonPackProvider
         var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), episode: null, cancellationToken: token);
         var blob = response.Content.ToByteArray();
 
-        _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.StoreAsync(seasonPack.UniqueId, blob, null, default));
+        if (seasonPack.StoragePath == null)
+        {
+            _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.StoreAsync(seasonPack.UniqueId, blob, null, default));
+        }
 
         await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
         return new MemoryStream(blob);

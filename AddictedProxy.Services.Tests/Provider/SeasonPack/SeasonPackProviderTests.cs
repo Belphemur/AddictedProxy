@@ -218,7 +218,7 @@ public class SeasonPackProviderTests
         var entry = CreateEntry(seasonPack.Id, episode, "Show.S03E03.720p.srt");
         var zipBlob = CreateZipWithEntries(("Show.S03E03.720p.srt", srtContent));
 
-        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<CancellationToken>())
+        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<Func<CancellationToken, Task<Stream?>>>(), Arg.Any<CancellationToken>())
             .Returns(new MemoryStream(zipBlob));
 
         // Act
@@ -264,23 +264,24 @@ public class SeasonPackProviderTests
         const int episode = 3;
         var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
         var entry = CreateEntry(seasonPack.Id, episode, "Show.S03E03.720p.srt");
-        var content = new byte[] { 7, 8, 9 };
-        var response = new DownloadSubtitleResponse { Content = ByteString.CopyFrom(content) };
+        const string srtContent = "1\n00:00:01,000 --> 00:00:02,000\nHello";
+        var zipBlob = CreateZipWithEntries((entry.FileName, srtContent));
+        var response = new DownloadSubtitleResponse { Content = ByteString.CopyFrom(zipBlob) };
 
         // Storage returns null (ZIP not found in S3)
-        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<CancellationToken>())
-            .Returns((Stream?)null);
+        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<Func<CancellationToken, Task<Stream?>>>(), Arg.Any<CancellationToken>())
+            .Returns(callInfo => callInfo.ArgAt<Func<CancellationToken, Task<Stream?>>>(2)(CancellationToken.None));
         _superSubtitlesClient
-            .DownloadSubtitleAsync("42", episode, Arg.Any<CancellationToken>())
+            .DownloadSubtitleAsync("42", null, Arg.Any<CancellationToken>())
             .Returns(response);
 
         // Act
         var result = await _sut.GetEntryFileAsync(seasonPack, entry, CancellationToken.None);
 
         // Assert
-        var buffer = new byte[content.Length];
-        await result.ReadExactlyAsync(buffer, CancellationToken.None);
-        buffer.Should().Equal(content);
+        using var reader = new StreamReader(result);
+        var content = await reader.ReadToEndAsync();
+        content.Should().Be(srtContent);
     }
 
     [Test]
@@ -294,7 +295,7 @@ public class SeasonPackProviderTests
         var content = new byte[] { 7, 8, 9 };
         var response = new DownloadSubtitleResponse { Content = ByteString.CopyFrom(content) };
 
-        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<CancellationToken>())
+        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<Func<CancellationToken, Task<Stream?>>>(), Arg.Any<CancellationToken>())
             .Returns(new MemoryStream(zipBlob));
         _superSubtitlesClient
             .DownloadSubtitleAsync("42", episode, Arg.Any<CancellationToken>())
@@ -320,7 +321,7 @@ public class SeasonPackProviderTests
         var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
         var zipContent = new byte[] { 1, 2, 3 };
 
-        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<CancellationToken>())
+        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<Func<CancellationToken, Task<Stream?>>>(), Arg.Any<CancellationToken>())
             .Returns(new MemoryStream(zipContent));
 
         // Act

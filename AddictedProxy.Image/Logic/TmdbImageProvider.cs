@@ -64,7 +64,7 @@ public class TmdbImageProvider : IImageProvider
                 return null;
             }
 
-            await _cachedStorageProvider.GetSertAsync("tmdb",  context.Request.Path, _ => Task.FromResult(image.Value.ImageStream)!, default);
+            await _cachedStorageProvider.GetSertAsync("tmdb",  context.Request.Path, _ => Task.FromResult<Stream?>(image.Value.ImageStream), default);
     
 
             return new DistributedCacheExtensions.CacheData<TmdbImageMetadata?>(image.Value.Metadata, new DistributedCacheEntryOptions
