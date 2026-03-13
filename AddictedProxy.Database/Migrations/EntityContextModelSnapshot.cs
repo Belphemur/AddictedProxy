@@ -274,6 +274,12 @@ namespace AddictedProxy.Database.Migrations
                     b.Property<int>("Qualities")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("RangeEnd")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("RangeStart")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Release")
                         .HasColumnType("text");
 

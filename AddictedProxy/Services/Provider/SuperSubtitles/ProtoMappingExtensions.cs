@@ -79,6 +79,8 @@ internal static class ProtoMappingExtensions
             Language = subtitle.Language,
             LanguageIsoCode = languageIsoCode,
             Release = string.IsNullOrEmpty(subtitle.Release) ? null : subtitle.Release,
+            RangeStart = subtitle.HasRangeStart ? subtitle.RangeStart : null,
+            RangeEnd = subtitle.HasRangeEnd ? subtitle.RangeEnd : null,
             Uploader = string.IsNullOrEmpty(subtitle.Uploader) ? null : subtitle.Uploader,
             UploadedAt = subtitle.UploadedAt?.ToDateTime(),
             Qualities = subtitle.Qualities.ToVideoQuality(),

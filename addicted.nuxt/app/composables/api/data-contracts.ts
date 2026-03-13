@@ -356,6 +356,18 @@ export interface SeasonPackSubtitleDto {
    * @example ["NTb","FLUX"]
    */
   releaseGroups: string[];
+  /**
+   * Optional first episode covered by this season pack.
+   * @format int32
+   * @example 1
+   */
+  rangeStart?: number | null;
+  /**
+   * Optional last episode covered by this season pack.
+   * @format int32
+   * @example 8
+   */
+  rangeEnd?: number | null;
   /** Who uploaded this subtitle */
   uploader?: string | null;
   /**

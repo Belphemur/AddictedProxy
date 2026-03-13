@@ -97,6 +97,16 @@ public class SeasonPackProvider : ISeasonPackProvider
 
     public async Task<Stream> GetEpisodeFromUpstreamAsync(SeasonPackSubtitle seasonPack, int episode, CancellationToken token)
     {
+        if (seasonPack.RangeStart.HasValue && episode < seasonPack.RangeStart.Value)
+        {
+            throw new EpisodeNotInSeasonPackException(episode, $"Episode {episode} is before season pack range start ({seasonPack.RangeStart.Value})");
+        }
+
+        if (seasonPack.RangeEnd.HasValue && episode > seasonPack.RangeEnd.Value)
+        {
+            throw new EpisodeNotInSeasonPackException(episode, $"Episode {episode} is after season pack range end ({seasonPack.RangeEnd.Value})");
+        }
+
         return await DownloadFromUpstreamAsync(seasonPack, episode, token);
     }
 

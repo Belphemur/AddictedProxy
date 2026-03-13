@@ -14,6 +14,14 @@ public class SeasonPackSubtitleDto
         Language = language?.EnglishName ?? "Unknown";
         Version = seasonPack.Release ?? seasonPack.Filename;
         ReleaseGroups = seasonPack.ReleaseGroups?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+        var entryRangeStart = seasonPack.Entries.Count > 0
+            ? seasonPack.Entries.Min(entry => entry.EpisodeNumber)
+            : (int?)null;
+        var entryRangeEnd = seasonPack.Entries.Count > 0
+            ? seasonPack.Entries.Max(entry => entry.EpisodeNumber)
+            : (int?)null;
+        RangeStart = seasonPack.RangeStart ?? entryRangeStart;
+        RangeEnd = seasonPack.RangeEnd ?? entryRangeEnd;
         Uploader = seasonPack.Uploader;
         UploadedAt = seasonPack.UploadedAt;
         Qualities = VideoQualityFactory.ToDisplayNames(seasonPack.Qualities);
@@ -49,6 +57,18 @@ public class SeasonPackSubtitleDto
     /// <example>["NTb","FLUX"]</example>
     [Required]
     public string[] ReleaseGroups { get; }
+
+    /// <summary>
+    /// Optional first episode covered by this season pack.
+    /// </summary>
+    /// <example>1</example>
+    public int? RangeStart { get; }
+
+    /// <summary>
+    /// Optional last episode covered by this season pack.
+    /// </summary>
+    /// <example>8</example>
+    public int? RangeEnd { get; }
 
     /// <summary>
     /// Who uploaded this subtitle

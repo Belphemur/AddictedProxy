@@ -8,6 +8,9 @@
             <template v-slot:item.qualities="{ item }">
                 <shows-quality-chips :qualities="item.qualities" />
             </template>
+            <template v-slot:item.range="{ item }">
+                <span class="text-body-2">{{ formatRange(item) }}</span>
+            </template>
             <template v-slot:item.source="{ item }">
                 <v-chip :color="item.source === 'SuperSubtitles' ? 'teal' : 'blue-darken-2'" size="small"
                     label>{{ item.source }}</v-chip>
@@ -40,6 +43,9 @@
                         </div>
                         <div v-if="pack.qualities?.length" class="d-flex align-center flex-wrap ga-2 mb-2">
                             <shows-quality-chips :qualities="pack.qualities" />
+                        </div>
+                        <div class="text-body-2 text-medium-emphasis mb-2">
+                            Range: {{ formatRange(pack) }}
                         </div>
                         <div v-if="pack.uploader" class="text-body-2 text-medium-emphasis mb-2">
                             Uploaded by {{ pack.uploader }}
@@ -77,6 +83,7 @@ const device = useDevice();
 const headers = [
     { title: "Release Group", key: "releaseGroups" },
     { title: "Quality", key: "qualities" },
+    { title: "Range", key: "range" },
     { title: "Uploader", key: "uploader" },
     { title: "Source", key: "source" },
     { title: "Downloads", key: "downloadCount" },
@@ -86,6 +93,22 @@ const currentlyDownloading = ref<Set<string>>(new Set());
 const localDownloadCounts = ref<Map<string, number>>(new Map());
 
 const RFC5987_PREFIX = "utf-8''";
+
+const formatRange = (pack: SeasonPackSubtitleDto): string => {
+    if (pack.rangeStart != null && pack.rangeEnd != null) {
+        return `E${pack.rangeStart}-E${pack.rangeEnd}`;
+    }
+
+    if (pack.rangeStart != null) {
+        return `From E${pack.rangeStart}`;
+    }
+
+    if (pack.rangeEnd != null) {
+        return `Up to E${pack.rangeEnd}`;
+    }
+
+    return "Unknown";
+};
 
 const downloadSeasonPack = async (pack: SeasonPackSubtitleDto) => {
     mevent("download-subtitle", { subtitleId: pack.subtitleId, seasonPack: true });
