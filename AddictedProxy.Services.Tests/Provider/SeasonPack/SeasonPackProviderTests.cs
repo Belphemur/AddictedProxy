@@ -74,7 +74,7 @@ public class SeasonPackProviderTests
     {
         // Arrange
         var seasonPack = CreateSeasonPack(externalId: 99);
-        var rpcException = new RpcException(new Status(StatusCode.Internal,
+        var rpcException = new RpcException(new Status(StatusCode.NotFound,
             $"failed to download subtitle: failed to extract episode 5 from archive: episode 5 (searched 13 files)"));
 
         _superSubtitlesClient
