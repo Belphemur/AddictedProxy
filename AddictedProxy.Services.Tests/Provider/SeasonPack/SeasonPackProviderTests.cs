@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Provider.SeasonPack;
@@ -11,7 +12,6 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using SuperSubtitleClient.Generated;
 using SuperSubtitleClient.Service;
-using System.IO.Compression;
 
 namespace AddictedProxy.Services.Tests.Provider.SeasonPack;
 
@@ -75,7 +75,7 @@ public class SeasonPackProviderTests
         // Arrange
         var seasonPack = CreateSeasonPack(externalId: 99);
         var rpcException = new RpcException(new Status(StatusCode.Internal,
-            $"failed to download subtitle: failed to extract episode 5 from ZIP: episode 5 {SeasonPackProvider.EpisodeNotFoundInZipDetail} (searched 13 files)"));
+            $"failed to download subtitle: failed to extract episode 5 from archive: episode 5 (searched 13 files)"));
 
         _superSubtitlesClient
             .DownloadSubtitleAsync(Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
@@ -117,7 +117,7 @@ public class SeasonPackProviderTests
         // Arrange
         var seasonPack = CreateSeasonPack(externalId: 99);
         var rpcException = new RpcException(new Status(StatusCode.NotFound,
-            $"episode not found in subtitle ZIP archive: failed to extract episode 55 from ZIP: episode 55 {SeasonPackProvider.EpisodeNotFoundInZipDetail} (searched 34 files)"));
+            $"episode not found in subtitle ZIP archive: failed to extract episode 55 from archive: episode 55 (searched 34 files)"));
 
         _superSubtitlesClient
             .DownloadSubtitleAsync(Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
