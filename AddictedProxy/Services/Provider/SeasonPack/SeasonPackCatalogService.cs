@@ -50,6 +50,11 @@ public partial class SeasonPackCatalogService : ISeasonPackCatalogService
         foreach (var entry in archive.Entries)
         {
             var fileName = entry.FullName;
+            if (!IsSubtitleFile(fileName))
+            {
+                continue;
+            }
+
             var match = EpisodeNumberRegex().Match(fileName);
             if (!match.Success)
             {
@@ -80,20 +85,11 @@ public partial class SeasonPackCatalogService : ISeasonPackCatalogService
         // Get the text after SxxExx
         var afterEpisode = fileName[(episodeMatch.Index + episodeMatch.Length)..];
 
-        // Remove file extension
+        // Remove file extension if it is a known subtitle extension
         var extIndex = afterEpisode.LastIndexOf('.');
-        if (extIndex > 0)
+        if (extIndex > 0 && SubtitleExtensions.Contains(afterEpisode[extIndex..]))
         {
-            // Check if the extension is a known media extension (not part of the name)
-            var ext = afterEpisode[(extIndex + 1)..];
-            if (ext.Equals("srt", StringComparison.OrdinalIgnoreCase) ||
-                ext.Equals("sub", StringComparison.OrdinalIgnoreCase) ||
-                ext.Equals("ass", StringComparison.OrdinalIgnoreCase) ||
-                ext.Equals("ssa", StringComparison.OrdinalIgnoreCase) ||
-                ext.Equals("idx", StringComparison.OrdinalIgnoreCase))
-            {
-                afterEpisode = afterEpisode[..extIndex];
-            }
+            afterEpisode = afterEpisode[..extIndex];
         }
 
         // Find release markers using pattern matching against token boundaries
@@ -131,6 +127,16 @@ public partial class SeasonPackCatalogService : ISeasonPackCatalogService
         var releaseGroup = matchedMarkers.Count > 0 ? string.Join(", ", matchedMarkers) : null;
 
         return (episodeTitle, releaseGroup);
+    }
+
+    private static readonly HashSet<string> SubtitleExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".srt", ".sub", ".ass", ".ssa", ".idx", ".vtt"
+    };
+
+    private static bool IsSubtitleFile(string fileName)
+    {
+        return SubtitleExtensions.Contains(Path.GetExtension(fileName));
     }
 
     [GeneratedRegex(@"S\d{2}E(\d{2,3})", RegexOptions.IgnoreCase)]
