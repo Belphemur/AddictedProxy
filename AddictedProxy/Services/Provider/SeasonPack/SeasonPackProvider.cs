@@ -107,7 +107,10 @@ public class SeasonPackProvider : ISeasonPackProvider
             var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), episode: episode, cancellationToken: token);
             await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
 
-            _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(seasonPack.UniqueId, null!, default));
+            if(seasonPack.StoragePath == null)
+            {
+                _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(seasonPack.UniqueId, null!, default));
+            }
 
             return new MemoryStream(response.Content.ToByteArray());
         }
