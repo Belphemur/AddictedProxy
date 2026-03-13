@@ -75,6 +75,8 @@ message Subtitle {
   repeated string release_groups = 13;
   string release = 14;
   bool is_season_pack = 15;
+  optional int32 range_start = 16;
+  optional int32 range_end = 17;
 }
 
 // ShowInfo represents a TV show with its third-party IDs (sent once per show in a stream)
