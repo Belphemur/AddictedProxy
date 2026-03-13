@@ -1,3 +1,9 @@
+## [4.58.1](https://github.com/Belphemur/AddictedProxy/compare/v4.58.0...v4.58.1) (2026-03-13)
+
+### Bug Fixes
+
+* **database:** ensure updatedat triggers via migrations ([72b294e](https://github.com/Belphemur/AddictedProxy/commit/72b294e2537a5272ca496df29344c61ba78df715))
+
 ## [4.58.0](https://github.com/Belphemur/AddictedProxy/compare/v4.57.0...v4.58.0) (2026-03-13)
 
 ### Performance improvements
