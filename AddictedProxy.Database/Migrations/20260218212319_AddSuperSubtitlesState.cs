@@ -26,11 +26,21 @@ namespace AddictedProxy.Database.Migrations
                 {
                     table.PrimaryKey("PK_SuperSubtitlesState", x => x.Id);
                 });
+
+            migrationBuilder.Sql("""
+                                 CREATE TRIGGER updated_at_trigger_supersubtitlesstate
+                                 BEFORE UPDATE ON "SuperSubtitlesState"
+                                 FOR EACH ROW EXECUTE FUNCTION updated_set_now();
+                                 """);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("""
+                                 DROP TRIGGER IF EXISTS updated_at_trigger_supersubtitlesstate ON "SuperSubtitlesState";
+                                 """);
+
             migrationBuilder.DropTable(
                 name: "SuperSubtitlesState");
         }

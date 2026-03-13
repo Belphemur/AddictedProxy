@@ -163,6 +163,7 @@ The `MigrationType` property auto-generates a name: `"YYYY-M-D_ClassName"`.
 | `BackportHdToQualitiesMigration` | 2026-02-20 | Migrate legacy `HD` flag to `Qualities` bitmask |
 | `CleanSuperSubtitlesDataMigration` | 2026-02-21 | Truncate and re-import all SuperSubtitles data |
 | `BackfillSeasonPackSeasonFkMigration` | 2026-02-24 | Backfill `SeasonId` FK on `SeasonPackSubtitles` by joining on `TvShowId` + `Season` number |
+| `EnsureUpdatedAtTriggersMigration` | 2026-03-12 | Ensure every table with `UpdatedAt` has the PostgreSQL update trigger |
 
 ### Registration
 

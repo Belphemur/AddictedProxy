@@ -2,9 +2,11 @@
 
 ## Overview
 
-AddictedProxy uses PostgreSQL as its primary database, accessed via Entity Framework Core 10 with the Npgsql provider. All entities inherit from `BaseEntity` which provides `CreatedAt` and `UpdatedAt` timestamps.
+AddictedProxy uses PostgreSQL as its primary database, accessed via Entity Framework Core 10 with the Npgsql provider. Persistent entities inherit from `BaseEntity`, which provides `CreatedAt` and `UpdatedAt` provenance timestamps.
 
 Schema changes are managed via **EF Core migrations** (located in `AddictedProxy.Database/Migrations/`), which are auto-applied on application startup via `dbContext.Database.MigrateAsync()`.
+
+Tables with an `UpdatedAt` column are expected to have a PostgreSQL `BEFORE UPDATE` trigger that calls `updated_set_now()` and writes `UpdatedAt` in UTC. New persisted models should keep inheriting from `BaseEntity`, and the EF migration that creates the table should also create and drop that trigger explicitly.
 
 One-time **data migrations** (not schema changes) are handled by the `OneTimeMigration` framework (see [Background Jobs](background-jobs.md)).
 

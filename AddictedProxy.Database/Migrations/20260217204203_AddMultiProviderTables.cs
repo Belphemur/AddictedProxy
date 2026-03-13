@@ -138,11 +138,41 @@ namespace AddictedProxy.Database.Migrations
                 table: "ShowExternalIds",
                 columns: new[] { "TvShowId", "Source" },
                 unique: true);
+
+            migrationBuilder.Sql("""
+                                 CREATE TRIGGER updated_at_trigger_episodeexternalids
+                                 BEFORE UPDATE ON "EpisodeExternalIds"
+                                 FOR EACH ROW EXECUTE FUNCTION updated_set_now();
+                                 """);
+
+            migrationBuilder.Sql("""
+                                 CREATE TRIGGER updated_at_trigger_seasonpacksubtitles
+                                 BEFORE UPDATE ON "SeasonPackSubtitles"
+                                 FOR EACH ROW EXECUTE FUNCTION updated_set_now();
+                                 """);
+
+            migrationBuilder.Sql("""
+                                 CREATE TRIGGER updated_at_trigger_showexternalids
+                                 BEFORE UPDATE ON "ShowExternalIds"
+                                 FOR EACH ROW EXECUTE FUNCTION updated_set_now();
+                                 """);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("""
+                                 DROP TRIGGER IF EXISTS updated_at_trigger_episodeexternalids ON "EpisodeExternalIds";
+                                 """);
+
+            migrationBuilder.Sql("""
+                                 DROP TRIGGER IF EXISTS updated_at_trigger_seasonpacksubtitles ON "SeasonPackSubtitles";
+                                 """);
+
+            migrationBuilder.Sql("""
+                                 DROP TRIGGER IF EXISTS updated_at_trigger_showexternalids ON "ShowExternalIds";
+                                 """);
+
             migrationBuilder.DropTable(
                 name: "EpisodeExternalIds");
 

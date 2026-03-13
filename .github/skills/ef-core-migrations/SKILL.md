@@ -5,16 +5,16 @@ description: How to create, manage, and troubleshoot EF Core database migrations
 
 ## Project layout
 
-| Concern | Project | Notes |
-| ------- | ------- | ----- |
-| DbContext (`EntityContext`) | `AddictedProxy.Database` | Contains all entities, DbSets, and `OnModelCreating` |
-| Design-time factory | `AddictedProxy.Database/Context/Factory/EntityContextFactory.cs` | Implements `IDesignTimeDbContextFactory<EntityContext>` |
-| `Microsoft.EntityFrameworkCore.Design` package | `AddictedProxy.Database.csproj` | Required by `dotnet-ef` tooling |
-| Generated migrations | `AddictedProxy.Database/Migrations/` | Timestamped `.cs` + `.Designer.cs` files |
-| Model snapshot | `AddictedProxy.Database/Migrations/EntityContextModelSnapshot.cs` | Auto-updated by `dotnet-ef` |
+| Concern                                        | Project                                                           | Notes                                                   |
+| ---------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------- |
+| DbContext (`EntityContext`)                    | `AddictedProxy.Database`                                          | Contains all entities, DbSets, and `OnModelCreating`    |
+| Design-time factory                            | `AddictedProxy.Database/Context/Factory/EntityContextFactory.cs`  | Implements `IDesignTimeDbContextFactory<EntityContext>` |
+| `Microsoft.EntityFrameworkCore.Design` package | `AddictedProxy.Database.csproj`                                   | Required by `dotnet-ef` tooling                         |
+| Generated migrations                           | `AddictedProxy.Database/Migrations/`                              | Timestamped `.cs` + `.Designer.cs` files                |
+| Model snapshot                                 | `AddictedProxy.Database/Migrations/EntityContextModelSnapshot.cs` | Auto-updated by `dotnet-ef`                             |
 
 > **Key point:** The main web project (`AddictedProxy/`) does **not** reference
-> `Microsoft.EntityFrameworkCore.Design`.  The Database project owns both the
+> `Microsoft.EntityFrameworkCore.Design`. The Database project owns both the
 > design-time factory and the Design package, so it must be used as the
 > `--startup-project`.
 
@@ -44,6 +44,26 @@ Use PascalCase descriptive names that reflect the change:
 - `AddSeasonPackEntries` — adding a new table
 - `AddSeasonPackDownloadCountAndSeasonFk` — adding columns and a FK
 - `AddMultiProviderTables` — adding multiple related tables
+
+### Provenance convention for new models
+
+When adding a new persisted model, default to inheriting from `BaseEntity`
+unless there is a clear reason not to. That gives the table `CreatedAt` and
+`UpdatedAt` provenance columns automatically.
+
+If a new table should participate in timestamp provenance, make it inherit from
+`BaseEntity`, ensure it is mapped in `EntityContext`, and add trigger SQL to the
+EF migration that creates the table:
+
+```sql
+CREATE TRIGGER updated_at_trigger_<table>
+BEFORE UPDATE ON "<Table>"
+FOR EACH ROW EXECUTE FUNCTION updated_set_now();
+```
+
+The migration `Down()` should drop that trigger explicitly. The one-time
+migration `EnsureUpdatedAtTriggersMigration` repairs older databases, but it is
+not a replacement for adding the trigger in the schema migration itself.
 
 ---
 
@@ -76,13 +96,12 @@ dotnet ef migrations script \
 
 ## 4 — How migrations are applied at runtime
 
-Migrations are **auto-applied on application startup** by `SetupEfCoreHostedService`
-(in `AddictedProxy.Database/Bootstrap/`).  There is no need to run
+Migrations are **auto-applied on application startup** in `AddictedProxy/Program.cs`.
+There is no need to run
 `dotnet ef database update` manually against production — the app handles it.
 
 For local development with Docker Compose (`compose.yaml`), the PostgreSQL
-container starts alongside the app, and migrations run automatically on first
-request.
+container starts alongside the app, and migrations run automatically.
 
 ---
 
@@ -106,14 +125,14 @@ request.
 
 ### "doesn't reference Microsoft.EntityFrameworkCore.Design"
 
-You used `--startup-project AddictedProxy` (the web project).  Switch to
+You used `--startup-project AddictedProxy` (the web project). Switch to
 `--startup-project AddictedProxy.Database`.
 
 ### Build fails during migration generation
 
 The `dotnet-ef` tool builds the startup project before generating the migration.
 If the startup project doesn't compile, the migration tool will fail with
-"Build failed."  Fix compile errors first, then retry.
+"Build failed." Fix compile errors first, then retry.
 
 When using `AddictedProxy.Database` as the startup project, only that project
 and its dependencies need to compile — not the full web application.
@@ -126,6 +145,6 @@ Ensure `EntityContextFactory` in
 
 ### Migration has unexpected changes
 
-EF Core diffs the current model snapshot against your entities.  If the
+EF Core diffs the current model snapshot against your entities. If the
 migration includes unrelated changes, someone may have modified entities without
-generating a migration.  Review carefully and split if needed.
+generating a migration. Review carefully and split if needed.
