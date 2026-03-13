@@ -81,6 +81,16 @@ public class SeasonPackSubtitle : BaseEntity, IDiscoverableObject
     public string? Release { get; set; }
 
     /// <summary>
+    /// Optional first episode covered by this season pack.
+    /// </summary>
+    public int? RangeStart { get; set; }
+
+    /// <summary>
+    /// Optional last episode covered by this season pack.
+    /// </summary>
+    public int? RangeEnd { get; set; }
+
+    /// <summary>
     /// Who uploaded this subtitle
     /// </summary>
     public string? Uploader { get; set; }

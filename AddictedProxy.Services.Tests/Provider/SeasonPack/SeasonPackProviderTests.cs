@@ -150,6 +150,44 @@ public class SeasonPackProviderTests
             .Where(e => e.StatusCode == StatusCode.Internal && e.Status.Detail == "some unrelated internal error");
     }
 
+    [Test]
+    public async Task GetEpisodeFromUpstreamAsync_EpisodeBeforeKnownRange_ThrowsWithoutCallingUpstream()
+    {
+        // Arrange
+        var seasonPack = CreateSeasonPack(externalId: 99);
+        seasonPack.RangeStart = 3;
+        seasonPack.RangeEnd = 8;
+
+        // Act
+        var act = () => _sut.GetEpisodeFromUpstreamAsync(seasonPack, 2, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<EpisodeNotInSeasonPackException>()
+            .Where(e => e.Episode == 2);
+
+        await _superSubtitlesClient.DidNotReceive()
+            .DownloadSubtitleAsync(Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task GetEpisodeFromUpstreamAsync_EpisodeAfterKnownRange_ThrowsWithoutCallingUpstream()
+    {
+        // Arrange
+        var seasonPack = CreateSeasonPack(externalId: 99);
+        seasonPack.RangeStart = 3;
+        seasonPack.RangeEnd = 8;
+
+        // Act
+        var act = () => _sut.GetEpisodeFromUpstreamAsync(seasonPack, 9, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<EpisodeNotInSeasonPackException>()
+            .Where(e => e.Episode == 9);
+
+        await _superSubtitlesClient.DidNotReceive()
+            .DownloadSubtitleAsync(Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>());
+    }
+
     #endregion
 
     #region GetEntryFileAsync tests
