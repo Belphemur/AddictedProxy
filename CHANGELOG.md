@@ -1,3 +1,11 @@
+## [4.59.0](https://github.com/Belphemur/AddictedProxy/compare/v4.58.2...v4.59.0) (2026-03-13)
+
+### Features
+
+* **api:** add season pack range persistence and fallback ([5a12d7c](https://github.com/Belphemur/AddictedProxy/commit/5a12d7c149030bafcc0a01e48a7e391b24d75654))
+* **nuxt:** display season pack episode ranges ([d5553fb](https://github.com/Belphemur/AddictedProxy/commit/d5553fbf935ccbf5df3db53b587b57b55fa7e448))
+* **upstream:** add season pack range fields to proto ([6d577dd](https://github.com/Belphemur/AddictedProxy/commit/6d577dda01034522a9c564bba58afee2170f726f))
+
 ## [4.58.2](https://github.com/Belphemur/AddictedProxy/compare/v4.58.1...v4.58.2) (2026-03-13)
 
 ### Bug Fixes
