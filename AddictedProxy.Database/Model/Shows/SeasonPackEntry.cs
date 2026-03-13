@@ -11,10 +11,16 @@ namespace AddictedProxy.Database.Model.Shows;
 /// </summary>
 [Index(nameof(SeasonPackSubtitleId), nameof(FileName), IsUnique = true)]
 [Index(nameof(SeasonPackSubtitleId), nameof(EpisodeNumber))]
+[Index(nameof(UniqueId), IsUnique = true)]
 public class SeasonPackEntry : BaseEntity
 {
     [Key]
     public long Id { get; set; }
+
+    /// <summary>
+    /// Unique identifier for external-facing APIs
+    /// </summary>
+    public Guid UniqueId { get; set; }
 
     /// <summary>
     /// FK to the parent season pack

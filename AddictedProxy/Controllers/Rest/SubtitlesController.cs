@@ -37,6 +37,7 @@ public class SubtitlesController : Controller
 
     private const string SeasonPackPrefix = "sp_";
     private const string EpisodeSeparator = "_ep_";
+    private const string EntrySeparator = "_entry_";
 
     public SubtitlesController(
         ICultureParser cultureParser,
@@ -71,7 +72,13 @@ public class SubtitlesController : Controller
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 8 * 86400)]
     public async Task<Results<FileStreamHttpResult, NotFound<string>, JsonHttpResult<ErrorResponse>, BadRequest<ErrorResponse>>> Download([FromRoute] string subtitleId, CancellationToken token)
     {
-        // Season pack: sp_{uuid}_ep_{N} — single episode SRT extraction
+        // Season pack entry: sp_{packUuid}_entry_{entryUuid} — specific file from catalog
+        if (subtitleId.StartsWith(SeasonPackPrefix, StringComparison.OrdinalIgnoreCase) && subtitleId.Contains(EntrySeparator, StringComparison.OrdinalIgnoreCase))
+        {
+            return await DownloadSeasonPackEntryAsync(subtitleId, token);
+        }
+
+        // Season pack episode (legacy/uncataloged): sp_{uuid}_ep_{N} — upstream extraction
         if (subtitleId.StartsWith(SeasonPackPrefix, StringComparison.OrdinalIgnoreCase) && subtitleId.Contains(EpisodeSeparator, StringComparison.OrdinalIgnoreCase))
         {
             return await DownloadSeasonPackEpisodeAsync(subtitleId, token);
@@ -144,7 +151,7 @@ public class SubtitlesController : Controller
             return TypedResults.NotFound($"Season pack ({packGuid}) couldn't be found");
         }
 
-        var stream = await _seasonPackProvider.GetSeasonPackFileAsync(seasonPack, episode: null, token);
+        var stream = await _seasonPackProvider.GetSeasonPackZipAsync(seasonPack, token);
         var lang = (await _cultureParser.FromStringAsync(seasonPack.Language, token))?.TwoLetterISOLanguageName.ToLowerInvariant() ?? seasonPack.LanguageIsoCode?.ToLowerInvariant() ?? "unknown";
         var fileName = $"{seasonPack.TvShow.Name.Replace(" ", ".")}.S{seasonPack.Season:D2}.{lang}.zip";
 
@@ -154,6 +161,53 @@ public class SubtitlesController : Controller
             fileDownloadName: fileName,
             lastModified: seasonPack.StoredAt,
             entityTag: new EntityTagHeaderValue('"' + $"{seasonPack.UniqueId}{(seasonPack.StoredAt.HasValue ? "-" + seasonPack.StoredAt.Value.Ticks : "")}" + '"')
+        );
+    }
+
+    private async Task<Results<FileStreamHttpResult, NotFound<string>, JsonHttpResult<ErrorResponse>, BadRequest<ErrorResponse>>> DownloadSeasonPackEntryAsync(string subtitleId, CancellationToken token)
+    {
+        var withoutPrefix = subtitleId[SeasonPackPrefix.Length..];
+        var entryIndex = withoutPrefix.IndexOf(EntrySeparator, StringComparison.OrdinalIgnoreCase);
+        if (entryIndex < 0)
+        {
+            return TypedResults.BadRequest(new ErrorResponse("Invalid season pack entry ID format"));
+        }
+
+        var packGuidStr = withoutPrefix[..entryIndex];
+        var entryGuidStr = withoutPrefix[(entryIndex + EntrySeparator.Length)..];
+
+        if (!Guid.TryParse(packGuidStr, out var packGuid))
+        {
+            return TypedResults.BadRequest(new ErrorResponse("Invalid season pack ID format"));
+        }
+
+        if (!Guid.TryParse(entryGuidStr, out var entryGuid))
+        {
+            return TypedResults.BadRequest(new ErrorResponse("Invalid season pack entry ID format"));
+        }
+
+        var seasonPack = await _seasonPackProvider.GetByUniqueIdAsync(packGuid, token);
+        if (seasonPack == null)
+        {
+            return TypedResults.NotFound($"Season pack ({packGuid}) couldn't be found");
+        }
+
+        var entry = await _seasonPackProvider.GetEntryByUniqueIdAsync(entryGuid, token);
+        if (entry == null || entry.SeasonPackSubtitleId != seasonPack.Id)
+        {
+            return TypedResults.NotFound($"Entry ({entryGuid}) not found in season pack ({packGuid})");
+        }
+
+        var stream = await _seasonPackProvider.GetEntryFileAsync(seasonPack, entry, token);
+        var lang = (await _cultureParser.FromStringAsync(seasonPack.Language, token))?.TwoLetterISOLanguageName.ToLowerInvariant() ?? seasonPack.LanguageIsoCode?.ToLowerInvariant() ?? "unknown";
+        var fileName = $"{seasonPack.TvShow.Name.Replace(" ", ".")}.S{seasonPack.Season:D2}E{entry.EpisodeNumber:D2}.{lang}.srt";
+
+        return TypedResults.Stream(
+            stream,
+            contentType: "text/srt",
+            fileDownloadName: fileName,
+            lastModified: seasonPack.StoredAt,
+            entityTag: new EntityTagHeaderValue('"' + $"{entry.UniqueId}{(seasonPack.StoredAt.HasValue ? "-" + seasonPack.StoredAt.Value.Ticks : "")}" + '"')
         );
     }
 
@@ -187,7 +241,7 @@ public class SubtitlesController : Controller
 
         try
         {
-            var stream = await _seasonPackProvider.GetSeasonPackFileAsync(seasonPack, episode: episodeNumber, token);
+            var stream = await _seasonPackProvider.GetEpisodeFromUpstreamAsync(seasonPack, episodeNumber, token);
             var lang = (await _cultureParser.FromStringAsync(seasonPack.Language, token))?.TwoLetterISOLanguageName.ToLowerInvariant() ?? seasonPack.LanguageIsoCode?.ToLowerInvariant() ?? "unknown";
             var fileName = $"{seasonPack.TvShow.Name.Replace(" ", ".")}.S{seasonPack.Season:D2}E{episodeNumber:D2}.{lang}.srt";
 
@@ -267,17 +321,35 @@ public class SubtitlesController : Controller
         var seasonPacks = await _seasonPackSubtitleRepository.GetByShowAndSeasonAsync(tvShow.Id, season, token);
         var isoCode = language.TwoLetterISOLanguageName;
 
-        return seasonPacks
-            .Where(sp => string.Equals(sp.LanguageIsoCode, isoCode, StringComparison.OrdinalIgnoreCase))
-            // Offer the pack if: not cataloged yet (graceful degradation) OR has an entry for this episode
-            .Where(sp => sp.Entries.Count == 0 || sp.Entries.Any(e => e.EpisodeNumber == episode))
-            .Select(pack =>
+        var result = new List<SubtitleDto>();
+
+        foreach (var pack in seasonPacks.Where(sp => string.Equals(sp.LanguageIsoCode, isoCode, StringComparison.OrdinalIgnoreCase)))
+        {
+            var entriesForEpisode = pack.Entries.Where(e => e.EpisodeNumber == episode).ToList();
+
+            if (entriesForEpisode.Count > 0)
             {
+                // Cataloged: produce one DTO per entry (e.g., regular + dubtitle)
+                foreach (var entry in entriesForEpisode)
+                {
+                    var spSubtitleId = $"{SeasonPackPrefix}{pack.UniqueId}{EntrySeparator}{entry.UniqueId}";
+                    var downloadUri = Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", spSubtitleId } })
+                                      ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle");
+                    result.Add(new SubtitleDto(pack, entry, downloadUri, language, episode));
+                }
+            }
+            else if (pack.Entries.Count == 0)
+            {
+                // Not cataloged yet — graceful degradation: offer the pack-level DTO
                 var spSubtitleId = $"{SeasonPackPrefix}{pack.UniqueId}{EpisodeSeparator}{episode}";
                 var downloadUri = Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", spSubtitleId } })
                                   ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle");
-                return new SubtitleDto(pack, downloadUri, language, episode);
-            });
+                result.Add(new SubtitleDto(pack, downloadUri, language, episode));
+            }
+            // else: cataloged but no entry for this episode — skip
+        }
+
+        return result;
     }
 
 

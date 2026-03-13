@@ -23,4 +23,14 @@ public interface ISeasonPackEntryRepository
     /// Check whether a specific episode exists in a season pack
     /// </summary>
     Task<bool> HasEpisodeAsync(long seasonPackSubtitleId, int episodeNumber, CancellationToken token);
+
+    /// <summary>
+    /// Find a single entry by its unique ID
+    /// </summary>
+    Task<SeasonPackEntry?> FindByUniqueIdAsync(Guid uniqueId, CancellationToken token);
+
+    /// <summary>
+    /// Find all entries for a given episode number in a season pack
+    /// </summary>
+    Task<IReadOnlyList<SeasonPackEntry>> FindAllByEpisodeNumberAsync(long seasonPackSubtitleId, int episodeNumber, CancellationToken token);
 }

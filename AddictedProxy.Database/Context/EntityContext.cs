@@ -54,5 +54,9 @@ public class EntityContext : DbContext
         modelBuilder.Entity<SeasonPackSubtitle>()
             .Property(s => s.UniqueId)
             .HasDefaultValueSql("uuidv7()");
+
+        modelBuilder.Entity<SeasonPackEntry>()
+            .Property(e => e.UniqueId)
+            .HasDefaultValueSql("uuidv7()");
     }
 }

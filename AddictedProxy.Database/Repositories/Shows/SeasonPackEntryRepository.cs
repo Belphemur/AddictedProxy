@@ -30,7 +30,7 @@ public class SeasonPackEntryRepository : ISeasonPackEntryRepository
             {
                 options.ColumnPrimaryKeyExpression = e => new { e.SeasonPackSubtitleId, e.FileName };
                 options.IgnoreOnMergeInsertExpression = e => e.Id;
-                options.IgnoreOnMergeUpdateExpression = e => new { e.Id, e.CreatedAt };
+                options.IgnoreOnMergeUpdateExpression = e => new { e.Id, e.CreatedAt, e.UniqueId };
             }, token);
         }, token);
     }
@@ -53,5 +53,20 @@ public class SeasonPackEntryRepository : ISeasonPackEntryRepository
     {
         return _entityContext.SeasonPackEntries
             .AnyAsync(e => e.SeasonPackSubtitleId == seasonPackSubtitleId && e.EpisodeNumber == episodeNumber, token);
+    }
+
+    public Task<SeasonPackEntry?> FindByUniqueIdAsync(Guid uniqueId, CancellationToken token)
+    {
+        return _entityContext.SeasonPackEntries
+            .AsNoTracking()
+            .FirstOrDefaultAsync(e => e.UniqueId == uniqueId, token);
+    }
+
+    public async Task<IReadOnlyList<SeasonPackEntry>> FindAllByEpisodeNumberAsync(long seasonPackSubtitleId, int episodeNumber, CancellationToken token)
+    {
+        return await _entityContext.SeasonPackEntries
+            .Where(e => e.SeasonPackSubtitleId == seasonPackSubtitleId && e.EpisodeNumber == episodeNumber)
+            .AsNoTracking()
+            .ToListAsync(token);
     }
 }

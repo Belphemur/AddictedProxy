@@ -21,7 +21,6 @@ public class SeasonPackProviderTests
     private ISeasonPackSubtitleRepository _seasonPackRepo = null!;
     private ICachedStorageProvider _cachedStorageProvider = null!;
     private ISuperSubtitlesClient _superSubtitlesClient = null!;
-    private ISeasonPackCatalogService _catalogService = null!;
     private ISeasonPackEntryRepository _entryRepository = null!;
     private IBackgroundJobClient _backgroundJobClient = null!;
     private ILogger<SeasonPackProvider> _logger = null!;
@@ -33,7 +32,6 @@ public class SeasonPackProviderTests
         _seasonPackRepo = Substitute.For<ISeasonPackSubtitleRepository>();
         _cachedStorageProvider = Substitute.For<ICachedStorageProvider>();
         _superSubtitlesClient = Substitute.For<ISuperSubtitlesClient>();
-        _catalogService = Substitute.For<ISeasonPackCatalogService>();
         _entryRepository = Substitute.For<ISeasonPackEntryRepository>();
         _backgroundJobClient = Substitute.For<IBackgroundJobClient>();
         _logger = Substitute.For<ILogger<SeasonPackProvider>>();
@@ -42,7 +40,6 @@ public class SeasonPackProviderTests
             _seasonPackRepo,
             _cachedStorageProvider,
             _superSubtitlesClient,
-            _catalogService,
             _entryRepository,
             _backgroundJobClient,
             _logger);
@@ -60,8 +57,20 @@ public class SeasonPackProviderTests
         StoredAt = storagePath != null ? DateTime.UtcNow : null
     };
 
+    private static SeasonPackEntry CreateEntry(long seasonPackId, int episodeNumber, string fileName) => new()
+    {
+        Id = 1,
+        UniqueId = Guid.NewGuid(),
+        SeasonPackSubtitleId = seasonPackId,
+        EpisodeNumber = episodeNumber,
+        FileName = fileName,
+        EpisodeTitle = "Test Episode"
+    };
+
+    #region GetEpisodeFromUpstreamAsync tests
+
     [Test]
-    public async Task GetSeasonPackFileAsync_EpisodeNotInZip_ThrowsEpisodeNotInSeasonPackException()
+    public async Task GetEpisodeFromUpstreamAsync_EpisodeNotInZip_ThrowsEpisodeNotInSeasonPackException()
     {
         // Arrange
         var seasonPack = CreateSeasonPack(externalId: 99);
@@ -73,7 +82,7 @@ public class SeasonPackProviderTests
             .ThrowsAsync(rpcException);
 
         // Act
-        var act = () => _sut.GetSeasonPackFileAsync(seasonPack, episode: 5, CancellationToken.None);
+        var act = () => _sut.GetEpisodeFromUpstreamAsync(seasonPack, 5, CancellationToken.None);
 
         // Assert
         await act.Should().ThrowAsync<EpisodeNotInSeasonPackException>()
@@ -81,7 +90,7 @@ public class SeasonPackProviderTests
     }
 
     [Test]
-    public async Task GetSeasonPackFileAsync_EpisodeFound_ReturnsStream()
+    public async Task GetEpisodeFromUpstreamAsync_EpisodeFound_ReturnsStream()
     {
         // Arrange
         var seasonPack = CreateSeasonPack(externalId: 99);
@@ -93,7 +102,7 @@ public class SeasonPackProviderTests
             .Returns(response);
 
         // Act
-        var stream = await _sut.GetSeasonPackFileAsync(seasonPack, episode: 5, CancellationToken.None);
+        var stream = await _sut.GetEpisodeFromUpstreamAsync(seasonPack, 5, CancellationToken.None);
 
         // Assert
         stream.Should().NotBeNull();
@@ -103,7 +112,7 @@ public class SeasonPackProviderTests
     }
 
     [Test]
-    public async Task GetSeasonPackFileAsync_NotFoundRpcException_ThrowsEpisodeNotInSeasonPackException()
+    public async Task GetEpisodeFromUpstreamAsync_NotFoundRpcException_ThrowsEpisodeNotInSeasonPackException()
     {
         // Arrange
         var seasonPack = CreateSeasonPack(externalId: 99);
@@ -115,7 +124,7 @@ public class SeasonPackProviderTests
             .ThrowsAsync(rpcException);
 
         // Act
-        var act = () => _sut.GetSeasonPackFileAsync(seasonPack, episode: 55, CancellationToken.None);
+        var act = () => _sut.GetEpisodeFromUpstreamAsync(seasonPack, 55, CancellationToken.None);
 
         // Assert
         await act.Should().ThrowAsync<EpisodeNotInSeasonPackException>()
@@ -123,7 +132,7 @@ public class SeasonPackProviderTests
     }
 
     [Test]
-    public async Task GetSeasonPackFileAsync_OtherInternalRpcException_PropagatesOriginalException()
+    public async Task GetEpisodeFromUpstreamAsync_OtherInternalRpcException_PropagatesOriginalException()
     {
         // Arrange
         var seasonPack = CreateSeasonPack(externalId: 99);
@@ -134,14 +143,16 @@ public class SeasonPackProviderTests
             .ThrowsAsync(rpcException);
 
         // Act
-        var act = () => _sut.GetSeasonPackFileAsync(seasonPack, episode: 5, CancellationToken.None);
+        var act = () => _sut.GetEpisodeFromUpstreamAsync(seasonPack, 5, CancellationToken.None);
 
         // Assert
         await act.Should().ThrowAsync<RpcException>()
             .Where(e => e.StatusCode == StatusCode.Internal && e.Status.Detail == "some unrelated internal error");
     }
 
-    #region Self-extraction tests
+    #endregion
+
+    #region GetEntryFileAsync tests
 
     private static byte[] CreateZipWithEntries(params (string name, string content)[] entries)
     {
@@ -160,26 +171,20 @@ public class SeasonPackProviderTests
     }
 
     [Test]
-    public async Task GetSeasonPackFileAsync_StoredAndCataloged_SelfExtractsEpisode()
+    public async Task GetEntryFileAsync_StoredAndCataloged_SelfExtractsEntry()
     {
         // Arrange
         const int episode = 3;
         const string srtContent = "1\n00:00:01,000 --> 00:00:02,000\nHello";
         var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
+        var entry = CreateEntry(seasonPack.Id, episode, "Show.S03E03.720p.srt");
         var zipBlob = CreateZipWithEntries(("Show.S03E03.720p.srt", srtContent));
 
-        _catalogService.IsCatalogedAsync(seasonPack.Id, Arg.Any<CancellationToken>()).Returns(true);
-        _entryRepository.HasEpisodeAsync(seasonPack.Id, episode, Arg.Any<CancellationToken>()).Returns(true);
-        _entryRepository.GetBySeasonPackAsync(seasonPack.Id, Arg.Any<CancellationToken>())
-            .Returns(new List<SeasonPackEntry>
-            {
-                new() { SeasonPackSubtitleId = seasonPack.Id, EpisodeNumber = episode, FileName = "Show.S03E03.720p.srt" }
-            });
         _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<CancellationToken>())
             .Returns(new MemoryStream(zipBlob));
 
         // Act
-        var result = await _sut.GetSeasonPackFileAsync(seasonPack, episode, CancellationToken.None);
+        var result = await _sut.GetEntryFileAsync(seasonPack, entry, CancellationToken.None);
 
         // Assert
         using var reader = new StreamReader(result);
@@ -192,52 +197,12 @@ public class SeasonPackProviderTests
     }
 
     [Test]
-    public async Task GetSeasonPackFileAsync_StoredCatalogedButEpisodeMissing_ThrowsEpisodeNotInSeasonPackException()
-    {
-        // Arrange
-        const int episode = 99;
-        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
-
-        _catalogService.IsCatalogedAsync(seasonPack.Id, Arg.Any<CancellationToken>()).Returns(true);
-        _entryRepository.HasEpisodeAsync(seasonPack.Id, episode, Arg.Any<CancellationToken>()).Returns(false);
-
-        // Act
-        var act = () => _sut.GetSeasonPackFileAsync(seasonPack, episode, CancellationToken.None);
-
-        // Assert
-        await act.Should().ThrowAsync<EpisodeNotInSeasonPackException>()
-            .Where(e => e.Episode == episode);
-    }
-
-    [Test]
-    public async Task GetSeasonPackFileAsync_StoredButNotCataloged_FallsBackToUpstream()
-    {
-        // Arrange
-        const int episode = 5;
-        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
-        var content = new byte[] { 10, 20, 30 };
-        var response = new DownloadSubtitleResponse { Content = ByteString.CopyFrom(content) };
-
-        _catalogService.IsCatalogedAsync(seasonPack.Id, Arg.Any<CancellationToken>()).Returns(false);
-        _superSubtitlesClient
-            .DownloadSubtitleAsync("42", episode, Arg.Any<CancellationToken>())
-            .Returns(response);
-
-        // Act
-        var result = await _sut.GetSeasonPackFileAsync(seasonPack, episode, CancellationToken.None);
-
-        // Assert
-        var buffer = new byte[content.Length];
-        await result.ReadExactlyAsync(buffer, CancellationToken.None);
-        buffer.Should().Equal(content);
-    }
-
-    [Test]
-    public async Task GetSeasonPackFileAsync_NotStoredNotCataloged_FallsBackToUpstream()
+    public async Task GetEntryFileAsync_NoStoragePath_FallsBackToUpstream()
     {
         // Arrange
         const int episode = 5;
         var seasonPack = CreateSeasonPack(externalId: 42, storagePath: null);
+        var entry = CreateEntry(seasonPack.Id, episode, "Show.S03E05.720p.srt");
         var content = new byte[] { 10, 20, 30 };
         var response = new DownloadSubtitleResponse { Content = ByteString.CopyFrom(content) };
 
@@ -246,33 +211,24 @@ public class SeasonPackProviderTests
             .Returns(response);
 
         // Act
-        var result = await _sut.GetSeasonPackFileAsync(seasonPack, episode, CancellationToken.None);
+        var result = await _sut.GetEntryFileAsync(seasonPack, entry, CancellationToken.None);
 
         // Assert
         var buffer = new byte[content.Length];
         await result.ReadExactlyAsync(buffer, CancellationToken.None);
         buffer.Should().Equal(content);
-
-        // Should not touch catalog/entry repos since StoragePath is null
-        await _catalogService.DidNotReceive().IsCatalogedAsync(Arg.Any<long>(), Arg.Any<CancellationToken>());
     }
 
     [Test]
-    public async Task GetSeasonPackFileAsync_ZipMissingFromStorage_FallsBackToUpstream()
+    public async Task GetEntryFileAsync_ZipMissingFromStorage_FallsBackToUpstream()
     {
         // Arrange
         const int episode = 3;
         var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
+        var entry = CreateEntry(seasonPack.Id, episode, "Show.S03E03.720p.srt");
         var content = new byte[] { 7, 8, 9 };
         var response = new DownloadSubtitleResponse { Content = ByteString.CopyFrom(content) };
 
-        _catalogService.IsCatalogedAsync(seasonPack.Id, Arg.Any<CancellationToken>()).Returns(true);
-        _entryRepository.HasEpisodeAsync(seasonPack.Id, episode, Arg.Any<CancellationToken>()).Returns(true);
-        _entryRepository.GetBySeasonPackAsync(seasonPack.Id, Arg.Any<CancellationToken>())
-            .Returns(new List<SeasonPackEntry>
-            {
-                new() { SeasonPackSubtitleId = seasonPack.Id, EpisodeNumber = episode, FileName = "Show.S03E03.720p.srt" }
-            });
         // Storage returns null (ZIP not found in S3)
         _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<CancellationToken>())
             .Returns((Stream?)null);
@@ -281,7 +237,80 @@ public class SeasonPackProviderTests
             .Returns(response);
 
         // Act
-        var result = await _sut.GetSeasonPackFileAsync(seasonPack, episode, CancellationToken.None);
+        var result = await _sut.GetEntryFileAsync(seasonPack, entry, CancellationToken.None);
+
+        // Assert
+        var buffer = new byte[content.Length];
+        await result.ReadExactlyAsync(buffer, CancellationToken.None);
+        buffer.Should().Equal(content);
+    }
+
+    [Test]
+    public async Task GetEntryFileAsync_EntryNotInZip_FallsBackToUpstream()
+    {
+        // Arrange
+        const int episode = 3;
+        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
+        var entry = CreateEntry(seasonPack.Id, episode, "Show.S03E03.720p.srt");
+        var zipBlob = CreateZipWithEntries(("Show.S03E04.720p.srt", "wrong episode"));
+        var content = new byte[] { 7, 8, 9 };
+        var response = new DownloadSubtitleResponse { Content = ByteString.CopyFrom(content) };
+
+        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<CancellationToken>())
+            .Returns(new MemoryStream(zipBlob));
+        _superSubtitlesClient
+            .DownloadSubtitleAsync("42", episode, Arg.Any<CancellationToken>())
+            .Returns(response);
+
+        // Act
+        var result = await _sut.GetEntryFileAsync(seasonPack, entry, CancellationToken.None);
+
+        // Assert
+        var buffer = new byte[content.Length];
+        await result.ReadExactlyAsync(buffer, CancellationToken.None);
+        buffer.Should().Equal(content);
+    }
+
+    #endregion
+
+    #region GetSeasonPackZipAsync tests
+
+    [Test]
+    public async Task GetSeasonPackZipAsync_StoredInStorage_ReturnsFromStorage()
+    {
+        // Arrange
+        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
+        var zipContent = new byte[] { 1, 2, 3 };
+
+        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<CancellationToken>())
+            .Returns(new MemoryStream(zipContent));
+
+        // Act
+        var result = await _sut.GetSeasonPackZipAsync(seasonPack, CancellationToken.None);
+
+        // Assert
+        var buffer = new byte[zipContent.Length];
+        await result.ReadExactlyAsync(buffer, CancellationToken.None);
+        buffer.Should().Equal(zipContent);
+
+        await _superSubtitlesClient.DidNotReceive()
+            .DownloadSubtitleAsync(Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task GetSeasonPackZipAsync_NotStored_DownloadsFromUpstream()
+    {
+        // Arrange
+        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: null);
+        var content = new byte[] { 10, 20, 30 };
+        var response = new DownloadSubtitleResponse { Content = ByteString.CopyFrom(content) };
+
+        _superSubtitlesClient
+            .DownloadSubtitleAsync("42", null, Arg.Any<CancellationToken>())
+            .Returns(response);
+
+        // Act
+        var result = await _sut.GetSeasonPackZipAsync(seasonPack, CancellationToken.None);
 
         // Assert
         var buffer = new byte[content.Length];
