@@ -80,10 +80,11 @@ public class SeasonPackCatalogServiceParsingTests
 
         var entries = SeasonPackCatalogService.ParseZipEntries(1, blob);
 
-        // mp4 and txt files still match the SxxExx regex — they get included because ParseZipEntries
-        // doesn't filter by extension, only by regex match
-        entries.Should().HaveCount(2);
+        // Non-subtitle files (e.g., mp4, txt) should be ignored even if they match the SxxExx pattern
+        entries.Should().HaveCount(1);
         entries.Select(e => e.FileName).Should().Contain("Show.S01E01.srt");
+        entries.Select(e => e.FileName).Should().NotContain("Show.S01E02.mp4");
+        entries.Select(e => e.FileName).Should().NotContain("readme.txt");
     }
 
     [Test]
