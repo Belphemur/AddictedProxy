@@ -97,9 +97,4 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
 
         return memStream;
     }
-
-    public Task<Stream?> GetSertAsync(string shardingKey, string filename, CancellationToken cancellationToken)
-    {
-        return GetSertAsync(shardingKey, filename, _ => Task.FromResult<Stream?>(null), cancellationToken);
-    }
 }
