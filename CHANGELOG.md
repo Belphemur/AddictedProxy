@@ -1,3 +1,30 @@
+## [4.58.0](https://github.com/Belphemur/AddictedProxy/compare/v4.57.0...v4.58.0) (2026-03-13)
+
+### Performance improvements
+
+* use frozenset ([effa8be](https://github.com/Belphemur/AddictedProxy/commit/effa8be31bc8908c2b1a243f82a83fca095b68b1))
+
+### Bug Fixes
+
+* also store the season pack on episode download ([1477e7d](https://github.com/Belphemur/AddictedProxy/commit/1477e7dd5cd2c37013e13d9e3d9a8063793862da))
+* avoid subtitle recognized as hindi ([b65fb1a](https://github.com/Belphemur/AddictedProxy/commit/b65fb1ae05111e2d1257618074af6fe72988831b))
+* **jobs:** query DB for real UniqueIds before enqueuing StoreSeasonPackJob ([763eb42](https://github.com/Belphemur/AddictedProxy/commit/763eb42a36d828f2266d7a5587b65e515ab2319b))
+* **season-pack:** filter non-subtitle files and streamline extension handling in ZIP parsing ([1921ece](https://github.com/Belphemur/AddictedProxy/commit/1921eceb4ee0f867014307669215cd96385bc6ea))
+* tests for season pack provider ([2aa6390](https://github.com/Belphemur/AddictedProxy/commit/2aa6390bdfe3fbbea94d2d1d649d49157c293325))
+
+### Features
+
+* always return season pack subtitles ([db1e1de](https://github.com/Belphemur/AddictedProxy/commit/db1e1de66c5c03dfa79ac2ea5e21ddaaec3371bd))
+* **api:** filter season packs by episode using catalog entries ([c25884c](https://github.com/Belphemur/AddictedProxy/commit/c25884c72ef273cff4ccc16347634cee28c53280))
+* **controllers:** always include cataloged season pack entries in subtitle search results ([7f22298](https://github.com/Belphemur/AddictedProxy/commit/7f2229898dcb955ab8b35280a5365a947c2e179d))
+* **database:** add season pack entry repository ([14475f2](https://github.com/Belphemur/AddictedProxy/commit/14475f2d155ce009e905cff363e7b73be4753f4c))
+* **database:** add SeasonPackEntry entity and migration ([6f4aa74](https://github.com/Belphemur/AddictedProxy/commit/6f4aa747d8b8dc7b45dc9c70bc9704834d2d3986))
+* enhance parsing to capture streaming service tags and improve release marker detection ([0d3c6c4](https://github.com/Belphemur/AddictedProxy/commit/0d3c6c4d34bc4e5fdd5f3e389d0ad4e995cfa0ae))
+* **migration:** catalog existing season packs on startup ([28613bc](https://github.com/Belphemur/AddictedProxy/commit/28613bc917140779da821210e9b1b5d427284cbc))
+* **season-pack:** support multiple subtitle files per episode in season packs ([85f4d94](https://github.com/Belphemur/AddictedProxy/commit/85f4d94888593cac8076b67c5e1421c9e4d3d8bc))
+* **services:** add season pack catalog service with regex-based marker detection ([e28633e](https://github.com/Belphemur/AddictedProxy/commit/e28633e5e62a6cb3c2eb5c1eb8a5634491412484))
+* **services:** integrate catalog into season pack storage and self-extraction ([e59c1c9](https://github.com/Belphemur/AddictedProxy/commit/e59c1c971844dab00b6909929a35442523996511))
+
 ## [4.57.0](https://github.com/Belphemur/AddictedProxy/compare/v4.56.0...v4.57.0) (2026-03-09)
 
 ### Features
