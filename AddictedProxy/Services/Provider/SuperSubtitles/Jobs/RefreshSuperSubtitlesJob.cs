@@ -1,6 +1,7 @@
 using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Database.Repositories.State;
 using AddictedProxy.Services.Job.Filter;
 using AddictedProxy.Services.Provider.Merging;
@@ -35,6 +36,7 @@ public class RefreshSuperSubtitlesJob
     private readonly IProviderDataIngestionService _ingestionService;
     private readonly ITransactionManager<EntityContext> _transactionManager;
     private readonly ISuperSubtitlesStateRepository _stateRepository;
+    private readonly ISeasonPackSubtitleRepository _seasonPackRepo;
     private readonly ICultureParser _cultureParser;
     private readonly ILogger<RefreshSuperSubtitlesJob> _logger;
 
@@ -43,6 +45,7 @@ public class RefreshSuperSubtitlesJob
         IProviderDataIngestionService ingestionService,
         ITransactionManager<EntityContext> transactionManager,
         ISuperSubtitlesStateRepository stateRepository,
+        ISeasonPackSubtitleRepository seasonPackRepo,
         ICultureParser cultureParser,
         ILogger<RefreshSuperSubtitlesJob> logger)
     {
@@ -50,6 +53,7 @@ public class RefreshSuperSubtitlesJob
         _ingestionService = ingestionService;
         _transactionManager = transactionManager;
         _stateRepository = stateRepository;
+        _seasonPackRepo = seasonPackRepo;
         _cultureParser = cultureParser;
         _logger = logger;
     }
@@ -176,8 +180,11 @@ public class RefreshSuperSubtitlesJob
         {
             await _ingestionService.IngestSeasonPacksAsync(seasonPacks, token);
 
-            // Enqueue download-and-store for each season pack (idempotent — skips already-stored packs)
-            foreach (var pack in seasonPacks)
+            // Query DB for packs that still need storing — gets real DB-generated UniqueIds
+            // and skips packs that are already stored to avoid queue spam
+            var externalIds = seasonPacks.Select(p => p.ExternalId);
+            var unstoredPacks = await _seasonPackRepo.GetUnstoredByExternalIdsAsync(DataSource.SuperSubtitles, externalIds, token);
+            foreach (var pack in unstoredPacks)
             {
                 BackgroundJob.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(pack.UniqueId, null!, default));
             }

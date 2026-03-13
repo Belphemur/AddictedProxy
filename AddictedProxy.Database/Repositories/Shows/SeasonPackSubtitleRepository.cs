@@ -1,8 +1,8 @@
+using System.Runtime.CompilerServices;
 using AddictedProxy.Database.Context;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Tools.Database.Transaction;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 
 namespace AddictedProxy.Database.Repositories.Shows;
 
@@ -37,6 +37,14 @@ public class SeasonPackSubtitleRepository : ISeasonPackSubtitleRepository
         return _entityContext.SeasonPackSubtitles
             .Include(s => s.TvShow)
             .FirstOrDefaultAsync(s => s.UniqueId == uniqueId, token);
+    }
+
+    public async Task<IReadOnlyList<SeasonPackSubtitle>> GetUnstoredByExternalIdsAsync(DataSource source, IEnumerable<long> externalIds, CancellationToken token)
+    {
+        var ids = externalIds as long[] ?? externalIds.ToArray();
+        return await _entityContext.SeasonPackSubtitles
+            .Where(s => s.Source == source && ids.Contains(s.ExternalId) && s.StoragePath == null)
+            .ToListAsync(token);
     }
 
     public async Task BulkUpsertAsync(IEnumerable<SeasonPackSubtitle> seasonPackSubtitles, CancellationToken token)
