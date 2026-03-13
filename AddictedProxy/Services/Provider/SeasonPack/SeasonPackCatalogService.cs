@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
 using AddictedProxy.Database.Model.Shows;
@@ -9,8 +10,10 @@ public partial class SeasonPackCatalogService : ISeasonPackCatalogService
 {
     private readonly ISeasonPackEntryRepository _entryRepository;
     private readonly ILogger<SeasonPackCatalogService> _logger;
-
-
+    private static readonly FrozenSet<string> SubtitleExtensions = new[]
+    {
+        ".srt", ".sub", ".ass", ".ssa", ".idx", ".vtt"
+    }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
     public SeasonPackCatalogService(ISeasonPackEntryRepository entryRepository, ILogger<SeasonPackCatalogService> logger)
     {
@@ -128,11 +131,6 @@ public partial class SeasonPackCatalogService : ISeasonPackCatalogService
 
         return (episodeTitle, releaseGroup);
     }
-
-    private static readonly HashSet<string> SubtitleExtensions = new(StringComparer.OrdinalIgnoreCase)
-    {
-        ".srt", ".sub", ".ass", ".ssa", ".idx", ".vtt"
-    };
 
     private static bool IsSubtitleFile(string fileName)
     {
