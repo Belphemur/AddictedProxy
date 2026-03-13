@@ -1,3 +1,11 @@
+## [4.58.2](https://github.com/Belphemur/AddictedProxy/compare/v4.58.1...v4.58.2) (2026-03-13)
+
+### Bug Fixes
+
+* error management for subtitle not found ([a505b67](https://github.com/Belphemur/AddictedProxy/commit/a505b6747f537f91559eb1782080162db02050b1))
+* scheduling useless job ([d17165c](https://github.com/Belphemur/AddictedProxy/commit/d17165c5b92b518a23caf511ab275fbf45bbfe8a))
+* test again ([b66fd2a](https://github.com/Belphemur/AddictedProxy/commit/b66fd2af880cf6e012f0be0962c4fe83910769d2))
+
 ## [4.58.1](https://github.com/Belphemur/AddictedProxy/compare/v4.58.0...v4.58.1) (2026-03-13)
 
 ### Bug Fixes
