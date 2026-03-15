@@ -310,6 +310,45 @@ public class SeasonPackProviderTests
         buffer.Should().Equal(content);
     }
 
+    [Test]
+    public async Task GetEntryFileAsync_CorruptZip_ClearsStorageAndFallsBackToUpstream()
+    {
+        // Arrange
+        const int episode = 3;
+        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
+        var entry = CreateEntry(seasonPack.Id, episode, "Show.S03E03.720p.srt");
+        var corruptZipData = new byte[] { 0x00, 0x01, 0x02, 0x03 }; // Not a valid ZIP
+        var upstreamContent = new byte[] { 7, 8, 9 };
+        var upstreamResponse = new DownloadSubtitleResponse { Content = ByteString.CopyFrom(upstreamContent) };
+
+        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<Func<CancellationToken, Task<Stream?>>>(), Arg.Any<CancellationToken>())
+            .Returns(new MemoryStream(corruptZipData));
+        _superSubtitlesClient
+            .DownloadSubtitleAsync("42", episode, Arg.Any<CancellationToken>())
+            .Returns(upstreamResponse);
+
+        // Act
+        var result = await _sut.GetEntryFileAsync(seasonPack, entry, CancellationToken.None);
+
+        // Assert — should return upstream content
+        var buffer = new byte[upstreamContent.Length];
+        await result.ReadExactlyAsync(buffer, CancellationToken.None);
+        buffer.Should().Equal(upstreamContent);
+
+        // Should have cleared StoragePath so the re-store job can run
+        seasonPack.StoragePath.Should().BeNull();
+        seasonPack.StoredAt.Should().BeNull();
+
+        // Should have saved the cleared state
+        await _seasonPackRepo.Received(1).SaveChangeAsync(Arg.Any<CancellationToken>());
+
+        // DownloadEpisodeFromUpstreamAsync enqueues a DownloadAndStoreAsync job
+        // when StoragePath is null. Hangfire's Enqueue extension calls Create on IBackgroundJobClient.
+        _backgroundJobClient.Received(1).Create(
+            Arg.Is<Hangfire.Common.Job>(j => j.Type == typeof(StoreSeasonPackJob) && j.Method.Name == nameof(StoreSeasonPackJob.DownloadAndStoreAsync)),
+            Arg.Any<Hangfire.States.IState>());
+    }
+
     #endregion
 
     #region GetSeasonPackZipAsync tests
