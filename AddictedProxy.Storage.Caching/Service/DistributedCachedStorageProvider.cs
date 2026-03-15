@@ -1,6 +1,9 @@
 using AddictedProxy.Storage.Caching.Model;
 using AddictedProxy.Storage.Extensions;
+using AddictedProxy.Storage.Store;
 using AddictedProxy.Storage.Store.Compression;
+using Compressor;
+using Compressor.Factory;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Performance.Service;
@@ -18,9 +21,9 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
     private readonly ICompressedStorageProvider _compressedStorageProvider;
 
     public DistributedCachedStorageProvider(ICompressedStorageProvider compressedCompressedStorageProvider,
-        IDistributedCache distributedCache,
-        IOptions<StorageCachingConfig> cachingConfig,
-        IPerformanceTracker performanceTracker)
+                                                      IDistributedCache distributedCache, 
+                                                      IOptions<StorageCachingConfig> cachingConfig,
+                                                      IPerformanceTracker performanceTracker)
     {
         _compressedStorageProvider = compressedCompressedStorageProvider;
         _distributedCache = distributedCache;
@@ -28,19 +31,17 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         _performanceTracker = performanceTracker;
         _cacheHitCounter = Metrics.CreateCounter("cache_storage_hits", "Number of hits of the storage's cache", new CounterConfiguration
         {
-            ExemplarBehavior = ExemplarBehavior.NoExemplars(),
-            LabelNames = ["sharding_key"]
+            ExemplarBehavior = ExemplarBehavior.NoExemplars()
         });
         _cacheMissCounter = Metrics.CreateCounter("cache_storage_miss", "Number of misses of the storage's cache", new CounterConfiguration
         {
-            ExemplarBehavior = ExemplarBehavior.NoExemplars(),
-            LabelNames = ["sharding_key"]
+            ExemplarBehavior = ExemplarBehavior.NoExemplars()
         });
     }
 
     private static async Task<MemoryStream> GetMemoryStreamAsync(Stream inputStream, CancellationToken cancellationToken)
     {
-        if (inputStream is MemoryStream memStream && memStream.TryGetBuffer(out _))
+        if (inputStream is MemoryStream memStream)
         {
             memStream.ResetPosition();
             return memStream;
@@ -55,16 +56,15 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
     private string GetCacheKey(string sharding, string filename) => $"{{{sharding}}}/{filename}/[v2]";
 
 
-    public async Task<Stream?> GetSertAsync(string shardingKey, string filename, Func<CancellationToken, Task<Stream?>> dataGet, CancellationToken cancellationToken)
+    public async Task<Stream?> GetSertAsync(string shardingKey, string filename, CancellationToken cancellationToken)
     {
         using var span = _performanceTracker.BeginNestedSpan("getsert-cache-storage", $"Get file {filename}");
-        span.SetTag("cache.sharding_key", shardingKey);
         var cacheKey = GetCacheKey(shardingKey, filename);
         var cachedData = await _distributedCache.GetAsync(cacheKey, cancellationToken);
         if (cachedData != null)
         {
             span.SetTag("cache.result", "hit");
-            _cacheHitCounter.WithLabels(shardingKey).Inc();
+            _cacheHitCounter.Inc();
             return new MemoryStream(cachedData);
         }
 
@@ -73,19 +73,12 @@ public class DistributedCachedStorageProvider : ICachedStorageProvider
         var stream = await _compressedStorageProvider.DownloadAsync(filename, cancellationToken);
         if (stream == null)
         {
-            stream = await dataGet(cancellationToken);
-            if (stream == null)
-            {
-                return null;
-            }
-
-            await _compressedStorageProvider.StoreAsync(filename, stream, cancellationToken);
-            stream.ResetPosition();
+            return null;
         }
 
         span.SetTag("cache.result", "miss");
 
-        _cacheMissCounter.WithLabels(shardingKey).Inc();
+        _cacheMissCounter.Inc();
 
         var memStream = await GetMemoryStreamAsync(stream, cancellationToken);
 
