@@ -335,12 +335,17 @@ public class SeasonPackProviderTests
         await result.ReadExactlyAsync(buffer, CancellationToken.None);
         buffer.Should().Equal(upstreamContent);
 
-        // Should have cleared StoragePath
+        // Should have cleared StoragePath so the re-store job can run
         seasonPack.StoragePath.Should().BeNull();
         seasonPack.StoredAt.Should().BeNull();
 
         // Should have saved the cleared state
         await _seasonPackRepo.Received(1).SaveChangeAsync(Arg.Any<CancellationToken>());
+
+        // DownloadEpisodeFromUpstreamAsync enqueues a DownloadAndStoreAsync job
+        // when StoragePath is null (verified via IBackgroundJobClient.Create which
+        // is called by the Enqueue extension method)
+        _backgroundJobClient.ReceivedCalls().Should().NotBeEmpty();
     }
 
     #endregion
