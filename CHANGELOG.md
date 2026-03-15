@@ -1,3 +1,9 @@
+## [4.59.3](https://github.com/Belphemur/AddictedProxy/compare/v4.59.2...v4.59.3) (2026-03-15)
+
+### Bug Fixes
+
+* **caching:** revert to proper way to do the caching with our caching provider. ([faeba14](https://github.com/Belphemur/AddictedProxy/commit/faeba14ac330066875f01e6c5df548233db58644))
+
 ## [4.59.2](https://github.com/Belphemur/AddictedProxy/compare/v4.59.1...v4.59.2) (2026-03-13)
 
 ### Bug Fixes
