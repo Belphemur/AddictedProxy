@@ -151,11 +151,20 @@ public class SeasonPackProvider : ISeasonPackProvider
     /// <summary>
     /// Download the full ZIP from upstream for cache population only.
     /// Does NOT enqueue a store job or increment download count.
+    /// Returns null when the upstream response is empty to prevent caching invalid data.
     /// </summary>
     private async Task<Stream?> DownloadForCacheAsync(SeasonPackSubtitle seasonPack, CancellationToken token)
     {
         var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), episode: null, cancellationToken: token);
-        return new MemoryStream(response.Content.ToByteArray());
+        var blob = response.Content.ToByteArray();
+
+        if (blob.Length == 0)
+        {
+            _logger.LogWarning("Upstream returned empty content for season pack {SeasonPackId} (ExternalId: {ExternalId}), not caching", seasonPack.Id, seasonPack.ExternalId);
+            return null;
+        }
+
+        return new MemoryStream(blob);
     }
 
     /// <summary>
@@ -166,6 +175,12 @@ public class SeasonPackProvider : ISeasonPackProvider
     {
         var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), episode: null, cancellationToken: token);
         var blob = response.Content.ToByteArray();
+
+        if (blob.Length == 0)
+        {
+            _logger.LogWarning("Upstream returned empty content for season pack {SeasonPackId} (ExternalId: {ExternalId}), skipping store", seasonPack.Id, seasonPack.ExternalId);
+            return new MemoryStream(blob);
+        }
 
         _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.StoreAsync(seasonPack.UniqueId, blob, null, default));
 

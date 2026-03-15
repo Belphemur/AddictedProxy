@@ -343,9 +343,10 @@ public class SeasonPackProviderTests
         await _seasonPackRepo.Received(1).SaveChangeAsync(Arg.Any<CancellationToken>());
 
         // DownloadEpisodeFromUpstreamAsync enqueues a DownloadAndStoreAsync job
-        // when StoragePath is null (verified via IBackgroundJobClient.Create which
-        // is called by the Enqueue extension method)
-        _backgroundJobClient.ReceivedCalls().Should().NotBeEmpty();
+        // when StoragePath is null. Hangfire's Enqueue extension calls Create on IBackgroundJobClient.
+        _backgroundJobClient.Received(1).Create(
+            Arg.Is<Hangfire.Common.Job>(j => j.Type == typeof(StoreSeasonPackJob) && j.Method.Name == nameof(StoreSeasonPackJob.DownloadAndStoreAsync)),
+            Arg.Any<Hangfire.States.IState>());
     }
 
     #endregion
