@@ -49,7 +49,7 @@ public class SeasonPackProvider : ISeasonPackProvider
         if (seasonPack.StoragePath != null)
         {
             var stream = await _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath,
-                async ct => await DownloadAndStoreFullZipAsync(seasonPack, ct), token);
+                ct => DownloadForCacheAsync(seasonPack, ct), token);
             if (stream == null)
             {
                 _logger.LogError("GetSert returned null for season pack with path [{path}] after cache/storage miss", seasonPack.StoragePath);
@@ -72,7 +72,7 @@ public class SeasonPackProvider : ISeasonPackProvider
         }
 
         var zipStream = await _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath,
-            async ct => await DownloadAndStoreFullZipAsync(seasonPack, ct), token);
+            ct => DownloadForCacheAsync(seasonPack, ct), token);
         if (zipStream == null)
         {
             _logger.LogError("GetSert returned null for season pack with path [{path}] during entry extraction", seasonPack.StoragePath);
@@ -81,21 +81,33 @@ public class SeasonPackProvider : ISeasonPackProvider
 
         await using (zipStream)
         {
-            using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read, leaveOpen: true);
-            var zipEntry = archive.GetEntry(entry.FileName);
-            if (zipEntry == null)
+            try
             {
-                _logger.LogWarning("Catalog entry {FileName} not found in ZIP for season pack {SeasonPackId}, falling back to upstream", entry.FileName, seasonPack.Id);
+                using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read, leaveOpen: true);
+                var zipEntry = archive.GetEntry(entry.FileName);
+                if (zipEntry == null)
+                {
+                    _logger.LogWarning("Catalog entry {FileName} not found in ZIP for season pack {SeasonPackId}, falling back to upstream", entry.FileName, seasonPack.Id);
+                    return await DownloadEpisodeFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
+                }
+
+                var result = new MemoryStream();
+                await using var entryStream = zipEntry.Open();
+                await entryStream.CopyToAsync(result, token);
+                result.ResetPosition();
+
+                await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
+                return result;
+            }
+            catch (InvalidDataException ex)
+            {
+                _logger.LogError(ex, "Corrupt ZIP detected for season pack {SeasonPackId} at {StoragePath}, clearing storage and falling back to upstream", seasonPack.Id, seasonPack.StoragePath);
+                seasonPack.StoragePath = null;
+                seasonPack.StoredAt = null;
+                await _seasonPackSubtitleRepository.SaveChangeAsync(token);
+                // DownloadEpisodeFromUpstreamAsync will enqueue a re-store job since StoragePath is now null
                 return await DownloadEpisodeFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
             }
-
-            var result = new MemoryStream();
-            await using var entryStream = zipEntry.Open();
-            await entryStream.CopyToAsync(result, token);
-            result.ResetPosition();
-
-            await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
-            return result;
         }
     }
 
@@ -136,15 +148,26 @@ public class SeasonPackProvider : ISeasonPackProvider
         }
     }
 
+    /// <summary>
+    /// Download the full ZIP from upstream for cache population only.
+    /// Does NOT enqueue a store job or increment download count.
+    /// </summary>
+    private async Task<Stream?> DownloadForCacheAsync(SeasonPackSubtitle seasonPack, CancellationToken token)
+    {
+        var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), episode: null, cancellationToken: token);
+        return new MemoryStream(response.Content.ToByteArray());
+    }
+
+    /// <summary>
+    /// Download the full ZIP from upstream, enqueue a background store job, and increment download count.
+    /// Used when there is no cached/stored data available.
+    /// </summary>
     private async Task<Stream> DownloadAndStoreFullZipAsync(SeasonPackSubtitle seasonPack, CancellationToken token)
     {
         var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), episode: null, cancellationToken: token);
         var blob = response.Content.ToByteArray();
 
-        if (seasonPack.StoragePath == null)
-        {
-            _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.StoreAsync(seasonPack.UniqueId, blob, null, default));
-        }
+        _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.StoreAsync(seasonPack.UniqueId, blob, null, default));
 
         await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
         return new MemoryStream(blob);
