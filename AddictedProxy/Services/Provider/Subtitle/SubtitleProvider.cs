@@ -44,8 +44,7 @@ internal class SubtitleProvider : ISubtitleProvider
         //We have the subtitle stored
         if (subtitle.StoragePath != null)
         {
-            var stream = await _cachedStorageProvider.GetSertAsync("subtitle", subtitle.StoragePath,
-                ct => DownloadSubtitleForCacheAsync(subtitle, ct), token);
+            var stream = await _cachedStorageProvider.GetSertAsync("subtitle", subtitle.StoragePath, token);
             if (stream == null)
             {
                 _logger.LogError("GetSert returned null for subtitle with path [{path}] after cache/storage miss", subtitle.StoragePath);
@@ -59,10 +58,6 @@ internal class SubtitleProvider : ISubtitleProvider
         return await DownloadStoreSubtitleAsync(subtitle, token);
     }
 
-    private async Task<Stream?> DownloadSubtitleForCacheAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token)
-    {
-        return new MemoryStream(await DownloadSubtitleBlobAsync(subtitle, token));
-    }
 
     private async Task<Stream> DownloadStoreSubtitleAsync(Database.Model.Shows.Subtitle subtitle, CancellationToken token)
     {

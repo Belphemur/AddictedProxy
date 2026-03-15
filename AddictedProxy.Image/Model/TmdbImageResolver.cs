@@ -27,10 +27,6 @@ public class TmdbImageResolver : IImageResolver
 
     public async Task<Stream> OpenReadAsync()
     {
-        return (await _cacheStorageProvider.GetSertAsync("tmdb", _imagePath, async ct =>
-        {
-            var image = await _tmdbClient.GetImageAsync(_imagePath, ct);
-            return image?.ImageStream;
-        }, default)) ?? throw new InvalidOperationException($"TMDB image '{_imagePath}' could not be loaded");
+        return (await _cacheStorageProvider.GetSertAsync("tmdb", _imagePath, default)) ?? throw new InvalidOperationException($"TMDB image '{_imagePath}' could not be loaded");
     }
 }

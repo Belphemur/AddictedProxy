@@ -48,8 +48,7 @@ public class SeasonPackProvider : ISeasonPackProvider
     {
         if (seasonPack.StoragePath != null)
         {
-            var stream = await _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath,
-                async ct => await DownloadAndStoreFullZipAsync(seasonPack, ct), token);
+            var stream = await _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath, token);
             if (stream == null)
             {
                 _logger.LogError("GetSert returned null for season pack with path [{path}] after cache/storage miss", seasonPack.StoragePath);
@@ -71,31 +70,42 @@ public class SeasonPackProvider : ISeasonPackProvider
             return await DownloadEpisodeFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
         }
 
-        var zipStream = await _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath,
-            async ct => await DownloadAndStoreFullZipAsync(seasonPack, ct), token);
+        var zipStream = await _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath, token);
         if (zipStream == null)
         {
             _logger.LogError("GetSert returned null for season pack with path [{path}] during entry extraction", seasonPack.StoragePath);
             return await DownloadEpisodeFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
         }
 
-        await using (zipStream)
+        try
         {
-            using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read, leaveOpen: true);
-            var zipEntry = archive.GetEntry(entry.FileName);
-            if (zipEntry == null)
+            await using (zipStream)
             {
-                _logger.LogWarning("Catalog entry {FileName} not found in ZIP for season pack {SeasonPackId}, falling back to upstream", entry.FileName, seasonPack.Id);
-                return await DownloadEpisodeFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
+                await using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read, leaveOpen: true);
+                var zipEntry = archive.GetEntry(entry.FileName);
+                if (zipEntry == null)
+                {
+                    _logger.LogWarning("Catalog entry {FileName} not found in ZIP for season pack {SeasonPackId}, falling back to upstream", entry.FileName, seasonPack.Id);
+                    return await DownloadEpisodeFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
+                }
+
+                var result = new MemoryStream();
+                await using var entryStream = zipEntry.Open();
+                await entryStream.CopyToAsync(result, token);
+                result.ResetPosition();
+
+                await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
+                return result;
             }
-
-            var result = new MemoryStream();
-            await using var entryStream = zipEntry.Open();
-            await entryStream.CopyToAsync(result, token);
-            result.ResetPosition();
-
-            await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
-            return result;
+        }
+        catch (InvalidDataException ex)
+        {
+            _logger.LogError(ex, "Corrupt ZIP detected for season pack {SeasonPackId} at {StoragePath}, clearing storage and falling back to upstream", seasonPack.Id, seasonPack.StoragePath);
+            seasonPack.StoragePath = null;
+            seasonPack.StoredAt = null;
+            await _seasonPackSubtitleRepository.SaveChangeAsync(token);
+            // DownloadEpisodeFromUpstreamAsync will enqueue a re-store job since StoragePath is now null
+            return await DownloadEpisodeFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
         }
     }
 

@@ -9,8 +9,7 @@ public interface ICachedStorageProvider
     /// </summary>
     /// <param name="shardingKey"></param>
     /// <param name="filename"></param>
-    /// <param name="dataGet"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<Stream?> GetSertAsync(string shardingKey, string filename, Func<CancellationToken, Task<Stream?>> dataGet, CancellationToken cancellationToken);
+    Task<Stream?> GetSertAsync(string shardingKey, string filename, CancellationToken cancellationToken);
 }
