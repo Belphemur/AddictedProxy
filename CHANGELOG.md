@@ -1,3 +1,13 @@
+## [4.60.0](https://github.com/Belphemur/AddictedProxy/compare/v4.59.3...v4.60.0) (2026-03-16)
+
+### Bug Fixes
+
+* **api:** stabilize subtitle ordering in responses ([517ef45](https://github.com/Belphemur/AddictedProxy/commit/517ef4590474a1f0a636d8219f4f3da8d55c87d4))
+
+### Features
+
+* **nuxt:** increase media card sizes on large screens ([4d8e49d](https://github.com/Belphemur/AddictedProxy/commit/4d8e49db31ec3a557ccc65438102bc6201c3fe4d))
+
 ## [4.59.3](https://github.com/Belphemur/AddictedProxy/compare/v4.59.2...v4.59.3) (2026-03-15)
 
 ### Bug Fixes
