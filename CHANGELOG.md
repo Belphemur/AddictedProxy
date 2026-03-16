@@ -1,3 +1,10 @@
+## [4.61.0](https://github.com/Belphemur/AddictedProxy/compare/v4.60.0...v4.61.0) (2026-03-16)
+
+### Features
+
+* **migrations:** add season pack v2 reset and redownload ([d21a23f](https://github.com/Belphemur/AddictedProxy/commit/d21a23fbb20e5fd498b2ec00a7c939c4c0e39417))
+* **season-pack:** use direct s3 and shared job key ([34e53ab](https://github.com/Belphemur/AddictedProxy/commit/34e53ab0b43e4faf46811bfd9a28c67eca5adf3c))
+
 ## [4.60.0](https://github.com/Belphemur/AddictedProxy/compare/v4.59.3...v4.60.0) (2026-03-16)
 
 ### Bug Fixes
