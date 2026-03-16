@@ -21,6 +21,7 @@ public class BootstrapSuperSubtitles : IBootstrap
             {
                 var config = sp.GetRequiredService<IOptions<SuperSubtitlesConfig>>().Value;
                 options.Address = config.Address;
+                options.ChannelOptionsActions.Add(channelOptions => channelOptions.MaxReceiveMessageSize = 10 * 1024 * 1024);
             })
             .ConfigurePrimaryHttpMessageHandler((sp) =>
             {
