@@ -52,8 +52,8 @@ const setLanguage = (lang: string) => {
             :placeholder-text="props.details.details!.englishName" :sources="[
               {
                 size: 'xs',
-                height: 180,
-                width: 320,
+                height: 250,
+                width: 445,
                 media: '(orientation: portrait)',
                 src: props.details.details!.backdropPath!
               }, {
@@ -80,8 +80,8 @@ const setLanguage = (lang: string) => {
               },
               {
                 size: 'xxl',
-                width: 300,
-                height: 450
+                width: 400,
+                height: 600
               }]" :alt="`Poster for ${props.details.details?.englishName}`" :formats="['webp', 'jpeg']" />
         </v-col>
 

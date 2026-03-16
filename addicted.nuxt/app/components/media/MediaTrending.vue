@@ -14,15 +14,16 @@ const props = defineProps<Props>();
 <template>
 
   <v-row justify="center">
-    <v-col cols="12" sm="6" lg="3" v-for="media in props.medias" :key="media.media?.id" class="ma-0 pa-1"
+    <v-col cols="12" sm="6" lg="3" xxl="4" v-for="media in props.medias" :key="media.media?.id" class="ma-0 pa-1"
       align-self="center">
       <NuxtLink :to="{ name: 'show-details', params: { showId: media.media!.id, showName: media.media!.slug } }">
         <v-card>
           <span class="text-white text text-h6">{{ media?.details.englishName }} ({{ media!.details?.releaseYear }})
           </span>
           <lazy-optimized-picture :src="media.details!.backdropPath!" :sources="[
+            { size: 'sm', width: 500, height: 282 },
             { size: 'xl', width: 400, height: 225 },
-            { size: 'xxl', width: 500, height: 281 },
+            { size: 'xxl', width: 800, height: 450 },
           ]" :alt="`Backdrop poster for ${media.details!.englishName}`" :formats="['webp', 'jpeg']"
             :placeholder-text="media.details!.englishName" class="media-trending-backdrop" />
           <v-progress-circular class="vote" color="white" bg-color="red" :size="60" :width="5"

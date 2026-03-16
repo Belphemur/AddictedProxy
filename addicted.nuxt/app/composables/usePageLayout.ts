@@ -35,8 +35,8 @@ export const usePageLayout = () => {
     sectionHeading: "text-h6 mt-4",
   };
 
-  // Maximum container width (matches Vuetify default)
-  const maxWidth = "1600px";
+  // Maximum container width
+  const maxWidth = "2200px";
 
   return {
     colors,
