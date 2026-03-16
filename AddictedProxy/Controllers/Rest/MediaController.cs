@@ -224,6 +224,8 @@ public class MediaController : Controller
                 _generator.GetUriByRouteValues(HttpContext, nameof(Routes.DownloadSubtitle), new { subtitleId = $"sp_{pack.UniqueId}" })
                 ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
                 searchLanguage))
+            .OrderBy(dto => dto.RangeStart)
+            .ThenBy(dto => dto.SubtitleId)
             .ToArray();
 
         return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), episodes, lastSeason.Number, seasonPackDtos));

@@ -351,7 +351,7 @@ public class SubtitlesController : Controller
             // else: cataloged but no entry for this episode — skip
         }
 
-        return (cataloged, uncataloged);
+        return (cataloged.OrderBy(s => s.Version), uncataloged.OrderBy(s => s.Version));
     }
 
 

@@ -232,6 +232,8 @@ public class TvShowsController : Controller
                 Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", $"sp_{pack.UniqueId}" } })
                 ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
                 searchLanguage))
+            .OrderBy(dto => dto.RangeStart)
+            .ThenBy(dto => dto.SubtitleId)
             .ToArray();
     }
 }
