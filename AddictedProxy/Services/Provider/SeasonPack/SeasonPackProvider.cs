@@ -1,8 +1,8 @@
 using System.IO.Compression;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
-using AddictedProxy.Storage.Caching.Service;
 using AddictedProxy.Storage.Extensions;
+using AddictedProxy.Storage.Store;
 using Grpc.Core;
 using Hangfire;
 using SuperSubtitleClient.Service;
@@ -12,7 +12,7 @@ namespace AddictedProxy.Services.Provider.SeasonPack;
 public class SeasonPackProvider : ISeasonPackProvider
 {
     private readonly ISeasonPackSubtitleRepository _seasonPackSubtitleRepository;
-    private readonly ICachedStorageProvider _cachedStorageProvider;
+    private readonly IStorageProvider _storageProvider;
     private readonly ISuperSubtitlesClient _superSubtitlesClient;
     private readonly ISeasonPackEntryRepository _entryRepository;
     private readonly IBackgroundJobClient _backgroundJobClient;
@@ -20,14 +20,14 @@ public class SeasonPackProvider : ISeasonPackProvider
 
     public SeasonPackProvider(
         ISeasonPackSubtitleRepository seasonPackSubtitleRepository,
-        ICachedStorageProvider cachedStorageProvider,
+        IStorageProvider storageProvider,
         ISuperSubtitlesClient superSubtitlesClient,
         ISeasonPackEntryRepository entryRepository,
         IBackgroundJobClient backgroundJobClient,
         ILogger<SeasonPackProvider> logger)
     {
         _seasonPackSubtitleRepository = seasonPackSubtitleRepository;
-        _cachedStorageProvider = cachedStorageProvider;
+        _storageProvider = storageProvider;
         _superSubtitlesClient = superSubtitlesClient;
         _entryRepository = entryRepository;
         _backgroundJobClient = backgroundJobClient;
@@ -48,10 +48,10 @@ public class SeasonPackProvider : ISeasonPackProvider
     {
         if (seasonPack.StoragePath != null)
         {
-            var stream = await _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath, token);
+            var stream = await _storageProvider.DownloadAsync(seasonPack.StoragePath, token);
             if (stream == null)
             {
-                _logger.LogError("GetSert returned null for season pack with path [{path}] after cache/storage miss", seasonPack.StoragePath);
+                _logger.LogError("Storage returned null for season pack with path [{path}]", seasonPack.StoragePath);
                 return await DownloadAndStoreFullZipAsync(seasonPack, token);
             }
 
@@ -70,10 +70,10 @@ public class SeasonPackProvider : ISeasonPackProvider
             return await DownloadEpisodeFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
         }
 
-        var zipStream = await _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath, token);
+        var zipStream = await _storageProvider.DownloadAsync(seasonPack.StoragePath, token);
         if (zipStream == null)
         {
-            _logger.LogError("GetSert returned null for season pack with path [{path}] during entry extraction", seasonPack.StoragePath);
+            _logger.LogError("Storage returned null for season pack with path [{path}] during entry extraction", seasonPack.StoragePath);
             return await DownloadEpisodeFromUpstreamAsync(seasonPack, entry.EpisodeNumber, token);
         }
 
@@ -90,7 +90,7 @@ public class SeasonPackProvider : ISeasonPackProvider
                 }
 
                 var result = new MemoryStream();
-                await using var entryStream = zipEntry.Open();
+                await using var entryStream = await zipEntry.OpenAsync(token);
                 await entryStream.CopyToAsync(result, token);
                 result.ResetPosition();
 
@@ -141,7 +141,7 @@ public class SeasonPackProvider : ISeasonPackProvider
         {
             if (seasonPack.StoragePath == null)
             {
-                _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(seasonPack.UniqueId, null!, default));
+                _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(new StoreSeasonPackJob.JobData(seasonPack.UniqueId), null!, default));
             }
         }
     }
@@ -153,7 +153,7 @@ public class SeasonPackProvider : ISeasonPackProvider
 
         if (seasonPack.StoragePath == null)
         {
-            _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.StoreAsync(seasonPack.UniqueId, blob, null, default));
+            _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job => job.StoreAsync(new StoreSeasonPackJob.JobData(seasonPack.UniqueId), blob, null, default));
         }
 
         await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);

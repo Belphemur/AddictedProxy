@@ -3,7 +3,7 @@ using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.OneTimeMigration.Model;
 using AddictedProxy.Services.Provider.SeasonPack;
-using AddictedProxy.Storage.Store.Compression;
+using AddictedProxy.Storage.Store;
 using Hangfire.Console;
 using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
@@ -20,14 +20,14 @@ namespace AddictedProxy.Migrations.Services;
 public class CatalogExistingSeasonPacksMigration : IMigration
 {
     private readonly EntityContext _entityContext;
-    private readonly ICompressedStorageProvider _storageProvider;
+    private readonly IStorageProvider _storageProvider;
     private readonly ISeasonPackCatalogService _catalogService;
     private readonly ISeasonPackEntryRepository _entryRepository;
     private readonly ILogger<CatalogExistingSeasonPacksMigration> _logger;
 
     public CatalogExistingSeasonPacksMigration(
         EntityContext entityContext,
-        ICompressedStorageProvider storageProvider,
+        IStorageProvider storageProvider,
         ISeasonPackCatalogService catalogService,
         ISeasonPackEntryRepository entryRepository,
         ILogger<CatalogExistingSeasonPacksMigration> logger)

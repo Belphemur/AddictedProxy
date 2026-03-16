@@ -1,6 +1,7 @@
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Job.Filter;
-using AddictedProxy.Storage.Store.Compression;
+using AddictedProxy.Services.Job.Model;
+using AddictedProxy.Storage.Store;
 using AsyncKeyedLock;
 using Hangfire;
 using Hangfire.Console;
@@ -14,14 +15,14 @@ namespace AddictedProxy.Services.Provider.SeasonPack;
 public class StoreSeasonPackJob
 {
     private readonly ILogger<StoreSeasonPackJob> _logger;
-    private readonly ICompressedStorageProvider _storageProvider;
+    private readonly IStorageProvider _storageProvider;
     private readonly ISeasonPackSubtitleRepository _seasonPackSubtitleRepository;
     private readonly ISeasonPackCatalogService _catalogService;
     private readonly ISuperSubtitlesClient _superSubtitlesClient;
     private readonly IPerformanceTracker _performanceTracker;
     private static readonly AsyncKeyedLocker<Guid> AsyncKeyedLocker = new(LockOptions.Default);
 
-    public StoreSeasonPackJob(ILogger<StoreSeasonPackJob> logger, ICompressedStorageProvider storageProvider, ISeasonPackSubtitleRepository seasonPackSubtitleRepository, ISeasonPackCatalogService catalogService, ISuperSubtitlesClient superSubtitlesClient, IPerformanceTracker performanceTracker)
+    public StoreSeasonPackJob(ILogger<StoreSeasonPackJob> logger, IStorageProvider storageProvider, ISeasonPackSubtitleRepository seasonPackSubtitleRepository, ISeasonPackCatalogService catalogService, ISuperSubtitlesClient superSubtitlesClient, IPerformanceTracker performanceTracker)
     {
         _logger = logger;
         _storageProvider = storageProvider;
@@ -32,21 +33,22 @@ public class StoreSeasonPackJob
     }
 
     [Queue("store-subtitle")]
-    public async Task StoreAsync(Guid seasonPackUniqueId, byte[] blob, PerformContext? context, CancellationToken cancellationToken)
+    [UniqueJob]
+    public async Task StoreAsync(JobData data, byte[] blob, PerformContext? context, CancellationToken cancellationToken)
     {
-        context?.WriteLine($"Starting to store season pack {seasonPackUniqueId}");
-        using var releaser = await AsyncKeyedLocker.LockOrNullAsync(seasonPackUniqueId, 0, cancellationToken).ConfigureAwait(false);
+        context?.WriteLine($"Starting to store season pack {data.SeasonPackUniqueId}");
+        using var releaser = await AsyncKeyedLocker.LockOrNullAsync(data.SeasonPackUniqueId, 0, cancellationToken).ConfigureAwait(false);
 
         if (releaser is null)
         {
-            _logger.LogInformation("Lock already taken for season pack {seasonPackId}", seasonPackUniqueId);
-            context?.WriteLine($"Lock already held for season pack {seasonPackUniqueId}, skipping");
+            _logger.LogInformation("Lock already taken for season pack {seasonPackId}", data.SeasonPackUniqueId);
+            context?.WriteLine($"Lock already held for season pack {data.SeasonPackUniqueId}, skipping");
             return;
         }
 
         using var span = _performanceTracker.BeginNestedSpan(nameof(StoreSeasonPackJob), "store");
 
-        var seasonPack = await GetSeasonPackAsync(seasonPackUniqueId, context, cancellationToken);
+        var seasonPack = await GetSeasonPackAsync(data.SeasonPackUniqueId, context, cancellationToken);
         if (seasonPack == null)
         {
             return;
@@ -61,42 +63,51 @@ public class StoreSeasonPackJob
     /// </summary>
     [Queue("store-subtitle")]
     [UniqueJob]
-    public async Task DownloadAndStoreAsync(Guid seasonPackUniqueId, PerformContext? context, CancellationToken cancellationToken)
+    public async Task DownloadAndStoreAsync(JobData data, PerformContext? context, CancellationToken cancellationToken)
     {
-        context?.WriteLine($"Starting download-and-store for season pack {seasonPackUniqueId}");
-        using var releaser = await AsyncKeyedLocker.LockOrNullAsync(seasonPackUniqueId, 0, cancellationToken).ConfigureAwait(false);
+        context?.WriteLine($"Starting download-and-store for season pack {data.SeasonPackUniqueId}");
+        using var releaser = await AsyncKeyedLocker.LockOrNullAsync(data.SeasonPackUniqueId, 0, cancellationToken).ConfigureAwait(false);
 
         if (releaser is null)
         {
-            _logger.LogInformation("Lock already taken for season pack {seasonPackId}", seasonPackUniqueId);
-            context?.WriteLine($"Lock already held for season pack {seasonPackUniqueId}, skipping");
+            _logger.LogInformation("Lock already taken for season pack {seasonPackId}", data.SeasonPackUniqueId);
+            context?.WriteLine($"Lock already held for season pack {data.SeasonPackUniqueId}, skipping");
             return;
         }
 
         using var span = _performanceTracker.BeginNestedSpan(nameof(StoreSeasonPackJob), "download-and-store");
 
-        var seasonPack = await GetSeasonPackAsync(seasonPackUniqueId, context, cancellationToken);
+        var seasonPack = await GetSeasonPackAsync(data.SeasonPackUniqueId, context, cancellationToken);
         if (seasonPack == null)
         {
             return;
         }
 
-        if (seasonPack.StoragePath != null && await _catalogService.IsCatalogedAsync(seasonPack.Id, cancellationToken))
+        if (!data.ForceRedownload && seasonPack.StoragePath != null && await _catalogService.IsCatalogedAsync(seasonPack.Id, cancellationToken))
         {
-            context?.WriteLine($"Season pack {seasonPackUniqueId} already stored and cataloged, nothing to do");
+            context?.WriteLine($"Season pack {data.SeasonPackUniqueId} already stored and cataloged, nothing to do");
             return;
         }
 
-        _logger.LogInformation("Downloading season pack {seasonPackId} (ExternalId: {externalId}) from upstream", seasonPackUniqueId, seasonPack.ExternalId);
-        context?.WriteLine($"Downloading season pack {seasonPackUniqueId} from upstream (ExternalId: {seasonPack.ExternalId})");
+        if (data.ForceRedownload && seasonPack.StoragePath != null)
+        {
+            var previousStoragePath = seasonPack.StoragePath;
+            seasonPack.StoragePath = null;
+            seasonPack.StoredAt = null;
+            await _seasonPackSubtitleRepository.SaveChangeAsync(cancellationToken);
+            context?.WriteLine($"Force re-download requested, resetting existing storage path '{previousStoragePath}'");
+        }
+
+        _logger.LogInformation("Downloading season pack {seasonPackId} (ExternalId: {externalId}) from upstream", data.SeasonPackUniqueId, seasonPack.ExternalId);
+        context?.WriteLine($"Downloading season pack {data.SeasonPackUniqueId} from upstream (ExternalId: {seasonPack.ExternalId})");
 
         var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), cancellationToken: cancellationToken);
         var blob = response.Content.ToByteArray();
 
         if (blob.Length == 0)
         {
-            _logger.LogWarning("Downloaded empty blob for season pack {seasonPackId}", seasonPackUniqueId);
-            context?.WriteLine($"Error: Empty download for season pack {seasonPackUniqueId}");
+            _logger.LogWarning("Downloaded empty blob for season pack {seasonPackId}", data.SeasonPackUniqueId);
+            context?.WriteLine($"Error: Empty download for season pack {data.SeasonPackUniqueId}");
             return;
         }
 
@@ -120,7 +131,7 @@ public class StoreSeasonPackJob
         if (seasonPack.StoragePath == null)
         {
             await using var buffer = new MemoryStream(blob);
-            var storageName = $"season-packs/{seasonPack.TvShowId}/{seasonPack.Season}/{seasonPack.UniqueId}.zip";
+            var storageName = $"season-packs-v2/{seasonPack.TvShowId}/{seasonPack.Season}/{seasonPack.UniqueId}.zip";
             if (!await _storageProvider.StoreAsync(storageName, buffer, cancellationToken: cancellationToken))
             {
                 context?.WriteLine($"Error: Failed to store season pack {seasonPack.UniqueId} to storage");
@@ -135,5 +146,10 @@ public class StoreSeasonPackJob
 
         await _catalogService.CatalogAndPersistAsync(seasonPack, blob, cancellationToken);
         context?.WriteLine($"Cataloged entries for season pack {seasonPack.UniqueId}");
+    }
+
+    public readonly record struct JobData(Guid SeasonPackUniqueId, bool ForceRedownload = false) : IUniqueKey
+    {
+        public string Key => SeasonPackUniqueId.ToString("N");
     }
 }

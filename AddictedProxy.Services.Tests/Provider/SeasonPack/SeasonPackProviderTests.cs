@@ -4,7 +4,7 @@ using System.Text;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
 using AddictedProxy.Services.Provider.SeasonPack;
-using AddictedProxy.Storage.Caching.Service;
+using AddictedProxy.Storage.Store;
 using FluentAssertions;
 using Google.Protobuf;
 using Grpc.Core;
@@ -21,7 +21,7 @@ namespace AddictedProxy.Services.Tests.Provider.SeasonPack;
 public class SeasonPackProviderTests
 {
     private ISeasonPackSubtitleRepository _seasonPackRepo = null!;
-    private ICachedStorageProvider _cachedStorageProvider = null!;
+    private IStorageProvider _storageProvider = null!;
     private ISuperSubtitlesClient _superSubtitlesClient = null!;
     private ISeasonPackEntryRepository _entryRepository = null!;
     private IBackgroundJobClient _backgroundJobClient = null!;
@@ -34,7 +34,7 @@ public class SeasonPackProviderTests
         _seasonPackRepo = Substitute.For<ISeasonPackSubtitleRepository>();
         _seasonPackRepo.IncrementDownloadCountAsync(Arg.Any<SeasonPackSubtitle>(), Arg.Any<CancellationToken>())
             .Returns(Task.CompletedTask);
-        _cachedStorageProvider = Substitute.For<ICachedStorageProvider>();
+        _storageProvider = Substitute.For<IStorageProvider>();
         _superSubtitlesClient = Substitute.For<ISuperSubtitlesClient>();
         _entryRepository = Substitute.For<ISeasonPackEntryRepository>();
         _backgroundJobClient = Substitute.For<IBackgroundJobClient>();
@@ -42,7 +42,7 @@ public class SeasonPackProviderTests
 
         _sut = new SeasonPackProvider(
             _seasonPackRepo,
-            _cachedStorageProvider,
+            _storageProvider,
             _superSubtitlesClient,
             _entryRepository,
             _backgroundJobClient,
@@ -222,11 +222,11 @@ public class SeasonPackProviderTests
         // Arrange
         const int episode = 3;
         const string srtContent = "1\n00:00:01,000 --> 00:00:02,000\nHello";
-        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
+        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-packs-v2/test.zip");
         var entry = CreateEntry(seasonPack.Id, episode, "Show.S03E03.720p.srt");
         var zipBlob = CreateZipWithEntries(("Show.S03E03.720p.srt", srtContent));
 
-        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<CancellationToken>())
+        _storageProvider.DownloadAsync(seasonPack.StoragePath!, Arg.Any<CancellationToken>())
             .Returns(new MemoryStream(zipBlob));
 
         // Act
@@ -270,13 +270,13 @@ public class SeasonPackProviderTests
     {
         // Arrange
         const int episode = 3;
-        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
+        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-packs-v2/test.zip");
         var entry = CreateEntry(seasonPack.Id, episode, "Show.S03E03.720p.srt");
         const string srtContent = "1\n00:00:01,000 --> 00:00:02,000\nHello";
         var response = new DownloadSubtitleResponse { Content = ByteString.CopyFrom(Encoding.UTF8.GetBytes(srtContent))};
 
         // Storage returns null (ZIP not found in S3)
-        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<CancellationToken>())
+        _storageProvider.DownloadAsync(seasonPack.StoragePath!, Arg.Any<CancellationToken>())
             .Returns((Stream?)null);
         _superSubtitlesClient
             .DownloadSubtitleAsync("42", 3, Arg.Any<CancellationToken>())
@@ -296,13 +296,13 @@ public class SeasonPackProviderTests
     {
         // Arrange
         const int episode = 3;
-        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
+        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-packs-v2/test.zip");
         var entry = CreateEntry(seasonPack.Id, episode, "Show.S03E03.720p.srt");
         var zipBlob = CreateZipWithEntries(("Show.S03E04.720p.srt", "wrong episode"));
         var content = new byte[] { 7, 8, 9 };
         var response = new DownloadSubtitleResponse { Content = ByteString.CopyFrom(content) };
 
-        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<CancellationToken>())
+        _storageProvider.DownloadAsync(seasonPack.StoragePath!, Arg.Any<CancellationToken>())
             .Returns(new MemoryStream(zipBlob));
         _superSubtitlesClient
             .DownloadSubtitleAsync("42", episode, Arg.Any<CancellationToken>())
@@ -325,10 +325,10 @@ public class SeasonPackProviderTests
     public async Task GetSeasonPackZipAsync_StoredInStorage_ReturnsFromStorage()
     {
         // Arrange
-        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-pack/test.zip");
+        var seasonPack = CreateSeasonPack(externalId: 42, storagePath: "season-packs-v2/test.zip");
         var zipContent = new byte[] { 1, 2, 3 };
 
-        _cachedStorageProvider.GetSertAsync("season-pack", seasonPack.StoragePath!, Arg.Any<CancellationToken>())
+        _storageProvider.DownloadAsync(seasonPack.StoragePath!, Arg.Any<CancellationToken>())
             .Returns(new MemoryStream(zipContent));
 
         // Act

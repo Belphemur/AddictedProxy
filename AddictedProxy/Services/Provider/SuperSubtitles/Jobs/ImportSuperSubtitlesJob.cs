@@ -237,7 +237,7 @@ public class ImportSuperSubtitlesJob
             var unstoredPacks = await _seasonPackRepo.GetUnstoredByExternalIdsAsync(DataSource.SuperSubtitles, externalIds, token);
             foreach (var pack in unstoredPacks)
             {
-                BackgroundJob.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(pack.UniqueId, null!, default));
+                BackgroundJob.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(new StoreSeasonPackJob.JobData(pack.UniqueId), null!, default));
             }
         }
 
