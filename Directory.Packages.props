@@ -7,7 +7,7 @@
     <PackageVersion Include="AsyncKeyedLock" Version="8.0.2" />
     <PackageVersion Include="AWSSDK.S3" Version="4.0.19" />
     <PackageVersion Include="Community.Microsoft.Extensions.Caching.PostgreSql" Version="6.0.2" />
-    <PackageVersion Include="coverlet.collector" Version="8.0.0" />
+    <PackageVersion Include="coverlet.collector" Version="8.0.1" />
     <PackageVersion Include="FluentAssertions" Version="8.9.0" />
     <PackageVersion Include="Google.Protobuf" Version="3.34.0" />
     <PackageVersion Include="Grpc.Net.ClientFactory" Version="2.76.0" />
