@@ -1,3 +1,9 @@
+## [4.61.1](https://github.com/Belphemur/AddictedProxy/compare/v4.61.0...v4.61.1) (2026-03-18)
+
+### Bug Fixes
+
+* **supersubitle:** increase max size to 10 MB ([a08c927](https://github.com/Belphemur/AddictedProxy/commit/a08c9277d02cbe8fc9231dc6f89fd0a9f8a03854))
+
 ## [4.61.0](https://github.com/Belphemur/AddictedProxy/compare/v4.60.0...v4.61.0) (2026-03-16)
 
 ### Features
