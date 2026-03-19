@@ -40,28 +40,30 @@ public class SeasonPackCatalogServiceTests
     }
 
     [Test]
-    public async Task CatalogAndPersistAsync_ValidZip_CallsBulkUpsert()
+    public async Task CatalogAndPersistAsync_ValidZip_CallsBulkSync()
     {
         var seasonPack = new SeasonPackSubtitle { Id = 42, Filename = "test.zip" };
         var blob = CreateZipBlob("Show.S01E01.srt", "Show.S01E02.srt");
 
         await _sut.CatalogAndPersistAsync(seasonPack, blob, CancellationToken.None);
 
-        await _entryRepository.Received(1).BulkUpsertAsync(
+        await _entryRepository.Received(1).BulkSyncAsync(
+            42,
             Arg.Is<IEnumerable<SeasonPackEntry>>(entries => entries.Count() == 2),
             Arg.Any<CancellationToken>());
     }
 
     [Test]
-    public async Task CatalogAndPersistAsync_EmptyZip_DoesNotCallBulkUpsert()
+    public async Task CatalogAndPersistAsync_EmptyZip_ClearsExistingCatalogEntries()
     {
         var seasonPack = new SeasonPackSubtitle { Id = 42, Filename = "test.zip" };
         var blob = CreateZipBlob("readme.txt");
 
         await _sut.CatalogAndPersistAsync(seasonPack, blob, CancellationToken.None);
 
-        await _entryRepository.DidNotReceive().BulkUpsertAsync(
-            Arg.Any<IEnumerable<SeasonPackEntry>>(),
+        await _entryRepository.Received(1).BulkSyncAsync(
+            42,
+            Arg.Is<IEnumerable<SeasonPackEntry>>(entries => !entries.Any()),
             Arg.Any<CancellationToken>());
     }
 

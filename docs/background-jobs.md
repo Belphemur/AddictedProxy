@@ -164,6 +164,10 @@ The `MigrationType` property auto-generates a name: `"YYYY-M-D_ClassName"`.
 | `CleanSuperSubtitlesDataMigration` | 2026-02-21 | Truncate and re-import all SuperSubtitles data |
 | `BackfillSeasonPackSeasonFkMigration` | 2026-02-24 | Backfill `SeasonId` FK on `SeasonPackSubtitles` by joining on `TvShowId` + `Season` number |
 | `EnsureUpdatedAtTriggersMigration` | 2026-03-12 | Ensure every table with `UpdatedAt` has the PostgreSQL update trigger |
+| `CatalogExistingSeasonPacksMigration` | 2026-03-12 | Catalog stored season packs that do not yet have parsed entry rows |
+| `ResetSeasonPackStorageForV2PrefixMigration` | 2026-03-14 | Clear season pack storage metadata before re-storing ZIPs under the v2 prefix |
+| `EnqueueSeasonPackRedownloadMigration` | 2026-03-15 | Enqueue forced re-download and re-store jobs for all season packs |
+| `RecatalogStoredSeasonPacksMigration` | 2026-03-19 | Re-catalog every stored season pack from storage and replace stale entry rows |
 
 ### Registration
 

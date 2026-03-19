@@ -16,21 +16,25 @@ public class SeasonPackEntryRepository : ISeasonPackEntryRepository
         _transactionManager = transactionManager;
     }
 
-    public async Task BulkUpsertAsync(IEnumerable<SeasonPackEntry> entries, CancellationToken token)
+    public async Task BulkSyncAsync(long seasonPackSubtitleId, IEnumerable<SeasonPackEntry> entries, CancellationToken token)
     {
         await _transactionManager.WrapInTransactionAsync(async () =>
         {
             var array = entries as SeasonPackEntry[] ?? entries.ToArray();
             if (array.Length == 0)
             {
+                await _entityContext.SeasonPackEntries
+                    .Where(entry => entry.SeasonPackSubtitleId == seasonPackSubtitleId)
+                    .ExecuteDeleteAsync(token);
                 return;
             }
 
-            await _entityContext.SeasonPackEntries.BulkMergeAsync(array, options =>
+            await _entityContext.SeasonPackEntries.BulkSynchronizeAsync(array, options =>
             {
                 options.ColumnPrimaryKeyExpression = e => new { e.SeasonPackSubtitleId, e.FileName };
-                options.IgnoreOnMergeInsertExpression = e => e.Id;
-                options.IgnoreOnMergeUpdateExpression = e => new { e.Id, e.CreatedAt, e.UniqueId };
+                options.ColumnSynchronizeDeleteKeySubsetExpression = e => e.SeasonPackSubtitleId;
+                options.IgnoreOnSynchronizeInsertExpression = e => e.Id;
+                options.IgnoreOnSynchronizeUpdateExpression = e => new { e.Id, e.CreatedAt, e.UniqueId };
             }, token);
         }, token);
     }

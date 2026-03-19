@@ -70,7 +70,7 @@ public interface ISeasonPackCatalogService
 2. For each entry, apply episode-number regex.
 3. Parse episode title and release groups from filename.
 4. Build `SeasonPackEntry` list.
-5. Bulk upsert via `ISeasonPackEntryRepository.BulkUpsertAsync`.
+5. Synchronize via `ISeasonPackEntryRepository.BulkSyncAsync` so removed ZIP entries are deleted.
 
 ## Updated Data Flow
 
@@ -113,14 +113,21 @@ enqueue `StoreSeasonPackJob` for each newly-ingested pack that has no `StoragePa
 The store job already handles the download + store; with the catalog service injected, it will also
 catalog the ZIP entries in the same pass.
 
-## One-Time Catchup Migration
+## One-Time Catchup Migrations
 
 `CatalogExistingSeasonPacksMigration` implements `IMigration` with `[MigrationDate(2026, 3, 12)]`.
 
-1. Query all `SeasonPackSubtitle` rows where `StoragePath IS NOT NULL`.
+1. Query stored `SeasonPackSubtitle` rows that do not yet have catalog entries.
 2. For each, download the ZIP from S3 and catalog via `ISeasonPackCatalogService`.
 3. Report progress via Hangfire console.
 4. Season packs without a `StoragePath` are skipped — they'll be cataloged when next downloaded.
+
+`RecatalogStoredSeasonPacksMigration` implements `IMigration` with `[MigrationDate(2026, 3, 19)]`.
+
+1. Query all `SeasonPackSubtitle` rows where `StoragePath IS NOT NULL`.
+2. For each, download the ZIP from storage and recatalog via `ISeasonPackCatalogService`.
+3. Synchronize entries so stale rows from older ZIP contents are removed.
+4. Report progress via Hangfire console.
 
 ## Design Decisions
 
@@ -129,6 +136,6 @@ catalog the ZIP entries in the same pass.
 | Unique index on `(SeasonPackSubtitleId, FileName)`          | A pack may contain both regular and dubtitle variants for the same episode number |
 | Non-unique index on `(SeasonPackSubtitleId, EpisodeNumber)` | Fast lookups; multiple files per episode are valid                                |
 | Self-extract when stored + cataloged, upstream fallback     | Reduces upstream calls for common case; graceful for uncataloged packs            |
-| Graceful degradation for uncataloged packs                  | During backfill migration, packs without entries are still offered blindly        |
+| Graceful degradation for uncataloged packs                  | During backfill or failed recataloging, packs without entries are still offered blindly |
 | IMigration framework for catchup                            | Consistent with existing one-time job pattern; auto-discovered, tracked           |
 | Parse release groups from filename                          | Enriches metadata for display without requiring upstream changes                  |
