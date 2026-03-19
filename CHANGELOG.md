@@ -1,3 +1,10 @@
+## [4.61.2](https://github.com/Belphemur/AddictedProxy/compare/v4.61.1...v4.61.2) (2026-03-19)
+
+### Bug Fixes
+
+* **image:** fix removed caching methods used by image ([0bd8c73](https://github.com/Belphemur/AddictedProxy/commit/0bd8c734e24c3df2d5b5efcee9e1210785b5934a)), closes [#2651](https://github.com/Belphemur/AddictedProxy/issues/2651)
+* season pack corruption ([1f41c6d](https://github.com/Belphemur/AddictedProxy/commit/1f41c6dc838519619fa8aaa700586c508b3c943a))
+
 ## [4.61.1](https://github.com/Belphemur/AddictedProxy/compare/v4.61.0...v4.61.1) (2026-03-18)
 
 ### Bug Fixes
