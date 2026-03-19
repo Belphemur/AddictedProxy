@@ -6,6 +6,7 @@ using AddictedProxy.OneTimeMigration.Model;
 using AddictedProxy.Services.Provider.SeasonPack;
 using AddictedProxy.Storage.Store;
 using AddictedProxy.Tools.Database.Transaction;
+using Hangfire;
 using Hangfire.Console;
 using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,7 @@ public class RecatalogStoredSeasonPacksMigration : IMigration
     private readonly EntityContext _entityContext;
     private readonly ITransactionManager<EntityContext> _transactionManager;
     private readonly IDistributedCache _distributedCache;
+    private readonly IBackgroundJobClient _backgroundJobClient;
     private readonly ISeasonPackCatalogService _catalogService;
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<RecatalogStoredSeasonPacksMigration> _logger;
@@ -41,6 +43,7 @@ public class RecatalogStoredSeasonPacksMigration : IMigration
         EntityContext entityContext,
         ITransactionManager<EntityContext> transactionManager,
         IDistributedCache distributedCache,
+        IBackgroundJobClient backgroundJobClient,
         ISeasonPackCatalogService catalogService,
         IServiceProvider serviceProvider,
         ILogger<RecatalogStoredSeasonPacksMigration> logger)
@@ -48,6 +51,7 @@ public class RecatalogStoredSeasonPacksMigration : IMigration
         _entityContext = entityContext;
         _transactionManager = transactionManager;
         _distributedCache = distributedCache;
+        _backgroundJobClient = backgroundJobClient;
         _catalogService = catalogService;
         _serviceProvider = serviceProvider;
         _logger = logger;
@@ -172,11 +176,23 @@ public class RecatalogStoredSeasonPacksMigration : IMigration
                         continue;
                     }
 
-                    await _catalogService.CatalogAndPersistAsync(new SeasonPackSubtitle
+                    try
                     {
-                        Id = download.Pack.Id,
-                        Filename = download.Pack.Filename
-                    }, download.ZipBlob!, token);
+                        await _catalogService.CatalogAndPersistAsync(new SeasonPackSubtitle
+                        {
+                            Id = download.Pack.Id,
+                            Filename = download.Pack.Filename
+                        }, download.ZipBlob!, token);
+                    }
+                    catch (InvalidDataException ex)
+                    {
+                        batchMessages.Enqueue($"WARNING: Corrupt ZIP detected for season pack {download.Pack.UniqueId}; enqueueing forced re-download");
+                        _logger.LogWarning(ex, "Corrupt ZIP detected during recatalog for season pack {PackId}; enqueueing forced re-download", download.Pack.UniqueId);
+                        _backgroundJobClient.Enqueue<StoreSeasonPackJob>(job =>
+                            job.DownloadAndStoreAsync(new StoreSeasonPackJob.JobData(download.Pack.UniqueId, ForceRedownload: true), null!, default));
+                        batchFailed++;
+                        continue;
+                    }
 
                     batchRecataloged++;
                 }
