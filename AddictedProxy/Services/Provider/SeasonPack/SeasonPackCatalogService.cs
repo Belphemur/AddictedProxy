@@ -24,14 +24,14 @@ public partial class SeasonPackCatalogService : ISeasonPackCatalogService
     public async Task CatalogAndPersistAsync(SeasonPackSubtitle seasonPack, byte[] zipBlob, CancellationToken token)
     {
         var entries = ParseZipEntries(seasonPack.Id, zipBlob);
+        await _entryRepository.BulkSyncAsync(seasonPack.Id, entries, token);
 
         if (entries.Count == 0)
         {
-            _logger.LogWarning("No SRT entries found in season pack {SeasonPackId} ({Filename})", seasonPack.Id, seasonPack.Filename);
+            _logger.LogWarning("No subtitle entries found in season pack {SeasonPackId} ({Filename}); cleared any existing catalog entries", seasonPack.Id, seasonPack.Filename);
             return;
         }
 
-        await _entryRepository.BulkUpsertAsync(entries, token);
         _logger.LogInformation("Cataloged {Count} entries for season pack {SeasonPackId}", entries.Count, seasonPack.Id);
     }
 

@@ -5,9 +5,9 @@ namespace AddictedProxy.Database.Repositories.Shows;
 public interface ISeasonPackEntryRepository
 {
     /// <summary>
-    /// Bulk upsert season pack entries (matched on SeasonPackSubtitleId + FileName)
+    /// Synchronize all entries for a season pack so removed ZIP entries are deleted.
     /// </summary>
-    Task BulkUpsertAsync(IEnumerable<SeasonPackEntry> entries, CancellationToken token);
+    Task BulkSyncAsync(long seasonPackSubtitleId, IEnumerable<SeasonPackEntry> entries, CancellationToken token);
 
     /// <summary>
     /// Check whether any entries exist for the given season pack
