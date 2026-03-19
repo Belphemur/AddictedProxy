@@ -12,7 +12,7 @@ namespace AddictedProxy.Database.Model.Shows;
 [Index(nameof(TvShowId), nameof(Season))]
 [Index(nameof(Source), nameof(ExternalId), IsUnique = true)]
 [Index(nameof(UniqueId), IsUnique = true)]
-public class SeasonPackSubtitle : BaseEntity, IDiscoverableObject
+public class SeasonPackSubtitle : BaseEntity, IDiscoverableObject, ISoftDelete
 {
     [Key]
     public long Id { get; set; }
@@ -119,6 +119,11 @@ public class SeasonPackSubtitle : BaseEntity, IDiscoverableObject
     /// When the subtitle was cached to storage
     /// </summary>
     public DateTime? StoredAt { get; set; }
+
+    /// <summary>
+    /// When this season pack was soft-deleted because it became unusable.
+    /// </summary>
+    public DateTime? DeletedAt { get; set; }
 
     /// <summary>
     /// Cataloged entries parsed from the ZIP archive

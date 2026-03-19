@@ -1,6 +1,7 @@
 ﻿#region
 
 using AddictedProxy.Database.Context;
+using AddictedProxy.Database.Context.Interceptor;
 using AddictedProxy.Database.EnvVar;
 using AddictedProxy.Database.Repositories.Credentials;
 using AddictedProxy.Database.Repositories.Shows;
@@ -23,9 +24,11 @@ public class BootstrapDatabase : IBootstrap,
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddHostedService<SetupEfCoreHostedService>();
-        services.AddDbContext<EntityContext>(builder =>
+        services.AddScoped<SoftDeleteInterceptor>();
+        services.AddDbContext<EntityContext>((serviceProvider, builder) =>
         {
             builder.EnableSensitiveDataLogging();
+            builder.AddInterceptors(serviceProvider.GetRequiredService<SoftDeleteInterceptor>());
             builder.UseNpgsql(configuration.GetConnectionString("Addicted"), optionsBuilder =>
             {
                 optionsBuilder.EnableRetryOnFailure();

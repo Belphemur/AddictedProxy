@@ -91,7 +91,7 @@ The schema also includes provider mapping tables used by the merge pipeline:
 
 - **ShowExternalId**: maps provider `(Source, ExternalId)` values to a single `TvShow` (`Unique: (TvShowId, Source)` and `Unique: (Source, ExternalId)`).
 - **EpisodeExternalId**: maps provider `(Source, ExternalId)` values to a single `Episode` (`Unique: (EpisodeId, Source)` and `Unique: (Source, ExternalId)`).
-- **SeasonPackSubtitle**: stores season-pack subtitles (provider metadata + optional storage path), unique by `(Source, ExternalId)`. Includes `DownloadCount` (long) for download tracking and an optional `SeasonId` FK to `Season` (backfilled via one-time migration, resolved during ingestion).
+- **SeasonPackSubtitle**: stores season-pack subtitles (provider metadata + optional storage path), unique by `(Source, ExternalId)`. Includes `DownloadCount` (long) for download tracking, nullable `DeletedAt` for soft deletion of corrupt packs, and an optional `SeasonId` FK to `Season` (backfilled via one-time migration, resolved during ingestion). Default EF queries exclude rows where `DeletedAt` is not null, and writes use an EF `SaveChangesInterceptor` to translate deletes into soft deletes.
 
 ## Enums
 

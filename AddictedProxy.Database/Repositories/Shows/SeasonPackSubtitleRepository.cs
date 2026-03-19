@@ -75,6 +75,28 @@ public class SeasonPackSubtitleRepository : ISeasonPackSubtitleRepository
         }, token);
     }
 
+    public Task SoftDeleteAsync(SeasonPackSubtitle seasonPackSubtitle, CancellationToken token)
+    {
+        return _transactionManager.WrapInTransactionAsync(async () =>
+        {
+            await _entityContext.SeasonPackEntries
+                .Where(entry => entry.SeasonPackSubtitleId == seasonPackSubtitle.Id)
+                .ExecuteDeleteAsync(token);
+
+            seasonPackSubtitle.StoragePath = null;
+            seasonPackSubtitle.StoredAt = null;
+            seasonPackSubtitle.Entries.Clear();
+
+            if (_entityContext.Entry(seasonPackSubtitle).State == EntityState.Detached)
+            {
+                _entityContext.SeasonPackSubtitles.Attach(seasonPackSubtitle);
+            }
+
+            _entityContext.SeasonPackSubtitles.Remove(seasonPackSubtitle);
+            await _entityContext.SaveChangesAsync(token);
+        }, token);
+    }
+
     public Task SaveChangeAsync(CancellationToken token)
     {
         return _entityContext.SaveChangesAsync(token);

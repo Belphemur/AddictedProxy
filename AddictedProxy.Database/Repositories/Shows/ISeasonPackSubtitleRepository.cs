@@ -36,6 +36,11 @@ public interface ISeasonPackSubtitleRepository
     Task IncrementDownloadCountAsync(SeasonPackSubtitle seasonPackSubtitle, CancellationToken token);
 
     /// <summary>
+    /// Soft-delete a season pack subtitle and remove any cataloged entries attached to it.
+    /// </summary>
+    Task SoftDeleteAsync(SeasonPackSubtitle seasonPackSubtitle, CancellationToken token);
+
+    /// <summary>
     /// Save tracked changes to the database
     /// </summary>
     Task SaveChangeAsync(CancellationToken token);
