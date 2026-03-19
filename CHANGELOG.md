@@ -1,3 +1,13 @@
+## [4.62.0](https://github.com/Belphemur/AddictedProxy/compare/v4.61.4...v4.62.0) (2026-03-19)
+
+### Bug Fixes
+
+* **services:** soft-delete corrupt season packs ([b8f675b](https://github.com/Belphemur/AddictedProxy/commit/b8f675b0d405898166f27ffb06e791cb4a80848f))
+
+### Features
+
+* **database:** add soft delete for season packs ([8238e56](https://github.com/Belphemur/AddictedProxy/commit/8238e56f856734658ddbebfcb5344c02638b151e))
+
 ## [4.61.4](https://github.com/Belphemur/AddictedProxy/compare/v4.61.3...v4.61.4) (2026-03-19)
 
 ### Bug Fixes
