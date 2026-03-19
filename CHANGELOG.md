@@ -1,3 +1,9 @@
+## [4.62.1](https://github.com/Belphemur/AddictedProxy/compare/v4.62.0...v4.62.1) (2026-03-19)
+
+### Bug Fixes
+
+* **migrations:** retry corrupt season pack recatalog ([98a6d97](https://github.com/Belphemur/AddictedProxy/commit/98a6d976e4df7451eff6c1c7ee44d60f72fe284b))
+
 ## [4.62.0](https://github.com/Belphemur/AddictedProxy/compare/v4.61.4...v4.62.0) (2026-03-19)
 
 ### Bug Fixes
