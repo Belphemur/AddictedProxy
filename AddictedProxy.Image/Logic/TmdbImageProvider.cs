@@ -1,15 +1,15 @@
-﻿using AddictedProxy.Image.Model;
+﻿using AddictedProxy.Caching.Extensions;
+using AddictedProxy.Image.Model;
 using AddictedProxy.Storage.Caching.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
+using Performance.Service;
+using SixLabors.ImageSharp.Web;
 using SixLabors.ImageSharp.Web.Providers;
 using SixLabors.ImageSharp.Web.Resolvers;
 using TvMovieDatabaseClient.Service;
 using TvMovieDatabaseClient.Service.Model;
-using AddictedProxy.Caching.Extensions;
-using Performance.Service;
-using SixLabors.ImageSharp.Web;
 using DistributedCacheExtensions = AddictedProxy.Caching.Extensions.DistributedCacheExtensions;
 
 namespace AddictedProxy.Image.Logic;
@@ -25,7 +25,7 @@ public class TmdbImageProvider : IImageProvider
 
     public TmdbImageProvider(FormatUtilities formatUtilities,
         ITMDBClient tmdbClient,
-        IDistributedCache distributedCache, 
+        IDistributedCache distributedCache,
         ICachedStorageProvider cachedStorageProvider,
         IPerformanceTracker performanceTracker)
     {
@@ -64,8 +64,8 @@ public class TmdbImageProvider : IImageProvider
                 return null;
             }
 
-            await _cachedStorageProvider.GetSertAsync("tmdb",  context.Request.Path, default);
-    
+            await _cachedStorageProvider.GetSertAsync("tmdb", context.Request.Path, _ => Task.FromResult(image.Value.ImageStream)!, default);
+
 
             return new DistributedCacheExtensions.CacheData<TmdbImageMetadata?>(image.Value.Metadata, new DistributedCacheEntryOptions
             {
@@ -77,7 +77,7 @@ public class TmdbImageProvider : IImageProvider
         if (metadata == null)
             return null;
 
-        return new TmdbImageResolver( context.Request.Path, new ImageMetadata(metadata.LastModified, TimeSpan.FromDays(365), metadata.ContentLength), _tmdbClient, _cachedStorageProvider);
+        return new TmdbImageResolver(context.Request.Path, new ImageMetadata(metadata.LastModified, TimeSpan.FromDays(365), metadata.ContentLength), _tmdbClient, _cachedStorageProvider);
     }
 
     public ProcessingBehavior ProcessingBehavior => ProcessingBehavior.All;
