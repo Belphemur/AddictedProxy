@@ -145,23 +145,13 @@ public class SubtitlesController : Controller
             return TypedResults.BadRequest(new ErrorResponse("Invalid season pack ID format"));
         }
 
-        var seasonPack = await _seasonPackProvider.GetByUniqueIdAsync(packGuid, token);
-        if (seasonPack == null)
+        var result = await _seasonPackProvider.GetSeasonPackZipAsync(packGuid, token);
+        return result.Result switch
         {
-            return TypedResults.NotFound($"Season pack ({packGuid}) couldn't be found");
-        }
-
-        var stream = await _seasonPackProvider.GetSeasonPackZipAsync(seasonPack, token);
-        var lang = (await _cultureParser.FromStringAsync(seasonPack.Language, token))?.TwoLetterISOLanguageName.ToLowerInvariant() ?? seasonPack.LanguageIsoCode?.ToLowerInvariant() ?? "unknown";
-        var fileName = $"{seasonPack.TvShow.Name.Replace(" ", ".")}.S{seasonPack.Season:D2}.{lang}.zip";
-
-        return TypedResults.Stream(
-            stream,
-            contentType: "application/zip",
-            fileDownloadName: fileName,
-            lastModified: seasonPack.StoredAt,
-            entityTag: new EntityTagHeaderValue('"' + $"{seasonPack.UniqueId}{(seasonPack.StoredAt.HasValue ? "-" + seasonPack.StoredAt.Value.Ticks : "")}" + '"')
-        );
+            FileStreamHttpResult ok => ok,
+            NotFound<string> notFound => notFound,
+            _ => throw new InvalidOperationException("Unexpected season pack ZIP result")
+        };
     }
 
     private async Task<Results<FileStreamHttpResult, NotFound<string>, JsonHttpResult<ErrorResponse>, BadRequest<ErrorResponse>>> DownloadSeasonPackEntryAsync(string subtitleId, CancellationToken token)
@@ -186,29 +176,13 @@ public class SubtitlesController : Controller
             return TypedResults.BadRequest(new ErrorResponse("Invalid season pack entry ID format"));
         }
 
-        var seasonPack = await _seasonPackProvider.GetByUniqueIdAsync(packGuid, token);
-        if (seasonPack == null)
+        var result = await _seasonPackProvider.GetEntryFileAsync(packGuid, entryGuid, token);
+        return result.Result switch
         {
-            return TypedResults.NotFound($"Season pack ({packGuid}) couldn't be found");
-        }
-
-        var entry = await _seasonPackProvider.GetEntryByUniqueIdAsync(entryGuid, token);
-        if (entry == null || entry.SeasonPackSubtitleId != seasonPack.Id)
-        {
-            return TypedResults.NotFound($"Entry ({entryGuid}) not found in season pack ({packGuid})");
-        }
-
-        var stream = await _seasonPackProvider.GetEntryFileAsync(seasonPack, entry, token);
-        var lang = (await _cultureParser.FromStringAsync(seasonPack.Language, token))?.TwoLetterISOLanguageName.ToLowerInvariant() ?? seasonPack.LanguageIsoCode?.ToLowerInvariant() ?? "unknown";
-        var fileName = $"{seasonPack.TvShow.Name.Replace(" ", ".")}.S{seasonPack.Season:D2}E{entry.EpisodeNumber:D2}.{lang}.srt";
-
-        return TypedResults.Stream(
-            stream,
-            contentType: "text/srt",
-            fileDownloadName: fileName,
-            lastModified: seasonPack.StoredAt,
-            entityTag: new EntityTagHeaderValue('"' + $"{entry.UniqueId}{(seasonPack.StoredAt.HasValue ? "-" + seasonPack.StoredAt.Value.Ticks : "")}" + '"')
-        );
+            FileStreamHttpResult ok => ok,
+            NotFound<string> notFound => notFound,
+            _ => throw new InvalidOperationException("Unexpected season pack entry result")
+        };
     }
 
     private async Task<Results<FileStreamHttpResult, NotFound<string>, JsonHttpResult<ErrorResponse>, BadRequest<ErrorResponse>>> DownloadSeasonPackEpisodeAsync(string subtitleId, CancellationToken token)
@@ -233,30 +207,13 @@ public class SubtitlesController : Controller
             return TypedResults.BadRequest(new ErrorResponse("Invalid episode number in season pack ID"));
         }
 
-        var seasonPack = await _seasonPackProvider.GetByUniqueIdAsync(packGuid, token);
-        if (seasonPack == null)
+        var result = await _seasonPackProvider.GetEpisodeFromUpstreamAsync(packGuid, episodeNumber, token);
+        return result.Result switch
         {
-            return TypedResults.NotFound($"Season pack ({packGuid}) couldn't be found");
-        }
-
-        try
-        {
-            var stream = await _seasonPackProvider.GetEpisodeFromUpstreamAsync(seasonPack, episodeNumber, token);
-            var lang = (await _cultureParser.FromStringAsync(seasonPack.Language, token))?.TwoLetterISOLanguageName.ToLowerInvariant() ?? seasonPack.LanguageIsoCode?.ToLowerInvariant() ?? "unknown";
-            var fileName = $"{seasonPack.TvShow.Name.Replace(" ", ".")}.S{seasonPack.Season:D2}E{episodeNumber:D2}.{lang}.srt";
-
-            return TypedResults.Stream(
-                stream,
-                contentType: "text/srt",
-                fileDownloadName: fileName,
-                lastModified: seasonPack.StoredAt,
-                entityTag: new EntityTagHeaderValue('"' + $"{seasonPack.UniqueId}{(seasonPack.StoredAt.HasValue ? "-" + seasonPack.StoredAt.Value.Ticks : "")}" + '"')
-            );
-        }
-        catch (EpisodeNotInSeasonPackException)
-        {
-            return TypedResults.NotFound($"Episode {episodeNumber} not found in season pack ({packGuid})");
-        }
+            FileStreamHttpResult ok => ok,
+            NotFound<string> notFound => notFound,
+            _ => throw new InvalidOperationException("Unexpected season pack episode result")
+        };
     }
 
     private async Task<Results<Ok<SubtitleSearchResponse>, NotFound<ErrorResponse>, StatusCodeHttpResult>> ProcessSubtitleSearch(
@@ -290,7 +247,7 @@ public class SubtitlesController : Controller
                         // We'll also send the uncatalogued season packs as "matching" subtitles, even if we don't know for sure they have the episode, to give clients the chance to offer them as an option (with a "may contain the episode" disclaimer)
                         // if taken by the user, this will trigger downloading and cataloging of the season pack
                         foundMatchingSubtitles.AddRange(uncatalogedPacks);
-                        
+
                         return TypedResults.Ok(new SubtitleSearchResponse(foundMatchingSubtitles, subtitleFound.Episode));
                     },
                     onStatusCode: statusCode =>

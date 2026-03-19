@@ -1,10 +1,13 @@
 using System.IO.Compression;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Culture.Service;
 using AddictedProxy.Storage.Extensions;
 using AddictedProxy.Storage.Store;
 using Grpc.Core;
 using Hangfire;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Net.Http.Headers;
 using SuperSubtitleClient.Service;
 
 namespace AddictedProxy.Services.Provider.SeasonPack;
@@ -15,6 +18,7 @@ public class SeasonPackProvider : ISeasonPackProvider
     private readonly IStorageProvider _storageProvider;
     private readonly ISuperSubtitlesClient _superSubtitlesClient;
     private readonly ISeasonPackEntryRepository _entryRepository;
+    private readonly ICultureParser _cultureParser;
     private readonly IBackgroundJobClient _backgroundJobClient;
     private readonly ILogger<SeasonPackProvider> _logger;
 
@@ -23,6 +27,7 @@ public class SeasonPackProvider : ISeasonPackProvider
         IStorageProvider storageProvider,
         ISuperSubtitlesClient superSubtitlesClient,
         ISeasonPackEntryRepository entryRepository,
+        ICultureParser cultureParser,
         IBackgroundJobClient backgroundJobClient,
         ILogger<SeasonPackProvider> logger)
     {
@@ -30,6 +35,7 @@ public class SeasonPackProvider : ISeasonPackProvider
         _storageProvider = storageProvider;
         _superSubtitlesClient = superSubtitlesClient;
         _entryRepository = entryRepository;
+        _cultureParser = cultureParser;
         _backgroundJobClient = backgroundJobClient;
         _logger = logger;
     }
@@ -44,7 +50,32 @@ public class SeasonPackProvider : ISeasonPackProvider
         return _entryRepository.FindByUniqueIdAsync(uniqueId, token);
     }
 
-    public async Task<Stream> GetSeasonPackZipAsync(SeasonPackSubtitle seasonPack, CancellationToken token)
+    public async Task<Results<FileStreamHttpResult, NotFound<string>>> GetSeasonPackZipAsync(Guid uniqueId, CancellationToken token)
+    {
+        var seasonPack = await _seasonPackSubtitleRepository.GetByUniqueIdAsync(uniqueId, token);
+        if (seasonPack == null)
+        {
+            return TypedResults.NotFound($"Season pack ({uniqueId}) couldn't be found");
+        }
+
+        try
+        {
+            var stream = await GetSeasonPackZipStreamAsync(seasonPack, token);
+            return TypedResults.Stream(
+                stream,
+                contentType: "application/zip",
+                fileDownloadName: await BuildSeasonPackZipFileNameAsync(seasonPack, token),
+                lastModified: seasonPack.StoredAt,
+                entityTag: CreateEntityTag(seasonPack.UniqueId, seasonPack.StoredAt)
+            );
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.DataLoss)
+        {
+            return await HandleCorruptSeasonPackAsync(seasonPack, ex, $"Season pack ({uniqueId}) is corrupted and couldn't be downloaded", token);
+        }
+    }
+
+    private async Task<Stream> GetSeasonPackZipStreamAsync(SeasonPackSubtitle seasonPack, CancellationToken token)
     {
         if (seasonPack.StoragePath != null)
         {
@@ -62,7 +93,38 @@ public class SeasonPackProvider : ISeasonPackProvider
         return await DownloadAndStoreFullZipAsync(seasonPack, token);
     }
 
-    public async Task<Stream> GetEntryFileAsync(SeasonPackSubtitle seasonPack, SeasonPackEntry entry, CancellationToken token)
+    public async Task<Results<FileStreamHttpResult, NotFound<string>>> GetEntryFileAsync(Guid seasonPackUniqueId, Guid entryUniqueId, CancellationToken token)
+    {
+        var seasonPack = await _seasonPackSubtitleRepository.GetByUniqueIdAsync(seasonPackUniqueId, token);
+        if (seasonPack == null)
+        {
+            return TypedResults.NotFound($"Season pack ({seasonPackUniqueId}) couldn't be found");
+        }
+
+        var entry = await _entryRepository.FindByUniqueIdAsync(entryUniqueId, token);
+        if (entry == null || entry.SeasonPackSubtitleId != seasonPack.Id)
+        {
+            return TypedResults.NotFound($"Entry ({entryUniqueId}) not found in season pack ({seasonPackUniqueId})");
+        }
+
+        try
+        {
+            var stream = await GetEntryFileStreamAsync(seasonPack, entry, token);
+            return TypedResults.Stream(
+                stream,
+                contentType: "text/srt",
+                fileDownloadName: await BuildSeasonPackEpisodeFileNameAsync(seasonPack, entry.EpisodeNumber, token),
+                lastModified: seasonPack.StoredAt,
+                entityTag: CreateEntityTag(entry.UniqueId, seasonPack.StoredAt)
+            );
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.DataLoss)
+        {
+            return await HandleCorruptSeasonPackAsync(seasonPack, ex, $"Season pack ({seasonPackUniqueId}) is corrupted and entry ({entryUniqueId}) couldn't be downloaded", token);
+        }
+    }
+
+    private async Task<Stream> GetEntryFileStreamAsync(SeasonPackSubtitle seasonPack, SeasonPackEntry entry, CancellationToken token)
     {
         if (seasonPack.StoragePath == null)
         {
@@ -109,7 +171,36 @@ public class SeasonPackProvider : ISeasonPackProvider
         }
     }
 
-    public async Task<Stream> GetEpisodeFromUpstreamAsync(SeasonPackSubtitle seasonPack, int episode, CancellationToken token)
+    public async Task<Results<FileStreamHttpResult, NotFound<string>>> GetEpisodeFromUpstreamAsync(Guid seasonPackUniqueId, int episode, CancellationToken token)
+    {
+        var seasonPack = await _seasonPackSubtitleRepository.GetByUniqueIdAsync(seasonPackUniqueId, token);
+        if (seasonPack == null)
+        {
+            return TypedResults.NotFound($"Season pack ({seasonPackUniqueId}) couldn't be found");
+        }
+
+        try
+        {
+            var stream = await GetEpisodeFromUpstreamStreamAsync(seasonPack, episode, token);
+            return TypedResults.Stream(
+                stream,
+                contentType: "text/srt",
+                fileDownloadName: await BuildSeasonPackEpisodeFileNameAsync(seasonPack, episode, token),
+                lastModified: seasonPack.StoredAt,
+                entityTag: CreateEntityTag(seasonPack.UniqueId, seasonPack.StoredAt)
+            );
+        }
+        catch (EpisodeNotInSeasonPackException)
+        {
+            return TypedResults.NotFound($"Episode {episode} not found in season pack ({seasonPackUniqueId})");
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.DataLoss)
+        {
+            return await HandleCorruptSeasonPackAsync(seasonPack, ex, $"Season pack ({seasonPackUniqueId}) is corrupted and episode {episode} couldn't be downloaded", token);
+        }
+    }
+
+    private async Task<Stream> GetEpisodeFromUpstreamStreamAsync(SeasonPackSubtitle seasonPack, int episode, CancellationToken token)
     {
         if (seasonPack.RangeStart.HasValue && episode < seasonPack.RangeStart.Value)
         {
@@ -158,5 +249,36 @@ public class SeasonPackProvider : ISeasonPackProvider
 
         await _seasonPackSubtitleRepository.IncrementDownloadCountAsync(seasonPack, token);
         return new MemoryStream(blob);
+    }
+
+    private async Task<NotFound<string>> HandleCorruptSeasonPackAsync(SeasonPackSubtitle seasonPack, RpcException exception, string message, CancellationToken token)
+    {
+        _logger.LogWarning(exception, "Soft-deleting corrupt season pack {SeasonPackUniqueId} after upstream reported DataLoss", seasonPack.UniqueId);
+        await _seasonPackSubtitleRepository.SoftDeleteAsync(seasonPack, token);
+        return TypedResults.NotFound(message);
+    }
+
+    private async Task<string> BuildSeasonPackZipFileNameAsync(SeasonPackSubtitle seasonPack, CancellationToken token)
+    {
+        var languageCode = await GetLanguageCodeAsync(seasonPack, token);
+        return $"{seasonPack.TvShow.Name.Replace(" ", ".")}.S{seasonPack.Season:D2}.{languageCode}.zip";
+    }
+
+    private async Task<string> BuildSeasonPackEpisodeFileNameAsync(SeasonPackSubtitle seasonPack, int episodeNumber, CancellationToken token)
+    {
+        var languageCode = await GetLanguageCodeAsync(seasonPack, token);
+        return $"{seasonPack.TvShow.Name.Replace(" ", ".")}.S{seasonPack.Season:D2}E{episodeNumber:D2}.{languageCode}.srt";
+    }
+
+    private async Task<string> GetLanguageCodeAsync(SeasonPackSubtitle seasonPack, CancellationToken token)
+    {
+        return (await _cultureParser.FromStringAsync(seasonPack.Language, token))?.TwoLetterISOLanguageName.ToLowerInvariant()
+               ?? seasonPack.LanguageIsoCode?.ToLowerInvariant()
+               ?? "unknown";
+    }
+
+    private static EntityTagHeaderValue CreateEntityTag(Guid uniqueId, DateTime? storedAt)
+    {
+        return new EntityTagHeaderValue('"' + $"{uniqueId}{(storedAt.HasValue ? "-" + storedAt.Value.Ticks : "")}" + '"');
     }
 }

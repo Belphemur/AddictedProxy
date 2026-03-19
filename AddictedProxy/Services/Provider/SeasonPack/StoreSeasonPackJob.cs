@@ -8,6 +8,7 @@ using Hangfire.Console;
 using Hangfire.Server;
 using Locking;
 using Performance.Service;
+using Grpc.Core;
 using SuperSubtitleClient.Service;
 
 namespace AddictedProxy.Services.Provider.SeasonPack;
@@ -101,8 +102,19 @@ public class StoreSeasonPackJob
         _logger.LogInformation("Downloading season pack {seasonPackId} (ExternalId: {externalId}) from upstream", data.SeasonPackUniqueId, seasonPack.ExternalId);
         context?.WriteLine($"Downloading season pack {data.SeasonPackUniqueId} from upstream (ExternalId: {seasonPack.ExternalId})");
 
-        var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), cancellationToken: cancellationToken);
-        var blob = response.Content.ToByteArray();
+        byte[] blob;
+        try
+        {
+            var response = await _superSubtitlesClient.DownloadSubtitleAsync(seasonPack.ExternalId.ToString(), cancellationToken: cancellationToken);
+            blob = response.Content.ToByteArray();
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.DataLoss)
+        {
+            _logger.LogWarning(ex, "Soft-deleting corrupt season pack {SeasonPackUniqueId} during background storage", seasonPack.UniqueId);
+            context?.WriteLine($"Corrupt season pack detected for {seasonPack.UniqueId}, soft-deleting it");
+            await _seasonPackSubtitleRepository.SoftDeleteAsync(seasonPack, cancellationToken);
+            return;
+        }
 
         if (blob.Length == 0)
         {
