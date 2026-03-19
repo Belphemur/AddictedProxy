@@ -1,3 +1,10 @@
+## [4.61.3](https://github.com/Belphemur/AddictedProxy/compare/v4.61.2...v4.61.3) (2026-03-19)
+
+### Bug Fixes
+
+* file name ([fc04117](https://github.com/Belphemur/AddictedProxy/commit/fc04117d6a887fe8e42f44a8c66eaf7c6b6b18c6))
+* **season-pack:** sync recataloged pack entries ([e5477e5](https://github.com/Belphemur/AddictedProxy/commit/e5477e569ad5a75a25cf83b311ee51923e3412e8))
+
 ## [4.61.2](https://github.com/Belphemur/AddictedProxy/compare/v4.61.1...v4.61.2) (2026-03-19)
 
 ### Bug Fixes
