@@ -11,7 +11,7 @@
     <PackageVersion Include="FluentAssertions" Version="8.9.0" />
     <PackageVersion Include="Google.Protobuf" Version="3.34.1" />
     <PackageVersion Include="Grpc.Net.ClientFactory" Version="2.76.0" />
-    <PackageVersion Include="Grpc.Tools" Version="2.78.0">
+    <PackageVersion Include="Grpc.Tools" Version="2.80.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
