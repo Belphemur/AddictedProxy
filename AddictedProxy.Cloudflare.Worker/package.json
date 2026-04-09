@@ -4,7 +4,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.0.0",
     "typescript": "^6.0.0",
-    "wrangler": "4.80.0"
+    "wrangler": "4.81.0"
   },
   "private": true,
   "scripts": {
