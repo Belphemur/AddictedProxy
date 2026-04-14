@@ -1,3 +1,9 @@
+## [4.64.0](https://github.com/Belphemur/AddictedProxy/compare/v4.63.0...v4.64.0) (2026-04-14)
+
+### Features
+
+* refactor usage of cloudflare beacon ([e09ec08](https://github.com/Belphemur/AddictedProxy/commit/e09ec08b5a85d3d5f3e2d630f6d15e41f7305d89))
+
 ## [4.63.0](https://github.com/Belphemur/AddictedProxy/compare/v4.62.1...v4.63.0) (2026-04-14)
 
 ### Features
