@@ -7,10 +7,12 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "gen-api": "swagger-typescript-api generate -p http://localhost/api/v1/swagger.json -o .\\composables\\api\\ -n api.ts --route-types --union-enums --modular  --no-no-client"
+    "gen-api": "swagger-typescript-api generate -p http://localhost/api/v1/swagger.json -o .\\composables\\api\\ -n api.ts --route-types --union-enums --modular  --no-no-client",
+    "prepare": "skilld prepare || true"
   },
   "devDependencies": {
     "@nuxt/devtools": "3.2.4",
+    "@nuxt/scripts": "1.0.0-beta.32",
     "@nuxtjs/device": "^4.0.0",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia/nuxt": "0.11.3",

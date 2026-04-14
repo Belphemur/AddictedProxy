@@ -37,3 +37,6 @@ fabric.properties
 
 # Screenshots
 *.png
+
+# Skilld references (recreated by `skilld install`)
+.skilld

@@ -394,3 +394,10 @@ chore(deps): update all NuGet packages to latest versions
 1. Create a job class in the relevant module
 2. Register it via the module's `IBootstrap` implementation
 3. Schedule via Hangfire's `IRecurringJobManager` or `IBackgroundJobClient`
+
+<!-- skilld -->
+
+Before modifying code, evaluate each installed skill against the current task.
+For each skill, determine YES/NO relevance and invoke all YES skills before proceeding.
+
+<!-- /skilld -->
