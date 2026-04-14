@@ -1,3 +1,9 @@
+## [4.63.0](https://github.com/Belphemur/AddictedProxy/compare/v4.62.1...v4.63.0) (2026-04-14)
+
+### Features
+
+* **nuxt:** add google adsense integration ([eea6a37](https://github.com/Belphemur/AddictedProxy/commit/eea6a37da845ab7ac4fb06a2b011002460bb7a61))
+
 ## [4.62.1](https://github.com/Belphemur/AddictedProxy/compare/v4.62.0...v4.62.1) (2026-03-19)
 
 ### Bug Fixes
