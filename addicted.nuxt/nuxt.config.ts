@@ -33,6 +33,13 @@ export default defineNuxtConfig({
       ],
     },
   },
+  scripts: {
+    registry: {
+      googleAdsense: {
+        client: "ca-pub-7284443005140816",
+      },
+    },
+  },
   build: {
     transpile: ["picomatch", "ws"],
   },
@@ -173,6 +180,7 @@ export default defineNuxtConfig({
     "@nuxtjs/device",
     "vuetify-nuxt-module",
     "pinia-plugin-persistedstate",
+    "@nuxt/scripts",
   ],
 
   compatibilityDate: "2026-02-27",
