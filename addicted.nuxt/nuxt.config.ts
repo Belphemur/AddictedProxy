@@ -37,7 +37,14 @@ export default defineNuxtConfig({
     registry: {
       googleAdsense: {
         client: "ca-pub-7284443005140816",
+        trigger: "onNuxtReady",
       },
+      cloudflareWebAnalytics: process.env.APP_CLOUDFLARE_ANALYTIC_TOKEN
+        ? {
+            token: process.env.APP_CLOUDFLARE_ANALYTIC_TOKEN,
+            trigger: "onNuxtReady",
+          }
+        : false,
     },
   },
   build: {
