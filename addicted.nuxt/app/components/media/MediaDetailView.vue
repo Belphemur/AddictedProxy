@@ -290,6 +290,12 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
 <template>
   <div>
     <media-details v-if="mediaInfo?.details != null" :details="mediaInfo" v-model="currentSeason" />
+    <v-row justify="center" class="mt-3">
+      <v-col cols="12" md="10" lg="8">
+        <ScriptGoogleAdsense style="display:block" data-ad-client="ca-pub-7284443005140816" data-ad-slot="8373307473"
+          data-ad-format="auto" data-full-width-responsive />
+      </v-col>
+    </v-row>
     <v-progress-linear v-if="refreshingProgress != null" v-model="refreshingProgress" color="blue" height="18"
       class="mt-2">
       {{ formattedProgress }}
@@ -301,39 +307,39 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
     <div class="mt-2">
       <v-skeleton-loader type="card" :loading="loadingEpisodes">
         <v-sheet rounded="lg" :color="layout.colors.primaryPanel" :class="layout.classes.primaryPanel">
-            <div class="d-flex align-center flex-wrap ga-2 mb-4">
-              <h2 class="text-h6">Season {{ currentSeason }}</h2>
-              <v-spacer />
-              <div class="d-flex ga-2">
-                <v-btn :prepend-icon="mdiRefresh" color="primary" size="small" @click="refreshShow"
-                  :disabled="refreshingProgress != null || downloadingInProgress">Refresh
-                  <v-tooltip activator="parent" location="bottom">Fetch from Addic7ed
-                  </v-tooltip>
-                </v-btn>
+          <div class="d-flex align-center flex-wrap ga-2 mb-4">
+            <h2 class="text-h6">Season {{ currentSeason }}</h2>
+            <v-spacer />
+            <div class="d-flex ga-2">
+              <v-btn :prepend-icon="mdiRefresh" color="primary" size="small" @click="refreshShow"
+                :disabled="refreshingProgress != null || downloadingInProgress">Refresh
+                <v-tooltip activator="parent" location="bottom">Fetch from Addic7ed
+                </v-tooltip>
+              </v-btn>
               <v-btn v-if="onlyOneTypeAvailable && hasEpisodes" :prepend-icon="mdiDownload" color="primary" size="small"
-                  @click="handleDownloadClick" :disabled="refreshingProgress != null || downloadingInProgress">
-                  Download season
-                  <v-tooltip activator="parent" location="bottom">Download all subtitles of the season as ZIP file
-                  </v-tooltip>
-                </v-btn>
+                @click="handleDownloadClick" :disabled="refreshingProgress != null || downloadingInProgress">
+                Download season
+                <v-tooltip activator="parent" location="bottom">Download all subtitles of the season as ZIP file
+                </v-tooltip>
+              </v-btn>
               <v-btn v-else-if="hasEpisodes" :prepend-icon="mdiDownload" color="primary" size="small"
-                  :disabled="refreshingProgress != null || downloadingInProgress">
-                  <SubtitleTypeChooser @selected="downloadSeasonSubtitles" :available-types="availableSubtitleTypes" />
-                  Download season
-                  <v-tooltip activator="parent" location="bottom">Download all subtitles of the season as ZIP file
-                  </v-tooltip>
-                </v-btn>
-              </div>
+                :disabled="refreshingProgress != null || downloadingInProgress">
+                <SubtitleTypeChooser @selected="downloadSeasonSubtitles" :available-types="availableSubtitleTypes" />
+                Download season
+                <v-tooltip activator="parent" location="bottom">Download all subtitles of the season as ZIP file
+                </v-tooltip>
+              </v-btn>
             </div>
+          </div>
           <div v-if="hasSeasonPacks" class="mb-4">
-              <h3 class="text-subtitle-1 font-weight-medium mb-2">Season Packs</h3>
-              <season-packs-section :season-packs="seasonPacks" />
-            </div>
+            <h3 class="text-subtitle-1 font-weight-medium mb-2">Season Packs</h3>
+            <season-packs-section :season-packs="seasonPacks" />
+          </div>
           <v-divider v-if="hasSeasonPacks && hasEpisodes" class="mb-4" />
           <h3 v-if="hasSeasonPacks && hasEpisodes" class="text-subtitle-1 font-weight-medium mb-2">Episodes</h3>
-            <subtitles-table :episodes="episodes" :season-pack-count="seasonPacks.length"></subtitles-table>
-          </v-sheet>
-        </v-skeleton-loader>
+          <subtitles-table :episodes="episodes" :season-pack-count="seasonPacks.length"></subtitles-table>
+        </v-sheet>
+      </v-skeleton-loader>
     </div>
   </div>
 </template>
