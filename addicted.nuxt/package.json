@@ -7,10 +7,12 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "gen-api": "swagger-typescript-api generate -p http://localhost/api/v1/swagger.json -o .\\composables\\api\\ -n api.ts --route-types --union-enums --modular  --no-no-client"
+    "gen-api": "swagger-typescript-api generate -p http://localhost/api/v1/swagger.json -o .\\composables\\api\\ -n api.ts --route-types --union-enums --modular  --no-no-client",
+    "prepare": "skilld prepare || true"
   },
   "devDependencies": {
     "@nuxt/devtools": "3.2.4",
+    "@nuxt/scripts": "1.0.0-rc.7",
     "@nuxtjs/device": "^4.0.0",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia/nuxt": "0.11.3",
@@ -23,7 +25,7 @@
     "pinia-plugin-persistedstate": "4.7.1",
     "roboto-fontface": "^0.10.0",
     "swagger-typescript-api": "^13.2.18",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.0",
     "vite": "^8.0.0",
     "vite-plugin-vuetify": "^2.1.3",
     "vuetify-nuxt-module": "^0.19.5"
@@ -34,7 +36,7 @@
     "bufferutil": "^4.1.0",
     "client-zip": "^2.5.0",
     "fetch-retry": "^6.0.0",
-    "lodash-es": "^4.17.23",
+    "lodash-es": "^4.18.1",
     "utf-8-validate": "^6.0.6",
     "vuetify": "^4.0.0"
   },
@@ -47,5 +49,5 @@
       "utf-8-validate"
     ]
   },
-  "packageManager": "pnpm@10.32.1+sha512.a706938f0e89ac1456b6563eab4edf1d1faf3368d1191fc5c59790e96dc918e4456ab2e67d613de1043d2e8c81f87303e6b40d4ffeca9df15ef1ad567348f2be"
+  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
 }

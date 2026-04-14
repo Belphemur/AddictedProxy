@@ -1,0 +1,8 @@
+skills:
+  nuxt-scripts-skilld:
+    packageName: "@nuxt/scripts"
+    version: 1.0.0-beta.32
+    repo: nuxt/scripts
+    source: "https://github.com/nuxt/scripts/tree/v1.0.0-beta.32/docs"
+    syncedAt: 2026-04-14
+    generator: skilld
