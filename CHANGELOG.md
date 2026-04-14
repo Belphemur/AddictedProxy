@@ -1,3 +1,9 @@
+## [4.64.1](https://github.com/Belphemur/AddictedProxy/compare/v4.64.0...v4.64.1) (2026-04-14)
+
+### Bug Fixes
+
+* **ads:** show ads on website ([a70616b](https://github.com/Belphemur/AddictedProxy/commit/a70616b541d64c9b61a653fcb4dfdac661b5142d))
+
 ## [4.64.0](https://github.com/Belphemur/AddictedProxy/compare/v4.63.0...v4.64.0) (2026-04-14)
 
 ### Features
