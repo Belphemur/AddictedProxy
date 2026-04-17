@@ -53,5 +53,5 @@ public interface ISeasonRepository
     /// Returns all seasons that have at least one subtitle or season pack subtitle,
     /// as a queryable for sitemap generation.
     /// </summary>
-    IQueryable<Season> GetAllForSitemapAsync();
+    IQueryable<Season> GetAllForSitemap();
 }

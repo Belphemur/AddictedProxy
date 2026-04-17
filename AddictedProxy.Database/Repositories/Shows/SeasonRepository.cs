@@ -85,7 +85,7 @@ public class SeasonRepository : ISeasonRepository
     }
 
     /// <inheritdoc />
-    public IQueryable<Season> GetAllForSitemapAsync()
+    public IQueryable<Season> GetAllForSitemap()
     {
         return _entityContext.Seasons
             .Where(s =>

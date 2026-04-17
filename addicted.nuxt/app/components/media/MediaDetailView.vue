@@ -128,37 +128,40 @@ async function loadViewData() {
   }
   mediaInfo.value = data.value!.details;
   if (data.value?.lastSeasonNumber == null) {
+    loadingEpisodes.value = false;
     return;
   }
 
-  const lastSeason = data.value.lastSeasonNumber;
-  const availableSeasons: number[] = mediaInfo.value?.media?.seasons ?? [];
+  try {
+    const lastSeason = data.value.lastSeasonNumber;
+    const availableSeasons: number[] = mediaInfo.value?.media?.seasons ?? [];
 
-  // Determine target season: use initialSeason if valid, otherwise latest.
-  let targetSeason: number;
-  if (props.initialSeason != null && availableSeasons.includes(props.initialSeason)) {
-    targetSeason = props.initialSeason;
-  } else if (props.initialSeason != null) {
-    // Requested season doesn't exist — 404.
-    const showName = mediaInfo.value?.media?.name ?? 'this show';
-    throw createError({ statusCode: 404, statusMessage: `Season ${props.initialSeason} not found for ${showName}` });
-  } else {
-    targetSeason = lastSeason;
+    // Determine target season: use initialSeason if valid, otherwise latest.
+    let targetSeason: number;
+    if (props.initialSeason != null && availableSeasons.includes(props.initialSeason)) {
+      targetSeason = props.initialSeason;
+    } else if (props.initialSeason != null) {
+      // Requested season doesn't exist — 404.
+      const showName = mediaInfo.value?.media?.name ?? 'this show';
+      throw createError({ statusCode: 404, statusMessage: `Season ${props.initialSeason} not found for ${showName}` });
+    } else {
+      targetSeason = lastSeason;
+    }
+
+    currentSeason.value = targetSeason;
+
+    if (targetSeason === lastSeason) {
+      episodes.value = data.value.episodeWithSubtitles;
+      seasonPacks.value = data.value.seasonPacks ?? [];
+    } else {
+      // Fetch the specific requested season.
+      const response = (await showsApi.showsDetail(props.showId, targetSeason, language.lang)).data;
+      episodes.value = response.episodes ?? [];
+      seasonPacks.value = response.seasonPacks ?? [];
+    }
+  } finally {
+    loadingEpisodes.value = false;
   }
-
-  currentSeason.value = targetSeason;
-
-  if (targetSeason === lastSeason) {
-    episodes.value = data.value.episodeWithSubtitles;
-    seasonPacks.value = data.value.seasonPacks ?? [];
-  } else {
-    // Fetch the specific requested season.
-    const response = (await showsApi.showsDetail(props.showId, targetSeason, language.lang)).data;
-    episodes.value = response.episodes!;
-    seasonPacks.value = response.seasonPacks ?? [];
-  }
-
-  loadingEpisodes.value = false;
 }
 
 watch([currentSeason, language], async ([newSeason], [oldSeason]) => {

@@ -29,16 +29,19 @@ public class SitemapController : Controller
     [Route("/sitemap.xml")]
     [HttpGet]
     [Produces("text/xml")]
-    public async Task<ActionResult> Media([FromRoute] int? page, CancellationToken cancellationToken)
+    public ActionResult Media([FromRoute] int? page, CancellationToken cancellationToken)
     {
         var showItems = _tvShowRepository.GetAllHavingSubtitlesAsync()
             .Select(s => new MediaSitemapItem(s.UniqueId, s.Name, null, s.LastUpdated, s.IsCompleted));
 
-        var seasonItems = _seasonRepository.GetAllForSitemapAsync()
+        var seasonItems = _seasonRepository.GetAllForSitemap()
             .Select(s => new MediaSitemapItem(s.TvShow.UniqueId, s.TvShow.Name, s.Number,
                 s.LastRefreshed ?? s.TvShow.LastUpdated, false));
 
-        var combined = showItems.Concat(seasonItems);
+        var combined = showItems
+            .Concat(seasonItems)
+            .OrderBy(i => i.ShowUniqueId)
+            .ThenBy(i => i.SeasonNumber ?? 0);
         var indexConfiguration = new MediaSitemapIndexConfiguration(combined, page, Url, _sitemapConfig);
         return _dynamicSitemapIndexProvider.CreateSitemapIndex(_sitemapProvider, indexConfiguration);
     }
