@@ -48,16 +48,24 @@ if (imageUrl != null) {
   twitterUrl += "?width=250&format=jpeg"
 }
 
+const seoSeasonSuffix = computed(() => {
+  if (currentSeason.value == null) {
+    return "";
+  }
+
+  return ` - Season ${currentSeason.value}`;
+});
+
 useSeoMeta({
-  title: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
-  ogTitle: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
-  description: `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}`,
-  ogDescription: `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}`,
+  title: () => `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
+  ogTitle: () => `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
+  description: () => `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
+  ogDescription: () => `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
   ogImage: new URL(imageUrl ?? '', runtimeConfig.public.api.clientUrl).href,
   articleTag: mediaInfo.value!.details?.genre ?? [],
   twitterImage: new URL(twitterUrl ?? '', runtimeConfig.public.api.clientUrl).href,
-  ogImageAlt: `Poster of ${mediaInfo.value!.media?.name}`,
-  twitterImageAlt: `Poster of ${mediaInfo.value!.media?.name}`,
+  ogImageAlt: () => `Poster of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
+  twitterImageAlt: () => `Poster of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
   ogType: "website"
 })
 
@@ -126,18 +134,19 @@ async function loadViewData() {
   const lastSeason = data.value.lastSeasonNumber;
   const availableSeasons: number[] = mediaInfo.value?.media?.seasons ?? [];
 
-  // Determine target season: honour initialSeason when valid, otherwise use last season.
-  let targetSeason = lastSeason;
-  if (props.initialSeason !== undefined) {
-    if (availableSeasons.includes(props.initialSeason)) {
-      targetSeason = props.initialSeason;
-    } else {
-      // Season not in show — redirect to canonical latest-season URL.
-      await navigateTo(
-        { name: 'show-season', params: { ...route.params, seasonNumber: lastSeason } },
-        { replace: true }
-      );
-    }
+  // Determine target season: use initialSeason if valid, otherwise latest.
+  let targetSeason: number;
+  if (props.initialSeason != null && availableSeasons.includes(props.initialSeason)) {
+    targetSeason = props.initialSeason;
+  } else if (props.initialSeason != null) {
+    // Requested season doesn't exist — redirect to latest.
+    targetSeason = lastSeason;
+    await navigateTo(
+      { name: 'show-season', params: { ...route.params, seasonNumber: lastSeason } },
+      { replace: true }
+    );
+  } else {
+    targetSeason = lastSeason;
   }
 
   currentSeason.value = targetSeason;
