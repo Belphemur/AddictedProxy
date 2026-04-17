@@ -19,9 +19,11 @@ import { last } from "lodash-es";
 
 export interface Props {
   showId: string;
+  initialSeason?: number;
 }
 
 const layout = usePageLayout();
+const route = useRoute();
 const props = defineProps<Props>();
 const mediaApi = useMedia();
 const showsApi = useShows();
@@ -120,9 +122,36 @@ async function loadViewData() {
   if (data.value?.lastSeasonNumber == null) {
     return;
   }
-  currentSeason.value = data.value?.lastSeasonNumber
-  episodes.value = data.value?.episodeWithSubtitles;
-  seasonPacks.value = data.value?.seasonPacks ?? [];
+
+  const lastSeason = data.value.lastSeasonNumber;
+  const availableSeasons: number[] = mediaInfo.value?.media?.seasons ?? [];
+
+  // Determine target season: honour initialSeason when valid, otherwise use last season.
+  let targetSeason = lastSeason;
+  if (props.initialSeason !== undefined) {
+    if (availableSeasons.includes(props.initialSeason)) {
+      targetSeason = props.initialSeason;
+    } else {
+      // Season not in show — redirect to canonical latest-season URL.
+      await navigateTo(
+        { name: 'show-season', params: { ...route.params, seasonNumber: lastSeason } },
+        { replace: true }
+      );
+    }
+  }
+
+  currentSeason.value = targetSeason;
+
+  if (targetSeason === lastSeason) {
+    episodes.value = data.value.episodeWithSubtitles;
+    seasonPacks.value = data.value.seasonPacks ?? [];
+  } else {
+    // Fetch the specific requested season.
+    const response = (await showsApi.showsDetail(props.showId, targetSeason, language.lang)).data;
+    episodes.value = response.episodes!;
+    seasonPacks.value = response.seasonPacks ?? [];
+  }
+
   loadingEpisodes.value = false;
 }
 
@@ -143,6 +172,14 @@ watch([currentSeason, language], async ([newSeason], [oldSeason]) => {
   }
 
   loadingEpisodes.value = false;
+
+  // Sync URL when the user changes season on the season route.
+  if (newSeason !== undefined && newSeason !== oldSeason && route.name === 'show-season') {
+    await navigateTo({
+      name: 'show-season',
+      params: { ...route.params, seasonNumber: newSeason }
+    });
+  }
 })
 
 
