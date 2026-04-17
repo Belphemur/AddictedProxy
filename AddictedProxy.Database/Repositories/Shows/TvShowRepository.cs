@@ -162,12 +162,15 @@ public class TvShowRepository : ITvShowRepository
     }
 
     /// <summary>
-    /// Get shows having at least one season
+    /// Get shows having at least one subtitle or season pack subtitle
     /// </summary>
     /// <returns></returns>
     public IQueryable<TvShow> GetAllHavingSubtitlesAsync()
     {
-        return _entityContext.TvShows.Where(show => show.Episodes.First().Subtitles.Count > 0)
+        return _entityContext.TvShows
+            .Where(show =>
+                show.Episodes.Any(e => e.Subtitles.Count > 0) ||
+                _entityContext.SeasonPackSubtitles.Any(sp => sp.TvShowId == show.Id))
             .OrderBy(show => show.Id)
             .AsNoTracking();
     }

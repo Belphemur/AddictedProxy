@@ -1,7 +1,6 @@
 ﻿using System.Web;
 using AddictedProxy.Controllers.Rest;
 using AddictedProxy.Culture.Extensions;
-using AddictedProxy.Database.Model.Shows;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SimpleMvcSitemap;
@@ -9,12 +8,11 @@ using SimpleMvcSitemap.StyleSheets;
 
 namespace AddictedProxy.Services.Sitemap;
 
-public class MediaSitemapIndexConfiguration : SitemapIndexConfiguration<TvShow>
+public class MediaSitemapIndexConfiguration : SitemapIndexConfiguration<MediaSitemapItem>
 {
     private readonly IUrlHelper _helper;
 
-
-    public MediaSitemapIndexConfiguration(IQueryable<TvShow> dataSource, int? currentPage, IUrlHelper helper, IOptions<SitemapConfig> sitemapConfig) : base(dataSource, currentPage)
+    public MediaSitemapIndexConfiguration(IQueryable<MediaSitemapItem> dataSource, int? currentPage, IUrlHelper helper, IOptions<SitemapConfig> sitemapConfig) : base(dataSource, currentPage)
     {
         _helper = helper;
         Size = 500;
@@ -27,12 +25,21 @@ public class MediaSitemapIndexConfiguration : SitemapIndexConfiguration<TvShow>
         return new SitemapIndexNode(_helper.RouteUrl(Routes.MediaSitemap.ToString(), new { page }));
     }
 
-    public override SitemapNode CreateNode(TvShow show)
+    public override SitemapNode CreateNode(MediaSitemapItem item)
     {
-        return new SitemapNode($"/shows/{show.UniqueId}/{HttpUtility.UrlEncode(show.Name.ToSlug())}")
+        var slug = HttpUtility.UrlEncode(item.ShowName.ToSlug());
+        var url = item.SeasonNumber.HasValue
+            ? $"/shows/{item.ShowUniqueId}/{slug}/{item.SeasonNumber}"
+            : $"/shows/{item.ShowUniqueId}/{slug}";
+
+        var frequency = item.SeasonNumber.HasValue
+            ? ChangeFrequency.Weekly
+            : (item.IsCompleted ? ChangeFrequency.Monthly : ChangeFrequency.Daily);
+
+        return new SitemapNode(url)
         {
-            LastModificationDate = show.LastUpdated,
-            ChangeFrequency = show.IsCompleted ? ChangeFrequency.Monthly : ChangeFrequency.Daily
+            LastModificationDate = item.LastModified,
+            ChangeFrequency = frequency
         };
     }
 }
