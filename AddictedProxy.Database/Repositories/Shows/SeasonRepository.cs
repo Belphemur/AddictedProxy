@@ -28,7 +28,7 @@ public class SeasonRepository : ISeasonRepository
     {
         return _entityContext.Seasons.Where(season => season.TvShow.Id == showId).SingleOrDefaultAsync(season => season.Number == seasonNumber, token);
     }
-    
+
     /// <summary>
     /// Get all seasons for the show
     /// </summary>
@@ -51,7 +51,7 @@ public class SeasonRepository : ISeasonRepository
             .Select(s => new { s.TvShowId, s.Number, s.Id })
             .ToDictionaryAsync(s => (s.TvShowId, s.Number), s => s.Id, token);
     }
-    
+
     /// <summary>
     /// Update the lastRefreshed field of the season
     /// </summary>
@@ -88,6 +88,7 @@ public class SeasonRepository : ISeasonRepository
     public IQueryable<Season> GetAllForSitemap()
     {
         return _entityContext.Seasons
+            .Include(s => s.TvShow)
             .Where(s =>
                 _entityContext.Episodes.Any(e => e.TvShowId == s.TvShowId && e.Season == s.Number) ||
                 _entityContext.SeasonPackSubtitles.Any(sp => sp.TvShowId == s.TvShowId && sp.Season == s.Number))

@@ -2,3 +2,4 @@ User-Agent: *
 Allow: /
 
 Sitemap: https://www.gestdown.info/sitemap.xml
+Sitemap: https://www.gestdown.info/sitemap/season

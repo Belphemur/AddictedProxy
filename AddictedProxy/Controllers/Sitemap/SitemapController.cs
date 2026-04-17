@@ -31,18 +31,18 @@ public class SitemapController : Controller
     [Produces("text/xml")]
     public ActionResult Media([FromRoute] int? page, CancellationToken cancellationToken)
     {
-        var showItems = _tvShowRepository.GetAllHavingSubtitlesAsync()
-            .Select(s => new MediaSitemapItem(s.UniqueId, s.Name, null, s.LastUpdated, s.IsCompleted));
+        var shows = _tvShowRepository.GetAllHavingSubtitlesAsync();
+        var indexConfiguration = new MediaSitemapIndexConfiguration(shows, page, Url, _sitemapConfig);
+        return _dynamicSitemapIndexProvider.CreateSitemapIndex(_sitemapProvider, indexConfiguration);
+    }
 
-        var seasonItems = _seasonRepository.GetAllForSitemap()
-            .Select(s => new MediaSitemapItem(s.TvShow.UniqueId, s.TvShow.Name, s.Number,
-                s.LastRefreshed ?? s.TvShow.LastUpdated, false));
-
-        var combined = showItems
-            .Concat(seasonItems)
-            .OrderBy(i => i.ShowUniqueId)
-            .ThenBy(i => i.SeasonNumber ?? 0);
-        var indexConfiguration = new MediaSitemapIndexConfiguration(combined, page, Url, _sitemapConfig);
+    [Route("/sitemap/season/{page?}", Name = nameof(Routes.SeasonSitemap))]
+    [HttpGet]
+    [Produces("text/xml")]
+    public ActionResult Season([FromRoute] int? page, CancellationToken cancellationToken)
+    {
+        var seasons = _seasonRepository.GetAllForSitemap();
+        var indexConfiguration = new SeasonSitemapIndexConfiguration(seasons, page, Url, _sitemapConfig);
         return _dynamicSitemapIndexProvider.CreateSitemapIndex(_sitemapProvider, indexConfiguration);
     }
 }
