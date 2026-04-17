@@ -76,7 +76,11 @@
         </ul>
       </div>
       <p :class="layout.classes.bodyText">
-        You can exercise these rights by contacting us at support@gestdown.info.
+        You can exercise these rights by contacting us at
+        <span class="email-wrapper">
+          <canvas ref="emailCanvasRights" :width="canvasWidth" height="34"></canvas>
+          <noscript>Please enable JavaScript to view the contact email address.</noscript>
+        </span>
       </p>
 
       <h2 :class="layout.classes.sectionHeading">10. Data Retention</h2>
@@ -100,7 +104,11 @@
 
       <h2 :class="layout.classes.sectionHeading">13. Contact Us</h2>
       <p :class="layout.classes.bodyText">
-        If you have any questions about this Privacy Policy, please contact us at support@gestdown.info.
+        If you have any questions about this Privacy Policy, please contact us at
+        <span class="email-wrapper">
+          <canvas ref="emailCanvasContact" :width="canvasWidth" height="34"></canvas>
+          <noscript>Please enable JavaScript to view the contact email address.</noscript>
+        </span>
       </p>
     </v-sheet>
   </v-container>
@@ -111,6 +119,18 @@ import { mdiShieldAccount } from "@mdi/js";
 import { usePageLayout } from "~/composables/usePageLayout";
 
 const layout = usePageLayout();
+
+// Shared obfuscated email — same word used on both server and client via useState.
+const { email: privacyEmail, canvasWidth } = useObfuscatedEmail("privacy-email-word", "privacy", "admincmd.com");
+
+// Two canvas refs for the two places the email appears on the page.
+const emailCanvasRights = ref<HTMLCanvasElement | null>(null);
+const emailCanvasContact = ref<HTMLCanvasElement | null>(null);
+
+onMounted(() => {
+  if (emailCanvasRights.value) drawEmailOnCanvas(emailCanvasRights.value, privacyEmail.value, canvasWidth);
+  if (emailCanvasContact.value) drawEmailOnCanvas(emailCanvasContact.value, privacyEmail.value, canvasWidth);
+});
 
 definePageMeta({
   name: "Privacy Policy",
@@ -128,5 +148,14 @@ useSeoMeta({
 <style scoped>
 #list {
   padding-left: 20px;
+}
+
+.email-wrapper {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+canvas {
+  display: block;
 }
 </style>

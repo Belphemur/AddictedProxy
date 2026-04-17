@@ -20,7 +20,7 @@
 
     <v-row justify="center" class="my-3">
       <v-col cols="12" md="10" lg="8">
-        <ScriptGoogleAdsense style="display:block" data-ad-client="ca-pub-7284443005140816" data-ad-slot="8171782485"
+        <AdsUnit style="display:block" data-ad-client="ca-pub-7284443005140816" data-ad-slot="8171782485"
           data-ad-format="auto" data-full-width-responsive />
       </v-col>
     </v-row>
