@@ -120,30 +120,16 @@ import { usePageLayout } from "~/composables/usePageLayout";
 
 const layout = usePageLayout();
 
-const privacyEmail = "support@gestdown.info";
-const canvasWidth = 200;
+// Shared obfuscated email — same word used on both server and client via useState.
+const { email: privacyEmail, canvasWidth } = useObfuscatedEmail("privacy-email-word", "support", "gestdown.info");
 
-function drawEmail(canvas: HTMLCanvasElement | null) {
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-  const style = getComputedStyle(canvas);
-  const fontFamily = style.fontFamily || "Arial, sans-serif";
-  const textColor = style.getPropertyValue("--v-theme-on-surface").trim()
-    ? `rgb(${style.getPropertyValue("--v-theme-on-surface").trim()})`
-    : "#e0e0e0";
-  ctx.clearRect(0, 0, canvasWidth, 34);
-  ctx.font = `500 15px ${fontFamily}`;
-  ctx.fillStyle = textColor;
-  ctx.fillText(privacyEmail, 4, 23);
-}
-
+// Two canvas refs for the two places the email appears on the page.
 const emailCanvasRights = ref<HTMLCanvasElement | null>(null);
 const emailCanvasContact = ref<HTMLCanvasElement | null>(null);
 
 onMounted(() => {
-  drawEmail(emailCanvasRights.value);
-  drawEmail(emailCanvasContact.value);
+  if (emailCanvasRights.value) drawEmailOnCanvas(emailCanvasRights.value, privacyEmail.value, canvasWidth);
+  if (emailCanvasContact.value) drawEmailOnCanvas(emailCanvasContact.value, privacyEmail.value, canvasWidth);
 });
 
 definePageMeta({

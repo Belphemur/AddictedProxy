@@ -276,6 +276,7 @@ All NuGet package versions are managed centrally in `Directory.Packages.props` a
 - `record` types used for DTOs
 - Async/await throughout with `CancellationToken` support
 - Dependency injection everywhere — no service locator pattern
+- **DRY (Don't Repeat Yourself):** Before writing new logic, search for existing utilities, composables, helpers, or base classes that already solve the problem. Extract any duplicated logic into a shared location — backend utilities go in the appropriate module, frontend shared logic goes in `app/composables/` or `app/utils/`. Never copy-paste logic between files; refactor both the new and existing code to use the shared abstraction.
 
 ## CI/CD Notes
 

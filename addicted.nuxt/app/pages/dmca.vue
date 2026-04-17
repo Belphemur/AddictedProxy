@@ -118,42 +118,11 @@ import { usePageLayout } from "~/composables/usePageLayout";
 
 const layout = usePageLayout();
 
-const words = [
-  "crimson", "azure", "golden", "silver", "copper", "ivory", "amber", "jade",
-  "coral", "indigo", "violet", "scarlet", "tawny", "onyx", "pearl", "russet",
-  "cobalt", "umber", "sienna", "maple", "cedar", "spruce", "aspen", "birch",
-  "swift", "bold", "brave", "keen", "deft", "calm", "wise", "fair",
-  "noble", "lunar", "solar", "polar", "delta", "sigma", "omega", "alpha",
-  "ember", "frost", "storm", "ridge", "cliff", "shore", "grove", "vale",
-  "blade", "stone", "flame", "spark", "drift", "surge", "flare", "gleam",
-];
-
-// useState ensures the same word is used on both server and client (prevents hydration mismatch).
-// With swr: 3600 in routeRules, the server renders this once and the cached page
-// (including the same word) is served to all visitors for up to one hour.
-const selectedWord = useState("dmca-email-word", () => words[Math.floor(Math.random() * words.length)]);
-
-const dmcaEmail = computed(() => `dmca-${selectedWord.value}@admincmd.com`);
-
-const emailCanvas = ref<HTMLCanvasElement | null>(null);
-const canvasWidth = 340;
-
-onMounted(() => {
-  if (!emailCanvas.value) return;
-  const ctx = emailCanvas.value.getContext("2d");
-  if (!ctx) return;
-  // Derive font and color from the computed styles of the host element so they
-  // stay in sync with the Vuetify theme instead of being hard-coded.
-  const style = getComputedStyle(emailCanvas.value);
-  const fontFamily = style.fontFamily || "Arial, sans-serif";
-  const textColor = style.getPropertyValue("--v-theme-on-surface").trim()
-    ? `rgb(${style.getPropertyValue("--v-theme-on-surface").trim()})`
-    : "#e0e0e0";
-  ctx.clearRect(0, 0, canvasWidth, 34);
-  ctx.font = `500 15px ${fontFamily}`;
-  ctx.fillStyle = textColor;
-  ctx.fillText(dmcaEmail.value, 4, 23);
-});
+// useState inside the composable ensures the same word is used on both server and
+// client (prevents hydration mismatch). With swr: 3600 in routeRules, the server
+// renders this once and the cached page (including the same word) is served to all
+// visitors for up to one hour.
+const { canvasRef: emailCanvas, canvasWidth } = useObfuscatedEmail("dmca-email-word", "dmca", "admincmd.com");
 
 definePageMeta({
   name: "DMCA",
