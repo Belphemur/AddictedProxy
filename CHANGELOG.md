@@ -1,3 +1,20 @@
+## [4.65.0](https://github.com/Belphemur/AddictedProxy/compare/v4.64.1...v4.65.0) (2026-04-17)
+
+### Bug Fixes
+
+* address PR review comments ([0ec7f0c](https://github.com/Belphemur/AddictedProxy/commit/0ec7f0c1205a3ff5d1fb8e414fcedea7cede4a28))
+* **nuxt:** add fallbackOnSrcOnBundleFail for script assets ([18f50a4](https://github.com/Belphemur/AddictedProxy/commit/18f50a42b0f058ebd95564b00f4ee63fc46911e6))
+* **nuxt:** fix homepage Invalid URL crash when APP_URL is unset ([6a38c28](https://github.com/Belphemur/AddictedProxy/commit/6a38c2886d39136c5e438bdc64d208559ec6e36a))
+* **nuxt:** fix season URL routing and season resolution ([a4b15ad](https://github.com/Belphemur/AddictedProxy/commit/a4b15ade96b49bfe6251fdaa575fdd5f88a6d7bb))
+* **nuxt:** return 404 for non-existent season instead of crashing ([3b798c3](https://github.com/Belphemur/AddictedProxy/commit/3b798c333c1ab5b09fa2ab60547228731af707fb))
+
+### Features
+
+* **frontend:** add season URL routing with route-driven season selection ([66445a5](https://github.com/Belphemur/AddictedProxy/commit/66445a52723c3affe77099f6bd96d9e09fded144))
+* **mock-server:** add per-season episode data for demo shows ([63767cd](https://github.com/Belphemur/AddictedProxy/commit/63767cd7b9ec86d2d5e9034f40e848e3385c9976))
+* **nuxt:** add custom error page with show-aware navigation ([c6693f2](https://github.com/Belphemur/AddictedProxy/commit/c6693f2976374dc25af4a33e94ee02d7e49c671d))
+* **sitemap:** add season-level URLs to existing media sitemap ([ad84f73](https://github.com/Belphemur/AddictedProxy/commit/ad84f7363b407c9b333019cc2d6e178ad072ac05))
+
 ## [4.64.1](https://github.com/Belphemur/AddictedProxy/compare/v4.64.0...v4.64.1) (2026-04-14)
 
 ### Bug Fixes
