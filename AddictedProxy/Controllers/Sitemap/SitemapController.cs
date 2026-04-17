@@ -13,13 +13,15 @@ public class SitemapController : Controller
     private readonly ISitemapProvider _sitemapProvider;
     private readonly IDynamicSitemapIndexProvider _dynamicSitemapIndexProvider;
     private readonly ITvShowRepository _tvShowRepository;
+    private readonly ISeasonRepository _seasonRepository;
     private readonly IOptions<SitemapConfig> _sitemapConfig;
 
-    public SitemapController(ISitemapProvider sitemapProvider, IDynamicSitemapIndexProvider dynamicSitemapIndexProvider, ITvShowRepository tvShowRepository, IOptions<SitemapConfig> sitemapConfig)
+    public SitemapController(ISitemapProvider sitemapProvider, IDynamicSitemapIndexProvider dynamicSitemapIndexProvider, ITvShowRepository tvShowRepository, ISeasonRepository seasonRepository, IOptions<SitemapConfig> sitemapConfig)
     {
         _sitemapProvider = sitemapProvider;
         _dynamicSitemapIndexProvider = dynamicSitemapIndexProvider;
         _tvShowRepository = tvShowRepository;
+        _seasonRepository = seasonRepository;
         _sitemapConfig = sitemapConfig;
     }
 
@@ -29,8 +31,15 @@ public class SitemapController : Controller
     [Produces("text/xml")]
     public async Task<ActionResult> Media([FromRoute] int? page, CancellationToken cancellationToken)
     {
-        var shows = _tvShowRepository.GetAllHavingSubtitlesAsync();
-        var indexConfiguration = new MediaSitemapIndexConfiguration(shows, page, Url, _sitemapConfig);
+        var showItems = _tvShowRepository.GetAllHavingSubtitlesAsync()
+            .Select(s => new MediaSitemapItem(s.UniqueId, s.Name, null, s.LastUpdated, s.IsCompleted));
+
+        var seasonItems = _seasonRepository.GetAllForSitemapAsync()
+            .Select(s => new MediaSitemapItem(s.TvShow.UniqueId, s.TvShow.Name, s.Number,
+                s.LastRefreshed ?? s.TvShow.LastUpdated, false));
+
+        var combined = showItems.Concat(seasonItems);
+        var indexConfiguration = new MediaSitemapIndexConfiguration(combined, page, Url, _sitemapConfig);
         return _dynamicSitemapIndexProvider.CreateSitemapIndex(_sitemapProvider, indexConfiguration);
     }
 }

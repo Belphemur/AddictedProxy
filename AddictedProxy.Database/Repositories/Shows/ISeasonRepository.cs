@@ -48,4 +48,10 @@ public interface ISeasonRepository
     /// <param name="token"></param>
     /// <returns>Number of seasons deleted</returns>
     Task<int> DeleteEmptySeasonsForShowAsync(long showId, CancellationToken token);
+
+    /// <summary>
+    /// Returns all seasons that have at least one subtitle or season pack subtitle,
+    /// as a queryable for sitemap generation.
+    /// </summary>
+    IQueryable<Season> GetAllForSitemapAsync();
 }

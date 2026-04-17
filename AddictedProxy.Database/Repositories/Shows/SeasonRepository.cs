@@ -83,4 +83,14 @@ public class SeasonRepository : ISeasonRepository
             .Where(season => !_entityContext.SeasonPackSubtitles.Any(sp => sp.TvShowId == showId && sp.Season == season.Number))
             .ExecuteDeleteAsync(token);
     }
+
+    /// <inheritdoc />
+    public IQueryable<Season> GetAllForSitemapAsync()
+    {
+        return _entityContext.Seasons
+            .Where(s =>
+                _entityContext.Episodes.Any(e => e.TvShowId == s.TvShowId && e.Season == s.Number) ||
+                _entityContext.SeasonPackSubtitles.Any(sp => sp.TvShowId == s.TvShowId && sp.Season == s.Number))
+            .AsNoTracking();
+    }
 }
