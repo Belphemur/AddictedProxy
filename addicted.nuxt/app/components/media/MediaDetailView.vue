@@ -338,7 +338,7 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
     <media-details v-if="mediaInfo?.details != null" :details="mediaInfo" v-model="currentSeason" />
     <v-row justify="center" class="mt-3">
       <v-col cols="12" md="10" lg="8">
-        <ScriptGoogleAdsense style="display:block" data-ad-client="ca-pub-7284443005140816" data-ad-slot="8373307473"
+        <AdsUnit style="display:block" data-ad-client="ca-pub-7284443005140816" data-ad-slot="8373307473"
           data-ad-format="auto" data-full-width-responsive />
       </v-col>
     </v-row>
