@@ -139,12 +139,8 @@ async function loadViewData() {
   if (props.initialSeason != null && availableSeasons.includes(props.initialSeason)) {
     targetSeason = props.initialSeason;
   } else if (props.initialSeason != null) {
-    // Requested season doesn't exist — redirect to latest.
-    targetSeason = lastSeason;
-    await navigateTo(
-      { name: 'show-season', params: { ...route.params, seasonNumber: lastSeason } },
-      { replace: true }
-    );
+    // Requested season doesn't exist — 404.
+    throw createError({ statusCode: 404, statusMessage: `Season ${props.initialSeason} not found for this show` });
   } else {
     targetSeason = lastSeason;
   }
