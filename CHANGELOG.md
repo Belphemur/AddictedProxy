@@ -1,3 +1,9 @@
+## [4.65.1](https://github.com/Belphemur/AddictedProxy/compare/v4.65.0...v4.65.1) (2026-04-17)
+
+### Bug Fixes
+
+* **sitemap:** split into separate show and season endpoints ([e8f04a9](https://github.com/Belphemur/AddictedProxy/commit/e8f04a933b811a87abd53196140838edd2dcdc3d))
+
 ## [4.65.0](https://github.com/Belphemur/AddictedProxy/compare/v4.64.1...v4.65.0) (2026-04-17)
 
 ### Bug Fixes
