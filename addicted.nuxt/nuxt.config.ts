@@ -34,6 +34,9 @@ export default defineNuxtConfig({
     },
   },
   scripts: {
+    assets: {
+      fallbackOnSrcOnBundleFail: true,
+    },
     registry: {
       googleAdsense: {
         client: "ca-pub-7284443005140816",

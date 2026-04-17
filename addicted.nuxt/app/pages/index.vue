@@ -40,6 +40,9 @@ import { usePageLayout } from "~/composables/usePageLayout";
 import { mdiSearchWeb } from "@mdi/js";
 
 const TRENDING_LIMIT = 12;
+const runtimeConfig = useRuntimeConfig();
+const requestUrl = useRequestURL();
+const siteOrigin = runtimeConfig.public.url || requestUrl.origin;
 
 definePageMeta({
   name: "Home",
@@ -50,7 +53,7 @@ useSeoMeta({
   title: "Gestdown: Subtitle Aggregator",
   description: "Search and download subtitles from Addic7ed and SuperSubtitles in one place",
   ogDescription: "Search and download subtitles from Addic7ed and SuperSubtitles in one place",
-  ogImage: new URL("/img/Gestdown-logos.jpeg", useRuntimeConfig().public.url).href,
+  ogImage: new URL("/img/Gestdown-logos.jpeg", siteOrigin).href,
   ogLocale: "en-US",
   ogTitle: "Gestdown: Subtitle Aggregator",
   ogSiteName: "Gestdown: Subtitle Aggregator — Addic7ed & SuperSubtitles",

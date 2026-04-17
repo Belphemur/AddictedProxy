@@ -29,6 +29,7 @@ import (
 	"strings"
 	"time"
 )
+
 // ── Data types (mirrors data-contracts.ts) ────────────────────────────────────
 
 type ApplicationInfoDto struct {
@@ -128,16 +129,20 @@ type SeasonPackSubtitleDto struct {
 
 // ShowData is the shape of one entry in data/shows.json.
 type ShowData struct {
-	ID            string     `json:"id"`
-	Name          string     `json:"name"`
-	NbSeasons     int        `json:"nbSeasons"`
-	Seasons       []int      `json:"seasons"`
-	TvDbID        *int       `json:"tvDbId"`
-	TmdbID        *int       `json:"tmdbId"`
-	Slug          string     `json:"slug"`
-	SeasonPackOnly bool      `json:"seasonPackOnly"`
-	Details       DetailsDto `json:"details"`
-	EpisodeTitles []string   `json:"episodeTitles"`
+	ID             string     `json:"id"`
+	Name           string     `json:"name"`
+	NbSeasons      int        `json:"nbSeasons"`
+	Seasons        []int      `json:"seasons"`
+	TvDbID         *int       `json:"tvDbId"`
+	TmdbID         *int       `json:"tmdbId"`
+	Slug           string     `json:"slug"`
+	SeasonPackOnly bool       `json:"seasonPackOnly"`
+	Details        DetailsDto `json:"details"`
+	// EpisodeTitles is a fallback list used when a season has no entry in SeasonEpisodes.
+	EpisodeTitles []string `json:"episodeTitles"`
+	// SeasonEpisodes maps season number (as string key) to episode title list.
+	// When present for a given season it takes priority over EpisodeTitles.
+	SeasonEpisodes map[string][]string `json:"seasonEpisodes"`
 }
 
 // EpisodeSubtitleConfig holds the cycling patterns used to generate per-episode subtitle variants.
@@ -250,7 +255,14 @@ func buildEpisodes(show *ShowDto, season int, language string) []EpisodeWithSubt
 	}
 
 	cfg := mockConfig.EpisodeSubtitles
-	titles := sd.EpisodeTitles
+	// Prefer per-season episode titles when available, fall back to the shared list.
+	var titles []string
+	if sd.SeasonEpisodes != nil {
+		titles = sd.SeasonEpisodes[strconv.Itoa(season)]
+	}
+	if len(titles) == 0 {
+		titles = sd.EpisodeTitles
+	}
 	if len(titles) == 0 {
 		titles = []string{"Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5"}
 	}
@@ -755,4 +767,3 @@ func main() {
 		log.Fatalf("server error: %v", err)
 	}
 }
-

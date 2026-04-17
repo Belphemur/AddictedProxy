@@ -19,9 +19,11 @@ import { last } from "lodash-es";
 
 export interface Props {
   showId: string;
+  initialSeason?: number;
 }
 
 const layout = usePageLayout();
+const route = useRoute();
 const props = defineProps<Props>();
 const mediaApi = useMedia();
 const showsApi = useShows();
@@ -46,16 +48,24 @@ if (imageUrl != null) {
   twitterUrl += "?width=250&format=jpeg"
 }
 
+const seoSeasonSuffix = computed(() => {
+  if (currentSeason.value == null) {
+    return "";
+  }
+
+  return ` - Season ${currentSeason.value}`;
+});
+
 useSeoMeta({
-  title: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
-  ogTitle: `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
-  description: `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}`,
-  ogDescription: `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}`,
+  title: () => `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
+  ogTitle: () => `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
+  description: () => `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
+  ogDescription: () => `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
   ogImage: new URL(imageUrl ?? '', runtimeConfig.public.api.clientUrl).href,
   articleTag: mediaInfo.value!.details?.genre ?? [],
   twitterImage: new URL(twitterUrl ?? '', runtimeConfig.public.api.clientUrl).href,
-  ogImageAlt: `Poster of ${mediaInfo.value!.media?.name}`,
-  twitterImageAlt: `Poster of ${mediaInfo.value!.media?.name}`,
+  ogImageAlt: () => `Poster of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
+  twitterImageAlt: () => `Poster of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
   ogType: "website"
 })
 
@@ -118,12 +128,40 @@ async function loadViewData() {
   }
   mediaInfo.value = data.value!.details;
   if (data.value?.lastSeasonNumber == null) {
+    loadingEpisodes.value = false;
     return;
   }
-  currentSeason.value = data.value?.lastSeasonNumber
-  episodes.value = data.value?.episodeWithSubtitles;
-  seasonPacks.value = data.value?.seasonPacks ?? [];
-  loadingEpisodes.value = false;
+
+  try {
+    const lastSeason = data.value.lastSeasonNumber;
+    const availableSeasons: number[] = mediaInfo.value?.media?.seasons ?? [];
+
+    // Determine target season: use initialSeason if valid, otherwise latest.
+    let targetSeason: number;
+    if (props.initialSeason != null && availableSeasons.includes(props.initialSeason)) {
+      targetSeason = props.initialSeason;
+    } else if (props.initialSeason != null) {
+      // Requested season doesn't exist — 404.
+      const showName = mediaInfo.value?.media?.name ?? 'this show';
+      throw createError({ statusCode: 404, statusMessage: `Season ${props.initialSeason} not found for ${showName}` });
+    } else {
+      targetSeason = lastSeason;
+    }
+
+    currentSeason.value = targetSeason;
+
+    if (targetSeason === lastSeason) {
+      episodes.value = data.value.episodeWithSubtitles;
+      seasonPacks.value = data.value.seasonPacks ?? [];
+    } else {
+      // Fetch the specific requested season.
+      const response = (await showsApi.showsDetail(props.showId, targetSeason, language.lang)).data;
+      episodes.value = response.episodes ?? [];
+      seasonPacks.value = response.seasonPacks ?? [];
+    }
+  } finally {
+    loadingEpisodes.value = false;
+  }
 }
 
 watch([currentSeason, language], async ([newSeason], [oldSeason]) => {
@@ -143,6 +181,14 @@ watch([currentSeason, language], async ([newSeason], [oldSeason]) => {
   }
 
   loadingEpisodes.value = false;
+
+  // Sync URL when the user changes season on the season route.
+  if (newSeason !== undefined && newSeason !== oldSeason && route.name === 'show-season') {
+    await navigateTo({
+      name: 'show-season',
+      params: { ...route.params, seasonNumber: newSeason }
+    });
+  }
 })
 
 
