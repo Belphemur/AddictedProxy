@@ -76,7 +76,11 @@
         </ul>
       </div>
       <p :class="layout.classes.bodyText">
-        You can exercise these rights by contacting us at support@gestdown.info.
+        You can exercise these rights by contacting us at
+        <span class="email-wrapper">
+          <canvas ref="emailCanvasRights" :width="canvasWidth" height="34"></canvas>
+          <noscript>Please enable JavaScript to view the contact email address.</noscript>
+        </span>
       </p>
 
       <h2 :class="layout.classes.sectionHeading">10. Data Retention</h2>
@@ -100,7 +104,11 @@
 
       <h2 :class="layout.classes.sectionHeading">13. Contact Us</h2>
       <p :class="layout.classes.bodyText">
-        If you have any questions about this Privacy Policy, please contact us at support@gestdown.info.
+        If you have any questions about this Privacy Policy, please contact us at
+        <span class="email-wrapper">
+          <canvas ref="emailCanvasContact" :width="canvasWidth" height="34"></canvas>
+          <noscript>Please enable JavaScript to view the contact email address.</noscript>
+        </span>
       </p>
     </v-sheet>
   </v-container>
@@ -111,6 +119,32 @@ import { mdiShieldAccount } from "@mdi/js";
 import { usePageLayout } from "~/composables/usePageLayout";
 
 const layout = usePageLayout();
+
+const privacyEmail = "support@gestdown.info";
+const canvasWidth = 200;
+
+function drawEmail(canvas: HTMLCanvasElement | null) {
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  const style = getComputedStyle(canvas);
+  const fontFamily = style.fontFamily || "Arial, sans-serif";
+  const textColor = style.getPropertyValue("--v-theme-on-surface").trim()
+    ? `rgb(${style.getPropertyValue("--v-theme-on-surface").trim()})`
+    : "#e0e0e0";
+  ctx.clearRect(0, 0, canvasWidth, 34);
+  ctx.font = `500 15px ${fontFamily}`;
+  ctx.fillStyle = textColor;
+  ctx.fillText(privacyEmail, 4, 23);
+}
+
+const emailCanvasRights = ref<HTMLCanvasElement | null>(null);
+const emailCanvasContact = ref<HTMLCanvasElement | null>(null);
+
+onMounted(() => {
+  drawEmail(emailCanvasRights.value);
+  drawEmail(emailCanvasContact.value);
+});
 
 definePageMeta({
   name: "Privacy Policy",
@@ -128,5 +162,14 @@ useSeoMeta({
 <style scoped>
 #list {
   padding-left: 20px;
+}
+
+.email-wrapper {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+canvas {
+  display: block;
 }
 </style>

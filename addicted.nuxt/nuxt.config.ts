@@ -101,6 +101,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       url: process.env.APP_URL,
+      ads: {
+        enabled: process.env.NUXT_PUBLIC_ADS_ENABLED !== "false",
+      },
       api: {
         clientUrl: process.env.APP_API_PATH,
         serverUrl: process.env.APP_SERVER_PATH,
