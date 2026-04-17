@@ -6,10 +6,10 @@ description: Step-by-step guide for spinning up the Docker Compose mock environm
 The AddictedProxy repository ships a self-contained development stack in
 `docker-compose.dev.yml` that wires together two containers:
 
-| Service      | URL                       | Description                                           |
-| ------------ | ------------------------- | ----------------------------------------------------- |
-| `mock-api`   | `http://localhost:8080`   | Go mock server — emulates every REST + SignalR endpoint the frontend consumes |
-| `frontend`   | `http://localhost:3000`   | Production-built Nuxt 4 app pointed at the mock API   |
+| Service    | URL                     | Description                                                                   |
+| ---------- | ----------------------- | ----------------------------------------------------------------------------- |
+| `mock-api` | `http://localhost:8080` | Go mock server — emulates every REST + SignalR endpoint the frontend consumes |
+| `frontend` | `http://localhost:3000` | Production-built Nuxt 4 app pointed at the mock API                           |
 
 No real .NET backend, PostgreSQL database, or external credentials are required.
 
@@ -31,7 +31,7 @@ docker compose -f docker-compose.dev.yml up --build
 ```
 
 The `--build` flag re-builds both images from source so any recent code changes
-are picked up.  On subsequent starts you can omit `--build` if neither the
+are picked up. On subsequent starts you can omit `--build` if neither the
 mock server nor the frontend source has changed:
 
 ```bash
@@ -41,7 +41,7 @@ docker compose -f docker-compose.dev.yml up
 Once both services report healthy, open:
 
 - **Frontend:** <http://localhost:3000>
-- **Mock API:**  <http://localhost:8080>
+- **Mock API:** <http://localhost:8080>
 
 ---
 
@@ -55,18 +55,18 @@ Once both services report healthy, open:
 - All mock data lives in **`mock-server/data/`** — edit these JSON files to add
   shows, change episode titles, or tweak subtitle generation without touching Go:
 
-  | File            | Purpose                                                                 |
-  | --------------- | ----------------------------------------------------------------------- |
-  | `shows.json`    | Show definitions, episode titles, TMDB details, `seasonPackOnly` flag  |
-  | `config.json`   | App version, episode subtitle cycles, season pack template values       |
+  | File          | Purpose                                                               |
+  | ------------- | --------------------------------------------------------------------- |
+  | `shows.json`  | Show definitions, episode titles, TMDB details, `seasonPackOnly` flag |
+  | `config.json` | App version, episode subtitle cycles, season pack template values     |
 
 - Serves four shows (defined in `data/shows.json`):
 
-  | Show             | ID                                     | Seasons | Notes                                      |
-  | ---------------- | -------------------------------------- | ------- | ------------------------------------------ |
-  | Breaking Bad     | `a1b2c3d4-0001-0001-0001-000000000001` | 1–5     | Full episodes + season packs               |
-  | Game of Thrones  | `a1b2c3d4-0002-0002-0002-000000000002` | 1–8     | Full episodes + season packs               |
-  | Succession       | `a1b2c3d4-0003-0003-0003-000000000003` | 1–4     | Full episodes + season packs               |
+  | Show             | ID                                     | Seasons | Notes                                        |
+  | ---------------- | -------------------------------------- | ------- | -------------------------------------------- |
+  | Breaking Bad     | `a1b2c3d4-0001-0001-0001-000000000001` | 1–5     | Full episodes + season packs                 |
+  | Game of Thrones  | `a1b2c3d4-0002-0002-0002-000000000002` | 1–8     | Full episodes + season packs                 |
+  | Succession       | `a1b2c3d4-0003-0003-0003-000000000003` | 1–4     | Full episodes + season packs                 |
   | Only Season Pack | `a1b2c3d4-0004-0004-0004-000000000004` | 1–2     | **Season packs only — no episode subtitles** |
 
 - Each regular show episode returns two subtitle variants (regular + hearing-impaired)
@@ -79,7 +79,7 @@ Once both services report healthy, open:
 
 ### Test case: season-pack-only show
 
-Navigate to the *Only Season Pack* show page to verify the "Episodes" header and
+Navigate to the _Only Season Pack_ show page to verify the "Episodes" header and
 divider are **not** rendered when a season has only season packs:
 
 ```
@@ -94,14 +94,18 @@ divider above it are **absent**.
 The dev stack builds the frontend using `addicted.nuxt/Dockerfile.dev` (a
 lightweight variant of the production `Dockerfile` that requires no Alpine
 package registry access). It uses production presets (`NUXT_PRESET=node-server`)
-and overrides API URLs at runtime via environment variables:
+and overrides API URLs at runtime via Nuxt public runtime variables:
 
-| Variable                      | Value in dev stack              | Purpose                            |
-| ----------------------------- | ------------------------------- | ---------------------------------- |
-| `NUXT_PUBLIC_API_CLIENT_URL`  | `http://localhost:8080`         | Browser-side fetch target          |
-| `NUXT_PUBLIC_API_SERVER_URL`  | `http://mock-api:8080`          | SSR fetch target (Docker hostname) |
-| `NUXT_PUBLIC_URL`             | `http://localhost:3000`         | Canonical frontend URL             |
-| `NUXT_PUBLIC_SENTRY_CONFIG_ENABLED` | `false`                   | Disable Sentry in the dev stack    |
+| Variable                            | Value in dev stack      | Purpose                            |
+| ----------------------------------- | ----------------------- | ---------------------------------- |
+| `NUXT_PUBLIC_API_CLIENT_URL`        | `http://localhost:8080` | Browser-side fetch target          |
+| `NUXT_PUBLIC_API_SERVER_URL`        | `http://mock-api:8080`  | SSR fetch target (Docker hostname) |
+| `NUXT_PUBLIC_URL`                   | `http://localhost:3000` | Canonical frontend URL             |
+| `NUXT_PUBLIC_SENTRY_CONFIG_ENABLED` | `false`                 | Disable Sentry in the dev stack    |
+
+This differs from native local development. When you run the Nuxt app directly
+with `pnpm dev`, this repository currently uses the unprefixed `APP_*`
+variables consumed in `nuxt.config.ts`.
 
 ---
 
@@ -115,19 +119,28 @@ natively and start the Nuxt dev server against it:
 cd mock-server
 go run .          # listens on :8080; use -port NNNN to override
 
-# Terminal 2 — start the Nuxt dev server
+# Terminal 2 — start the Nuxt dev server (MUST be in addicted.nuxt/)
 cd addicted.nuxt
-APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm dev
+APP_URL=http://localhost:3000 APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 SENTRY_ENABLE=false pnpm dev
 ```
 
+> **Important:** All `pnpm` commands (`pnpm dev`, `pnpm install`, `pnpm exec playwright test`, etc.)
+> must be run from the `addicted.nuxt/` directory — that is where `package.json` lives.
+
 Nuxt dev server runs on <http://localhost:3000> with HMR enabled.
+
+Summary:
+
+- Docker Compose dev stack: use `NUXT_PUBLIC_*`
+- Native local `pnpm dev`: use `APP_*`
 
 ---
 
 ## 5 — Playwright testing against the mock stack
 
-The mock server is the correct backend for all Playwright tests.  Start the
-stack first (either via Docker Compose or natively), then run:
+The mock server is the correct backend for all Playwright tests. Start the
+stack first (either via Docker Compose or natively), then run from the
+`addicted.nuxt/` directory:
 
 ```bash
 cd addicted.nuxt
@@ -201,10 +214,12 @@ docker compose -f docker-compose.dev.yml up --build frontend
 
 ## 8 — Troubleshooting
 
-| Symptom | Likely cause | Fix |
-| ------- | ------------ | --- |
-| `frontend` fails to fetch data | `NUXT_PUBLIC_API_SERVER_URL` must use the Docker service name (`mock-api`), not `localhost` | Verify the env var in `docker-compose.dev.yml` |
-| Port already in use | Another process is using 3000 or 8080 | Stop the conflicting process or change the port mapping in `docker-compose.dev.yml` |
-| Mock API returns unexpected data | Code changes in `mock-server/main.go` not picked up | Re-run with `--build` |
-| Frontend shows old UI | Nuxt build cache | Re-run with `--build` |
-| `go build` fails inside Docker | Go version mismatch | Check `mock-server/go.mod` and the `FROM golang:` line in `mock-server/Dockerfile` match |
+| Symptom                                            | Likely cause                                                                                | Fix                                                                                      |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `frontend` fails to fetch data in Docker Compose   | `NUXT_PUBLIC_API_SERVER_URL` must use the Docker service name (`mock-api`), not `localhost` | Verify the env var in `docker-compose.dev.yml`                                           |
+| `frontend` fails to fetch data in native local dev | `APP_SERVER_PATH` must point at the running mock API, usually `http://localhost:8080`       | Start the mock server and export the local `APP_*` variables before `pnpm dev`           |
+| Homepage throws `Invalid URL` during SSR           | `APP_URL` is unset, so SEO URL generation has no valid base URL                             | Set `APP_URL=http://localhost:3000` in local/dev environments                            |
+| Port already in use                                | Another process is using 3000 or 8080                                                       | Stop the conflicting process or change the port mapping in `docker-compose.dev.yml`      |
+| Mock API returns unexpected data                   | Code changes in `mock-server/main.go` not picked up                                         | Re-run with `--build`                                                                    |
+| Frontend shows old UI                              | Nuxt build cache                                                                            | Re-run with `--build`                                                                    |
+| `go build` fails inside Docker                     | Go version mismatch                                                                         | Check `mock-server/go.mod` and the `FROM golang:` line in `mock-server/Dockerfile` match |
