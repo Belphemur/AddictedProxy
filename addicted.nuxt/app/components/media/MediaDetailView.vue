@@ -140,7 +140,8 @@ async function loadViewData() {
     targetSeason = props.initialSeason;
   } else if (props.initialSeason != null) {
     // Requested season doesn't exist — 404.
-    throw createError({ statusCode: 404, statusMessage: `Season ${props.initialSeason} not found for this show` });
+    const showName = mediaInfo.value?.media?.name ?? 'this show';
+    throw createError({ statusCode: 404, statusMessage: `Season ${props.initialSeason} not found for ${showName}` });
   } else {
     targetSeason = lastSeason;
   }
