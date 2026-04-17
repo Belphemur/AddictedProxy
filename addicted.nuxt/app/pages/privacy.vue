@@ -121,7 +121,7 @@ import { usePageLayout } from "~/composables/usePageLayout";
 const layout = usePageLayout();
 
 // Shared obfuscated email — same word used on both server and client via useState.
-const { email: privacyEmail, canvasWidth } = useObfuscatedEmail("privacy-email-word", "support", "gestdown.info");
+const { email: privacyEmail, canvasWidth } = useObfuscatedEmail("privacy-email-word", "privacy", "admincmd.com");
 
 // Two canvas refs for the two places the email appears on the page.
 const emailCanvasRights = ref<HTMLCanvasElement | null>(null);
