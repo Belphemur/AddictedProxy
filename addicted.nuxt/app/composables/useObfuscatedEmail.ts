@@ -25,6 +25,10 @@ export function drawEmailOnCanvas(canvas: HTMLCanvasElement, email: string, widt
   ctx.font = `500 15px ${fontFamily}`;
   ctx.fillStyle = textColor;
   ctx.fillText(email, 4, 23);
+  // Expose the email to screen readers via ARIA. The address is already
+  // obfuscated (rotating random word), so static scrapers gain nothing useful.
+  canvas.setAttribute("role", "img");
+  canvas.setAttribute("aria-label", email);
 }
 
 /**

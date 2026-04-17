@@ -6,5 +6,5 @@
 defineOptions({ inheritAttrs: false });
 
 const { ads } = useRuntimeConfig().public;
-const adsEnabled = computed(() => ads.enabled);
+const adsEnabled = ads.enabled;
 </script>
