@@ -1,3 +1,14 @@
+## [4.66.0](https://github.com/Belphemur/AddictedProxy/compare/v4.65.1...v4.66.0) (2026-04-17)
+
+### Bug Fixes
+
+* **frontend:** apply code review — drop computed in AdsUnit, aria-label on canvas, route all ads through AdsUnit ([10e21e1](https://github.com/Belphemur/AddictedProxy/commit/10e21e129a41b174e04bd6c7b16bca7d46c59e74))
+* use same domain for email for privacy ([5b8ba8d](https://github.com/Belphemur/AddictedProxy/commit/5b8ba8d83c445ad835f96bda7b5c0406ebce9cbb))
+
+### Features
+
+* **frontend:** add ads feature flag and protect privacy email with canvas ([06a93df](https://github.com/Belphemur/AddictedProxy/commit/06a93dfff3d74799c290e08496665a2de70b4504))
+
 ## [4.65.1](https://github.com/Belphemur/AddictedProxy/compare/v4.65.0...v4.65.1) (2026-04-17)
 
 ### Bug Fixes
