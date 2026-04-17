@@ -3,7 +3,13 @@
     "id": "a1b2c3d4-0001-0001-0001-000000000001",
     "name": "Breaking Bad",
     "nbSeasons": 5,
-    "seasons": [1, 2, 3, 4, 5],
+    "seasons": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
     "tvDbId": 81189,
     "tmdbId": 1396,
     "slug": "breaking-bad",
@@ -16,25 +22,104 @@
       "englishName": "Breaking Bad",
       "mediaType": "Show",
       "voteAverage": 9.5,
-      "genre": ["Drama", "Crime", "Thriller"],
+      "genre": [
+        "Drama",
+        "Crime",
+        "Thriller"
+      ],
       "tagLine": "All hail the king.",
       "releaseYear": 2008
     },
-    "episodeTitles": [
-      "Pilot",
-      "Cat's in the Bag",
-      "...And the Bag's in the River",
-      "Cancer Man",
-      "Gray Matter",
-      "Crazy Handful of Nothin'",
-      "A No-Rough-Stuff-Type Deal"
-    ]
+    "episodeTitles": [],
+    "seasonEpisodes": {
+      "1": [
+        "Pilot",
+        "Cat's in the Bag",
+        "...And the Bag's in the River",
+        "Cancer Man",
+        "Gray Matter",
+        "Crazy Handful of Nothin'",
+        "A No-Rough-Stuff-Type Deal"
+      ],
+      "2": [
+        "Seven Thirty-Seven",
+        "Down",
+        "Bit by a Dead Bee",
+        "Down",
+        "Breakage",
+        "Peekaboo",
+        "Negro y Azul",
+        "Better Call Saul",
+        "4 Days Out",
+        "Over",
+        "Mandala",
+        "Phoenix",
+        "ABQ"
+      ],
+      "3": [
+        "No Más",
+        "Caballo Sin Nombre",
+        "I.F.T.",
+        "Green Light",
+        "Mas",
+        "Sunset",
+        "One Minute",
+        "I See You",
+        "Kafkaesque",
+        "Fly",
+        "Abiquiú",
+        "Half Measures",
+        "Full Measure"
+      ],
+      "4": [
+        "Box Cutter",
+        "Thirty-Eight Snub",
+        "Open House",
+        "Bullet Points",
+        "Shotgun",
+        "Cornered",
+        "Problem Dog",
+        "Hermanos",
+        "Bug",
+        "Salud",
+        "Crawl Space",
+        "End Times",
+        "Face Off"
+      ],
+      "5": [
+        "Live Free or Die",
+        "Madrigal",
+        "Hazard Pay",
+        "Fifty-One",
+        "Dead Freight",
+        "Buyout",
+        "Say My Name",
+        "Gliding Over All",
+        "Blood Money",
+        "Buried",
+        "Confessions",
+        "Rabid Dog",
+        "To'hajiilee",
+        "Ozymandias",
+        "Granite State",
+        "Felina"
+      ]
+    }
   },
   {
     "id": "a1b2c3d4-0002-0002-0002-000000000002",
     "name": "Game of Thrones",
     "nbSeasons": 8,
-    "seasons": [1, 2, 3, 4, 5, 6, 7, 8],
+    "seasons": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
     "tvDbId": 121361,
     "tmdbId": 1399,
     "slug": "game-of-thrones",
@@ -47,28 +132,117 @@
       "englishName": "Game of Thrones",
       "mediaType": "Show",
       "voteAverage": 8.4,
-      "genre": ["Sci-Fi & Fantasy", "Drama", "Action & Adventure"],
+      "genre": [
+        "Sci-Fi & Fantasy",
+        "Drama",
+        "Action & Adventure"
+      ],
       "tagLine": "You win or you die.",
       "releaseYear": 2011
     },
-    "episodeTitles": [
-      "Winter Is Coming",
-      "The Kingsroad",
-      "Lord Snow",
-      "Cripples, Bastards, and Broken Things",
-      "The Wolf and the Lion",
-      "A Golden Crown",
-      "You Win or You Die",
-      "The Pointy End",
-      "Baelor",
-      "Fire and Blood"
-    ]
+    "episodeTitles": [],
+    "seasonEpisodes": {
+      "1": [
+        "Winter Is Coming",
+        "The Kingsroad",
+        "Lord Snow",
+        "Cripples, Bastards, and Broken Things",
+        "The Wolf and the Lion",
+        "A Golden Crown",
+        "You Win or You Die",
+        "The Pointy End",
+        "Baelor",
+        "Fire and Blood"
+      ],
+      "2": [
+        "The North Remembers",
+        "The Night Lands",
+        "What Is Dead May Never Die",
+        "Garden of Bones",
+        "The Ghost of Harrenhal",
+        "The Old Gods and the New",
+        "A Man Without Honor",
+        "The Prince of Winterfell",
+        "Blackwater",
+        "Valar Morghulis"
+      ],
+      "3": [
+        "Valar Dohaeris",
+        "Dark Wings, Dark Words",
+        "Walk of Punishment",
+        "And Now His Watch Is Ended",
+        "Kissed by Fire",
+        "The Climb",
+        "The Bear and the Maiden Fair",
+        "Second Sons",
+        "The Rains of Castamere",
+        "Mhysa"
+      ],
+      "4": [
+        "Two Swords",
+        "The Lion and the Rose",
+        "Breaker of Chains",
+        "Oathkeeper",
+        "First of His Name",
+        "The Laws of Gods and Men",
+        "Mockingbird",
+        "The Mountain and the Viper",
+        "The Watchers on the Wall",
+        "The Children"
+      ],
+      "5": [
+        "The Wars to Come",
+        "The House of Black and White",
+        "High Sparrow",
+        "Sons of the Harpy",
+        "Kill the Boy",
+        "Unbowed, Unbent, Unbroken",
+        "The Gift",
+        "Hardhome",
+        "The Dance of Dragons",
+        "Mother's Mercy"
+      ],
+      "6": [
+        "The Red Woman",
+        "Home",
+        "Oathbreaker",
+        "Book of the Stranger",
+        "The Door",
+        "Blood of My Blood",
+        "The Broken Man",
+        "No One",
+        "Battle of the Bastards",
+        "The Winds of Winter"
+      ],
+      "7": [
+        "Dragonstone",
+        "Stormborn",
+        "The Queen's Justice",
+        "The Spoils of War",
+        "Eastwatch",
+        "Beyond the Wall",
+        "The Dragon and the Wolf"
+      ],
+      "8": [
+        "Winterfell",
+        "A Knight of the Seven Kingdoms",
+        "The Long Night",
+        "The Last of the Starks",
+        "The Bells",
+        "The Iron Throne"
+      ]
+    }
   },
   {
     "id": "a1b2c3d4-0003-0003-0003-000000000003",
     "name": "Succession",
     "nbSeasons": 4,
-    "seasons": [1, 2, 3, 4],
+    "seasons": [
+      1,
+      2,
+      3,
+      4
+    ],
     "tvDbId": 153021,
     "tmdbId": 84958,
     "slug": "succession",
@@ -81,28 +255,71 @@
       "englishName": "Succession",
       "mediaType": "Show",
       "voteAverage": 8.7,
-      "genre": ["Drama"],
+      "genre": [
+        "Drama"
+      ],
       "tagLine": "Who's next?",
       "releaseYear": 2018
     },
-    "episodeTitles": [
-      "Celebration",
-      "Shit Show at the Fuck Factory",
-      "Lifeboats",
-      "Sad Sack Wasp Trap",
-      "I Went to Market",
-      "Which Side Are You On?",
-      "Austerlitz",
-      "Prague",
-      "Pre-Nuptial",
-      "Nobody Is Ever Missing"
-    ]
+    "episodeTitles": [],
+    "seasonEpisodes": {
+      "1": [
+        "Celebration",
+        "Shit Show at the Fuck Factory",
+        "Lifeboats",
+        "Sad Sack Wasp Trap",
+        "I Went to Market",
+        "Which Side Are You On?",
+        "Austerlitz",
+        "Prague",
+        "Pre-Nuptial",
+        "Nobody Is Ever Missing"
+      ],
+      "2": [
+        "The Summer Palace",
+        "Vaulter",
+        "Hunting",
+        "Safe Room",
+        "Tern Haven",
+        "Argestes",
+        "Five Stars for Beelzebub",
+        "Return",
+        "DC",
+        "This Is Not for Tears"
+      ],
+      "3": [
+        "Secession",
+        "Mass in Time of War",
+        "What It Takes",
+        "Lion in the Meadow",
+        "Retired Janitors of Idaho",
+        "What It Takes",
+        "Too Much Birthday",
+        "Chiantishire",
+        "All the Bells Say"
+      ],
+      "4": [
+        "The Munsters",
+        "Rehearsal",
+        "Connor's Wedding",
+        "Honeymoon States",
+        "Kill List",
+        "Living+",
+        "Tailgate Party",
+        "America Decides",
+        "Church and State",
+        "With Open Eyes"
+      ]
+    }
   },
   {
     "id": "a1b2c3d4-0004-0004-0004-000000000004",
     "name": "Only Season Pack",
     "nbSeasons": 2,
-    "seasons": [1, 2],
+    "seasons": [
+      1,
+      2
+    ],
     "tvDbId": null,
     "tmdbId": null,
     "slug": "only-season-pack",
@@ -115,7 +332,9 @@
       "englishName": "Only Season Pack",
       "mediaType": "Show",
       "voteAverage": 0.0,
-      "genre": ["Test"],
+      "genre": [
+        "Test"
+      ],
       "tagLine": "No episodes here.",
       "releaseYear": 2024
     },
