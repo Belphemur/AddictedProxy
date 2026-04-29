@@ -87,6 +87,6 @@
     <PackageVersion Include="System.Text.Json" Version="10.0.7" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="Z.EntityFramework.Extensions.EFCore" Version="10.105.4" />
-    <PackageVersion Include="ZstdSharp.Port" Version="0.8.7" />
+    <PackageVersion Include="ZstdSharp.Port" Version="0.8.8" />
   </ItemGroup>
 </Project>
