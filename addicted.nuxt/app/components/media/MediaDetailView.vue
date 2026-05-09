@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MediaDetails from "@/components/media/MediaDetails.vue";
 import { onUnmounted, ref, computed } from "vue";
+import { joinURL } from "ufo";
 import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
 import SeasonPacksSection from "@/components/media/SeasonPacksSection.vue";
 import type { DoneHandler, ProgressHandler } from "~/composables/hub/RefreshHub";
@@ -42,7 +43,7 @@ await loadViewData();
 
 const runtimeConfig = useRuntimeConfig();
 const requestUrl = useRequestURL();
-const siteOrigin = runtimeConfig.public.url || requestUrl.origin;
+const siteOrigin = runtimeConfig.public.url?.trim() || requestUrl.origin;
 let imageUrl = mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath;
 let twitterUrl = imageUrl;
 if (imageUrl != null) {
@@ -72,7 +73,7 @@ useSeoMeta({
 })
 
 useHead(() => {
-  if (route.name !== "show-season" || mediaInfo.value?.media?.slug == null) {
+  if (props.initialSeason == null || mediaInfo.value?.media?.id == null || mediaInfo.value.media.slug == null) {
     return {};
   }
 
@@ -80,10 +81,12 @@ useHead(() => {
     link: [
       {
         rel: "canonical",
-        href: new URL(
-          `/shows/${encodeURIComponent(props.showId)}/${encodeURIComponent(mediaInfo.value.media.slug)}`,
+        href: joinURL(
           siteOrigin,
-        ).href,
+          "shows",
+          encodeURIComponent(mediaInfo.value.media.id),
+          encodeURIComponent(mediaInfo.value.media.slug),
+        ),
       },
     ],
   };

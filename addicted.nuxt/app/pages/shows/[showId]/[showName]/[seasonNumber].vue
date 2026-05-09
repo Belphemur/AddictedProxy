@@ -12,8 +12,9 @@ definePageMeta({
 
 const route = useRoute();
 const layout = usePageLayout();
-const showId = route.params.showId.toString();
-const initialSeason = parseInt(route.params.seasonNumber.toString(), 10);
+const getSingleRouteParam = (value: string | string[]) => Array.isArray(value) ? value[0] ?? "" : value;
+const showId = getSingleRouteParam(route.params.showId);
+const initialSeason = parseInt(getSingleRouteParam(route.params.seasonNumber), 10);
 
 useSeoMeta({
     robots: "noindex,follow",
