@@ -1,3 +1,9 @@
+## [4.66.1](https://github.com/Belphemur/AddictedProxy/compare/v4.66.0...v4.66.1) (2026-05-09)
+
+### Bug Fixes
+
+* **sitemap:** disable season sitemap and update robots ([27ba19b](https://github.com/Belphemur/AddictedProxy/commit/27ba19b1d6142f187ff142239d9d6a67d6e9d456))
+
 ## [4.66.0](https://github.com/Belphemur/AddictedProxy/compare/v4.65.1...v4.66.0) (2026-04-17)
 
 ### Bug Fixes
