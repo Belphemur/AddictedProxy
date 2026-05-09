@@ -13,15 +13,13 @@ public class SitemapController : Controller
     private readonly ISitemapProvider _sitemapProvider;
     private readonly IDynamicSitemapIndexProvider _dynamicSitemapIndexProvider;
     private readonly ITvShowRepository _tvShowRepository;
-    private readonly ISeasonRepository _seasonRepository;
     private readonly IOptions<SitemapConfig> _sitemapConfig;
 
-    public SitemapController(ISitemapProvider sitemapProvider, IDynamicSitemapIndexProvider dynamicSitemapIndexProvider, ITvShowRepository tvShowRepository, ISeasonRepository seasonRepository, IOptions<SitemapConfig> sitemapConfig)
+    public SitemapController(ISitemapProvider sitemapProvider, IDynamicSitemapIndexProvider dynamicSitemapIndexProvider, ITvShowRepository tvShowRepository, IOptions<SitemapConfig> sitemapConfig)
     {
         _sitemapProvider = sitemapProvider;
         _dynamicSitemapIndexProvider = dynamicSitemapIndexProvider;
         _tvShowRepository = tvShowRepository;
-        _seasonRepository = seasonRepository;
         _sitemapConfig = sitemapConfig;
     }
 
@@ -33,16 +31,6 @@ public class SitemapController : Controller
     {
         var shows = _tvShowRepository.GetAllHavingSubtitlesAsync();
         var indexConfiguration = new MediaSitemapIndexConfiguration(shows, page, Url, _sitemapConfig);
-        return _dynamicSitemapIndexProvider.CreateSitemapIndex(_sitemapProvider, indexConfiguration);
-    }
-
-    [Route("/sitemap/season/{page?}", Name = nameof(Routes.SeasonSitemap))]
-    [HttpGet]
-    [Produces("text/xml")]
-    public ActionResult Season([FromRoute] int? page, CancellationToken cancellationToken)
-    {
-        var seasons = _seasonRepository.GetAllForSitemap();
-        var indexConfiguration = new SeasonSitemapIndexConfiguration(seasons, page, Url, _sitemapConfig);
         return _dynamicSitemapIndexProvider.CreateSitemapIndex(_sitemapProvider, indexConfiguration);
     }
 }
