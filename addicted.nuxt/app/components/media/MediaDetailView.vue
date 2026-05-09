@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MediaDetails from "@/components/media/MediaDetails.vue";
 import { onUnmounted, ref, computed } from "vue";
+import { joinURL } from "ufo";
 import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
 import SeasonPacksSection from "@/components/media/SeasonPacksSection.vue";
 import type { DoneHandler, ProgressHandler } from "~/composables/hub/RefreshHub";
@@ -41,6 +42,8 @@ const subtitlesApi = useSubtitles();
 await loadViewData();
 
 const runtimeConfig = useRuntimeConfig();
+const requestUrl = useRequestURL();
+const siteOrigin = runtimeConfig.public.url?.trim() || requestUrl.origin;
 let imageUrl = mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath;
 let twitterUrl = imageUrl;
 if (imageUrl != null) {
@@ -68,6 +71,26 @@ useSeoMeta({
   twitterImageAlt: () => `Poster of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
   ogType: "website"
 })
+
+useHead(() => {
+  if (route.params.seasonNumber == null || props.initialSeason == null || mediaInfo.value?.media?.id == null || mediaInfo.value?.media?.slug == null) {
+    return {};
+  }
+
+  return {
+    link: [
+      {
+        rel: "canonical",
+        href: joinURL(
+          siteOrigin,
+          "shows",
+          encodeURIComponent(mediaInfo.value.media.id),
+          encodeURIComponent(mediaInfo.value.media.slug),
+        ),
+      },
+    ],
+  };
+});
 
 const {
   sendRefreshAsync,
