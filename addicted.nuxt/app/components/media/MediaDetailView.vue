@@ -73,7 +73,7 @@ useSeoMeta({
 })
 
 useHead(() => {
-  if (route.params.seasonNumber == null || props.initialSeason == null || mediaInfo.value?.media?.id == null || mediaInfo.value.media.slug == null) {
+  if (route.params.seasonNumber == null || props.initialSeason == null || mediaInfo.value?.media?.id == null || mediaInfo.value?.media?.slug == null) {
     return {};
   }
 
