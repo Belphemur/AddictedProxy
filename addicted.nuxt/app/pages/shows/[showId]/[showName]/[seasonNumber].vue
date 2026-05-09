@@ -11,9 +11,29 @@ definePageMeta({
 });
 
 const route = useRoute();
+const runtimeConfig = useRuntimeConfig();
+const requestUrl = useRequestURL();
 const layout = usePageLayout();
 const showId = route.params.showId as string;
+const showName = route.params.showName as string;
 const initialSeason = parseInt(route.params.seasonNumber as string, 10);
+const siteOrigin = runtimeConfig.public.url || requestUrl.origin;
+
+useSeoMeta({
+    robots: "noindex,follow",
+});
+
+useHead({
+    link: [
+        {
+            rel: "canonical",
+            href: new URL(
+                `/shows/${encodeURIComponent(showId)}/${encodeURIComponent(showName)}`,
+                siteOrigin,
+            ).href,
+        },
+    ],
+});
 </script>
 
 <template>
