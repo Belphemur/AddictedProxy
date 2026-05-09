@@ -41,6 +41,8 @@ const subtitlesApi = useSubtitles();
 await loadViewData();
 
 const runtimeConfig = useRuntimeConfig();
+const requestUrl = useRequestURL();
+const siteOrigin = runtimeConfig.public.url || requestUrl.origin;
 let imageUrl = mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath;
 let twitterUrl = imageUrl;
 if (imageUrl != null) {
@@ -68,6 +70,24 @@ useSeoMeta({
   twitterImageAlt: () => `Poster of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
   ogType: "website"
 })
+
+useHead(() => {
+  if (route.name !== "show-season" || mediaInfo.value?.media?.slug == null) {
+    return {};
+  }
+
+  return {
+    link: [
+      {
+        rel: "canonical",
+        href: new URL(
+          `/shows/${encodeURIComponent(props.showId)}/${encodeURIComponent(mediaInfo.value.media.slug)}`,
+          siteOrigin,
+        ).href,
+      },
+    ],
+  };
+});
 
 const {
   sendRefreshAsync,
