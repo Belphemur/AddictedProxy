@@ -1,3 +1,12 @@
+## [4.66.2](https://github.com/Belphemur/AddictedProxy/compare/v4.66.1...v4.66.2) (2026-05-09)
+
+### Bug Fixes
+
+* **nuxt:** derive season canonical from fetched show slug ([ead03c6](https://github.com/Belphemur/AddictedProxy/commit/ead03c6fbe495e00d4944055714274c37f224ff4))
+* **nuxt:** guard season canonical on season routes ([e9f8b8b](https://github.com/Belphemur/AddictedProxy/commit/e9f8b8b8c5fb028e8724209833867304611d2f8a))
+* **nuxt:** harden season canonical url generation ([2f64147](https://github.com/Belphemur/AddictedProxy/commit/2f64147bac08c76f75fdf745cb2fc7bf1be9eaa2))
+* **nuxt:** noindex and canonicalize season pages ([ba9c3d0](https://github.com/Belphemur/AddictedProxy/commit/ba9c3d01facbedb7186cdeee2cfbf57a720ed2a8))
+
 ## [4.66.1](https://github.com/Belphemur/AddictedProxy/compare/v4.66.0...v4.66.1) (2026-05-09)
 
 ### Bug Fixes
