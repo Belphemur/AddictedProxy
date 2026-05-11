@@ -23,7 +23,7 @@ public class MediaSitemapIndexConfiguration : SitemapIndexConfiguration<TvShow>
 
     public override SitemapIndexNode CreateSitemapIndexNode(int page)
     {
-        return new SitemapIndexNode(_helper.RouteUrl(Routes.MediaSitemap.ToString(), new { page }));
+        return new SitemapIndexNode(_helper.RouteUrl(Routes.ShowsSitemap.ToString(), new { page }));
     }
 
     public override SitemapNode CreateNode(TvShow show)
