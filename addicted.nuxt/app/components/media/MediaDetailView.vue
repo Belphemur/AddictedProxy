@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import MediaDetails from "@/components/media/MediaDetails.vue";
 import { onUnmounted, ref, computed } from "vue";
-import { joinURL } from "ufo";
 import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
 import SeasonPacksSection from "@/components/media/SeasonPacksSection.vue";
 import type { DoneHandler, ProgressHandler } from "~/composables/hub/RefreshHub";
@@ -20,11 +19,9 @@ import { last } from "lodash-es";
 
 export interface Props {
   showId: string;
-  initialSeason?: number;
 }
 
 const layout = usePageLayout();
-const route = useRoute();
 const props = defineProps<Props>();
 const mediaApi = useMedia();
 const showsApi = useShows();
@@ -42,8 +39,6 @@ const subtitlesApi = useSubtitles();
 await loadViewData();
 
 const runtimeConfig = useRuntimeConfig();
-const requestUrl = useRequestURL();
-const siteOrigin = runtimeConfig.public.url?.trim() || requestUrl.origin;
 let imageUrl = mediaInfo.value!.details?.backdropPath ?? mediaInfo.value!.details?.posterPath;
 let twitterUrl = imageUrl;
 if (imageUrl != null) {
@@ -51,45 +46,25 @@ if (imageUrl != null) {
   twitterUrl += "?width=250&format=jpeg"
 }
 
-const seoSeasonSuffix = computed(() => {
-  if (currentSeason.value == null) {
+const seoSeasonList = computed(() => {
+  const seasons = mediaInfo.value?.media?.seasons;
+  if (!seasons || seasons.length === 0) {
     return "";
   }
-
-  return ` - Season ${currentSeason.value}`;
+  return ` Seasons available: ${seasons.join(", ")}.`;
 });
 
 useSeoMeta({
-  title: () => `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
-  ogTitle: () => `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
-  description: () => `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
-  ogDescription: () => `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
+  title: () => `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
+  ogTitle: () => `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
+  description: () => `Find all the subtitles in multiple languages like English, French, etc... for your favorite show ${mediaInfo.value!.media?.name}.${seoSeasonList.value}`,
+  ogDescription: () => `Find all the subtitles in multiple languages like English, French, etc... for your favorite show ${mediaInfo.value!.media?.name}.${seoSeasonList.value}`,
   ogImage: new URL(imageUrl ?? '', runtimeConfig.public.api.clientUrl).href,
   articleTag: mediaInfo.value!.details?.genre ?? [],
   twitterImage: new URL(twitterUrl ?? '', runtimeConfig.public.api.clientUrl).href,
-  ogImageAlt: () => `Poster of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
-  twitterImageAlt: () => `Poster of ${mediaInfo.value!.media?.name}${seoSeasonSuffix.value}`,
+  ogImageAlt: () => `Poster of ${mediaInfo.value!.media?.name}`,
+  twitterImageAlt: () => `Poster of ${mediaInfo.value!.media?.name}`,
   ogType: "website"
-})
-
-useHead(() => {
-  if (route.params.seasonNumber == null || props.initialSeason == null || mediaInfo.value?.media?.id == null || mediaInfo.value?.media?.slug == null) {
-    return {};
-  }
-
-  return {
-    link: [
-      {
-        rel: "canonical",
-        href: joinURL(
-          siteOrigin,
-          "shows",
-          encodeURIComponent(mediaInfo.value.media.id),
-          encodeURIComponent(mediaInfo.value.media.slug),
-        ),
-      },
-    ],
-  };
 });
 
 const {
@@ -157,31 +132,10 @@ async function loadViewData() {
 
   try {
     const lastSeason = data.value.lastSeasonNumber;
-    const availableSeasons: number[] = mediaInfo.value?.media?.seasons ?? [];
 
-    // Determine target season: use initialSeason if valid, otherwise latest.
-    let targetSeason: number;
-    if (props.initialSeason != null && availableSeasons.includes(props.initialSeason)) {
-      targetSeason = props.initialSeason;
-    } else if (props.initialSeason != null) {
-      // Requested season doesn't exist — 404.
-      const showName = mediaInfo.value?.media?.name ?? 'this show';
-      throw createError({ statusCode: 404, statusMessage: `Season ${props.initialSeason} not found for ${showName}` });
-    } else {
-      targetSeason = lastSeason;
-    }
-
-    currentSeason.value = targetSeason;
-
-    if (targetSeason === lastSeason) {
-      episodes.value = data.value.episodeWithSubtitles;
-      seasonPacks.value = data.value.seasonPacks ?? [];
-    } else {
-      // Fetch the specific requested season.
-      const response = (await showsApi.showsDetail(props.showId, targetSeason, language.lang)).data;
-      episodes.value = response.episodes ?? [];
-      seasonPacks.value = response.seasonPacks ?? [];
-    }
+    currentSeason.value = lastSeason;
+    episodes.value = data.value.episodeWithSubtitles;
+    seasonPacks.value = data.value.seasonPacks ?? [];
   } finally {
     loadingEpisodes.value = false;
   }
@@ -204,14 +158,6 @@ watch([currentSeason, language], async ([newSeason], [oldSeason]) => {
   }
 
   loadingEpisodes.value = false;
-
-  // Sync URL when the user changes season on the season route.
-  if (newSeason !== undefined && newSeason !== oldSeason && route.name === 'show-season') {
-    await navigateTo({
-      name: 'show-season',
-      params: { ...route.params, seasonNumber: newSeason }
-    });
-  }
 })
 
 

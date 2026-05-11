@@ -8,6 +8,9 @@ dist
 # Node dependencies
 node_modules
 
+# npm lock file (project uses pnpm)
+package-lock.json
+
 # Logs
 logs
 *.log
