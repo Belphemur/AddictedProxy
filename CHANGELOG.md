@@ -1,3 +1,9 @@
+## [4.68.0](https://github.com/Belphemur/AddictedProxy/compare/v4.67.0...v4.68.0) (2026-05-11)
+
+### Features
+
+* **frontend:** 301 season pages → show page; add season list to show SEO ([#2809](https://github.com/Belphemur/AddictedProxy/issues/2809)) ([a7a0a83](https://github.com/Belphemur/AddictedProxy/commit/a7a0a83e467d6c54b8092518249d673b32265e68))
+
 ## [4.67.0](https://github.com/Belphemur/AddictedProxy/compare/v4.66.2...v4.67.0) (2026-05-11)
 
 ### Features
