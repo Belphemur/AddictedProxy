@@ -23,6 +23,7 @@ public class SitemapController : Controller
         _sitemapConfig = sitemapConfig;
     }
 
+    [Route("/sitemap/shows/{page?}", Name = nameof(Routes.ShowsSitemap))]
     [Route("/sitemap/media/{page?}", Name = nameof(Routes.MediaSitemap))]
     [Route("/sitemap.xml")]
     [HttpGet]
