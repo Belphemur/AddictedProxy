@@ -57,8 +57,8 @@ const seoSeasonList = computed(() => {
 useSeoMeta({
   title: () => `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
   ogTitle: () => `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
-  description: () => `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}.${seoSeasonList.value}`,
-  ogDescription: () => `Find all the subtitles in multiple language like English, French, etc ... your favorite show ${mediaInfo.value!.media?.name}.${seoSeasonList.value}`,
+  description: () => `Find all the subtitles in multiple languages like English, French, etc... for your favorite show ${mediaInfo.value!.media?.name}.${seoSeasonList.value}`,
+  ogDescription: () => `Find all the subtitles in multiple languages like English, French, etc... for your favorite show ${mediaInfo.value!.media?.name}.${seoSeasonList.value}`,
   ogImage: new URL(imageUrl ?? '', runtimeConfig.public.api.clientUrl).href,
   articleTag: mediaInfo.value!.details?.genre ?? [],
   twitterImage: new URL(twitterUrl ?? '', runtimeConfig.public.api.clientUrl).href,
