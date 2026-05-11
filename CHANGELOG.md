@@ -1,3 +1,9 @@
+## [4.67.0](https://github.com/Belphemur/AddictedProxy/compare/v4.66.2...v4.67.0) (2026-05-11)
+
+### Features
+
+* **sitemap:** add /sitemap/shows route as default, keep /sitemap/media for backwards compat ([ba1dc6c](https://github.com/Belphemur/AddictedProxy/commit/ba1dc6c8a69c5bf1d45d1316b201a9de6d807f5e))
+
 ## [4.66.2](https://github.com/Belphemur/AddictedProxy/compare/v4.66.1...v4.66.2) (2026-05-09)
 
 ### Bug Fixes
