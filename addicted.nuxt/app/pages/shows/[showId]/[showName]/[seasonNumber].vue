@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import MediaDetailView from "~/components/media/MediaDetailView.vue";
-import { usePageLayout } from "~/composables/usePageLayout";
-
 definePageMeta({
     name: "show-season",
     validate(route) {
@@ -11,20 +8,12 @@ definePageMeta({
 });
 
 const route = useRoute();
-const layout = usePageLayout();
 const getSingleRouteParam = (value: string | string[]) => Array.isArray(value) ? value[0] ?? "" : value;
-const showId = getSingleRouteParam(route.params.showId);
-const initialSeason = parseInt(getSingleRouteParam(route.params.seasonNumber), 10);
 
-useSeoMeta({
-    robots: "noindex,follow",
-});
+await navigateTo(
+    `/shows/${getSingleRouteParam(route.params.showId)}/${getSingleRouteParam(route.params.showName)}`,
+    { redirectCode: 301 },
+);
 </script>
 
-<template>
-    <v-container fluid :class="layout.classes.pageContainer" :style="{ maxWidth: layout.maxWidth }">
-        <media-detail-view :show-id="showId" :initial-season="initialSeason" />
-    </v-container>
-</template>
-
-<style scoped></style>
+<template></template>
