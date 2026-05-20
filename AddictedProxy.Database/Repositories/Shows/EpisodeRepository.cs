@@ -16,13 +16,15 @@ public class EpisodeRepository : IEpisodeRepository
     private readonly EntityContext _entityContext;
     private readonly ITransactionManager<EntityContext> _transactionManager;
     private readonly ILogger<EpisodeRepository> _logger;
+    private readonly IEpisodeExternalIdRepository _episodeExternalIdRepository;
 
 
-    public EpisodeRepository(EntityContext entityContext, ITransactionManager<EntityContext> transactionManager, ILogger<EpisodeRepository> logger)
+    public EpisodeRepository(EntityContext entityContext, ITransactionManager<EntityContext> transactionManager, ILogger<EpisodeRepository> logger, IEpisodeExternalIdRepository episodeExternalIdRepository)
     {
         _entityContext = entityContext;
         _transactionManager = transactionManager;
         _logger = logger;
+        _episodeExternalIdRepository = episodeExternalIdRepository;
     }
 
     /// <summary>
@@ -39,8 +41,16 @@ public class EpisodeRepository : IEpisodeRepository
                 return;
             }
 
-            var originalExternalIds = enumerable.ToDictionary(episode => episode,
-                episode => episode.ExternalIds?.ToArray() ?? []);
+            // Store the original collection references so we can restore them in finally,
+            // preserving the EF navigation collection type (IList<T>, not a fixed-size array).
+            var originalExternalIdCollections = enumerable.ToDictionary(
+                episode => episode,
+                episode => episode.ExternalIds);
+
+            // Array copies are used by BuildPendingEpisodeExternalIdsForUpsert for dedup logic.
+            var originalExternalIds = originalExternalIdCollections.ToDictionary(
+                pair => pair.Key,
+                pair => pair.Value?.ToArray() ?? []);
 
             foreach (var episode in enumerable)
             {
@@ -98,9 +108,9 @@ public class EpisodeRepository : IEpisodeRepository
             }
             finally
             {
-                foreach (var (episode, externalIds) in originalExternalIds)
+                foreach (var (episode, externalIds) in originalExternalIdCollections)
                 {
-                    episode.ExternalIds = externalIds;
+                    episode.ExternalIds = externalIds ?? [];
                 }
             }
         }, token);
@@ -180,11 +190,13 @@ public class EpisodeRepository : IEpisodeRepository
             .ToHashSet();
         var tvShowIds = episodeKeys.Select(key => key.TvShowId).Distinct().ToArray();
         var seasons = episodeKeys.Select(key => key.Season).Distinct().ToArray();
+        var numbers = episodeKeys.Select(key => key.Number).Distinct().ToArray();
 
         var persistedEpisodes = await _entityContext.Episodes
             .AsNoTracking()
             .Where(episode => tvShowIds.Contains(episode.TvShowId))
             .Where(episode => seasons.Contains(episode.Season))
+            .Where(episode => numbers.Contains(episode.Number))
             .Select(episode => new PersistedEpisodeInfo(
                 episode.Id,
                 new EpisodeNaturalKey(episode.TvShowId, episode.Season, episode.Number),
@@ -203,52 +215,32 @@ public class EpisodeRepository : IEpisodeRepository
         PersistedEpisodeInfo persistedEpisode,
         CancellationToken token)
     {
-        var conflictingExternalId = await _entityContext.EpisodeExternalIds
-            .AsNoTracking()
-            .Where(mapping => mapping.Source == externalId.Source && mapping.ExternalId == externalId.ExternalId)
-            .Select(mapping => new PersistedEpisodeInfo(
-                mapping.EpisodeId,
-                new EpisodeNaturalKey(mapping.Episode.TvShowId, mapping.Episode.Season, mapping.Episode.Number),
-                mapping.Episode.TvShow.Name,
-                mapping.Episode.Season,
-                mapping.Episode.Number))
-            .FirstOrDefaultAsync(token);
+        var conflictingExternalId = await _episodeExternalIdRepository.GetBySourceAndExternalIdAsync(
+            externalId.Source,
+            externalId.ExternalId,
+            token);
 
-        if (conflictingExternalId is not null && conflictingExternalId.Id != persistedEpisode.Id)
+        if (conflictingExternalId is not null && conflictingExternalId.EpisodeId != persistedEpisode.Id)
         {
             _logger.LogWarning(
                 "Episode external ID already belongs to another episode. Source={Source}, ExternalId={ExternalId}, ExistingShow={ExistingShow}, ExistingSeason={ExistingSeason}, ExistingEpisode={ExistingEpisode}, RequestedShow={RequestedShow}, RequestedSeason={RequestedSeason}, RequestedEpisode={RequestedEpisode}",
                 externalId.Source,
                 externalId.ExternalId,
-                conflictingExternalId.ShowName,
-                conflictingExternalId.Season,
-                conflictingExternalId.Number,
+                conflictingExternalId.Episode.TvShow.Name,
+                conflictingExternalId.Episode.Season,
+                conflictingExternalId.Episode.Number,
                 persistedEpisode.ShowName,
                 persistedEpisode.Season,
                 persistedEpisode.Number);
         }
 
-        var now = DateTime.UtcNow;
-        await _entityContext.Database.ExecuteSqlAsync(
-            $"""
-             WITH update_by_episode AS (
-                 UPDATE "EpisodeExternalIds"
-                 SET "ExternalId" = {externalId.ExternalId}, "UpdatedAt" = {now}
-                 WHERE "EpisodeId" = {persistedEpisode.Id}
-                   AND "Source" = {(int)externalId.Source}
-                   AND NOT EXISTS (
-                       SELECT 1 FROM "EpisodeExternalIds" e2
-                       WHERE e2."Source" = {(int)externalId.Source}
-                         AND e2."ExternalId" = {externalId.ExternalId}
-                         AND e2."EpisodeId" != {persistedEpisode.Id}
-                   )
-                 RETURNING "Id"
-             )
-             INSERT INTO "EpisodeExternalIds" ("EpisodeId", "Source", "ExternalId", "CreatedAt", "UpdatedAt")
-             SELECT {persistedEpisode.Id}, {(int)externalId.Source}, {externalId.ExternalId}, {now}, {now}
-             WHERE NOT EXISTS (SELECT 1 FROM update_by_episode)
-             ON CONFLICT ("Source", "ExternalId") DO NOTHING
-             """,
+        await _episodeExternalIdRepository.UpsertAsync(
+            new EpisodeExternalId
+            {
+                EpisodeId = persistedEpisode.Id,
+                Source = externalId.Source,
+                ExternalId = externalId.ExternalId
+            },
             token);
     }
 

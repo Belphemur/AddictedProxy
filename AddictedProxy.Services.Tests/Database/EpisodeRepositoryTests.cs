@@ -64,8 +64,10 @@ public class EpisodeRepositoryTests
         logger.ReceivedCalls()
             .Select(call => call.GetArguments())
             .Any(arguments => arguments[0] is LogLevel.Warning &&
-                              arguments[2]?.ToString()?.Contains("Skipping duplicate episode external ID in batch upsert") == true &&
-                              arguments[2]?.ToString()?.Contains("198540") == true)
+                              arguments[2] is IReadOnlyList<KeyValuePair<string, object?>> state &&
+                              state.Any(kv => kv.Key == "{OriginalFormat}" &&
+                                             kv.Value?.ToString()?.Contains("Skipping duplicate episode external ID in batch upsert") == true) &&
+                              state.Any(kv => kv.Key == "ExternalId" && kv.Value?.ToString() == "198540"))
             .Should()
             .BeTrue();
     }
@@ -105,7 +107,9 @@ public class EpisodeRepositoryTests
         logger.ReceivedCalls()
             .Select(call => call.GetArguments())
             .Any(arguments => arguments[0] is LogLevel.Warning &&
-                              arguments[2]?.ToString()?.Contains("Skipping episode external ID with empty value during batch upsert") == true)
+                              arguments[2] is IReadOnlyList<KeyValuePair<string, object?>> state &&
+                              state.Any(kv => kv.Key == "{OriginalFormat}" &&
+                                             kv.Value?.ToString()?.Contains("Skipping episode external ID with empty value during batch upsert") == true))
             .Should()
             .BeTrue();
     }
