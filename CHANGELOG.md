@@ -1,3 +1,10 @@
+## [4.68.1](https://github.com/Belphemur/AddictedProxy/compare/v4.68.0...v4.68.1) (2026-05-20)
+
+### Bug Fixes
+
+* **database:** address review feedback in EpisodeRepository ([d90e57e](https://github.com/Belphemur/AddictedProxy/commit/d90e57ed670f1479e25de0e4b4c7228ae1a28f1e))
+* **database:** avoid duplicate episode external id bulk inserts ([a7edf3c](https://github.com/Belphemur/AddictedProxy/commit/a7edf3c4dae6f7ae27acdb705c97e6b13257a22e))
+
 ## [4.68.0](https://github.com/Belphemur/AddictedProxy/compare/v4.67.0...v4.68.0) (2026-05-11)
 
 ### Features
