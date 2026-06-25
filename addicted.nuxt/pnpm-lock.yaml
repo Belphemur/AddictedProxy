@@ -74,7 +74,7 @@ importers:
         version: 0.10.0
       swagger-typescript-api:
         specifier: ^13.2.18
-        version: 13.12.2(magicast@0.5.3)
+        version: 13.12.3(magicast@0.5.3)
       typescript:
         specifier: ^6.0.0
         version: 6.0.3
@@ -315,12 +315,12 @@ packages:
     resolution: {integrity: sha512-p7/ABylAYlexb31wtRdIfH9L9A0Z2T/9H6zAqzqndkY2PLkvNNc580wGhp/gGKN4Sp9sQvSkhc6Oga8/O+wTyw==}
     engines: {node: ^22.18.0 || >=24.11.0}
 
-  '@biomejs/js-api@4.0.0':
-    resolution: {integrity: sha512-EOArR/6drRzM1/hwOIz1pZw90FL31Ud4Y7hEHGWVtMNmAwS9SrwZ8hMENGlLVXCeGW/kL46p8kX7eO6x9Nmezg==}
+  '@biomejs/js-api@6.0.0':
+    resolution: {integrity: sha512-8HP7wexjQo5Np1J9h0B2x8L5G0GZpCacgjykxLHtvLPvF0hNqSG754oh8bxo+OSFDpVGMfSjmLO+ZY/5KbfjmQ==}
     peerDependencies:
-      '@biomejs/wasm-bundler': ^2.3.0
-      '@biomejs/wasm-nodejs': ^2.3.0
-      '@biomejs/wasm-web': ^2.3.0
+      '@biomejs/wasm-bundler': ^2.5.0
+      '@biomejs/wasm-nodejs': ^2.5.0
+      '@biomejs/wasm-web': ^2.5.0
     peerDependenciesMeta:
       '@biomejs/wasm-bundler':
         optional: true
@@ -329,8 +329,8 @@ packages:
       '@biomejs/wasm-web':
         optional: true
 
-  '@biomejs/wasm-nodejs@2.4.16':
-    resolution: {integrity: sha512-3BSGXHJ25Is+9gRgV+Gwz7YdMktrMOBP+Vw3RwXy3Y/CHqXbbNSyhaMt6VFk1J/WAGutdYfBy+NzhlvOftwd+g==}
+  '@biomejs/wasm-nodejs@2.5.0':
+    resolution: {integrity: sha512-8yng33quWVLdyfNiYmr9Hq3fd9GTRqXAbhrsvpaw+iME1gd7oJBVcczucDFl/tsz69TnfrR42O/PDBoA8MSWYw==}
 
   '@bomb.sh/tab@0.0.15':
     resolution: {integrity: sha512-Y90ub44TAvbdO9P8mcD/XPyQjFhiR5xmd4Fk7JErmWmEWEUimNnjWiBrVZ16Tj3GA1rLZ+uvCN2V/pzLawv31g==}
@@ -2952,8 +2952,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.4.8:
-    resolution: {integrity: sha512-yb1cEmaOum7wFvOCSQxyfgVlv5D47Rc30iZWoMpbDIWTnJ6grDDQyu2KFJzB2k7u0pMuJcQ1zphH//fFnw2tjQ==}
+  dompurify@3.4.11:
+    resolution: {integrity: sha512-zhlUV12GsaRzMsf9q5M254YhA4+VuF0fG+QFqu6aYpoGlKtz+w8//jBcGVYBgQkR5GHjUomejY84AV+/uPbWdw==}
 
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
@@ -3036,8 +3036,8 @@ packages:
     resolution: {integrity: sha512-HWcBoN6NileqtSydK2FqHbS/LoDd2pqrnQHLyJzBj4kOp/ky2MWMN694xOfkK8/SnUsW2DH7EfyVlydKCsm1Zw==}
     engines: {node: '>= 0.4'}
 
-  es-toolkit@1.47.0:
-    resolution: {integrity: sha512-n1GuoD0WEQZMBk5tttoZSqwgyLx01oqa5XsBmCHwPyNe1S9jPBEmtR2pSgp2kJuWE3ciFZ6yRHmY4pM4C3OOkw==}
+  es-toolkit@1.48.1:
+    resolution: {integrity: sha512-wfnXlwd5I75eXRtdD2vuEs50xHHESECDsGD7yiQnfFVNoa5522NwXEbmgo98LfiukSQHs+mBM7/YG3qKJB9/mQ==}
 
   es6-promise@3.3.1:
     resolution: {integrity: sha512-SOp9Phqvqn7jtEUxPWdWfWoLmyt2VaJ6MpvP9Comy1MceMXqE6bxvaTu4iaxpYYPzhny28Lc+M87/c2cPK6lDg==}
@@ -3108,6 +3108,9 @@ packages:
 
   exsolve@1.0.8:
     resolution: {integrity: sha512-LmDxfWXwcTArk8fUEnOfSZpHOJ6zOMUJKOtFLFqJLoKJetuQG874Uc7/Kki7zFLzYybmZhp1M7+98pfMqeX8yA==}
+
+  exsolve@1.1.0:
+    resolution: {integrity: sha512-D+42+T12DdIlJM3uepa55qGiL3sYdLBOxIl2ifQCzCHz4c7eiolaHsi3BIqEr7JxBzxv2pYZQX9kw16ziMcEmw==}
 
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
@@ -3237,6 +3240,10 @@ packages:
 
   giget@3.2.0:
     resolution: {integrity: sha512-GvHTWcykIR/fP8cj8dMpuMMkvaeJfPvYnhq0oW+chSeIr+ldX21ifU2Ms6KBoyKZQZmVaUAAhQ2EZ68KJF8a7A==}
+    hasBin: true
+
+  giget@3.3.0:
+    resolution: {integrity: sha512-gzi2D96p+AMfDcmJHGDj3KJ9NRiwvlFAU5yfa3ROwWZmFUjX4P43x3BcyRaOMMLto1vUo7C+86+MFhYTl6Ryiw==}
     hasBin: true
 
   glob-parent@5.1.2:
@@ -3710,8 +3717,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.1.11:
-    resolution: {integrity: sha512-v+KEsUv2ps74PaSKv0gHTxTCgMXOIfBEbaqa6w6ISIGC7ZsvHN4N9oJ8d4cmf0n5oTzQz2SLmThbQWhjd/8eKg==}
+  nanoid@5.1.16:
+    resolution: {integrity: sha512-kVrnsrJqMR8+oLJnGEmSWw9BivK5mt7H3FZatVRjrc5wGqFYuBxX1yG7+A7Gi5AefkX6t/oCkizcQgpu0cY1dQ==}
     engines: {node: ^18 || >=20}
     hasBin: true
 
@@ -4226,8 +4233,8 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  qs@6.15.2:
-    resolution: {integrity: sha512-Rzq0KEyX/w/tEybncDgdkZrJgVUsUMk3xjh3t5bv3S1HTAtg+uOYt72+ZfwiQwKdysThkTBdL/rTi6HDmX9Ddw==}
+  qs@6.15.3:
+    resolution: {integrity: sha512-O9gl3zCl5h5blw1KGUzQKhA5oUXSl8rwUIM5o0S3nCXMliSvy5Dzx7/DJcI+SwgICv+IneSZwhBh1oSyEHA71A==}
     engines: {node: '>=0.6'}
 
   quansync@0.2.11:
@@ -4577,8 +4584,8 @@ packages:
   swagger-schema-official@2.0.0-bab6bed:
     resolution: {integrity: sha512-rCC0NWGKr/IJhtRuPq/t37qvZHI/mH4I4sxflVM+qgVe5Z2uOCivzWaVbuioJaB61kvm5UvB7b49E+oBY0M8jA==}
 
-  swagger-typescript-api@13.12.2:
-    resolution: {integrity: sha512-HRLF0FYxJ5bRJ5FCClvgOXC+RtKDuk+/moH8qfcw0SoIRZO4Tzle4trkglpx+1f5PkqkU1qlPNlhTTLUGRWdxA==}
+  swagger-typescript-api@13.12.3:
+    resolution: {integrity: sha512-t6DyvxtpSqU0TgbPCzKgobdDIR4I+7/JHQuSwT52O4puGawTvq5H8JoUkh9haJi+z7Ip7Hv2PsZlOHuvSSf5pg==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -5160,8 +5167,8 @@ packages:
     resolution: {integrity: sha512-rwu/ClNdSMpkSrUb+d6BRsSkLUq1fmfsY6TOpYzTwvwkg1/NRG85KBy3kq++A8LKQwX6lsu+aWad+2khvuXrqw==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=23}
 
-  yargs@17.7.2:
-    resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
+  yargs@17.7.3:
+    resolution: {integrity: sha512-GZtjxm/J/4TSxuL3FNYjCmLktBTnIw/rVmKSIyKeYAZpmJB2ig9VauCC5xsa82GNKVKDAqpOn3KVzNt0zmrU0g==}
     engines: {node: '>=12'}
 
   yargs@18.0.0:
@@ -5182,8 +5189,8 @@ packages:
   youch@4.1.1:
     resolution: {integrity: sha512-mxW3qiSnl+GRxXsaUMzv2Mbada1Y8CDltET9UxejDQe6DBYlSekghl5U5K0ReAikcHDi0G1vKZEmmo/NWAGKLA==}
 
-  yummies@7.19.4:
-    resolution: {integrity: sha512-OO7jPtnYW+D8DX/1P1vQsWGZZjpQljuW2oEHc3RJ1a8e6SiWOtIUCL8sTwkLO6kaf7NfocRr/ld48vXZnO2hOg==}
+  yummies@7.20.1:
+    resolution: {integrity: sha512-H/AxRy+SjVlfpeI0TkiVkU/M2n+XpR1XGt5yS5r7GsP9Iz3mr17dbq9DLW18PmMlyKO78+yvH/9Z9VAnVuV3og==}
     peerDependencies:
       mobx: ^6.12.4
       react: ^18 || ^19
@@ -5505,11 +5512,11 @@ snapshots:
       '@babel/helper-string-parser': 8.0.0-rc.6
       '@babel/helper-validator-identifier': 8.0.0-rc.6
 
-  '@biomejs/js-api@4.0.0(@biomejs/wasm-nodejs@2.4.16)':
+  '@biomejs/js-api@6.0.0(@biomejs/wasm-nodejs@2.5.0)':
     optionalDependencies:
-      '@biomejs/wasm-nodejs': 2.4.16
+      '@biomejs/wasm-nodejs': 2.5.0
 
-  '@biomejs/wasm-nodejs@2.4.16': {}
+  '@biomejs/wasm-nodejs@2.5.0': {}
 
   '@bomb.sh/tab@0.0.15(cac@6.7.14)(citty@0.2.2)':
     optionalDependencies:
@@ -7559,8 +7566,8 @@ snapshots:
       confbox: 0.2.4
       defu: 6.1.7
       dotenv: 17.4.2
-      exsolve: 1.0.8
-      giget: 3.2.0
+      exsolve: 1.1.0
+      giget: 3.3.0
       jiti: 2.7.0
       ohash: 2.0.11
       pathe: 2.0.3
@@ -7576,8 +7583,8 @@ snapshots:
       confbox: 0.2.4
       defu: 6.1.7
       dotenv: 17.4.2
-      exsolve: 1.0.8
-      giget: 3.2.0
+      exsolve: 1.1.0
+      giget: 3.3.0
       jiti: 2.7.0
       ohash: 2.0.11
       pathe: 2.0.3
@@ -7845,7 +7852,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.4.8:
+  dompurify@3.4.11:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -7914,7 +7921,7 @@ snapshots:
       es-errors: 1.3.0
     optional: true
 
-  es-toolkit@1.47.0: {}
+  es-toolkit@1.48.1: {}
 
   es6-promise@3.3.1: {}
 
@@ -8076,6 +8083,8 @@ snapshots:
 
   exsolve@1.0.8: {}
 
+  exsolve@1.1.0: {}
+
   fast-deep-equal@3.1.3: {}
 
   fast-fifo@1.3.2: {}
@@ -8201,6 +8210,8 @@ snapshots:
       resolve-pkg-maps: 1.0.0
 
   giget@3.2.0: {}
+
+  giget@3.3.0: {}
 
   glob-parent@5.1.2:
     dependencies:
@@ -8655,7 +8666,7 @@ snapshots:
 
   nanoid@3.3.15: {}
 
-  nanoid@5.1.11: {}
+  nanoid@5.1.16: {}
 
   nanotar@0.3.0: {}
 
@@ -8666,7 +8677,7 @@ snapshots:
       micro-api-client: 3.3.0
       node-fetch: 3.3.2
       p-wait-for: 5.0.2
-      qs: 6.15.2
+      qs: 6.15.3
     optional: true
 
   nitropack@2.13.4(@netlify/blobs@9.1.2)(oxc-parser@0.133.0)(rolldown@1.1.2)(srvx@0.11.16):
@@ -8984,7 +8995,7 @@ snapshots:
       oas-kit-common: 1.0.8
       reftools: 1.1.9
       yaml: 1.10.3
-      yargs: 17.7.2
+      yargs: 17.7.3
 
   oas-schema-walker@1.1.5: {}
 
@@ -9441,8 +9452,9 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  qs@6.15.2:
+  qs@6.15.3:
     dependencies:
+      es-define-property: 1.0.1
       side-channel: 1.1.1
     optional: true
 
@@ -9837,25 +9849,25 @@ snapshots:
 
   swagger-schema-official@2.0.0-bab6bed: {}
 
-  swagger-typescript-api@13.12.2(magicast@0.5.3):
+  swagger-typescript-api@13.12.3(magicast@0.5.3):
     dependencies:
       '@apidevtools/swagger-parser': 12.1.0(openapi-types@12.1.3)
-      '@biomejs/js-api': 4.0.0(@biomejs/wasm-nodejs@2.4.16)
-      '@biomejs/wasm-nodejs': 2.4.16
+      '@biomejs/js-api': 6.0.0(@biomejs/wasm-nodejs@2.5.0)
+      '@biomejs/wasm-nodejs': 2.5.0
       '@types/swagger-schema-official': 2.0.25
       c12: 3.3.4(magicast@0.5.3)
       citty: 0.2.2
       consola: 3.4.2
-      es-toolkit: 1.47.0
+      es-toolkit: 1.48.1
       eta: 3.5.0
-      nanoid: 5.1.11
+      nanoid: 5.1.16
       openapi-types: 12.1.3
       swagger-schema-official: 2.0.0-bab6bed
       swagger2openapi: 7.0.8
       type-fest: 5.7.0
       typescript: 6.0.3
       yaml: 2.9.0
-      yummies: 7.19.4
+      yummies: 7.20.1
     transitivePeerDependencies:
       - '@biomejs/wasm-bundler'
       - '@biomejs/wasm-web'
@@ -9876,7 +9888,7 @@ snapshots:
       oas-validator: 5.0.8
       reftools: 1.1.9
       yaml: 1.10.3
-      yargs: 17.7.2
+      yargs: 17.7.3
     transitivePeerDependencies:
       - encoding
 
@@ -10394,7 +10406,7 @@ snapshots:
 
   yargs-parser@22.0.0: {}
 
-  yargs@17.7.2:
+  yargs@17.7.3:
     dependencies:
       cliui: 8.0.1
       escalade: 3.2.0
@@ -10431,13 +10443,13 @@ snapshots:
       cookie-es: 3.1.1
       youch-core: 0.3.3
 
-  yummies@7.19.4:
+  yummies@7.20.1:
     dependencies:
       class-variance-authority: 0.7.1
       clsx: 2.1.1
       dayjs: 1.11.21
-      dompurify: 3.4.8
-      nanoid: 5.1.11
+      dompurify: 3.4.11
+      nanoid: 5.1.16
       tailwind-merge: 3.6.0
 
   zip-stream@6.0.1:
