@@ -1,9 +1,9 @@
-﻿using System.Net;
+using System.Net;
 using AddictedProxy.Storage.Store.S3.Bootstrap.EnvVar;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Polly;
-using Polly.Contrib.WaitAndRetry;
+using Polly.Registry;
 using Polly.Retry;
 
 namespace AddictedProxy.Storage.Store.S3;
@@ -12,18 +12,22 @@ public class S3StorageProvider : IStorageProvider
 {
     private readonly S3Config _s3Config;
     private readonly AmazonS3Client _awsS3Client;
-    private readonly AsyncRetryPolicy _asyncRetryPolicy;
+    private readonly ResiliencePipeline _retryPipeline;
 
-    public S3StorageProvider(S3Config s3Config)
+    /// <summary>
+    /// Initializes a new instance of the S3StorageProvider with S3 configuration and retry resilience.
+    /// </summary>
+    /// <param name="s3Config">The S3 configuration including gateway URL, credentials, and bucket name.</param>
+    /// <param name="pipelineProvider">The resilience pipeline provider to retrieve the "s3-download" pipeline.</param>
+    public S3StorageProvider(S3Config s3Config, ResiliencePipelineProvider<string> pipelineProvider)
     {
         _s3Config = s3Config;
+        _retryPipeline = pipelineProvider.GetPipeline("s3-download");
         var config = new AmazonS3Config
         {
             ServiceURL = s3Config.Gateway
         };
         _awsS3Client = new AmazonS3Client(s3Config.AccessKey, s3Config.SecretKey, config);
-        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromMilliseconds(50), retryCount: 3);
-        _asyncRetryPolicy = Policy.Handle<AmazonS3Exception>().WaitAndRetryAsync(delay);
     }
 
 
@@ -53,7 +57,7 @@ public class S3StorageProvider : IStorageProvider
 
     public async Task<Stream?> DownloadAsync(string filename, CancellationToken cancellationToken)
     {
-        return await _asyncRetryPolicy.ExecuteAsync(token => DownloadInternalAsync(filename, token), cancellationToken);
+        return await _retryPipeline.ExecuteAsync(async token => await DownloadInternalAsync(filename, token), cancellationToken);
     }
 
     private async Task<Stream?> DownloadInternalAsync(string filename, CancellationToken cancellationToken)

@@ -2,6 +2,7 @@ using System.Net;
 using System.Reflection;
 using AntiCaptcha.Bootstrap;
 using InversionOfControl.Model;
+using InversionOfControl.Service.Resilience;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -24,7 +25,7 @@ public class BootstrapProxyScrape : IBootstrap
             {
                 AllowAutoRedirect = false,
                 AutomaticDecompression = DecompressionMethods.All
-            }).AddStandardResilienceHandler();
+            }).AddSharedResilienceHandler("proxyscrape");
 
         if (configuration.GetValue("ProxyScrape:EnableScrape", false))
         {

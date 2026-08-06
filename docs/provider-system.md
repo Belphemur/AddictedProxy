@@ -104,7 +104,7 @@ public interface ISubtitleProvider
 **Current Implementation (`SubtitleProvider`):**
 - Checks cached storage first (`ICachedStorageProvider`)
 - Falls back to provider-routed download via `SubtitleDownloaderFactory` using `subtitle.Source`
-- Addic7ed downloader keeps credential rotation and retry behavior
+- Addic7ed downloader relies on the shared `AddSharedResilienceHandler` pipeline for retry, circuit breaker (5xx/401/402/403), and timeout
 - SuperSubtitles downloader calls gRPC `DownloadSubtitle` using `subtitle.ExternalId`
 - Stores completed subtitles in background via `StoreSubtitleJob`
 
@@ -155,7 +155,7 @@ AddictedProxy.Upstream/
 │   ├── IAddic7edClient.cs        # Interface for Addic7ed API
 │   ├── Addic7edClient.cs         # HTTP client implementation
 │   ├── IAddic7edDownloader.cs    # Interface for subtitle file download
-│   ├── Addic7edDownloader.cs     # Download implementation with retry
+│   ├── Addic7edDownloader.cs     # Download implementation
 │   ├── Parser.cs                 # HTML parser (AngleSharp) for scraping
 │   ├── HttpUtils.cs              # Request preparation with credentials
 │   └── Performance/              # Metrics (download counters)
@@ -285,5 +285,5 @@ SuperSubtitles is a Go-based gRPC service that scrapes feliratok.eu (a Hungarian
 - **Season/episode provided** — the `Subtitle` message includes `season` and `episode` as `int32` fields, used directly
 - **Show lookup via `ShowExternalId`** — uses the new external ID system to look up already-imported shows before falling back to TvDB/TMDB matching
 - **Two-phase ingestion**: one-time startup bulk import job (idempotent) + recurring 15-minute incremental updates
-- **Subtitle downloads** via gRPC `DownloadSubtitle` method (supports season pack episode extraction)
+- **Subtitle downloads** via gRPC `DownloadSubtitle` method (supports season pack episode extraction), protected by the shared resilience pipeline
 - **Season packs stored** in dedicated `SeasonPackSubtitle` table during ingestion. Season packs now have a `SeasonId` FK to the `Season` entity (resolved during ingestion by `IngestSeasonPacksAsync`) and a `DownloadCount` for download tracking. See [Season Pack Plan](season-pack-plan.md) for the API/frontend plan.

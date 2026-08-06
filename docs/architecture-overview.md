@@ -192,7 +192,7 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
 | Bootstrap Pattern     | Custom DI framework for modular service registration        |
 | Background Jobs       | Hangfire for async/scheduled work (refresh, store, migrate)  |
 | Async Keyed Locking   | Prevents concurrent operations on same resource             |
-| HTTP Resilience       | Polly retry policies, circuit breakers, timeouts            |
+| HTTP Resilience       | Polly v8 resilience pipelines via `Microsoft.Extensions.Http.Resilience`; shared retry + circuit breaker (5xx, 401/402/403) + timeout for all upstream HTTP/gRPC clients |
 | Real-time Updates     | SignalR hubs for progress notifications                     |
 | Caching               | Multi-layer: In-Memory → Redis → PostgreSQL                |
 | Compression           | Zstandard compression for stored subtitle files             |

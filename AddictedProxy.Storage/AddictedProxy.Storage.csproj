@@ -19,8 +19,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Newtonsoft.Json" />
-        <PackageReference Include="Polly" />
-        <PackageReference Include="Polly.Contrib.WaitAndRetry" />
+        <PackageReference Include="Polly.Core" />
         <PackageReference Include="Hangfire.AspNetCore" />
         <PackageReference Include="Hangfire.Console" />
         <PackageReference Include="System.Text.Encodings.Web" />
