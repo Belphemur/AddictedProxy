@@ -3,7 +3,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="AngleSharp" Version="1.7.0" />
+    <PackageVersion Include="AngleSharp" Version="1.7.1" />
     <PackageVersion Include="AsyncKeyedLock" Version="8.0.2" />
     <PackageVersion Include="AWSSDK.S3" Version="4.0.101.6" />
     <PackageVersion Include="Community.Microsoft.Extensions.Caching.PostgreSql" Version="6.0.2" />
