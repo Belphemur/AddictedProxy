@@ -120,9 +120,9 @@ public class ProxyScrapeClient : IProxyScrapeClient
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginExtraData.AccessToken);
                 request.Headers.UserAgent.ParseAdd(loginExtraData.UserAgent);
                 request.Headers.Add("Referer", $"https://dashboard.proxyscrape.com/v2/services/residential/overview/{_config.Value.AccountId}");
-                var response = await _client.SendAsync(request, token);
-                return (response, await response.Content.ReadFromJsonAsync<ProxyStatistics>(JsonContext.JsonSerializerOptions, token));
+                return await _client.SendAsync(request, token);
             },
+            response => response.Content.ReadFromJsonAsync<ProxyStatistics>(JsonContext.JsonSerializerOptions, token),
             token);
     }
 
@@ -142,13 +142,13 @@ public class ProxyScrapeClient : IProxyScrapeClient
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginExtraData.AccessToken);
                 request.Headers.UserAgent.ParseAdd(loginExtraData.UserAgent);
                 request.Headers.Add("Referer", $"https://dashboard.proxyscrape.com/v2/services/residential/overview/{_config.Value.AccountId}");
-                var response = await _client.SendAsync(request, token);
-                return (response, await response.Content.ReadFromJsonAsync<ProxyOverview>(JsonContext.JsonSerializerOptions, token));
+                return await _client.SendAsync(request, token);
             },
+            response => response.Content.ReadFromJsonAsync<ProxyOverview>(JsonContext.JsonSerializerOptions, token),
             token);
     }
 
-    private async Task<TResult?> SendAuthenticatedRequestAsync<TResult>(string endpoint, Func<AuthResponse, Task<(HttpResponseMessage Response, TResult? Result)>> executeRequest, CancellationToken token)
+    private async Task<TResult?> SendAuthenticatedRequestAsync<TResult>(string endpoint, Func<AuthResponse, Task<HttpResponseMessage>> executeRequest, Func<HttpResponseMessage, Task<TResult?>> readResult, CancellationToken token)
     {
         var loginExtraData = await GetLoginDataAsync(token);
         if (loginExtraData is null)
@@ -156,7 +156,7 @@ public class ProxyScrapeClient : IProxyScrapeClient
             return default;
         }
 
-        var (response, result) = await executeRequest(loginExtraData);
+        var response = await executeRequest(loginExtraData);
         if (ShouldInvalidateSession(response.StatusCode))
         {
             await _cache.RemoveAsync(AuthResponseCachingKey, token);
@@ -167,11 +167,11 @@ public class ProxyScrapeClient : IProxyScrapeClient
                 return default;
             }
 
-            (response, result) = await executeRequest(loginExtraData);
+            response = await executeRequest(loginExtraData);
         }
 
         response.EnsureSuccessStatusCode();
-        return result;
+        return await readResult(response);
     }
 
     private static bool ShouldInvalidateSession(HttpStatusCode statusCode) =>

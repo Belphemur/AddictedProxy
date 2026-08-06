@@ -19,7 +19,7 @@ public static class ResilienceDefaults
     /// when the upstream returns server errors (5xx) or authentication/payment errors
     /// (401, 402, 403).
     /// </summary>
-    public static IHttpClientBuilder AddSharedResilienceHandler(this IHttpClientBuilder builder, string pipelineName)
+    public static IHttpClientBuilder AddSharedResilienceHandler(this IHttpClientBuilder builder, string pipelineName, TimeSpan? requestTimeout = null)
     {
         builder.AddResilienceHandler(pipelineName, pipelineBuilder =>
         {
@@ -47,7 +47,7 @@ public static class ResilienceDefaults
 
             pipelineBuilder.AddTimeout(new HttpTimeoutStrategyOptions
             {
-                Timeout = TimeSpan.FromSeconds(60)
+                Timeout = requestTimeout ?? TimeSpan.FromSeconds(60)
             });
         });
 
