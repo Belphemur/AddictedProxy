@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
+using InversionOfControl.Service.Resilience;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,7 +22,7 @@ public class BootstrapTMDB : IBootstrap, IBootstrapEnvironmentVariable<TmdbConfi
             {
                 AutomaticDecompression = DecompressionMethods.All
             })
-            .AddStandardResilienceHandler();
+            .AddSharedResilienceHandler("tmdb");
     }
 
     public EnvVarRegistration<TmdbConfig, TmdbConfigParser> EnvVarRegistration { get; } = new("TMDB_APIKEY");
