@@ -19,6 +19,9 @@ on:
         type: string
         default: "lts/*"
 
+permissions:
+  contents: read
+
 jobs:
   e2e:
     name: E2E (Playwright + mock server)

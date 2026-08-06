@@ -12,6 +12,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   PROJECT_NAME: "AddictedProxy"
@@ -139,6 +142,8 @@ jobs:
     needs: [ ci-gate ]
     if: github.ref == 'refs/heads/main' && needs.ci-gate.result == 'success'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     outputs:
       version: ${{ steps.version.outputs.version }}
       repo-lowercase: ${{ steps.repo.outputs.lowercase }}

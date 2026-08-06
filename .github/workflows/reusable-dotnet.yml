@@ -14,6 +14,9 @@ on:
         type: string
         default: "AddictedProxy/AddictedProxy.csproj"
 
+permissions:
+  contents: read
+
 jobs:
   build-test:
     name: Build & Test
