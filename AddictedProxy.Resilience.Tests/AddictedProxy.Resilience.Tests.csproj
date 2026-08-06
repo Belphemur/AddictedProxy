@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="NUnit.Analyzers" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
+    <ProjectReference Include="..\AddictedProxy.Upstream\AddictedProxy.Upstream.csproj" />
+    <ProjectReference Include="..\ProxyScrape\ProxyScrape.csproj" />
+    <ProjectReference Include="..\AntiCaptcha\AntiCaptcha.csproj" />
+    <ProjectReference Include="..\TvMovieDatabaseClient\TvMovieDatabaseClient.csproj" />
+    <ProjectReference Include="..\ProxyProvider\ProxyProvider.csproj" />
+    <ProjectReference Include="..\SuperSubtitleClient\SuperSubtitleClient.csproj" />
+  </ItemGroup>
+
+</Project>
