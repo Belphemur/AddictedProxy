@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
         id: filter
         with:
@@ -50,7 +50,7 @@ jobs:
             nuxt:
               - 'addicted.nuxt/**'
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5.2.0
+        uses: actions/setup-dotnet@v6.0.0
         if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
         with:
           dotnet-version: ${{ env.DOTNET }}
@@ -76,7 +76,7 @@ jobs:
           corepack enable
       - name: Use Node.js
         if: steps.filter.outputs.node == 'true'
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: lts/*
           cache: 'pnpm'
@@ -103,13 +103,13 @@ jobs:
         run: |
           echo "lowercase=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
         id: repo
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Install pnpm
         run: |
           npm i -g corepack@latest
           corepack enable
       - name: Use Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: lts/*
           cache: 'pnpm'
@@ -128,11 +128,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: v${{ needs.main-release.outputs.version}}
       - name: Sentry Release
-        uses: getsentry/action-release@v3.6.0
+        uses: getsentry/action-release@v3.7.0
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{env.SENTRY_ORG}}
@@ -164,7 +164,7 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6      
+        uses: actions/checkout@v7      
       
       # Workaround: https://github.com/docker/build-push-action/issues/461
       - name: Setup Docker buildx

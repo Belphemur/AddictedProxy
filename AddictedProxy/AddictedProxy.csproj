@@ -20,12 +20,10 @@
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" />
         <PackageReference Include="Newtonsoft.Json" />
-        <PackageReference Include="Polly.Contrib.WaitAndRetry" />
         <PackageReference Include="SimpleMvcSitemap.Core" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
         <PackageReference Include="AngleSharp" />
-        <PackageReference Include="Microsoft.Extensions.Http.Polly" />
-        <PackageReference Include="Polly" />
+        <PackageReference Include="Polly.Core" />
         <PackageReference Include="System.Drawing.Common" />
         <PackageReference Include="System.Linq.Async" />
         <PackageReference Include="System.Net.Http" />

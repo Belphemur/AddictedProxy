@@ -69,6 +69,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Services.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InversionOfControl.Generator", "InversionOfControl.Generator\InversionOfControl.Generator.csproj", "{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddictedProxy.Resilience.Tests", "AddictedProxy.Resilience.Tests\AddictedProxy.Resilience.Tests.csproj", "{A21E5346-1526-48B8-8125-40BBCD222D13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -403,6 +405,18 @@ Global
 		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Release|x64.Build.0 = Release|Any CPU
 		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Release|x86.ActiveCfg = Release|Any CPU
 		{878F4E4A-CC2D-4F5D-85C7-0B4A6D1785FB}.Release|x86.Build.0 = Release|Any CPU
+		{A21E5346-1526-48B8-8125-40BBCD222D13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A21E5346-1526-48B8-8125-40BBCD222D13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A21E5346-1526-48B8-8125-40BBCD222D13}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A21E5346-1526-48B8-8125-40BBCD222D13}.Debug|x64.Build.0 = Debug|Any CPU
+		{A21E5346-1526-48B8-8125-40BBCD222D13}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A21E5346-1526-48B8-8125-40BBCD222D13}.Debug|x86.Build.0 = Debug|Any CPU
+		{A21E5346-1526-48B8-8125-40BBCD222D13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A21E5346-1526-48B8-8125-40BBCD222D13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A21E5346-1526-48B8-8125-40BBCD222D13}.Release|x64.ActiveCfg = Release|Any CPU
+		{A21E5346-1526-48B8-8125-40BBCD222D13}.Release|x64.Build.0 = Release|Any CPU
+		{A21E5346-1526-48B8-8125-40BBCD222D13}.Release|x86.ActiveCfg = Release|Any CPU
+		{A21E5346-1526-48B8-8125-40BBCD222D13}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

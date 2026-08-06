@@ -1,4 +1,5 @@
 using InversionOfControl.Model;
+using InversionOfControl.Service.Resilience;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -31,7 +32,7 @@ public class BootstrapSuperSubtitles : IBootstrap
                     PooledConnectionLifetime = config.ConnectionLifetime
                 };
             })
-            .AddStandardResilienceHandler();
+            .AddSharedResilienceHandler("supersubtitles");
 
         services.AddSingleton<ISuperSubtitlesClient, SuperSubtitlesClientImpl>();
     }
