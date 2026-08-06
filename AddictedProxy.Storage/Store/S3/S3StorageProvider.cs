@@ -3,6 +3,7 @@ using AddictedProxy.Storage.Store.S3.Bootstrap.EnvVar;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Polly;
+using Polly.Registry;
 using Polly.Retry;
 
 namespace AddictedProxy.Storage.Store.S3;
@@ -13,10 +14,15 @@ public class S3StorageProvider : IStorageProvider
     private readonly AmazonS3Client _awsS3Client;
     private readonly ResiliencePipeline _retryPipeline;
 
-    public S3StorageProvider(S3Config s3Config, ResiliencePipeline retryPipeline)
+    /// <summary>
+    /// Initializes a new instance of the S3StorageProvider with S3 configuration and retry resilience.
+    /// </summary>
+    /// <param name="s3Config">The S3 configuration including gateway URL, credentials, and bucket name.</param>
+    /// <param name="pipelineProvider">The resilience pipeline provider to retrieve the "s3-download" pipeline.</param>
+    public S3StorageProvider(S3Config s3Config, ResiliencePipelineProvider<string> pipelineProvider)
     {
         _s3Config = s3Config;
-        _retryPipeline = retryPipeline;
+        _retryPipeline = pipelineProvider.GetPipeline("s3-download");
         var config = new AmazonS3Config
         {
             ServiceURL = s3Config.Gateway

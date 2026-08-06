@@ -46,16 +46,10 @@ public class ResilienceDefaultsTests
         var factory = provider.GetRequiredService<IHttpClientFactory>();
         var client = factory.CreateClient("test");
 
-        try
-        {
-            await client.GetAsync("/");
-        }
-        catch
-        {
-            // Expected when all retries are exhausted.
-        }
+        var response = await client.GetAsync("/");
 
-        handler.Attempts.Should().BeGreaterThan(1);
+        response.StatusCode.Should().Be(statusCode);
+        handler.Attempts.Should().Be(4);
     }
 
     [TestCase(HttpStatusCode.OK)]
@@ -126,16 +120,10 @@ public class ResilienceDefaultsTests
         var client = factory.CreateClient("test");
         client.DefaultRequestHeaders.Add("Idempotency-Key", Guid.NewGuid().ToString("N"));
 
-        try
-        {
-            await client.PostAsync("/", new StringContent("payload"));
-        }
-        catch
-        {
-            // Expected when all retries are exhausted.
-        }
+        var response = await client.PostAsync("/", new StringContent("payload"));
 
-        handler.Attempts.Should().BeGreaterThan(1);
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        handler.Attempts.Should().Be(4);
     }
 
     [Test]
@@ -151,16 +139,9 @@ public class ResilienceDefaultsTests
         var factory = provider.GetRequiredService<IHttpClientFactory>();
         var client = factory.CreateClient("test");
 
-        try
-        {
-            await client.GetAsync("/");
-        }
-        catch
-        {
-            // Expected when all retries are exhausted.
-        }
+        await client.Invoking(c => c.GetAsync("/")).Should().ThrowAsync<HttpRequestException>();
 
-        handler.Attempts.Should().BeGreaterThan(1);
+        handler.Attempts.Should().Be(4);
     }
 
     private class CountingHandler : DelegatingHandler
