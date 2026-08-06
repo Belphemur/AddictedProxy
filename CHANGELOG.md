@@ -1,3 +1,14 @@
+## [4.69.0](https://github.com/Belphemur/AddictedProxy/compare/v4.68.1...v4.69.0) (2026-08-06)
+
+### Bug Fixes
+
+* apply CodeRabbit auto-fixes ([0a61b23](https://github.com/Belphemur/AddictedProxy/commit/0a61b2370d330cb981dd0cbb1d75d78b8dab1745))
+* **resilience:** address review feedback on Polly v8 migration ([b01ce7a](https://github.com/Belphemur/AddictedProxy/commit/b01ce7a71145607acccc913a5154e2199006ce5c))
+
+### Features
+
+* **resilience:** apply shared circuit-breaker handler to all HttpClient/gRPC registrations ([1fe5b18](https://github.com/Belphemur/AddictedProxy/commit/1fe5b181b27c0418ca33f606663282b1e09342aa))
+
 ## [4.68.1](https://github.com/Belphemur/AddictedProxy/compare/v4.68.0...v4.68.1) (2026-05-20)
 
 ### Bug Fixes
