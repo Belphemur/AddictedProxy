@@ -25,11 +25,13 @@ test.describe("Show search", () => {
 
     const searchInput = page.getByRole("textbox", { name: "Name of the show" });
     await searchInput.click();
+    const searchResponse = page.waitForResponse((response) => {
+      const url = decodeURIComponent(response.url()).toLowerCase();
+      return response.ok() && url.endsWith("/shows/search/zzzznonexistentshow");
+    });
     await searchInput.pressSequentially("Zzzznonexistentshow", { delay: 30 });
+    await searchResponse;
 
-    // Give the debounced search a moment to resolve, then confirm no
-    // navigation happened and the input keeps focus on the search box.
-    await page.waitForTimeout(500);
     await expect(page).toHaveURL("/");
   });
 });

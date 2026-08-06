@@ -4,8 +4,6 @@ on:
   push:
     branches: [ dev, main ]
   pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ dev, main ]
   workflow_dispatch:
 
 concurrency:
@@ -36,7 +34,7 @@ jobs:
     outputs:
       dotnet: ${{ steps.filter.outputs.dotnet == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main' }}
       nuxt: ${{ steps.filter.outputs.nuxt == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main' }}
-      node: ${{ steps.filter.outputs.node == 'true' }}
+      node: ${{ steps.filter.outputs.node == 'true' || steps.filter.outputs.ci == 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7

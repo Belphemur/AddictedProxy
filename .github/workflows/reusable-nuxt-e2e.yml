@@ -78,7 +78,7 @@ jobs:
         run: |
           rm -rf node_modules
           pnpm install
-          pnpm add ws
+          pnpm add ws@8.21.1
 
       - name: Start Nuxt app
         working-directory: ${{ inputs.working-directory }}
