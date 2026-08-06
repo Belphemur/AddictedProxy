@@ -7,13 +7,12 @@ using AddictedProxy.Upstream.Service.Performance;
 using AngleSharp.Html.Parser;
 using InversionOfControl.Model;
 using InversionOfControl.Service.EnvironmentVariable.Registration;
+using InversionOfControl.Service.Resilience;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
 using Polly;
-using Polly.Contrib.WaitAndRetry;
-using Polly.Extensions.Http;
-using Polly.Timeout;
 using Prometheus;
 
 #endregion
@@ -35,9 +34,8 @@ public class BootstrapAddictedServices : IBootstrap,
                 })
                 .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>(), false))
                 .SetHandlerLifetime(TimeSpan.FromMinutes(3))
-                .AddPolicyHandler(GetRetryPolicy())
-                .AddPolicyHandler(GetTimeoutPolicy())
-                .UseHttpClientMetrics();
+                .UseHttpClientMetrics()
+                .AddResilienceHandler("addic7ed-client", ConfigureResilience);
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>(client =>
                 {
@@ -46,9 +44,8 @@ public class BootstrapAddictedServices : IBootstrap,
                 })
                 .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>(), false))
                 .SetHandlerLifetime(TimeSpan.FromMinutes(3))
-                .AddPolicyHandler(GetRetryPolicy())
-                .AddPolicyHandler(GetTimeoutPolicy())
-                .UseHttpClientMetrics();
+                .UseHttpClientMetrics()
+                .AddResilienceHandler("addic7ed-downloader", ConfigureResilience);
 
         services.AddSingleton<HttpUtils>();
         services.AddSingleton<DownloadCounterWrapper>();
@@ -70,22 +67,47 @@ public class BootstrapAddictedServices : IBootstrap,
         };
     }
 
-    private static IAsyncPolicy<HttpResponseMessage> GetCircuitBreaker() => HttpPolicyExtensions
-        .HandleTransientHttpError()
-        .Or<TimeoutRejectedException>()
-        .AdvancedCircuitBreakerAsync(0.5, TimeSpan.FromMinutes(1), 20, TimeSpan.FromMinutes(5));
-
-    private static IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy() => Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(60));
-
-    private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+    private static void ConfigureResilience(ResiliencePipelineBuilder<HttpResponseMessage> builder)
     {
-        var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(10), retryCount: 8);
-        return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            //Issue with downloading the subtitle from Addic7ed
-            .OrInner<IOException>()
-            .Or<TimeoutRejectedException>()
-            .OrResult(msg => msg.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden)
-            .WaitAndRetryAsync(delay);
+        builder.AddRetry(new HttpRetryStrategyOptions
+        {
+            ShouldHandle = args => ValueTask.FromResult(
+                args.Outcome.Result is HttpResponseMessage response &&
+                IsRetryableStatusCode(response.StatusCode)),
+            BackoffType = DelayBackoffType.Exponential,
+            MaxRetryAttempts = 8,
+            Delay = TimeSpan.FromSeconds(10),
+            MaxDelay = TimeSpan.FromSeconds(60)
+        });
+
+        builder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions
+        {
+            ShouldHandle = args => ValueTask.FromResult(
+                args.Outcome.Result is HttpResponseMessage response &&
+                IsCircuitBreakerStatusCode(response.StatusCode)),
+            SamplingDuration = TimeSpan.FromMinutes(1),
+            FailureRatio = 0.5,
+            MinimumThroughput = 20,
+            BreakDuration = TimeSpan.FromMinutes(5)
+        });
+
+        builder.AddTimeout(new HttpTimeoutStrategyOptions
+        {
+            Timeout = TimeSpan.FromSeconds(60)
+        });
+    }
+
+    private static bool IsRetryableStatusCode(HttpStatusCode statusCode)
+    {
+        var status = (int)statusCode;
+        // Retry transient server errors, auth failures and the legacy Addic7ed 404/403 cases.
+        return status is >= 500 and <= 599 or 401 or 402 or 403 or 404;
+    }
+
+    private static bool IsCircuitBreakerStatusCode(HttpStatusCode statusCode)
+    {
+        var status = (int)statusCode;
+        // Open the circuit when upstream is failing with server errors or explicit auth errors.
+        return status is >= 500 and <= 599 or 401 or 402 or 403;
     }
 }
