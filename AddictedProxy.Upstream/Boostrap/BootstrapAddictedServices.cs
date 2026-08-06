@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
 using Polly;
+using Polly.Timeout;
 using Prometheus;
 
 #endregion
@@ -69,22 +70,28 @@ public class BootstrapAddictedServices : IBootstrap,
 
     private static void ConfigureResilience(ResiliencePipelineBuilder<HttpResponseMessage> builder)
     {
+        var retryPredicate = new PredicateBuilder<HttpResponseMessage>()
+            .Handle<HttpRequestException>()
+            .Handle<TimeoutRejectedException>()
+            .HandleResult(response => IsRetryableStatusCode(response.StatusCode));
+
         builder.AddRetry(new HttpRetryStrategyOptions
         {
-            ShouldHandle = args => ValueTask.FromResult(
-                args.Outcome.Result is HttpResponseMessage response &&
-                IsRetryableStatusCode(response.StatusCode)),
+            ShouldHandle = args => ValueTask.FromResult(retryPredicate.Build().Invoke(args.Outcome)),
             BackoffType = DelayBackoffType.Exponential,
             MaxRetryAttempts = 8,
             Delay = TimeSpan.FromSeconds(10),
             MaxDelay = TimeSpan.FromSeconds(60)
         });
 
+        var circuitBreakerPredicate = new PredicateBuilder<HttpResponseMessage>()
+            .Handle<HttpRequestException>()
+            .Handle<TimeoutRejectedException>()
+            .HandleResult(response => IsCircuitBreakerStatusCode(response.StatusCode));
+
         builder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions
         {
-            ShouldHandle = args => ValueTask.FromResult(
-                args.Outcome.Result is HttpResponseMessage response &&
-                IsCircuitBreakerStatusCode(response.StatusCode)),
+            ShouldHandle = args => ValueTask.FromResult(circuitBreakerPredicate.Build().Invoke(args.Outcome)),
             SamplingDuration = TimeSpan.FromMinutes(1),
             FailureRatio = 0.5,
             MinimumThroughput = 20,
@@ -100,8 +107,8 @@ public class BootstrapAddictedServices : IBootstrap,
     private static bool IsRetryableStatusCode(HttpStatusCode statusCode)
     {
         var status = (int)statusCode;
-        // Retry transient server errors, auth failures and the legacy Addic7ed 404/403 cases.
-        return status is >= 500 and <= 599 or 401 or 402 or 403 or 404;
+        // Retry transient server errors, auth failures, 408, and the legacy Addic7ed 404/403 cases.
+        return status is >= 500 and <= 599 or 401 or 402 or 403 or 404 or 408;
     }
 
     private static bool IsCircuitBreakerStatusCode(HttpStatusCode statusCode)

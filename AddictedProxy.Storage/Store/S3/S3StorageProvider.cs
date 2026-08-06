@@ -13,24 +13,15 @@ public class S3StorageProvider : IStorageProvider
     private readonly AmazonS3Client _awsS3Client;
     private readonly ResiliencePipeline _retryPipeline;
 
-    public S3StorageProvider(S3Config s3Config)
+    public S3StorageProvider(S3Config s3Config, ResiliencePipeline retryPipeline)
     {
         _s3Config = s3Config;
+        _retryPipeline = retryPipeline;
         var config = new AmazonS3Config
         {
             ServiceURL = s3Config.Gateway
         };
         _awsS3Client = new AmazonS3Client(s3Config.AccessKey, s3Config.SecretKey, config);
-        _retryPipeline = new ResiliencePipelineBuilder()
-            .AddRetry(new RetryStrategyOptions
-            {
-                ShouldHandle = args => ValueTask.FromResult(args.Outcome.Exception is AmazonS3Exception),
-                BackoffType = DelayBackoffType.Exponential,
-                MaxRetryAttempts = 3,
-                Delay = TimeSpan.FromMilliseconds(50),
-                MaxDelay = TimeSpan.FromMilliseconds(500)
-            })
-            .Build();
     }
 
 

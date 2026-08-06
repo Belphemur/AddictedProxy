@@ -113,7 +113,6 @@ public class ProxyScrapeClient : IProxyScrapeClient
     public async Task<ProxyStatistics?> GetProxyStatisticsAsync(CancellationToken token)
     {
         return await SendAuthenticatedRequestAsync(
-            $"/v2/v4/account/{_config.Value.AccountId}/residential/subuser/{_config.Value.SubUserId}/statistic",
             async loginExtraData =>
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, $"/v2/v4/account/{_config.Value.AccountId}/residential/subuser/{_config.Value.SubUserId}/statistic");
@@ -135,7 +134,6 @@ public class ProxyScrapeClient : IProxyScrapeClient
     public async Task<ProxyOverview?> GetProxyOverviewAsync(CancellationToken token)
     {
         return await SendAuthenticatedRequestAsync(
-            $"/v2/v4/account/{_config.Value.AccountId}/services/residential/overview",
             async loginExtraData =>
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, $"/v2/v4/account/{_config.Value.AccountId}/services/residential/overview");
@@ -148,7 +146,7 @@ public class ProxyScrapeClient : IProxyScrapeClient
             token);
     }
 
-    private async Task<TResult?> SendAuthenticatedRequestAsync<TResult>(string endpoint, Func<AuthResponse, Task<HttpResponseMessage>> executeRequest, Func<HttpResponseMessage, Task<TResult?>> readResult, CancellationToken token)
+    private async Task<TResult?> SendAuthenticatedRequestAsync<TResult>(Func<AuthResponse, Task<HttpResponseMessage>> executeRequest, Func<HttpResponseMessage, Task<TResult?>> readResult, CancellationToken token)
     {
         var loginExtraData = await GetLoginDataAsync(token);
         if (loginExtraData is null)
@@ -168,6 +166,10 @@ public class ProxyScrapeClient : IProxyScrapeClient
             }
 
             response = await executeRequest(loginExtraData);
+            if (ShouldInvalidateSession(response.StatusCode))
+            {
+                await _cache.RemoveAsync(AuthResponseCachingKey, token);
+            }
         }
 
         response.EnsureSuccessStatusCode();
