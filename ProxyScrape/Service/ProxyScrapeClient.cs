@@ -10,6 +10,11 @@ public class ProxyScrapeClient : IProxyScrapeClient
     private readonly IOptions<ProxyScrapeConfig> _config;
     private readonly HttpClient _client;
 
+    /// <summary>
+    /// Create a ProxyScrape client
+    /// </summary>
+    /// <param name="config"></param>
+    /// <param name="client"></param>
     public ProxyScrapeClient(IOptions<ProxyScrapeConfig> config, HttpClient client)
     {
         _config = config;

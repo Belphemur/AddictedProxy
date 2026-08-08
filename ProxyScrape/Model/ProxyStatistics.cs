@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace ProxyScrape.Model;
 
-public class ProxyStatistics
+public sealed record ProxyStatistics
 {
     [JsonPropertyName("success")]
     public bool Success { get; init; }
