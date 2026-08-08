@@ -8,6 +8,7 @@ using AddictedProxy.Services.Job.Model;
 using AddictedProxy.Services.Provider.Episodes;
 using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.Shows.Jobs;
+using AddictedProxy.Upstream.Service.Exception;
 using AsyncKeyedLock;
 using Hangfire;
 using Hangfire.Console;
@@ -15,6 +16,7 @@ using Hangfire.Server;
 using Locking;
 using Performance.Model;
 using Performance.Service;
+using Polly.CircuitBreaker;
 
 #endregion
 
@@ -128,6 +130,13 @@ public class FetchSubtitlesJob
                 _logger.LogInformation("Couldn't find matching subtitles for {search}", data.RequestData);
                 context.WriteLine(string.Format("No matching subtitles found for {0}", data.RequestData));
             }
+        }
+        catch (Exception e) when (e is NothingToParseException or BrokenCircuitException)
+        {
+            transaction.Finish(e, Status.Unavailable);
+            _logger.LogWarning(e, "Transient upstream issue while fetching subtitles for {search}", data.RequestData);
+            context.WriteLine(string.Format("Transient error fetching subtitles for {0}: {1}", data.RequestData, e.Message));
+            throw;
         }
         catch (Exception e)
         {

@@ -1,6 +1,7 @@
 using System.Text;
 using AddictedProxy.Culture.Service;
 using AddictedProxy.Upstream.Service;
+using AddictedProxy.Upstream.Service.Exception;
 using AngleSharp.Html.Parser;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -411,5 +412,21 @@ pageTracker._trackPageview();
         downloadUsage.Used.Should().Be(12);
         downloadUsage.TotalAvailable.Should().Be(40);
         downloadUsage.Remaining.Should().Be(28);
+    }
+
+    [Test]
+    public async Task Test_GetSeasonSubtitles_Throws_When_Season_Element_Missing()
+    {
+        const string html = "<html><body><div id=\"other\"></div></body></html>";
+
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(html));
+        var act = async () =>
+        {
+            await foreach (var _ in _parser.GetSeasonSubtitlesAsync(stream, default))
+            {
+            }
+        };
+
+        await act.Should().ThrowAsync<NothingToParseException>().WithMessage("Can't find episode table");
     }
 }
