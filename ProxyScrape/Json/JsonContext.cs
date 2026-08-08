@@ -5,7 +5,6 @@ using ProxyScrape.Model;
 
 namespace ProxyScrape.Json;
 
-[JsonSerializable(typeof(AuthResponse))]
 [JsonSerializable(typeof(ProxyStatistics))]
 [JsonSerializable(typeof(ProxyOverview))]
 internal partial class JsonContext : JsonSerializerContext

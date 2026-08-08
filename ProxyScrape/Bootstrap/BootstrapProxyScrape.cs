@@ -1,6 +1,3 @@
-using System.Net;
-using System.Reflection;
-using AntiCaptcha.Bootstrap;
 using InversionOfControl.Model;
 using InversionOfControl.Service.Resilience;
 using Microsoft.Extensions.Configuration;
@@ -13,19 +10,13 @@ namespace ProxyScrape.Bootstrap;
 
 public class BootstrapProxyScrape : IBootstrap
 {
-    public Assembly[] Dependencies => [typeof(BootstrapAntiCaptcha).Assembly];
-
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.Configure<ProxyScrapeConfig>(configuration.GetSection("ProxyScrape"));
         services.AddHttpClient<IProxyScrapeClient, ProxyScrapeClient>(client =>
-                client.BaseAddress = new Uri("https://dashboard.proxyscrape.com/"))
+                client.BaseAddress = new Uri("https://api.proxyscrape.com/"))
             .SetHandlerLifetime(TimeSpan.FromMinutes(10))
-            .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
-            {
-                AllowAutoRedirect = false,
-                AutomaticDecompression = DecompressionMethods.All
-            }).AddSharedResilienceHandler("proxyscrape");
+            .AddSharedResilienceHandler("proxyscrape");
 
         if (configuration.GetValue("ProxyScrape:EnableScrape", false))
         {
