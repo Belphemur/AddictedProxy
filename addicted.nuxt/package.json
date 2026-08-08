@@ -8,7 +8,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "gen-api": "swagger-typescript-api generate -p http://localhost/api/v1/swagger.json -o .\\composables\\api\\ -n api.ts --route-types --union-enums --modular  --no-no-client",
-    "prepare": "skilld prepare || true"
+    "prepare": "skilld prepare || true",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "devDependencies": {
     "@nuxt/devtools": "3.4.1",
@@ -16,6 +18,7 @@
     "@nuxtjs/device": "^4.0.0",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@pinia/nuxt": "1.0.1",
+    "@playwright/test": "^1.62.1",
     "@sentry/vite-plugin": "^5.1.0",
     "@types/node": "^25.3.0",
     "@types/webfontloader": "^1.6.38",
