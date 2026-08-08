@@ -25,3 +25,9 @@ logs
 .env.*
 !.env.example
 
+# Playwright
+/playwright-report
+/test-results
+/blob-report
+/e2e/.auth
+

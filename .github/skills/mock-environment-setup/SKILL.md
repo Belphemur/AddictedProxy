@@ -147,6 +147,11 @@ cd addicted.nuxt
 pnpm exec playwright test
 ```
 
+> For the automated e2e test suite (`addicted.nuxt/e2e/`), see the
+> `e2e-test-authoring` skill for how to write new tests and why they must run
+> against a production build (`pnpm build` + `node .output/server/index.mjs`)
+> rather than `pnpm dev`.
+
 ### Desktop verification
 
 1. Navigate to the page under test.
