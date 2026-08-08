@@ -186,9 +186,14 @@ skipped on one run because its episodes weren't present yet is simply reconsider
 later refresh run — nothing is lost.
 
 **Final net.** Both SuperSubtitles jobs additionally register a `CleanupEmptySeasonsJob`
-Hangfire continuation per processed show, which deletes any empty seasons — including
-historically polluted ones like the bogus seasons 5/8 found on a 1-season show that
-predate this guard.
+Hangfire continuation per processed show, which deletes any season that has **neither
+episodes nor a season pack**. It does not remove a season that still holds a pack — packs
+are treated as potential content. Separately, a one-time `CleanupEmptySeasonsMigrationAgain`
+migration runs at deploy to purge the already-existing empty seasons (including historically
+polluted ones like the bogus seasons 5/8 found on a 1-season show that predate this guard).
+Together with the ingestion guard, which drops season packs for episode-less seasons, the
+net effect is: no new empty or pack-only seasons going forward, and the pre-existing empty
+season pollution purged once.
 
 ## Application Startup
 
