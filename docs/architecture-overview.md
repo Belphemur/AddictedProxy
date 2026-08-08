@@ -160,42 +160,35 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
      └──────────────────────────┘
 ```
 
-## SuperSubtitles Ingestion & Validation
+## SuperSubtitles Ingestion & Season Cleanup
 
 SuperSubtitles is the secondary subtitle provider (upstream feliratok.eu). Its ingestion
 runs through two Hangfire jobs — `ImportSuperSubtitlesJob` (one-time bulk import on
 startup) and `RefreshSuperSubtitlesJob` (incremental, recurring every 15 minutes).
 
-**Season validation on ingestion.** Because feliratok.eu can return polluted seasons for a
-show, each streamed collection is passed through
-`SuperSubtitlesStreamFilter.DropInvalidSeasons(TvShow, subtitles, logger)` before it is
-persisted. This static filter drops proto subtitles whose season exceeds the show's known
-season count derived from TMDB:
+**Never create an empty season.** Because feliratok.eu can return season packs for seasons
+that don't actually exist on a show (e.g. a Hungarian pack for season 8 on a 1-season
+show), both jobs ask `ProviderDataIngestionService.IngestSeasonPacksAsync` /
+`IngestSeasonPackAsync` to skip any season pack whose `(TvShowId, Season)` has no
+episodes. Season rows come from episodes alone, never from a pack on its own — so a pack
+for a non-existent season is dropped rather than creating a permanently-empty `Season`.
 
-- Season `0` (specials) is always kept.
-- If the show's season count is unknown, every season is kept.
-- The max-subtitle-id cursor advances over the **raw** stream, so dropped entries are not
-  re-requested on the next run.
+The guard relies on `IEpisodeRepository.GetSeasonsHavingEpisodesAsync(long[] tvShowIds)`,
+which returns the set of `(TvShowId, Season)` that actually have episodes in a single
+`AsNoTracking` query (later referenced as a `HashSet<(TvShowId, Season)>`). Because
+`MergeEpisodesWithSubtitlesAsync` already only creates seasons from actual episodes, an
+episodeless season pack is always rejected and produces no `Season` row.
 
-The show's season count is stored as `TvShow.NumberOfSeasons` (`int?`, added by the EF Core
-migration `20260808224126_AddTvShowNumberOfSeasons`), populated by `ShowTmdbMapper` from
-TMDB show details and reset to `null` when a show is removed from TMDB.
+**Ordering guarantee (self-healing).** Both `ImportSuperSubtitlesJob` and
+`RefreshSuperSubtitlesJob` call `MergeEpisodesWithSubtitlesAsync` **before**
+`IngestSeasonPacksAsync`, so freshly-upserted episodes are visible to the guard. A pack
+skipped on one run because its episodes weren't present yet is simply reconsidered on a
+later refresh run — nothing is lost.
 
-**Pruning bogus seasons.** Both SuperSubtitles jobs register a `CleanupEmptySeasonsJob`
-Hangfire continuation per processed show. Degrading empty seasons that escape ingestion
-(e.g. historically created bogus seasons 5/8/9 on a 1-season show) are removed by
-`PruneInvalidSeasonsJob` (`[UniqueJob]`, per-show async keyed lock), which deletes any
-seasons beyond the TMDB count via `ISeasonRepository.DeleteSeasonsBeyondAsync`. That
-repository method is FK-safe: it issues an ordered `ExecuteDelete` chain (subtitles →
-episode external IDs → season pack entries → season packs → episodes → seasons, with
-`IgnoreQueryFilters` on the pack tables for soft-deleted rows).
-
-**Progressive retroactive healing.** Because ingestion validation only protects new writes,
-two jobs heal pre-existing data:
-
-- `CheckCompletedTmdbJob` (recurring) backfills `NumberOfSeasons` from TMDB for completed
-  shows and enqueues `PruneInvalidSeasonsJob` for a show when its count changes.
-- `MapShowTmdbJob` enqueues `PruneInvalidSeasonsJob` for newly mapped shows.
+**Final net.** Both SuperSubtitles jobs additionally register a `CleanupEmptySeasonsJob`
+Hangfire continuation per processed show, which deletes any empty seasons — including
+historically polluted ones like the bogus seasons 5/8 found on a 1-season show that
+predate this guard.
 
 ## Application Startup
 
