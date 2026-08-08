@@ -1,0 +1,41 @@
+name: Reusable - Nuxt Build
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: "Directory containing the Nuxt app's package.json"
+        required: false
+        type: string
+        default: "addicted.nuxt"
+      node-version:
+        description: "Node.js version to install"
+        required: false
+        type: string
+        default: "lts/*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - uses: ./.github/actions/setup-corepack-pnpm
+        with:
+          node-version: ${{ inputs.node-version }}
+          working-directory: ${{ inputs.working-directory }}
+          cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: NUXT_PRESET=node-server pnpm build

@@ -260,6 +260,21 @@ public class EpisodeRepository : IEpisodeRepository
         int Number);
 
     /// <summary>
+    /// Return the (TvShowId, Season) pairs that have at least one episode.
+    /// </summary>
+    public async Task<HashSet<(long TvShowId, int Season)>> GetSeasonsHavingEpisodesAsync(long[] tvShowIds, CancellationToken token)
+    {
+        var pairs = await _entityContext.Episodes
+            .AsNoTracking()
+            .Where(episode => tvShowIds.Contains(episode.TvShowId))
+            .Select(episode => new ValueTuple<long, int>(episode.TvShowId, episode.Season))
+            .Distinct()
+            .ToListAsync(token);
+
+        return pairs.ToHashSet();
+    }
+
+    /// <summary>
     /// Get season episodes
     /// </summary>
     /// <param name="tvShowId"></param>

@@ -1,0 +1,93 @@
+name: Reusable - Nuxt E2E Tests
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: "Directory containing the Nuxt app's package.json"
+        required: false
+        type: string
+        default: "addicted.nuxt"
+      mock-server-directory:
+        description: "Directory containing the Go mock API server"
+        required: false
+        type: string
+        default: "mock-server"
+      node-version:
+        description: "Node.js version to install"
+        required: false
+        type: string
+        default: "lts/*"
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: E2E (Playwright + mock server)
+    runs-on: ubuntu-latest
+    env:
+      APP_URL: "http://localhost:3000"
+      APP_API_PATH: "http://localhost:8080"
+      APP_SERVER_PATH: "http://localhost:8080"
+      SENTRY_ENABLE: "false"
+      E2E_BASE_URL: "http://localhost:3000"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Go
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: ${{ inputs.mock-server-directory }}/go.mod
+
+      - name: Start mock API server
+        working-directory: ${{ inputs.mock-server-directory }}
+        run: |
+          go run . -port 8080 &
+          timeout 60 bash -c 'until curl -sf http://localhost:8080/media/trending/1 > /dev/null; do sleep 1; done'
+
+      - uses: ./.github/actions/setup-corepack-pnpm
+        with:
+          node-version: ${{ inputs.node-version }}
+          working-directory: ${{ inputs.working-directory }}
+          cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: ${{ inputs.working-directory }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        working-directory: ${{ inputs.working-directory }}
+        run: pnpm exec playwright install --with-deps chromium webkit
+
+      - name: Build Nuxt app (production)
+        working-directory: ${{ inputs.working-directory }}
+        run: NUXT_PRESET=node-server pnpm build
+
+      - name: Install server runtime dependencies
+        # Mirrors addicted.nuxt/Dockerfile: the SignalR client needs the
+        # optional `ws` peer dependency when running under Node on the server.
+        working-directory: ${{ inputs.working-directory }}/.output/server
+        run: |
+          rm -rf node_modules
+          pnpm install
+          pnpm add ws@8.21.1
+
+      - name: Start Nuxt app
+        working-directory: ${{ inputs.working-directory }}
+        run: |
+          node .output/server/index.mjs &
+          timeout 60 bash -c 'until curl -sf http://localhost:3000/ > /dev/null; do sleep 1; done'
+
+      - name: Run Playwright e2e tests
+        working-directory: ${{ inputs.working-directory }}
+        run: pnpm exec playwright test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: ${{ inputs.working-directory }}/playwright-report
+          retention-days: 14

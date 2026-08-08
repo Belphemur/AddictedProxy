@@ -40,7 +40,7 @@ public class BootstrapAddictedServices : IBootstrap,
 
         services.AddHttpClient<IAddic7edDownloader, Addic7edDownloader>(client =>
                 {
-                    client.Timeout = TimeSpan.FromMinutes(2);
+                    client.Timeout = TimeSpan.FromMinutes(5);
                     client.BaseAddress = new Uri("https://www.addic7ed.com");
                 })
                 .ConfigurePrimaryHttpMessageHandler(provider => BuildProxyHttpMessageHandler(provider.GetRequiredService<HttpProxy>(), false))
@@ -100,7 +100,7 @@ public class BootstrapAddictedServices : IBootstrap,
 
         builder.AddTimeout(new HttpTimeoutStrategyOptions
         {
-            Timeout = TimeSpan.FromSeconds(60)
+            Timeout = TimeSpan.FromMinutes(3)
         });
     }
 

@@ -1,0 +1,49 @@
+name: Reusable - .NET Build & Test
+
+on:
+  workflow_call:
+    inputs:
+      dotnet-version:
+        description: ".NET SDK version to install"
+        required: false
+        type: string
+        default: "10.0.x"
+      project-path:
+        description: "Project file to build (the full solution is still used for tests)"
+        required: false
+        type: string
+        default: "AddictedProxy/AddictedProxy.csproj"
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6.0.0
+        with:
+          dotnet-version: ${{ inputs.dotnet-version }}
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build -c Release --no-restore ${{ inputs.project-path }}
+
+      - name: Test
+        run: dotnet test -c Release --no-restore --logger trx --results-directory "TestResults"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: dotnet-test-results
+          path: TestResults

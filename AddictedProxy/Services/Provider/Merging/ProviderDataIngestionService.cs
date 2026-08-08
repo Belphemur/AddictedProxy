@@ -159,6 +159,17 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
     /// <inheritdoc />
     public async Task IngestSeasonPackAsync(SeasonPackSubtitle seasonPack, CancellationToken token)
     {
+        // Never create a season without episodes — a pack for an episode-less season
+        // (e.g. a bogus upstream season number) would leave a permanently-empty Season row.
+        var seasonsWithEpisodes = await _episodeRepo.GetSeasonsHavingEpisodesAsync([seasonPack.TvShowId], token);
+        if (!seasonsWithEpisodes.Contains((seasonPack.TvShowId, seasonPack.Season)))
+        {
+            _logger.LogInformation(
+                "Skipped season pack {ExternalId}: season {Season} of show {TvShowId} has no episodes",
+                seasonPack.ExternalId, seasonPack.Season, seasonPack.TvShowId);
+            return;
+        }
+
         // Ensure Season entity exists and resolve SeasonId
         await _seasonRepo.InsertNewSeasonsAsync(seasonPack.TvShowId,
             [new Season { TvShowId = seasonPack.TvShowId, Number = seasonPack.Season }],
@@ -200,8 +211,26 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
             return;
         }
 
+        // Never create a season without episodes — a pack for an episode-less season
+        // (e.g. a bogus upstream season number) would leave a permanently-empty Season row.
+        // Callers merge episodes before packs, so just-upserted episodes are visible here.
+        var tvShowIds = packsArray.Select(sp => sp.TvShowId).Distinct().ToArray();
+        var seasonsWithEpisodes = await _episodeRepo.GetSeasonsHavingEpisodesAsync(tvShowIds, token);
+        var ingestiblePacks = packsArray.Where(pack => seasonsWithEpisodes.Contains((pack.TvShowId, pack.Season))).ToArray();
+
+        var skippedCount = packsArray.Length - ingestiblePacks.Length;
+        if (skippedCount > 0)
+        {
+            _logger.LogInformation("Skipped {SkippedCount} season packs for seasons without episodes", skippedCount);
+        }
+
+        if (ingestiblePacks.Length == 0)
+        {
+            return;
+        }
+
         // Ensure Season entities exist for all season numbers in the packs
-        foreach (var group in packsArray.GroupBy(sp => sp.TvShowId))
+        foreach (var group in ingestiblePacks.GroupBy(sp => sp.TvShowId))
         {
             var tvShowId = group.Key;
             var seasonNumbers = group.Select(sp => sp.Season).Distinct();
@@ -211,11 +240,10 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
         }
 
         // Batch-fetch (TvShowId, SeasonNumber) → SeasonId lookup in a single query
-        var tvShowIds = packsArray.Select(sp => sp.TvShowId).Distinct().ToArray();
         var seasonIdLookup = await _seasonRepo.GetSeasonIdLookupAsync(tvShowIds, token);
 
         // Assign SeasonIds to packs from the lookup
-        foreach (var pack in packsArray)
+        foreach (var pack in ingestiblePacks)
         {
             if (seasonIdLookup.TryGetValue((pack.TvShowId, pack.Season), out var seasonId))
             {
@@ -223,7 +251,7 @@ public class ProviderDataIngestionService : IProviderDataIngestionService
             }
         }
 
-        await _seasonPackRepo.BulkUpsertAsync(packsArray, token);
+        await _seasonPackRepo.BulkUpsertAsync(ingestiblePacks, token);
     }
 
     /// <summary>

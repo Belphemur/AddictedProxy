@@ -115,15 +115,7 @@ public partial class Parser
     public async IAsyncEnumerable<Episode> GetSeasonSubtitlesAsync(Stream html, [EnumeratorCancellation] CancellationToken token)
     {
         var document = await _parser.ParseDocumentAsync(html, token);
-        IHtmlTableElement table;
-        try
-        {
-            table = document.QuerySelector("#season").QuerySelector<IHtmlTableElement>("table");
-        }
-        catch (NullReferenceException e)
-        {
-            throw new NothingToParseException("Problem while parsing episodes", e);
-        }
+        var table = document.QuerySelector("#season")?.QuerySelector<IHtmlTableElement>("table");
 
         var subtitlesRows = new List<SubtitleRow>();
 

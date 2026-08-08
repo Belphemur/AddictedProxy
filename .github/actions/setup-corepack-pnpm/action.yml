@@ -1,0 +1,61 @@
+name: "Set up pnpm via Corepack"
+description: >
+  Installs Node.js and enables the Corepack-managed pnpm, then verifies that the
+  resolved pnpm version matches the `packageManager` field in the target project's
+  package.json. Fails the job with a clear error if corepack resolves a different
+  version, so CI always uses the exact pnpm version pinned in the repo.
+
+inputs:
+  node-version:
+    description: "Node.js version spec passed to actions/setup-node (e.g. 'lts/*')."
+    required: false
+    default: "lts/*"
+  working-directory:
+    description: >
+      Directory whose package.json carries the `packageManager` field pinning pnpm.
+      pnpm is expected to run from this directory.
+    required: false
+    default: "."
+  cache-dependency-path:
+    description: >
+      Path to the pnpm-lock.yaml used for the setup-node cache key. Defaults to
+      '<working-directory>/pnpm-lock.yaml'.
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Enable Corepack
+      shell: bash
+      run: |
+        # pnpm docs recommend refreshing Corepack because some Node.js releases
+        # ship with outdated package-manager signatures.
+        npm i -g corepack@latest
+        corepack enable
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: "pnpm"
+        cache-dependency-path: ${{ inputs.cache-dependency-path != '' && inputs.cache-dependency-path || format('{0}/pnpm-lock.yaml', inputs.working-directory) }}
+
+    - name: Verify pnpm version matches packageManager
+      shell: bash
+      run: |
+        set -euo pipefail
+        dir="${{ inputs.working-directory }}"
+        expected="$(
+          node -e "
+            const p = require(require('node:path').resolve(process.cwd(), '$dir', 'package.json'));
+            const m = (p.packageManager || '').match(/^pnpm@([^+]+)/);
+            if (m) console.log(m[1]);
+          "
+        )"
+        actual="$( (cd "$dir" && pnpm --version) )"
+        echo "Resolved pnpm: $actual (pinned in packageManager: ${expected:-none})"
+        if [ -n "$expected" ] && [ "$actual" != "$expected" ]; then
+          echo "::error::Expected pnpm $expected (from packageManager) but corepack resolved $actual. Check the 'packageManager' field and the working-directory."
+          exit 1
+        fi

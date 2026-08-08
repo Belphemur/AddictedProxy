@@ -60,13 +60,13 @@ AddictedProxy.Stats/              # Statistics tracking (show popularity)
 AddictedProxy.Storage/            # Storage abstraction (AWS S3)
 AddictedProxy.Storage.Caching/    # Cached storage layer (combines cache + S3)
 AddictedProxy.Tools.Database/     # Database tooling helpers (transactions)
-AntiCaptcha/                      # CAPTCHA solving integration
+AntiCaptcha/                      # CAPTCHA solving integration (DORMANT — still in the repo, but no bootstrap references it; preserved for potential reuse)
 Compressor/                       # Zstandard compression utilities
 InversionOfControl/               # Custom DI bootstrap framework
 Locking/                          # Async keyed locking utilities
 Performance/                      # OpenTelemetry tracing/metrics
 ProxyProvider/                    # HTTP proxy provider abstraction
-ProxyScrape/                      # Proxy scraping implementation
+ProxyScrape/                      # ProxyScrape v4 API integration (residential proxy quota metrics)
 TvMovieDatabaseClient/            # TMDB API client
 addicted.nuxt/                    # Nuxt 4 frontend (Vue.js + Vuetify)
 ```
@@ -160,6 +160,41 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
      └──────────────────────────┘
 ```
 
+## SuperSubtitles Ingestion & Season Cleanup
+
+SuperSubtitles is the secondary subtitle provider (upstream feliratok.eu). Its ingestion
+runs through two Hangfire jobs — `ImportSuperSubtitlesJob` (one-time bulk import on
+startup) and `RefreshSuperSubtitlesJob` (incremental, recurring every 15 minutes).
+
+**Never create an empty season.** Because feliratok.eu can return season packs for seasons
+that don't actually exist on a show (e.g. a Hungarian pack for season 8 on a 1-season
+show), both jobs ask `ProviderDataIngestionService.IngestSeasonPacksAsync` /
+`IngestSeasonPackAsync` to skip any season pack whose `(TvShowId, Season)` has no
+episodes. Season rows come from episodes alone, never from a pack on its own — so a pack
+for a non-existent season is dropped rather than creating a permanently-empty `Season`.
+
+The guard relies on `IEpisodeRepository.GetSeasonsHavingEpisodesAsync(long[] tvShowIds)`,
+which returns the set of `(TvShowId, Season)` that actually have episodes in a single
+`AsNoTracking` query (later referenced as a `HashSet<(TvShowId, Season)>`). Because
+`MergeEpisodesWithSubtitlesAsync` already only creates seasons from actual episodes, an
+episodeless season pack is always rejected and produces no `Season` row.
+
+**Ordering guarantee (self-healing).** Both `ImportSuperSubtitlesJob` and
+`RefreshSuperSubtitlesJob` call `MergeEpisodesWithSubtitlesAsync` **before**
+`IngestSeasonPacksAsync`, so freshly-upserted episodes are visible to the guard. A pack
+skipped on one run because its episodes weren't present yet is simply reconsidered on a
+later refresh run — nothing is lost.
+
+**Final net.** Both SuperSubtitles jobs additionally register a `CleanupEmptySeasonsJob`
+Hangfire continuation per processed show, which deletes any season that has **neither
+episodes nor a season pack**. It does not remove a season that still holds a pack — packs
+are treated as potential content. Separately, a one-time `CleanupEmptySeasonsMigrationAgain`
+migration runs at deploy to purge the already-existing empty seasons (including historically
+polluted ones like the bogus seasons 5/8 found on a 1-season show that predate this guard).
+Together with the ingestion guard, which drops season packs for episode-less seasons, the
+net effect is: no new empty or pack-only seasons going forward, and the pre-existing empty
+season pollution purged once.
+
 ## Application Startup
 
 1. **Configuration**: Environment variables with `A7D_` prefix, `appsettings.json`
@@ -180,8 +215,8 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
 
 - **Tracing**: OpenTelemetry spans via `IPerformanceTracker` throughout services and jobs
 - **Metrics**: Prometheus metrics (e.g., download counters via `DownloadCounterWrapper`)
-- **Error Tracking**: Sentry integration with environment-specific configuration
-- **Logging**: Structured logging via `ILogger<T>`
+- **Error Tracking**: Sentry integration with environment-specific configuration. Upstream parse/resilience failures are classified so transient faults don't flood Sentry: the Addic7ed parser throws `NothingToParseException` (via a null-safe guard for a missing episode table) instead of leaking an `ArgumentNullException`, and `FetchSubtitlesJob` treats `NothingToParseException`/`BrokenCircuitException` as transient (`Status.Unavailable` + warning, rethrown) rather than `LogCritical`.
+- **Logging**: Structured logging via `ILogger<T>`. Polly's `OnTimeout` error-level telemetry is silenced via `"Polly": "Critical"` in `appsettings.json:Logging:LogLevel`.
 
 ## Key Design Patterns
 
@@ -192,7 +227,7 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
 | Bootstrap Pattern     | Custom DI framework for modular service registration        |
 | Background Jobs       | Hangfire for async/scheduled work (refresh, store, migrate)  |
 | Async Keyed Locking   | Prevents concurrent operations on same resource             |
-| HTTP Resilience       | Polly v8 resilience pipelines via `Microsoft.Extensions.Http.Resilience`; shared retry + circuit breaker (5xx, 401/402/403) + timeout for all upstream HTTP/gRPC clients |
+| HTTP Resilience       | Polly v8 resilience pipelines via `Microsoft.Extensions.Http.Resilience`; shared retry + circuit breaker (5xx, 401/402/403) + timeout for all upstream HTTP/gRPC clients. Addic7ed: 8 retry attempts (exponential 10–60 s), circuit breaker 5 min break (0.5 failure ratio / 20 minimum throughput), 3 min per-attempt timeout plus a 5 min overall `HttpClient.Timeout` via `AddSharedResilienceHandler`/explicit config |
 | Real-time Updates     | SignalR hubs for progress notifications                     |
 | Caching               | Multi-layer: In-Memory → Redis → PostgreSQL                |
 | Compression           | Zstandard compression for stored subtitle files             |

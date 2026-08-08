@@ -25,7 +25,6 @@
     <ProjectReference Include="..\InversionOfControl\InversionOfControl.csproj" />
     <ProjectReference Include="..\AddictedProxy.Upstream\AddictedProxy.Upstream.csproj" />
     <ProjectReference Include="..\ProxyScrape\ProxyScrape.csproj" />
-    <ProjectReference Include="..\AntiCaptcha\AntiCaptcha.csproj" />
     <ProjectReference Include="..\TvMovieDatabaseClient\TvMovieDatabaseClient.csproj" />
     <ProjectReference Include="..\ProxyProvider\ProxyProvider.csproj" />
     <ProjectReference Include="..\SuperSubtitleClient\SuperSubtitleClient.csproj" />

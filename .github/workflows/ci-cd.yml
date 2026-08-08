@@ -1,18 +1,19 @@
-name: .NET
+name: CI/CD
 
 on:
   push:
     branches: [ dev, main ]
   pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ dev, main ]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 env:
-  # Stop wasting time caching packages
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  # Disable sending usage data to Microsoft
-  # DOTNET_CLI_TELEMETRY_OPTOUT: true
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   PROJECT_NAME: "AddictedProxy"
   PROJECT_NAME_FRONTEND: "AddictedProxy-frontend"
@@ -25,11 +26,15 @@ env:
   # github.repository as <account>/<repo>
 
 jobs:
-  build:
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
+  # Detect which parts of the repo changed so unrelated pipelines can be
+  # skipped on PRs, while `main` always runs everything before a release.
+  changes:
+    name: Detect changes
     runs-on: ubuntu-latest
+    outputs:
+      dotnet: ${{ steps.filter.outputs.dotnet == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main' }}
+      nuxt: ${{ steps.filter.outputs.nuxt == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main' }}
+      node: ${{ steps.filter.outputs.node == 'true' || steps.filter.outputs.ci == 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -38,8 +43,8 @@ jobs:
         with:
           filters: |
             ci:
-             - '.github/**/*.yml'
-            MainProject:
+             - '.github/workflows/**'
+            dotnet:
               - 'Addicted*/**'
               - 'Locking/**'
               - 'InversionOfControl/**'
@@ -49,52 +54,89 @@ jobs:
               - 'package.json'
             nuxt:
               - 'addicted.nuxt/**'
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v6.0.0
-        if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
+              - 'mock-server/**'
+
+  # --- Required pipelines (reusable workflows) -----------------------------
+  dotnet-ci:
+    name: .NET
+    needs: changes
+    if: needs.changes.outputs.dotnet == 'true'
+    uses: ./.github/workflows/reusable-dotnet.yml
+    with:
+      dotnet-version: "10.0.x"
+      project-path: "AddictedProxy/AddictedProxy.csproj"
+
+  nuxt-ci:
+    name: Nuxt
+    needs: changes
+    if: needs.changes.outputs.nuxt == 'true'
+    uses: ./.github/workflows/reusable-nuxt.yml
+    with:
+      working-directory: "addicted.nuxt"
+      node-version: "lts/*"
+
+  nuxt-e2e:
+    name: Nuxt E2E
+    needs: changes
+    if: needs.changes.outputs.nuxt == 'true'
+    uses: ./.github/workflows/reusable-nuxt-e2e.yml
+    with:
+      working-directory: "addicted.nuxt"
+      mock-server-directory: "mock-server"
+      node-version: "lts/*"
+
+  release-dry-run:
+    name: Release dry-run
+    needs: changes
+    if: needs.changes.outputs.node == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-corepack-pnpm
         with:
-          dotnet-version: ${{ env.DOTNET }}
-      - name: Restore
-        if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
-        run: dotnet restore --locked-mode
-      - name: Build
-        if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
-        run: dotnet build -c Release --no-restore ${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.csproj
-      - name: Test
-        if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
-        run: dotnet test -c Release --no-restore  --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}"
-      - name: Upload test results
-        if: steps.filter.outputs.MainProject == 'true' || steps.filter.outputs.ci == 'true' || github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v7
-        with:
-          name: dotnet-results-${{ matrix.dotnet-version }}
-          path: TestResults-${{ matrix.dotnet-version }}
-      - name: Install pnpm
-        if: steps.filter.outputs.node == 'true'
-        run: |
-          npm i -g corepack@latest
-          corepack enable
-      - name: Use Node.js
-        if: steps.filter.outputs.node == 'true'
-        uses: actions/setup-node@v7
-        with:
-          node-version: lts/*
-          cache: 'pnpm'
+          node-version: ${{ env.NODEJS }}
+          cache-dependency-path: "pnpm-lock.yaml"
       - name: Install dependencies
-        if: steps.filter.outputs.node == 'true'
         run: pnpm install --frozen-lockfile
       - name: Release dry run
-        if: steps.filter.outputs.node == 'true'
         run: pnpm run release-test
 
-  main-release:
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
-    name: "Prepare release"
-    needs: [ build ]
-    if: github.ref == 'refs/heads/main'
+  # --- Merge gate -----------------------------------------------------------
+  # Single required status check for branch protection: it fails if any
+  # required pipeline (.NET, Nuxt build, Nuxt e2e) failed, and succeeds when
+  # they passed or were correctly skipped (path filtering / dry-run only).
+  ci-gate:
+    name: CI Gate
+    needs: [ changes, dotnet-ci, nuxt-ci, nuxt-e2e, release-dry-run ]
+    if: always()
     runs-on: ubuntu-latest
+    steps:
+      - name: Check required pipeline results
+        run: |
+          check() {
+            local name="$1"
+            local result="$2"
+            if [[ "$result" == "failure" || "$result" == "cancelled" ]]; then
+              echo "::error::$name pipeline result was '$result'"
+              exit 1
+            fi
+            echo "$name: $result"
+          }
+          check ".NET" "${{ needs.dotnet-ci.result }}"
+          check "Nuxt build" "${{ needs.nuxt-ci.result }}"
+          check "Nuxt e2e" "${{ needs.nuxt-e2e.result }}"
+          check "Release dry-run" "${{ needs.release-dry-run.result }}"
+          echo "All required pipelines passed (or were skipped)."
+
+  # --- Release (main only) ---------------------------------------------------
+  main-release:
+    name: "Prepare release"
+    needs: [ ci-gate ]
+    if: github.ref == 'refs/heads/main' && needs.ci-gate.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     outputs:
       version: ${{ steps.version.outputs.version }}
       repo-lowercase: ${{ steps.repo.outputs.lowercase }}
@@ -104,27 +146,23 @@ jobs:
           echo "lowercase=${GITHUB_REPOSITORY@L}" >> $GITHUB_OUTPUT
         id: repo
       - uses: actions/checkout@v7
-      - name: Install pnpm
-        run: |
-          npm i -g corepack@latest
-          corepack enable
-      - name: Use Node.js
-        uses: actions/setup-node@v7
+      - uses: ./.github/actions/setup-corepack-pnpm
         with:
           node-version: lts/*
-          cache: 'pnpm'
+          cache-dependency-path: "pnpm-lock.yaml"
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Release
         run: pnpm run release
       - name: Latest Version
-        run: | 
+        run: |
           version=$(git describe --tags --abbrev=0 | cut -c 2-)
           echo "version=$version" >> $GITHUB_OUTPUT
         id: version
+
   sentry-release:
     name: "Setup Sentry Release"
-    needs: [main-release]
+    needs: [ main-release ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -140,7 +178,7 @@ jobs:
         with:
           environment: Production
           version: "${{env.PROJECT_NAME}}@${{ needs.main-release.outputs.version}}"
-  
+
   docker-build-publish:
     needs: [ main-release ]
     runs-on: ubuntu-latest
@@ -161,15 +199,15 @@ jobs:
       # Both used for attesting the build provenance
       id-token: write
       attestations: write
-    
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7      
-      
+        uses: actions/checkout@v7
+
       # Workaround: https://github.com/docker/build-push-action/issues/461
       - name: Setup Docker buildx
         uses: docker/setup-buildx-action@v4
-      
+
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
@@ -179,7 +217,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      
+
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
