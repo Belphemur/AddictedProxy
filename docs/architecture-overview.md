@@ -60,13 +60,13 @@ AddictedProxy.Stats/              # Statistics tracking (show popularity)
 AddictedProxy.Storage/            # Storage abstraction (AWS S3)
 AddictedProxy.Storage.Caching/    # Cached storage layer (combines cache + S3)
 AddictedProxy.Tools.Database/     # Database tooling helpers (transactions)
-AntiCaptcha/                      # CAPTCHA solving integration
+AntiCaptcha/                      # CAPTCHA solving integration (DORMANT — still in the repo, but no bootstrap references it; preserved for potential reuse)
 Compressor/                       # Zstandard compression utilities
 InversionOfControl/               # Custom DI bootstrap framework
 Locking/                          # Async keyed locking utilities
 Performance/                      # OpenTelemetry tracing/metrics
 ProxyProvider/                    # HTTP proxy provider abstraction
-ProxyScrape/                      # Proxy scraping implementation
+ProxyScrape/                      # ProxyScrape v4 API integration (residential proxy quota metrics)
 TvMovieDatabaseClient/            # TMDB API client
 addicted.nuxt/                    # Nuxt 4 frontend (Vue.js + Vuetify)
 ```
@@ -160,6 +160,43 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
      └──────────────────────────┘
 ```
 
+## SuperSubtitles Ingestion & Validation
+
+SuperSubtitles is the secondary subtitle provider (upstream feliratok.eu). Its ingestion
+runs through two Hangfire jobs — `ImportSuperSubtitlesJob` (one-time bulk import on
+startup) and `RefreshSuperSubtitlesJob` (incremental, recurring every 15 minutes).
+
+**Season validation on ingestion.** Because feliratok.eu can return polluted seasons for a
+show, each streamed collection is passed through
+`SuperSubtitlesStreamFilter.DropInvalidSeasons(TvShow, subtitles, logger)` before it is
+persisted. This static filter drops proto subtitles whose season exceeds the show's known
+season count derived from TMDB:
+
+- Season `0` (specials) is always kept.
+- If the show's season count is unknown, every season is kept.
+- The max-subtitle-id cursor advances over the **raw** stream, so dropped entries are not
+  re-requested on the next run.
+
+The show's season count is stored as `TvShow.NumberOfSeasons` (`int?`, added by the EF Core
+migration `20260808224126_AddTvShowNumberOfSeasons`), populated by `ShowTmdbMapper` from
+TMDB show details and reset to `null` when a show is removed from TMDB.
+
+**Pruning bogus seasons.** Both SuperSubtitles jobs register a `CleanupEmptySeasonsJob`
+Hangfire continuation per processed show. Degrading empty seasons that escape ingestion
+(e.g. historically created bogus seasons 5/8/9 on a 1-season show) are removed by
+`PruneInvalidSeasonsJob` (`[UniqueJob]`, per-show async keyed lock), which deletes any
+seasons beyond the TMDB count via `ISeasonRepository.DeleteSeasonsBeyondAsync`. That
+repository method is FK-safe: it issues an ordered `ExecuteDelete` chain (subtitles →
+episode external IDs → season pack entries → season packs → episodes → seasons, with
+`IgnoreQueryFilters` on the pack tables for soft-deleted rows).
+
+**Progressive retroactive healing.** Because ingestion validation only protects new writes,
+two jobs heal pre-existing data:
+
+- `CheckCompletedTmdbJob` (recurring) backfills `NumberOfSeasons` from TMDB for completed
+  shows and enqueues `PruneInvalidSeasonsJob` for a show when its count changes.
+- `MapShowTmdbJob` enqueues `PruneInvalidSeasonsJob` for newly mapped shows.
+
 ## Application Startup
 
 1. **Configuration**: Environment variables with `A7D_` prefix, `appsettings.json`
@@ -180,8 +217,8 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
 
 - **Tracing**: OpenTelemetry spans via `IPerformanceTracker` throughout services and jobs
 - **Metrics**: Prometheus metrics (e.g., download counters via `DownloadCounterWrapper`)
-- **Error Tracking**: Sentry integration with environment-specific configuration
-- **Logging**: Structured logging via `ILogger<T>`
+- **Error Tracking**: Sentry integration with environment-specific configuration. Upstream parse/resilience failures are classified so transient faults don't flood Sentry: the Addic7ed parser throws `NothingToParseException` (via a null-safe guard for a missing episode table) instead of leaking an `ArgumentNullException`, and `FetchSubtitlesJob` treats `NothingToParseException`/`BrokenCircuitException` as transient (`Status.Unavailable` + warning, rethrown) rather than `LogCritical`.
+- **Logging**: Structured logging via `ILogger<T>`. Polly's `OnTimeout` error-level telemetry is silenced via `"Polly": "Critical"` in `appsettings.json:Logging:LogLevel`.
 
 ## Key Design Patterns
 
@@ -192,7 +229,7 @@ Conditional bootstrapping is supported via `IBootstrapConditional` (checked at r
 | Bootstrap Pattern     | Custom DI framework for modular service registration        |
 | Background Jobs       | Hangfire for async/scheduled work (refresh, store, migrate)  |
 | Async Keyed Locking   | Prevents concurrent operations on same resource             |
-| HTTP Resilience       | Polly v8 resilience pipelines via `Microsoft.Extensions.Http.Resilience`; shared retry + circuit breaker (5xx, 401/402/403) + timeout for all upstream HTTP/gRPC clients |
+| HTTP Resilience       | Polly v8 resilience pipelines via `Microsoft.Extensions.Http.Resilience`; shared retry + circuit breaker (5xx, 401/402/403) + timeout for all upstream HTTP/gRPC clients. Addic7ed: 8 retry attempts (exponential 10–60 s), circuit breaker 5 min break (0.5 failure ratio / 20 minimum throughput), 3 min per-attempt timeout plus a 5 min overall `HttpClient.Timeout` via `AddSharedResilienceHandler`/explicit config |
 | Real-time Updates     | SignalR hubs for progress notifications                     |
 | Caching               | Multi-layer: In-Memory → Redis → PostgreSQL                |
 | Compression           | Zstandard compression for stored subtitle files             |
