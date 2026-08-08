@@ -5,7 +5,7 @@ namespace AddictedProxy.Services.Provider.ShowInfo;
 /// <summary>
 /// Resolved TMDB data for a TV show.
 /// </summary>
-public record ShowTmdbInfo(int TmdbId, int? TvdbId, bool IsEnded, int? NumberOfSeasons);
+public record ShowTmdbInfo(int TmdbId, int? TvdbId, bool IsEnded);
 
 /// <summary>
 /// Resolved TMDB data for a movie.

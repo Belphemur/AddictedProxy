@@ -38,6 +38,7 @@ public interface IProviderDataIngestionService
     /// <summary>
     /// Ingest a season pack subtitle into the <see cref="SeasonPackSubtitle"/> table.
     /// Season packs are not linked to individual episodes — they cover an entire season.
+    /// Packs for seasons that have no episodes are skipped, so no empty <see cref="Season"/> is ever created.
     /// </summary>
     /// <param name="seasonPack">The season pack subtitle to upsert</param>
     /// <param name="token">Cancellation token</param>
@@ -57,6 +58,8 @@ public interface IProviderDataIngestionService
 
     /// <summary>
     /// Bulk ingest multiple season pack subtitles into the <see cref="SeasonPackSubtitle"/> table.
+    /// Packs for seasons that have no episodes are skipped, so no empty <see cref="Season"/> is ever created.
+    /// Callers should run <see cref="MergeEpisodesWithSubtitlesAsync"/> first so freshly upserted episodes are visible.
     /// </summary>
     /// <param name="seasonPacks">The season pack subtitles to upsert</param>
     /// <param name="token">Cancellation token</param>

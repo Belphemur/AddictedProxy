@@ -50,22 +50,10 @@ public class CheckCompletedTmdbJob
                 show.IsCompleted = false;
                 show.TmdbId = null;
                 show.TvdbId = null;
-                show.NumberOfSeasons = null;
                 show.LastSeasonRefreshed = null;
                 count++;
                 progressBar.SetValue((i + 1) * 100.0 / allShows.Length);
                 continue;
-            }
-
-            // Keep the TMDB season count fresh — it validates provider subtitle streams.
-            // When it changes, prune any seasons beyond the real count (polluted upstream data).
-            if (show.NumberOfSeasons != details.NumberOfSeasons)
-            {
-                show.NumberOfSeasons = details.NumberOfSeasons;
-                if (details.NumberOfSeasons.HasValue)
-                {
-                    BackgroundJob.Enqueue<PruneInvalidSeasonsJob>(job => job.ExecuteAsync(new PruneInvalidSeasonsJob.JobData(show.Id), null!, default));
-                }
             }
 
             var isTmdbShowCompleted = details.Status.ToLowerInvariant() is "ended" or "canceled";

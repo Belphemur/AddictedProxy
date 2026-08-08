@@ -180,21 +180,16 @@ public class ImportSuperSubtitlesJob
             thirdPartyIds,
             token);
 
-        // Advance the cursor over the raw stream — even dropped subtitles must count,
-        // otherwise the refresh job would re-fetch the same invalid entries forever.
-        long maxSubtitleId = collection.Subtitles.Aggregate(currentMaxId, (max, subtitle) => Math.Max(max, subtitle.Id));
-
-        // 2. Drop subtitles for seasons exceeding the show's known TMDB season count
-        var validSubtitles = SuperSubtitlesStreamFilter.DropInvalidSeasons(currentShow, collection.Subtitles, _logger);
-
-        // 3. Build episodes and season packs from the collection's subtitles
+        // 2. Build episodes and season packs from the collection's subtitles
         var now = DateTime.UtcNow;
         var seasonPacks = new List<SeasonPackSubtitle>();
         var subtitlesByEpisode = new Dictionary<(int Season, int Episode), (string Title, List<SubtitleEntity> Subtitles)>();
+        long maxSubtitleId = currentMaxId;
         var languageCache = new Dictionary<string, string?>();
 
-        foreach (var subtitle in validSubtitles)
+        foreach (var subtitle in collection.Subtitles)
         {
+            maxSubtitleId = Math.Max(maxSubtitleId, subtitle.Id);
             var languageIsoCode = await GetOrCacheLanguageIsoCodeAsync(subtitle.Language, languageCache, token);
 
             if (subtitle.IsSeasonPack)
@@ -213,7 +208,7 @@ public class ImportSuperSubtitlesJob
             }
         }
 
-        // 4. Build Episode entities with their Subtitles and ExternalIds
+        // 3. Build Episode entities with their Subtitles and ExternalIds
         var showExternalId = collection.ShowInfo.Show.Id;
         var episodes = subtitlesByEpisode.Select(kvp => new Episode
         {
@@ -230,7 +225,7 @@ public class ImportSuperSubtitlesJob
             }]
         }).ToList();
 
-        // 5. Bulk upsert episodes (with subtitles + external IDs) and season packs
+        // 4. Bulk upsert episodes (with subtitles + external IDs) and season packs
         await _ingestionService.MergeEpisodesWithSubtitlesAsync(currentShow, episodes, token);
 
         if (seasonPacks.Count > 0)
@@ -247,7 +242,7 @@ public class ImportSuperSubtitlesJob
             }
         }
 
-        // 6. Schedule empty-season cleanup as a continuation — Hangfire only runs it once
+        // 5. Schedule empty-season cleanup as a continuation — Hangfire only runs it once
         // this job succeeds, so it is safe to register per processed show.
         BackgroundJob.ContinueJobWith<CleanupEmptySeasonsJob>(
             context.BackgroundJob.Id,
