@@ -8,6 +8,7 @@ using AddictedProxy.Services.Job.Service;
 using AddictedProxy.Services.Provider.Merging;
 using AddictedProxy.Services.Provider.Merging.Model;
 using AddictedProxy.Services.Provider.SeasonPack;
+using AddictedProxy.Services.Provider.Shows.Jobs;
 using AddictedProxy.Services.Provider.SuperSubtitles;
 using AddictedProxy.Services.Provider.SuperSubtitles.Config;
 using AddictedProxy.Tools.Database.Transaction;
@@ -102,7 +103,7 @@ public class ImportSuperSubtitlesJob
             context.WriteLine($"Processing batch {i + 1}/{batches.Length}...");
 
             // 3. Process batch
-            var batchStats = await ProcessShowBatchAsync(batch, maxSubtitleId, token);
+            var batchStats = await ProcessShowBatchAsync(batch, maxSubtitleId, context, token);
             maxSubtitleId = batchStats.MaxSubtitleId;
             totalSubtitles += batchStats.SubtitleCount;
             totalSeasonPacks += batchStats.SeasonPackCount;
@@ -142,7 +143,7 @@ public class ImportSuperSubtitlesJob
 
     private record BatchStats(long MaxSubtitleId, int SubtitleCount, int SeasonPackCount);
 
-    private async Task<BatchStats> ProcessShowBatchAsync(Show[] batch, long currentMaxId, CancellationToken token)
+    private async Task<BatchStats> ProcessShowBatchAsync(Show[] batch, long currentMaxId, PerformContext context, CancellationToken token)
     {
         var maxSubtitleId = currentMaxId;
         var subtitleCount = 0;
@@ -152,7 +153,7 @@ public class ImportSuperSubtitlesJob
         {
             await foreach (var collection in _superSubtitlesClient.GetShowSubtitlesAsync(batch, token))
             {
-                var stats = await ProcessShowCollectionAsync(collection, maxSubtitleId, token);
+                var stats = await ProcessShowCollectionAsync(collection, maxSubtitleId, context, token);
                 maxSubtitleId = stats.MaxSubtitleId;
                 subtitleCount += stats.SubtitleCount;
                 seasonPackCount += stats.SeasonPackCount;
@@ -162,7 +163,7 @@ public class ImportSuperSubtitlesJob
         return new BatchStats(maxSubtitleId, subtitleCount, seasonPackCount);
     }
 
-    private async Task<BatchStats> ProcessShowCollectionAsync(ShowSubtitlesCollection collection, long currentMaxId, CancellationToken token)
+    private async Task<BatchStats> ProcessShowCollectionAsync(ShowSubtitlesCollection collection, long currentMaxId, PerformContext context, CancellationToken token)
     {
         // 1. Merge show
         var thirdPartyIds = collection.ShowInfo.ThirdPartyIds != null
@@ -240,6 +241,12 @@ public class ImportSuperSubtitlesJob
                 BackgroundJob.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(new StoreSeasonPackJob.JobData(pack.UniqueId), null!, default));
             }
         }
+
+        // 5. Schedule empty-season cleanup as a continuation — Hangfire only runs it once
+        // this job succeeds, so it is safe to register per processed show.
+        BackgroundJob.ContinueJobWith<CleanupEmptySeasonsJob>(
+            context.BackgroundJob.Id,
+            job => job.ExecuteAsync(new CleanupEmptySeasonsJob.JobData(currentShow.Id), null!, default));
 
         var subtitleCount = subtitlesByEpisode.Values.Sum(g => g.Subtitles.Count);
         return new BatchStats(maxSubtitleId, subtitleCount, seasonPacks.Count);

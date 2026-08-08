@@ -45,6 +45,15 @@ public class ProviderDataIngestionServiceTests
             _seasonPackRepo,
             _tmdbClient,
             _logger);
+
+        // Permissive default: every (show, season) pair used by the existing pack tests has episodes.
+        // Tests for the episode guard override this with a specific set.
+        var seasonsWithEpisodes = new[] { 1L, 10L, 20L }
+            .SelectMany(showId => Enumerable.Range(1, 10).Select(season => (showId, season)))
+            .ToHashSet();
+        _episodeRepo
+            .GetSeasonsHavingEpisodesAsync(Arg.Any<long[]>(), Arg.Any<CancellationToken>())
+            .Returns(seasonsWithEpisodes);
     }
 
     #region MergeShowAsync — Fast path (ShowExternalId lookup)
@@ -609,6 +618,51 @@ public class ProviderDataIngestionServiceTests
         await _seasonRepo.Received(1).InsertNewSeasonsAsync(20L, Arg.Any<IEnumerable<Season>>(), Arg.Any<CancellationToken>());
         // GetSeasonIdLookupAsync called once total (not per show)
         await _seasonRepo.Received(1).GetSeasonIdLookupAsync(Arg.Any<IEnumerable<long>>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task IngestSeasonPacksAsync_SkipsPacksForSeasonsWithoutEpisodes()
+    {
+        // Arrange — episode repo reports no season with episodes for this show
+        var pack = new SeasonPackSubtitle { TvShowId = 10, Season = 8, Source = DataSource.SuperSubtitles, ExternalId = 1, Filename = "s08.zip", Language = "Hungarian", Discovered = DateTime.UtcNow };
+
+        _episodeRepo
+            .GetSeasonsHavingEpisodesAsync(Arg.Any<long[]>(), Arg.Any<CancellationToken>())
+            .Returns(new HashSet<(long, int)>());
+
+        // Act
+        await _sut.IngestSeasonPacksAsync([pack], CancellationToken.None);
+
+        // Assert — nothing is persisted: no empty season, no pack
+        await _seasonRepo.DidNotReceive().InsertNewSeasonsAsync(Arg.Any<long>(), Arg.Any<IEnumerable<Season>>(), Arg.Any<CancellationToken>());
+        await _seasonPackRepo.DidNotReceive().BulkUpsertAsync(Arg.Any<IEnumerable<SeasonPackSubtitle>>(), Arg.Any<CancellationToken>());
+    }
+
+    [Test]
+    public async Task IngestSeasonPacksAsync_IngestsPacksForSeasonsWithEpisodes()
+    {
+        // Arrange — season 1 of show 10 has episodes
+        var pack = new SeasonPackSubtitle { TvShowId = 10, Season = 1, Source = DataSource.SuperSubtitles, ExternalId = 1, Filename = "s01.zip", Language = "English", Discovered = DateTime.UtcNow };
+
+        _episodeRepo
+            .GetSeasonsHavingEpisodesAsync(Arg.Any<long[]>(), Arg.Any<CancellationToken>())
+            .Returns(new HashSet<(long, int)> { (10L, 1) });
+
+        _seasonRepo
+            .GetSeasonIdLookupAsync(Arg.Any<IEnumerable<long>>(), Arg.Any<CancellationToken>())
+            .Returns(new Dictionary<(long, int), long> { { (10L, 1), 100L } });
+
+        // Act
+        await _sut.IngestSeasonPacksAsync([pack], CancellationToken.None);
+
+        // Assert — season created and pack upserted
+        await _seasonRepo.Received(1).InsertNewSeasonsAsync(
+            10L,
+            Arg.Is<IEnumerable<Season>>(seasons => seasons.Any(season => season.Number == 1)),
+            Arg.Any<CancellationToken>());
+        await _seasonPackRepo.Received(1).BulkUpsertAsync(
+            Arg.Is<IEnumerable<SeasonPackSubtitle>>(packs => packs.Contains(pack)),
+            Arg.Any<CancellationToken>());
     }
 
     #endregion

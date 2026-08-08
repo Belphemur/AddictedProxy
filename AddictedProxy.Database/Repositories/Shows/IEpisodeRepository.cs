@@ -19,6 +19,11 @@ public interface IEpisodeRepository
     Task<Episode?> GetEpisodeUntrackedAsync(long tvShowId, int season, int episodeNumber, CancellationToken token);
 
     /// <summary>
+    /// Return the (TvShowId, Season) pairs that have at least one episode.
+    /// </summary>
+    Task<HashSet<(long TvShowId, int Season)>> GetSeasonsHavingEpisodesAsync(long[] tvShowIds, CancellationToken token);
+
+    /// <summary>
     /// Get season episodes
     /// </summary>
     /// <param name="tvShowId"></param>
