@@ -57,6 +57,11 @@ public class TvShow : BaseEntity, IDiscoverableObject
     public int? TvdbId { get; set; }
 
     /// <summary>
+    /// Real number of seasons according to TMDB. Null when the show has no TMDB match.
+    /// </summary>
+    public int? NumberOfSeasons { get; set; }
+
+    /// <summary>
     /// Is the show completed. No more episode coming.
     /// </summary>
     public bool IsCompleted { get; set; }

@@ -7,6 +7,7 @@ using AddictedProxy.Services.Job.Filter;
 using AddictedProxy.Services.Provider.Merging;
 using AddictedProxy.Services.Provider.Merging.Model;
 using AddictedProxy.Services.Provider.SeasonPack;
+using AddictedProxy.Services.Provider.Shows.Jobs;
 using AddictedProxy.Services.Provider.SuperSubtitles;
 using AddictedProxy.Tools.Database.Transaction;
 using Hangfire;
@@ -91,7 +92,7 @@ public class RefreshSuperSubtitlesJob
         {
             await foreach (var collection in _superSubtitlesClient.GetRecentSubtitlesAsync(maxId, token))
             {
-                var stats = await ProcessShowCollectionAsync(collection, newMaxId, token);
+                var stats = await ProcessShowCollectionAsync(collection, newMaxId, context, token);
                 newMaxId = stats.MaxSubtitleId;
                 subtitleCount += stats.SubtitleCount;
                 seasonPackCount += stats.SeasonPackCount;
@@ -111,7 +112,7 @@ public class RefreshSuperSubtitlesJob
 
     private record ProcessingStats(long MaxSubtitleId, int SubtitleCount, int SeasonPackCount);
 
-    private async Task<ProcessingStats> ProcessShowCollectionAsync(ShowSubtitlesCollection collection, long currentMaxId, CancellationToken token)
+    private async Task<ProcessingStats> ProcessShowCollectionAsync(ShowSubtitlesCollection collection, long currentMaxId, PerformContext context, CancellationToken token)
     {
         // 1. Merge show
         var thirdPartyIds = collection.ShowInfo.ThirdPartyIds != null
@@ -128,16 +129,21 @@ public class RefreshSuperSubtitlesJob
             thirdPartyIds,
             token);
 
-        // 2. Build episodes and season packs from the collection's subtitles
+        // Advance the cursor over the raw stream — even dropped subtitles must count,
+        // otherwise the refresh job would re-fetch the same invalid entries forever.
+        var maxSubtitleId = collection.Subtitles.Aggregate(currentMaxId, (max, subtitle) => Math.Max(max, subtitle.Id));
+
+        // 2. Drop subtitles for seasons exceeding the show's known TMDB season count
+        var validSubtitles = SuperSubtitlesStreamFilter.DropInvalidSeasons(currentShow, collection.Subtitles, _logger);
+
+        // 3. Build episodes and season packs from the collection's subtitles
         var now = DateTime.UtcNow;
         var seasonPacks = new List<SeasonPackSubtitle>();
         var subtitlesByEpisode = new Dictionary<(int Season, int Episode), (string Title, List<SubtitleEntity> Subtitles)>();
-        long maxSubtitleId = currentMaxId;
         var languageCache = new Dictionary<string, string?>();
 
-        foreach (var subtitle in collection.Subtitles)
+        foreach (var subtitle in validSubtitles)
         {
-            maxSubtitleId = Math.Max(maxSubtitleId, subtitle.Id);
             var languageIsoCode = await GetOrCacheLanguageIsoCodeAsync(subtitle.Language, languageCache, token);
 
             if (subtitle.IsSeasonPack)
@@ -189,6 +195,12 @@ public class RefreshSuperSubtitlesJob
                 BackgroundJob.Enqueue<StoreSeasonPackJob>(job => job.DownloadAndStoreAsync(new StoreSeasonPackJob.JobData(pack.UniqueId), null!, default));
             }
         }
+
+        // 5. Schedule empty-season cleanup as a continuation — Hangfire only runs it once
+        // this job succeeds, so it is safe to register per processed show.
+        BackgroundJob.ContinueJobWith<CleanupEmptySeasonsJob>(
+            context.BackgroundJob.Id,
+            job => job.ExecuteAsync(new CleanupEmptySeasonsJob.JobData(currentShow.Id), null!, default));
 
         var subtitleCount = subtitlesByEpisode.Values.Sum(g => g.Subtitles.Count);
         return new ProcessingStats(maxSubtitleId, subtitleCount, seasonPacks.Count);

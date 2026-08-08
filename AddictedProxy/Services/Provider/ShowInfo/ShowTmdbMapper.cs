@@ -26,7 +26,8 @@ public class ShowTmdbMapper : IShowTmdbMapper
         return new ShowTmdbInfo(
             TmdbId: showInfo.Details.Id,
             TvdbId: showInfo.ExternalIds?.TvdbId,
-            IsEnded: showInfo.Details.Status == "Ended");
+            IsEnded: showInfo.Details.Status == "Ended",
+            NumberOfSeasons: showInfo.Details.NumberOfSeasons);
     }
 
     /// <inheritdoc />

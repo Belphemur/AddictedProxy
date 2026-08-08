@@ -50,6 +50,12 @@ public interface ISeasonRepository
     Task<int> DeleteEmptySeasonsForShowAsync(long showId, CancellationToken token);
 
     /// <summary>
+    /// Delete a show's seasons whose number exceeds the given real season count,
+    /// including their episodes, subtitles and season packs. Returns the number of seasons deleted.
+    /// </summary>
+    Task<int> DeleteSeasonsBeyondAsync(long showId, int maxSeason, CancellationToken token);
+
+    /// <summary>
     /// Returns all seasons that have at least one subtitle or season pack subtitle,
     /// as a queryable for sitemap generation.
     /// </summary>

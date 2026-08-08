@@ -52,6 +52,13 @@ public partial class MapShowTmdbJob
             show.TmdbId = showInfo.TmdbId;
             show.IsCompleted = showInfo.IsEnded;
             show.TvdbId = showInfo.TvdbId;
+            show.NumberOfSeasons = showInfo.NumberOfSeasons;
+
+            // Newly mapped show — prune any seasons beyond the real TMDB count (polluted provider data).
+            if (showInfo.NumberOfSeasons.HasValue)
+            {
+                BackgroundJob.Enqueue<PruneInvalidSeasonsJob>(job => job.ExecuteAsync(new PruneInvalidSeasonsJob.JobData(show.Id), null!, default));
+            }
 
             if (++count % 50 == 0)
             {

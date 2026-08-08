@@ -85,6 +85,38 @@ public class SeasonRepository : ISeasonRepository
     }
 
     /// <inheritdoc />
+    public async Task<int> DeleteSeasonsBeyondAsync(long showId, int maxSeason, CancellationToken token)
+    {
+        await _entityContext.Subtitles
+            .Where(subtitle => subtitle.Episode.TvShowId == showId && subtitle.Episode.Season > maxSeason)
+            .ExecuteDeleteAsync(token);
+
+        await _entityContext.EpisodeExternalIds
+            .Where(externalId => externalId.Episode.TvShowId == showId && externalId.Episode.Season > maxSeason)
+            .ExecuteDeleteAsync(token);
+
+        // IgnoreQueryFilters: entries of soft-deleted packs must go too, their parent pack is deleted below.
+        await _entityContext.SeasonPackEntries
+            .IgnoreQueryFilters()
+            .Where(entry => entry.SeasonPackSubtitle.TvShowId == showId && entry.SeasonPackSubtitle.Season > maxSeason)
+            .ExecuteDeleteAsync(token);
+
+        // IgnoreQueryFilters: soft-deleted packs still hold the SeasonId FK and must be removed before the seasons.
+        await _entityContext.SeasonPackSubtitles
+            .IgnoreQueryFilters()
+            .Where(pack => pack.TvShowId == showId && pack.Season > maxSeason)
+            .ExecuteDeleteAsync(token);
+
+        await _entityContext.Episodes
+            .Where(episode => episode.TvShowId == showId && episode.Season > maxSeason)
+            .ExecuteDeleteAsync(token);
+
+        return await _entityContext.Seasons
+            .Where(season => season.TvShowId == showId && season.Number > maxSeason)
+            .ExecuteDeleteAsync(token);
+    }
+
+    /// <inheritdoc />
     public IQueryable<Season> GetAllForSitemap()
     {
         return _entityContext.Seasons
