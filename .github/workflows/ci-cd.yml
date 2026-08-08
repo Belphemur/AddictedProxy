@@ -133,7 +133,10 @@ jobs:
   main-release:
     name: "Prepare release"
     needs: [ ci-gate ]
-    if: github.ref == 'refs/heads/main' && needs.ci-gate.result == 'success'
+    # !cancelled() suppresses the implicit success() check, which would
+    # otherwise skip this job whenever any upstream pipeline (e.g. the
+    # release dry-run) was skipped by path filtering.
+    if: '!cancelled() && github.ref == ''refs/heads/main'' && needs.ci-gate.result == ''success'''
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -163,6 +166,7 @@ jobs:
   sentry-release:
     name: "Setup Sentry Release"
     needs: [ main-release ]
+    if: '!cancelled() && needs.main-release.result == ''success'''
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -181,6 +185,7 @@ jobs:
 
   docker-build-publish:
     needs: [ main-release ]
+    if: '!cancelled() && needs.main-release.result == ''success'''
     runs-on: ubuntu-latest
     strategy:
       matrix:
