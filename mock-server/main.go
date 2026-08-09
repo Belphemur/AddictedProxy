@@ -12,17 +12,11 @@
 package main
 
 import (
-	"bufio"
-	"crypto/sha1"
 	_ "embed"
-	"encoding/base64"
-	"encoding/binary"
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"log"
-	"net"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -376,131 +370,6 @@ func corsMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-// ── WebSocket / SignalR helpers ───────────────────────────────────────────────
-
-const wsGUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
-
-// upgradeWebSocket performs the HTTP → WebSocket upgrade handshake (RFC 6455).
-// It hijacks the connection, writes the 101 response, and returns the raw conn
-// and its buffered reader/writer.
-func upgradeWebSocket(w http.ResponseWriter, r *http.Request) (net.Conn, *bufio.ReadWriter, error) {
-	key := r.Header.Get("Sec-Websocket-Key")
-	if key == "" {
-		http.Error(w, "missing Sec-WebSocket-Key", http.StatusBadRequest)
-		return nil, nil, fmt.Errorf("missing Sec-WebSocket-Key")
-	}
-
-	h := sha1.New() //nolint:gosec // SHA-1 required by the WebSocket spec (RFC 6455 §1.3)
-	h.Write([]byte(key + wsGUID))
-	accept := base64.StdEncoding.EncodeToString(h.Sum(nil))
-
-	hj, ok := w.(http.Hijacker)
-	if !ok {
-		http.Error(w, "hijacking not supported", http.StatusInternalServerError)
-		return nil, nil, fmt.Errorf("hijacking not supported")
-	}
-
-	conn, buf, err := hj.Hijack()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	resp := "HTTP/1.1 101 Switching Protocols\r\n" +
-		"Upgrade: websocket\r\n" +
-		"Connection: Upgrade\r\n" +
-		"Sec-WebSocket-Accept: " + accept + "\r\n\r\n"
-	if _, err = buf.WriteString(resp); err != nil {
-		conn.Close()
-		return nil, nil, err
-	}
-	if err = buf.Flush(); err != nil {
-		conn.Close()
-		return nil, nil, err
-	}
-	return conn, buf, nil
-}
-
-// wsReadFrame reads one WebSocket frame and returns its opcode and unmasked payload.
-func wsReadFrame(r *bufio.Reader) (opcode byte, payload []byte, err error) {
-	header := make([]byte, 2)
-	if _, err = io.ReadFull(r, header); err != nil {
-		return
-	}
-	opcode = header[0] & 0x0F
-	masked := header[1]&0x80 != 0
-	payloadLen := int64(header[1] & 0x7F)
-
-	switch payloadLen {
-	case 126:
-		b := make([]byte, 2)
-		if _, err = io.ReadFull(r, b); err != nil {
-			return
-		}
-		payloadLen = int64(binary.BigEndian.Uint16(b))
-	case 127:
-		b := make([]byte, 8)
-		if _, err = io.ReadFull(r, b); err != nil {
-			return
-		}
-		payloadLen = int64(binary.BigEndian.Uint64(b))
-	}
-
-	var mask [4]byte
-	if masked {
-		if _, err = io.ReadFull(r, mask[:]); err != nil {
-			return
-		}
-	}
-
-	payload = make([]byte, payloadLen)
-	if _, err = io.ReadFull(r, payload); err != nil {
-		return
-	}
-	if masked {
-		for i := range payload {
-			payload[i] ^= mask[i%4]
-		}
-	}
-	return
-}
-
-// wsWriteTextFrame sends an unmasked text frame (FIN=1, opcode=0x1).
-func wsWriteTextFrame(conn net.Conn, payload []byte) error {
-	var frame []byte
-	frame = append(frame, 0x81) // FIN + text opcode
-	l := len(payload)
-	switch {
-	case l < 126:
-		frame = append(frame, byte(l))
-	case l < 65536:
-		frame = append(frame, 126, byte(l>>8), byte(l))
-	default:
-		b := make([]byte, 8)
-		binary.BigEndian.PutUint64(b, uint64(l))
-		frame = append(frame, 127)
-		frame = append(frame, b...)
-	}
-	frame = append(frame, payload...)
-	_, err := conn.Write(frame)
-	return err
-}
-
-// handleSignalRHandshake reads the SignalR JSON protocol handshake frame and
-// responds with the required empty-object acknowledgement.
-func handleSignalRHandshake(conn net.Conn, buf *bufio.ReadWriter) error {
-	opcode, payload, err := wsReadFrame(buf.Reader)
-	if err != nil {
-		return err
-	}
-	// opcode 1 = text frame
-	if opcode != 1 {
-		return fmt.Errorf("expected text frame, got opcode %d", opcode)
-	}
-	log.Printf("SignalR handshake request: %s", payload)
-	// Respond with empty JSON object + record-separator (0x1E) as required by SignalR
-	return wsWriteTextFrame(conn, []byte("{}\x1e"))
-}
-
 // ── Route handlers ────────────────────────────────────────────────────────────
 
 // GET /application/info
@@ -614,62 +483,6 @@ Use the real API for actual subtitles.
 	fmt.Fprint(w, srt)
 }
 
-// handleSignalRNegotiate handles POST /refresh/negotiate, returning a SignalR
-// negotiation response that allows the client to proceed with a WebSocket connection.
-func handleSignalRNegotiate(w http.ResponseWriter, r *http.Request) {
-	connID := "mock-signalr-conn"
-	jsonResponse(w, http.StatusOK, map[string]any{
-		"negotiateVersion": 1,
-		"connectionId":     connID,
-		"connectionToken":  connID,
-		"availableTransports": []map[string]any{
-			{
-				"transport":       "WebSockets",
-				"transferFormats": []string{"Text", "Binary"},
-			},
-		},
-	})
-}
-
-// handleSignalRHub accepts a SignalR WebSocket connection. It completes the
-// WebSocket upgrade, performs the SignalR JSON protocol handshake, and then
-// keeps the connection open while discarding all incoming frames.
-// No hub methods or events are implemented — the connection is accepted silently.
-func handleSignalRHub(w http.ResponseWriter, r *http.Request) {
-	if !strings.EqualFold(r.Header.Get("Upgrade"), "websocket") {
-		http.Error(w, "expected WebSocket upgrade", http.StatusBadRequest)
-		return
-	}
-
-	conn, buf, err := upgradeWebSocket(w, r)
-	if err != nil {
-		log.Printf("SignalR WebSocket upgrade error: %v", err)
-		return
-	}
-	defer conn.Close()
-
-	if err = handleSignalRHandshake(conn, buf); err != nil {
-		log.Printf("SignalR handshake error: %v", err)
-		return
-	}
-	log.Printf("SignalR connection accepted from %s", r.RemoteAddr)
-
-	// Drain incoming frames to keep the connection alive.
-	// Respond to ping frames (opcode 9) with pong frames (opcode 10).
-	for {
-		opcode, payload, err := wsReadFrame(buf.Reader)
-		if err != nil {
-			break
-		}
-		if opcode == 9 { // ping → pong
-			pong := append([]byte{0x8A, byte(len(payload))}, payload...)
-			if _, err = conn.Write(pong); err != nil {
-				break
-			}
-		}
-	}
-}
-
 // ── Router ────────────────────────────────────────────────────────────────────
 
 var (
@@ -689,16 +502,6 @@ func router(w http.ResponseWriter, r *http.Request) {
 
 	if path == "/application/info" {
 		handleApplicationInfo(w, r)
-		return
-	}
-
-	// SignalR hub
-	if path == "/refresh/negotiate" {
-		handleSignalRNegotiate(w, r)
-		return
-	}
-	if path == "/refresh" {
-		handleSignalRHub(w, r)
 		return
 	}
 
