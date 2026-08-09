@@ -12,6 +12,7 @@ A lightweight Go HTTP server that emulates the AddictedProxy backend API for loc
 | `GET /media/{showId}/episodes/{language}` | Show details + episodes with subtitles |
 | `GET /shows/search/{query}` | Show search results |
 | `GET /shows/{showId}/{season}/{language}` | Season episodes with subtitles |
+| `POST /shows/{showId}/refresh` | Trigger a background refresh of a show |
 | `GET /subtitles/download/{subtitleId}` | Downloads a placeholder `.srt` file |
 
 ## Running

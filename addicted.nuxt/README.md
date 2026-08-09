@@ -15,13 +15,13 @@ Gestdown provides a user-friendly interface to browse and download subtitles fro
 
 ## Technology Stack
 
-- **Framework**: Nuxt 4.0.3 (Vue 3)
-- **UI Library**: Vuetify 3.9.4
+- **Framework**: Nuxt 4.5.2 (Vue 3)
+- **UI Library**: Vuetify 4.1.8
 - **State Management**: Pinia with persisted state
 - **API Client**: Swagger-generated TypeScript clients
 - **Build Tool**: Vite 7.1.1
 - **TypeScript**: Full TypeScript support
-- **Package Manager**: pnpm 10.18.1
+- **Package Manager**: pnpm 11.20.0
 - **Monitoring**: Sentry integration for error tracking
 - **Analytics**: Cloudflare Analytics and Matomo
 

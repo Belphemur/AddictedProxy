@@ -14,6 +14,7 @@ Base URL: `https://api.gestdown.info`
 | ------ | ----------------------------------------------------------------- | -------------------------------------------- | -------------- |
 | `GET`  | `/shows/search/{search}`                                          | Search shows by name (min 3 chars)           | 1 day          |
 | `GET`  | `/shows/external/tvdb/{tvdbId}`                                   | Find show by TheTVDB ID                      | 1 day          |
+| `POST` | `/shows/{showId:guid}/refresh`                                    | Trigger a background refresh of a show       | None           |
 | `GET`  | `/shows/{showId:guid}/{seasonNumber:int}/{language}`              | Get all subtitles for a season in a language | 2 hours        |
 | `GET`  | `/shows/{showId:guid}/{seasonNumber:int}/{language}/season-packs` | Get season pack subtitles for a season       | 2 hours        |
 

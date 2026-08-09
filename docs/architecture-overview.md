@@ -227,6 +227,6 @@ season pollution purged once.
 | Background Jobs       | Hangfire for async/scheduled work (refresh, store, migrate)  |
 | Async Keyed Locking   | Prevents concurrent operations on same resource             |
 | HTTP Resilience       | Polly v8 resilience pipelines via `Microsoft.Extensions.Http.Resilience`; shared retry + circuit breaker (5xx, 401/402/403) + timeout for all upstream HTTP/gRPC clients. Addic7ed: 8 retry attempts (exponential 10–60 s), circuit breaker 5 min break (0.5 failure ratio / 20 minimum throughput), 3 min per-attempt timeout plus a 5 min overall `HttpClient.Timeout` via `AddSharedResilienceHandler`/explicit config |
-| Real-time Updates     | Background jobs for refresh orchestration                   |
+| Refresh Orchestration | Background jobs for refresh orchestration                   |
 | Caching               | Multi-layer: In-Memory → Redis → PostgreSQL                |
 | Compression           | Zstandard compression for stored subtitle files             |
