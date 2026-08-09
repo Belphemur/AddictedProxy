@@ -1,3 +1,9 @@
+## [5.0.3](https://github.com/Belphemur/AddictedProxy/compare/v5.0.2...v5.0.3) (2026-08-09)
+
+### Bug Fixes
+
+* **backend:** remove stale SignalR namespace import ([80b761e](https://github.com/Belphemur/AddictedProxy/commit/80b761e36bbaca1fccbdf535a3375bb6ecdffff3))
+
 ## [5.0.2](https://github.com/Belphemur/AddictedProxy/compare/v5.0.1...v5.0.2) (2026-08-09)
 
 ### Bug Fixes
