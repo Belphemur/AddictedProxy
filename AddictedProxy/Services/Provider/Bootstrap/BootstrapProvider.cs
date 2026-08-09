@@ -7,7 +7,6 @@ using AddictedProxy.Services.Provider.SeasonPack;
 using AddictedProxy.Services.Provider.Seasons;
 using AddictedProxy.Services.Provider.ShowInfo;
 using AddictedProxy.Services.Provider.Shows;
-using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Services.Provider.Subtitle;
 using AddictedProxy.Services.Provider.Subtitle.Download;
 using AddictedProxy.Services.Provider.SuperSubtitles.Config;
@@ -26,7 +25,6 @@ public class BootstrapProvider : IBootstrap
         services.AddScoped<ISeasonRefresher, SeasonRefresher>();
         services.AddScoped<IEpisodeRefresher, EpisodeRefresher>();
         services.Configure<RefreshConfig>(configuration.GetSection("Refresh"));
-        services.AddSingleton<IRefreshHubManager, RefreshHubManager>();
         services.AddScoped<SubtitleCounterUpdater>();
         services.AddScoped<IDetailsProvider, DetailsProvider>();
         services.AddScoped<IShowTmdbMapper, ShowTmdbMapper>();
