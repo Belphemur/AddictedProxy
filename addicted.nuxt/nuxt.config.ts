@@ -54,6 +54,14 @@ export default defineNuxtConfig({
     transpile: ["picomatch", "ws"],
   },
 
+  nitro: {
+    externals: {
+      // ws is loaded dynamically by @microsoft/signalr at runtime, so Nitro's
+      // static tracer misses it. Force-include it in the traced server output.
+      traceInclude: ["ws"],
+    },
+  },
+
   devtools: { enabled: true },
   sourcemap: { server: true, client: true },
 

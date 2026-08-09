@@ -90,6 +90,10 @@ jobs:
     needs: changes
     if: needs.changes.outputs.node == 'true'
     runs-on: ubuntu-latest
+    # semantic-release verifies push access (git push --dry-run) even in
+    # dry-run mode, which fails with the read-only default token.
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
