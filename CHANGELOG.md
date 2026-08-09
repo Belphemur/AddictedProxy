@@ -1,3 +1,25 @@
+## [5.0.0](https://github.com/Belphemur/AddictedProxy/compare/v4.69.0...v5.0.0) (2026-08-09)
+
+### ⚠ BREAKING CHANGES
+
+* **proxyscrape:** ProxyScrape config User/Password replaced by ApiToken;
+operators must set A7D_ProxyScrape__ApiToken.
+
+Fixes ADDICTEDPROXY-1NP
+
+### Bug Fixes
+
+* **ci:** rebase on dev and address ci review issues ([5524d5d](https://github.com/Belphemur/AddictedProxy/commit/5524d5d9783660081d9807b51a4f9391434ee8be))
+* **ci:** run main release jobs despite skipped upstream pipelines ([71413f1](https://github.com/Belphemur/AddictedProxy/commit/71413f15210e75c96de1a4d4e2a121ae34cfe7fa))
+* **migrations:** purge existing empty seasons via one-time migration re-run ([fcfac54](https://github.com/Belphemur/AddictedProxy/commit/fcfac545f580fb2146fa0d7eec4c9e9f8d210c05))
+* **parser:** classify missing season table as unparsable instead of crashing ([6fd546b](https://github.com/Belphemur/AddictedProxy/commit/6fd546b91e2a489a6fa9d0f8c057ccd0de7fd1f1)), closes [#season](https://github.com/Belphemur/AddictedProxy/issues/season)
+* **supersubtitles:** gate season creation on episode existence, drop TMDB-based pruning ([876a65f](https://github.com/Belphemur/AddictedProxy/commit/876a65f2b9a6eadb439707e907ac1107fbb70dab))
+
+### Features
+
+* **proxyscrape:** migrate from dashboard scraping to ProxyScrape v4 API ([e3a32aa](https://github.com/Belphemur/AddictedProxy/commit/e3a32aae0395f0cfd38d40359ce8e73028fc6e31))
+* **supersubtitles:** validate seasons against TMDB and prune polluted upstream data ([e6ba090](https://github.com/Belphemur/AddictedProxy/commit/e6ba090034a629da8aa3b9e898cf8554a4edd5ac))
+
 ## [4.69.0](https://github.com/Belphemur/AddictedProxy/compare/v4.68.1...v4.69.0) (2026-08-06)
 
 ### Bug Fixes
