@@ -14,6 +14,12 @@ const manualChunk = [
 export default defineNuxtConfig({
   experimental: {
     sharedPrerenderData: true,
+    // Reuse Vite's file watcher instead of spinning up a second one (less
+    // memory, fewer file handles in dev). Default in Nuxt 5.
+    watcher: "builder",
+    // Forward the destination page's preload/modulepreload hints as
+    // rel="prefetch" when a link is prefetched, so navigations feel instant.
+    prefetchPreloadTags: true,
   },
   routeRules: {
     "/": { swr: 120 },

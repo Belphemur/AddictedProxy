@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Frontend (Nuxt dev)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm dev",
+      "cwd": "${workspaceFolder}/addicted.nuxt",
+      "serverReadyAction": {
+        "pattern": "Local:\\s+(http://localhost:[0-9]+/)",
+        "uriFormat": "%s",
+        "action": "openExternally"
+      }
+    },
+    {
+      "name": "Mock API Server (Go)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "go run .",
+      "cwd": "${workspaceFolder}/mock-server"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Frontend + Mock API",
+      "configurations": ["Mock API Server (Go)", "Frontend (Nuxt dev)"],
+      "stopAll": true
+    }
+  ]
+}
