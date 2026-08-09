@@ -6,14 +6,18 @@ const manualChunk = [
   "@sentry/vue",
   "@sentry/tracing",
   "@sentry/browser",
-  "@microsoft/signalr",
   "lodash-es",
-  "@microsoft/signalr-protocol-msgpack",
 ];
 
 export default defineNuxtConfig({
   experimental: {
     sharedPrerenderData: true,
+    // Reuse Vite's file watcher instead of spinning up a second one (less
+    // memory, fewer file handles in dev). Default in Nuxt 5.
+    watcher: "builder",
+    // Forward the destination page's preload/modulepreload hints as
+    // rel="prefetch" when a link is prefetched, so navigations feel instant.
+    prefetchPreloadTags: true,
   },
   routeRules: {
     "/": { swr: 120 },
@@ -51,15 +55,7 @@ export default defineNuxtConfig({
     },
   },
   build: {
-    transpile: ["picomatch", "ws"],
-  },
-
-  nitro: {
-    externals: {
-      // ws is loaded dynamically by @microsoft/signalr at runtime, so Nitro's
-      // static tracer misses it. Force-include it in the traced server output.
-      traceInclude: ["ws"],
-    },
+    transpile: ["picomatch"],
   },
 
   devtools: { enabled: true },

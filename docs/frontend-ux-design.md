@@ -386,7 +386,7 @@ APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm de
 ```
 
 The mock server provides three shows (*Breaking Bad*, *Game of Thrones*, *Succession*) with episodes,
-subtitles (regular + HI), quality chips, source chips, season packs, and an accepted SignalR connection.
+subtitles (regular + HI), quality chips, source chips, and season packs.
 See `mock-server/README.md` for the full endpoint list.
 
 ### Desktop Verification
