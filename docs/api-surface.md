@@ -2,7 +2,7 @@
 
 ## Overview
 
-AddictedProxy exposes a REST API for searching shows, finding subtitles, and downloading subtitle files. It also provides a SignalR hub for real-time progress notifications during show refresh operations.
+AddictedProxy exposes a REST API for searching shows, finding subtitles, and downloading subtitle files.
 
 Base URL: `https://api.gestdown.info`
 
@@ -14,7 +14,6 @@ Base URL: `https://api.gestdown.info`
 | ------ | ----------------------------------------------------------------- | -------------------------------------------- | -------------- |
 | `GET`  | `/shows/search/{search}`                                          | Search shows by name (min 3 chars)           | 1 day          |
 | `GET`  | `/shows/external/tvdb/{tvdbId}`                                   | Find show by TheTVDB ID                      | 1 day          |
-| `POST` | `/shows/{showId:guid}/refresh`                                    | Enqueue background refresh for a show        | None           |
 | `GET`  | `/shows/{showId:guid}/{seasonNumber:int}/{language}`              | Get all subtitles for a season in a language | 2 hours        |
 | `GET`  | `/shows/{showId:guid}/{seasonNumber:int}/{language}/season-packs` | Get season pack subtitles for a season       | 2 hours        |
 
@@ -37,16 +36,6 @@ GET /shows/external/tvdb/{tvdbId}
 - **Parameters**: `tvdbId` (int) — TheTVDB identifier
 - **Returns**: `ShowSearchResponse` with matching shows
 - **Cache**: 1 day
-
-#### Refresh Show
-
-```
-POST /shows/{showId:guid}/refresh
-```
-
-- **Parameters**: `showId` (Guid) — show's UniqueId
-- **Returns**: 200 OK (refresh queued) or 404 Not Found
-- **Side Effect**: Enqueues `RefreshSingleShowJob` via Hangfire
 
 #### Get Season Subtitles
 
@@ -238,19 +227,6 @@ record TvShowSubtitleResponse(
 ```csharp
 record ErrorResponse(string Error);
 ```
-
-## SignalR Hub
-
-### RefreshHub (`/hub/refresh`)
-
-Provides real-time progress updates when a show's seasons/episodes are being refreshed.
-
-**Methods (Server → Client):**
-
-- `SendProgressAsync(show, progressPercent)` — Progress update (0-100%)
-- `SendRefreshDone(show)` — Refresh completed
-
-**Usage**: The Nuxt frontend subscribes to this hub when a user triggers a show refresh, displaying a progress bar.
 
 ## Authentication
 

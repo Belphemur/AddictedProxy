@@ -26,7 +26,6 @@ AddictedProxy (branded as **Gestdown**) is a .NET 10 ASP.NET Core application th
 ```
 AddictedProxy/                    # Main ASP.NET Core web application (entry point)
 ├── Controllers/Rest/             # REST API controllers
-├── Controllers/Hub/              # SignalR hubs (real-time updates)
 ├── Services/                     # Business logic services
 │   ├── Provider/                 # Core provider services (shows, episodes, seasons, subtitles)
 │   ├── Search/                   # Subtitle search engine
@@ -202,7 +201,7 @@ season pollution purged once.
 3. **Database Migration**: `dbContext.Database.MigrateAsync()` applies pending EF Core migrations
 4. **One-Time Migrations**: `MigrationRunnerHostedService` enqueues pending data migrations via Hangfire
 5. **Hangfire**: Background job processing starts
-6. **HTTP Pipeline**: Controllers, SignalR hubs, Swagger, response caching
+6. **HTTP Pipeline**: Controllers, Swagger, response caching
 
 ## Configuration
 
@@ -228,6 +227,6 @@ season pollution purged once.
 | Background Jobs       | Hangfire for async/scheduled work (refresh, store, migrate)  |
 | Async Keyed Locking   | Prevents concurrent operations on same resource             |
 | HTTP Resilience       | Polly v8 resilience pipelines via `Microsoft.Extensions.Http.Resilience`; shared retry + circuit breaker (5xx, 401/402/403) + timeout for all upstream HTTP/gRPC clients. Addic7ed: 8 retry attempts (exponential 10–60 s), circuit breaker 5 min break (0.5 failure ratio / 20 minimum throughput), 3 min per-attempt timeout plus a 5 min overall `HttpClient.Timeout` via `AddSharedResilienceHandler`/explicit config |
-| Real-time Updates     | SignalR hubs for progress notifications                     |
+| Real-time Updates     | Background jobs for refresh orchestration                   |
 | Caching               | Multi-layer: In-Memory → Redis → PostgreSQL                |
 | Compression           | Zstandard compression for stored subtitle files             |
