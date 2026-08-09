@@ -1,3 +1,10 @@
+## [5.0.1](https://github.com/Belphemur/AddictedProxy/compare/v5.0.0...v5.0.1) (2026-08-09)
+
+### Bug Fixes
+
+* **ci:** grant release dry-run job contents:write ([9a0d621](https://github.com/Belphemur/AddictedProxy/commit/9a0d62122d427fc50e6eaf69d96adc1f782b70b9))
+* **frontend:** ship self-contained Nitro server output in Docker image ([e6b9de0](https://github.com/Belphemur/AddictedProxy/commit/e6b9de0f4ca33641a809fb754f1efb61b8525e37))
+
 ## [5.0.0](https://github.com/Belphemur/AddictedProxy/compare/v4.69.0...v5.0.0) (2026-08-09)
 
 ### ⚠ BREAKING CHANGES
