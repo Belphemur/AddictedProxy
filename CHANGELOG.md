@@ -1,3 +1,9 @@
+## [5.0.2](https://github.com/Belphemur/AddictedProxy/compare/v5.0.1...v5.0.2) (2026-08-09)
+
+### Bug Fixes
+
+* pinia ([b93b297](https://github.com/Belphemur/AddictedProxy/commit/b93b297d31928ada41d9dc9a2922599d28467ec2))
+
 ## [5.0.1](https://github.com/Belphemur/AddictedProxy/compare/v5.0.0...v5.0.1) (2026-08-09)
 
 ### Bug Fixes
