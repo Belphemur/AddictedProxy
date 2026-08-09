@@ -6,7 +6,6 @@ using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Merging;
 using AddictedProxy.Services.Provider.Merging.Model;
 using AddictedProxy.Services.Provider.ShowInfo;
-using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Upstream.Service;
 using Microsoft.Extensions.Logging;
 using Performance.Service;
