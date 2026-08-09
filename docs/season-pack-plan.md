@@ -140,7 +140,6 @@ Expose season packs via augmented existing responses and a dedicated Bazarr endp
     - Add `seasonPacks = ref<SeasonPackSubtitleDto[]>([])`
     - `loadViewData()`: populate from `data.value?.seasonPacks`
     - `watch([currentSeason, language])`: extract `seasonPacks` from `showsDetail` response
-    - `doneHandler`: after `getEpisodes` (SignalR), also call `showsApi.showsDetail(...)` to refresh season packs from REST
     - **Display logic**:
       - Season packs always appear **above** the episodes table when available
       - `showSeasonPackFallback` computed: `episodes` is empty/null **and** `seasonPacks.length > 0`

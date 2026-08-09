@@ -6,9 +6,7 @@ const manualChunk = [
   "@sentry/vue",
   "@sentry/tracing",
   "@sentry/browser",
-  "@microsoft/signalr",
   "lodash-es",
-  "@microsoft/signalr-protocol-msgpack",
 ];
 
 export default defineNuxtConfig({
@@ -57,15 +55,7 @@ export default defineNuxtConfig({
     },
   },
   build: {
-    transpile: ["picomatch", "ws"],
-  },
-
-  nitro: {
-    externals: {
-      // ws is loaded dynamically by @microsoft/signalr at runtime, so Nitro's
-      // static tracer misses it. Force-include it in the traced server output.
-      traceInclude: ["ws"],
-    },
+    transpile: ["picomatch"],
   },
 
   devtools: { enabled: true },

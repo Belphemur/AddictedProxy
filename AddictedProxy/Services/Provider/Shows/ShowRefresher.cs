@@ -6,7 +6,6 @@ using AddictedProxy.Services.Credentials;
 using AddictedProxy.Services.Provider.Merging;
 using AddictedProxy.Services.Provider.Merging.Model;
 using AddictedProxy.Services.Provider.ShowInfo;
-using AddictedProxy.Services.Provider.Shows.Hub;
 using AddictedProxy.Upstream.Service;
 using Microsoft.Extensions.Logging;
 using Performance.Service;
@@ -24,7 +23,6 @@ public class ShowRefresher : IShowRefresher
     private readonly IProviderDataIngestionService _ingestionService;
     private readonly IShowTmdbMapper _showTmdbMapper;
     private readonly ILogger<ShowRefresher> _logger;
-    private readonly IRefreshHubManager _refreshHubManager;
     private readonly IPerformanceTracker _performanceTracker;
     private readonly ITvShowRepository _tvShowRepository;
 
@@ -36,7 +34,6 @@ public class ShowRefresher : IShowRefresher
                          IProviderDataIngestionService ingestionService,
                          IShowTmdbMapper showTmdbMapper,
                          ILogger<ShowRefresher> logger,
-                         IRefreshHubManager refreshHubManager,
                          IPerformanceTracker performanceTracker)
     {
         _tvShowRepository = tvShowRepository;
@@ -47,7 +44,6 @@ public class ShowRefresher : IShowRefresher
         _ingestionService = ingestionService;
         _showTmdbMapper = showTmdbMapper;
         _logger = logger;
-        _refreshHubManager = refreshHubManager;
         _performanceTracker = performanceTracker;
     }
 
@@ -123,15 +119,11 @@ public class ShowRefresher : IShowRefresher
         var show = (await _tvShowRepository.GetByIdAsync(showId, token))!;
         var externalIds = await _showExternalIdRepository.GetByShowIdAsync(show.Id, token);
 
-        await _refreshHubManager.SendProgressAsync(show, 1, token);
-
         foreach (var extId in externalIds)
         {
             var refresher = _providerShowRefresherFactory.GetService(extId.Source);
             await refresher.RefreshShowAsync(show, extId, token);
         }
-
-        await _refreshHubManager.SendRefreshDone(show, token);
     }
 
     public IAsyncEnumerable<TvShow> FindShowsAsync(string search, CancellationToken token)

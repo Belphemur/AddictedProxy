@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import MediaDetails from "@/components/media/MediaDetails.vue";
-import { onUnmounted, ref, computed } from "vue";
+import { ref, computed } from "vue";
 import SubtitlesTable from "@/components/shows/SubtitlesTable.vue";
 import SeasonPacksSection from "@/components/media/SeasonPacksSection.vue";
-import type { DoneHandler, ProgressHandler } from "~/composables/hub/RefreshHub";
-import { useRefreshHub } from "~/composables/hub/RefreshHub";
 import type { EpisodeWithSubtitlesDto, MediaDetailsDto, SeasonPackSubtitleDto } from "~/composables/api/data-contracts";
 import { useMedia, useShows, useSubtitles } from "~/composables/rest/api";
 import SubtitleTypeChooser from "~/components/media/Download/SubtitleTypeChooser.vue";
@@ -14,7 +12,7 @@ import { trim } from "~/composables/utils/trim";
 import { downloadZip } from "client-zip";
 import { mevent } from "~/composables/data/event";
 import { usePageLayout } from "~/composables/usePageLayout";
-import { mdiDownload, mdiRefresh } from "@mdi/js";
+import { mdiDownload } from "@mdi/js";
 import { last } from "lodash-es";
 
 export interface Props {
@@ -28,7 +26,6 @@ const showsApi = useShows();
 let loadingEpisodes = ref(false);
 let episodes = ref<EpisodeWithSubtitlesDto[] | null>([]);
 const seasonPacks = ref<SeasonPackSubtitleDto[]>([]);
-const refreshingProgress = ref<number | null>(null);
 const downloadingProgress = ref<number | null>(null);
 const downloadingInProgress = ref<boolean>(false);
 const language = useLanguage();
@@ -65,56 +62,6 @@ useSeoMeta({
   ogImageAlt: () => `Poster of ${mediaInfo.value!.media?.name}`,
   twitterImageAlt: () => `Poster of ${mediaInfo.value!.media?.name}`,
   ogType: "website"
-});
-
-const {
-  sendRefreshAsync,
-  unsubscribeShowAsync,
-  onProgress,
-  offProgress,
-  onDone,
-  offDone,
-  getEpisodes
-} = useRefreshHub();
-
-const progressHandler: ProgressHandler = (progress) => {
-  if (refreshingProgress.value != null && progress.progress < refreshingProgress.value) {
-    console.error("Got progress lower than current value");
-    return;
-  }
-  refreshingProgress.value = progress.progress;
-};
-
-const doneHandler: DoneHandler = async (show) => {
-  if (show.id != props.showId) {
-    return;
-  }
-  refreshingProgress.value = null;
-  await unsubscribeShowAsync(show.id!);
-
-  mediaInfo.value = { details: mediaInfo.value?.details, media: show }
-  if (currentSeason.value == undefined) {
-    currentSeason.value = last(mediaInfo.value?.media?.seasons);
-  }
-
-  loadingEpisodes.value = true;
-  episodes.value = await getEpisodes(show.id!, language.lang, currentSeason.value!);
-  // Fetch season packs via REST since SignalR hub only streams episodes
-  try {
-    const response = (await showsApi.showsDetail(show.id!, currentSeason.value!, language.lang)).data;
-    seasonPacks.value = response.seasonPacks ?? [];
-  } catch {
-    // Season packs are supplementary; don't fail the whole refresh
-  }
-  loadingEpisodes.value = false;
-};
-
-
-onProgress(progressHandler);
-onDone(doneHandler);
-onUnmounted(() => {
-  offProgress(progressHandler);
-  offDone(doneHandler);
 });
 
 async function loadViewData() {
@@ -160,37 +107,6 @@ watch([currentSeason, language], async ([newSeason], [oldSeason]) => {
   loadingEpisodes.value = false;
 })
 
-
-const refreshShow = async () => {
-  refreshingProgress.value = 0;
-  await sendRefreshAsync(props.showId);
-};
-
-if (currentSeason.value == undefined) {
-  await refreshShow();
-  loadingEpisodes.value = true;
-}
-
-const formattedProgress = computed(() => {
-  let keyword = "";
-  if (refreshingProgress.value == null) {
-    return "";
-  }
-  switch (true) {
-    case refreshingProgress.value == 100:
-      return `Ready`;
-    case refreshingProgress.value < 25:
-      keyword = "Fetching seasons";
-      break;
-    case refreshingProgress.value >= 25:
-      keyword = "Fetching subtitles";
-      break;
-    default:
-      keyword = "Fetching";
-      break;
-  }
-  return `${keyword}: (${refreshingProgress.value}%)`;
-});
 
 const availableSubtitleTypes = computed(() => {
   if (!episodes.value || episodes.value.length === 0) {
@@ -311,10 +227,6 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
           data-ad-format="auto" data-full-width-responsive />
       </v-col>
     </v-row>
-    <v-progress-linear v-if="refreshingProgress != null" v-model="refreshingProgress" color="blue" height="18"
-      class="mt-2">
-      {{ formattedProgress }}
-    </v-progress-linear>
     <v-progress-linear v-if="downloadingProgress != null" v-model="downloadingProgress" color="blue" height="18"
       class="mt-2">
       Downloading subtitles
@@ -326,19 +238,14 @@ const downloadSeasonSubtitles = async (type: SubtitleType) => {
             <h2 class="text-h6">Season {{ currentSeason }}</h2>
             <v-spacer />
             <div class="d-flex ga-2">
-              <v-btn :prepend-icon="mdiRefresh" color="primary" size="small" @click="refreshShow"
-                :disabled="refreshingProgress != null || downloadingInProgress">Refresh
-                <v-tooltip activator="parent" location="bottom">Fetch from Addic7ed
-                </v-tooltip>
-              </v-btn>
               <v-btn v-if="onlyOneTypeAvailable && hasEpisodes" :prepend-icon="mdiDownload" color="primary" size="small"
-                @click="handleDownloadClick" :disabled="refreshingProgress != null || downloadingInProgress">
+                @click="handleDownloadClick" :disabled="downloadingInProgress">
                 Download season
                 <v-tooltip activator="parent" location="bottom">Download all subtitles of the season as ZIP file
                 </v-tooltip>
               </v-btn>
               <v-btn v-else-if="hasEpisodes" :prepend-icon="mdiDownload" color="primary" size="small"
-                :disabled="refreshingProgress != null || downloadingInProgress">
+                :disabled="downloadingInProgress">
                 <SubtitleTypeChooser @selected="downloadSeasonSubtitles" :available-types="availableSubtitleTypes" />
                 Download season
                 <v-tooltip activator="parent" location="bottom">Download all subtitles of the season as ZIP file

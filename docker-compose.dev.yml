@@ -11,7 +11,7 @@
 
 services:
   # ── Mock API server ──────────────────────────────────────────────────────────
-  # Serves all REST + SignalR endpoints the frontend needs.
+  # Serves all REST endpoints the frontend needs.
   # See mock-server/README.md for the full endpoint list.
   mock-api:
     build:

@@ -11,17 +11,17 @@ Gestdown provides a user-friendly interface to browse and download subtitles fro
 - **View episode listings** with available subtitles for each show
 - **Download subtitles** in various formats and languages
 - **Filter by subtitle type** and language preferences
-- **Real-time updates** via SignalR for subtitle availability
+- **RESTful API** for subtitle search and download
 
 ## Technology Stack
 
-- **Framework**: Nuxt 4.0.3 (Vue 3)
-- **UI Library**: Vuetify 3.9.4
+- **Framework**: Nuxt 4.5.2 (Vue 3)
+- **UI Library**: Vuetify 4.1.8
 - **State Management**: Pinia with persisted state
-- **Real-time Communication**: SignalR (@microsoft/signalr)
+- **API Client**: Swagger-generated TypeScript clients
 - **Build Tool**: Vite 7.1.1
 - **TypeScript**: Full TypeScript support
-- **Package Manager**: pnpm 10.18.1
+- **Package Manager**: pnpm 11.20.0
 - **Monitoring**: Sentry integration for error tracking
 - **Analytics**: Cloudflare Analytics and Matomo
 

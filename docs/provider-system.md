@@ -20,7 +20,6 @@ public class BootstrapProvider : IBootstrap
         services.AddScoped<ISeasonRefresher, SeasonRefresher>();
         services.AddScoped<IEpisodeRefresher, EpisodeRefresher>();
         services.Configure<RefreshConfig>(configuration.GetSection("Refresh"));
-        services.AddSingleton<IRefreshHubManager, RefreshHubManager>();
         services.AddScoped<SubtitleCounterUpdater>();
         services.AddScoped<IDetailsProvider, DetailsProvider>();
         services.AddScoped<IShowTmdbMapper, ShowTmdbMapper>();
@@ -50,7 +49,7 @@ public interface IShowRefresher
 - `RefreshShowsAsync()`: Fetches all shows from Addic7ed, bulk-checks which are already in `ShowExternalId` (single query), resolves missing TMDB IDs via `IShowTmdbMapper`, then merges each new show via `IProviderDataIngestionService.MergeShowAsync()` (TvDB → TMDB ID matching for deduplication across providers)
 - `RefreshShowAsync()`: Routes per-provider refresh by loading all `ShowExternalId` entries and delegating to `IProviderShowRefresher` implementations via factory
 - `FindShowsAsync()`: Delegates to `ITvShowRepository.FindAsync()` for full-text search
-- Sends real-time progress via `IRefreshHubManager` (SignalR)
+- Refreshes seasons and episodes via provider-specific refreshers
 
 #### ISeasonRefresher
 
