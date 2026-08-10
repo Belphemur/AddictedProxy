@@ -105,19 +105,19 @@ internal class Addic7edClient : IAddic7edClient
     ///     Get episode for the following season
     /// </summary>
     /// <param name="credentials"></param>
-    /// <param name="show"></param>
+    /// <param name="showExternalId"></param>
     /// <param name="season"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    public async Task<IEnumerable<Episode>> GetEpisodesAsync(AddictedUserCredentials credentials, TvShow show, int season, CancellationToken token)
+    public async Task<IEnumerable<Episode>> GetEpisodesAsync(AddictedUserCredentials credentials, ShowExternalId showExternalId, int season, CancellationToken token)
     {
-        using var scope = _logger.BeginScope("Getting episode for {Show} {Season}", show.Name, season);
-        using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_loadShow.php?show={show.ExternalId}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get),
+        using var scope = _logger.BeginScope("Getting episode for {Show} {Season}", showExternalId.TvShow.Name, season);
+        using var response = await _httpClient.SendAsync(_httpUtils.PrepareRequest(credentials, $"ajax_loadShow.php?show={showExternalId.ExternalId}&season={season}&langs=&hd=undefined&hi=undefined", HttpMethod.Get),
             token);
         return await _parser.GetSeasonSubtitlesAsync(await response.Content.ReadAsStreamAsync(token), token)
             .Select(episode =>
             {
-                episode.TvShowId = show.Id;
+                episode.TvShowId = showExternalId.TvShowId;
                 return episode;
             })
             .ToArrayAsync(token);

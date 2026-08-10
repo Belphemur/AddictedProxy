@@ -40,6 +40,6 @@ internal class Addic7edShowRefresher : IProviderShowRefresher
         _logger.LogInformation("Refreshing episodes for {number} seasons of {show} (Addic7ed)", seasonToSync.Length, show.Name);
 
         var episodeRefresher = _episodeRefresherFactory.GetService(DataSource.Addic7ed);
-        await episodeRefresher.RefreshEpisodesAsync(show, externalId, seasonToSync, _ => Task.CompletedTask, token);
+        await episodeRefresher.RefreshEpisodesAsync(externalId, seasonToSync, _ => Task.CompletedTask, token);
     }
 }

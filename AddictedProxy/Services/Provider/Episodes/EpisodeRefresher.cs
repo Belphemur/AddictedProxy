@@ -35,7 +35,7 @@ public class EpisodeRefresher : IEpisodeRefresher
         foreach (var extId in externalIds)
         {
             var refresher = _providerEpisodeRefresherFactory.GetService(extId.Source);
-            await refresher.GetRefreshEpisodeAsync(show, extId, season, episodeNumber, token);
+            await refresher.GetRefreshEpisodeAsync(extId, season, episodeNumber, token);
         }
 
         // Final fallback: check DB in case episodes were already loaded by another path
@@ -52,7 +52,7 @@ public class EpisodeRefresher : IEpisodeRefresher
         foreach (var extId in externalIds)
         {
             var refresher = _providerEpisodeRefresherFactory.GetService(extId.Source);
-            await refresher.RefreshEpisodesAsync(show, extId, seasonsToRefresh, sendProgress, token);
+            await refresher.RefreshEpisodesAsync(extId, seasonsToRefresh, sendProgress, token);
         }
     }
 

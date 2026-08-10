@@ -48,39 +48,39 @@ internal class Addic7edEpisodeRefresher : IProviderEpisodeRefresher
 
     public DataSource Enum => DataSource.Addic7ed;
 
-    public async Task<Episode?> GetRefreshEpisodeAsync(TvShow show, ShowExternalId showExternalId, Season season, int episodeNumber, CancellationToken token)
+    public async Task<Episode?> GetRefreshEpisodeAsync(ShowExternalId showExternalId, Season season, int episodeNumber, CancellationToken token)
     {
-        await RefreshEpisodesAsync(show, season, token);
-        return await _episodeRepository.GetEpisodeUntrackedAsync(show.Id, season.Number, episodeNumber, token);
+        await RefreshEpisodesAsync(showExternalId, season, token);
+        return await _episodeRepository.GetEpisodeUntrackedAsync(showExternalId.TvShowId, season.Number, episodeNumber, token);
     }
 
     /// <summary>
     /// Refresh episodes for a single season from Addic7ed.
     /// </summary>
-    private async Task RefreshEpisodesAsync(TvShow show, Season season, CancellationToken token)
+    private async Task RefreshEpisodesAsync(ShowExternalId showExternalId, Season season, CancellationToken token)
     {
-        using var transaction = _performanceTracker.BeginNestedSpan("episode", $"refresh-episodes-subtitles for {show.Name} S{season.Number} (Addic7ed)");
-        using var releaser = await AsyncKeyedLocker.LockOrNullAsync((show.Id, season.Id), 0, token).ConfigureAwait(false);
+        using var transaction = _performanceTracker.BeginNestedSpan("episode", $"refresh-episodes-subtitles for {showExternalId.TvShow.Name} S{season.Number} (Addic7ed)");
+        using var releaser = await AsyncKeyedLocker.LockOrNullAsync((showExternalId.TvShowId, season.Id), 0, token).ConfigureAwait(false);
 
         if (releaser is null)
         {
-            _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
+            _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, showExternalId.TvShow.Name);
             transaction.Finish(Status.Unavailable);
             return;
         }
 
-        if (!IsSeasonNeedRefresh(show, season))
+        if (!IsSeasonNeedRefresh(showExternalId.TvShow, season))
         {
-            _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
+            _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", showExternalId.TvShow.Name, season.Number);
             transaction.SetTag("season.state", "refreshed");
             return;
         }
 
         await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
-        var episodes = (await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, show, season.Number, token)).ToArray();
+        var episodes = (await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, showExternalId, season.Number, token)).ToArray();
         await _episodeRepository.UpsertEpisodes(episodes, token);
         await _seasonRepository.UpdateLastRefreshedFromIdAsync(season.Id, DateTime.UtcNow, token);
-        _logger.LogInformation("Refreshed {episodes} episodes of {show} S{season} (Addic7ed)", episodes.Length, show.Name, season.Number);
+        _logger.LogInformation("Refreshed {episodes} episodes of {show} S{season} (Addic7ed)", episodes.Length, showExternalId.TvShow.Name, season.Number);
     }
 
     public bool IsSeasonNeedRefresh(TvShow show, Season season)
@@ -98,23 +98,23 @@ internal class Addic7edEpisodeRefresher : IProviderEpisodeRefresher
         return season.LastRefreshed == null || DateTime.UtcNow - season.LastRefreshed >= refreshTime;
     }
 
-    public async Task RefreshEpisodesAsync(TvShow show, ShowExternalId showExternalId, IEnumerable<Season> seasonsToRefresh, Func<int, Task> sendProgress, CancellationToken token)
+    public async Task RefreshEpisodesAsync(ShowExternalId showExternalId, IEnumerable<Season> seasonsToRefresh, Func<int, Task> sendProgress, CancellationToken token)
     {
         async Task<Episode[]?> EpisodeFetch(Season season)
         {
-            using var transaction = _performanceTracker.BeginNestedSpan("episodes.fetch", $"refresh-episodes-subtitles for {show.Name} S{season.Number} (Addic7ed)");
-            using var releaser = await AsyncKeyedLocker.LockOrNullAsync((show.Id, season.Id), 0, token).ConfigureAwait(false);
+            using var transaction = _performanceTracker.BeginNestedSpan("episodes.fetch", $"refresh-episodes-subtitles for {showExternalId.TvShow.Name} S{season.Number} (Addic7ed)");
+            using var releaser = await AsyncKeyedLocker.LockOrNullAsync((showExternalId.TvShowId, season.Id), 0, token).ConfigureAwait(false);
 
             if (releaser is null)
             {
-                _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, show.Name);
+                _logger.LogInformation("Already refreshing episodes of S{season} of {show}", season.Number, showExternalId.TvShow.Name);
                 transaction.Finish(Status.Unavailable);
                 return null;
             }
 
-            if (!IsSeasonNeedRefresh(show, season))
+            if (!IsSeasonNeedRefresh(showExternalId.TvShow, season))
             {
-                _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", show.Name, season.Number);
+                _logger.LogInformation("{show} S{season} don't need to have its episode refreshed", showExternalId.TvShow.Name, season.Number);
                 transaction.SetTag("season.state", "refreshed");
                 return null;
             }
@@ -122,7 +122,7 @@ internal class Addic7edEpisodeRefresher : IProviderEpisodeRefresher
             await using var scope = _serviceProvider.CreateAsyncScope();
 
             await using var credentials = await scope.ServiceProvider.GetRequiredService<ICredentialsService>().GetLeastUsedCredsQueryingAsync(token);
-            var episodes = (await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, show, season.Number, token)).ToArray();
+            var episodes = (await _client.GetEpisodesAsync(credentials.AddictedUserCredentials, showExternalId, season.Number, token)).ToArray();
             season.LastRefreshed = DateTime.UtcNow;
             return episodes;
         }
@@ -134,7 +134,7 @@ internal class Addic7edEpisodeRefresher : IProviderEpisodeRefresher
         var seasonCount = seasons.Length != 0 ? seasons.Length : 1;
         var progressIncrement = 50 / (int)Math.Ceiling(seasonCount / 2.0);
 
-        using (_performanceTracker.BeginNestedSpan("episodes.seasons", $"Fetch episodes and subtitles from addic7ed for {show.Name} and Seasons {seasonsText}"))
+        using (_performanceTracker.BeginNestedSpan("episodes.seasons", $"Fetch episodes and subtitles from addic7ed for {showExternalId.TvShow.Name} and Seasons {seasonsText}"))
         {
             foreach (var season in seasons.Chunk(2))
             {
@@ -145,7 +145,7 @@ internal class Addic7edEpisodeRefresher : IProviderEpisodeRefresher
             }
         }
 
-        using var savingSubtitlesSpan = _performanceTracker.BeginNestedSpan("episodes.save", $"Saving all the downloaded subtitles for {show.Name} and Seasons {seasonsText}");
+        using var savingSubtitlesSpan = _performanceTracker.BeginNestedSpan("episodes.save", $"Saving all the downloaded subtitles for {showExternalId.TvShow.Name} and Seasons {seasonsText}");
 
         var total = 0;
         progressIncrement = 50 / (results.Count != 0 ? results.Count : 1);
@@ -164,7 +164,7 @@ internal class Addic7edEpisodeRefresher : IProviderEpisodeRefresher
             await sendProgress(100);
         }
 
-        _logger.LogInformation("Refreshed {episodes} episodes of {show} {season} (Addic7ed)", total, show.Name, seasonsText);
+        _logger.LogInformation("Refreshed {episodes} episodes of {show} {season} (Addic7ed)", total, showExternalId.TvShow.Name, seasonsText);
     }
 
 }
