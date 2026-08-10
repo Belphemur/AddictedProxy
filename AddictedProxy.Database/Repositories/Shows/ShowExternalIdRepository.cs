@@ -29,6 +29,7 @@ public class ShowExternalIdRepository : IShowExternalIdRepository
         return await _entityContext.ShowExternalIds
             .Where(e => e.TvShowId == tvShowId)
             .Include(e => e.TvShow)
+            .ThenInclude(s => s.Seasons)
             .AsNoTracking()
             .ToListAsync(token);
     }
