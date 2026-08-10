@@ -160,7 +160,7 @@ public class FetchSubtitlesJob
                           .WhereAwait(async subtitle => data.Language == await _cultureParser.FromStringAsync(subtitle.Language, token));
         if (data.FileName != null)
         {
-            list = list.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-').Any(version => data.FileName.ToLowerInvariant().Contains(version)));
+            list = list.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-', ',').Any(version => data.FileName.ToLowerInvariant().Contains(version)));
         }
 
         return await list.AnyAsync(token);

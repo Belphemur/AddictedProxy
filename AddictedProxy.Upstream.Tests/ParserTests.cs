@@ -1,5 +1,6 @@
 using System.Text;
 using AddictedProxy.Culture.Service;
+using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Upstream.Service;
 using AddictedProxy.Upstream.Service.Exception;
 using AngleSharp.Html.Parser;
@@ -428,5 +429,40 @@ pageTracker._trackPageview();
         };
 
         await act.Should().ThrowAsync<NothingToParseException>().WithMessage("Can't find episode table");
+    }
+
+    [Test]
+    public async Task Test_GetSeasonSubtitles_Splits_Plus_Separated_Scene()
+    {
+        const string html = """
+            <html>
+            <body>
+            <div id="season">
+            <table>
+            <tr><th>Season</th><th>Episode</th><th>Title</th><th>Language</th><th>Version</th><th>Status</th><th>HI</th><th>Corrected</th><th>HD</th><th>Download</th></tr>
+            <tr>
+            <td>1</td><td>2</td><td>Pilot</td><td>English</td><td>NTb+playWEB+Kitsune</td><td>100%</td><td></td><td></td><td>Yes</td>
+            <td><a href="/updated/1/234567/8">Download</a></td>
+            </tr>
+            <tr>
+            <td>1</td><td>3</td><td>Second Episode</td><td>English</td><td>AMZN.WEB-DL</td><td>100%</td><td></td><td></td><td></td>
+            <td><a href="/updated/1/234568/1">Download</a></td>
+            </tr>
+            </table>
+            </div>
+            </body>
+            </html>
+            """;
+
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(html));
+        var episodes = new List<Episode>();
+        await foreach (var episode in _parser.GetSeasonSubtitlesAsync(stream, default))
+        {
+            episodes.Add(episode);
+        }
+
+        episodes.Should().HaveCount(2);
+        episodes[0].Subtitles.Should().ContainSingle().Which.Scene.Should().Be("NTb, playWEB, Kitsune");
+        episodes[1].Subtitles.Should().ContainSingle().Which.Scene.Should().Be("AMZN.WEB-DL");
     }
 }
