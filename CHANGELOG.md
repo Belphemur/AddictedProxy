@@ -1,3 +1,9 @@
+## [5.1.2](https://github.com/Belphemur/AddictedProxy/compare/v5.1.1...v5.1.2) (2026-08-10)
+
+### Bug Fixes
+
+* eager load seasons ([a95de98](https://github.com/Belphemur/AddictedProxy/commit/a95de98da6bb3f5513dacabdd0e91e0f91fb8da8))
+
 ## [5.1.1](https://github.com/Belphemur/AddictedProxy/compare/v5.1.0...v5.1.1) (2026-08-10)
 
 ### Bug Fixes
