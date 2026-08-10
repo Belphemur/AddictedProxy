@@ -1,3 +1,14 @@
+## [5.2.0](https://github.com/Belphemur/AddictedProxy/compare/v5.1.2...v5.2.0) (2026-08-10)
+
+### Bug Fixes
+
+* **subtitles:** trim and drop empty Scene tokens when matching file names ([b5275e4](https://github.com/Belphemur/AddictedProxy/commit/b5275e4ba0a0f24c99c2e76bc024ab713600d577))
+
+### Features
+
+* **addic7ed:** split '+'-separated release groups in subtitle Scene ([0e15ea3](https://github.com/Belphemur/AddictedProxy/commit/0e15ea3258eed49b2d201a294f3674d5ede5d6cd))
+* **cors:** make allowed origins configurable via appsettings.json ([c2f0de7](https://github.com/Belphemur/AddictedProxy/commit/c2f0de77043ef3f7131c5f642d6f15d754c86cd2))
+
 ## [5.1.2](https://github.com/Belphemur/AddictedProxy/compare/v5.1.1...v5.1.2) (2026-08-10)
 
 ### Bug Fixes
