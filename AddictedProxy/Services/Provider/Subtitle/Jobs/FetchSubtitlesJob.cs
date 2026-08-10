@@ -160,10 +160,25 @@ public class FetchSubtitlesJob
                           .WhereAwait(async subtitle => data.Language == await _cultureParser.FromStringAsync(subtitle.Language, token));
         if (data.FileName != null)
         {
-            list = list.Where(subtitle => subtitle.Scene.ToLowerInvariant().Split('+', '.', '-', ',').Any(version => data.FileName.ToLowerInvariant().Contains(version)));
+            var fileName = data.FileName;
+            list = list.Where(subtitle => SceneMatchesFileName(subtitle.Scene, fileName));
         }
 
         return await list.AnyAsync(token);
+    }
+
+    /// <summary>
+    /// Checks whether any release-group token from the subtitle Scene appears in the file name.
+    /// Scene tokens are separated by '+', '.', '-' or ',' (comma after the '+' normalization);
+    /// each token is trimmed and empty tokens are ignored so they cannot match every file name.
+    /// </summary>
+    internal static bool SceneMatchesFileName(string scene, string fileName)
+    {
+        var lowerFileName = fileName.ToLowerInvariant();
+        return scene.ToLowerInvariant()
+                    .Split('+', '.', '-', ',')
+                    .Select(version => version.Trim())
+                    .Any(version => version.Length > 0 && lowerFileName.Contains(version));
     }
 
     public readonly record struct JobData(long ShowId, int Season, int Episode, Culture.Model.Culture? Language, string? FileName) : IUniqueKey
