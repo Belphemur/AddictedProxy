@@ -1,3 +1,15 @@
+## [5.1.0](https://github.com/Belphemur/AddictedProxy/compare/v5.0.3...v5.1.0) (2026-08-10)
+
+### Bug Fixes
+
+* **episode:** use correct Addic7ed show external ID for episode refresh ([b54d3ff](https://github.com/Belphemur/AddictedProxy/commit/b54d3ffb1474313dbd201e56dba8bb2ec95dd4bc))
+* Not refreshing the right show ID ([e6a4457](https://github.com/Belphemur/AddictedProxy/commit/e6a445788f6a0f2c8ddf154ed9c66514f98c12ba))
+* possible parsing issue with season ([60e7acc](https://github.com/Belphemur/AddictedProxy/commit/60e7accd83044604e89e7402f959b8653fdbad92))
+
+### Features
+
+* **migrations:** purge seasons pollinated by Addic7ed showID=0 ([b564a6e](https://github.com/Belphemur/AddictedProxy/commit/b564a6ed25b7e8567254e6dda2403444c547c2c4))
+
 ## [5.0.3](https://github.com/Belphemur/AddictedProxy/compare/v5.0.2...v5.0.3) (2026-08-09)
 
 ### Bug Fixes
