@@ -233,6 +233,29 @@ record ErrorResponse(string Error);
 
 The API is **public** — no authentication is required for any endpoint. Rate limiting is applied at the proxy/infrastructure level.
 
+## CORS
+
+Cross-origin requests are governed by a single policy configured in `BootstrapController` (`AddictedProxy/Controllers/Bootstrap/BootstrapController.cs`).
+
+- **Allowed origins** come from the `Cors:AllowedOrigins` array in `appsettings.json`. Entries may use a wildcard subdomain (e.g. `https://*.example.com`), matched via ASP.NET Core's `SetIsOriginAllowedToAllowWildcardSubdomains()`. The scheme is part of the origin, so `http://` variants are rejected unless explicitly listed.
+- **Methods & headers**: any method and any request header are allowed.
+- **Credentials**: allowed (`AllowCredentials()`), which is why the origin list can never be `*`.
+- **Exposed headers**: `Content-Disposition` (subtitle download filename), `sentry-trace` and `baggage` (distributed tracing propagation).
+- **Development environment**: any origin is accepted to ease local development.
+
+Default allowed origins:
+
+| Origin pattern                       | Covers                                    |
+| ------------------------------------ | ----------------------------------------- |
+| `https://gestdown.info`              | Production frontend (apex)                |
+| `https://*.gestdown.info`            | Production frontend subdomains            |
+| `https://addictedproxy.pages.dev`    | Cloudflare Pages deployment (apex)        |
+| `https://*.addictedproxy.pages.dev`  | Cloudflare Pages preview deployments      |
+| `https://subvault.tv`                | SubVault frontend (apex)                  |
+| `https://*.subvault.tv`              | SubVault subdomains                       |
+
+To allow a new origin, add it to `Cors:AllowedOrigins` in `appsettings.json` (or via environment variables, e.g. `A7D_Cors__AllowedOrigins__0`) and redeploy.
+
 ## Response Caching Strategy
 
 | Content Type            | Cache Duration | Rationale                                    |

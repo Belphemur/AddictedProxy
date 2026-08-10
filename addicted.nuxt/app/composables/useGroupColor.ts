@@ -31,10 +31,12 @@ export const useGroupColor = () => {
 };
 
 /**
- * Split a comma-separated version string into individual release group names.
+ * Split a version string into individual release group names.
+ * Handles comma-separated groups (SuperSubtitles) and legacy
+ * '+'-separated groups (Addic7ed).
  */
 export const parseReleaseGroups = (version: string): string[] =>
   version
-    .split(",")
+    .split(/[+,]/)
     .map((s) => s.trim())
     .filter(Boolean);

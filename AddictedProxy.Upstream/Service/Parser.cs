@@ -219,7 +219,7 @@ public partial class Parser
                 var languageIsoCode = (await _cultureParser.FromStringAsync(subtitleRow.Language, token))?.Name;
                 subtitles.Add(new Subtitle
                 {
-                    Scene = subtitleRow.Scene.Trim(),
+                    Scene = NormalizeScene(subtitleRow.Scene),
                     Corrected = subtitleRow.Corrected,
                     DownloadUri = subtitleRow.DownloadUri,
                     Qualities = subtitleRow.HD ? VideoQuality.Q720P | VideoQuality.Q1080P : VideoQuality.None,
@@ -238,5 +238,16 @@ public partial class Parser
             episode.Subtitles = subtitles;
             yield return episode;
         }
+    }
+
+    /// <summary>
+    /// Addic7ed joins multiple release groups with '+' in the version column
+    /// (e.g. "NTb+playWEB+Kitsune"). Splits them into the comma-separated format
+    /// used by the SuperSubtitles source.
+    /// </summary>
+    private static string NormalizeScene(string scene)
+    {
+        var groups = scene.Split('+', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return groups.Length > 0 ? string.Join(", ", groups) : scene.Trim();
     }
 }
