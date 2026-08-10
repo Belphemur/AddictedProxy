@@ -96,7 +96,7 @@ public partial class Parser
             throw new NothingToParseException("No season found", null);
         }
 
-        if (selectSeason.Options.Length == 1)
+        if (selectSeason.Options.Length == 1 && !int.TryParse(selectSeason.Options[0].Value, out _))
         {
             throw new NothingToParseException("No season found", null);
         }

@@ -24,10 +24,10 @@ public class TvShow : BaseEntity, IDiscoverableObject
     public long ExternalId { get; set; }
     public string Name { get; set; }
 
-    public virtual IList<Episode> Episodes { get; set; }
-    public virtual IList<Season> Seasons { get; set; }
-    public virtual IList<ShowExternalId> ExternalIds { get; set; } = [];
-    public virtual IList<SeasonPackSubtitle> SeasonPackSubtitles { get; set; } = [];
+    public virtual ICollection<Episode> Episodes { get; set; }
+    public virtual ICollection<Season> Seasons { get; set; }
+    public virtual ICollection<ShowExternalId> ExternalIds { get; set; } = [];
+    public virtual ICollection<SeasonPackSubtitle> SeasonPackSubtitles { get; set; } = [];
 
     public DateTime LastUpdated { get; set; }
 

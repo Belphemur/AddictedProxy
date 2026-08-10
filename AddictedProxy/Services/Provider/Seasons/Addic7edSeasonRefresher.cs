@@ -77,7 +77,7 @@ internal class Addic7edSeasonRefresher : IProviderSeasonRefresher
 
         await using var credentials = await _credentialsService.GetLeastUsedCredsQueryingAsync(token);
 
-        var seasons = (await _addic7EdClient.GetSeasonsAsync(credentials.AddictedUserCredentials, show, token)).ToArray();
+        var seasons = (await _addic7EdClient.GetSeasonsAsync(credentials.AddictedUserCredentials, externalId, token)).ToArray();
         await _transactionManager.WrapInTransactionAsync(async () =>
         {
             await _seasonRepository.InsertNewSeasonsAsync(show.Id, seasons, token);
