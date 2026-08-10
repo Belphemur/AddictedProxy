@@ -2,17 +2,18 @@
 
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
-using System.Text.RegularExpressions;
+using AddictedProxy.Controllers.Config;
 using AddictedProxy.Controllers.Rest.Serializer;
 using AddictedProxy.Services.Middleware;
 using InversionOfControl.Model;
+using Microsoft.Extensions.Options;
 using Prometheus;
 
 #endregion
 
 namespace AddictedProxy.Controllers.Bootstrap;
 
-public partial class BootstrapController : IBootstrap, IBootstrapApp
+public class BootstrapController : IBootstrap, IBootstrapApp
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
@@ -26,6 +27,7 @@ public partial class BootstrapController : IBootstrap, IBootstrapApp
         services.AddHttpContextAccessor();
         services.AddHttpLogging(_ => { });
         services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
+        services.Configure<CorsConfig>(configuration.GetSection(CorsConfig.SectionName));
     }
 
     public void ConfigureApp(IApplicationBuilder app)
@@ -35,13 +37,14 @@ public partial class BootstrapController : IBootstrap, IBootstrapApp
             endpointRouteBuilder.MapControllers();
         }
 
+        var corsConfig = app.ApplicationServices.GetRequiredService<IOptions<CorsConfig>>().Value;
+
         app.UseCors(policyBuilder =>
         {
             policyBuilder
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials()
-                .SetIsOriginAllowedToAllowWildcardSubdomains()
                 .WithExposedHeaders("Content-Disposition")
                 .WithExposedHeaders("sentry-trace")
                 .WithExposedHeaders("baggage");
@@ -51,7 +54,9 @@ public partial class BootstrapController : IBootstrap, IBootstrapApp
             }
             else
             {
-                policyBuilder.SetIsOriginAllowed(hostname => CorsOriginRegex().IsMatch(hostname));
+                policyBuilder
+                    .WithOrigins(corsConfig.AllowedOrigins)
+                    .SetIsOriginAllowedToAllowWildcardSubdomains();
             }
         });
 
@@ -60,8 +65,4 @@ public partial class BootstrapController : IBootstrap, IBootstrapApp
         app.UseHttpMetrics();
         app.UseAuthorization();
     }
-    
-
-    [GeneratedRegex(@"^(https:\/\/(gestdown\.info|addictedproxy\.pages\.dev|dev\.addictedproxy\.pages\.dev)|.*\.gestdown\.info)$")]
-    private static partial Regex CorsOriginRegex();
 }

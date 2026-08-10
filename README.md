@@ -84,6 +84,7 @@ docker build -t addictedproxy .
 - Settings live in `AddictedProxy/appsettings.json` and `AddictedProxy/appsettings.Development.json`.
 - Environment variable prefix is `A7D_`.
 - SuperSubtitles import/refresh controls are under `SuperSubtitles:Import` (`EnableImport`, `EnableRefresh`, `BatchSize`, delays).
+- CORS allowed origins are under `Cors:AllowedOrigins` (wildcard subdomains supported, e.g. `https://*.example.com`); see [docs/api-surface.md](docs/api-surface.md#cors).
 
 ## Repository highlights
 
