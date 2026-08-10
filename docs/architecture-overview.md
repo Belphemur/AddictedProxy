@@ -207,7 +207,7 @@ season pollution purged once.
 
 - **Environment variables**: Use `A7D_` prefix convention
 - **Settings files**: `appsettings.json` and `appsettings.Development.json`
-- **Key config sections**: Connection strings, PostgreSQL caching, rate limiting, proxy scraping, Sentry, Performance (OpenTelemetry)
+- **Key config sections**: Connection strings, PostgreSQL caching, rate limiting, proxy scraping, Sentry, Performance (OpenTelemetry), CORS allowed origins (`Cors:AllowedOrigins`, see [API Surface — CORS](api-surface.md#cors))
 - **NuGet packages**: Centrally managed in `Directory.Packages.props` at solution root
 
 ## Observability
