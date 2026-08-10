@@ -1,3 +1,9 @@
+## [5.1.1](https://github.com/Belphemur/AddictedProxy/compare/v5.1.0...v5.1.1) (2026-08-10)
+
+### Bug Fixes
+
+* **migrations:** inline season list in raw SQL for showID=0 cleanup ([6102b92](https://github.com/Belphemur/AddictedProxy/commit/6102b92ee9ee984d3c3234adbf49602c8b3db374))
+
 ## [5.1.0](https://github.com/Belphemur/AddictedProxy/compare/v5.0.3...v5.1.0) (2026-08-10)
 
 ### Bug Fixes
