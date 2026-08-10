@@ -80,7 +80,7 @@ public class CleanupAddictedShowIdZeroSeasonsMigration : IMigration
         context.WriteLine($"Found {impactedShowIds.Count} impacted show(s) with bogus seasons from Addic7ed showID=0");
         _logger.LogInformation("Found {Count} impacted show(s) with bogus seasons from Addic7ed showID=0", impactedShowIds.Count);
 
-        var showsReset = await _entityContext.Database.ExecuteSqlAsync(
+        var showsReset = await _entityContext.Database.ExecuteSqlRawAsync(
             $"""
              UPDATE "TvShows"
              SET "LastSeasonRefreshed" = NULL
@@ -98,7 +98,7 @@ public class CleanupAddictedShowIdZeroSeasonsMigration : IMigration
         context.WriteLine($"Nulled LastSeasonRefreshed on {showsReset} show(s)");
         _logger.LogInformation("Nulled LastSeasonRefreshed on {Count} show(s)", showsReset);
 
-        var episodesDeleted = await _entityContext.Database.ExecuteSqlAsync(
+        var episodesDeleted = await _entityContext.Database.ExecuteSqlRawAsync(
             $"""
              DELETE FROM "Episodes" e
              WHERE e."Season" IN ({PollutedSeasonNumbersSql})
@@ -120,7 +120,7 @@ public class CleanupAddictedShowIdZeroSeasonsMigration : IMigration
         context.WriteLine($"Deleted {episodesDeleted} bogus episode(s) (addicted-only external IDs)");
         _logger.LogInformation("Deleted {Count} bogus episode(s) (addicted-only external IDs)", episodesDeleted);
 
-        var seasonsDeleted = await _entityContext.Database.ExecuteSqlAsync(
+        var seasonsDeleted = await _entityContext.Database.ExecuteSqlRawAsync(
             $"""
              DELETE FROM "Seasons" s
              WHERE s."Number" IN ({PollutedSeasonNumbersSql})
