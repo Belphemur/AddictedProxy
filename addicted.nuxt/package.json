@@ -24,7 +24,7 @@
     "@types/webfontloader": "^1.6.38",
     "h3-proxy": "^1.13.0",
     "nuxt": "^4.5.2",
-    "pinia": "^3.0.4",
+    "pinia": "^4.0.0",
     "pinia-plugin-persistedstate": "4.7.1",
     "roboto-fontface": "^0.10.0",
     "swagger-typescript-api": "^13.12.6",
