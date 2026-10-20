@@ -78,15 +78,41 @@ all environments, so its server URL and title must not be literals.
   approach plus copy decisions; the API-side configurability is not blocked by
   them.
 
-## Out of scope (deferred, tracked for the frontend migration)
+## Frontend branding — composable-driven, env-configurable
 
-- `addicted.nuxt/public/robots.txt:4` hardcodes the sitemap URL into the
-  frontend image.
-- Brand/legal copy naming gestdown.info in `dmca.vue`, `privacy.vue`.
-- SEO title `"Gestdown: Subtitles of ..."` in `MediaDetailView.vue:56`.
-- Cloudflare Worker `addicted-cache` (`AddictedProxy.Cloudflare.Worker`) —
-  dormant, not in the serving path; its hardcoded endpoint must not be treated
-  as production configuration.
+A new `addicted.nuxt/app/composables/useSiteBrand.ts` is the single source of
+truth for the user-facing brand. It reads `runtimeConfig.public` and exposes
+`siteName`, `siteUrl`, `siteDomain` (derived from `url`), and `apiDocsUrl`.
+Pages consume it instead of hard-coding the brand, so no brand string is baked
+into static prerender output and every knob is env-overridable.
+
+| Value | `runtimeConfig.public` key | Build env | Runtime env | Default |
+|---|---|---|---|---|
+| Site name | `siteName` | `APP_SITENAME` | `NUXT_PUBLIC_SITENAME` | `Subvault` |
+| Site URL | `url` | `APP_URL` | `NUXT_PUBLIC_URL` | `https://www.subvault.tv` |
+| API docs URL | `apiDocsUrl` | `APP_API_DOCS_URL` | `NUXT_PUBLIC_API_DOCS_URL` | `https://gestdown.readme.io/` (API docs host; the API itself stays `api.gestdown.info`) |
+
+All `Gestdown` brand literals in `app.vue`, `AppBar.vue`, `index.vue`,
+`api.vue`, `MediaDetailView.vue`, `dmca.vue`, `privacy.vue` were replaced with
+`{{ siteName }}` / `` `${siteName}` ``; the API-doc link in `api.vue` now binds
+to `apiDocsUrl`. `robots.txt` still ships in `public/` (the backend
+`RobotsController` route is dormant until the prod DNS switch); only its
+`Sitemap:` URL was repointed to `https://www.subvault.tv/sitemap.xml`.
+
+**Trade-off (coding-philosophy, strict priority):** DRY — one composable funnels
+every brand value instead of N hard-coded copies. The readme.io default is
+retained (not erased) because no subvault-equivalent docs host is known yet;
+*env-configurability* is what removes the "hard-coded" violation, not changing
+the default. KISS: no new abstraction beyond the `runtimeConfig.public` +
+composable idiom already established by `usePageLayout`.
+
+## Remaining out of scope
+
+- Cloudflare Worker `AddictedProxy.Cloudflare.Worker` — dormant, not in the
+  serving path; its endpoint literal (`https://api.gestdown.info`, the API that
+  survives the migration) must not be treated as frontend configuration.
+- Backend `RobotsController.cs` (`/robots.txt`) ships dormant; the Traefik route
+  is deferred pending the prod DNS switch.
 
 ## Production wiring (deploy-time, no image rebuild)
 
