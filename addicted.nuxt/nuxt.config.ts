@@ -104,7 +104,10 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      url: process.env.APP_URL,
+      // Default to www.subvault.tv so prerendered/static pages bake a valid URL
+      // instead of undefined when APP_URL isn't passed at build time. Override
+      // via APP_URL (build) or NUXT_PUBLIC_URL (runtime) — see docs/domain-configurability-plan.md.
+      url: process.env.APP_URL ?? process.env.NUXT_PUBLIC_URL ?? "https://www.subvault.tv",
       ads: {
         enabled: process.env.NUXT_PUBLIC_ADS_ENABLED !== "false",
       },
