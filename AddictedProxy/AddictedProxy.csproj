@@ -24,8 +24,6 @@
         <PackageReference Include="Polly.Core" />
         <PackageReference Include="System.Drawing.Common" />
         <PackageReference Include="System.Linq.Async" />
-        <PackageReference Include="System.Net.Http" />
-        <PackageReference Include="System.Text.RegularExpressions" />
     </ItemGroup>
 
     <ItemGroup>

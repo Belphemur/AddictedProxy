@@ -13,7 +13,6 @@
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
         <PackageReference Include="Community.Microsoft.Extensions.Caching.PostgreSql" />
         <PackageReference Include="Npgsql" />
-        <PackageReference Include="System.Text.Encodings.Web" />
 
     </ItemGroup>
 

@@ -16,7 +16,6 @@
       <PackageReference Include="Hangfire.Console" />
       <PackageReference Include="Hangfire.Core" />
       <PackageReference Include="Newtonsoft.Json" />
-      <PackageReference Include="System.Text.Json" />
     </ItemGroup>
 
 </Project>
