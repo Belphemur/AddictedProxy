@@ -4,7 +4,7 @@ This document defines the visual design patterns, component conventions, and res
 
 ## Tech Stack
 
-- **Framework:** Nuxt 4 (Vue 3.5+), Vuetify 3
+- **Framework:** Nuxt 4 (Vue 3.5+), Vuetify 4
 - **Icons:** `@mdi/js` (tree-shakeable SVG imports per component)
 - **Font:** Google Fonts Roboto (weights: 100, 300, 400, 500, 700, 900)
 - **Theme:** Vuetify `dark` theme (default)
@@ -96,7 +96,7 @@ Use responsive padding classes that scale up at the `sm` breakpoint:
 ### Container Width
 
 ```html
-<v-container fluid class="pa-2 pa-sm-4" style="max-width: 1600px"></v-container>
+<v-container fluid class="pa-2 pa-sm-4" style="max-width: 2200px"></v-container>
 ```
 
 ## Typography
@@ -335,7 +335,7 @@ const layout = usePageLayout();
 // - layout.classes.pageSubtitle: "text-body-2 text-sm-body-1 text-medium-emphasis mt-1"
 // - layout.classes.bodyText: "text-body-2 text-sm-body-1"
 // - layout.classes.sectionHeading: "text-h6 mt-4"
-// - layout.maxWidth: "1600px"
+// - layout.maxWidth: "2200px"
 ```
 
 **Usage in pages and components:**
@@ -379,7 +379,7 @@ The frontend requires a running API to render any meaningful content. Use the mo
 docker compose -f docker-compose.dev.yml up --build
 # Frontend: http://localhost:3000  |  Mock API: http://localhost:8080
 
-# Option B — native Go (Go 1.25 required)
+# Option B — native Go (Go 1.26 required)
 cd mock-server && go run .
 # separate terminal:
 APP_API_PATH=http://localhost:8080 APP_SERVER_PATH=http://localhost:8080 pnpm dev

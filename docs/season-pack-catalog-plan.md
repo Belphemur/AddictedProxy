@@ -1,5 +1,7 @@
 # Season Pack Episode Catalog & Self-Extraction
 
+> **Status as of 2026-10-20:** Implemented — see [`season-pack-catalog-checklist.md`](season-pack-catalog-checklist.md) for item-level status. Additions beyond this plan: `SeasonPackEntry.UniqueId` (Guid, unique index) powering the `sp_{uuid}_entry_{entryUuid}` download scheme, `RangeStart`/`RangeEnd` columns on `SeasonPackSubtitle` (out-of-range episodes rejected without an upstream call), and soft-delete (`DeletedAt`) of season packs when upstream reports the pack is gone.
+
 ## Overview
 
 Introduce a **`SeasonPackEntry`** child table that catalogs every episode file inside each season pack ZIP.
