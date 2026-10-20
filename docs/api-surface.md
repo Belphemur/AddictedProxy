@@ -267,7 +267,11 @@ Cross-origin requests are governed by a single policy configured in `BootstrapCo
 - **Exposed headers**: `Content-Disposition` (subtitle download filename), `sentry-trace` and `baggage` (distributed tracing propagation).
 - **Development environment**: any origin is accepted to ease local development.
 
-Default allowed origins:
+The list lives **only in configuration** (`appsettings.json` /
+`A7D_Cors__AllowedOrigins__*` environment variables) — there is no compiled-in
+fallback. An unconfigured deployment denies all origins (fail closed).
+
+Default allowed origins (`appsettings.json`):
 
 | Origin pattern                       | Covers                                    |
 | ------------------------------------ | ----------------------------------------- |
