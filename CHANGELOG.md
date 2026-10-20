@@ -1,3 +1,13 @@
+## [5.3.0](https://github.com/Belphemur/AddictedProxy/compare/v5.2.0...v5.3.0) (2026-10-20)
+
+### Bug Fixes
+
+* **performance:** drop local AlwaysRecordSampler, use SDK 1.19.1 type ([2926389](https://github.com/Belphemur/AddictedProxy/commit/292638903c357d72b7df0806de8a8cd534ae24db))
+
+### Features
+
+* **config:** make domain-dependent settings fully configurable ([43b068f](https://github.com/Belphemur/AddictedProxy/commit/43b068f765ee95588ceed8d1ae97b04070dd24d0))
+
 ## [5.2.0](https://github.com/Belphemur/AddictedProxy/compare/v5.1.2...v5.2.0) (2026-08-10)
 
 ### Bug Fixes
