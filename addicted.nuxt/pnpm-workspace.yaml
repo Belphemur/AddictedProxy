@@ -3,3 +3,15 @@ allowBuilds:
   bufferutil: true
   esbuild: true
   utf-8-validate: true
+
+# Supply-chain freshness gate (pnpm defaults to 1440 min = 1 day since pnpm 11):
+# a package version must have been public at least this long before install,
+# which blunts typosquatting / account-takeover / dependency-confusion attacks.
+# Keep the default explicit here; use minimumReleaseAgeExclude ONLY for
+# specific, already-reviewed releases CI must install before they age out.
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  # vuetify@4.3.0: published 2026-10-19T21:15Z; Renovate's lockfile bump
+  # (PR #3227) hit the 1-day gate ~2h before it elapsed and blocked the
+  # frontend build. Excluded deliberately, per release — not blanket.
+  - vuetify@4.3.0
