@@ -69,7 +69,7 @@ public class MediaController : Controller
         var genres = await GetGenresCachedAsync(cancellationToken);
 
         var trendingTvShows = _tmdbClient.GetTrendingTvAsync(TimeWindowEnum.week, cancellationToken)
-            .SelectAwait(async searchResult => (ShowDetails: searchResult, MatchedShows: await _tvShowRepository.GetShowsByTmdbIdAsync(searchResult.Id).ToArrayAsync(cancellationToken: cancellationToken)))
+            .Select(async (searchResult, token) => (ShowDetails: searchResult, MatchedShows: await _tvShowRepository.GetShowsByTmdbIdAsync(searchResult.Id).ToArrayAsync(cancellationToken: token)))
             .Where(results => results.MatchedShows.Length > 0)
             .Select(results => (results.ShowDetails, MatchedShow: results.MatchedShows.MaxBy(show => show.Seasons.Count)!))
             .Take(max)
@@ -196,7 +196,7 @@ public class MediaController : Controller
         var lastSeason = show.Seasons.OrderBy(season => season.Number).LastOrDefault();
         if (lastSeason == null)
         {
-            BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, null, CancellationToken.None));
+            BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, null!, CancellationToken.None));
             return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), Array.Empty<EpisodeWithSubtitlesDto>().ToAsyncEnumerable(), null, Array.Empty<SeasonPackSubtitleDto>()));
         }
 

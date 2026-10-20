@@ -16,7 +16,7 @@ public interface IShowRefresher
     Task RefreshShowsAsync(CancellationToken token);
 
     /// <summary>
-    /// Find show having name matching <see cref="search"/>
+    /// Find show having name matching <paramref name="search"/>
     /// </summary>
     /// <param name="search"></param>
     /// <param name="token"></param>

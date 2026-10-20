@@ -157,7 +157,7 @@ public class FetchSubtitlesJob
     {
         var list = episode.Subtitles
                           .ToAsyncEnumerable()
-                          .WhereAwait(async subtitle => data.Language == await _cultureParser.FromStringAsync(subtitle.Language, token));
+                          .Where(async (subtitle, token) => data.Language == await _cultureParser.FromStringAsync(subtitle.Language, token));
         if (data.FileName != null)
         {
             var fileName = data.FileName;

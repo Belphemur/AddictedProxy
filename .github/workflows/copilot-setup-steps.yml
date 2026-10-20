@@ -21,3 +21,12 @@ jobs:
 
       - name: Build
         run: dotnet build -c Release --no-restore
+
+      - name: Setup Node + pnpm
+        uses: ./.github/actions/setup-corepack-pnpm
+
+      - name: Install frontend dependencies
+        run: pnpm --dir addicted.nuxt install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm --dir addicted.nuxt exec playwright install --with-deps chromium webkit

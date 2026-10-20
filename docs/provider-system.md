@@ -23,7 +23,17 @@ public class BootstrapProvider : IBootstrap
         services.AddScoped<SubtitleCounterUpdater>();
         services.AddScoped<IDetailsProvider, DetailsProvider>();
         services.AddScoped<IShowTmdbMapper, ShowTmdbMapper>();
+
+        // Data merging service (used by background jobs for multi-provider ingestion)
         services.AddScoped<IProviderDataIngestionService, ProviderDataIngestionService>();
+
+        // Season pack provider
+        services.AddScoped<ISeasonPackProvider, SeasonPackProvider>();
+        services.AddScoped<ISeasonPackCatalogService, SeasonPackCatalogService>();
+
+        // SuperSubtitles import config
+        services.Configure<SuperSubtitlesImportConfig>(
+            configuration.GetSection(SuperSubtitlesImportConfig.SectionName));
     }
 }
 ```
@@ -60,14 +70,14 @@ public interface ISeasonRefresher
 {
     Task<Season?> GetRefreshSeasonAsync(TvShow show, int seasonNumber, CancellationToken token);
     Task RefreshSeasonsAsync(TvShow show, CancellationToken token = default);
-    bool IsShowNeedsRefresh(TvShow show);
+    Task<bool> IsShowNeedsRefreshAsync(TvShow show, CancellationToken token);
 }
 ```
 
 **Current Implementation (`SeasonRefresher`):**
-- Calls `IAddic7edClient.GetSeasonsAsync()` to fetch seasons from Addic7ed
-- Uses async keyed locking to prevent concurrent refreshes per show
-- Respects `RefreshConfig` for refresh intervals (completed shows are refreshed less frequently)
+- Loads all `ShowExternalId` entries for the show and delegates to `IProviderSeasonRefresher` implementations via `ProviderSeasonRefresherFactory` (`Addic7edSeasonRefresher`, `SuperSubtitlesSeasonRefresher`)
+- The Addic7ed refresher calls `IAddic7edClient.GetSeasonsAsync()` and uses async keyed locking to prevent concurrent refreshes per show
+- Provider refreshers respect `RefreshConfig` for refresh intervals (completed shows are refreshed less frequently)
 
 #### IEpisodeRefresher
 
@@ -78,15 +88,14 @@ public interface IEpisodeRefresher
 {
     Task<Episode?> GetRefreshEpisodeAsync(TvShow show, Season season, int episodeNumber, CancellationToken token);
     Task RefreshEpisodesAsync(TvShow show, IEnumerable<Season> seasonsToRefresh, Func<int, Task> sendProgress, CancellationToken token);
-    bool IsSeasonNeedRefresh(TvShow show, Season season);
+    Task<bool> IsSeasonNeedRefreshAsync(TvShow show, Season season, CancellationToken token);
 }
 ```
 
 **Current Implementation (`EpisodeRefresher`):**
-- Calls `IAddic7edClient.GetEpisodesAsync()` to fetch episodes with their subtitles
-- Processes seasons in parallel (chunks of 2)
-- Upserts episodes and subtitles via `IEpisodeRepository.UpsertEpisodes()`
-- Uses async keyed locking per (showId, seasonId) pair
+- Loads all `ShowExternalId` entries for the show and delegates to `IProviderEpisodeRefresher` implementations via `ProviderEpisodeRefresherFactory` (`Addic7edEpisodeRefresher`, `SuperSubtitlesEpisodeRefresher`)
+- The Addic7ed refresher calls `IAddic7edClient.GetEpisodesAsync()` to fetch episodes with their subtitles, processes seasons in parallel (chunks of 2), and uses async keyed locking per (showId, seasonId) pair
+- Upserts episodes and subtitles via `IProviderDataIngestionService.MergeEpisodesWithSubtitlesAsync()` → `IEpisodeRepository.UpsertEpisodes()`
 
 #### ISubtitleProvider
 
@@ -105,6 +114,7 @@ public interface ISubtitleProvider
 - Falls back to provider-routed download via `SubtitleDownloaderFactory` using `subtitle.Source`
 - Addic7ed downloader relies on the shared `AddSharedResilienceHandler` pipeline for retry, circuit breaker (5xx/401/402/403), and timeout
 - SuperSubtitles downloader calls gRPC `DownloadSubtitle` using `subtitle.ExternalId`
+- A `SubtitleFileDeletedException` from the downloader marks the subtitle via `ISubtitleRepository.TagForRemoval()` and rethrows (the API then returns 404)
 - Stores completed subtitles in background via `StoreSubtitleJob`
 
 #### IDetailsProvider
@@ -114,8 +124,8 @@ Responsible for fetching media details (posters, descriptions, etc.) from TMDB.
 ```csharp
 public interface IDetailsProvider
 {
-    Task<(ShowDetails details, ExternalIds? externalIds)?> GetShowInfoAsync(TvShow show, CancellationToken token);
-    Task<(MovieDetails details, ExternalIds? externalIds)?> GetMovieInfoAsync(TvShow show, CancellationToken token);
+    Task<(ShowDetails Details, ExternalIds? ExternalIds)> GetShowInfoAsync(TvShow show, Func<ShowSearchResult, bool> filter, CancellationToken cancellationToken);
+    Task<(MovieDetails Details, ExternalIds? ExternalIds)> GetMovieInfoAsync(TvShow show, Func<MovieSearchResult, bool> filter, CancellationToken cancellationToken);
 }
 ```
 
@@ -171,8 +181,8 @@ AddictedProxy.Upstream/
 public interface IAddic7edClient
 {
     IAsyncEnumerable<TvShow> GetTvShowsAsync(AddictedUserCredentials creds, CancellationToken token);
-    Task<IEnumerable<Season>> GetSeasonsAsync(AddictedUserCredentials credentials, TvShow show, CancellationToken token);
-    Task<IEnumerable<Episode>> GetEpisodesAsync(AddictedUserCredentials credentials, TvShow show, int season, CancellationToken token);
+    Task<IEnumerable<Season>> GetSeasonsAsync(AddictedUserCredentials credentials, ShowExternalId showExternalId, CancellationToken token);
+    Task<IEnumerable<Episode>> GetEpisodesAsync(AddictedUserCredentials credentials, ShowExternalId showExternalId, int season, CancellationToken token);
     Task<DownloadUsage> GetDownloadUsageAsync(AddictedUserCredentials credentials, CancellationToken token);
     Task<bool> CleanupInbox(AddictedUserCredentials creds, CancellationToken token);
 }
@@ -254,12 +264,13 @@ Addic7ed enforces rate limits per account. The system manages multiple `Addicted
 ```json
 {
     "Refresh": {
-        "SeasonRefresh": "04:00:00",           // How often to refresh season list
+        "SeasonRefresh": "12:00:00",           // How often to refresh season list
         "EpisodeRefresh": {
-            "DefaultRefresh": "12:00:00",       // Default episode refresh interval
-            "LastSeasonRefresh": "01:00:00",    // Latest season refreshed more often
-            "CompletedShowRefresh": "30.00:00:00" // Completed shows refreshed rarely
-        }
+            "DefaultRefresh": "24:00:00",       // Default episode refresh interval
+            "LastSeasonRefresh": "03:00:00",    // Latest season refreshed more often
+            "CompletedShowRefresh": "90.00:00:00" // Completed shows refreshed rarely
+        },
+        "DownloadExceededTimeout": "1"          // Days before a download-exceeded credential can be reused
     }
 }
 ```

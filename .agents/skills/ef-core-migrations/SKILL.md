@@ -1,6 +1,9 @@
 ---
 name: ef-core-migrations
 description: How to create, manage, and troubleshoot EF Core database migrations in the AddictedProxy project. Use this skill whenever asked to generate, apply, remove, or debug Entity Framework Core migrations.
+license: GPL-3.0
+metadata:
+  author: Antoine Aflalo (Belphemur)
 ---
 
 ## Project layout

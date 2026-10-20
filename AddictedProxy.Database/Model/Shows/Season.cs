@@ -16,7 +16,7 @@ public class Season : BaseEntity
     public long TvShowId { get; set; }
 
     [ForeignKey("TvShowId")]
-    public virtual TvShow TvShow { get; set; }
+    public virtual TvShow TvShow { get; set; } = default!; // EF sets this during materialization.
 
     /// <summary>
     ///     Number associated with the season

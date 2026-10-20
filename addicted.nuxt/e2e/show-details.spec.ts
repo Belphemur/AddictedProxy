@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 /**
  * Show details e2e tests against the mock server's fixed catalog.
- * See mock-server/README.md and .github/skills/mock-environment-setup for
+ * See mock-server/README.md and .agents/skills/mock-environment-setup for
  * the full list of mock shows and expected behaviour.
  */
 test.describe("Show details", () => {

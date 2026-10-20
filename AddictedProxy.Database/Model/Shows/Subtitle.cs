@@ -22,9 +22,9 @@ public class Subtitle : BaseEntity, IDiscoverableObject
     public long EpisodeId { get; set; }
 
     [ForeignKey(nameof(EpisodeId))]
-    public virtual Episode Episode { get; set; }
+    public virtual Episode Episode { get; set; } = default!; // EF sets this during materialization.
 
-    public string Scene { get; set; }
+    public required string Scene { get; set; }
 
     public int Version { get; set; }
     public bool Completed { get; set; }
@@ -50,8 +50,8 @@ public class Subtitle : BaseEntity, IDiscoverableObject
     [Obsolete("Use Qualities instead. Will be removed after BackportHdToQualitiesMigration completes.")]
     public bool HD { get; set; }
 
-    public Uri DownloadUri { get; set; }
-    public string Language { get; set; }
+    public required Uri DownloadUri { get; set; }
+    public required string Language { get; set; }
 
     [Column(TypeName = "VARCHAR")]
     [StringLength(7)]

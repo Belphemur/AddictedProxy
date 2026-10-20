@@ -8,7 +8,7 @@ public class ExternalIds
     public  int Id { get; set; }
 
     [JsonPropertyName("imdb_id")]
-    public string ImdbId { get; set; }
+    public string? ImdbId { get; set; }
 
     [JsonPropertyName("freebase_mid")]
     public string? FreebaseMid { get; set; }

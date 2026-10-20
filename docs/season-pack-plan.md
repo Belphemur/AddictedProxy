@@ -1,5 +1,7 @@
 # Plan: Season Pack API + Frontend UX
 
+> **Status as of 2026-10-20:** Implemented — all phases (DTO/repository, `SeasonPackProvider` + `sp_` download routing, controllers, `SeasonPacksSection.vue` + `MediaDetailView.vue`, `docs/api-surface.md` + `docs/frontend-ux-design.md`) exist in the codebase. Post-plan evolution: episode extraction now prefers catalog entries (`sp_{uuid}_entry_{entryUuid}` via `SeasonPackEntry`); `sp_{uuid}_ep_{N}` remains as the legacy/uncataloged fallback — see [`season-pack-catalog-plan.md`](season-pack-catalog-plan.md).
+
 ## TL;DR
 
 Expose season packs via augmented existing responses and a dedicated Bazarr endpoint. Extend the download route with a `sp_` prefix scheme: `sp_{uuid}` returns a full ZIP (frontend), `sp_{uuid}_ep_{N}` extracts a single episode SRT (Bazarr fallback — **no Bazarr provider changes needed**). Add a `SeasonPackProvider` service and build `SeasonPacksSection.vue` in the frontend.

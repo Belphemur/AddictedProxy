@@ -39,8 +39,10 @@ internal class BootstrapRegister : IDisposable
             var parserType = genericTypes[1];
 
             var currentEnvVarRegistrationType = _envVarRegistrationType.MakeGenericType(genericTypes);
-            var currentKeys = (string[])currentEnvVarRegistrationType.GetProperty(nameof(EnvVarRegistration<Void, VoidParser>.Keys))!.GetValue(registration);
-            var lifeTime = (ServiceLifetime)currentEnvVarRegistrationType.GetProperty(nameof(EnvVarRegistration<Void, VoidParser>.Lifetime))!.GetValue(registration);
+            var currentKeys = (string[]?)currentEnvVarRegistrationType.GetProperty(nameof(EnvVarRegistration<Void, VoidParser>.Keys))!.GetValue(registration)
+                              ?? throw new InvalidOperationException($"The env var registration of {currentBootstrapType} doesn't define its Keys.");
+            var lifeTime = (ServiceLifetime)(currentEnvVarRegistrationType.GetProperty(nameof(EnvVarRegistration<Void, VoidParser>.Lifetime))!.GetValue(registration)
+                          ?? throw new InvalidOperationException($"The env var registration of {currentBootstrapType} doesn't define its Lifetime."));
             foreach (var key in currentKeys)
             {
                 if (keys.TryGetValue(key, out var alreadyRegisteredType))
@@ -56,7 +58,8 @@ internal class BootstrapRegister : IDisposable
             {
                 var parser = factory.GetRequiredService(parserType);
                 var keyValues = currentKeys.ToDictionary(s => s, Environment.GetEnvironmentVariable);
-                return parserType.GetMethod(nameof(VoidParser.Parse))!.Invoke(parser, [currentKeys, keyValues]);
+                return parserType.GetMethod(nameof(VoidParser.Parse))!.Invoke(parser, [currentKeys, keyValues])
+                       ?? throw new InvalidOperationException($"The parser {parserType} returned null.");
             }, lifeTime));
         }
 
@@ -70,7 +73,12 @@ internal class BootstrapRegister : IDisposable
                 if (_bootstrapConditionalType.IsAssignableFrom(type))
                 {
                     bootstrap ??= Activator.CreateInstance(type);
-                    if (!((IBootstrapConditional)bootstrap).ShouldLoadBootstrap(configuration))
+                    if (bootstrap is not IBootstrapConditional conditionalBootstrap)
+                    {
+                        throw new InvalidOperationException($"Couldn't instantiate the bootstrap: {type}");
+                    }
+
+                    if (!conditionalBootstrap.ShouldLoadBootstrap(configuration))
                     {
                         Console.Out.WriteLine($"[Bootstrap] Condition not met to load boostrap: {type}");
                         continue;
@@ -82,8 +90,13 @@ internal class BootstrapRegister : IDisposable
                 if (_bootstrapType.IsAssignableFrom(type))
                 {
                     bootstrap ??= Activator.CreateInstance(type);
-                    ((IBootstrap)bootstrap).ConfigureServices(services, configuration, logging);
-                    foreach (var dependency in ((IBootstrap)bootstrap).Dependencies)
+                    if (bootstrap is not IBootstrap bootstrapInstance)
+                    {
+                        throw new InvalidOperationException($"Couldn't instantiate the bootstrap: {type}");
+                    }
+
+                    bootstrapInstance.ConfigureServices(services, configuration, logging);
+                    foreach (var dependency in bootstrapInstance.Dependencies)
                     {
                         RegisterBootstrapServices(services, configuration, logging, dependency);
                     }
@@ -123,12 +136,18 @@ internal class BootstrapRegister : IDisposable
 
             foreach (var type in types)
             {
-                object? bootstrap;
-                if (_bootstrapApp.IsAssignableFrom(type))
+                if (!_bootstrapApp.IsAssignableFrom(type))
                 {
-                    bootstrap = Activator.CreateInstance(type);
-                    ((IBootstrapApp)bootstrap).ConfigureApp(application);
+                    continue;
                 }
+
+                var bootstrap = Activator.CreateInstance(type);
+                if (bootstrap is not IBootstrapApp bootstrapApp)
+                {
+                    throw new InvalidOperationException($"Couldn't instantiate the bootstrap: {type}");
+                }
+
+                bootstrapApp.ConfigureApp(application);
             }
         }
     }
@@ -183,7 +202,8 @@ internal class BootstrapRegister : IDisposable
 
     private class VoidBootstrap : IBootstrapEnvironmentVariable<Void, VoidParser>
     {
-        public EnvVarRegistration<Void, VoidParser> EnvVarRegistration { get; }
+        // Never used: VoidBootstrap only exists to make the env-var registration property name resolvable via nameof().
+        public EnvVarRegistration<Void, VoidParser> EnvVarRegistration { get; } = new(ServiceLifetime.Singleton, "VOID_KEY");
     }
 
     #endregion

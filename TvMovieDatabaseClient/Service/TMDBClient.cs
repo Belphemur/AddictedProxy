@@ -127,7 +127,7 @@ internal class TMDBClient : ITMDBClient
     /// <returns></returns>
     public IAsyncEnumerable<ShowSearchResult> GetTrendingTvAsync(TimeWindowEnum timeWindow = TimeWindowEnum.week, CancellationToken token = default)
     {
-        return PaginateAsync<ShowSearchResult>($"trending/tv/{timeWindow.ToString()}", new Dictionary<string, string>(), token);
+        return PaginateAsync<ShowSearchResult>($"trending/tv/{timeWindow.ToString()}", new Dictionary<string, string?>(), token);
     }
 
     /// <summary>
@@ -154,13 +154,13 @@ internal class TMDBClient : ITMDBClient
 
     private async IAsyncEnumerable<T> SearchAsync<T>(string searchType, string query, [EnumeratorCancellation] CancellationToken token)
     {
-        await foreach (var result in PaginateAsync<T>("search/" + searchType, new Dictionary<string, string> { { "query", query } }, token))
+        await foreach (var result in PaginateAsync<T>("search/" + searchType, new Dictionary<string, string?> { { "query", query } }, token))
         {
             yield return result;
         }
     }
 
-    private async IAsyncEnumerable<T> PaginateAsync<T>(string url, Dictionary<string, string> query, [EnumeratorCancellation] CancellationToken token)
+    private async IAsyncEnumerable<T> PaginateAsync<T>(string url, Dictionary<string, string?> query, [EnumeratorCancellation] CancellationToken token)
     {
         var page = 1;
         const int maxPage = 4;
@@ -169,7 +169,7 @@ internal class TMDBClient : ITMDBClient
 
         do
         {
-            var queryParams = query.Union(new Dictionary<string, string>
+            var queryParams = query.Union(new Dictionary<string, string?>
                                    {
                                        { "language", "en-US" },
                                        { "page", page.ToString() },
@@ -203,7 +203,7 @@ internal class TMDBClient : ITMDBClient
     /// <inheritdoc />
     public async Task<FindByExternalIdResult?> FindByExternalIdAsync(string externalId, string externalSource, CancellationToken token)
     {
-        var queryParams = new Dictionary<string, string>
+        var queryParams = new Dictionary<string, string?>
         {
             { "external_source", externalSource }
         };
@@ -255,9 +255,9 @@ internal class TMDBClient : ITMDBClient
     }
 
 
-    private HttpRequestMessage PrepareRequest(string url, HttpMethod method, Dictionary<string, string>? queryParams = null)
+    private HttpRequestMessage PrepareRequest(string url, HttpMethod method, Dictionary<string, string?>? queryParams = null)
     {
-        queryParams ??= new Dictionary<string, string>();
+        queryParams ??= new Dictionary<string, string?>();
         queryParams["api_key"] = _tmdbConfig.ApiKey;
         var urlWithQueryParams = QueryHelpers.AddQueryString(url, queryParams);
         return new HttpRequestMessage(method, urlWithQueryParams)

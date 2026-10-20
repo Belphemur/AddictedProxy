@@ -6,5 +6,5 @@ namespace TvMovieDatabaseClient.Model.Show;
 public class ShowGenres
 {
     [JsonPropertyName("genres")]
-    public List<Genre> Genres { get; set; }
+    public required List<Genre> Genres { get; set; }
 }

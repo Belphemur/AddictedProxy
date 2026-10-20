@@ -11,14 +11,9 @@ public class CorsConfig
     /// <summary>
     /// Origins allowed to call the API. Entries may use a wildcard subdomain
     /// (e.g. "https://*.example.com"); the scheme is part of the origin.
+    /// Bound from the "Cors:AllowedOrigins" configuration section; falls back
+    /// to an empty list (deny-all) when unconfigured so the API fails closed
+    /// rather than reflecting an unintended origin.
     /// </summary>
-    public string[] AllowedOrigins { get; set; } =
-    [
-        "https://gestdown.info",
-        "https://*.gestdown.info",
-        "https://addictedproxy.pages.dev",
-        "https://*.addictedproxy.pages.dev",
-        "https://subvault.tv",
-        "https://*.subvault.tv"
-    ];
+    public string[]? AllowedOrigins { get; set; }
 }

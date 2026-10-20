@@ -17,7 +17,7 @@ public class OneTimeMigrationRelease : BaseEntity
 
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    public string MigrationType { get; set; }
+    public required string MigrationType { get; set; }
 
     public MigrationState State { get; set; }
 }

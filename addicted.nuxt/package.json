@@ -13,18 +13,18 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "devDependencies": {
-    "@nuxt/devtools": "3.4.1",
-    "@nuxt/scripts": "1.3.3",
+    "@nuxt/devtools": "3.4.4",
+    "@nuxt/scripts": "1.3.12",
     "@nuxtjs/device": "^4.0.0",
     "@nuxtjs/google-fonts": "^3.2.0",
-    "@pinia/nuxt": "0.11.3",
-    "@playwright/test": "^1.62.1",
-    "@sentry/vite-plugin": "^5.4.0",
-    "@types/node": "^25.9.5",
+    "@pinia/nuxt": "1.0.3",
+    "@playwright/test": "^1.64.1",
+    "@sentry/vite-plugin": "^11.8.0",
+    "@types/node": "^26.6.5",
     "@types/webfontloader": "^1.6.38",
     "h3-proxy": "^1.13.0",
-    "nuxt": "^4.5.2",
-    "pinia": "^3.0.4",
+    "nuxt": "^4.6.2",
+    "pinia": "^4.1.0",
     "pinia-plugin-persistedstate": "4.7.1",
     "roboto-fontface": "^0.10.0",
     "swagger-typescript-api": "^13.12.6",
@@ -38,7 +38,7 @@
     "client-zip": "^2.5.0",
     "fetch-retry": "^6.0.0",
     "lodash-es": "^4.18.1",
-    "vuetify": "^4.1.8"
+    "vuetify": "^4.2.6"
   },
-  "packageManager": "pnpm@11.21.0+sha512.521705bce689924eac72f5a3587122f362689ef6571e55ba80076fd637c11132ecffada26fad4ea79c485bfddbfd3d5a2a5b05805a77e893de71ec8a6cca3bb1"
+  "packageManager": "pnpm@12.9.1+sha512.06b055fff5cd20dc12781de173ced3310ce0951bf2ec620211a16045d5444d5c93a663210764ef29a653a610459ba0368f0e74f84d80c54723cf95aae7bc0d6d"
 }

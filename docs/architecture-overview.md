@@ -16,8 +16,8 @@ AddictedProxy (branded as **Gestdown**) is a .NET 10 ASP.NET Core application th
 | Jobs            | Hangfire with PostgreSQL storage                 |
 | Observability   | OpenTelemetry, Sentry, Prometheus                |
 | Compression     | ZstdSharp.Port                                   |
-| Frontend        | Nuxt 4, Vue.js 3, Vuetify 3, pnpm               |
-| Testing         | NUnit 4, NSubstitute, FluentAssertions           |
+| Frontend        | Nuxt 4, Vue.js 3, Vuetify 4, pnpm               |
+| Testing         | NUnit 5, NSubstitute, FluentAssertions           |
 | CI/CD           | GitHub Actions, semantic-release                 |
 | Container       | Docker (Alpine-based), Docker Compose            |
 
@@ -32,6 +32,7 @@ AddictedProxy/                    # Main ASP.NET Core web application (entry poi
 │   ├── Credentials/              # Upstream credential management
 │   ├── Details/                  # Media details (TMDB integration)
 │   ├── Job/                      # Background job infrastructure
+│   ├── Middleware/               # MVC filters (e.g. OperationCancelledExceptionFilter)
 │   └── Sitemap/                  # Sitemap generation
 ├── Migrations/                   # One-time data migrations (not EF schema migrations)
 ├── Model/                        # DTOs and response models
@@ -59,7 +60,7 @@ AddictedProxy.Stats/              # Statistics tracking (show popularity)
 AddictedProxy.Storage/            # Storage abstraction (AWS S3)
 AddictedProxy.Storage.Caching/    # Cached storage layer (combines cache + S3)
 AddictedProxy.Tools.Database/     # Database tooling helpers (transactions)
-AntiCaptcha/                      # CAPTCHA solving integration (DORMANT — still in the repo, but no bootstrap references it; preserved for potential reuse)
+AntiCaptcha/                      # CAPTCHA solving integration (DORMANT — still in the repo, and its `BootstrapAntiCaptcha` exists, but the assembly is not passed to AddBootstrap/UseBootstrap in Program.cs, so nothing gets registered; preserved for potential reuse)
 Compressor/                       # Zstandard compression utilities
 InversionOfControl/               # Custom DI bootstrap framework
 Locking/                          # Async keyed locking utilities
@@ -102,7 +103,8 @@ var currentAssemblies = new[]
     typeof(BootstrapMigration).Assembly,
     typeof(BootstrapImage).Assembly,
     typeof(BootstrapStoreCompression).Assembly,
-    typeof(BootstrapProxyScrape).Assembly
+    typeof(BootstrapProxyScrape).Assembly,
+    typeof(BootstrapSuperSubtitles).Assembly
 };
 
 builder.AddBootstrap(currentAssemblies);

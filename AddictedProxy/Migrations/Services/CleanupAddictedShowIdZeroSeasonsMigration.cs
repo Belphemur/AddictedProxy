@@ -41,8 +41,6 @@ public class CleanupAddictedShowIdZeroSeasonsMigration : IMigration
     /// </summary>
     private static readonly int[] PollutedSeasonNumbers = [0, 3, 5, 8, 9];
 
-    private static readonly string PollutedSeasonNumbersSql = string.Join(", ", PollutedSeasonNumbers);
-
     private readonly EntityContext _entityContext;
     private readonly IBackgroundJobClient _backgroundJobClient;
     private readonly ILogger<CleanupAddictedShowIdZeroSeasonsMigration> _logger;
@@ -80,7 +78,7 @@ public class CleanupAddictedShowIdZeroSeasonsMigration : IMigration
         context.WriteLine($"Found {impactedShowIds.Count} impacted show(s) with bogus seasons from Addic7ed showID=0");
         _logger.LogInformation("Found {Count} impacted show(s) with bogus seasons from Addic7ed showID=0", impactedShowIds.Count);
 
-        var showsReset = await _entityContext.Database.ExecuteSqlRawAsync(
+        var showsReset = await _entityContext.Database.ExecuteSqlAsync(
             $"""
              UPDATE "TvShows"
              SET "LastSeasonRefreshed" = NULL
@@ -91,17 +89,18 @@ public class CleanupAddictedShowIdZeroSeasonsMigration : IMigration
                )
                AND EXISTS (
                    SELECT 1 FROM "Seasons" s
-                   WHERE s."TvShowId" = "TvShows"."Id" AND s."Number" IN ({PollutedSeasonNumbersSql})
+                   WHERE s."TvShowId" = "TvShows"."Id"
+                     AND s."Number" IN ({PollutedSeasonNumbers[0]}, {PollutedSeasonNumbers[1]}, {PollutedSeasonNumbers[2]}, {PollutedSeasonNumbers[3]}, {PollutedSeasonNumbers[4]})
                )
              """, token);
 
         context.WriteLine($"Nulled LastSeasonRefreshed on {showsReset} show(s)");
         _logger.LogInformation("Nulled LastSeasonRefreshed on {Count} show(s)", showsReset);
 
-        var episodesDeleted = await _entityContext.Database.ExecuteSqlRawAsync(
+        var episodesDeleted = await _entityContext.Database.ExecuteSqlAsync(
             $"""
              DELETE FROM "Episodes" e
-             WHERE e."Season" IN ({PollutedSeasonNumbersSql})
+             WHERE e."Season" IN ({PollutedSeasonNumbers[0]}, {PollutedSeasonNumbers[1]}, {PollutedSeasonNumbers[2]}, {PollutedSeasonNumbers[3]}, {PollutedSeasonNumbers[4]})
                AND EXISTS (
                    SELECT 1 FROM "TvShows" t
                    WHERE t."Id" = e."TvShowId"
@@ -120,10 +119,10 @@ public class CleanupAddictedShowIdZeroSeasonsMigration : IMigration
         context.WriteLine($"Deleted {episodesDeleted} bogus episode(s) (addicted-only external IDs)");
         _logger.LogInformation("Deleted {Count} bogus episode(s) (addicted-only external IDs)", episodesDeleted);
 
-        var seasonsDeleted = await _entityContext.Database.ExecuteSqlRawAsync(
+        var seasonsDeleted = await _entityContext.Database.ExecuteSqlAsync(
             $"""
              DELETE FROM "Seasons" s
-             WHERE s."Number" IN ({PollutedSeasonNumbersSql})
+             WHERE s."Number" IN ({PollutedSeasonNumbers[0]}, {PollutedSeasonNumbers[1]}, {PollutedSeasonNumbers[2]}, {PollutedSeasonNumbers[3]}, {PollutedSeasonNumbers[4]})
                AND EXISTS (
                    SELECT 1 FROM "TvShows" t
                    WHERE t."Id" = s."TvShowId"

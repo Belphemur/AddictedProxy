@@ -1,5 +1,7 @@
 # Multi-Provider Architecture Plan: Adding SuperSubtitles
 
+> **Status as of 2026-10-20:** Implemented and shipped — item-level status lives in [`multi-provider-checklist.md`](multi-provider-checklist.md); the only open items are the integration tests. Two deviations from this document: the `ISubtitleSource` / `ISubtitleSourceRegistry` abstraction (Phase 3.1–3.2) was never built — downloads route via `ISubtitleDownloader` + `SubtitleDownloaderFactory`, and refresh routing uses the planned `IProviderShowRefresher` / `IProviderSeasonRefresher` / `IProviderEpisodeRefresher` factories; and the SuperSubtitles jobs live in `AddictedProxy/Services/Provider/SuperSubtitles/Jobs/` (only the gRPC client lives in `SuperSubtitleClient/`).
+
 ## Goal
 
 Enable AddictedProxy to support multiple subtitle providers beyond Addic7ed. The first new provider is **SuperSubtitles** (based on the [SuperSubtitles](https://github.com/Belphemur/SuperSubtitles) project, which scrapes feliratok.eu). Shows from different providers should be **merged** when they represent the same media, so the rest of the app (search, browse, download) works seamlessly regardless of the subtitle source.

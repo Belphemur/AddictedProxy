@@ -20,7 +20,7 @@ One-time **data migrations** (not schema changes) are handled by the `OneTimeMig
 │ UniqueId (Guid, unique, default uuidv7) │
 │ ExternalId (long, legacy)               │  ◄── Legacy Addic7ed show ID (kept for compatibility)
 │ Name (string)                           │
-│ TmdbId (int?, indexed)                  │  ◄── The Movie Database ID
+│ TmdbId (int?)                           │  ◄── The Movie Database ID
 │ TvdbId (int?, indexed)                  │  ◄── TheTVDB ID
 │ Type (ShowType enum)                    │  ◄── Show | Movie
 │ Source (DataSource enum)                │  ◄── Where the show was first discovered
@@ -68,7 +68,9 @@ One-time **data migrations** (not schema changes) are handled by the `OneTimeMig
                       │ CompletionPct (double)                    │
                       │ HearingImpaired (bool)                    │
                       │ Corrected (bool)                          │
-                      │ HD (bool)                                 │
+                      │ HD (bool, legacy/obsolete)                │  ◄── Kept until BackportHdToQualitiesMigration has run
+                      │ Qualities (VideoQuality flags bitmask)    │  ◄── Q720P/Q1080P/Q2160P etc.
+                      │ Release (string?, nullable)               │  ◄── Full release name (SuperSubtitles; null for Addic7ed)
                       │ DownloadUri (Uri, unique)                 │  ◄── Original download URL
                       │ DownloadCount (long)                      │
                       │ StoragePath (string?, nullable)           │  ◄── Path in S3/storage
@@ -91,7 +93,7 @@ The schema also includes provider mapping tables used by the merge pipeline:
 
 - **ShowExternalId**: maps provider `(Source, ExternalId)` values to a single `TvShow` (`Unique: (TvShowId, Source)` and `Unique: (Source, ExternalId)`).
 - **EpisodeExternalId**: maps provider `(Source, ExternalId)` values to a single `Episode` (`Unique: (EpisodeId, Source)` and `Unique: (Source, ExternalId)`).
-- **SeasonPackSubtitle**: stores season-pack subtitles (provider metadata + optional storage path), unique by `(Source, ExternalId)`. Includes `DownloadCount` (long) for download tracking, nullable `DeletedAt` for soft deletion of corrupt packs, and an optional `SeasonId` FK to `Season` (backfilled via one-time migration, resolved during ingestion). Default EF queries exclude rows where `DeletedAt` is not null, and writes use an EF `SaveChangesInterceptor` to translate deletes into soft deletes.
+- **SeasonPackSubtitle**: stores season-pack subtitles (provider metadata + optional storage path), unique by `(Source, ExternalId)` where `ExternalId` is a numeric (`long`) provider ID. Includes `DownloadCount` (long) for download tracking, nullable `DeletedAt` for soft deletion of corrupt packs, and an optional `SeasonId` FK to `Season` (backfilled via one-time migration, resolved during ingestion). Default EF queries exclude rows where `DeletedAt` is not null, and writes use an EF `SaveChangesInterceptor` to translate deletes into soft deletes.
 
 ## Enums
 
@@ -138,7 +140,7 @@ Stores Addic7ed account credentials for authenticated API access. Multiple accou
 ┌──────────────────────────────────────┐
 │     AddictedUserCredentials          │
 ├──────────────────────────────────────┤
-│ Id (PK, long)                        │
+│ Id (PK, int)                         │
 │ Cookie (string, unique)              │  ◄── Session cookie for Addic7ed
 │ Usage (int)                          │  ◄── Query usage counter
 │ DownloadUsage (int)                  │  ◄── Download usage counter
@@ -175,13 +177,13 @@ GetByIdAsync(id)                             // Get by primary key
 GetByGuidAsync(guid)                         // Get by UniqueId
 GetByTvdbIdAsync(tvdbId)                     // Get by TheTVDB ID
 GetAllAsync()                                // All shows
-GetAllHavingSubtitlesAsync()                 // Shows with at least one subtitle
-GetShowsByTmdbIdAsync(tmdbId)                // Get by TMDB ID
+GetShowsByTmdbIdAsync(tmdbIds)               // Get by TMDB ID(s)
 GetShowWithoutTmdbIdAsync()                  // Shows missing TMDB mapping
 GetShowsWithoutTvdbIdWithTmdbIdAsync()       // Shows with TMDB but missing TVDB
-GetCompletedShows()                          // Completed shows
+GetCompletedShows(isCompleted)               // Shows filtered by completion state
 GetDuplicateTvShowByTmdbIdAsync()            // Find duplicate TMDB mappings
 UpsertRefreshedShowsAsync(shows)             // Bulk upsert shows
+InsertShowAsync(show)                        // Insert a single show
 UpdateShowAsync(show)                        // Single show update
 BulkSaveChangesAsync()                       // Batch save
 ```
@@ -189,14 +191,14 @@ BulkSaveChangesAsync()                       // Batch save
 ### IEpisodeRepository
 
 ```csharp
-UpsertEpisodes(episodes)                     // Bulk upsert episodes with subtitles (BulkMergeAsync, used by Addic7ed)
-MergeEpisodeWithSubtitleAsync(episode, sub)  // Atomic single episode+subtitle upsert via raw SQL CTE (used by SuperSubtitles)
+UpsertEpisodes(episodes)                     // Bulk upsert episodes with subtitles + EpisodeExternalIds (EFCore.BulkExtensions BulkMergeAsync with IncludeGraph)
 GetEpisodeUntrackedAsync(showId, season, ep) // Get episode (no change tracking)
+GetSeasonsHavingEpisodesAsync(tvShowIds)     // Set of (TvShowId, Season) pairs that have at least one episode (single AsNoTracking query)
 GetSeasonEpisodesAsync(showId, season)       // All episodes in a season
 GetSeasonEpisodesByLangUntrackedAsync(...)   // Episodes filtered by language
 ```
 
-> **⚠️ Raw SQL:** `MergeEpisodeWithSubtitleAsync` uses a raw SQL CTE (`INSERT ... ON CONFLICT`) that references `Episode`, `Subtitle`, and `EpisodeExternalId` columns by name. When adding, removing, or renaming columns on these entities, you **must** update the SQL manually — the compiler will not catch mismatches.
+> **⚠️ Raw SQL:** `EpisodeExternalIdRepository` uses a raw SQL `INSERT ... ON CONFLICT ("Source", "ExternalId") DO NOTHING` statement that references `EpisodeExternalId` columns by name. When adding, removing, or renaming columns on that entity, you **must** update the SQL manually — the compiler will not catch mismatches.
 
 ### ISeasonRepository
 
@@ -204,15 +206,17 @@ GetSeasonEpisodesByLangUntrackedAsync(...)   // Episodes filtered by language
 InsertNewSeasonsAsync(showId, seasons)        // Insert new seasons
 GetSeasonForShowAsync(showId, seasonNumber)   // Get specific season
 GetSeasonsForShowAsync(showId)                // All seasons for show
+GetSeasonIdLookupAsync(showIds)               // (TvShowId, Number) → SeasonId lookup map
 SaveChangesAsync()                            // Save changes
 UpdateLastRefreshedFromIdAsync(id, date)      // Update refresh timestamp
+DeleteEmptySeasonsForShowAsync(showId)        // Delete seasons of a show that have neither episodes nor season packs
 ```
 
 ### ISubtitleRepository
 
 ```csharp
-GetSubtitleByIdAsync(id, includeEpisode, includeShow)    // Get by PK
-GetSubtitleByGuidAsync(guid, includeEpisode, includeShow) // Get by UniqueId
+GetSubtitleByIdAsync(id)                                  // Get by PK
+GetSubtitleByGuidAsync(guid, withEpisode, withShow)       // Get by UniqueId (optionally including Episode/TvShow)
 SaveChangeAsync()                                         // Save changes
 IncrementDownloadCountAsync(subtitle)                     // Atomic counter increment
 TagForRemoval(subtitle)                                   // Mark for deletion
@@ -224,8 +228,11 @@ TagForRemoval(subtitle)                                   // Mark for deletion
 GetByShowAndSeasonAsync(tvShowId, season)                 // All packs for a show + season
 GetBySourceAndExternalIdAsync(source, externalId)         // Lookup by provider + ID
 GetByUniqueIdAsync(uniqueId)                              // Lookup by UniqueId (for download)
+GetUnstoredByExternalIdsAsync(source, externalIds)        // Packs from a provider with no StoragePath yet
 BulkUpsertAsync(seasonPacks)                              // Bulk upsert (ignores DownloadCount on update)
 IncrementDownloadCountAsync(seasonPackSubtitle)           // Atomic counter increment
+SoftDeleteAsync(seasonPackSubtitle)                       // Set DeletedAt (soft delete of corrupt packs)
+SaveChangeAsync()                                         // Save changes
 ```
 
 ## Database Configuration

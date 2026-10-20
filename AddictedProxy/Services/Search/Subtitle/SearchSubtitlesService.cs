@@ -102,7 +102,7 @@ public class SearchSubtitlesService : ISearchSubtitlesService
         var searchLanguage = (await _cultureParser.FromStringAsync(payload.LanguageIso, token))!;
         var search = episode.Subtitles
                             .ToAsyncEnumerable()
-                            .WhereAwait(async subtitle =>
+                            .Where(async (subtitle, token) =>
                                 subtitle.LanguageIsoCode == searchLanguage.Name || searchLanguage == await _cultureParser.FromStringAsync(subtitle.Language, token));
 
         return await search.ToArrayAsync(token);
@@ -125,6 +125,6 @@ public class SearchSubtitlesService : ISearchSubtitlesService
 
         var jobData = new FetchSubtitlesJob.JobData(show.Id, payload.Season, payload.Episode, language, payload.FileName);
 
-        BackgroundJob.Enqueue<FetchSubtitlesJob>(subtitlesJob => subtitlesJob.ExecuteAsync(jobData, null, default));
+        BackgroundJob.Enqueue<FetchSubtitlesJob>(subtitlesJob => subtitlesJob.ExecuteAsync(jobData, null!, default));
     }
 }

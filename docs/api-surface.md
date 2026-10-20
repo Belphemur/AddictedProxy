@@ -12,8 +12,8 @@ Base URL: `https://api.gestdown.info`
 
 | Method | Route                                                             | Description                                  | Response Cache |
 | ------ | ----------------------------------------------------------------- | -------------------------------------------- | -------------- |
-| `GET`  | `/shows/search/{search}`                                          | Search shows by name (min 3 chars)           | 1 day          |
-| `GET`  | `/shows/external/tvdb/{tvdbId}`                                   | Find show by TheTVDB ID                      | 1 day          |
+| `GET`  | `/shows/search/{search}`                                          | Search shows by name (min 3 chars)           | 2 hours        |
+| `GET`  | `/shows/external/tvdb/{tvdbId}`                                   | Find show by TheTVDB ID                      | 2 hours        |
 | `POST` | `/shows/{showId:guid}/refresh`                                    | Trigger a background refresh of a show       | None           |
 | `GET`  | `/shows/{showId:guid}/{seasonNumber:int}/{language}`              | Get all subtitles for a season in a language | 2 hours        |
 | `GET`  | `/shows/{showId:guid}/{seasonNumber:int}/{language}/season-packs` | Get season pack subtitles for a season       | 2 hours        |
@@ -26,7 +26,7 @@ GET /shows/search/{search}
 
 - **Parameters**: `search` (string, min 3 chars) — show name to search for
 - **Returns**: `ShowSearchResponse` with array of `ShowDto`
-- **Cache**: 1 day
+- **Cache**: 2 hours
 
 #### Get Show by TvDB ID
 
@@ -36,7 +36,7 @@ GET /shows/external/tvdb/{tvdbId}
 
 - **Parameters**: `tvdbId` (int) — TheTVDB identifier
 - **Returns**: `ShowSearchResponse` with matching shows
-- **Cache**: 1 day
+- **Cache**: 2 hours
 
 #### Get Season Subtitles
 
@@ -63,9 +63,9 @@ GET /shows/{showId:guid}/{seasonNumber:int}/{language}/season-packs
 | Method | Route                                                        | Description                             | Response Cache |
 | ------ | ------------------------------------------------------------ | --------------------------------------- | -------------- |
 | `GET`  | `/subtitles/download/{subtitleId}`                           | Download a subtitle file or season pack | 8 days         |
-| `POST` | `/subtitles/search`                                          | Search subtitles (deprecated)           | 2 hours        |
-| `GET`  | `/subtitles/find/{lang}/{show}/{season}/{episode}`           | Find subtitles by name (deprecated)     | 2 hours        |
 | `GET`  | `/subtitles/get/{showId:guid}/{season}/{episode}/{language}` | **Preferred**: Get subtitles by show ID | 2 hours        |
+
+> The legacy name-based endpoints (`POST /subtitles/search`, `GET /subtitles/find/{lang}/{show}/{season}/{episode}`) have been removed — use `/shows/search/{search}` + `/subtitles/get/...` instead.
 
 #### Download Subtitle
 
@@ -76,7 +76,8 @@ GET /subtitles/download/{subtitleId}
 - **Parameters**: `subtitleId` (string) — subtitle's UniqueId or season pack ID
   - Regular subtitle: GUID (e.g., `1086727A-EB71-4B24-A209-7CF22374574D`)
   - Season pack ZIP: `sp_{uuid}` (e.g., `sp_1086727A-EB71-4B24-A209-7CF22374574D`)
-  - Season pack single episode: `sp_{uuid}_ep_{number}` (e.g., `sp_1086727A-EB71-4B24-A209-7CF22374574D_ep_3`)
+  - Season pack single episode (uncataloged): `sp_{uuid}_ep_{number}` (e.g., `sp_1086727A-EB71-4B24-A209-7CF22374574D_ep_3`)
+  - Season pack single entry (cataloged): `sp_{uuid}_entry_{entryUuid}` — extracts a specific file from the catalog
 - **Returns**: SRT file stream (regular/episode) or ZIP archive (season pack)
 - **Headers**: Content-Type `text/srt` or `application/zip`, ETag support, file download name
 - **Error Codes**:
@@ -96,7 +97,9 @@ GET /subtitles/get/{showUniqueId:guid}/{season:int}/{episode:int}/{language}
   - `season` (int, min 0)
   - `episode` (int, min 0)
   - `language` (string, 2+ chars, ISO code)
-- **Returns**: `SubtitleSearchResponse` with matching subtitles. When no episode-level subtitles are found, returns season pack entries as fallback (with `sp_{uuid}_ep_{episode}` IDs that extract the specific episode SRT from the season pack ZIP)
+- **Returns**: `SubtitleSearchResponse` with matching subtitles. When no episode-level subtitles are found, returns season pack entries as fallback:
+  - Cataloged packs → one entry per matching file with `sp_{uuid}_entry_{entryUuid}` IDs (e.g. regular + dubtitle variants)
+  - Uncataloged packs (no entries) → `sp_{uuid}_ep_{episode}` ID that extracts the specific episode SRT from the season pack ZIP
 - **Error Codes**:
   - 404: Show not found
   - 423: Show is being refreshed, try again later
@@ -107,8 +110,10 @@ GET /subtitles/get/{showUniqueId:guid}/{season:int}/{episode:int}/{language}
 | Method | Route                                      | Description                                              | Response Cache |
 | ------ | ------------------------------------------ | -------------------------------------------------------- | -------------- |
 | `GET`  | `/media/trending/{max:range(1,50)}`        | Get trending TV shows/movies                             | 1 day          |
-| `GET`  | `/media/{showId:guid}/details`             | Get media details (poster, overview, etc.)               | 1 day          |
-| `GET`  | `/media/{showId:guid}/episodes/{language}` | Get last season episodes with subtitles and season packs | 2 hours        |
+| `GET`  | `/media/{showId:guid}/details`             | Get media details (poster, overview, etc.)               | 1 day (12 h when not found) |
+| `GET`  | `/media/{showId:guid}/episodes/{language}` | Get last season episodes with subtitles and season packs | 12 hours       |
+
+> Media endpoints set `Cache-Control: public, max-age=...` headers explicitly in the controller rather than via the `[ResponseCache]` attribute.
 
 ### Stats Controller (`/stats`)
 
@@ -123,52 +128,59 @@ Generates XML sitemaps for SEO purposes.
 ### ShowDto
 
 ```csharp
-record ShowDto(
+class ShowDto(
     Guid Id,              // UniqueId
     string Name,
     int NbSeasons,        // Total season count
     int[] Seasons,        // Available season numbers
     int? TvDbId,
-    int? TmdbId,
-    string Slug           // URL-friendly name
-);
+    int? TmdbId)
+{
+    string Slug { get; }  // URL-friendly name (computed from Name)
+}
 ```
 
 ### SubtitleDto
 
 ```csharp
-record SubtitleDto(
-    int Version,
+class SubtitleDto
+{
+    string SubtitleId,     // Subtitle's UniqueId (or sp_-prefixed pack ID)
+    string Version,        // Scene/release name for Addic7ed; Release or Filename for packs
     bool Completed,
     bool HearingImpaired,
     bool Corrected,
-    bool HD,
+    bool HD,               // Derived from Qualities (720p/1080p/2160p present)
     string DownloadUri,    // Relative download URL
-    string Language,
+    string Language,       // English language name
+    DateTime Discovered,
     long DownloadCount,
-    string? Scene          // Release group name
-);
+    string Source,         // e.g., "Addic7ed", "SuperSubtitles"
+    string[] Qualities,    // e.g., ["720p", "1080p"]
+    string? Release        // Full release name (SuperSubtitles; null for Addic7ed)
+}
 ```
 
 ### EpisodeDto
 
 ```csharp
-record EpisodeDto(
+class EpisodeDto
+{
     int Season,
     int Number,
     string Title,
-    string? Show,          // Show name (nullable for inline use)
-    DateTime? Discovered
-);
+    string Show,           // Show name
+    DateTime Discovered
+}
 ```
 
 ### EpisodeWithSubtitlesDto
 
 ```csharp
-record EpisodeWithSubtitlesDto(
-    EpisodeDto Episode,
-    SubtitleDto[] Subtitles
-);
+class EpisodeWithSubtitlesDto : EpisodeDto
+{
+    IEnumerable<SubtitleDto> Subtitles
+}
 ```
 
 ### SubtitleSearchResponse
@@ -183,9 +195,19 @@ record SubtitleSearchResponse(
 ### MediaDetailsDto
 
 ```csharp
-record MediaDetailsDto(
-    ShowDto Show,
-    DetailsDto Details     // Poster, backdrop, overview, genres, vote, year
+record struct MediaDetailsDto(ShowDto Media, DetailsDto? Details);
+
+record DetailsDto(
+    string PosterPath,
+    string Overview,
+    string OriginalName,
+    MediaType MediaType,   // Show | Movie
+    string BackdropPath,
+    double VoteAverage,
+    string[] Genre,
+    string TagLine,
+    int? ReleaseYear,
+    string EnglishName
 );
 ```
 
@@ -197,6 +219,8 @@ record SeasonPackSubtitleDto(
     string Language,
     string Version,        // Release/version name
     string[] ReleaseGroups,// e.g., ["NTb", "FLUX"]
+    int? RangeStart,       // First episode in the pack (from pack metadata or cataloged entries)
+    int? RangeEnd,         // Last episode in the pack
     string? Uploader,
     DateTime? UploadedAt,
     string[] Qualities,    // e.g., ["720p", "1080p"]
@@ -243,7 +267,11 @@ Cross-origin requests are governed by a single policy configured in `BootstrapCo
 - **Exposed headers**: `Content-Disposition` (subtitle download filename), `sentry-trace` and `baggage` (distributed tracing propagation).
 - **Development environment**: any origin is accepted to ease local development.
 
-Default allowed origins:
+The list lives **only in configuration** (`appsettings.json` /
+`A7D_Cors__AllowedOrigins__*` environment variables) — there is no compiled-in
+fallback. An unconfigured deployment denies all origins (fail closed).
+
+Default allowed origins (`appsettings.json`):
 
 | Origin pattern                       | Covers                                    |
 | ------------------------------------ | ----------------------------------------- |
@@ -260,8 +288,9 @@ To allow a new origin, add it to `Cors:AllowedOrigins` in `appsettings.json` (or
 
 | Content Type            | Cache Duration | Rationale                                    |
 | ----------------------- | -------------- | -------------------------------------------- |
-| Show search results     | 1 day          | Show catalog changes infrequently            |
+| Show search results     | 2 hours        | Show catalog changes infrequently            |
 | Media details/trending  | 1 day          | TMDB data is stable                          |
+| Media episodes listing  | 12 hours       | Same as subtitle search, longer TTL          |
 | Subtitle search results | 2 hours        | New subtitles appear periodically            |
 | Season subtitle listing | 2 hours        | Same as subtitle search                      |
 | Subtitle file download  | 8 days         | Subtitle content is immutable once completed |

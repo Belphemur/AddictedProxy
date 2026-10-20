@@ -1,0 +1,31 @@
+# EditorConfig: https://editorconfig.org
+# Baseline only — no formatting enforcement. Every diagnostic below stays at
+# suggestion severity so adopting IDE conventions never becomes a breaking
+# build change or a repo-wide reformat pass.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# C#: 4-space indent (dotnet default).
+[*.cs]
+indent_size = 4
+
+# Go: tabs by convention (mock-server).
+[*.go]
+indent_style = tab
+
+# Markdown: keep trailing whitespace (double-space line breaks).
+[*.{md,markdown}]
+trim_trailing_whitespace = false
+
+# Conservative diagnostics: every Roslyn analyzer rule is advisory only.
+# Nothing here promotes a diagnostic to warning/error, so no existing code
+# fails the build and no formatting pass is forced.
+[*.{cs,vb}]
+dotnet_analyzer_diagnostic.severity = suggestion

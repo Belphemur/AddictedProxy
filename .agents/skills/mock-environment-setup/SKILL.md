@@ -1,6 +1,9 @@
 ---
 name: mock-environment-setup
 description: Step-by-step guide for spinning up the Docker Compose mock environment to develop and test the Nuxt frontend without a real .NET backend or database. Use this skill whenever asked to start, configure, or troubleshoot the local mock dev stack.
+license: GPL-3.0
+metadata:
+  author: Antoine Aflalo (Belphemur)
 ---
 
 The AddictedProxy repository ships a self-contained development stack in

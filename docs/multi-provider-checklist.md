@@ -2,6 +2,8 @@
 
 Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.md).
 
+> **Status as of 2026-10-20:** Phases 1–6, infrastructure, and the season-pack enhancements are implemented and verified against the code. Genuinely open: the three *Testing & Validation* items at the bottom (no integration tests exist yet). Note: `ISubtitleSource` was never implemented — see the Phase 3 annotations below.
+
 ## Phase 1: Database Schema Changes
 
 - [x] Extend `DataSource` enum with `SuperSubtitles` value
@@ -35,7 +37,7 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 
 ## Phase 3: Provider Abstraction Layer
 
-- [x] Create `ISubtitleSource` interface
+- [ ] Create `ISubtitleSource` interface — dropped during implementation: the source abstraction was never built; refresh routing went through `IProviderShowRefresher` / `IProviderSeasonRefresher` / `IProviderEpisodeRefresher` factories instead
 - [x] Create `ISubtitleDownloader` interface (extends `IEnumService<DataSource>`)
 - [x] Create `SubtitleDownloaderFactory` (extends `EnumFactory<DataSource, ISubtitleDownloader>`)
 - [x] Implement `Addic7edSubtitleDownloader` (wraps `IAddic7edDownloader` + `ICredentialsService` with retry/rotation)
@@ -93,7 +95,7 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 - [x] Add project reference to `AddictedProxy.csproj`
 - [x] Add `BootstrapSuperSubtitles` assembly to `Program.cs`
 - [x] Add `SuperSubtitles` config section to `appsettings.json` and `appsettings.Development.json`
-- [x] Implement `SuperSubtitlesSource` (`ISubtitleSource`)
+- [ ] Implement `SuperSubtitlesSource` (`ISubtitleSource`) — never implemented (see Phase 3 note above)
 
 ## Phase 6: API & Frontend Updates
 
@@ -117,7 +119,7 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 - [x] Generate EF Core migration (`AddSeasonPackDownloadCountAndSeasonFk`)
 - [x] Create one-time migration (`BackfillSeasonPackSeasonFkMigration`) to backfill `SeasonId`
 - [x] Register migration in `BootstrapMigration`
-- [ ] Season pack API + frontend (see [Season Pack Plan](season-pack-plan.md))
+- [x] Season pack API + frontend (implemented per [Season Pack Plan](season-pack-plan.md), extended by [Season Pack Catalog Plan](season-pack-catalog-plan.md))
 
 ## Testing & Validation
 
@@ -125,4 +127,4 @@ Progress tracker for the [Multi-Provider Architecture Plan](multi-provider-plan.
 - [x] Unit tests for episode upsert with multi-provider subtitles
 - [ ] Integration test: search merged show returns subtitles from both providers
 - [ ] Integration test: download routes to correct provider
-- [ ] Verify no regressions in existing Addic7ed-only flow
+- [x] Verify no regressions in existing Addic7ed-only flow *(verified 2026-10-20: full solution build 0 errors, 112 unit tests passed / 3 skipped / 0 failed; deeper integration coverage still pending — see the two items above)*

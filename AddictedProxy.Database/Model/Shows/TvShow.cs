@@ -22,10 +22,10 @@ public class TvShow : BaseEntity, IDiscoverableObject
     /// Legacy Addic7ed external ID. Use <see cref="ExternalIds"/> for multi-provider lookups.
     /// </summary>
     public long ExternalId { get; set; }
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
-    public virtual ICollection<Episode> Episodes { get; set; }
-    public virtual ICollection<Season> Seasons { get; set; }
+    public virtual ICollection<Episode> Episodes { get; set; } = []; // EF populates this during materialization.
+    public virtual ICollection<Season> Seasons { get; set; } = []; // EF populates this during materialization.
     public virtual ICollection<ShowExternalId> ExternalIds { get; set; } = [];
     public virtual ICollection<SeasonPackSubtitle> SeasonPackSubtitles { get; set; } = [];
 
