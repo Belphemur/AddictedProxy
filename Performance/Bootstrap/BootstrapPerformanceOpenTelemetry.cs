@@ -17,7 +17,6 @@ using Performance.Service.OpenTelemetry;
 using OpenTelemetry.Trace;
 using Performance.Model;
 using Performance.Service.OpenTelemetry.Processor;
-using Performance.Service.OpenTelemetry.Sampler;
 
 namespace Performance.Bootstrap;
 
