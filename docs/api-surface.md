@@ -6,6 +6,32 @@ AddictedProxy exposes a REST API for searching shows, finding subtitles, and dow
 
 Base URL: `https://api.gestdown.info`
 
+## ID Encoding
+
+All externally visible API `Guid` identifiers (show ids, subtitle ids, season
+pack ids, entry ids) are encoded as **fixed-width base62** strings — 22
+characters over the alphabet `0-9A-Za-z` — before leaving the API edge, and
+decoded strictly on the way in. See
+[2026-10-20-api-id-base62.md](2026-10-20-api-id-base62.md) for the design.
+
+- **Round-trippable**: the server can rebuild the original `Guid` from any id
+  it emitted (`Encode(Decode(x)) == x`).
+- **Canonical & fail-closed**: only the exact canonical byte form decodes.
+  Legacy dashed GUID strings are **rejected** at every surface
+  (routes → 404, JSON/download parsing → 400).
+- **Alphabet**: `0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`
+  (case-sensitive; consumers must preserve case).
+- Composite identifiers keep their `sp_` prefix and `_` separators because the
+  alphabet excludes `_` and `-`; the encoded Guid half is base62:
+
+| Identifier | Format |
+| --- | --- |
+| Show / pack / entry id | `{base62}` (22 chars) |
+| Subtitle regular | `{base62}` |
+| Season pack ZIP | `sp_{base62}` |
+| Episode from pack (uncataloged) | `sp_{base62}_ep_{episodeNumber}` |
+| Entry from pack (cataloged) | `sp_{base62}_entry_{base62}` |
+
 ## REST Endpoints
 
 ### Shows Controller (`/shows`)
@@ -14,9 +40,9 @@ Base URL: `https://api.gestdown.info`
 | ------ | ----------------------------------------------------------------- | -------------------------------------------- | -------------- |
 | `GET`  | `/shows/search/{search}`                                          | Search shows by name (min 3 chars)           | 2 hours        |
 | `GET`  | `/shows/external/tvdb/{tvdbId}`                                   | Find show by TheTVDB ID                      | 2 hours        |
-| `POST` | `/shows/{showId:guid}/refresh`                                    | Trigger a background refresh of a show       | None           |
-| `GET`  | `/shows/{showId:guid}/{seasonNumber:int}/{language}`              | Get all subtitles for a season in a language | 2 hours        |
-| `GET`  | `/shows/{showId:guid}/{seasonNumber:int}/{language}/season-packs` | Get season pack subtitles for a season       | 2 hours        |
+| `POST` | `/shows/{showId:apiId}/refresh`                                    | Trigger a background refresh of a show       | None           |
+| `GET`  | `/shows/{showId:apiId}/{seasonNumber:int}/{language}`              | Get all subtitles for a season in a language | 2 hours        |
+| `GET`  | `/shows/{showId:apiId}/{seasonNumber:int}/{language}/season-packs` | Get season pack subtitles for a season       | 2 hours        |
 
 #### Search Shows
 
@@ -41,20 +67,20 @@ GET /shows/external/tvdb/{tvdbId}
 #### Get Season Subtitles
 
 ```
-GET /shows/{showId:guid}/{seasonNumber:int}/{language}
+GET /shows/{showId:apiId}/{seasonNumber:int}/{language}
 ```
 
-- **Parameters**: `showId` (Guid), `seasonNumber` (int), `language` (string, ISO code)
+- **Parameters**: `showId` (base62-encoded Guid), `seasonNumber` (int), `language` (string, ISO code)
 - **Returns**: `TvShowSubtitleResponse` with episodes, subtitles, and season packs for that season/language
 - **Cache**: 2 hours
 
 #### Get Season Packs
 
 ```
-GET /shows/{showId:guid}/{seasonNumber:int}/{language}/season-packs
+GET /shows/{showId:apiId}/{seasonNumber:int}/{language}/season-packs
 ```
 
-- **Parameters**: `showId` (Guid), `seasonNumber` (int), `language` (string, ISO code)
+- **Parameters**: `showId` (base62-encoded Guid), `seasonNumber` (int), `language` (string, ISO code)
 - **Returns**: `SeasonPackResponse` with season pack subtitles filtered by language
 - **Cache**: 2 hours
 
@@ -63,7 +89,7 @@ GET /shows/{showId:guid}/{seasonNumber:int}/{language}/season-packs
 | Method | Route                                                        | Description                             | Response Cache |
 | ------ | ------------------------------------------------------------ | --------------------------------------- | -------------- |
 | `GET`  | `/subtitles/download/{subtitleId}`                           | Download a subtitle file or season pack | 8 days         |
-| `GET`  | `/subtitles/get/{showId:guid}/{season}/{episode}/{language}` | **Preferred**: Get subtitles by show ID | 2 hours        |
+| `GET`  | `/subtitles/get/{showId:apiId}/{season}/{episode}/{language}` | **Preferred**: Get subtitles by show ID | 2 hours        |
 
 > The legacy name-based endpoints (`POST /subtitles/search`, `GET /subtitles/find/{lang}/{show}/{season}/{episode}`) have been removed — use `/shows/search/{search}` + `/subtitles/get/...` instead.
 
@@ -74,9 +100,9 @@ GET /subtitles/download/{subtitleId}
 ```
 
 - **Parameters**: `subtitleId` (string) — subtitle's UniqueId or season pack ID
-  - Regular subtitle: GUID (e.g., `1086727A-EB71-4B24-A209-7CF22374574D`)
-  - Season pack ZIP: `sp_{uuid}` (e.g., `sp_1086727A-EB71-4B24-A209-7CF22374574D`)
-  - Season pack single episode (uncataloged): `sp_{uuid}_ep_{number}` (e.g., `sp_1086727A-EB71-4B24-A209-7CF22374574D_ep_3`)
+  - Regular subtitle: base62 id (e.g., `3j3OsqLGMsYABUdr7n9XsD`)
+  - Season pack ZIP: `sp_{base62}` (e.g., `sp_3j3OsqLGMsYABUdr7n9XsD`)
+  - Season pack single episode (uncataloged): `sp_{base62}_ep_{number}` (e.g., `sp_3j3OsqLGMsYABUdr7n9XsD_ep_3`)
   - Season pack single entry (cataloged): `sp_{uuid}_entry_{entryUuid}` — extracts a specific file from the catalog
 - **Returns**: SRT file stream (regular/episode) or ZIP archive (season pack)
 - **Headers**: Content-Type `text/srt` or `application/zip`, ETag support, file download name
@@ -89,11 +115,11 @@ GET /subtitles/download/{subtitleId}
 #### Get Subtitles (Preferred Endpoint)
 
 ```
-GET /subtitles/get/{showUniqueId:guid}/{season:int}/{episode:int}/{language}
+GET /subtitles/get/{showUniqueId:apiId}/{season:int}/{episode:int}/{language}
 ```
 
 - **Parameters**:
-  - `showUniqueId` (Guid) — from Shows::Search
+  - `showUniqueId` (base62-encoded Guid) — from Shows::Search
   - `season` (int, min 0)
   - `episode` (int, min 0)
   - `language` (string, 2+ chars, ISO code)
@@ -110,8 +136,8 @@ GET /subtitles/get/{showUniqueId:guid}/{season:int}/{episode:int}/{language}
 | Method | Route                                      | Description                                              | Response Cache |
 | ------ | ------------------------------------------ | -------------------------------------------------------- | -------------- |
 | `GET`  | `/media/trending/{max:range(1,50)}`        | Get trending TV shows/movies                             | 1 day          |
-| `GET`  | `/media/{showId:guid}/details`             | Get media details (poster, overview, etc.)               | 1 day (12 h when not found) |
-| `GET`  | `/media/{showId:guid}/episodes/{language}` | Get last season episodes with subtitles and season packs | 12 hours       |
+| `GET`  | `/media/{showId:apiId}/details`             | Get media details (poster, overview, etc.)               | 1 day (12 h when not found) |
+| `GET`  | `/media/{showId:apiId}/episodes/{language}` | Get last season episodes with subtitles and season packs | 12 hours       |
 
 > Media endpoints set `Cache-Control: public, max-age=...` headers explicitly in the controller rather than via the `[ResponseCache]` attribute.
 
@@ -129,7 +155,7 @@ Generates XML sitemaps for SEO purposes.
 
 ```csharp
 class ShowDto(
-    Guid Id,              // UniqueId
+    Guid Id,              // UniqueId — serialized as fixed-22-char base62 ("15tKKYmsRZNNgPJoOScXfn"), see ID Encoding
     string Name,
     int NbSeasons,        // Total season count
     int[] Seasons,        // Available season numbers
