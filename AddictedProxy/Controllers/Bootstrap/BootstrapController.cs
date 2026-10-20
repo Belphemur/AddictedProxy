@@ -55,7 +55,7 @@ public class BootstrapController : IBootstrap, IBootstrapApp
             else
             {
                 policyBuilder
-                    .WithOrigins(corsConfig.AllowedOrigins)
+                    .WithOrigins(corsConfig.AllowedOrigins ?? [])
                     .SetIsOriginAllowedToAllowWildcardSubdomains();
             }
         });

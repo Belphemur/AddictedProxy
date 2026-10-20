@@ -43,14 +43,14 @@ builder.Services.AddSwaggerGen(options =>
         {
             options.AddServer(new OpenApiServer
             {
-                Url = "https://api.gestdown.info",
+                Url = builder.Configuration["Swagger:ServerUrl"],
                 Description = "Production"
             });
         }
 
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Title = "Gestdown: Addicted Proxy",
+            Title = builder.Configuration["Swagger:Title"] ?? "Gestdown: Addicted Proxy",
             Description = "Provide a full api to search and download subtitles from Addic7ed website.",
             Version = executingAssembly.GetName().Version!.ToString(3)
         });
