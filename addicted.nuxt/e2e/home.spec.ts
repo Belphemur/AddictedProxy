@@ -8,7 +8,7 @@ test.describe("Homepage", () => {
   test("renders the search box and trending shows from the mock server", async ({ page }) => {
     await page.goto("/");
 
-    await expect(page.getByRole("heading", { name: "Gestdown" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Subvault" })).toBeVisible();
     await expect(page.getByRole("textbox", { name: "Name of the show" })).toBeVisible();
 
     await expect(page.getByRole("heading", { name: "Trending" })).toBeVisible();

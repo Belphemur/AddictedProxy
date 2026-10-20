@@ -7,7 +7,7 @@
       </div>
 
       <p :class="layout.classes.bodyText">
-        This Privacy Policy explains how gestdown.info ("we" or "us") collects, uses, and discloses information about
+        This Privacy Policy explains how {{ siteDomain }} ("we" or "us") collects, uses, and discloses information about
         visitors to our website. By using our website, you agree to the terms of this Privacy Policy.
       </p>
 
@@ -117,8 +117,10 @@
 <script lang="ts" setup>
 import { mdiShieldAccount } from "@mdi/js";
 import { usePageLayout } from "~/composables/usePageLayout";
+import { useSiteBrand } from "~/composables/useSiteBrand";
 
 const layout = usePageLayout();
+const { siteName, siteDomain } = useSiteBrand();
 
 // Shared obfuscated email — same word used on both server and client via useState.
 const { email: privacyEmail, canvasWidth } = useObfuscatedEmail("privacy-email-word", "privacy", "admincmd.com");
@@ -137,12 +139,12 @@ definePageMeta({
   order: 50,
   icon: mdiShieldAccount,
 })
-useSeoMeta({
-  title: "Gestdown: Privacy Policy",
-  description: "Privacy Policy of Gestdown",
-  ogDescription: "Privacy Policy of Gestdown",
+useSeoMeta(() => ({
+  title: `${siteName}: Privacy Policy`,
+  description: `Privacy Policy of ${siteName}`,
+  ogDescription: `Privacy Policy of ${siteName}`,
   ogImage: "/img/logo.png"
-})
+}))
 </script>
 
 <style scoped>

@@ -104,7 +104,15 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      url: process.env.APP_URL,
+      // Default to www.subvault.tv so prerendered/static pages bake a valid URL
+      // instead of undefined when APP_URL isn't passed at build time. Override
+      // via APP_URL (build) or NUXT_PUBLIC_URL (runtime) — see docs/domain-configurability-plan.md.
+      url: process.env.APP_URL ?? process.env.NUXT_PUBLIC_URL ?? "https://www.subvault.tv",
+      // Configurable brand name (defaults to the subvault.tv brand). Override at
+      // build time (APP_SITENAME) or runtime (NUXT_PUBLIC_SITENAME). See
+      // composables/useSiteBrand.ts and docs/domain-configurability-plan.md.
+      siteName: process.env.APP_SITENAME ?? process.env.NUXT_PUBLIC_SITENAME ?? "Subvault",
+      apiDocsUrl: process.env.APP_API_DOCS_URL ?? process.env.NUXT_PUBLIC_API_DOCS_URL ?? "https://gestdown.readme.io/",
       ads: {
         enabled: process.env.NUXT_PUBLIC_ADS_ENABLED !== "false",
       },

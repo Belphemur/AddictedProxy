@@ -1,19 +1,22 @@
 <template>
   <NuxtLayout/>
 </template>
-<script lang="ts" setup>
+<script setup lang="ts">
+import { useSiteBrand } from "~/composables/useSiteBrand";
+
+const { siteName } = useSiteBrand();
 useHead({
   htmlAttrs: {
     lang: "en-US",
   }
 })
-useSeoMeta({
+useSeoMeta(() => ({
   ogType: "website",
   ogImage: "/img/Gestdown-logos.jpeg",
   twitterCard: "summary",
   twitterImage: "/img/Gestdown-logos.jpeg",
   ogLocale: "en_US",
-  ogSiteName: "Gestdown: Search and download subtitles from Addic7ed",
-})
+  ogSiteName: `${siteName}: Search and download subtitles from Addic7ed`,
+}))
 
 </script>

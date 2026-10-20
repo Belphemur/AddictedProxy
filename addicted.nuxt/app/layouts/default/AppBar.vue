@@ -2,7 +2,7 @@
   <v-app-bar density="compact" elevation="2" color="rgba(0,0,0,0.7)">
     <v-app-bar-title class="text-body-1 flex-grow-0">
       <v-icon :icon="logo" size="small" />
-      Gestdown
+      {{ siteName }}
     </v-app-bar-title>
 
     <v-spacer />
@@ -19,6 +19,9 @@
 import logo from "@/components/icon/logo.vue";
 import { useRouter } from "vue-router";
 import { orderBy, filter } from "lodash-es";
+import { useSiteBrand } from "~/composables/useSiteBrand";
+
+const { siteName } = useSiteBrand();
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits<{
