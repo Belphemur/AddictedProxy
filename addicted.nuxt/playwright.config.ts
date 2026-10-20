@@ -4,7 +4,7 @@ import { defineConfig, devices } from "@playwright/test";
  * Playwright configuration for AddictedProxy frontend e2e tests.
  *
  * Tests run against the Nuxt app wired to the Go mock server
- * (see mock-server/README.md and .github/skills/mock-environment-setup).
+ * (see mock-server/README.md and .agents/skills/mock-environment-setup).
  *
  * Local usage:
  *   1. Start the mock API:      cd mock-server && go run .
