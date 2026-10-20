@@ -83,7 +83,7 @@ public class CheckCompletedTmdbJob
         
         foreach (var showId in showsToUpdate)
         {
-            BackgroundJob.Enqueue<RefreshSingleShowJob>(job => job.ExecuteAsync(showId, null, default));
+            BackgroundJob.Enqueue<RefreshSingleShowJob>(job => job.ExecuteAsync(showId, null!, default));
         }
         context.WriteLine(string.Format("Enqueued {0} refresh jobs", showsToUpdate.Count));
     }

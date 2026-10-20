@@ -6,22 +6,22 @@ namespace ProxyScrape.Model;
     public class Data
     {
         [JsonPropertyName("account_type")]
-        public string AccountType { get; set; }
+        public required string AccountType { get; set; }
 
         [JsonPropertyName("bandwidth")]
         public int Bandwidth { get; set; }
 
         [JsonPropertyName("campaign_id")]
-        public object CampaignId { get; set; }
+        public object? CampaignId { get; set; }
 
         [JsonPropertyName("discount_applied")]
         public int DiscountApplied { get; set; }
 
         [JsonPropertyName("duration")]
-        public string Duration { get; set; }
+        public required string Duration { get; set; }
 
         [JsonPropertyName("email")]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [JsonPropertyName("expiry_date")]
         public long ExpiryDate { get; set; }
@@ -33,16 +33,16 @@ namespace ProxyScrape.Model;
         public int ExternalSubUserId { get; set; }
 
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
         [JsonPropertyName("time_created")]
         public int TimeCreated { get; set; }
 
         [JsonPropertyName("users")]
-        public List<User> Users { get; set; }
+        public required List<User> Users { get; set; }
 
         [JsonPropertyName("plans")]
-        public List<Plan> Plans { get; set; }
+        public required List<Plan> Plans { get; set; }
     }
 
     public class Plan
@@ -63,13 +63,13 @@ namespace ProxyScrape.Model;
         public int MaxThroughput { get; set; }
 
         [JsonPropertyName("start_date")]
-        public string StartDate { get; set; }
+        public required string StartDate { get; set; }
 
         [JsonPropertyName("end_date")]
-        public string EndDate { get; set; }
+        public required string EndDate { get; set; }
 
         [JsonPropertyName("status")]
-        public string Status { get; set; }
+        public required string Status { get; set; }
 
         [JsonPropertyName("duration")]
         public int Duration { get; set; }
@@ -99,39 +99,38 @@ namespace ProxyScrape.Model;
         public int Duration { get; set; }
 
         [JsonPropertyName("status")]
-        public string Status { get; set; }
+        public required string Status { get; set; }
 
         [JsonPropertyName("created_at")]
-        public string CreatedAt { get; set; }
+        public required string CreatedAt { get; set; }
     }
 
     public class ProxyOverview
     {
         [JsonPropertyName("status")]
-        public string Status { get; set; }
+        public required string Status { get; set; }
 
         [JsonPropertyName("data")]
-        public Data Data { get; set; }
+        public required Data Data { get; set; }
 
         [JsonPropertyName("account_type")]
-        public string AccountType { get; set; }
+        public required string AccountType { get; set; }
 
         [JsonPropertyName("riptide_api_response")]
-        public List<RiptideApiResponse> RiptideApiResponse { get; set; }
+        public required List<RiptideApiResponse> RiptideApiResponse { get; set; }
     }
 
     public class User
     {
         [JsonPropertyName("pp_api_login")]
-        public string PpApiLogin { get; set; }
+        public required string PpApiLogin { get; set; }
 
         [JsonPropertyName("pp_api_password")]
-        public string PpApiPassword { get; set; }
+        public required string PpApiPassword { get; set; }
 
         [JsonPropertyName("proxy_ip")]
-        public string ProxyIp { get; set; }
+        public required string ProxyIp { get; set; }
 
         [JsonPropertyName("proxy_port")]
-        public string ProxyPort { get; set; }
+        public required string ProxyPort { get; set; }
     }
-

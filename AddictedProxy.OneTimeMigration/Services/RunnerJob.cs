@@ -25,8 +25,10 @@ internal class RunnerJob
         _logger = logger;
     }
 
-    public async Task RunMigrationAsync(string migrationType, PerformContext context, CancellationToken token)
+    // PerformContext is injected by Hangfire.Console at job runtime; the caller enqueues it as null.
+    public async Task RunMigrationAsync(string migrationType, PerformContext? context, CancellationToken token)
     {
+        context = context ?? throw new InvalidOperationException("The PerformContext must be injected by Hangfire.Console.");
         context.WriteLine($"Starting migration: {migrationType}");
         using var span = _performanceTracker.BeginNestedSpan("migration");
         span.SetTag("migration.type", migrationType);

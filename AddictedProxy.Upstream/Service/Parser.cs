@@ -127,61 +127,11 @@ public partial class Parser
         foreach (var row in table.Rows.Skip(1))
         {
             if (row.Cells.Length <= 2) continue;
-            var subtitleRow = new SubtitleRow();
-
-            for (var i = 0; i < row.Cells.Length; i++)
+            var subtitleRow = ParseSubtitleRow(row);
+            if (subtitleRow == null)
             {
-                switch (i)
-                {
-                    case 0:
-                        subtitleRow.Season = int.Parse(row.Cells[i].TextContent);
-                        break;
-                    case 1:
-                        subtitleRow.Number = int.Parse(row.Cells[i].TextContent);
-                        break;
-                    case 2:
-                        subtitleRow.Title = row.Cells[i].TextContent;
-                        break;
-                    case 3:
-                        subtitleRow.Language = row.Cells[i].TextContent.Trim();
-                        break;
-                    case 4:
-                        subtitleRow.Scene = row.Cells[i].TextContent;
-                        break;
-                    case 5:
-                        var state = row.Cells[i].TextContent;
-                        var match = CompletionRegex().Match(state);
-                        //Consider the subtitle completed if there isn't a percentage
-                        if (!match.Success)
-                        {
-                            subtitleRow.Completed = true;
-                            subtitleRow.CompletionPercentage = 100;
-                            break;
-                        }
-
-                        subtitleRow.CompletionPercentage = double.Parse(match.Groups["completion"].Value);
-
-                        break;
-                    case 6:
-                        subtitleRow.HearingImpaired = row.Cells[i].TextContent.Length > 0;
-                        break;
-                    case 7:
-                        subtitleRow.Corrected = row.Cells[i].TextContent.Length > 0;
-                        break;
-                    case 8:
-                        subtitleRow.HD = row.Cells[i].TextContent.Length > 0;
-                        break;
-                    case 9:
-                        var downloadUri = row.Cells[i].FirstElementChild.Attributes["href"].Value;
-                        var splitOnSlash = downloadUri
-                            .Replace("/updated/", "")
-                            .Replace("/original/", "")
-                            .Split('/');
-                        subtitleRow.EpisodeId = int.Parse(splitOnSlash[1]);
-                        subtitleRow.Version = int.Parse(splitOnSlash[^1]);
-                        subtitleRow.DownloadUri = new Uri(downloadUri, UriKind.Relative);
-                        break;
-                }
+                _logger.LogWarning("Couldn't parse subtitle row (missing download link or unexpected column count), skipping it");
+                continue;
             }
 
             subtitlesRows.Add(subtitleRow);
@@ -238,6 +188,54 @@ public partial class Parser
             episode.Subtitles = subtitles;
             yield return episode;
         }
+    }
+
+    /// <summary>
+    /// Parse one row of the season subtitles table.
+    /// The table always renders the same 10 columns; returns null when the row
+    /// doesn't match that layout (logged and skipped by the caller).
+    /// </summary>
+    private SubtitleRow? ParseSubtitleRow(IHtmlTableRowElement row)
+    {
+        var cells = row.Cells;
+        if (cells.Length < 10)
+        {
+            return null;
+        }
+
+        var state = cells[5].TextContent;
+        var match = CompletionRegex().Match(state);
+        //Consider the subtitle completed if there isn't a percentage
+        var completed = !match.Success;
+        var completionPercentage = completed ? 100 : double.Parse(match.Groups["completion"].Value);
+
+        var downloadUri = cells[9].FirstElementChild?.GetAttribute("href");
+        if (downloadUri == null)
+        {
+            return null;
+        }
+
+        var splitOnSlash = downloadUri
+            .Replace("/updated/", "")
+            .Replace("/original/", "")
+            .Split('/');
+
+        return new SubtitleRow
+        {
+            Season = int.Parse(cells[0].TextContent),
+            Number = int.Parse(cells[1].TextContent),
+            Title = cells[2].TextContent,
+            Language = cells[3].TextContent.Trim(),
+            Scene = cells[4].TextContent,
+            Completed = completed,
+            CompletionPercentage = completionPercentage,
+            HearingImpaired = cells[6].TextContent.Length > 0,
+            Corrected = cells[7].TextContent.Length > 0,
+            HD = cells[8].TextContent.Length > 0,
+            DownloadUri = new Uri(downloadUri, UriKind.Relative),
+            EpisodeId = int.Parse(splitOnSlash[1]),
+            Version = int.Parse(splitOnSlash[^1])
+        };
     }
 
     /// <summary>

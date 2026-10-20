@@ -18,12 +18,12 @@ public class Episode : BaseEntity, IDiscoverableObject
     public long TvShowId { get; set; }
 
     [ForeignKey(nameof(TvShowId))]
-    public virtual TvShow TvShow { get; set; }
+    public virtual TvShow TvShow { get; set; } = default!; // EF sets this during materialization.
 
     public int Season { get; set; }
     public int Number { get; set; }
-    public string Title { get; set; }
-    public IList<Subtitle> Subtitles { get; set; }
+    public required string Title { get; set; }
+    public IList<Subtitle> Subtitles { get; set; } = []; // EF populates this during materialization.
     public virtual IList<EpisodeExternalId> ExternalIds { get; set; } = [];
 
     /// <summary>

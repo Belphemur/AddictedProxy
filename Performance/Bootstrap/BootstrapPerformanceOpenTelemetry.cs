@@ -7,9 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
-#if !DEBUG
-using OpenTelemetry.Exporter;
-#endif
 using OpenTelemetry.Resources;
 using Prometheus;
 using Performance.Service;

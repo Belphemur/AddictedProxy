@@ -105,7 +105,7 @@ var forwardedHeadersOptions = new ForwardedHeadersOptions
     ForwardedForHeaderName = app.Configuration.GetSection("Http:RealIpHeader").Get<string>()!,
 };
 forwardedHeadersOptions.KnownProxies.Clear();
-forwardedHeadersOptions.KnownNetworks.Clear();
+forwardedHeadersOptions.KnownIPNetworks.Clear();
 app.UseForwardedHeaders(forwardedHeadersOptions);
 
 app.UseBootstrap(currentAssemblies);

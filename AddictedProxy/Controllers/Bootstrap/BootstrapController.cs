@@ -26,7 +26,7 @@ public class BootstrapController : IBootstrap, IBootstrapApp
                 });
         services.AddHttpContextAccessor();
         services.AddHttpLogging(_ => { });
-        services.AddLogging(opt => { opt.AddConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
+        services.AddLogging(opt => { opt.AddSimpleConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });
         services.Configure<CorsConfig>(configuration.GetSection(CorsConfig.SectionName));
     }
 

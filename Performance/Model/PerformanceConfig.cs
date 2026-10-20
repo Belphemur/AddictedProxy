@@ -9,7 +9,8 @@ public class PerformanceConfig
         None
     }
     public double SampleRate { get; init; }
-    public string Endpoint { get; init; }
+    // Only required when the backend is OpenTelemetry; defaulted so other backends can bind without it.
+    public string Endpoint { get; init; } = string.Empty;
     public BackendType Type { get; init; }
     
     public bool SendLogs { get; init; }

@@ -29,7 +29,14 @@ public enum AlgorithmEnum
     Zstd,
     BrotliWithSignature,
 
-    [Obsolete($"Doesn't have magic number/Signature use {nameof(BrotliWithSignature)} instead. Only here for backward compatibility.")]
+    /// <summary>
+    /// Legacy signature-less Brotli, kept for backward compatibility: used only to
+    /// decompress streams stored before signatures were introduced and as the
+    /// fallback when magic-number detection fails. Never use it to compress new data.
+    /// </summary>
+    // Not [Obsolete]: every remaining usage IS the backward-compatibility path it
+    // describes, and BrotliWithSignature is not a drop-in replacement (its
+    // decompressor skips the magic number, corrupting signature-less streams).
     BrotliDefault,
     ZstdSrtDict
 }

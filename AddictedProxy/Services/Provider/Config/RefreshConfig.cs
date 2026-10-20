@@ -20,7 +20,7 @@ public class RefreshConfig
     }
 
     public TimeSpan SeasonRefresh { get; init; }
-    public Episode EpisodeRefresh { get; init; }
+    public required Episode EpisodeRefresh { get; init; }
 
     /// <summary>
     /// How long before a download exceeded cred can be reused

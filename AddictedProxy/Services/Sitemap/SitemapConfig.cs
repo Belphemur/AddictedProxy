@@ -2,5 +2,5 @@
 
 public class SitemapConfig
 {
-    public string BaseUrl { get; set; }
+    public required string BaseUrl { get; set; }
 }

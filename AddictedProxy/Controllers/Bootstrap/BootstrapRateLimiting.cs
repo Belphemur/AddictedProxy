@@ -47,12 +47,12 @@ public class BootstrapRateLimiting : IBootstrap, IBootstrapApp
                     var lease = context.Lease;
                     if (lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
                     {
-                        context.HttpContext.Response.Headers.Add(HeaderNames.RetryAfter, ((int)retryAfter.TotalSeconds).ToString(NumberFormatInfo.InvariantInfo));
+                        context.HttpContext.Response.Headers.Append(HeaderNames.RetryAfter, ((int)retryAfter.TotalSeconds).ToString(NumberFormatInfo.InvariantInfo));
                     }
 
                     if (lease.TryGetMetadata(MetadataName.ReasonPhrase, out var reason) && reason != null)
                     {
-                        context.HttpContext.Response.Headers.Add("X-Retry-Reason", reason);
+                        context.HttpContext.Response.Headers.Append("X-Retry-Reason", reason);
                     }
 
                     logger.LogWarning("RateLimiting reached for {IP}: {retryAfter}", context.HttpContext.Connection.RemoteIpAddress, retryAfter);

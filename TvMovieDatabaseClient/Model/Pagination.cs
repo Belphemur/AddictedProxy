@@ -9,7 +9,7 @@ public class Pagination<T>
     public int Page { get; set; }
 
     [JsonPropertyName("results")]
-    public IReadOnlyList<T> Results { get; set; }
+    public required IReadOnlyList<T> Results { get; set; }
 
     [JsonPropertyName("total_pages")]
     public int TotalPages { get; set; }

@@ -10,6 +10,9 @@ namespace AddictedProxy.Model.Dto;
 /// <param name="Id"></param>
 /// <param name="Name"></param>
 /// <param name="NbSeasons"></param>
+/// <param name="Seasons"></param>
+/// <param name="TvDbId"></param>
+/// <param name="TmdbId"></param>
 public record ShowDto(Guid Id, string Name, int NbSeasons, int[] Seasons, int? TvDbId, int? TmdbId)
 {
     /// <summary>
