@@ -4,7 +4,7 @@
       <div :class="layout.classes.pageHeading">
         <h1 :class="layout.classes.pageTitle">
           <v-icon :icon="logo" class="mr-1" />
-          Gestdown
+          {{ siteName }}
         </h1>
         <p :class="layout.classes.pageSubtitle">
           Search and download subtitles from <strong>Addic7ed</strong> &amp; <strong>SuperSubtitles</strong>
@@ -37,10 +37,12 @@ import logo from "@/components/icon/logo.vue";
 import type { MediaDetailsDto, ShowDto } from "~/composables/api/data-contracts";
 import { useMedia } from "~/composables/rest/api";
 import { usePageLayout } from "~/composables/usePageLayout";
+import { useSiteBrand } from "~/composables/useSiteBrand";
 import { mdiSearchWeb } from "@mdi/js";
 
 const TRENDING_LIMIT = 12;
 const runtimeConfig = useRuntimeConfig();
+const { siteName } = useSiteBrand();
 const requestUrl = useRequestURL();
 const siteOrigin = runtimeConfig.public.url || requestUrl.origin;
 
@@ -50,13 +52,13 @@ definePageMeta({
   icon: mdiSearchWeb,
 })
 useSeoMeta({
-  title: "Gestdown: Subtitle Aggregator",
+  title: `${siteName}: Subtitle Aggregator`,
   description: "Search and download subtitles from Addic7ed and SuperSubtitles in one place",
   ogDescription: "Search and download subtitles from Addic7ed and SuperSubtitles in one place",
   ogImage: new URL("/img/Gestdown-logos.jpeg", siteOrigin).href,
   ogLocale: "en-US",
-  ogTitle: "Gestdown: Subtitle Aggregator",
-  ogSiteName: "Gestdown: Subtitle Aggregator — Addic7ed & SuperSubtitles",
+  ogTitle: `${siteName}: Subtitle Aggregator`,
+  ogSiteName: `${siteName}: Subtitle Aggregator — Addic7ed & SuperSubtitles`,
   keywords: "subtitles, Addic7ed, SuperSubtitles, subtitle aggregator, download subtitles",
 })
 

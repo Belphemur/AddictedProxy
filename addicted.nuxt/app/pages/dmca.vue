@@ -7,13 +7,13 @@
       </div>
 
       <p :class="layout.classes.bodyText">
-        Gestdown (gestdown.info) is a subtitle search and download service. We respect intellectual property rights
+        {{ siteName }} ({{ siteDomain }}) is a subtitle search and download service. We respect intellectual property rights
         and respond promptly to valid DMCA takedown notices.
       </p>
 
       <h2 :class="layout.classes.sectionHeading">1. About Our Service</h2>
       <p :class="layout.classes.bodyText">
-        Gestdown lets you search and directly download legal subtitle files translated by users for TV shows and
+        {{ siteName }} lets you search and directly download legal subtitle files translated by users for TV shows and
         movies, served from our secure servers. We store subtitle files only — we do not offer, link to, or host
         any video, audio, torrent, or other copyrighted media files. We do not provide any means to source TV
         shows or movies. We carefully review content to ensure copyright compliance and will promptly remove any
@@ -21,10 +21,10 @@
       </p>
       <p :class="layout.classes.bodyText">
         <strong>Important:</strong> We can only remove subtitle files from our website. We have no control over
-        content on other websites, even if those sites reference or mention Gestdown.
+        content on other websites, even if those sites reference or mention {{ siteName }}.
       </p>
       <p :class="layout.classes.bodyText">
-        Gestdown content is for personal use only. Commercial use is strictly prohibited.
+        {{ siteName }} content is for personal use only. Commercial use is strictly prohibited.
       </p>
 
       <h2 :class="layout.classes.sectionHeading">2. Content Attribution</h2>
@@ -34,7 +34,7 @@
         <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer">The Movie Database (TMDB)</a>.
         This content is contributed by the community at TMDB and is used in accordance with
         <a href="https://www.themoviedb.org/api-terms-of-use" target="_blank" rel="noopener noreferrer">TMDB's API terms of use</a>.
-        Gestdown is not endorsed by or affiliated with TMDB.
+        {{ siteName }} is not endorsed by or affiliated with TMDB.
       </p>
 
       <h2 :class="layout.classes.sectionHeading">3. Copyright Infringement</h2>
@@ -90,7 +90,7 @@
 
       <h2 :class="layout.classes.sectionHeading">6. Repeat Infringers</h2>
       <p :class="layout.classes.bodyText">
-        In accordance with the DMCA and other applicable law, Gestdown has adopted a policy of terminating,
+        In accordance with the DMCA and other applicable law, {{ siteName }} has adopted a policy of terminating,
         in appropriate circumstances, access for users who are deemed to be repeat infringers.
       </p>
 
@@ -115,8 +115,10 @@
 <script lang="ts" setup>
 import { mdiGavel } from "@mdi/js";
 import { usePageLayout } from "~/composables/usePageLayout";
+import { useSiteBrand } from "~/composables/useSiteBrand";
 
 const layout = usePageLayout();
+const { siteName, siteDomain } = useSiteBrand();
 
 // useState inside the composable ensures the same word is used on both server and
 // client (prevents hydration mismatch). With swr: 3600 in routeRules, the server
@@ -130,12 +132,12 @@ definePageMeta({
   icon: mdiGavel,
 });
 
-useSeoMeta({
-  title: "Gestdown: DMCA Policy",
-  description: "DMCA Policy and copyright takedown procedure for Gestdown",
-  ogDescription: "DMCA Policy and copyright takedown procedure for Gestdown",
+useSeoMeta(() => ({
+  title: `${siteName}: DMCA Policy`,
+  description: `DMCA Policy and copyright takedown procedure for ${siteName}`,
+  ogDescription: `DMCA Policy and copyright takedown procedure for ${siteName}`,
   ogImage: "/img/logo.png",
-});
+}));
 </script>
 
 <style scoped>

@@ -10,7 +10,7 @@
           </v-row>
           <v-row>
             <v-col>
-              The api documentation has moved to <a href="https://gestdown.readme.io/" target="_blank">Readme</a>
+              The api documentation has moved to <a :href="apiDocsUrl" target="_blank">Readme</a>
             </v-col>
           </v-row>
         </v-sheet>
@@ -22,6 +22,9 @@
 <script type="ts" setup>
 
 import {mdiCodeBraces} from "@mdi/js";
+import { useSiteBrand } from "~/composables/useSiteBrand";
+
+const { siteName, apiDocsUrl } = useSiteBrand();
 
 definePageMeta({
   order: 20,
@@ -29,14 +32,14 @@ definePageMeta({
   name: "Api"
 })
 useSeoMeta({
-  title: "Gestdown: API Documentation",
+  title: () => `${siteName}: API Documentation`,
   description: "API to help you search for subtitle for different show available on Addic7edn",
   ogDescription: "API to help you search for subtitle for different show available on Addic7ed",
   ogImage: "/img/logo.png"
 })
 
 if (process.client) {
-  window.open("https://gestdown.readme.io/", "_blank")
+  window.open(apiDocsUrl, "_blank")
 }
 </script>
 

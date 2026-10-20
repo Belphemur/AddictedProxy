@@ -12,6 +12,7 @@ import { trim } from "~/composables/utils/trim";
 import { downloadZip } from "client-zip";
 import { mevent } from "~/composables/data/event";
 import { usePageLayout } from "~/composables/usePageLayout";
+import { useSiteBrand } from "~/composables/useSiteBrand";
 import { mdiDownload } from "@mdi/js";
 import { last } from "lodash-es";
 
@@ -20,6 +21,7 @@ export interface Props {
 }
 
 const layout = usePageLayout();
+const { siteName } = useSiteBrand();
 const props = defineProps<Props>();
 const mediaApi = useMedia();
 const showsApi = useShows();
@@ -52,8 +54,8 @@ const seoSeasonList = computed(() => {
 });
 
 useSeoMeta({
-  title: () => `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
-  ogTitle: () => `Gestdown: Subtitles of ${mediaInfo.value!.media?.name}`,
+  title: () => `${siteName}: Subtitles of ${mediaInfo.value!.media?.name}`,
+  ogTitle: () => `${siteName}: Subtitles of ${mediaInfo.value!.media?.name}`,
   description: () => `Find all the subtitles in multiple languages like English, French, etc... for your favorite show ${mediaInfo.value!.media?.name}.${seoSeasonList.value}`,
   ogDescription: () => `Find all the subtitles in multiple languages like English, French, etc... for your favorite show ${mediaInfo.value!.media?.name}.${seoSeasonList.value}`,
   ogImage: new URL(imageUrl ?? '', runtimeConfig.public.api.clientUrl).href,
