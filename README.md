@@ -2,7 +2,7 @@
 
 AddictedProxy (Gestdown) is a .NET 10 subtitle platform exposing a public REST API and Nuxt frontend for searching and downloading subtitles.
 
-[![.NET](https://github.com/Belphemur/AddictedProxy/actions/workflows/dotnet.yml/badge.svg)](https://github.com/Belphemur/AddictedProxy/actions/workflows/dotnet.yml)
+[![CI/CD](https://github.com/Belphemur/AddictedProxy/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/Belphemur/AddictedProxy/actions/workflows/ci-cd.yml)
 [![CodeQL](https://github.com/Belphemur/AddictedProxy/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Belphemur/AddictedProxy/actions/workflows/codeql-analysis.yml)
 
 ## What it does today
