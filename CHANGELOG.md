@@ -1,3 +1,10 @@
+## [5.4.0](https://github.com/Belphemur/AddictedProxy/compare/v5.3.0...v5.4.0) (2026-10-20)
+
+### Features
+
+* **config:** default public URL to www.subvault.tv, env-overridable ([e7e094c](https://github.com/Belphemur/AddictedProxy/commit/e7e094c496adc2ca4fcdab21811033ab4858f0d0))
+* **config:** make site name & API docs URL configurable, default to Subvault ([611d40c](https://github.com/Belphemur/AddictedProxy/commit/611d40c49e2a421ebce74b3e1a7d4eae4531dbcb))
+
 ## [5.3.0](https://github.com/Belphemur/AddictedProxy/compare/v5.2.0...v5.3.0) (2026-10-20)
 
 ### Bug Fixes
