@@ -1,6 +1,6 @@
 ---
 name: backend-testing
-description: How to write and run .NET unit tests in AddictedProxy (NUnit 4 + NSubstitute + FluentAssertions). Use this skill whenever asked to add, update, fix, or debug .NET unit tests, or when a CI test failure needs investigation.
+description: How to write and run .NET unit tests in AddictedProxy (NUnit 5 + NSubstitute + FluentAssertions). Use this skill whenever asked to add, update, fix, or debug .NET unit tests, or when a CI test failure needs investigation.
 license: GPL-3.0
 metadata:
   author: Antoine Aflalo (Belphemur)
@@ -12,10 +12,10 @@ metadata:
 
 | Concern     | Choice                                    | Pinned in                    |
 | ----------- | ------------------------------------------ | ----------------------------- |
-| Framework   | NUnit 4 + `NUnit3TestAdapter`              | `Directory.Packages.props`    |
-| Mocking     | NSubstitute                                | `Directory.Packages.props`    |
-| Assertions  | FluentAssertions (5 of 7 projects)         | `Directory.Packages.props`    |
-| Coverage    | coverlet.collector (except 2 projects)     | `Directory.Packages.props`    |
+| Framework   | NUnit 5.0.0 + `NUnit3TestAdapter` 6.3.1    | `Directory.Packages.props`    |
+| Mocking     | NSubstitute 6.2.0                          | `Directory.Packages.props`    |
+| Assertions  | FluentAssertions 8.11.0 (5 of 7 projects)  | `Directory.Packages.props`    |
+| Coverage    | coverlet.collector 10.1.0 (all 7 projects) | `Directory.Packages.props`    |
 | Target      | net10.0, Nullable + ImplicitUsings enabled | `Directory.Build.props`       |
 
 ## Test-project map

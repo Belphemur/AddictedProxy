@@ -1,6 +1,6 @@
 ---
 name: coding-philosophy
-description: Mandatory design decision framework for ALL code changes in this repository. Load BEFORE writing or reviewing any code. Orders design trade-offs strictly as DRY over SOLID over KISS and defines how conflicts are resolved.
+description: Mandatory design decision framework for ALL code changes in this repository. You MUST load this skill BEFORE starting ANY code task — writing, editing, reviewing, or planning code — with no exceptions. Orders design trade-offs strictly as DRY over SOLID over KISS and defines how conflicts are resolved.
 license: GPL-3.0
 metadata:
   author: Antoine Aflalo (Belphemur)
@@ -11,9 +11,10 @@ metadata:
 
 This repository's paradigm order is **DRY > SOLID > KISS**. The ordering is the
 point: each principle wins ties against the ones below it. Every non-trivial
-design decision MUST be resolvable in these terms, and the trade must be named
-(commit body, PR description, or design doc) — documenting the order is not
-following it.
+design decision MUST be resolvable in these terms, and the trade MUST be named
+in the commit message or pull-request description of the change that makes it —
+naming it in a design doc alone does not satisfy this requirement.
+Documenting the order is not following it.
 
 ## The precedence rule
 

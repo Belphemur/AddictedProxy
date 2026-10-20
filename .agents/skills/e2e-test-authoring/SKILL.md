@@ -1,6 +1,9 @@
 ---
 name: e2e-test-authoring
 description: How to write and run Playwright end-to-end tests for the AddictedProxy Nuxt frontend against the Go mock server. Use this skill whenever asked to add, update, or debug an e2e test.
+license: GPL-3.0
+metadata:
+  author: Antoine Aflalo (Belphemur)
 ---
 
 The AddictedProxy frontend has a Playwright e2e test suite in

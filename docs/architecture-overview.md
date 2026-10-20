@@ -17,7 +17,7 @@ AddictedProxy (branded as **Gestdown**) is a .NET 10 ASP.NET Core application th
 | Observability   | OpenTelemetry, Sentry, Prometheus                |
 | Compression     | ZstdSharp.Port                                   |
 | Frontend        | Nuxt 4, Vue.js 3, Vuetify 4, pnpm               |
-| Testing         | NUnit 4, NSubstitute, FluentAssertions           |
+| Testing         | NUnit 5, NSubstitute, FluentAssertions           |
 | CI/CD           | GitHub Actions, semantic-release                 |
 | Container       | Docker (Alpine-based), Docker Compose            |
 
