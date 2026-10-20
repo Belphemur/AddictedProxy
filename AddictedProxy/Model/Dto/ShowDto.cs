@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using AddictedProxy.Culture.Extensions;
 using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Model.Api;
 
 namespace AddictedProxy.Model.Dto;
 
@@ -18,8 +20,10 @@ public record ShowDto(Guid Id, string Name, int NbSeasons, int[] Seasons, int? T
     /// <summary>
     /// Unique ID of the show
     /// </summary>
-    /// <example>E9C1FA23-55AF-4711-8E34-3B31E2A75533</example>
+    /// <example>15tKKYmsRZNNgPJoOScXfn</example>
     [Required]
+    [ApiId]
+    [JsonConverter(typeof(GuidBase62JsonConverter))]
     public Guid Id { get; init; } = Id;
 
     /// <summary>
@@ -61,7 +65,11 @@ public record ShowDto(Guid Id, string Name, int NbSeasons, int[] Seasons, int? T
     [Required]
     public string Slug => Name.ToSlug();
 
-    public ShowDto(TvShow show) : this(show.UniqueId, show.Name, show.Seasons.Count, show.Seasons.Select(season => season.Number).ToArray(), show.TvdbId, show.TmdbId)
-    {
-    }
+    /// <summary>
+    /// Factory from an entity. Kept off the constructors so the record has
+    /// exactly one (the JSON binding constructor) — see
+    /// docs/2026-10-20-api-id-base62.md.
+    /// </summary>
+    public static ShowDto From(TvShow show) =>
+        new(show.UniqueId, show.Name, show.Seasons.Count, show.Seasons.Select(season => season.Number).ToArray(), show.TvdbId, show.TmdbId);
 }

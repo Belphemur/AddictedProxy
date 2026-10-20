@@ -26,6 +26,6 @@ public class StatsController : Controller
     [Route("downloads/{top:range(1,50)}")]
     public async Task<Ok<TopShowDto[]>> GetTopDownloads([FromRoute] int top, CancellationToken token)
     {
-        return TypedResults.Ok(await _showPopularityService.GetTopDownloadPopularity(top).Select(record => new TopShowDto(new ShowDto(record.Show), record.TotalDownloads)).ToArrayAsync(token));
+        return TypedResults.Ok(await _showPopularityService.GetTopDownloadPopularity(top).Select(record => new TopShowDto(ShowDto.From(record.Show), record.TotalDownloads)).ToArrayAsync(token));
     }
 }

@@ -2,6 +2,7 @@
 using AddictedProxy.Database.Model;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Model.Api;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Services.Provider.Shows;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -77,7 +78,7 @@ public class MediaController : Controller
             {
                 var show = result.MatchedShow;
                 var showDetails = result.ShowDetails;
-                var showDto = new ShowDto(show);
+                var showDto = ShowDto.From(show);
                 var genreNames = showDetails.GenreIds.Select(i =>
                     {
                         genres.TryGetValue(i, out var genreName);
@@ -127,7 +128,7 @@ public class MediaController : Controller
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    [Route("{showId:guid}/details", Name = nameof(Routes.MediaDetails))]
+    [Route("{showId:apiId}/details", Name = nameof(Routes.MediaDetails))]
     [HttpGet]
     [ProducesResponseType(typeof(MediaDetailsDto), 200)]
     [ProducesResponseType(typeof(string), 429)]
@@ -154,7 +155,7 @@ public class MediaController : Controller
 
         var detailsDto = await _mediaDetailsService.GetDetailsDtoCachedAsync(show, cancellationToken);
 
-        return TypedResults.Ok(new MediaDetailsDto(new ShowDto(show), detailsDto));
+        return TypedResults.Ok(new MediaDetailsDto(ShowDto.From(show), detailsDto));
     }
 
     /// <summary>
@@ -165,7 +166,7 @@ public class MediaController : Controller
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    [Route("{showId:guid}/episodes/{**language}")]
+    [Route("{showId:apiId}/episodes/{**language}")]
     [HttpGet]
     [ProducesResponseType(typeof(MediaDetailsWithEpisodeAndSubtitlesDto), 200)]
     [ProducesResponseType(typeof(string), 429)]
@@ -197,7 +198,7 @@ public class MediaController : Controller
         if (lastSeason == null)
         {
             BackgroundJob.Enqueue<RefreshSingleShowJob>(showJob => showJob.ExecuteAsync(show.Id, null!, CancellationToken.None));
-            return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), Array.Empty<EpisodeWithSubtitlesDto>().ToAsyncEnumerable(), null, Array.Empty<SeasonPackSubtitleDto>()));
+            return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(ShowDto.From(show), await detailsTask), Array.Empty<EpisodeWithSubtitlesDto>().ToAsyncEnumerable(), null, Array.Empty<SeasonPackSubtitleDto>()));
         }
 
         var episodes = _episodeRepository.GetSeasonEpisodesByLangUntrackedAsync(show.Id, searchLanguage, lastSeason.Number)
@@ -221,13 +222,13 @@ public class MediaController : Controller
             .Where(sp => string.Equals(sp.LanguageIsoCode, isoCode, StringComparison.OrdinalIgnoreCase))
             .Select(pack => new SeasonPackSubtitleDto(
                 pack,
-                _generator.GetUriByRouteValues(HttpContext, nameof(Routes.DownloadSubtitle), new { subtitleId = $"sp_{pack.UniqueId}" })
+                _generator.GetUriByRouteValues(HttpContext, nameof(Routes.DownloadSubtitle), new { subtitleId = $"sp_{Base62Id.Encode(pack.UniqueId)}" })
                 ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
                 searchLanguage))
             .OrderBy(dto => dto.RangeStart)
             .ThenBy(dto => dto.SubtitleId)
             .ToArray();
 
-        return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(new ShowDto(show), await detailsTask), episodes, lastSeason.Number, seasonPackDtos));
+        return TypedResults.Ok(new MediaDetailsWithEpisodeAndSubtitlesDto(new MediaDetailsDto(ShowDto.From(show), await detailsTask), episodes, lastSeason.Number, seasonPackDtos));
     }
 }

@@ -3,6 +3,7 @@
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using AddictedProxy.Controllers.Config;
+using AddictedProxy.Controllers.Rest;
 using AddictedProxy.Controllers.Rest.Serializer;
 using AddictedProxy.Services.Middleware;
 using InversionOfControl.Model;
@@ -18,12 +19,24 @@ public class BootstrapController : IBootstrap, IBootstrapApp
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration, ILoggingBuilder logging)
     {
         services.AddControllers()
-                .AddMvcOptions(options => options.Filters.Add<OperationCancelledExceptionFilter>())
+                .AddMvcOptions(options =>
+                {
+                    options.Filters.Add<OperationCancelledExceptionFilter>();
+                    // Path-bound Guid parameters bind from the base62 API encoding
+                    // validated by the `apiId` route constraint (docs/2026-10-20-api-id-base62.md).
+                    options.ModelBinderProviders.Insert(0, new ApiIdRouteModelBinderProvider());
+                })
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.TypeInfoResolver = JsonTypeInfoResolver.Combine(SerializationContext.Default, new DefaultJsonTypeInfoResolver());
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
+        services.AddRouting(options =>
+        {
+            // `{showId:apiId}` — validate inbound base62 API ids and encode Guid
+            // route values in generated links (docs/2026-10-20-api-id-base62.md).
+            options.ConstraintMap["apiId"] = typeof(ApiIdParameterPolicy);
+        });
         services.AddHttpContextAccessor();
         services.AddHttpLogging(_ => { });
         services.AddLogging(opt => { opt.AddSimpleConsole(c => { c.TimestampFormat = "[HH:mm:ss] "; }); });

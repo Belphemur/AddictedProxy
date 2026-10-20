@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Model.Shows;
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Model.Api;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
 using AddictedProxy.Model.Search;
@@ -58,7 +59,7 @@ public class SubtitlesController : Controller
 
 
     /// <summary>
-    /// Download specific subtitle. Supports regular subtitle GUIDs, season pack ZIPs (sp_{uuid}), and single episode extraction from season packs (sp_{uuid}_ep_{N}).
+    /// Download specific subtitle. Supports regular subtitle base62 ids (3h7q...), season pack ZIPs (sp_{base62}, canonical Guid encoding per docs/2026-10-20-api-id-base62.md), and single episode extraction from season packs (sp_{base62}_ep_{N}).
     /// </summary>
     /// <param name="subtitleId">Subtitle identifier: a GUID, sp_{uuid}, or sp_{uuid}_ep_{N}</param>
     /// <param name="token"></param>
@@ -90,8 +91,8 @@ public class SubtitlesController : Controller
             return await DownloadSeasonPackZipAsync(subtitleId, token);
         }
 
-        // Regular subtitle GUID
-        if (!Guid.TryParse(subtitleId, out var guid))
+        // Regular subtitle encoded id
+        if (!Base62Id.TryDecode(subtitleId, out var guid))
         {
             return TypedResults.BadRequest(new ErrorResponse("Invalid subtitle ID format"));
         }
@@ -140,7 +141,7 @@ public class SubtitlesController : Controller
     private async Task<Results<FileStreamHttpResult, NotFound<string>, JsonHttpResult<ErrorResponse>, BadRequest<ErrorResponse>>> DownloadSeasonPackZipAsync(string subtitleId, CancellationToken token)
     {
         var guidStr = subtitleId[SeasonPackPrefix.Length..];
-        if (!Guid.TryParse(guidStr, out var packGuid))
+        if (!Base62Id.TryDecode(guidStr, out var packGuid))
         {
             return TypedResults.BadRequest(new ErrorResponse("Invalid season pack ID format"));
         }
@@ -166,12 +167,12 @@ public class SubtitlesController : Controller
         var packGuidStr = withoutPrefix[..entryIndex];
         var entryGuidStr = withoutPrefix[(entryIndex + EntrySeparator.Length)..];
 
-        if (!Guid.TryParse(packGuidStr, out var packGuid))
+        if (!Base62Id.TryDecode(packGuidStr, out var packGuid))
         {
             return TypedResults.BadRequest(new ErrorResponse("Invalid season pack ID format"));
         }
 
-        if (!Guid.TryParse(entryGuidStr, out var entryGuid))
+        if (!Base62Id.TryDecode(entryGuidStr, out var entryGuid))
         {
             return TypedResults.BadRequest(new ErrorResponse("Invalid season pack entry ID format"));
         }
@@ -197,7 +198,7 @@ public class SubtitlesController : Controller
         var guidStr = withoutPrefix[..epIndex];
         var episodeStr = withoutPrefix[(epIndex + EpisodeSeparator.Length)..];
 
-        if (!Guid.TryParse(guidStr, out var packGuid))
+        if (!Base62Id.TryDecode(guidStr, out var packGuid))
         {
             return TypedResults.BadRequest(new ErrorResponse("Invalid season pack ID format"));
         }
@@ -291,7 +292,7 @@ public class SubtitlesController : Controller
                 // Cataloged: produce one DTO per entry (e.g., regular + dubtitle)
                 foreach (var entry in entriesForEpisode)
                 {
-                    var spSubtitleId = $"{SeasonPackPrefix}{pack.UniqueId}{EntrySeparator}{entry.UniqueId}";
+                    var spSubtitleId = $"{SeasonPackPrefix}{Base62Id.Encode(pack.UniqueId)}{EntrySeparator}{Base62Id.Encode(entry.UniqueId)}";
                     var downloadUri = Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", spSubtitleId } })
                                       ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle");
                     cataloged.Add(new SubtitleDto(pack, entry, downloadUri, language, episode));
@@ -300,7 +301,7 @@ public class SubtitlesController : Controller
             else if (pack.Entries.Count == 0)
             {
                 // Not cataloged yet — graceful degradation: offer the pack-level DTO
-                var spSubtitleId = $"{SeasonPackPrefix}{pack.UniqueId}{EpisodeSeparator}{episode}";
+                var spSubtitleId = $"{SeasonPackPrefix}{Base62Id.Encode(pack.UniqueId)}{EpisodeSeparator}{episode}";
                 var downloadUri = Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", spSubtitleId } })
                                   ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle");
                 uncataloged.Add(new SubtitleDto(pack, downloadUri, language, episode));
@@ -330,7 +331,7 @@ public class SubtitlesController : Controller
     ///
     /// Then use the subtitles/get/ endpoint to get subtitle for the episode you want.
     /// </remarks>
-    [Route("get/{showUniqueId:guid}/{season:int:min(0)}/{episode:int:min(0)}/{**language:minlength(2)}")]
+    [Route("get/{showUniqueId:apiId}/{season:int:min(0)}/{episode:int:min(0)}/{**language:minlength(2)}")]
     [HttpGet]
     [ProducesResponseType(typeof(SubtitleSearchResponse), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 404)]
