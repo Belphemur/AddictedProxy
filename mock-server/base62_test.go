@@ -36,14 +36,22 @@ func TestAPIId_RejectsNonUUID(t *testing.T) {
 		if _, err := APIId(bad); err == nil {
 			t.Errorf("APIId(%q) should fail", bad)
 		}
-		if func() (panicked bool) {
-			defer func() { recover(); panicked = true }()
-			MustAPIId(bad)
-			return false
-		}() != true {
+		if !panics(func() { MustAPIId(bad) }) {
 			t.Errorf("MustAPIId(%q) should panic", bad)
 		}
 	}
+}
+
+// panics reports whether calling f raised a panic (a clean return is *not* a
+// panic — the deferred recover in the closure must distinguish the two).
+func panics(f func()) (panicked bool) {
+	defer func() {
+		if recover() != nil {
+			panicked = true
+		}
+	}()
+	f()
+	return
 }
 
 func TestAPIId_Deterministic(t *testing.T) {

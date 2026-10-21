@@ -60,7 +60,8 @@ Combine the ADR decision record with the repo design-plan format:
 6. **Implementation phases** — table: phase, content, tests. Each phase must
    be an independently landable Conventional Commit **with its tests**.
    Include peripheral work (docs, mock servers, e2e fixtures, deprecation
-   notes) as its own phase — integer work isn't real until listed.
+   notes) as its own phase — later work isn't real until it has a listed
+   phase.
 7. **Verification (definition of done)** — checkbox list; hard gates
    (round-trip invariants, fail-closed behavior on bad input, whole-solution
    test green) plus doc updates and "PR description names the trade".
@@ -88,7 +89,8 @@ Combine the ADR decision record with the repo design-plan format:
 ## Before you finish
 
 - [ ] `coding-philosophy` loaded; every do/don't decision names its principle
-- [ ] File named `docs/YYYY-MM-DD-<slug>.md`, linked from `AGENTS.md`
+- [ ] File named `docs/YYYY-MM-DD-<slug>.md` (or the documented legacy
+  `<topic>-plan.md` exception), linked from `AGENTS.md`
 - [ ] Status/Date/Breaking filled; alternatives table names losing principles
 - [ ] Every phase has tests named (project + class, not "add tests")
 - [ ] "What does NOT change" list present (scope-firewall against creep)
