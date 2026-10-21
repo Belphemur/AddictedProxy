@@ -59,7 +59,8 @@ trade-off (a **KISS-over-SOLID** correctness hole — see
    design note — a pinned section in the PR body or, for reusable decisions, a
    `docs/*-plan.md` entry — stating the chosen approach and the rejected
    alternatives (name the losing principle). Small fixes may skip this at the
-   implementer's judgment.
+   implementer's judgment. For the full-document case (ADR + plan), load the
+   `design-doc-authoring` skill for the repo's naming and document format.
 
 > **No code changes without tests.** Every production change must add or update
 > coverage. See [Testing](#4-testing).
@@ -229,6 +230,7 @@ aspiration.
 | `season-pack-plan.md` | Season pack feature design |
 | `season-pack-catalog-plan.md` | Season pack catalog design |
 | `season-pack-catalog-checklist.md` | Season pack catalog implementation checklist |
+| `2026-10-20-api-id-base62.md` | Base62 API identifiers (ADR + design: Guid → fixed-22 base62 at the API edge) |
 
 ---
 
@@ -249,6 +251,7 @@ into `.agents/skills/` and commit.
 | `e2e-test-authoring` | Playwright e2e for the Nuxt frontend | When writing/fixing frontend e2e | no |
 | `mock-environment-setup` | Docker Compose mock stack for UI dev/e2e | When the mock API is needed | no |
 | `nuxt-scripts-skilld` | `@nuxt/scripts` usage/troubleshooting | When touching Nuxt telemetry scripts | no |
+| `design-doc-authoring` | ADR + design-doc format for this repo (`docs/YYYY-MM-DD-<slug>.md`) | When asked to design a non-trivial change or write a design/plan/ADR | no |
 
 <!-- skilld -->
 Before modifying code, evaluate each installed skill against the current task.

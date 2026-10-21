@@ -65,12 +65,12 @@ Once both services report healthy, open:
 
 - Serves four shows (defined in `data/shows.json`):
 
-  | Show             | ID                                     | Seasons | Notes                                        |
-  | ---------------- | -------------------------------------- | ------- | -------------------------------------------- |
-  | Breaking Bad     | `a1b2c3d4-0001-0001-0001-000000000001` | 1–5     | Full episodes + season packs                 |
-  | Game of Thrones  | `a1b2c3d4-0002-0002-0002-000000000002` | 1–8     | Full episodes + season packs                 |
-  | Succession       | `a1b2c3d4-0003-0003-0003-000000000003` | 1–4     | Full episodes + season packs                 |
-  | Only Season Pack | `a1b2c3d4-0004-0004-0004-000000000004` | 1–2     | **Season packs only — no episode subtitles** |
+  | Show             | Internal fixture UUID                  | External API id (base62) | Seasons | Notes                                        |
+  | ---------------- | -------------------------------------- | ------------------------ | ------- | -------------------------------------------- |
+  | Breaking Bad     | `a1b2c3d4-0001-0001-0001-000000000001` | `4v7SXznCWD5QQLn9P9mSaf` | 1–5     | Full episodes + season packs                 |
+  | Game of Thrones  | `a1b2c3d4-0002-0002-0002-000000000002` | `4v7SXznCcFo1E8yZ6ItWba` | 1–8     | Full episodes + season packs                 |
+  | Succession       | `a1b2c3d4-0003-0003-0003-000000000003` | `4v7SXznCiIWc1w9ynS0acV` | 1–4     | Full episodes + season packs                 |
+  | Only Season Pack | `a1b2c3d4-0004-0004-0004-000000000004` | `4v7SXznCoLFCpjLOUb7edQ` | 1–2     | **Season packs only — no episode subtitles** |
 
 - Each regular show episode returns two subtitle variants (regular + hearing-impaired)
   with alternating `Addic7ed` / `SuperSubtitles` sources and quality chips.
@@ -86,8 +86,12 @@ Navigate to the _Only Season Pack_ show page to verify the "Episodes" header and
 divider are **not** rendered when a season has only season packs:
 
 ```
-/shows/a1b2c3d4-0004-0004-0004-000000000004/only-season-pack
+/shows/4v7SXznCoLFCpjLOUb7edQ/only-season-pack
 ```
+
+(The mock server, like the real backend, keeps dashed UUIDs internally and
+serves/accepts only the canonical base62 form at the API edge —
+see `mock-server/base62.go`.)
 
 Expected: Season Packs section is visible; "Episodes" heading and the horizontal
 divider above it are **absent**.
