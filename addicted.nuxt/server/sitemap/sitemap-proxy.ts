@@ -5,6 +5,6 @@ export default defineEventHandler(
         target: useRuntimeConfig().public.api.serverUrl,
         changeOrigin: false,
         pathRewrite: {},
-        pathFilter: ["/sitemap/**"],
+        pathFilter: ["/sitemap.xml", "/sitemap/**"],
     }),
 )

@@ -86,4 +86,27 @@ test.describe("SEO structured data (JSON-LD)", () => {
     const nodes = extractJsonLdNodes(html);
     expect(nodes.some((node) => node["@type"] === "WebSite")).toBeTruthy();
   });
+
+  test("/llms.txt is served as non-empty text/plain without download URIs", async ({ request }) => {
+    // The Go mock server does not implement the backend sitemap routes, so
+    // locally /llms.txt cannot list show pages (design open item #5) — assert
+    // the served shape; catalog-content verification is post-deploy.
+    const response = await request.get("/llms.txt");
+    expect(response.status()).toBe(200);
+    expect(response.headers()["content-type"]).toContain("text/plain");
+
+    const body = await response.text();
+    expect(body.trim().length).toBeGreaterThan(0);
+    // Download-wall invariant holds for every SEO surface.
+    expect(body).not.toContain("/subtitles/download/");
+  });
+
+  test("/llms-full.txt is served without download URIs", async ({ request }) => {
+    const response = await request.get("/llms-full.txt");
+    expect(response.status()).toBe(200);
+
+    const body = await response.text();
+    expect(body.trim().length).toBeGreaterThan(0);
+    expect(body).not.toContain("/subtitles/download/");
+  });
 });
