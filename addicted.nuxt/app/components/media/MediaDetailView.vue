@@ -66,6 +66,50 @@ useSeoMeta({
   ogType: "website"
 });
 
+// Structured data for LLMs & search engines (design:
+// docs/2026-10-21-llm-discoverability.md). Download-wall invariant: metadata
+// only — no downloadUri, no sp_-prefixed ids, no /subtitles/download/ URI in
+// any node. Nodes carry names/seasons/episode titles only.
+const siteConfig = useSiteConfig();
+const showPageUrl = computed(() => {
+  const media = mediaInfo.value?.media;
+  return media?.slug ? `${siteConfig.url}/shows/${media.id}/${media.slug}` : undefined;
+});
+
+const showSchemaNodes = computed(() => {
+  const media = mediaInfo.value?.media;
+  const details = mediaInfo.value?.details;
+  if (!media) return [];
+  return [
+    defineTVSeries({
+      name: media.name,
+      alternateName: details?.englishName,
+      description: details?.overview,
+      image: details?.posterPath,
+      genre: details?.genre ?? [],
+      datePublished: details?.releaseYear ? `${details.releaseYear}` : undefined,
+      containsSeason: (media.seasons ?? []).map((seasonNumber) => ({
+        "@type": "TVSeason",
+        seasonNumber,
+        name: `${media.name} Season ${seasonNumber}`,
+      })),
+    }),
+    ...(() => {
+      const url = showPageUrl.value;
+      if (!url) return [];
+      return (episodes.value ?? []).map((episode) =>
+        defineTVEpisode({
+          name: episode.title,
+          episodeNumber: episode.number,
+          seasonNumber: episode.season,
+          partOfSeries: { name: media.name },
+          url,
+        }));
+    })(),
+  ];
+});
+useSchemaOrg(showSchemaNodes);
+
 async function loadViewData() {
   loadingEpisodes.value = true;
 

@@ -24,6 +24,10 @@ export default defineNuxtConfig({
     "/api": { prerender: true },
     "/privacy": { prerender: true },
     "/dmca": { swr: 3600 },
+    // Crawler-facing surfaces: show pages render full SSR HTML (with JSON-LD)
+    // per crawler hit — cache for an hour instead of re-rendering every request.
+    "/shows/**": { swr: 3600 },
+    "/llms.txt": { swr: 3600 },
   },
   app: {
     head: {
@@ -209,7 +213,33 @@ export default defineNuxtConfig({
     "vuetify-nuxt-module",
     "pinia-plugin-persistedstate",
     "@nuxt/scripts",
+    // LLM discoverability (design: docs/2026-10-21-llm-discoverability.md).
+    // Individual modules, NOT the @nuxtjs/seo umbrella — its sitemap/robots
+    // modules would duplicate backend-owned producers (DRY).
+    "nuxt-site-config",
+    "nuxt-schema-org",
+    "nuxt-ai-ready",
   ],
+  site: {
+    // Same env fallback chain as runtimeConfig.public.url / .siteName — one
+    // set of envs, one brand source (DRY; no new env vars).
+    url:
+      process.env.APP_URL ??
+      process.env.NUXT_PUBLIC_URL ??
+      "https://www.subvault.tv",
+    name:
+      process.env.APP_SITENAME ??
+      process.env.NUXT_PUBLIC_SITENAME ??
+      "Subvault",
+    description:
+      "Search and download subtitles from Addic7ed and SuperSubtitles",
+    defaultLocale: "en-US",
+  },
+  schemaOrg: {
+    // Identity resolves its name/description/url from the `site` config (same
+    // env fallback chain) — no hardcoded brand (DRY).
+    identity: { type: "Organization" },
+  },
 
   compatibilityDate: "2026-02-27",
 });
