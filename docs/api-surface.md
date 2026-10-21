@@ -103,7 +103,7 @@ GET /subtitles/download/{subtitleId}
   - Regular subtitle: base62 id (e.g., `0VBJpBmUXk2twqNJdYbHmH`)
   - Season pack ZIP: `sp_{base62}` (e.g., `sp_0VBJpBmUXk2twqNJdYbHmH`)
   - Season pack single episode (uncataloged): `sp_{base62}_ep_{number}` (e.g., `sp_0VBJpBmUXk2twqNJdYbHmH_ep_3`)
-  - Season pack single entry (cataloged): `sp_{uuid}_entry_{entryUuid}` — extracts a specific file from the catalog
+  - Season pack single entry (cataloged): `sp_{base62}_entry_{base62}` (e.g., `sp_0VBJpBmUXk2twqNJdYbHmH_entry_7n42DGM5Tflk9n8mt7Fhc7`) — extracts a specific file from the catalog
 - **Returns**: SRT file stream (regular/episode) or ZIP archive (season pack)
 - **Headers**: Content-Type `text/srt` or `application/zip`, ETag support, file download name
 - **Error Codes**:
@@ -124,8 +124,8 @@ GET /subtitles/get/{showUniqueId:apiId}/{season:int}/{episode:int}/{language}
   - `episode` (int, min 0)
   - `language` (string, 2+ chars, ISO code)
 - **Returns**: `SubtitleSearchResponse` with matching subtitles. When no episode-level subtitles are found, returns season pack entries as fallback:
-  - Cataloged packs → one entry per matching file with `sp_{uuid}_entry_{entryUuid}` IDs (e.g. regular + dubtitle variants)
-  - Uncataloged packs (no entries) → `sp_{uuid}_ep_{episode}` ID that extracts the specific episode SRT from the season pack ZIP
+  - Cataloged packs → one entry per matching file with `sp_{base62}_entry_{base62}` IDs (e.g. regular + dubtitle variants)
+  - Uncataloged packs (no entries) → `sp_{base62}_ep_{episode}` ID that extracts the specific episode SRT from the season pack ZIP
 - **Error Codes**:
   - 404: Show not found
   - 423: Show is being refreshed, try again later
