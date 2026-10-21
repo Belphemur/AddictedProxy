@@ -1,3 +1,9 @@
+## [6.2.0](https://github.com/Belphemur/AddictedProxy/compare/v6.1.0...v6.2.0) (2026-10-21)
+
+### Features
+
+* **config:** default API docs URL to docs.subvault.tv ([7ac5cc1](https://github.com/Belphemur/AddictedProxy/commit/7ac5cc1bc27beb24c9177ec32aa649a32c8230c5))
+
 ## [6.1.0](https://github.com/Belphemur/AddictedProxy/compare/v6.0.0...v6.1.0) (2026-10-21)
 
 ### Features
