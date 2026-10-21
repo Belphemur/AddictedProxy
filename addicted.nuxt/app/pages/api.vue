@@ -10,7 +10,7 @@
           </v-row>
           <v-row>
             <v-col>
-              The api documentation has moved to <a :href="apiDocsUrl" target="_blank">Readme</a>
+              The api documentation has moved to <a :href="apiDocsUrl" target="_blank">{{ siteName }} docs</a>
             </v-col>
           </v-row>
         </v-sheet>

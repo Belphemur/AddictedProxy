@@ -57,11 +57,11 @@ New `Swagger` configuration section in `appsettings.json`:
 ```
 
 `Program.cs` reads both values; overridable in production via
-`A7D_Swagger__ServerUrl` / `A7D_Swagger__Title`. Defaults keep the gestdown
+`A7D_Swagger__ServerUrl` / `A7D_Swagger__Title`. Defaults keep the subvault
 API identity, which survives the frontend migration. The Swagger *UI* is
-dev-only (`UseDeveloperExceptionPage` gate) and the public API docs live on
-readme.io — but the OpenAPI document itself (`app.UseSwagger()`) is served in
-all environments, so its server URL and title must not be literals.
+dev-only (`UseDeveloperExceptionPage` gate) and the public API docs are served
+on docs.subvault.tv — but the OpenAPI document itself (`app.UseSwagger()`) is
+served in all environments, so its server URL and title must not be literals.
 
 ## Rejected alternatives
 
@@ -90,7 +90,7 @@ into static prerender output and every knob is env-overridable.
 |---|---|---|---|---|
 | Site name | `siteName` | `APP_SITENAME` | `NUXT_PUBLIC_SITENAME` | `Subvault` |
 | Site URL | `url` | `APP_URL` | `NUXT_PUBLIC_URL` | `https://www.subvault.tv` |
-| API docs URL | `apiDocsUrl` | `APP_API_DOCS_URL` | `NUXT_PUBLIC_API_DOCS_URL` | `https://gestdown.readme.io/` (API docs host; the API itself stays `api.gestdown.info`) |
+| API docs URL | `apiDocsUrl` | `APP_API_DOCS_URL` | `NUXT_PUBLIC_API_DOCS_URL` | `https://docs.subvault.tv/` (API docs host; the API itself stays `api.subvault.tv`) |
 
 All `Gestdown` brand literals in `app.vue`, `AppBar.vue`, `index.vue`,
 `api.vue`, `MediaDetailView.vue`, `dmca.vue`, `privacy.vue` were replaced with
@@ -100,11 +100,11 @@ to `apiDocsUrl`. `robots.txt` still ships in `public/` (the backend
 `Sitemap:` URL was repointed to `https://www.subvault.tv/sitemap.xml`.
 
 **Trade-off (coding-philosophy, strict priority):** DRY — one composable funnels
-every brand value instead of N hard-coded copies. The readme.io default is
-retained (not erased) because no subvault-equivalent docs host is known yet;
-*env-configurability* is what removes the "hard-coded" violation, not changing
-the default. KISS: no new abstraction beyond the `runtimeConfig.public` +
-composable idiom already established by `usePageLayout`.
+every brand value instead of N hard-coded copies. The docs default now points
+at `https://docs.subvault.tv/` (the subvault docs host); *env-configurability*
+keeps it overridable for non-subvault deployments. KISS: no new abstraction
+beyond the `runtimeConfig.public` + composable idiom already established by
+`usePageLayout`.
 
 ## Remaining out of scope
 
