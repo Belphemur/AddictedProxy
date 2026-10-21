@@ -231,6 +231,7 @@ aspiration.
 | `season-pack-catalog-plan.md` | Season pack catalog design |
 | `season-pack-catalog-checklist.md` | Season pack catalog implementation checklist |
 | `2026-10-20-api-id-base62.md` | Base62 API identifiers (ADR + design: Guid → fixed-22 base62 at the API edge) |
+| `2026-10-21-llm-discoverability.md` | LLM discoverability & technical SEO (ADR + design: JSON-LD, llms.txt, download-wall) |
 
 ---
 
