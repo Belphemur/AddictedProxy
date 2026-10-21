@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AddictedProxy.Culture.Service;
 using AddictedProxy.Database.Repositories.Shows;
+using AddictedProxy.Model.Api;
 using AddictedProxy.Model.Dto;
 using AddictedProxy.Model.Responses;
 using AddictedProxy.Services.Provider.Shows;
@@ -61,7 +62,7 @@ public class TvShowsController : Controller
     public async Task<Results<Ok<ShowSearchResponse>, NotFound<string>>> Search(string search, CancellationToken cancellationToken)
     {
         var shows = await _showRefresher.FindShowsAsync(search.Trim(), cancellationToken)
-                                        .Select(show => new ShowDto(show))
+                                        .Select(show => ShowDto.From(show))
                                         .ToArrayAsync(cancellationToken);
         return ShowsToActionResult(search, shows);
     }
@@ -101,7 +102,7 @@ public class TvShowsController : Controller
     public async Task<Results<Ok<ShowSearchResponse>, NotFound<string>>> GetByTvdbId(int tvdbId, CancellationToken cancellationToken)
     {
         var shows = await _showRefresher.GetShowByTvDbIdAsync(tvdbId, cancellationToken)
-                                        .Select(show => new ShowDto(show))
+                                        .Select(show => ShowDto.From(show))
                                         .ToArrayAsync(cancellationToken);
         return ShowsToActionResult(tvdbId, shows);
     }
@@ -115,7 +116,7 @@ public class TvShowsController : Controller
     /// <returns></returns>
     /// <response code="404">Couldn't find the show</response>
     /// <response code="204">If the job to sync the show has been scheduled</response>
-    [Route("{showId:guid}/refresh")]
+    [Route("{showId:apiId}/refresh")]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [HttpPost]
@@ -144,7 +145,7 @@ public class TvShowsController : Controller
     /// <response code="400">Unknown language</response>
     /// <response code="429">Reached the rate limiting of the endpoint</response>
     /// <returns></returns>
-    [Route("{showId:guid}/{seasonNumber:int}/{language}")]
+    [Route("{showId:apiId}/{seasonNumber:int}/{language}")]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(string), 429)]
@@ -173,7 +174,7 @@ public class TvShowsController : Controller
                                                         .Select(
                                                             subtitle =>
                                                                 new SubtitleDto(subtitle,
-                                                                    Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
+                                                                    Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", Base62Id.Encode(subtitle.UniqueId) } }) ??
                                                                     throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
                                                                     searchLanguage)
                                                         );
@@ -196,7 +197,7 @@ public class TvShowsController : Controller
     /// <response code="400">Unknown language</response>
     /// <response code="429">Reached the rate limiting of the endpoint</response>
     /// <returns></returns>
-    [Route("{showId:guid}/{seasonNumber:int}/{language}/season-packs")]
+    [Route("{showId:apiId}/{seasonNumber:int}/{language}/season-packs")]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(string), 429)]
@@ -229,7 +230,7 @@ public class TvShowsController : Controller
             .Where(sp => string.Equals(sp.LanguageIsoCode, isoCode, StringComparison.OrdinalIgnoreCase))
             .Select(pack => new SeasonPackSubtitleDto(
                 pack,
-                Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", $"sp_{pack.UniqueId}" } })
+                Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", $"sp_{Base62Id.Encode(pack.UniqueId)}" } })
                 ?? throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
                 searchLanguage))
             .OrderBy(dto => dto.RangeStart)

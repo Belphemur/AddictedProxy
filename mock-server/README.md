@@ -40,9 +40,9 @@ The server includes three hard-coded shows:
 
 | Show | ID | Seasons |
 |---|---|---|
-| Breaking Bad | `a1b2c3d4-0001-0001-0001-000000000001` | 1–5 |
-| Game of Thrones | `a1b2c3d4-0002-0002-0002-000000000002` | 1–8 |
-| Succession | `a1b2c3d4-0003-0003-0003-000000000003` | 1–4 |
+| Breaking Bad | `4v7SXznCWD5QQLn9P9mSaf` | 1–5 |
+| Game of Thrones | `4v7SXznCcFo1E8yZ6ItWba` | 1–8 |
+| Succession | `4v7SXznCiIWc1w9ynS0acV` | 1–4 |
 
 Episodes are generated dynamically for any requested season/language combination.
 Each episode has two subtitle variants: a regular subtitle and a hearing-impaired one,

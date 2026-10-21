@@ -16,7 +16,7 @@ test.describe("Show search", () => {
     await expect(result).toBeVisible();
     await result.click();
 
-    await expect(page).toHaveURL(/\/shows\/a1b2c3d4-0001-0001-0001-000000000001\//);
+    await expect(page).toHaveURL(/\/shows\/4v7SXznCWD5QQLn9P9mSaf\//);
     await expect(page.getByRole("heading", { name: /Season \d+/ })).toBeVisible();
   });
 

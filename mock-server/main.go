@@ -205,8 +205,15 @@ func init() {
 
 	for i := range showsData {
 		sd := &showsData[i]
+		// Externally visible ids use the canonical base62 API encoding
+		// (docs/2026-10-20-api-id-base62.md); the dashed UUID stays internal
+		// to the fixture file, like the database in the real backend.
+		apiID, err := APIId(sd.ID)
+		if err != nil {
+			log.Fatalf("show %q: %v", sd.Name, err)
+		}
 		allShows[i] = ShowDto{
-			ID:        sd.ID,
+			ID:        apiID,
 			Name:      sd.Name,
 			NbSeasons: sd.NbSeasons,
 			Seasons:   sd.Seasons,
@@ -214,9 +221,9 @@ func init() {
 			TmdbID:    sd.TmdbID,
 			Slug:      sd.Slug,
 		}
-		showByID[sd.ID] = &allShows[i]
-		showDetails[sd.ID] = &sd.Details
-		showDataByID[sd.ID] = sd
+		showByID[apiID] = &allShows[i]
+		showDetails[apiID] = &sd.Details
+		showDataByID[apiID] = sd
 	}
 
 	if err := json.Unmarshal(configJSON, &mockConfig); err != nil {

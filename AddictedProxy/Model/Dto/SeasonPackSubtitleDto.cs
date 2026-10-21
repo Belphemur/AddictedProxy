@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Model.Api;
 
 namespace AddictedProxy.Model.Dto;
 
@@ -10,7 +11,7 @@ public class SeasonPackSubtitleDto
 {
     public SeasonPackSubtitleDto(SeasonPackSubtitle seasonPack, string downloadUri, Culture.Model.Culture? language)
     {
-        SubtitleId = $"sp_{seasonPack.UniqueId}";
+        SubtitleId = $"sp_{Base62Id.Encode(seasonPack.UniqueId)}";
         Language = language?.EnglishName ?? "Unknown";
         Version = seasonPack.Release ?? seasonPack.Filename;
         ReleaseGroups = seasonPack.ReleaseGroups?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
@@ -31,9 +32,9 @@ public class SeasonPackSubtitleDto
     }
 
     /// <summary>
-    /// Unique Id of the season pack subtitle (prefixed with sp_)
+    /// Unique Id of the season pack subtitle (sp_-prefixed canonical base62 encoding of the Guid)
     /// </summary>
-    /// <example>sp_1086727A-EB71-4B24-A209-7CF22374574D</example>
+    /// <example>sp_0VBJpBmUXk2twqNJdYbHmH</example>
     [Required]
     public string SubtitleId { get; }
 
@@ -98,7 +99,7 @@ public class SeasonPackSubtitleDto
     /// <summary>
     /// Url to download the season pack (ZIP archive)
     /// </summary>
-    /// <example>/subtitles/download/sp_1086727A-EB71-4B24-A209-7CF22374574D</example>
+    /// <example>/subtitles/download/sp_0VBJpBmUXk2twqNJdYbHmH</example>
     [Required]
     public string DownloadUri { get; }
 

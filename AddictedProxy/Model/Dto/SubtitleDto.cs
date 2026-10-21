@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using AddictedProxy.Database.Model.Shows;
+using AddictedProxy.Model.Api;
 
 namespace AddictedProxy.Model.Dto;
 
@@ -14,7 +15,7 @@ public class SubtitleDto
         DownloadUri = downloadUri;
         Language = language?.EnglishName ?? "Unknown";
         Discovered = subtitle.Discovered;
-        SubtitleId = subtitle.UniqueId.ToString();
+        SubtitleId = Base62Id.Encode(subtitle.UniqueId);
         DownloadCount = subtitle.DownloadCount;
         Source = subtitle.Source.ToString();
         Qualities = VideoQualityFactory.ToDisplayNames(subtitle.Qualities);
@@ -28,7 +29,7 @@ public class SubtitleDto
     /// </summary>
     public SubtitleDto(SeasonPackSubtitle seasonPack, string downloadUri, Culture.Model.Culture? language, int episode)
     {
-        SubtitleId = $"sp_{seasonPack.UniqueId}_ep_{episode}";
+        SubtitleId = $"sp_{Base62Id.Encode(seasonPack.UniqueId)}_ep_{episode}";
         Version = seasonPack.Release ?? seasonPack.Filename;
         Completed = true;
         HearingImpaired = false;
@@ -49,7 +50,7 @@ public class SubtitleDto
     /// </summary>
     public SubtitleDto(SeasonPackSubtitle seasonPack, SeasonPackEntry entry, string downloadUri, Culture.Model.Culture? language, int episode)
     {
-        SubtitleId = $"sp_{seasonPack.UniqueId}_entry_{entry.UniqueId}";
+        SubtitleId = $"sp_{Base62Id.Encode(seasonPack.UniqueId)}_entry_{Base62Id.Encode(entry.UniqueId)}";
         Version = entry.ReleaseGroup ?? seasonPack.Release ?? seasonPack.Filename;
         Completed = true;
         HearingImpaired = entry.FileName.Contains("dubtitle", StringComparison.OrdinalIgnoreCase);
@@ -65,9 +66,11 @@ public class SubtitleDto
     }
 
     /// <summary>
-    /// Unique Id of the subtitle
+    /// Unique Id of the subtitle — canonical base62 encoding of the Guid (see
+    /// docs/2026-10-20-api-id-base62.md); for season packs wrapped as
+    /// sp_{base62}[_ep_{N}|_entry_{base62}]
     /// </summary>
-    /// <example>1086727A-EB71-4B24-A209-7CF22374574D</example>
+    /// <example>0VBJpBmUXk2twqNJdYbHmH</example>
     [Required]
     public string SubtitleId { get; }
 
@@ -97,7 +100,7 @@ public class SubtitleDto
     /// <summary>
     /// Url to download the subtitle
     /// </summary>
-    /// <example>/download/1086727A-EB71-4B24-A209-7CF22374574D</example>
+    /// <example>/subtitles/download/0VBJpBmUXk2twqNJdYbHmH</example>
     [Required]
     public string DownloadUri { get; }
 
