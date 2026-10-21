@@ -1,3 +1,9 @@
+## [6.1.0](https://github.com/Belphemur/AddictedProxy/compare/v6.0.0...v6.1.0) (2026-10-21)
+
+### Features
+
+* **sitemap:** serve robots.txt from backend config instead of Nuxt static asset ([77ca3d4](https://github.com/Belphemur/AddictedProxy/commit/77ca3d4137e5e26cdc5ef07a5d29b9d2f64e20b3))
+
 ## [6.0.0](https://github.com/Belphemur/AddictedProxy/compare/v5.4.0...v6.0.0) (2026-10-21)
 
 ### ⚠ BREAKING CHANGES
