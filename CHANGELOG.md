@@ -1,3 +1,91 @@
+## [6.0.0](https://github.com/Belphemur/AddictedProxy/compare/v5.4.0...v6.0.0) (2026-10-21)
+
+### ⚠ BREAKING CHANGES
+
+* every API identifier (show/subtitle/season-pack ids,
+route segments) changed from dashed UUID strings to fixed-22-char base62.
+Legacy dashed formats are rejected everywhere (404/400). Consumers such as
+Bazarr or SubVault must re-search to obtain ids in the new format.
+Cached responses may serve legacy ids for up to 8 days after deploy.
+
+* feat(mock-server): emit base62 api identifiers
+
+The mock server encodes fixture UUIDs to canonical base62 when building
+responses (mock-server/base62.go — APIId/MustAPIId), mirroring the
+real backend's DB-internal/external-API boundary: data/shows.json keeps
+dashed UUIDs, the DTO layer emits base62.
+
+base62_test.go mirrors the canonical vectors from the C# suite — the
+cross-language wire contract is pinned on both sides. e2e specs and the
+README now reference the encoded fixture ids.
+
+* docs: record base62 id design as-built + api-surface encoding section
+
+- design doc: status → Implemented; as-built deltas (pure-marker [ApiId]
+  beside the literal JsonConverter attribute — source-gen only resolves
+  the literal form; ShowDto.From factory; single JSON binding ctor;
+  SDK ≥ 10.0.4xx required for the Roslyn 5.9 analyzer pin)
+- api-surface.md: new ID Encoding section (alphabet, canonical form,
+  fail-closed behavior, composite formats), route templates {showId:apiId},
+  examples in base62
+
+* fix!: review fixes for base62 id rollout
+
+Code-review findings on the first base62 cut:
+
+- [FromRoute] on MediaController.GetShowDetails' showId — MediaController is
+  not [ApiController], so without the annotation the parameter never reached
+  the Path-binding-aware base62 model binder and every
+  /media/{base62}/episodes call degraded to the default Guid binder (400).
+- Sitemap show URLs now encode via Base62Id.Encode — createNode interpolated
+  the dashed Guid straight into /shows/{id}/{slug}, bypassing the outbound
+  apiId transformer, so every sitemap link 404'd on the constrained routes.
+- Regular-subtitle download URIs encode at the three generation sites
+  (SubtitlesController, TvShowsController, MediaController) — they passed the
+  raw Guid to the download/{subtitleId} route, emitting dashed URIs that the
+  tightened download parser now rejects (400).
+- Byte order: Base62Id now maps Guids in plain RFC (big-endian) order via
+  Guid.TryWriteBytes(bigEndian: true) / Guid(bigEndian: true) — the first cut
+  encoded Guid.ToByteArray() (mixed-endian), contradicting the design doc and
+  losing the UUIDv7 temporal-sorting property. Wire format was not yet
+  shipped, so the shared canonical vectors were regenerated and mirrored in
+  the Go mock (now plain hex order), e2e fixtures, DTO examples and docs.
+- Mock-environment skill test URLs use the base62 fixture ids.
+- New tests: sitemap encode + round-trip decode, and a binding-source guard
+  asserting every apiId-routed Guid action parameter declares [FromRoute].
+* base62 vector values changed relative to the first cut of
+this PR (never merged); pinned vectors are regenerated on both languages.
+
+* fix: coderabbit round-2 doc/test accuracies
+
+- design doc download-format table now uses the real canonical vectors
+  (0VBJpBmUXk2twqNJdYbHmH / 7n42DGM5Tflk9n8mt7Fhc7) instead of a made-up
+  placeholder token that contradicted the pinned cross-language contract
+- §5 corrected: the download route is intentionally NOT :apiId-constrained
+  (composite sp_… ids share it), so the outbound transformer does not cover
+  raw- id route values there — call-site encoding (9a1a463a) is the mechanism
+- decode description now matches the implementation (explicit overflow
+  bounds checks, not checked multiplication)
+- design-doc-authoring skill: reworded the undefined "integer work" term and
+  aligned the completion checklist with the documented <topic>-plan.md legacy
+  naming exception
+- base62_test.go: the deferred panic probe set panicked=true on every return,
+  making the must-panic assertion vacuous; a panics() helper now only counts
+  actual panics
+
+* docs: api-surface season-pack composite ids shown in base62
+
+The download and search-response sections still documented the legacy
+sp_{uuid}_entry_{entryUuid} / sp_{uuid}_ep_{episode} forms the parser now
+rejects with 400; consumers following them would send dashed ids that
+fail closed. All composite formats now read sp_{base62}_entry_{base62} /
+sp_{base62}_ep_{episode}, matching the parser, the DTO builders, and the
+canonical vectors in the design doc.
+
+### Features
+
+* base62 API identifiers ([#3232](https://github.com/Belphemur/AddictedProxy/issues/3232)) ([4bf9115](https://github.com/Belphemur/AddictedProxy/commit/4bf9115e306c67c17f9b42f6db1400b1fe10a28f))
+
 ## [5.4.0](https://github.com/Belphemur/AddictedProxy/compare/v5.3.0...v5.4.0) (2026-10-20)
 
 ### Features
