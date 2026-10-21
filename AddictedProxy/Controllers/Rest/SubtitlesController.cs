@@ -73,6 +73,11 @@ public class SubtitlesController : Controller
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 8 * 86400)]
     public async Task<Results<FileStreamHttpResult, NotFound<string>, JsonHttpResult<ErrorResponse>, BadRequest<ErrorResponse>>> Download([FromRoute] string subtitleId, CancellationToken token)
     {
+        // Download-wall (fail closed): the header is set before ANY result is
+        // produced — success and 400/404/429 paths alike — so a leaked download
+        // URL can never be indexed regardless of robots.txt compliance.
+        Response.Headers["X-Robots-Tag"] = "noindex, nofollow";
+
         // Season pack entry: sp_{packUuid}_entry_{entryUuid} — specific file from catalog
         if (subtitleId.StartsWith(SeasonPackPrefix, StringComparison.OrdinalIgnoreCase) && subtitleId.Contains(EntrySeparator, StringComparison.OrdinalIgnoreCase))
         {
