@@ -112,7 +112,10 @@ export default defineNuxtConfig({
       // build time (APP_SITENAME) or runtime (NUXT_PUBLIC_SITENAME). See
       // composables/useSiteBrand.ts and docs/domain-configurability-plan.md.
       siteName: process.env.APP_SITENAME ?? process.env.NUXT_PUBLIC_SITENAME ?? "Subvault",
-      apiDocsUrl: process.env.APP_API_DOCS_URL ?? process.env.NUXT_PUBLIC_API_DOCS_URL ?? "https://gestdown.readme.io/",
+      // Default to the subvault.tv docs host so the API page links to the
+      // current documentation. Override at build time (APP_API_DOCS_URL) or
+      // runtime (NUXT_PUBLIC_API_DOCS_URL). See docs/domain-configurability-plan.md.
+      apiDocsUrl: process.env.APP_API_DOCS_URL ?? process.env.NUXT_PUBLIC_API_DOCS_URL ?? "https://docs.subvault.tv/",
       ads: {
         enabled: process.env.NUXT_PUBLIC_ADS_ENABLED !== "false",
       },
