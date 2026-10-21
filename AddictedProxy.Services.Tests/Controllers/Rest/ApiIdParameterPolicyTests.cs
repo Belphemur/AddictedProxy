@@ -10,7 +10,7 @@ public class ApiIdParameterPolicyTests
 {
     private const string Key = "showId";
     private static readonly Guid Sample = new("E9C1FA23-55AF-4711-8E34-3B31E2A75533");
-    private const string SampleBase62 = "15tKKYmsRZNNgPJoOScXfn";
+    private const string SampleBase62 = "775rJjCDufZ0nuSVDeriR1";
 
     private static readonly ApiIdParameterPolicy Policy = new();
 
@@ -55,7 +55,7 @@ public class ApiIdParameterPolicyTests
     public void TransformOutbound_AlreadyEncodedString_PassesThroughUnchanged()
     {
         // Composite ids (sp_{pack}_ep_{N}) arrive as strings and must not be double-encoded.
-        const string composite = "sp_3j3OsqLGMsYABUdr7n9XsD_ep_3";
+        const string composite = "sp_0VBJpBmUXk2twqNJdYbHmH_ep_3";
         Policy.TransformOutbound(composite).Should().Be(composite);
     }
 

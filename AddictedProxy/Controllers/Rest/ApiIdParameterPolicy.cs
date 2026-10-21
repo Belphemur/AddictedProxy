@@ -6,12 +6,12 @@ namespace AddictedProxy.Controllers.Rest;
 
 /// <summary>
 /// Route parameter policy for external API identifiers, registered under the
-/// name <c>apiId</c> in <see cref="Microsoft.AspNetCore.Routing.RouteOptions.ConstraintMap"/>
+/// name <c>apiId</c> in MVC's `RouteOptions.ConstraintMap`
 /// and used in templates as <c>{showId:apiId}</c>.
 ///
 /// Dual role over the single <see cref="Base62Id"/> funnel:
 /// <list type="bullet">
-/// <item><see cref="IRouteConstraint.Match">Inbound validation</see>: a route
+/// <item>Inbound validation (`IRouteConstraint.Match`): a route
 /// only matches when the segment decodes as a canonical base62 id — anything
 /// else fails closed with the same UX as the previous <c>:guid</c>
 /// constraint (404).</item>

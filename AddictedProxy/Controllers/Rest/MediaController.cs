@@ -172,7 +172,7 @@ public class MediaController : Controller
     [ProducesResponseType(typeof(string), 429)]
     [ProducesResponseType(404)]
     [Produces("application/json")]
-    public async Task<Results<Ok<MediaDetailsWithEpisodeAndSubtitlesDto>, NotFound, BadRequest<string>>> GetShowDetails(Guid showId, string language, CancellationToken cancellationToken)
+    public async Task<Results<Ok<MediaDetailsWithEpisodeAndSubtitlesDto>, NotFound, BadRequest<string>>> GetShowDetails([FromRoute] Guid showId, string language, CancellationToken cancellationToken)
     {
         Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue
         {
@@ -209,7 +209,7 @@ public class MediaController : Controller
                     .Select(
                         subtitle =>
                             new SubtitleDto(subtitle,
-                                _generator.GetUriByRouteValues(HttpContext, nameof(Routes.DownloadSubtitle), new { subtitleId = subtitle.UniqueId }) ??
+                                _generator.GetUriByRouteValues(HttpContext, nameof(Routes.DownloadSubtitle), new { subtitleId = Base62Id.Encode(subtitle.UniqueId) }) ??
                                 throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
                                 searchLanguage)
                     );

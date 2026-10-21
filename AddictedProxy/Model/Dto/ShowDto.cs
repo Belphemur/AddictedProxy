@@ -20,7 +20,7 @@ public record ShowDto(Guid Id, string Name, int NbSeasons, int[] Seasons, int? T
     /// <summary>
     /// Unique ID of the show
     /// </summary>
-    /// <example>15tKKYmsRZNNgPJoOScXfn</example>
+    /// <example>775rJjCDufZ0nuSVDeriR1</example>
     [Required]
     [ApiId]
     [JsonConverter(typeof(GuidBase62JsonConverter))]

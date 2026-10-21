@@ -13,7 +13,7 @@ namespace AddictedProxy.Services.Tests.Controllers.Rest;
 public class ApiIdRouteModelBinderTests
 {
     private static readonly Guid Sample = new("E9C1FA23-55AF-4711-8E34-3B31E2A75533");
-    private const string SampleBase62 = "15tKKYmsRZNNgPJoOScXfn";
+    private const string SampleBase62 = "775rJjCDufZ0nuSVDeriR1";
 
     private static ModelBindingContext BuildContext(string value)
     {

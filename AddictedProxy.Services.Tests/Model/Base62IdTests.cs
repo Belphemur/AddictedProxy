@@ -10,15 +10,15 @@ public class Base62IdTests
     /// <summary>
     /// Canonical cross-language vectors — the wire contract shared with the Go
     /// mock server (see docs/2026-10-20-api-id-base62.md). These literals pin
-    /// the byte mapping (Guid.ToByteArray() read big-endian) and the alphabet
+    /// the byte mapping (Guid big-endian RFC byte order) and the alphabet
     /// ordering; they were derived from an independent big-integer oracle.
     /// </summary>
     private static readonly (Guid Guid, string Base62)[] CanonicalVectors =
     [
         (new Guid("00000000-0000-0000-0000-000000000000"), "0000000000000000000000"),
         (new Guid("ffffffff-ffff-ffff-ffff-ffffffffffff"), "7n42DGM5Tflk9n8mt7Fhc7"),
-        (new Guid("E9C1FA23-55AF-4711-8E34-3B31E2A75533"), "15tKKYmsRZNNgPJoOScXfn"),
-        (new Guid("1086727A-EB71-4B24-A209-7CF22374574D"), "3j3OsqLGMsYABUdr7n9XsD"),
+        (new Guid("E9C1FA23-55AF-4711-8E34-3B31E2A75533"), "775rJjCDufZ0nuSVDeriR1"),
+        (new Guid("1086727A-EB71-4B24-A209-7CF22374574D"), "0VBJpBmUXk2twqNJdYbHmH"),
     ];
 
     [Test]
@@ -79,7 +79,7 @@ public class Base62IdTests
     public void Decode_ValidCanonicalId_ReturnsGuid()
     {
         // Act
-        Func<Guid> decode = () => Base62Id.Decode("15tKKYmsRZNNgPJoOScXfn");
+        Func<Guid> decode = () => Base62Id.Decode("775rJjCDufZ0nuSVDeriR1");
 
         // Assert
         decode.Should().NotThrow().Which.Should().Be(new Guid("E9C1FA23-55AF-4711-8E34-3B31E2A75533"));
@@ -87,11 +87,11 @@ public class Base62IdTests
 
     [TestCase("")] // empty
     [TestCase("15tKKYmsRZNNgPJoOScXf")] // 21 valid characters — wrong canonical length
-    [TestCase("15tKKYmsRZNNgPJoOScXfn0")] // 23 valid characters — wrong canonical length
+    [TestCase("775rJjCDufZ0nuSVDeriR10")] // 23 valid characters — wrong canonical length
     [TestCase("15tKKYmsRZNNgPJoOScXf-")] // '-' is not in the base62 alphabet
-    [TestCase("15tKKYmsRZNNgPJoOScXfn_")] // '_' is not in the base62 alphabet
-    [TestCase("15tKKYmsRZNNgPJoOScXfn+")] // '+' is not in the base62 alphabet
-    [TestCase("15tKKYmsRZNNgPJoOScXfn/")] // '/' is not in the base62 alphabet
+    [TestCase("775rJjCDufZ0nuSVDeriR1_")] // '_' is not in the base62 alphabet
+    [TestCase("775rJjCDufZ0nuSVDeriR1+")] // '+' is not in the base62 alphabet
+    [TestCase("775rJjCDufZ0nuSVDeriR1/")] // '/' is not in the base62 alphabet
     [TestCase("E9C1FA23-55AF-4711-8E34-3B31E2A75533")] // legacy dashed Guid must fail closed
     [TestCase("zzzzzzzzzzzzzzzzzzzzzz")] // 62^22 - 1 exceeds the 128-bit value space (overflow)
     [TestCase("1-5tKKYmsRZNNgPJoOScXfn")] // separator smuggled inside the id
@@ -114,24 +114,12 @@ public class Base62IdTests
     /// </summary>
     private static string BigIntegerOracle(string dashed)
     {
-        // Guid.ToByteArray() lays the first three fields out little-endian.
+        // UUIDs are parsed in plain RFC (big-endian) field order.
         var hex = dashed.Replace("-", string.Empty);
         Span<byte> bytes = stackalloc byte[16];
-        for (var i = 0; i < 4; i++)
+        for (var i = 0; i < 16; i++)
         {
-            bytes[i] = Convert.ToByte(hex.Substring((3 - i) * 2, 2), 16);
-        }
-        for (var i = 0; i < 2; i++)
-        {
-            bytes[4 + i] = Convert.ToByte(hex.Substring(8 + (1 - i) * 2, 2), 16);
-        }
-        for (var i = 0; i < 2; i++)
-        {
-            bytes[6 + i] = Convert.ToByte(hex.Substring(12 + (1 - i) * 2, 2), 16);
-        }
-        for (var i = 0; i < 8; i++)
-        {
-            bytes[8 + i] = Convert.ToByte(hex.Substring(16 + i * 2, 2), 16);
+            bytes[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
         }
 
         var value = new BigInteger(bytes, isUnsigned: true, isBigEndian: true);

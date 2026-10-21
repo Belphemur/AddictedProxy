@@ -58,8 +58,9 @@ func divMod(value *big.Int, radix uint64) (*big.Int, uint64) {
 	return quotient, remainder.Uint64()
 }
 
-// guidToByteArray replicates Guid.ToByteArray(): standard UUID fields with the
-// first three groups stored little-endian.
+// guidToByteArray parses a dashed UUID into its 16 RFC-order (big-endian)
+// bytes, matching Guid.ToByteArray(bigEndian: true) / Guid.TryWriteBytes on
+// the C# side.
 func guidToByteArray(dashed string) ([]byte, error) {
 	hex := strings.ReplaceAll(dashed, "-", "")
 	if len(hex) != 32 {
@@ -74,37 +75,11 @@ func guidToByteArray(dashed string) ([]byte, error) {
 		nibbles[i] = byte(n)
 	}
 
-	var out [16]byte
-	// groups: 8-4-4-4-12 hex chars; first three stored little-endian.
-	group := func(dst, hexStart, hexLen int, littleEndian bool) error {
-		if !littleEndian {
-			for i := 0; i < hexLen/2; i++ {
-				out[dst+i] = nibble2byte(nibbles, hexStart+i*2)
-			}
-			return nil
-		}
-		for i := 0; i < hexLen/2; i++ {
-			out[dst+i] = nibble2byte(nibbles, hexStart+(hexLen-2)-i*2)
-		}
-		return nil
+	out := make([]byte, 16)
+	for i := 0; i < 16; i++ {
+		out[i] = nibble2byte(nibbles, i*2)
 	}
-
-	if err := group(0, 0, 8, true); err != nil {
-		return nil, err
-	}
-	if err := group(4, 8, 4, true); err != nil {
-		return nil, err
-	}
-	if err := group(6, 12, 4, true); err != nil {
-		return nil, err
-	}
-	if err := group(8, 16, 8, false); err != nil {
-		return nil, err
-	}
-	if err := group(12, 24, 8, false); err != nil {
-		return nil, err
-	}
-	return out[:], nil
+	return out, nil
 }
 
 func nibble2byte(nibbles []byte, start int) byte {

@@ -13,7 +13,7 @@ public class ApiIdJsonConverterTests
     private static ShowDto CreateShow(Guid id) => new(id, "Wellington Paranormal", 1, [1], 344280, 80475);
 
     private static readonly Guid Sample = new("E9C1FA23-55AF-4711-8E34-3B31E2A75533");
-    private const string SampleBase62 = "15tKKYmsRZNNgPJoOScXfn";
+    private const string SampleBase62 = "775rJjCDufZ0nuSVDeriR1";
 
     [Test]
     public void Serialize_SourceGenerationMetadata_WritesBase62()
@@ -64,7 +64,7 @@ public class ApiIdJsonConverterTests
     {
         // Arrange
         var options = new JsonSerializerOptions();
-        const string json = """{"Id":"15tKKYmsRZNNgPJoOScXfn","Name":"Wellington Paranormal","NbSeasons":1,"Seasons":[1]}""";
+        const string json = """{"Id":"775rJjCDufZ0nuSVDeriR1","Name":"Wellington Paranormal","NbSeasons":1,"Seasons":[1]}""";
 
         // Act
         var dto = JsonSerializer.Deserialize<ShowDto>(json, options);

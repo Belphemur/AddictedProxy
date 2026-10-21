@@ -235,7 +235,7 @@ public class SubtitlesController : Controller
                         var foundMatchingSubtitles = subtitleFound.MatchingSubtitles.Select(
                             subtitle => new SubtitleDto(
                                 subtitle,
-                                Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", subtitle.UniqueId } }) ??
+                                Url.RouteUrl(nameof(Routes.DownloadSubtitle), new Dictionary<string, object> { { "subtitleId", Base62Id.Encode(subtitle.UniqueId) } }) ??
                                 throw new InvalidOperationException("Couldn't find the route for the download subtitle"),
                                 subtitleFound.Language
                             )

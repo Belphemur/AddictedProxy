@@ -132,17 +132,22 @@ public static class Base62Id
     }
 
     /// <summary>
-    /// Map a Guid onto its 128-bit value: the 16 bytes of
-    /// <see cref="Guid.ToByteArray()"/> interpreted big-endian. The inverse of
-    /// <see cref="ToGuid"/>.
+    /// Map a Guid onto its 128-bit value: the 16 RFC-order (big-endian) bytes
+    /// of the Guid interpreted big-endian, so UUIDv7 timestamp ordering is
+    /// preserved. Matches <c>Guid.ToByteArray(bigEndian: true)</c>. The inverse
+    /// of <see cref="ToGuid"/>.
     /// </summary>
     private static UInt128 ToUInt128(Guid id)
     {
-        var bytes = id.ToByteArray();
+        // RFC byte order (big-endian) so UUIDv7 timestamp ordering is
+        // preserved; matches the Go mock, which reads the dashed hex in
+        // plain order. Canonical vectors: docs/2026-10-20-api-id-base62.md.
+        Span<byte> bytes = stackalloc byte[16];
+        id.TryWriteBytes(bytes, bigEndian: true, out _);
         Span<byte> buffer = stackalloc byte[8];
-        bytes.AsSpan(0, 8).CopyTo(buffer);
+        bytes[..8].CopyTo(buffer);
         var high = BinaryPrimitives.ReadUInt64BigEndian(buffer);
-        bytes.AsSpan(8, 8).CopyTo(buffer);
+        bytes[8..].CopyTo(buffer);
         var low = BinaryPrimitives.ReadUInt64BigEndian(buffer);
         return new UInt128(high, low);
     }
@@ -158,6 +163,6 @@ public static class Base62Id
         buffer.CopyTo(bytes);
         BinaryPrimitives.WriteUInt64BigEndian(buffer, (ulong)value);
         buffer.CopyTo(bytes[8..]);
-        return new Guid(bytes.ToArray());
+        return new Guid(bytes.ToArray(), bigEndian: true);
     }
 }

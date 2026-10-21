@@ -34,7 +34,7 @@ public class SeasonPackSubtitleDto
     /// <summary>
     /// Unique Id of the season pack subtitle (sp_-prefixed canonical base62 encoding of the Guid)
     /// </summary>
-    /// <example>sp_3j3OsqLGMsYABUdr7n9XsD</example>
+    /// <example>sp_0VBJpBmUXk2twqNJdYbHmH</example>
     [Required]
     public string SubtitleId { get; }
 
@@ -99,7 +99,7 @@ public class SeasonPackSubtitleDto
     /// <summary>
     /// Url to download the season pack (ZIP archive)
     /// </summary>
-    /// <example>/subtitles/download/sp_3j3OsqLGMsYABUdr7n9XsD</example>
+    /// <example>/subtitles/download/sp_0VBJpBmUXk2twqNJdYbHmH</example>
     [Required]
     public string DownloadUri { get; }
 

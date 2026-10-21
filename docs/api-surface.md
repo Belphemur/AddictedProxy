@@ -100,9 +100,9 @@ GET /subtitles/download/{subtitleId}
 ```
 
 - **Parameters**: `subtitleId` (string) — subtitle's UniqueId or season pack ID
-  - Regular subtitle: base62 id (e.g., `3j3OsqLGMsYABUdr7n9XsD`)
-  - Season pack ZIP: `sp_{base62}` (e.g., `sp_3j3OsqLGMsYABUdr7n9XsD`)
-  - Season pack single episode (uncataloged): `sp_{base62}_ep_{number}` (e.g., `sp_3j3OsqLGMsYABUdr7n9XsD_ep_3`)
+  - Regular subtitle: base62 id (e.g., `0VBJpBmUXk2twqNJdYbHmH`)
+  - Season pack ZIP: `sp_{base62}` (e.g., `sp_0VBJpBmUXk2twqNJdYbHmH`)
+  - Season pack single episode (uncataloged): `sp_{base62}_ep_{number}` (e.g., `sp_0VBJpBmUXk2twqNJdYbHmH_ep_3`)
   - Season pack single entry (cataloged): `sp_{uuid}_entry_{entryUuid}` — extracts a specific file from the catalog
 - **Returns**: SRT file stream (regular/episode) or ZIP archive (season pack)
 - **Headers**: Content-Type `text/srt` or `application/zip`, ETag support, file download name
@@ -155,7 +155,7 @@ Generates XML sitemaps for SEO purposes.
 
 ```csharp
 class ShowDto(
-    Guid Id,              // UniqueId — serialized as fixed-22-char base62 ("15tKKYmsRZNNgPJoOScXfn"), see ID Encoding
+    Guid Id,              // UniqueId — serialized as fixed-22-char base62 ("775rJjCDufZ0nuSVDeriR1"), see ID Encoding
     string Name,
     int NbSeasons,        // Total season count
     int[] Seasons,        // Available season numbers

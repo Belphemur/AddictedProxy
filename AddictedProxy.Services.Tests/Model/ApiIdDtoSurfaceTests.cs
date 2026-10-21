@@ -13,7 +13,7 @@ public class ApiIdDtoSurfaceTests
     /// DTO exposes an id in, the Guid half must be the canonical base62 form.
     /// </summary>
     private static readonly Guid VectorGuid = new("1086727A-EB71-4B24-A209-7CF22374574D");
-    private const string VectorBase62 = "3j3OsqLGMsYABUdr7n9XsD";
+    private const string VectorBase62 = "0VBJpBmUXk2twqNJdYbHmH";
     private static readonly Guid EntryVectorGuid = new("ffffffff-ffff-ffff-ffff-ffffffffffff");
     private const string EntryVectorBase62 = "7n42DGM5Tflk9n8mt7Fhc7";
 

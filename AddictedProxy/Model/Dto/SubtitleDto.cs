@@ -70,7 +70,7 @@ public class SubtitleDto
     /// docs/2026-10-20-api-id-base62.md); for season packs wrapped as
     /// sp_{base62}[_ep_{N}|_entry_{base62}]
     /// </summary>
-    /// <example>3j3OsqLGMsYABUdr7n9XsD</example>
+    /// <example>0VBJpBmUXk2twqNJdYbHmH</example>
     [Required]
     public string SubtitleId { get; }
 
@@ -100,7 +100,7 @@ public class SubtitleDto
     /// <summary>
     /// Url to download the subtitle
     /// </summary>
-    /// <example>/subtitles/download/3j3OsqLGMsYABUdr7n9XsD</example>
+    /// <example>/subtitles/download/0VBJpBmUXk2twqNJdYbHmH</example>
     [Required]
     public string DownloadUri { get; }
 

@@ -7,7 +7,7 @@ import { expect, test } from "@playwright/test";
  */
 test.describe("Show details", () => {
   test("renders season packs and episodes for a regular show", async ({ page }) => {
-    await page.goto("/shows/6TTo3qLDnBJgjloPOYLLKT/breaking-bad");
+    await page.goto("/shows/4v7SXznCWD5QQLn9P9mSaf/breaking-bad");
 
     await expect(page.getByRole("heading", { name: /Season \d+/ })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Season Packs" })).toBeVisible();
@@ -15,7 +15,7 @@ test.describe("Show details", () => {
   });
 
   test("hides the Episodes heading for a season-pack-only show", async ({ page }) => {
-    await page.goto("/shows/6TTo3qMQerhZH6zvNexUjU/only-season-pack");
+    await page.goto("/shows/4v7SXznCoLFCpjLOUb7edQ/only-season-pack");
 
     await expect(page.getByRole("heading", { name: /Season \d+/ })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Season Packs" })).toBeVisible();
