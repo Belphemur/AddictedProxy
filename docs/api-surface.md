@@ -149,6 +149,60 @@ Provides statistics endpoints for tracking subtitle and show metrics.
 
 Generates XML sitemaps for SEO purposes.
 
+### Robots Controller (`/robots.txt`)
+
+Serves `robots.txt` from configuration (`text/plain`), replacing the Nuxt static
+asset in production (Traefik routes the www host's `robots.txt` here). The
+sitemap URL reuses the same base URL as the sitemap generation.
+
+Crawl policy — the download-wall (see
+[2026-10-21-llm-discoverability.md](2026-10-21-llm-discoverability.md)):
+metadata pages stay open to every agent, subtitle downloads never do.
+
+```
+User-Agent: *
+Allow: /
+Disallow: /subtitles/download/
+
+User-Agent: GPTBot
+User-Agent: OAI-SearchBot
+User-Agent: ChatGPT-User
+User-Agent: PerplexityBot
+User-Agent: ClaudeBot
+User-Agent: Claude-Web
+User-Agent: Google-Extended
+User-Agent: CCBot
+User-Agent: Bytespider
+Allow: /
+Disallow: /subtitles/download/
+
+Sitemap: {BaseUrl}/sitemap.xml
+# LLM agent guidance: /llms.txt lists the show catalog (metadata only).
+```
+
+The AI-crawler agent list is one `AiCrawlerUserAgents` constant on
+`RobotsController`, asserted verbatim by `RobotsControllerTests`; the explicit
+group exists so agents that only honour their own most-specific block are
+covered. New AI crawlers require a code change (one array entry).
+
+### LLM discovery surfaces
+
+- `/llms.txt` and `/llms-full.txt` — produced by the backend
+  (`SitemapController.LlmCatalog` / `LlmFullCatalog`, `text/plain`), using the
+  SAME `ITvShowRepository.GetAllHavingSubtitlesAsync()` data source as the XML
+  sitemap (DRY: one catalog producer). Caching: `ResponseCache` 1h, matching
+  the controller-level caching pattern used elsewhere. The frontend only
+  proxies these paths to the backend (`addicted.nuxt/server/sitemap/sitemap-proxy.ts`)
+  — no second producer. Metadata only: no download URI appears in any
+  LLM/SEO-facing surface.
+- Show pages expose schema.org JSON-LD (`TVSeries` + `TVSeason` + `TVEpisode`
+  nodes) in SSR HTML; episode nodes carry names/season/episode numbers only —
+  no download URIs.
+- `SubtitlesController.Download` sets `X-Robots-Tag: noindex, nofollow` on
+  **every** response path (success, 400, 404, 429) as the first statement of
+  the action, so a leaked download URL is never indexed regardless of
+  robots.txt compliance.
+
 ## Data Transfer Objects (DTOs)
 
 ### ShowDto

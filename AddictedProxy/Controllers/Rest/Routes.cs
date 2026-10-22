@@ -5,5 +5,7 @@ public enum Routes
     DownloadSubtitle,
     MediaDetails,
     MediaSitemap,
-    ShowsSitemap
+    ShowsSitemap,
+    LlmCatalog,
+    LlmFullCatalog
 }
