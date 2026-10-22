@@ -24,10 +24,12 @@ export default defineNuxtConfig({
     "/api": { prerender: true },
     "/privacy": { prerender: true },
     "/dmca": { swr: 3600 },
-    // Crawler-facing surfaces: show pages render full SSR HTML (with JSON-LD)
-    // per crawler hit — cache for an hour instead of re-rendering every request.
-    "/shows/**": { swr: 3600 },
-    "/llms.txt": { swr: 3600 },
+    // /llms.txt and /llms-full.txt are proxied to the backend, which owns their
+    // response caching — no SWR rule here (backend-owned producer, DRY).
+    // /shows/** is deliberately NOT SWR-cached: show pages render device-varying
+    // SSR markup (useDevice() in MediaDetails.vue / SubtitlesTable.vue), and a
+    // URL-keyed SWR cache would serve one device's layout to the other for up
+    // to an hour (hydration mismatch). See docs/2026-10-21-llm-discoverability.md.
   },
   app: {
     head: {
@@ -218,28 +220,14 @@ export default defineNuxtConfig({
     // modules would duplicate backend-owned producers (DRY).
     "nuxt-site-config",
     "nuxt-schema-org",
-    "nuxt-ai-ready",
   ],
-  // nuxt-ai-ready hard-depends on @nuxtjs/robots and @nuxtjs/sitemap; both are
-  // DISABLED here — the backend owns robots.txt (RobotsController, Traefik
-  // routed) and sitemap.xml (SitemapController). Running them would create a
-  // second producer of each (DRY); see docs/2026-10-21-llm-discoverability.md.
-  // nuxt-ai-ready only needs them as module dependencies; its /llms.txt and
-  // /llms-full.txt handlers fetch /sitemap.xml dynamically (proxied to the
-  // backend via server/sitemap/sitemap-proxy.ts).
-  sitemap: { enabled: false },
-  robots: { enabled: false },
-  nitro: {
-    virtual: {
-      // @nuxtjs/sitemap is disabled (backend owns /sitemap.xml) but
-      // nuxt-ai-ready's runtime re-exports this virtual from its
-      // sitemap-config module — provide the empty default ourselves.
-      "#sitemap-virtual/static-config.mjs": "export default {}",
-    },
-  },
   site: {
     // Same env fallback chain as runtimeConfig.public.url / .siteName — one
     // set of envs, one brand source (DRY; no new env vars).
+    // NOTE: `site` is build-time only — it does NOT follow the NUXT_PUBLIC_URL
+    // runtime override. Anything URL-shaped that must honour the documented
+    // runtime chain (e.g. JSON-LD page URLs) reads runtimeConfig.public.url
+    // instead; see docs/2026-10-21-llm-discoverability.md (as-built).
     url:
       process.env.APP_URL ??
       process.env.NUXT_PUBLIC_URL ??

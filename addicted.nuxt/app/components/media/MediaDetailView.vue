@@ -70,10 +70,13 @@ useSeoMeta({
 // docs/2026-10-21-llm-discoverability.md). Download-wall invariant: metadata
 // only — no downloadUri, no sp_-prefixed ids, no /subtitles/download/ URI in
 // any node. Nodes carry names/seasons/episode titles only.
-const siteConfig = useSiteConfig();
+// Page URLs come from the documented runtime chain (runtimeConfig.public.url,
+// overridable via NUXT_PUBLIC_URL at runtime — docs/domain-configurability-plan.md).
+// The `site` config that nuxt-site-config resolves is BUILD-TIME only and would
+// bake the image's build host into the structured data.
 const showPageUrl = computed(() => {
   const media = mediaInfo.value?.media;
-  return media?.slug ? `${siteConfig.url}/shows/${media.id}/${media.slug}` : undefined;
+  return media?.slug ? `${runtimeConfig.public.url}/shows/${media.id}/${media.slug}` : undefined;
 });
 
 const showSchemaNodes = computed(() => {
@@ -82,6 +85,9 @@ const showSchemaNodes = computed(() => {
   if (!media) return [];
   return [
     defineTVSeries({
+      // Explicit url — otherwise the node inherits the build-time site-config
+      // origin, which ignores the NUXT_PUBLIC_URL runtime override.
+      url: showPageUrl.value,
       name: media.name,
       alternateName: details?.englishName,
       description: details?.overview,
