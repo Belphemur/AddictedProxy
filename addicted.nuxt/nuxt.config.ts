@@ -24,6 +24,12 @@ export default defineNuxtConfig({
     "/api": { prerender: true },
     "/privacy": { prerender: true },
     "/dmca": { swr: 3600 },
+    // /llms.txt and /llms-full.txt are proxied to the backend, which owns their
+    // response caching — no SWR rule here (backend-owned producer, DRY).
+    // /shows/** is deliberately NOT SWR-cached: show pages render device-varying
+    // SSR markup (useDevice() in MediaDetails.vue / SubtitlesTable.vue), and a
+    // URL-keyed SWR cache would serve one device's layout to the other for up
+    // to an hour (hydration mismatch). See docs/2026-10-21-llm-discoverability.md.
   },
   app: {
     head: {
@@ -209,7 +215,36 @@ export default defineNuxtConfig({
     "vuetify-nuxt-module",
     "pinia-plugin-persistedstate",
     "@nuxt/scripts",
+    // LLM discoverability (design: docs/2026-10-21-llm-discoverability.md).
+    // Individual modules, NOT the @nuxtjs/seo umbrella — its sitemap/robots
+    // modules would duplicate backend-owned producers (DRY).
+    "nuxt-site-config",
+    "nuxt-schema-org",
   ],
+  site: {
+    // Same env fallback chain as runtimeConfig.public.url / .siteName — one
+    // set of envs, one brand source (DRY; no new env vars).
+    // NOTE: `site` is build-time only — it does NOT follow the NUXT_PUBLIC_URL
+    // runtime override. Anything URL-shaped that must honour the documented
+    // runtime chain (e.g. JSON-LD page URLs) reads runtimeConfig.public.url
+    // instead; see docs/2026-10-21-llm-discoverability.md (as-built).
+    url:
+      process.env.APP_URL ??
+      process.env.NUXT_PUBLIC_URL ??
+      "https://www.subvault.tv",
+    name:
+      process.env.APP_SITENAME ??
+      process.env.NUXT_PUBLIC_SITENAME ??
+      "Subvault",
+    description:
+      "Search and download subtitles from Addic7ed and SuperSubtitles",
+    defaultLocale: "en-US",
+  },
+  schemaOrg: {
+    // Identity resolves its name/description/url from the `site` config (same
+    // env fallback chain) — no hardcoded brand (DRY).
+    identity: { type: "Organization" },
+  },
 
   compatibilityDate: "2026-02-27",
 });

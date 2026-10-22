@@ -66,6 +66,56 @@ useSeoMeta({
   ogType: "website"
 });
 
+// Structured data for LLMs & search engines (design:
+// docs/2026-10-21-llm-discoverability.md). Download-wall invariant: metadata
+// only — no downloadUri, no sp_-prefixed ids, no /subtitles/download/ URI in
+// any node. Nodes carry names/seasons/episode titles only.
+// Page URLs come from the documented runtime chain (runtimeConfig.public.url,
+// overridable via NUXT_PUBLIC_URL at runtime — docs/domain-configurability-plan.md).
+// The `site` config that nuxt-site-config resolves is BUILD-TIME only and would
+// bake the image's build host into the structured data.
+const showPageUrl = computed(() => {
+  const media = mediaInfo.value?.media;
+  return media?.slug ? `${runtimeConfig.public.url}/shows/${media.id}/${media.slug}` : undefined;
+});
+
+const showSchemaNodes = computed(() => {
+  const media = mediaInfo.value?.media;
+  const details = mediaInfo.value?.details;
+  if (!media) return [];
+  return [
+    defineTVSeries({
+      // Explicit url — otherwise the node inherits the build-time site-config
+      // origin, which ignores the NUXT_PUBLIC_URL runtime override.
+      url: showPageUrl.value,
+      name: media.name,
+      alternateName: details?.englishName,
+      description: details?.overview,
+      image: details?.posterPath,
+      genre: details?.genre ?? [],
+      datePublished: details?.releaseYear ? `${details.releaseYear}` : undefined,
+      containsSeason: (media.seasons ?? []).map((seasonNumber) => ({
+        "@type": "TVSeason",
+        seasonNumber,
+        name: `${media.name} Season ${seasonNumber}`,
+      })),
+    }),
+    ...(() => {
+      const url = showPageUrl.value;
+      if (!url) return [];
+      return (episodes.value ?? []).map((episode) =>
+        defineTVEpisode({
+          name: episode.title,
+          episodeNumber: episode.number,
+          seasonNumber: episode.season,
+          partOfSeries: { name: media.name },
+          url,
+        }));
+    })(),
+  ];
+});
+useSchemaOrg(showSchemaNodes);
+
 async function loadViewData() {
   loadingEpisodes.value = true;
 

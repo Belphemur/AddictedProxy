@@ -502,6 +502,28 @@ var (
 	reSubDownload   = regexp.MustCompile(`^/subtitles/download/(.+)$`)
 )
 
+// GET /llms.txt — minimal valid llms.txt stub so the frontend proxy passthrough
+// can be asserted in e2e. Real production payload is backend-built
+// (SitemapController.LlmCatalog); the mock only needs the spec shape.
+func handleLlmTxt(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintln(w, "# Mock Subvault")
+	fmt.Fprintln(w, "> Mock catalog for e2e proxy tests.")
+	fmt.Fprintln(w, "")
+	fmt.Fprintln(w, "## Links")
+	fmt.Fprintln(w, "- [Breaking Bad](/shows/4v7SXznCWD5QQLn9P9mSaf/breaking-bad)")
+}
+
+// GET /sitemap.xml — minimal valid sitemap stub for proxy e2e.
+func handleSitemapXml(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/xml; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintln(w, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+	fmt.Fprintln(w, "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">")
+	fmt.Fprintln(w, "</sitemapindex>")
+}
+
 func router(w http.ResponseWriter, r *http.Request) {
 	log.Printf("%s %s", r.Method, r.URL.Path)
 
@@ -509,6 +531,16 @@ func router(w http.ResponseWriter, r *http.Request) {
 
 	if path == "/application/info" {
 		handleApplicationInfo(w, r)
+		return
+	}
+
+	if path == "/llms.txt" || path == "/llms-full.txt" {
+		handleLlmTxt(w, r)
+		return
+	}
+
+	if path == "/sitemap.xml" {
+		handleSitemapXml(w, r)
 		return
 	}
 
