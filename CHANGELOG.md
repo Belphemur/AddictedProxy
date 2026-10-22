@@ -1,3 +1,9 @@
+## [6.3.0](https://github.com/Belphemur/AddictedProxy/compare/v6.2.0...v6.3.0) (2026-10-22)
+
+### Features
+
+* **seo:** expose show catalog to LLMs via JSON-LD and backend-built llms.txt with download wall ([6816422](https://github.com/Belphemur/AddictedProxy/commit/6816422dbe6f78c482b0995220b89c785e19ede6)), closes [#5](https://github.com/Belphemur/AddictedProxy/issues/5)
+
 ## [6.2.0](https://github.com/Belphemur/AddictedProxy/compare/v6.1.0...v6.2.0) (2026-10-21)
 
 ### Features
