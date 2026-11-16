@@ -22,7 +22,7 @@
     <PackageVersion Include="Hangfire.MaximumConcurrentExecutions" Version="1.1.0" />
     <PackageVersion Include="Hangfire.PostgreSql" Version="1.21.1" />
     <PackageVersion Include="IsExternalInit" Version="1.0.3" />
-    <PackageVersion Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.3.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.3.14" />
     <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="10.0.15" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.15" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.15">
@@ -42,7 +42,7 @@
     <PackageVersion Include="Microsoft.Extensions.Hosting.Systemd" Version="10.0.15" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.15" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.11.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0">
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.12.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.15" />
