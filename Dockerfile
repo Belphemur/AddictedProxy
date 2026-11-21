@@ -2,7 +2,7 @@ ARG MAIN_PROJECT=AddictedProxy
 ARG DATA_DIRECTORY="/data"
 ARG RELEASE_VERSION="1.0.0"
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:11.0 AS base
 RUN useradd -r -s /bin/false dotnetuser
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl dumb-init && rm -rf /var/lib/apt/lists/*
@@ -12,7 +12,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS restore
+FROM mcr.microsoft.com/dotnet/sdk:11.0 AS restore
 ARG MAIN_PROJECT
 WORKDIR /src
 COPY . .
